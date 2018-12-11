@@ -1,0 +1,6 @@
+[submodule "vendor/cid"]
+	path = vendor/cid
+	url = https://github.com/FFT-Hackers/Cid.git
+[submodule "vendor/mog"]
+	path = vendor/mog
+	url = https://github.com/FFT-Hackers/Mog.git

@@ -1,4 +1,4 @@
 # SisterRay
-A chantage-like loader for FFVII
+A chantage-like project for FF7
 
-Chantage is powered by Cid and Mog
+SisterRay is powered by Cid and Mog

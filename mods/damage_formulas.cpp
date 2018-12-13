@@ -6,6 +6,11 @@ void PhysicalFormulaRewrite() {
     i32 base_damage;
     i32 final_damage;
 
+    /*auto critical check*/
+    if (DamageContextPtr->specialAbilityFlags & 0x2000 == 0) {
+        DamageContextPtr->abilityFlags2 = ((DamageContextPtr->abilityFlags2) | 0x02);
+    }
+
     atk = (*DamageContextPtr).attackerAtk;
     lvl = (*DamageContextPtr).attackerLevel;
     defense = (*DamageContextPtr).targetDefense;
@@ -13,6 +18,8 @@ void PhysicalFormulaRewrite() {
     attacker_status = (*DamageContextPtr).attackerStatusMask
 
     base_damage = atk + ((atk + lvl) / 32)*((atk*lvl) / 32);
+
+    /*apply defense*/
     base_damage = ((256 - defense)*base_damage) / 256;
     base_damage = (ability_power*base_damage) / 16;
 
@@ -74,4 +81,7 @@ void PhysicalFormulaRewrite() {
 
     /*set the base damage in the context object*/
     (*DamageContextPtr).currentDamage = base_damage;
+
+    /*set damage to 1 for testing purposes*/
+    (*DamageContextPtr).currentDamage = 1;
 }

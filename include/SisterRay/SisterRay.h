@@ -8,26 +8,21 @@ typedef uint8_t     u8;
 typedef uint16_t    u16;
 typedef uint32_t    u32;
 
-void* FORMULA_TABLE_LOCATION = 0x8FF1F8;
+void* FORMULA_TABLE_LOCATION = (void*)0x8FF1F8;
 
-void* PHYSICAL_DAMAGE_FORMULA = 0x5DE5DF;
-void* MAGICAL_DAMAGE_FORMULA = 0x5DE9B8;
-void* CURRENT_HP_GRAVITY = 0x5DEA6D;
-void* MAX_HP_GRAVITY = 0x5DEAF7;
-void* CURE_FORMULA = 0x5DEB81;
-void* CONSTANT_20 = 0x5DEBE5;
-void* CONSTANT_16 = 0x5DEC0A;
-void* RECOVERY_FORMULA = 0x5DEC52;
-void* THROW_FORMULA = 0x5DEC8A;
-void* COIN_FORMULA = 0x5DECAA;
+void* PHYSICAL_DAMAGE_FORMULA = (void*)0x5DE5DF;
+void* MAGICAL_DAMAGE_FORMULA = (void*)0x5DE9B8;
+void* CURRENT_HP_GRAVITY = (void*)0x5DEA6D;
+void* MAX_HP_GRAVITY = (void*)0x5DEAF7;
+void* CURE_FORMULA = (void*)0x5DEB81;
+void* CONSTANT_20 = (void*)0x5DEBE5;
+void* CONSTANT_16 = (void*)0x5DEC0A;
+void* RECOVERY_FORMULA = (void*)0x5DEC52;
+void* THROW_FORMULA = (void*)0x5DEC8A;
+void* COIN_FORMULA = (void*)0x5DECAA;
 
 //Damage Modifier Routines
-void* APPLY_ELEMENTAL_MODIFIERS = 0x5DB593;
-
-const DamageCalcStruct* DamageContextPtr = 0x99CE0C;
-
-const ActorBattleVars* AIActorVariables = 0x9AB0DC;
-int ACTOR_ARRAY_SIZE = 10;
+void* APPLY_ELEMENTAL_MODIFIERS = (void*)0x5DB593;
 
 //This struct has size 260h and is referenced by the main context ptr
 #pragma pack(push, 1)
@@ -92,7 +87,7 @@ typedef struct {
     u32 targetMaskCopy2; //0xEC
     u32 addedCutMPHPAbsorbByte; //0xF0
     u32 currentUnitIDTempt; //0xF4
-    u32 unkDWord4; //0xF8
+    u32 unkDWord5; //0xF8
     u32 hitCountCopy; //0xFC
     /*256 unused bytes*/
     u8 padding3[100]; 
@@ -103,7 +98,7 @@ typedef struct {
     u32 targetDefense; //0x210
     i32 currentDamage; //0x214
     u32 abilityFlags1; //0x218
-    u32 unkDWord5; //0x21C
+    u32 unkDWord6; //0x21C
     u32 abilityFlags2; //0x220
     u32 unkActionID; //0x224
     u32 targetStatusMask; //0x228
@@ -183,4 +178,9 @@ typedef struct {
     u8      unused15;
 
 } ActorBattleVars;
-#pragma pack pack(pop)
+#pragma pack(pop)
+
+const DamageCalcStruct* DamageContextPtr = (DamageCalcStruct*)0x99CE0C;
+
+const ActorBattleVars* AIActorVariables = (ActorBattleVars*)0x9AB0DC;
+int ACTOR_ARRAY_SIZE = 10;

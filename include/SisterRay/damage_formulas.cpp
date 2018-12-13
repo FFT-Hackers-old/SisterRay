@@ -1,4 +1,4 @@
-#include <mods/damage_formulas.h>
+#include <damage_formulas.h>
 
 void PhysicalFormulaRewrite() {
     i32 atk;

@@ -1,6 +1,5 @@
 #include <mog/mog.h>
 #include <windows.h>
-#include <../../../mods/damage_formulas.h>
 
 __declspec(dllexport) void rayInit()
 {

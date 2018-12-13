@@ -58,8 +58,20 @@ void PhysicalFormulaRewrite() {
         base_damage = base_damage / 5;
     }
 
+    /*apply checks from existing modifiers*/
+    base_damage = sadnessModifier(base_damage);
+    base_damage = spltDamageQuadraMagicModifier(base_damage, 0);
+    base_damage = barriersModifier(base_damage);
+
+
     /*mini modifier*/
     if (attacker_status & 0x1000) {
         base_damage = base_damage / 10;
     }
+
+    /*randomVariation*/
+    base_damage = randomVariation(base_damage);
+
+    /*set the base damage in the context object*/
+    (*DamageContextPtr).current_damage = base_damage;
 }

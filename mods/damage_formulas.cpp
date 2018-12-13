@@ -10,7 +10,7 @@ void PhysicalFormulaRewrite() {
     lvl = (*DamageContextPtr).attackerLevel;
     defense = (*DamageContextPtr).targetDefense;
     ability_power = (*DamageContextPtr).abilityPower;
-    attacker_status = (*DamageContextPtr).attakerStatusByte
+    attacker_status = (*DamageContextPtr).attackerStatusMask
 
     base_damage = atk + ((atk + lvl) / 32)*((atk*lvl) / 32);
     base_damage = ((256 - defense)*base_damage) / 256;
@@ -27,9 +27,9 @@ void PhysicalFormulaRewrite() {
     }
 
     /*row modification, now respects enemy short-rangedness*/
-    bool attacker_row = ((AIActorVariables[DamageContextPtr->attacker_id]->stateFlags) & 0x40);
-    bool target_row = ((AIActorVariables[DamageContextPtr->target_id]->stateFlags) & 0x40);
-    bool is_short_range = (DamageContextPtr->abilityFlags & 0x20);
+    bool attacker_row = ((AIActorVariables[DamageContextPtr->attackerID]->stateFlags) & 0x40);
+    bool target_row = ((AIActorVariables[DamageContextPtr->targetID]->stateFlags) & 0x40);
+    bool is_short_range = (DamageContextPtr->targetStateFlags & 0x20);
 
     if (target_row) {
         if (is_short_range) {
@@ -73,5 +73,5 @@ void PhysicalFormulaRewrite() {
     base_damage = randomVariation(base_damage);
 
     /*set the base damage in the context object*/
-    (*DamageContextPtr).current_damage = base_damage;
+    (*DamageContextPtr).currentDamage = base_damage;
 }

@@ -8,19 +8,6 @@ typedef uint8_t     u8;
 typedef uint16_t    u16;
 typedef uint32_t    u32;
 
-/*Function type definitions*/
-typedef u32 (*pfnsadnessmodifier)(u32);
-pfnsadnessmodifier sadnessModifier = (pfnsadnessmodifier)0x5DE958;
-
-typedef u32(*pfnsplitdamagequadramagic)(u32, u32);
-pfnsplitdamagequadramagic spltDamageQuadraMagicModifier = (pfnsplitdamagequadramagic)0x5DE8F4;
-
-typedef u32(*pfnbarriersmodifier)(u32);
-pfnbarriersmodifier barriersModifier = (pfnbarriersmodifier)0x5DE82C;
-
-typedef u32(*pfnrandomvariation)(u32);
-pfnrandomvariation randomVariation = (pfnrandomvariation)0x5DE988;
-
 void* FORMULA_TABLE_LOCATION = 0x8FF1F8;
 
 void* PHYSICAL_DAMAGE_FORMULA = 0x5DE5DF;

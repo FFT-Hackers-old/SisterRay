@@ -8,40 +8,40 @@ typedef uint8_t     u8;
 typedef uint16_t    u16;
 typedef uint32_t    u32;
 
-const u32 FORMULA_TABLE_LOCATION = 0x8FF1F8;
+void* FORMULA_TABLE_LOCATION = 0x8FF1F8;
 
-const u32 PHYSICAL_DAMAGE_FORMULA = 0x5DE5DF;
-const u32 MAGICAL_DAMAGE_FORMULA = 0x5DE9B8;
-const u32 CURRENT_HP_GRAVITY = 0x5DEA6D;
-const u32 MAX_HP_GRAVITY = 0x5DEAF7;
-const u32 CURE_FORMULA = 0x5DEB81;
-const u32 CONSTANT_20 = 0x5DEBE5;
-const u32 CONSTANT_16 = 0x5DEC0A;
-const u32 RECOVERY_FORMULA = 0x5DEC52;
-const u32 THROW_FORMULA = 0x5DEC8A;
-const u32 COIN_FORMULA = 0x5DECAA;
+void* PHYSICAL_DAMAGE_FORMULA = 0x5DE5DF;
+void* MAGICAL_DAMAGE_FORMULA = 0x5DE9B8;
+void* CURRENT_HP_GRAVITY = 0x5DEA6D;
+void* MAX_HP_GRAVITY = 0x5DEAF7;
+void* CURE_FORMULA = 0x5DEB81;
+void* CONSTANT_20 = 0x5DEBE5;
+void* CONSTANT_16 = 0x5DEC0A;
+void* RECOVERY_FORMULA = 0x5DEC52;
+void* THROW_FORMULA = 0x5DEC8A;
+void* COIN_FORMULA = 0x5DECAA;
+
+//Damage Modifier Routines
+void* APPLY_ELEMENTAL_MODIFIERS = 0x5DB593;
 
 const DamageCalcStruct* DamageContextPtr = 0x99CE0C;
 
-const u32 ACTOR_ARRAY_START = 0x9AB0DC;
+const ActorBattleVars* AIActorVariables = 0x9AB0DC;
 int ACTOR_ARRAY_SIZE = 10;
 
-
-#if defined(__GNUC__)
-# define PACKED  __attribute__ ((packed))
-#else
-# define PACKED
-#endif
-
 //This struct has size 260h and is referenced by the main context ptr
+#pragma pack(push, 1)
 typedef struct {
-
-} PACKED DamageCalcStruct;
+    u32 attackerID;
+    u32 attackerLevel;
+} DamageCalcStruct;
+#pragma pack(pop)
 
 //An array of size ACTOR_ARRAY_SIZE w/ elements of size 0x68 exists at ARRAY_ACTOR_START
+#pragma pack(push, 1)
 typedef struct {
     u32     statusMasks;
-    u32     actorFlags;
+    u32     stateFlags;
     u8      index;
     u8      level;
     u8      unknown0;
@@ -58,7 +58,7 @@ typedef struct {
     u8      luck;
     u8      idleAnimHolder;
     u8      lastCovered;
-    u16      lastTargets;
+    u16     lastTargets;
     u16     prevAttackerMask;
     u16     prevPhysAttackerMask;
     u16     prevMagAttackerMask;
@@ -95,4 +95,5 @@ typedef struct {
     u8      unused14;
     u8      unused15;
 
-} PACKED ActorBattleVars;
+} ActorBattleVars;
+#pragma pack pack(pop)

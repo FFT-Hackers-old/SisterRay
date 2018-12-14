@@ -1,21 +1,24 @@
-#include <damage_formulas.h>
+#include "damage_formulas.h"
 
 void PhysicalFormulaRewrite() {
     i32 atk;
     i32 lvl;
     i32 base_damage;
     i32 final_damage;
+    u32 defense;
+    u32 ability_power;
+    u32 attacker_status;
 
     /*auto critical check*/
-    if (DamageContextPtr->specialAbilityFlags & 0x2000 == 0) {
+    if ((DamageContextPtr->specialAbilityFlags & 0x2000) == 0) {
         DamageContextPtr->abilityFlags2 = ((DamageContextPtr->abilityFlags2) | 0x02);
     }
 
-    atk = (*DamageContextPtr).attackerAtk;
-    lvl = (*DamageContextPtr).attackerLevel;
-    defense = (*DamageContextPtr).targetDefense;
-    ability_power = (*DamageContextPtr).abilityPower;
-    attacker_status = (*DamageContextPtr).attackerStatusMask
+    atk = DamageContextPtr->attackerAtk;
+    lvl = DamageContextPtr->attackerLevel;
+    defense = DamageContextPtr->targetDefense;
+    ability_power = DamageContextPtr->abilityPower;
+    attacker_status = DamageContextPtr->attackerStatusMask;
 
     base_damage = atk + ((atk + lvl) / 32)*((atk*lvl) / 32);
 
@@ -24,13 +27,13 @@ void PhysicalFormulaRewrite() {
     base_damage = (ability_power*base_damage) / 16;
 
     /*check crit*/
-    if ((*DamageContextPtr).flags & 2) {
-        base_damage = 1.5*base_damage;
+    if (DamageContextPtr->flags & 2) {
+        base_damage = 1.5f * base_damage;
     }
 
     /*berserk check*/
     if (attacker_status & 0x00800000) {
-        base_damage = 1.3*base_damage;
+        base_damage = 1.3f * base_damage;
     }
 
     /*row modification, now respects enemy short-rangedness*/
@@ -80,8 +83,8 @@ void PhysicalFormulaRewrite() {
     base_damage = randomVariation(base_damage);
 
     /*set the base damage in the context object*/
-    (*DamageContextPtr).currentDamage = base_damage;
+    DamageContextPtr->currentDamage = base_damage;
 
     /*set damage to 1 for testing purposes*/
-    (*DamageContextPtr).currentDamage = 1;
+    DamageContextPtr->currentDamage = 1;
 }

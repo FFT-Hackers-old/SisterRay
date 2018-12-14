@@ -1,3 +1,8 @@
+#ifndef SISTER_RAY_H
+#define SISTER_RAY_H
+
+#include <stdint.h>
+
 //Define relevant constants for accessing specific parts of the exe*//
 
 typedef int8_t      i8;
@@ -180,7 +185,9 @@ typedef struct {
 } ActorBattleVars;
 #pragma pack(pop)
 
-const DamageCalcStruct* DamageContextPtr = (DamageCalcStruct*)0x99CE0C;
+DamageCalcStruct* const DamageContextPtr = (DamageCalcStruct*)0x99CE0C;
 
 const ActorBattleVars* AIActorVariables = (ActorBattleVars*)0x9AB0DC;
 int ACTOR_ARRAY_SIZE = 10;
+
+#endif

@@ -55,7 +55,7 @@ typedef struct {
     u32 partofAttackerMask; //034
     u32 MPCost; //0x38
     u32 hitChance; //0x3C
-    u32 damageFormulaID; //0x44
+    u32 damageFormulaID; //0x40
     u32 attackElementsMask; //0x44
     u32 abilityPower; //0x48
     i32 attackerAtk; //0x4C
@@ -69,6 +69,7 @@ typedef struct {
     u32 specialAbilityFlags; //0x6C
     u8 padding1[8]; //0x70, 0x74
     u32 damageCalcMask; //0x78
+    u32 unkTHATCRASHEDTHEGAME; // 0x7C
     u32 addStatusMask; //0x80
     u32 rmStatusMask; //0x84
     u32 changeStatusMask; //0x88
@@ -102,7 +103,8 @@ typedef struct {
     u32 unkDWord5; //0xF8
     u32 hitCountCopy; //0xFC
     /*256 unused bytes*/
-    u8 padding3[100]; 
+    u8 padding3[0x100];
+
     u32 targetObjectBlock1Ptr; //0x200
     u32 targetObjectBlock2Ptr; //0x204
     u32 targetID; //0x208
@@ -192,7 +194,7 @@ typedef struct {
 } ActorBattleVars;
 #pragma pack(pop)
 
-static DamageCalcStruct* DamageContextPtr = (DamageCalcStruct*)0x99CE0C;
-static ActorBattleVars* AIActorVariables = (ActorBattleVars*)0x9AB0DC;
+static DamageCalcStruct* DamageContextPtr = (DamageCalcStruct*)0x0099E308;
+static ActorBattleVars* AIActorVariables = (ActorBattleVars*)0x009AB0DC;
 
 #endif

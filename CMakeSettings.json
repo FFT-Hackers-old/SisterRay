@@ -3,7 +3,33 @@
     {
       "name": "x86-Release",
       "generator": "Ninja",
+      "configurationType": "Release",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\build\\${name}",
+      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v",
+      "ctestCommandArgs": ""
+    },
+    {
+      "name": "x86-RelWithDebInfo",
+      "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\build\\${name}",
+      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v",
+      "ctestCommandArgs": ""
+    },
+    {
+      "name": "x86-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
       "inheritEnvironments": [
         "msvc_x86"
       ],

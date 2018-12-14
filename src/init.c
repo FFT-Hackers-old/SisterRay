@@ -1,6 +1,6 @@
 #include <mog/mog.h>
 #include <windows.h>
-#include <../../SisterRay/src/damage_formulas.h>
+#include "../src/damage_formulas.h"
 
 __declspec(dllexport) void rayInit()
 {

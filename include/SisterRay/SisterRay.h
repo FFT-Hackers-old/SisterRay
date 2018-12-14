@@ -13,21 +13,21 @@ typedef uint8_t     u8;
 typedef uint16_t    u16;
 typedef uint32_t    u32;
 
-void* FORMULA_TABLE_LOCATION = (void*)0x8FF1F8;
+static void* FORMULA_TABLE_LOCATION = (void*)0x8FF1F8;
 
-void* PHYSICAL_DAMAGE_FORMULA = (void*)0x5DE5DF;
-void* MAGICAL_DAMAGE_FORMULA = (void*)0x5DE9B8;
-void* CURRENT_HP_GRAVITY = (void*)0x5DEA6D;
-void* MAX_HP_GRAVITY = (void*)0x5DEAF7;
-void* CURE_FORMULA = (void*)0x5DEB81;
-void* CONSTANT_20 = (void*)0x5DEBE5;
-void* CONSTANT_16 = (void*)0x5DEC0A;
-void* RECOVERY_FORMULA = (void*)0x5DEC52;
-void* THROW_FORMULA = (void*)0x5DEC8A;
-void* COIN_FORMULA = (void*)0x5DECAA;
+static void* PHYSICAL_DAMAGE_FORMULA = (void*)0x5DE5DF;
+static void* MAGICAL_DAMAGE_FORMULA = (void*)0x5DE9B8;
+static void* CURRENT_HP_GRAVITY = (void*)0x5DEA6D;
+static void* MAX_HP_GRAVITY = (void*)0x5DEAF7;
+static void* CURE_FORMULA = (void*)0x5DEB81;
+static void* CONSTANT_20 = (void*)0x5DEBE5;
+static void* CONSTANT_16 = (void*)0x5DEC0A;
+static void* RECOVERY_FORMULA = (void*)0x5DEC52;
+static void* THROW_FORMULA = (void*)0x5DEC8A;
+static void* COIN_FORMULA = (void*)0x5DECAA;
 
 //Damage Modifier Routines
-void* APPLY_ELEMENTAL_MODIFIERS = (void*)0x5DB593;
+static void* APPLY_ELEMENTAL_MODIFIERS = (void*)0x5DB593;
 
 //This struct has size 260h and is referenced by the main context ptr
 #pragma pack(push, 1)
@@ -185,9 +185,7 @@ typedef struct {
 } ActorBattleVars;
 #pragma pack(pop)
 
-DamageCalcStruct* DamageContextPtr = (DamageCalcStruct*)0x99CE0C;
-ActorBattleVars* AIActorVariables = (ActorBattleVars*)0x9AB0DC;
-
-int ACTOR_ARRAY_SIZE = 10;
+static DamageCalcStruct* DamageContextPtr = (DamageCalcStruct*)0x99CE0C;
+static ActorBattleVars* AIActorVariables = (ActorBattleVars*)0x9AB0DC;
 
 #endif

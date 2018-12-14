@@ -1,4 +1,4 @@
-#include <SisterRay.h>
+#include <SisterRay/SisterRay.h>
 
 void ApplyELementalModifiers();
 

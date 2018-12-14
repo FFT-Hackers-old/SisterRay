@@ -185,9 +185,9 @@ typedef struct {
 } ActorBattleVars;
 #pragma pack(pop)
 
-DamageCalcStruct* const DamageContextPtr = (DamageCalcStruct*)0x99CE0C;
+DamageCalcStruct* DamageContextPtr = (DamageCalcStruct*)0x99CE0C;
+ActorBattleVars* AIActorVariables = (ActorBattleVars*)0x9AB0DC;
 
-const ActorBattleVars* AIActorVariables = (ActorBattleVars*)0x9AB0DC;
 int ACTOR_ARRAY_SIZE = 10;
 
 #endif

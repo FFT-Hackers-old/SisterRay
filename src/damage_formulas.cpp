@@ -27,7 +27,7 @@ void PhysicalFormulaRewrite() {
     base_damage = (ability_power*base_damage) / 16;
 
     /*check crit*/
-    if (DamageContextPtr->flags & 2) {
+    if (DamageContextPtr->abilityFlags2 & 2) {
         base_damage = 1.5f * base_damage;
     }
 
@@ -37,8 +37,8 @@ void PhysicalFormulaRewrite() {
     }
 
     /*row modification, now respects enemy short-rangedness*/
-    bool attacker_row = ((AIActorVariables[DamageContextPtr->attackerID]->stateFlags) & 0x40);
-    bool target_row = ((AIActorVariables[DamageContextPtr->targetID]->stateFlags) & 0x40);
+    bool attacker_row = ((AIActorVariables[DamageContextPtr->attackerID].stateFlags) & 0x40);
+    bool target_row = ((AIActorVariables[DamageContextPtr->targetID].stateFlags) & 0x40);
     bool is_short_range = (DamageContextPtr->targetStateFlags & 0x20);
 
     if (target_row) {
@@ -51,7 +51,7 @@ void PhysicalFormulaRewrite() {
     }
 
     /*defend check*/
-    bool is_defending = ((AIActorVariables[DamageContextPtr->attacker_id]->stateFlags) & 0x20);
+    bool is_defending = ((AIActorVariables[DamageContextPtr->attackerID].stateFlags) & 0x20);
     if (is_defending) {
         base_damage = base_damage / 2;
     }
@@ -59,7 +59,7 @@ void PhysicalFormulaRewrite() {
     /*back_attack_handling*/
     bool is_back_attack = (DamageContextPtr->targetStateFlags & 0x01);
     if (is_back_attack) {
-        back_damage_mult = AIActorVariables[DamageContextPtr->target_id]->backDamageMult;
+        u32 back_damage_mult = AIActorVariables[DamageContextPtr->targetID].backDamageMult;
         base_damage = (base_damage*back_damage_mult) / 8;
     }
 

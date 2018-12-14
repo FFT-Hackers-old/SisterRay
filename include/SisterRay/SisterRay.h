@@ -3,6 +3,13 @@
 
 #include <stdint.h>
 
+/*Macro for handling compilation in both C and C++*/
+#if defined(__cplusplus)
+# define SISTERRAY_API extern "C"
+#else
+# define SISTERRAY_API
+#endif
+
 //Define relevant constants for accessing specific parts of the exe*//
 
 typedef int8_t      i8;

@@ -1,6 +1,6 @@
 #include "damage_formulas.h"
 
-void PhysicalFormulaRewrite() {
+SISTERRAY_API void PhysicalFormulaRewrite() {
     i32 atk;
     i32 lvl;
     i32 base_damage;

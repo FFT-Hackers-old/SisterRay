@@ -1,7 +1,8 @@
 #include "elemental_modifiers.h"
 
 /*reimplementaiton of elemental modifier mask*/
-void ApplyElementalModifers() {
+
+SISTERRAY_API void ApplyElementalModifers() {
     u32 elm_def_mask = (*DamageContextPtr).elementalDefenseMask;
 
     /*handle absorb*/

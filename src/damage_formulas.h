@@ -1,6 +1,6 @@
 #include <SisterRay/SisterRay.h>
 
-void PhysicalFormulaRewrite();
+SISTERRAY_API void PhysicalFormulaRewrite();
 
 typedef i32(*pfnsadnessmodifier)(i32);
 pfnsadnessmodifier sadnessModifier = (pfnsadnessmodifier)0x5DE958;

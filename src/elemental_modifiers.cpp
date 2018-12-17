@@ -74,9 +74,22 @@ SISTERRAY_API void InflictElementalStatus() {
         /*If not soaked, chilled, or frozen inflict burn */
         if (!((AIActorVariables[target_id].unused10 & 0x0200) || (AIActorVariables[target_id].unused10 & 0x0400)
             || (AIActorVariables[target_id].unused10 & 0x0800))) {
-            AIActorVariables[target_id].unused10 = (AIActorVariables[target_id].unused10 | 0x2000);
+            /*If not already burned, initialize stuff*/
+            if (!(AIActorVariables[target_id].unused10 & 0x2000)) {
+                AIActorVariables[target_id].unused10 = (AIActorVariables[target_id].unused10 | 0x2000);
+                statusConstantArray[target_id].burnDuration = defaultBurnDuration;
+                statusConstantArray[target_id].burnTickRate = defaultBurnTick;
+                statusConstantArray[target_id].burnIntensity = defaultBurnIntensity;
+            }
+            else {
+                statusConstantArray[target_id].burnDuration = (
+                    (statusConstantArray[target_id].burnDuration <= 255) ? (statusConstantArray[target_id].burnDuration + (defaultBurnDuration / 2)):statusConstantArray[target_id].burnDuration);
+                statusConstantArray[target_id].burnIntensity = (
+                    (statusConstantArray[target_id].burnIntensity <= 5) ? (statusConstantArray[target_id].burnIntensity + 1):statusConstantArray[target_id].burnIntensity);
+            }
         }
     }
+
     /*inflict chilled if the attack is ice elemental*/
     if (attack_elements_mask & iceBit) {
         if (!((AIActorVariables[target_id].unused10 & 0x2000) || (AIActorVariables[target_id].unused10 & 0x1000))) {

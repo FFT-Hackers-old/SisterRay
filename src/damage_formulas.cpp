@@ -1,10 +1,9 @@
 #include "damage_formulas.h"
 
 SISTERRAY_API void PhysicalFormulaRewrite() {
-    i32 atk;
-    i32 lvl;
-    i32 base_damage;
-    i32 final_damage;
+    u32 atk;
+    u32 lvl;
+    u32 base_damage;
     u32 defense;
     u32 ability_power;
     u32 attacker_status;
@@ -87,10 +86,10 @@ SISTERRAY_API void PhysicalFormulaRewrite() {
 }
 
 SISTERRAY_API void MagicFormulaRewrite() {
-    i32 atk;
-    i32 lvl;
-    i32 base_damage;
-    i32 final_damage;
+    u32 atk;
+    u32 lvl;
+    u32 base_damage;
+    u32 final_damage;
     u32 defense;
     u32 ability_power;
     u32 attacker_status;

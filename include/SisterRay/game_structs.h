@@ -1,3 +1,6 @@
+#ifndef SR_STRUCT_H
+#define SR_STRUCT_H
+
 #include <SisterRay/SisterRay.h>
 
 //This struct has size 260h and is referenced by the main context ptr
@@ -6,7 +9,7 @@ typedef struct {
     u32 attackerID; //0x00
     u32 attackerLevel; //0x04
     u32 attackerEnemyIndex; //0x08
-    u32 actionId; //0x0C
+    u32 commandIndex; //0x0C
     u32 attackIndex; //0x10
     u32 attackerIDMagic; //0x14
     u32 targetMask; //0x18
@@ -68,13 +71,12 @@ typedef struct {
     u32 hitCountCopy; //0xFC
     /*256 unused bytes*/
     u8 padding3[0x100];
-
     u32 targetObjectBlock1Ptr; //0x200
     u32 targetObjectBlock2Ptr; //0x204
     u32 targetID; //0x208
     u32 targetEnemyIndex; //0x20C
     u32 targetDefense; //0x210
-    i32 currentDamage; //0x214
+    u32 currentDamage; //0x214
     u32 abilityFlags1; //0x218
     u32 unkDWord6; //0x21C
     u32 abilityFlags2; //0x220
@@ -148,7 +150,7 @@ typedef struct {
     u32     expValue;
     u8      unused8;
     u8      unused9;
-    u16      unused10;
+    u16     unused10;
     u8      unused12;
     u8      unused13;
     u8      unused14;
@@ -157,5 +159,7 @@ typedef struct {
 } ActorBattleVars;
 #pragma pack(pop)
 
-static DamageCalcStruct* DamageContextPtr = (DamageCalcStruct*)0x0099E308;
-static ActorBattleVars* AIActorVariables = (ActorBattleVars*)0x009AB0DC;
+static DamageCalcStruct* DamageContextPtr;
+static ActorBattleVars* AIActorVariables;
+
+#endif

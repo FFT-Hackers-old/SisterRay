@@ -1,20 +1,21 @@
-#include <SisterRay/SisterRay.h>
+#ifndef SISTER_RAY_ROUTINES_H
+#define SISTER_RAY_ROUTINES_H
 
-static void* FORMULA_TABLE_LOCATION;
-static void* PHYSICAL_DAMAGE_FORMULA;
-static void* MAGICAL_DAMAGE_FORMULA;
-static void* CURRENT_HP_GRAVITY;
-static void* MAX_HP_GRAVITY;
-static void* CURE_FORMULA;
-static void* CONSTANT_20;
-static void* CONSTANT_16;
-static void* RECOVERY_FORMULA;
-static void* THROW_FORMULA;
-static void* COIN_FORMULA;
-static void* MAIN_COMMAND_FORMULA;
+#include <SisterRay/types.h>
 
-//Damage Modifier Routines
-static void* APPLY_ELEMENTAL_MODIFIERS;
+#define FORMULA_TABLE_LOCATION          ((void*)0x8FF1F8)
+#define PHYSICAL_DAMAGE_FORMULA         ((void*)0x5DE5DF)
+#define MAGICAL_DAMAGE_FORMULA          ((void*)0x5DE9B8)
+#define CURRENT_HP_GRAVITY              ((void*)0x5DEA6D)
+#define MAX_HP_GRAVITY                  ((void*)0x5DEAF7)
+#define CURE_FORMULA                    ((void*)0x5DEB81)
+#define CONSTANT_20                     ((void*)0x5DEBE5)
+#define CONSTANT_16                     ((void*)0x5DEC0A)
+#define RECOVERY_FORMULA                ((void*)0x5DEC52)
+#define THROW_FORMULA                   ((void*)0x5DEC8A)
+#define COIN_FORMULA                    ((void*)0x5DECAA)
+#define MAIN_COMMAND_FORMULA            ((void*)0x435D81)
+#define APPLY_ELEMENTAL_MODIFIERS       ((void*)0x5DB593)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u8);
@@ -25,19 +26,12 @@ typedef u32(*pfnrandomvariation)(i32);
 typedef u32(*pfnmpturbo)(i32);
 typedef void(*pfncommandmain)(u32);
 
-static pfnnullmasks nullMasks;
+#define nullMasks                       ((pfnnullmasks)0x5DBCDD)
+#define enqueueAction                   ((pfnenqueueaction)0x432687)
+#define sadnessModifier                 ((pfnsadnessmodifier)0x5DE958)
+#define spltDamageQuadraMagicModifier   ((pfnsplitdamagequadramagic)0x5DE8F4)
+#define barriersModifier                ((pfnbarriersmodifier)0x5DE82C)
+#define randomVariation                 ((pfnrandomvariation)0x5DE988)
+#define mpTurbo                         ((pfnmpturbo)0x5DE958)
 
-/*function to enqueue a an action*/
-static pfnenqueueaction enqueueAction;
-
-static pfnsadnessmodifier sadnessModifier;
-
-static pfnsplitdamagequadramagic spltDamageQuadraMagicModifier;
-
-static pfnbarriersmodifier barriersModifier;
-
-static pfnrandomvariation randomVariation;
-
-static pfnmpturbo mpTurbo ;
-
-static pfncommandmain commandMain;
+#endif

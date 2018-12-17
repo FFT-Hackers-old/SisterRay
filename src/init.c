@@ -1,7 +1,7 @@
 #include <mog/mog.h>
 #include <windows.h>
-#include "../src/damage_formulas.h"
-#include <../src/command_mechanics.h>
+#include "damage_formulas.h"
+#include "command_mechanics.h"
 
 __declspec(dllexport) void rayInit()
 {

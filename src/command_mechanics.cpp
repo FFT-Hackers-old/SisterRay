@@ -5,29 +5,29 @@ SISTERRAY_API void CommandMainRewrite(u32 arg_1) {
     u32 attacker_id;
     u32 command_index;
 
-    attacker_id = DamageContextPtr->attackerID;
-    character_id = AIActorVariables[attacker_id].characterID;
-    command_index = DamageContextPtr->commandIndex;
+    attacker_id = gDamageContextPtr->attackerID;
+    character_id = gAiActorVariables[attacker_id].characterID;
+    command_index = gDamageContextPtr->commandIndex;
 
     if (attacker_id < 3) {
-        if ((command_index == ATTACK) && (character_id = CLOUD)) {
+        if ((command_index == CMD_ATTACK) && (character_id = ACT_CLOUD)) {
             /*When Cloud uses a physical attack, turn it into a double cut*/
             if (TriggerCloudSpecial()) {
-                DamageContextPtr->commandIndex = DOUBLE_CUT;
+                gDamageContextPtr->commandIndex = CMD_DOUBLE_CUT;
             }
         }
     }
 
     /*Call the games existinct Command Main Function*/
-    commandMain(arg_1);
+    //commandMain(arg_1); <----- INFINITE LOOP HERE
 
     if (attacker_id < 3) {
-        if ((command_index == ATTACK) && (character_id = CLOUD)) {
+        if ((command_index == CMD_ATTACK) && (character_id = ACT_CLOUD)) {
             /*Enqueue a potential extra action with priority 0 for execution*/
             if (TriggerCloudSpecial()) {
                 /*Populate with the correct arguments*/
-                u8 targetMask = DamageContextPtr->targetMaskCopy;
-                enqueueAction(attacker_id, (u16)0, DEATHBLOW, (u8)0, (u8)targetMask);
+                u8 targetMask = gDamageContextPtr->targetMaskCopy;
+                enqueueAction(attacker_id, (u16)0, CMD_DEATHBLOW, (u8)0, (u8)targetMask);
             }
         }
     }
@@ -42,9 +42,9 @@ SISTERRAY_API int TriggerCloudSpecial() {
     bool in_front_row;
 
 
-    attacker_id = DamageContextPtr->attackerID;
-    current_hp = AIActorVariables[attacker_id].currentHP;
-    max_hp = AIActorVariables[attacker_id].maxHP;
+    attacker_id = gDamageContextPtr->attackerID;
+    current_hp = gAiActorVariables[attacker_id].currentHP;
+    max_hp = gAiActorVariables[attacker_id].maxHP;
     is_fury = true;
     in_front_row = true;
 

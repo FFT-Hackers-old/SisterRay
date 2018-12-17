@@ -1,7 +1,7 @@
-#ifndef SR_STRUCT_H
-#define SR_STRUCT_H
+#ifndef SISTER_RAY_GAME_STRUCTS_H
+#define SISTER_RAY_GAME_STRUCTS_H
 
-#include <SisterRay/SisterRay.h>
+#include <SisterRay/types.h>
 
 //This struct has size 260h and is referenced by the main context ptr
 #pragma pack(push, 1)
@@ -159,7 +159,7 @@ typedef struct {
 } ActorBattleVars;
 #pragma pack(pop)
 
-static DamageCalcStruct* DamageContextPtr;
-static ActorBattleVars* AIActorVariables;
+#define gDamageContextPtr   ((DamageCalcStruct*)0x0099E308)
+#define gAiActorVariables   ((ActorBattleVars*)0x009AB0DC)
 
 #endif

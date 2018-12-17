@@ -9,15 +9,15 @@ SISTERRAY_API void PhysicalFormulaRewrite() {
     u32 attacker_status;
 
     /*auto critical check*/
-    if ((DamageContextPtr->specialAbilityFlags & 0x2000) == 0) {
-        DamageContextPtr->abilityFlags2 = ((DamageContextPtr->abilityFlags2) | 0x02);
+    if ((gDamageContextPtr->specialAbilityFlags & 0x2000) == 0) {
+        gDamageContextPtr->abilityFlags2 = ((gDamageContextPtr->abilityFlags2) | 0x02);
     }
 
-    atk = DamageContextPtr->attackerAtk;
-    lvl = DamageContextPtr->attackerLevel;
-    defense = DamageContextPtr->targetDefense;
-    ability_power = DamageContextPtr->abilityPower;
-    attacker_status = DamageContextPtr->attackerStatusMask;
+    atk = gDamageContextPtr->attackerAtk;
+    lvl = gDamageContextPtr->attackerLevel;
+    defense = gDamageContextPtr->targetDefense;
+    ability_power = gDamageContextPtr->abilityPower;
+    attacker_status = gDamageContextPtr->attackerStatusMask;
 
     base_damage = atk + ((atk + lvl) / 32)*((atk*lvl) / 32);
 
@@ -26,7 +26,7 @@ SISTERRAY_API void PhysicalFormulaRewrite() {
     base_damage = (ability_power*base_damage) / 16;
 
     /*check crit*/
-    if (DamageContextPtr->abilityFlags2 & 2) {
+    if (gDamageContextPtr->abilityFlags2 & 2) {
         base_damage = 1.5f * base_damage;
     }
 
@@ -36,9 +36,9 @@ SISTERRAY_API void PhysicalFormulaRewrite() {
     }
 
     /*row modification, now respects enemy short-rangedness*/
-    bool attacker_row = ((AIActorVariables[DamageContextPtr->attackerID].stateFlags) & 0x40);
-    bool target_row = ((AIActorVariables[DamageContextPtr->targetID].stateFlags) & 0x40);
-    bool is_short_range = (DamageContextPtr->targetStateFlags & 0x20);
+    bool attacker_row = ((gAiActorVariables[gDamageContextPtr->attackerID].stateFlags) & 0x40);
+    bool target_row = ((gAiActorVariables[gDamageContextPtr->targetID].stateFlags) & 0x40);
+    bool is_short_range = (gDamageContextPtr->targetStateFlags & 0x20);
 
     if (target_row) {
         if (is_short_range) {
@@ -50,15 +50,15 @@ SISTERRAY_API void PhysicalFormulaRewrite() {
     }
 
     /*defend check*/
-    bool is_defending = ((AIActorVariables[DamageContextPtr->attackerID].stateFlags) & 0x20);
+    bool is_defending = ((gAiActorVariables[gDamageContextPtr->attackerID].stateFlags) & 0x20);
     if (is_defending) {
         base_damage = base_damage / 2;
     }
 
     /*back_attack_handling*/
-    bool is_back_attack = (DamageContextPtr->targetStateFlags & 0x01);
+    bool is_back_attack = (gDamageContextPtr->targetStateFlags & 0x01);
     if (is_back_attack) {
-        u32 back_damage_mult = AIActorVariables[DamageContextPtr->targetID].backDamageMult;
+        u32 back_damage_mult = gAiActorVariables[gDamageContextPtr->targetID].backDamageMult;
         base_damage = (base_damage*back_damage_mult) / 8;
     }
 
@@ -82,7 +82,7 @@ SISTERRAY_API void PhysicalFormulaRewrite() {
     base_damage = randomVariation(base_damage);
 
     /*set the base damage in the context object*/
-    DamageContextPtr->currentDamage = base_damage;
+    gDamageContextPtr->currentDamage = base_damage;
 }
 
 SISTERRAY_API void MagicFormulaRewrite() {
@@ -95,14 +95,14 @@ SISTERRAY_API void MagicFormulaRewrite() {
     u32 attacker_status;
     u32 quadra_magic_arg;
 
-    atk = DamageContextPtr->attackerAtk;
-    lvl = DamageContextPtr->attackerLevel;
-    defense = DamageContextPtr->targetDefense;
-    ability_power = DamageContextPtr->abilityPower;
-    attacker_status = DamageContextPtr->attackerStatusMask;
+    atk = gDamageContextPtr->attackerAtk;
+    lvl = gDamageContextPtr->attackerLevel;
+    defense = gDamageContextPtr->targetDefense;
+    ability_power = gDamageContextPtr->abilityPower;
+    attacker_status = gDamageContextPtr->attackerStatusMask;
     quadra_magic_arg = 0;
 
-    if (!((DamageContextPtr->targetStateMask & 0xC)^0x04)) {
+    if (!((gDamageContextPtr->targetStateMask & 0xC)^0x04)) {
         quadra_magic_arg = 1;
     }
 
@@ -122,5 +122,5 @@ SISTERRAY_API void MagicFormulaRewrite() {
     base_damage = randomVariation(base_damage);
 
     /*set the base damage in the context object*/
-    DamageContextPtr->currentDamage = base_damage;
+    gDamageContextPtr->currentDamage = base_damage;
 }

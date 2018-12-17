@@ -1,62 +1,58 @@
 #ifndef SR_CONSTANTS_H
 #define SR_CONSTANTS_H
 
-#include <SisterRay/SisterRay.h>
+#define ELM_FIRE_BIT        (0x0001)
+#define ELM_ICE_BIT         (0x0002)
+#define ELM_THUNDER_BIT     (0x0004)
+#define ELM_EARTH_BIT       (0x0008)
+#define ELM_POISON_BIT      (0x0010)
+#define ELM_GRAVITY_BIT     (0x0020)
+#define ELM_WATER_BIT       (0x0040)
+#define ELM_WIND_BIT        (0x0080)
+#define ELM_HOLY_BIT        (0x0100)
+#define ELM_RESTORE_BIT     (0x0200)
+#define ELM_CUT_BIT         (0x0400)
+#define ELM_HIT_BIT         (0x0800)
+#define ELM_PUNCH_BIT       (0x1000)
+#define ELM_SHOOT_BIT       (0x2000)
+#define ELM_SHOUT_BIT       (0x4000)
+#define ELM_HIDDEN_BIT      (0x8000)
 
-/*section for constants*/
-/*Element Constants*/
-static u16 fireBit;
-static u16 iceBit;
-static u16 boltBit;
-static u16 earthBit;
-static u16 poisonBit;
-static u16 gravityBit;
-static u16 waterBit;
-static u16 windBit;
-static u16 holyBit;
-static u16 restoreBit;
-static u16 cutBit;
-static u16 hitBit;
-static u16 punchBit;
-static u16 shootBit;
-static u16 shoutBit;
-static u16 hiddenBit;
+#define ACT_CLOUD           (0x10)
+#define ACT_BARRET          (0x11)
+#define ACT_TIFA            (0x12)
+#define ACT_AERITH          (0x13)
+#define ACT_RED_XIII        (0x14)
+#define ACT_YUFFIE          (0x15)
+#define ACT_CAIT_SITH       (0x16)
+#define ACT_VINCENT         (0x17)
+#define ACT_CID             (0x18)
 
-static u8 CLOUD;
-static u8 BARRET;
-static u8 TIFA;
-static u8 AERITH;
-static u8 RED_XIII;
-static u8 YUFFIE;
-static u8 CAIT_SITH;
-static u8 VINCENT;
-static u8 CID;
-
-static u8 ATTACK;
-static u8 MAGIC;
-static u8 SUMMON;
-static u8 ITEM;
-static u8 STEAL;
-static u8 SENSE;
-static u8 COIN;
-static u8 THROW;
-static u8 MORPH;
-static u8 DEATHBLOW;
-static u8 MANIPULATE;
-static u8 MIME;
-static u8 ENEMY_SKILL;
-static u8 MUG;
-static u8 CHANGE;
-static u8 DEFEND;
-static u8 LIMIT;
-static u8 W_MAGIC;
-static u8 W_SUMMON;
-static u8 W_ITEM;
-static u8 SLASH_ALL;
-static u8 DOUBLE_CUT;
-static u8 FLASH;
-static u8 QUAD_CUT;
-static u8 ENEMY_ACTION;
-static u8 POISONTICK;
+#define CMD_ATTACK          (0x01)
+#define CMD_MAGIC           (0x02)
+#define CMD_SUMMON          (0x03)
+#define CMD_ITEM            (0x04)
+#define CMD_STEAL           (0x05)
+#define CMD_SENSE           (0x06)
+#define CMD_COIN            (0x07)
+#define CMD_THROW           (0x08)
+#define CMD_MORPH           (0x09)
+#define CMD_DEATHBLOW       (0x0A)
+#define CMD_MANIPULATE      (0x0B)
+#define CMD_MIME            (0x0C)
+#define CMD_ENEMY_SKILL     (0x0D)
+#define CMD_MUG             (0x11)
+#define CMD_CHANGE          (0x12)
+#define CMD_DEFEND          (0x13)
+#define CMD_LIMIT           (0x14)
+#define CMD_W_MAGIC         (0x15)
+#define CMD_W_SUMMON        (0x16)
+#define CMD_W_ITEM          (0x17)
+#define CMD_SLASH_ALL       (0x18)
+#define CMD_DOUBLE_CUT      (0x19)
+#define CMD_FLASH           (0x1A)
+#define CMD_QUAD_CUT        (0x1B)
+#define CMD_ENEMY_ACTION    (0x20)
+#define CMD_POISONTICK      (0x23)
 
 #endif

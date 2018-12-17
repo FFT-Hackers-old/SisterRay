@@ -3,7 +3,7 @@
 
 #include <SisterRay/SisterRay.h>
 
-typedef void (PFNCOMMANDMAINPROC)(u32);
+typedef void (PFNCOMMANDMAINPROC)(u8*);
 SISTERRAY_GLOBAL PFNCOMMANDMAINPROC* oldCommandMain;
 
 #endif

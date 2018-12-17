@@ -3,5 +3,5 @@
 #include <SisterRay/game_structs.h>
 #include <SisterRay/routines.h>
 
-SISTERRAY_API void CommandMainRewrite(u32 arg_1);
+SISTERRAY_API void CommandMainRewrite(u8* cmd);
 SISTERRAY_API int TriggerCloudSpecial();

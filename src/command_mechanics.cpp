@@ -1,7 +1,7 @@
 #include "command_mechanics.h"
 #include "impl.h"
 
-SISTERRAY_API void CommandMainRewrite(u32 arg_1) {
+SISTERRAY_API void CommandMainRewrite(u8* cmd) {
     u8 character_id;
     u32 attacker_id;
     u32 command_index;
@@ -11,7 +11,8 @@ SISTERRAY_API void CommandMainRewrite(u32 arg_1) {
     command_index = gDamageContextPtr->commandIndex;
 
     if (attacker_id < 3) {
-        if ((command_index == CMD_ATTACK) && (character_id = ACT_CLOUD)) {
+        cmd[3] = CMD_DOUBLE_CUT;
+        if ((command_index == CMD_ATTACK) && (character_id == ACT_CLOUD)) {
             /*When Cloud uses a physical attack, turn it into a double cut*/
             if (TriggerCloudSpecial()) {
                 gDamageContextPtr->commandIndex = CMD_DOUBLE_CUT;
@@ -20,10 +21,10 @@ SISTERRAY_API void CommandMainRewrite(u32 arg_1) {
     }
 
     /*Call the games existinct Command Main Function*/
-    oldCommandMain(arg_1);
+    oldCommandMain(cmd);
 
-    if (attacker_id < 3) {
-        if ((command_index == CMD_ATTACK) && (character_id = ACT_CLOUD)) {
+    if (0 && attacker_id < 3) {
+        if ((command_index == CMD_ATTACK) && (character_id == ACT_CLOUD)) {
             /*Enqueue a potential extra action with priority 0 for execution*/
             if (TriggerCloudSpecial()) {
                 /*Populate with the correct arguments*/

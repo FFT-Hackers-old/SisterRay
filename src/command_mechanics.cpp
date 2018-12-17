@@ -6,23 +6,22 @@ SISTERRAY_API void CommandMainRewrite(u8* cmd) {
     u32 attacker_id;
     u8 command_index;
 
-    attacker_id = gDamageContextPtr->attackerID;
+    attacker_id = cmd[2];
     character_id = gAiActorVariables[attacker_id].characterID;
     command_index = cmd[3];
 
-    
     if (attacker_id < 3) {
         /*remove the command index check and see queue behavior working*/
-        if ((character_id == ACT_CLOUD) && (command_index == CMD_ATTACK)) {
+        if ((command_index == CMD_ATTACK) && (character_id == ACT_CLOUD)){
              cmd[3] = CMD_DOUBLE_CUT;
              gDamageContextPtr->commandIndex = CMD_DOUBLE_CUT;
 
-             u8 targetMask = gDamageContextPtr->targetMaskCopy;
-             enqueueAction(attacker_id, (u16)0, CMD_DEATHBLOW, (u8)0, (u8)targetMask);
+             u16 targetMask = cmd[6];
+             enqueueAction(attacker_id, 0, CMD_DEATHBLOW, 0, targetMask);
            
         }
     }
-    /*Call the games existinct Command Main Function*/
+    /*Call the games existing Command Main Function*/
     oldCommandMain(cmd);
 }
 

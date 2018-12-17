@@ -1,6 +1,6 @@
-#include "damage_formulas.h"
+#include "command_mechanics.h"
 
-SISTERRAY_API void CommandMainRewrite(u32 arg1) {
+SISTERRAY_API void CommandMainRewrite(u32 arg_1) {
     u8 character_id;
     u32 attacker_id;
     u32 command_index;

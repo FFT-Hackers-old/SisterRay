@@ -12,4 +12,10 @@
 # define SISTERRAY_API
 #endif
 
+#if defined(__cplusplus)
+# define SISTERRAY_GLOBAL extern "C"
+#else
+# define SISTERRAY_GLOBAL extern
+#endif
+
 #endif

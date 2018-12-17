@@ -1,4 +1,5 @@
 #include "command_mechanics.h"
+#include "impl.h"
 
 SISTERRAY_API void CommandMainRewrite(u32 arg_1) {
     u8 character_id;
@@ -19,7 +20,7 @@ SISTERRAY_API void CommandMainRewrite(u32 arg_1) {
     }
 
     /*Call the games existinct Command Main Function*/
-    //commandMain(arg_1); <----- INFINITE LOOP HERE
+    oldCommandMain(arg_1);
 
     if (attacker_id < 3) {
         if ((command_index == CMD_ATTACK) && (character_id = ACT_CLOUD)) {

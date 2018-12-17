@@ -4,3 +4,4 @@
 #include <SisterRay/routines.h>
 
 SISTERRAY_API void CommandMainRewrite(u32 arg_1);
+SISTERRAY_API int TriggerCloudSpecial();

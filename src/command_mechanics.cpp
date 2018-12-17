@@ -18,10 +18,8 @@ SISTERRAY_API void CommandMainRewrite(u32 arg_1) {
         }
     }
 
-    DamageContextPtr->currentDamage = base_damage;
-
     /*Call the games existinct Command Main Function*/
-    commandMain(arg1);
+    commandMain(arg_1);
 
     if (attacker_id < 3) {
         if ((command_index == ATTACK) && (character_id = CLOUD)) {
@@ -36,7 +34,7 @@ SISTERRAY_API void CommandMainRewrite(u32 arg_1) {
 }
 
 /*Determine whethe or not Cloud's special actions trigger*/
-SISTERRAY_API bool TriggerCloudSpecial() {
+SISTERRAY_API int TriggerCloudSpecial() {
     u32 attacker_id;
     u32 current_hp;
     u32 max_hp;
@@ -45,8 +43,8 @@ SISTERRAY_API bool TriggerCloudSpecial() {
 
 
     attacker_id = DamageContextPtr->attackerID;
-    currentHP = AIActorVariables[attacker_id].currentHP;
-    maxHP = AIActorVariables[attacker_id].maxHP;
+    current_hp = AIActorVariables[attacker_id].currentHP;
+    max_hp = AIActorVariables[attacker_id].maxHP;
     is_fury = true;
     in_front_row = true;
 
@@ -54,7 +52,7 @@ SISTERRAY_API bool TriggerCloudSpecial() {
         return false;
     }
 
-    base_chance = 1 - ((currentHP / maxHP)/2);
+    u32 base_chance = (1 - ((current_hp / max_hp)/2));
 
     if (is_fury) {
         base_chance = base_chance * 3;

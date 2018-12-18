@@ -11,4 +11,5 @@ __declspec(dllexport) void rayInit()
 	MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
     oldCommandMain = mogRedirectFunction(MAIN_COMMAND_FORMULA, &CommandMainRewrite);
     mogReplaceFunction(PHYSICAL_DAMAGE_FORMULA, &PhysicalFormulaRewrite);
+    mogReplaceFunction(POISON_SETUP_ROUTINE, &ModifyPoisonTest);
 }

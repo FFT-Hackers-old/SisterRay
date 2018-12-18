@@ -16,6 +16,7 @@
 #define COIN_FORMULA                    ((void*)0x5DECAA)
 #define MAIN_COMMAND_FORMULA            ((void*)0x435D81)
 #define APPLY_ELEMENTAL_MODIFIERS       ((void*)0x5DB593)
+#define POISON_SETUP_ROUTINE            ((void*)0x5C9FC0)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u8);
@@ -25,6 +26,7 @@ typedef i32(*pfnbarriersmodifier)(i32);
 typedef u32(*pfnrandomvariation)(i32);
 typedef u32(*pfnmpturbo)(i32);
 typedef void(*pfncommandmain)(u32);
+typedef void(*pfnpoisonsetup)();
 
 #define nullMasks                       ((pfnnullmasks)0x5DBCDD)
 #define enqueueAction                   ((pfnenqueueaction)0x432687)
@@ -33,5 +35,6 @@ typedef void(*pfncommandmain)(u32);
 #define barriersModifier                ((pfnbarriersmodifier)0x5DE82C)
 #define randomVariation                 ((pfnrandomvariation)0x5DE988)
 #define mpTurbo                         ((pfnmpturbo)0x5DE958)
+#define poisonSetUp                     ((pfnpoisonsetup)0x5C9FC0)
 
 #endif

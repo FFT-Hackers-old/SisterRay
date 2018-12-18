@@ -52,3 +52,14 @@ SISTERRAY_API int TriggerCloudSpecial() {
 
     return true;
 }
+
+/*This function should hijack the effect of poison
+ It should now be fire elemental, and trigger a fire animation*/
+SISTERRAY_API void ModifyPoisonTest() {
+    gDamageContextPtr->attackElementsMask = (u32)ELM_FIRE_BIT;
+    gDamageContextPtr->abilityPower = 2;
+    gDamageContextPtr->targetMask = (u32)0;
+    //gDamageContextPtr->animationScriptID = 0x0FFFFFFFF;
+    gDamageContextPtr->animationBaseOffset = (u32)0;
+    gDamageContextPtr->AttackEffectID = (u32)0x1B;
+}

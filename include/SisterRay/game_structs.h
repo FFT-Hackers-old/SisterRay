@@ -11,7 +11,7 @@ typedef struct {
     u32 attackerEnemyIndex; //0x08
     u32 commandIndex; //0x0C
     u32 attackIndex; //0x10
-    u32 attackerIDMagic; //0x14
+    u32 animationBaseOffset; //0x14
     u32 targetMask; //0x18
     u32 activeAllies; //0x1C
     u32 animationScriptID; //0x20

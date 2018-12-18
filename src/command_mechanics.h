@@ -5,3 +5,4 @@
 
 SISTERRAY_API void CommandMainRewrite(u8* cmd);
 SISTERRAY_API int TriggerCloudSpecial();
+SISTERRAY_API void ModifyPoisonTest();

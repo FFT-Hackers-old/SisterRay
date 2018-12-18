@@ -38,10 +38,10 @@ SISTERRAY_API void PhysicalFormulaRewrite() {
     /*row modification, now respects enemy short-rangedness*/
     bool attacker_row = ((gAiActorVariables[gDamageContextPtr->attackerID].stateFlags) & 0x40);
     bool target_row = ((gAiActorVariables[gDamageContextPtr->targetID].stateFlags) & 0x40);
-    bool is_short_range = (gDamageContextPtr->targetStateFlags & 0x20);
+    bool is_long_range = (gDamageContextPtr->targetStateFlags & 0x20);
 
     if (target_row) {
-        if (is_short_range) {
+        if (!(is_long_range)) {
             base_damage = base_damage / 2;
         }
     }

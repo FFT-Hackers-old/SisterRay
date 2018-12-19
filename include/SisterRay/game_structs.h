@@ -27,8 +27,8 @@ typedef struct {
     u32 abilityPower; //0x48
     i32 attackerAtk; //0x4C
     u32 targetStateMask; //0x50
-    u32 normalAtkSound; //0x54
-    u32 critAtkSound; //0x58
+    u32 impactSound; //0x54
+    u32 critkSound; //0x58
     u32 missAtkSound; //0x5C
     u32 cameraDataSingle; //0x60
     u32 cameraDataMultiple; //0x64

@@ -59,7 +59,9 @@ SISTERRAY_API void ModifyPoisonTest() {
     gDamageContextPtr->attackElementsMask = (u32)ELM_FIRE_BIT;
     gDamageContextPtr->abilityPower = 2;
     gDamageContextPtr->targetStateMask = (u32)0;
-    gDamageContextPtr->animationScriptID = 0x04;
+    gDamageContextPtr->commandIndex = 0x02;
+    gDamageContextPtr->actionIDCopy = 0x02;
+    gDamageContextPtr->animationScriptID = 0x1D;
     gDamageContextPtr->animationBaseOffset = (u32)0;
     gDamageContextPtr->AttackEffectID = (u32)0x1B;
 }

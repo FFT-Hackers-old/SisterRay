@@ -89,7 +89,6 @@ SISTERRAY_API void MagicFormulaRewrite() {
     u32 atk;
     u32 lvl;
     u32 base_damage;
-    u32 final_damage;
     u32 defense;
     u32 ability_power;
     u32 attacker_status;

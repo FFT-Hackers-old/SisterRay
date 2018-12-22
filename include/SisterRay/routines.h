@@ -27,7 +27,6 @@ typedef i32(*pfnsplitdamagequadramagic)(i32, u32);
 typedef i32(*pfnbarriersmodifier)(i32);
 typedef u32(*pfnrandomvariation)(i32);
 typedef u32(*pfnmpturbo)(i32);
-typedef void(*pfncommandmain)(u32);
 typedef void(*pfnpoisonsetup)();
 
 #define nullMasks                       ((pfnnullmasks)0x5DBCDD)

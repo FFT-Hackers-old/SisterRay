@@ -29,4 +29,4 @@ newActorAnimPtr actorAnimArray[10] =  {
 	{(u32)&newAnimScript, (u32)&newAnimScript},
 	{(u32)&newAnimScript, (u32)&newAnimScript},
 	{(u32)&newAnimScript, (u32)&newAnimScript}
-}
+};

@@ -59,12 +59,39 @@ SISTERRAY_API void ModifyPoisonTest() {
     gDamageContextPtr->attackElementsMask = (u32)ELM_FIRE_BIT;
     gDamageContextPtr->abilityPower = 2;
     gDamageContextPtr->targetStateMask = (u32)0;
-    //gDamageContextPtr->commandIndex = 0x23;
-    //gDamageContextPtr->actionIDCopy = 0x23;
-    gDamageContextPtr->animationScriptID = (u32)0x14;
-    gDamageContextPtr->animationBaseOffset = (u32)0;
+    gDamageContextPtr->animationScriptID = (u32)0x00;
     gDamageContextPtr->AttackEffectID = (u32)0x1B;
-    gDamageContextPtr->impactEffectID = (u32)0x3F;
-    gDamageContextPtr->impactSound = 0x090;
-    gDamageContextPtr->critkSound = 0x090;
+    //gDamageContextPtr->impactEffectID = (u32)0x3F;
+    //gDamageContextPtr->impactSound = 0x090;
+    //gDamageContextPtr->critkSound = 0x090;
+}
+
+
+/*Replace the current animation script function for command index 0x23 with a new one*/
+SISTERRAY_API void AnimationScriptRewrite(u16 actor_id, u32 ptr_to_anim_scripts, u32 unk1, u32 unk2) {
+	/*Use the new animation script whenever 0x23 is the index involved*/
+	u32 ptr_to_new_animation;
+	if (gBigAnimBlock[actor_id].commandID == 0x23) {
+		ptr_to_new_animation = (u32)&actorAnimArray;
+	}
+	else {
+		ptr_to_new_animation = ptr_to_anim_scripts;
+	}
+
+	oldRunAnimationScript(actor_id, ptr_to_new_animation, unk1, unk1);
+}
+
+SISTERRAY_API void AnimationEffectRewrite(u8 actor_id) {
+	/*Use hunt for an additional effect whenever 0x23 is the index involved*/
+	bool switchback;
+	if (gBigAnimBlock[actor_id].commandID == 0x23) {
+		gBigAnimBlock[actor_id].commandID = 0x02;
+		bool switchback = true;
+	}
+
+	oldAnimEffectLookUp(actor_id);
+
+	if (switchback) {
+		gBigAnimBlock[actor_id].commandID = 0x23;
+	}
 }

@@ -17,6 +17,8 @@
 #define MAIN_COMMAND_FORMULA            ((void*)0x435D81)
 #define APPLY_ELEMENTAL_MODIFIERS       ((void*)0x5DB593)
 #define POISON_SETUP_ROUTINE            ((void*)0x5C9FC0)
+#define RUN_ANIMATION_SCRIPT            ((void*)0x41FBA4)
+#define LOOKUP_ADDITIONAL_EFFECT        ((void*)0x4281B1)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u8);

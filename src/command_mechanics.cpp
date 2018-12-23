@@ -56,16 +56,18 @@ SISTERRAY_API int TriggerCloudSpecial() {
 /*This function should hijack the effect of poison
  It should now be fire elemental, and trigger a fire animation*/
 SISTERRAY_API void ModifyPoisonTest() {
-    gDamageContextPtr->attackElementsMask = (u32)ELM_FIRE_BIT;
-    gDamageContextPtr->abilityPower = 2;
-    gDamageContextPtr->targetStateMask = (u32)0;
-	//gDamageContextPtr->commandIndex = CMD_MAGIC;
-	gDamageContextPtr->actionIDCopy = CMD_MAGIC;
-    gDamageContextPtr->animationScriptID = (u32)0x00;
-    gDamageContextPtr->AttackEffectID = (u32)0x1B;
-    //gDamageContextPtr->impactEffectID = (u32)0x3F;
-    //gDamageContextPtr->impactSound = (u32)0x090;
-    //gDamageContextPtr->critkSound = (u32)0x090;
+	if ((gDamageContextPtr->attackerID) <= 0x0A) {
+		gDamageContextPtr->attackElementsMask = (u32)ELM_FIRE_BIT;
+		gDamageContextPtr->abilityPower = 2;
+		gDamageContextPtr->targetStateMask = (u32)0x0;
+		//gDamageContextPtr->commandIndex = CMD_MAGIC;
+		gDamageContextPtr->actionIDCopy = CMD_MAGIC;
+		gDamageContextPtr->animationScriptID = (i32)0x03;
+		gDamageContextPtr->AttackEffectID = (u32)0x1B;
+		//gDamageContextPtr->impactEffectID = (u32)0x3F;
+		//gDamageContextPtr->impactSound = (u32)0x090;
+		//gDamageContextPtr->critkSound = (u32)0x090;
+	}
 }
 
 
@@ -73,7 +75,7 @@ SISTERRAY_API void ModifyPoisonTest() {
 SISTERRAY_API void AnimationScriptRewrite(u16 actor_id, u32 ptr_to_anim_scripts, u32 unk1, u32 unk2) {
 	/*Use the new animation script whenever 0x23 is the index involved*/
 	u32 ptr_to_new_animation;
-	if ((gBigAnimBlock[actor_id].commandID == CMD_MAGIC) && (gBigAnimBlock[actor_id].commandAnimID == 0x00)) {
+	if ((gBigAnimBlock[actor_id].commandID == CMD_MAGIC) && (gBigAnimBlock[actor_id].commandAnimID == 0x03)) {
 		ptr_to_new_animation = (u32)&actorAnimArray;
 	}
 	else {

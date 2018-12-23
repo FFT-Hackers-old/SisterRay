@@ -159,14 +159,21 @@ typedef struct {
 } ActorBattleVars;
 #pragma pack(pop)
 
+/*Should  have size 0x1AEC*/
 #pragma pack(push, 1)
 typedef struct {
-	u8 commandID;
-	u8 padding[0x1AEB];
+	u16 ActorID; //BE1170
+	u8 padding1[6]; //BE1171
+	u16 AnimationData; //BE1178
+	u16 commandAnimID; //BE117A
+	u8 padding2[30]; //BE117C
+	u8 AnimationEffect; //BE119A
+	u8 commandID; //BE119B
+	u8 padding3[0x1AC0];
 } BigAnimBlock;
 #pragma pack(pop)
 
 #define gDamageContextPtr   ((DamageCalcStruct*)0x0099E308)
 #define gAiActorVariables   ((ActorBattleVars*)0x009AB0DC)
-#define gBigAnimBlock       ((BigAnimBlock*)0x00BE119B)
+#define gBigAnimBlock       ((BigAnimBlock*)0x00BE1170)
 #endif

@@ -9,6 +9,13 @@ SISTERRAY_API void CommandMainRewrite(u8* cmd) {
     attacker_id = cmd[2];
     character_id = gAiActorVariables[attacker_id].characterID;
     command_index = cmd[3];
+	bool actor_bleeding = gAiActorVariables[attacker_id].unused10 & 0x8000;
+
+	/*Tick Bleed and increase intensity when you attack*/
+	if ((actor_bleeding) && (command_index != CMD_POISONTICK)) {
+		enqueueAction(attacker_id, 0, 0x23, 0x02, 0);
+		statusConstantArray[attacker_id].burnIntensity = ((statusConstantArray[attacker_id].burnIntensity > 1) ? (statusConstantArray[attacker_id].burnIntensity - 1) : statusConstantArray[attacker_id].burnIntensity);
+	}
 
     if (attacker_id < 3) {
         /*remove the command index check and see queue behavior working*/
@@ -58,7 +65,7 @@ SISTERRAY_API void DecrementCountersRewrite() {
 		/*This is a bunch of clock wizardry*/
 		i32 currentVTimer = VTimerValue[actor];
 		bool increment_ready = (SmallVTimerValue[actor] == 0x2D8);
-		/*Check if a V-Timer tick has passed on the current actor*/
+		/*Burn Handler*/
 		if (statusConstantArray[actor].burnTickRate == (u16)0x00) {
 			if (gAiActorVariables[actor].unused10 & 0x2000) {
 				statusConstantArray[actor].burnIntensity = ((statusConstantArray[actor].burnIntensity <= 0x0C) ? (statusConstantArray[actor].burnIntensity + 2) : statusConstantArray[actor].burnIntensity);
@@ -69,25 +76,33 @@ SISTERRAY_API void DecrementCountersRewrite() {
 				enqueueAction(actor, 0, 0x23, 0x01, 0);
 			}
 		}
+		/*Bleed Handler*/
+		if (statusConstantArray[actor].bleedTickRate == (u16)0x00) {
+			if (gAiActorVariables[actor].unused10 & 0x8000) {
+				statusConstantArray[actor].bleedIntensity = ((statusConstantArray[actor].bleedIntensity <= 0x0C) ? (statusConstantArray[actor].bleedIntensity + 2) : statusConstantArray[actor].bleedIntensity);
+				statusConstantArray[actor].bleedTickRate = statusConstantArray[actor].bleedIntensity;
+				if (statusConstantArray[actor].bleedIntensity = 0x0C) {
+					gAiActorVariables[actor].unused10 = (gAiActorVariables[actor].unused10 & ~0x2000);
+				}
+				enqueueAction(actor, 0, 0x23, 0x02, 0);
+			}
+		}
 		if (increment_ready && ((currentVTimer + 0x2D8) >= (i32)0x2000)) {
+			/*Decrement Burn*/
 			if ((statusConstantArray[actor].burnTickRate) > (u16)0x00) {
 				statusConstantArray[actor].burnTickRate = (statusConstantArray[actor].burnTickRate - 0x01);
 				if (statusConstantArray[actor].burnTickRate < 0) {
 					statusConstantArray[actor].burnTickRate = 0;
 				}
 			}
-			/*if (statusConstantArray[actor].bleedTickRate > 0) {
-				statusConstantArray[actor].bleedTickRate = (statusConstantArray[actor].bleedTickRate - statusConstantArray[actor].bleedIntensity);
-				if (statusConstantArray < 0) {
+
+			/*Decrement Bleed*/
+			if ((statusConstantArray[actor].bleedTickRate) > (u16)0x00) {
+				statusConstantArray[actor].bleedTickRate = (statusConstantArray[actor].bleedTickRate - 0x01);
+				if (statusConstantArray[actor].bleedTickRate < 0) {
 					statusConstantArray[actor].bleedTickRate = 0;
 				}
 			}
-			if (statusConstantArray[actor].bleedTickRate == 0) {
-				if (gAiActorVariables[actor].unused10 & 0x8000) {
-					enqueueAction(actor, 0, 0x23, 0x02, 0);
-					statusConstantArray[actor].bleedTickRate = defaultBleedTick;
-				}
-			}*/
 		}
 	}
 	oldDecrementCounters();
@@ -104,12 +119,12 @@ SISTERRAY_API void ModifyPoisonTest() {
 		gDamageContextPtr->animationScriptID = (i32)0x03;
 		gDamageContextPtr->AttackEffectID = (u32)0x1B;
 	}
-	/*else if ((gDamageContextPtr->attackIndex == 0x02) || (gDamageContextPtr ->attackIndexCopy == 0x02)) {
+	else if ((gDamageContextPtr->attackIndex == 0x02) || (gDamageContextPtr ->attackIndexCopy == 0x02)) {
 		gDamageContextPtr->attackElementsMask = (u32)ELM_CUT_BIT;
 		gDamageContextPtr->abilityPower = 1;
 		gDamageContextPtr->targetStateMask = (u32)0x0;
 		//gDamageContextPtr->animationScriptID = (i32)0x0FFFFFFFF;
-	}*/
+	}
 	else {
 		gDamageContextPtr->attackElementsMask = (u32)ELM_POISON_BIT;
 		gDamageContextPtr->abilityPower = 2;

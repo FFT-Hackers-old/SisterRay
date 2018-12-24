@@ -117,6 +117,15 @@ SISTERRAY_API void InflictElementalStatus() {
             gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0200);
         }
     }
+
+	/*Allow Cut/Shoot Attacks to inflict Bleed*/
+	if ((attack_elements_mask & ELM_CUT_BIT) || (attack_elements_mask & ELM_SHOOT_BIT)) {
+		if (!(gAiActorVariables[target_id].unused10 & 0x8000)) {
+			gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x8000);
+			statusConstantArray[target_id].bleedTickRate = (u16)defaultBleedTick;
+			statusConstantArray[target_id].bleedIntensity = (u16)defaultBleedTick;
+		}
+	}
 }
 
 

@@ -187,7 +187,6 @@ typedef struct {
 
 /*Struct for holding actor data for new status effects*/
 typedef struct {
-	u16 bleedDuration;
 	u16 bleedIntensity;
 	u16 bleedTickRate;
 	u16 burnIntensity;

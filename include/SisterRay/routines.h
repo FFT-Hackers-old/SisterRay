@@ -19,6 +19,8 @@
 #define POISON_SETUP_ROUTINE            ((void*)0x5C9FC0)
 #define RUN_ANIMATION_SCRIPT            ((void*)0x41FBA4)
 #define LOOKUP_ADDITIONAL_EFFECT        ((void*)0x4281B1)
+#define POISON_ENQUEUE_CALLBACK         ((void*)0x434DB0)
+#define DECREMENT_COUNTERS              ((void*)0x43526A)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u8);

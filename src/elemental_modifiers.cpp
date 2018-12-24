@@ -2,7 +2,7 @@
 
 /*reimplementaiton of elemental modifier mask*/
 
-SISTERRAY_API void ApplyElementalModifers() {
+SISTERRAY_API void ApplyElementalModifiers() {
     u32 elm_def_mask = gDamageContextPtr->elementalDefenseMask;
 
     /*handle absorb*/
@@ -56,6 +56,16 @@ SISTERRAY_API void ApplyElementalModifers() {
             nullMasks();
         }
     }
+
+	/*Inflict elemental status effects assuming the target doesn't resist the given element*/
+	if (!((elm_def_mask & 0x40)||(elm_def_mask & 0x020))) {
+		InflictElementalStatus();
+	}
+
+	/*If any elemental status bits are flagged, handle their interactions*/
+	if (gAiActorVariables[gDamageContextPtr->targetID].unused10) {
+		HandleElementalInteractions();
+	}
 }
 
 /*Routine handles the infliction of new elemental status effects*/

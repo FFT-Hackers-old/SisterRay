@@ -15,6 +15,9 @@ unsigned char newAnimScript[] = {0xE8, 0xFC, 0x00, 0xED, 0xE6, 0xEA, 0x00, 0x00,
 unsigned char newAnimScript2[] = {0xE8, 0xEC, 0x9E};
 unsigned char newAnimScriptEnemies[] = { 0xE8, 0xEC, 0x9E };
 
+const i32* VTimerValue = (i32*)0x009AE900;
+const i32* SmallVTimerValue = (i32*)0x009AE928;
+
 /*We require an array of */
 typedef struct {
 	u32 pad1;

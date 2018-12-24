@@ -2,6 +2,8 @@
 
 /*reimplementaiton of elemental modifier mask*/
 
+newStatusActorBlock statusConstantArray[10];
+
 SISTERRAY_API void ApplyElementalModifiers() {
     u32 elm_def_mask = gDamageContextPtr->elementalDefenseMask;
 
@@ -87,14 +89,14 @@ SISTERRAY_API void InflictElementalStatus() {
             if (!(gAiActorVariables[target_id].unused10 & 0x2000)) {
                 gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x2000);
                 statusConstantArray[target_id].burnDuration = defaultBurnDuration;
-                statusConstantArray[target_id].burnTickRate = defaultBurnTick;
-                statusConstantArray[target_id].burnIntensity = defaultBurnIntensity;
+                statusConstantArray[target_id].burnTickRate = (u16)0x05;
+                statusConstantArray[target_id].burnIntensity = (u16)0x01;
             }
             else {
-                statusConstantArray[target_id].burnDuration = (
+                /*statusConstantArray[target_id].burnDuration = (
                     (statusConstantArray[target_id].burnDuration <= 255) ? (statusConstantArray[target_id].burnDuration + (defaultBurnDuration / 2)):statusConstantArray[target_id].burnDuration);
                 statusConstantArray[target_id].burnIntensity = (
-                    (statusConstantArray[target_id].burnIntensity <= 5) ? (statusConstantArray[target_id].burnIntensity + 1):statusConstantArray[target_id].burnIntensity);
+                    (statusConstantArray[target_id].burnIntensity <= 4) ? (statusConstantArray[target_id].burnIntensity + 1):statusConstantArray[target_id].burnIntensity);*/
             }
         }
     }

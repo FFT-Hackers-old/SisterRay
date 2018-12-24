@@ -54,20 +54,36 @@ SISTERRAY_API int TriggerCloudSpecial() {
 }
 
 SISTERRAY_API void DecrementCountersRewrite() {
-	/*Decrement Burn Counters for every actor*/
-	for (int actor = 0; actor <= 0xA; actor++) {
-		if (statusConstantArray[actor].burnTickRate > 0) {
-			statusConstantArray[actor].burnTickRate = (statusConstantArray[actor].burnTickRate - statusConstantArray[actor].burnIntensity);
-			if (statusConstantArray < 0) {
-				statusConstantArray[actor].burnTickRate = 0;
+	for (int actor = 0; actor <= 0x09; actor++) {
+		/*This is a bunch of clock wizardry*/
+		i32 currentVTimer = VTimerValue[actor];
+		bool increment_ready = (SmallVTimerValue[actor] == 0x2D8);
+		/*Check if a V-Timer tick has passed on the current actor*/
+		if (statusConstantArray[actor].burnTickRate == (u16)0x00) {
+			if (gAiActorVariables[actor].unused10 & 0x2000) {
+				statusConstantArray[actor].burnTickRate = 0x05;
+				enqueueAction(actor, 0, 0x23, 0x01, 0);
 			}
 		}
-		if (statusConstantArray[actor].burnTickRate == 0) {
-			if (gAiActorVariables[actor].unused10 & 0x2000) {
-				/*Enqueue an a burn action to be run with very high priority*/
-				enqueueAction(actor, 0, 0x23, 0x01, 0);
-				statusConstantArray[actor].burnTickRate = defaultBurnTick;
+		if (increment_ready && ((currentVTimer + 0x2D8) >= (i32)0x2000)) {
+			if ((statusConstantArray[actor].burnTickRate) > (u16)0x00) {
+				statusConstantArray[actor].burnTickRate = ((statusConstantArray[actor].burnTickRate) - 0x01);
+				if (statusConstantArray < 0) {
+					statusConstantArray[actor].burnTickRate = 0;
+				}
 			}
+			/*if (statusConstantArray[actor].bleedTickRate > 0) {
+				statusConstantArray[actor].bleedTickRate = (statusConstantArray[actor].bleedTickRate - statusConstantArray[actor].bleedIntensity);
+				if (statusConstantArray < 0) {
+					statusConstantArray[actor].bleedTickRate = 0;
+				}
+			}
+			if (statusConstantArray[actor].bleedTickRate == 0) {
+				if (gAiActorVariables[actor].unused10 & 0x8000) {
+					enqueueAction(actor, 0, 0x23, 0x02, 0);
+					statusConstantArray[actor].bleedTickRate = defaultBleedTick;
+				}
+			}*/
 		}
 	}
 	oldDecrementCounters();
@@ -84,18 +100,24 @@ SISTERRAY_API void ModifyPoisonTest() {
 		gDamageContextPtr->animationScriptID = (i32)0x03;
 		gDamageContextPtr->AttackEffectID = (u32)0x1B;
 	}
+	/*else if ((gDamageContextPtr->attackIndex == 0x02) || (gDamageContextPtr ->attackIndexCopy == 0x02)) {
+		gDamageContextPtr->attackElementsMask = (u32)ELM_CUT_BIT;
+		gDamageContextPtr->abilityPower = 1;
+		gDamageContextPtr->targetStateMask = (u32)0x0;
+		//gDamageContextPtr->animationScriptID = (i32)0x0FFFFFFFF;
+	}*/
 	else {
 		gDamageContextPtr->attackElementsMask = (u32)ELM_POISON_BIT;
 		gDamageContextPtr->abilityPower = 2;
 		gDamageContextPtr->targetStateMask = (u32)0x0;
-		gDamageContextPtr->animationScriptID = (i32)0x0FFFFFF;
+		//gDamageContextPtr->animationScriptID = (i32)0x0FFFFFFFF;
 	}
 }
 
 SISTERRAY_API void PoisonCallbackRewrite(u32 actor_id) {
 	if (gAiActorVariables[actor_id].statusMasks & 0x08) {
 		enqueueAction(actor_id, 0, 0x23, 0, 0);
-		gActorTimerBlock->PoisonTimer = 0xA;
+		gActorTimerBlock[actor_id].PoisonTimer = 0xA;
 	}
 	//if (gAiActorVariables[actor_id].unused10 & 0x2000) {
 		//enqueueAction(actor_id, 0, 0x23, 0x01, 0);

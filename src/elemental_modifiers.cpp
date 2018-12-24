@@ -89,14 +89,14 @@ SISTERRAY_API void InflictElementalStatus() {
             if (!(gAiActorVariables[target_id].unused10 & 0x2000)) {
                 gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x2000);
                 statusConstantArray[target_id].burnDuration = defaultBurnDuration;
-                statusConstantArray[target_id].burnTickRate = (u16)0x05;
+                statusConstantArray[target_id].burnTickRate = (u16)0x0A;
                 statusConstantArray[target_id].burnIntensity = (u16)0x01;
             }
             else {
                 /*statusConstantArray[target_id].burnDuration = (
-                    (statusConstantArray[target_id].burnDuration <= 255) ? (statusConstantArray[target_id].burnDuration + (defaultBurnDuration / 2)):statusConstantArray[target_id].burnDuration);
+                    (statusConstantArray[target_id].burnDuration <= 255) ? (statusConstantArray[target_id].burnDuration + (defaultBurnDuration / 2)):statusConstantArray[target_id].burnDuration);*/
                 statusConstantArray[target_id].burnIntensity = (
-                    (statusConstantArray[target_id].burnIntensity <= 4) ? (statusConstantArray[target_id].burnIntensity + 1):statusConstantArray[target_id].burnIntensity);*/
+                    (statusConstantArray[target_id].burnIntensity < 4) ? (statusConstantArray[target_id].burnIntensity + 1):statusConstantArray[target_id].burnIntensity);
             }
         }
     }

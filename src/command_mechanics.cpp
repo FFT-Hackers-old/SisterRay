@@ -61,14 +61,14 @@ SISTERRAY_API void DecrementCountersRewrite() {
 		/*Check if a V-Timer tick has passed on the current actor*/
 		if (statusConstantArray[actor].burnTickRate == (u16)0x00) {
 			if (gAiActorVariables[actor].unused10 & 0x2000) {
-				statusConstantArray[actor].burnTickRate = 0x05;
+				statusConstantArray[actor].burnTickRate = 0x0A;
 				enqueueAction(actor, 0, 0x23, 0x01, 0);
 			}
 		}
 		if (increment_ready && ((currentVTimer + 0x2D8) >= (i32)0x2000)) {
 			if ((statusConstantArray[actor].burnTickRate) > (u16)0x00) {
-				statusConstantArray[actor].burnTickRate = ((statusConstantArray[actor].burnTickRate) - 0x01);
-				if (statusConstantArray < 0) {
+				statusConstantArray[actor].burnTickRate = (statusConstantArray[actor].burnTickRate - statusConstantArray[actor].burnIntensity);
+				if (statusConstantArray[actor].burnTickRate < 0) {
 					statusConstantArray[actor].burnTickRate = 0;
 				}
 			}

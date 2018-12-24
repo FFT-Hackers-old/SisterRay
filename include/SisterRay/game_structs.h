@@ -190,7 +190,6 @@ typedef struct {
 	u16 bleedDuration;
 	u16 bleedIntensity;
 	u16 bleedTickRate;
-	u16 burnDuration;
 	u16 burnIntensity;
 	i16 burnTickRate;
 	u16 chilledDuration;

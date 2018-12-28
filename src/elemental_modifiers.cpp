@@ -163,22 +163,6 @@ SISTERRAY_API void InflictElementalStatus() {
 			if (allowed_targets) {
 				target_mask = getRandomBit(allowed_targets);
 			}
-			/*switch (rand_int) {
-			case 1:
-				target_mask = allowed_targets & (mask_of_source << 1);
-				if (!target_mask) {
-					target_mask = allowed_targets & (mask_of_source >> 1);
-				}
-				break;
-			case 2:
-				target_mask = allowed_targets & (mask_of_source >> 1);
-				if (!target_mask) {
-					target_mask = allowed_targets & (mask_of_source << 1);
-				}
-				break;
-			}
-			break;
-		}*/
 			if (target_mask) {
 				enqueueAction(target_id, 0, CMD_POISONTICK, 0x05, target_mask);
 			}

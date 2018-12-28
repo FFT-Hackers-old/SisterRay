@@ -189,13 +189,19 @@ typedef struct {
 typedef struct {
 	u16 bleedIntensity;
 	u16 bleedTickRate;
+	u8 SeriousWoundCount;
+	u8 SeriousWoundTickRate;
+	u8 GrievousWoundCount;
+	u8 GrievousWoundTickRate;
 	u16 burnIntensity;
 	i16 burnTickRate;
-	u16 chilledDuration;
+	u16 chilledIntensity;
 	u16 feezeDuration;
 	u16 soakedDuration;
 } newStatusActorBlock;
 
 /*create a new array for holding counters associated with new status effects*/
 extern newStatusActorBlock statusConstantArray[10];
+extern int arc_enabled;
+extern int disable_burn;
 #endif

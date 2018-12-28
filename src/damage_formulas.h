@@ -5,3 +5,5 @@
 
 SISTERRAY_API void PhysicalFormulaRewrite();
 SISTERRAY_API void MagicFormulaRewrite();
+
+SISTERRAY_API void applyWounds();

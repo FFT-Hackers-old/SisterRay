@@ -27,12 +27,13 @@ SISTERRAY_API void PhysicalFormulaRewrite() {
 
     /*check crit*/
     if (gDamageContextPtr->abilityFlags2 & 2) {
-        base_damage = 1.5f * base_damage;
+        base_damage = (3 * base_damage)/2;
+		applyWounds();
     }
 
     /*berserk check*/
     if (attacker_status & 0x00800000) {
-        base_damage = 1.3f * base_damage;
+        base_damage = (4*base_damage)/3;
     }
 
     /*row modification, now respects enemy short-rangedness*/
@@ -122,4 +123,19 @@ SISTERRAY_API void MagicFormulaRewrite() {
 
     /*set the base damage in the context object*/
     gDamageContextPtr->currentDamage = base_damage;
+}
+
+SISTERRAY_API void applyWounds() {
+	u32 target_id = gDamageContextPtr->targetID;
+	u16 attack_elements_mask = gDamageContextPtr->attackElementsMask;
+
+	/*Set the wounded bit in AI data and */
+	if (attack_elements_mask & (ELM_CUT_BIT | ELM_SHOOT_BIT)) {
+		gAiActorVariables[target_id].unused10 = gAiActorVariables[target_id].unused10 | 0x4000;
+		statusConstantArray[target_id].SeriousWoundCount = (statusConstantArray[target_id].SeriousWoundCount <= 4) ? (statusConstantArray[target_id].SeriousWoundCount++) : (statusConstantArray[target_id].SeriousWoundCount);
+	}
+	else if (attack_elements_mask & ELM_PUNCH_BIT) {
+		gAiActorVariables[target_id].unused10 = gAiActorVariables[target_id].unused10 | 0x4000;
+		statusConstantArray[target_id].GrievousWoundCount = (statusConstantArray[target_id].GrievousWoundCount <= 2) ? (statusConstantArray[target_id].GrievousWoundCount++) : (statusConstantArray[target_id].GrievousWoundCount);
+	}
 }

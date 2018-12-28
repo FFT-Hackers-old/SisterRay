@@ -1,8 +1,14 @@
 #include "elemental_modifiers.h"
+#include <time.h>
+#include <stdlib.h>
 
 /*reimplementaiton of elemental modifier mask*/
 
-SISTERRAY_API void ApplyElementalModifers() {
+newStatusActorBlock statusConstantArray[10];
+int arc_enabled = 1;
+int disable_burn = 0;
+
+SISTERRAY_API void ApplyElementalModifiers() {
     u32 elm_def_mask = gDamageContextPtr->elementalDefenseMask;
 
     /*handle absorb*/
@@ -56,61 +62,142 @@ SISTERRAY_API void ApplyElementalModifers() {
             nullMasks();
         }
     }
+
+	/*Inflict elemental status effects assuming the target doesn't resist the given element*/
+	if (!((elm_def_mask & 0x40)||(elm_def_mask & 0x020))) {
+		InflictElementalStatus();
+	}
+
+	/*If any elemental status bits are flagged, handle their interactions*/
+	if (gAiActorVariables[gDamageContextPtr->targetID].unused10) {
+		HandleElementalInteractions();
+	}
 }
 
 /*Routine handles the infliction of new elemental status effects*/
 SISTERRAY_API void InflictElementalStatus() {
-    u32 attacker_id;
-    u32 target_id;
-    u32 attack_elements_mask;
+	u32 attacker_id;
+	u32 target_id;
+	u32 attack_elements_mask;
 
-    attacker_id = gDamageContextPtr->attackerID;
-    target_id = gDamageContextPtr->targetID;
-    attack_elements_mask = gDamageContextPtr->attackElementsMask;
+	attacker_id = gDamageContextPtr->attackerID;
+	target_id = gDamageContextPtr->targetID;
+	attack_elements_mask = gDamageContextPtr->attackElementsMask;
 
-    /*Inflict burn if the attack is fire elemental*/
-    if (attack_elements_mask & ELM_FIRE_BIT) {
-        /*If not soaked, chilled, or frozen inflict burn */
-        if (!((gAiActorVariables[target_id].unused10 & 0x0200) || (gAiActorVariables[target_id].unused10 & 0x0400)
-            || (gAiActorVariables[target_id].unused10 & 0x0800))) {
-            /*If not already burned, initialize stuff*/
-            if (!(gAiActorVariables[target_id].unused10 & 0x2000)) {
-                gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x2000);
-                statusConstantArray[target_id].burnDuration = defaultBurnDuration;
-                statusConstantArray[target_id].burnTickRate = defaultBurnTick;
-                statusConstantArray[target_id].burnIntensity = defaultBurnIntensity;
-            }
-            else {
-                statusConstantArray[target_id].burnDuration = (
-                    (statusConstantArray[target_id].burnDuration <= 255) ? (statusConstantArray[target_id].burnDuration + (defaultBurnDuration / 2)):statusConstantArray[target_id].burnDuration);
-                statusConstantArray[target_id].burnIntensity = (
-                    (statusConstantArray[target_id].burnIntensity <= 5) ? (statusConstantArray[target_id].burnIntensity + 1):statusConstantArray[target_id].burnIntensity);
-            }
-        }
-    }
+	/*Inflict burn if the attack is fire elemental*/
+	if ((attack_elements_mask & ELM_FIRE_BIT) && (!disable_burn)) {
+		/*If not soaked, chilled, or frozen inflict burn */
+		if (!((gAiActorVariables[target_id].unused10 & 0x0200) || (gAiActorVariables[target_id].unused10 & 0x0400)
+			|| (gAiActorVariables[target_id].unused10 & 0x0800))) {
+			/*If not already burned, initialize stuff*/
+			if (!(gAiActorVariables[target_id].unused10 & 0x2000)) {
+				gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x2000);
+				statusConstantArray[target_id].burnTickRate = (u16)defaultBurnTick;
+				statusConstantArray[target_id].burnIntensity = (u16)defaultBurnTick;
+				enqueueAction(target_id, 0, 0x23, 0x01, 0);
+			}
+			else {
+				statusConstantArray[target_id].burnIntensity = (
+					(statusConstantArray[target_id].burnIntensity > 1) ? (statusConstantArray[target_id].burnIntensity - 1) : statusConstantArray[target_id].burnIntensity);
+			}
+		}
+	}
+	disable_burn = 0;
 
-    /*inflict chilled if the attack is ice elemental*/
-    if (attack_elements_mask & ELM_ICE_BIT) {
-        if (!((gAiActorVariables[target_id].unused10 & 0x2000) || (gAiActorVariables[target_id].unused10 & 0x1000))) {
-            /*If the target is soaked, inflict frozen*/
-            if (gAiActorVariables[target_id].unused10 & 0x0200) {
-                gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0400);
-            }
-            /*else inflict the chilled status*/
-            else {
-                gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0800);
-            }
-        }
-    }
-    /*inflict soaked if the attack is water elemental*/
-    if (attack_elements_mask & ELM_WATER_BIT) {
-        if (!((gAiActorVariables[target_id].unused10 & 0x2000) || (gAiActorVariables[target_id].unused10 & 0x1000))) {
-            gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0200);
-        }
-    }
+	/*inflict chilled if the attack is ice elemental*/
+	if (attack_elements_mask & ELM_ICE_BIT) {
+		if (!((gAiActorVariables[target_id].unused10 & 0x2000) || (gAiActorVariables[target_id].unused10 & 0x1000))) {
+			/*If the target is soaked, inflict frozen*/
+			if (gAiActorVariables[target_id].unused10 & 0x0200) {
+				gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0400);
+			}
+			/*else inflict the chilled status*/
+			else {
+				gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0800);
+			}
+		}
+	}
+	/*inflict soaked if the attack is water elemental*/
+	if (attack_elements_mask & ELM_WATER_BIT) {
+		if (!((gAiActorVariables[target_id].unused10 & 0x2000) || (gAiActorVariables[target_id].unused10 & 0x1000))) {
+			gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0200);
+		}
+	}
+
+	/*Allow Cut Attacks to inflict Bleed*/
+	if ((attack_elements_mask & ELM_CUT_BIT)) {
+		if (!(gAiActorVariables[target_id].unused10 & 0x8000)) {
+			gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x8000);
+			statusConstantArray[target_id].bleedTickRate = (u16)defaultBleedTick;
+			statusConstantArray[target_id].bleedIntensity = (u16)defaultBleedTick;
+			enqueueAction(target_id, 0, 0x23, 0x02, 0);
+		}
+	}
+
+
+	/*Arcing effect for lightning type attacks*/
+	if ((attack_elements_mask & ELM_THUNDER_BIT) && (arc_enabled == 1)) {
+		u16 target_mask;
+		u16 allowed_targets = getAllowableArcTargets(target_id);
+		u32 mask_of_source = gDamageContextPtr->targetMaskCopy;
+		srand(time(NULL));
+		int rand_int = (rand() % 2);
+		switch (target_id) {
+		case 0:
+			target_mask = 0x02;
+			break;
+		case 1:
+			switch (rand_int) {
+			case 0:
+				target_mask = 0x04;
+				break;
+			case 1:
+				target_mask = 0x01;
+				break;
+			}
+			break;
+		case 2:
+			target_mask = 0x02;
+			break;
+		default:
+			if (allowed_targets) {
+				target_mask = getRandomBit(allowed_targets);
+			}
+			if (target_mask) {
+				enqueueAction(target_id, 0, CMD_POISONTICK, 0x05, target_mask);
+			}
+		}
+	}
+	arc_enabled = 1;
 }
 
+u16 getRandomBit(u16 bit_vector) {
+	srand(time(NULL));
+	while (1) {
+		u8 rand_bit = (rand() % 0xB);
+		int bit_set = isBitSet(bit_vector, rand_bit);
+		if (bit_set) {
+			return (u16)(1 << rand_bit);
+		}
+	}
+}
 
+int isBitSet(u16 vector, int bit) {
+	return 1 == ((vector >> bit) & 1);
+}
+
+/*This helper function returns a mask containing valid targets for lighting to arc to*/
+u16 getAllowableArcTargets(u32 source_target) {
+	u16 allowable_targets = 0;
+	u32 source_state = gAiActorVariables[source_target].stateFlags;
+	for (int actor = 4; actor <= 9; actor++) {
+		u32 actor_state = gAiActorVariables[actor].stateFlags;
+		if ((actor_state & 0x0008) && (!(actor_state & 0x2000)) && (source_target != actor)) {
+			allowable_targets = allowable_targets | (1 << (actor));
+		}
+	}
+	return allowable_targets;
+}
 /*Function for handling damage modifiers due to elemental interactions*/
 SISTERRAY_API void HandleElementalInteractions() {
     u32 attacker_id;
@@ -161,11 +248,11 @@ void applySoakedInteractions(u16 new_actor_status_mask, u32 attack_elements_mask
     }
     if (attack_elements_mask & ELM_THUNDER_BIT) {
         /*Increase damage by 1.5*/
-        gDamageContextPtr->currentDamage = (gDamageContextPtr->currentDamage) * 1.75;
+        gDamageContextPtr->currentDamage = ((gDamageContextPtr->currentDamage) * 3)/2;
     }
     /*If wind attack hits soaked target*/
     if (attack_elements_mask & ELM_WIND_BIT) {
-        gDamageContextPtr->currentDamage = (gDamageContextPtr->currentDamage) * 1.5;
+        gDamageContextPtr->currentDamage = ((gDamageContextPtr->currentDamage) * 4)/3;
         /*Set the chilled status on the target*/
         gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0800);
         gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 & ~0x2000);

@@ -55,4 +55,12 @@
 #define CMD_ENEMY_ACTION    ((u8)0x20)
 #define CMD_POISONTICK      ((u8)0x23)
 
+/*Defines for default valuesof new status effects*/
+#define defaultBleedTick        ((u16)0x08)
+#define defaultBleedIntensity   ((u16)0x01)
+#define defaultBurnDuration     ((u16)0x80)
+#define defaultBurnTick         ((u16)0x08)
+#define defaultBurnIntensity    ((u16)0x01)
+#define defaultSoakedDuration   ((u16)0x60)
+
 #endif

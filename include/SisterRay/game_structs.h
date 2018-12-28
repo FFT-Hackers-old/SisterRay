@@ -173,7 +173,35 @@ typedef struct {
 } BigAnimBlock;
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+typedef struct {
+	i8 PoisonTimer;
+	u8 padding[43];
+} ActorTimerBlock;
+#pragma pack(pop)
+
 #define gDamageContextPtr   ((DamageCalcStruct*)0x0099E308)
 #define gAiActorVariables   ((ActorBattleVars*)0x009AB0DC)
 #define gBigAnimBlock       ((BigAnimBlock*)0x00BE1170)
+#define gActorTimerBlock    ((ActorTimerBlock*)0x009A8B26)
+
+/*Struct for holding actor data for new status effects*/
+typedef struct {
+	u16 bleedIntensity;
+	u16 bleedTickRate;
+	u8 SeriousWoundCount;
+	u8 SeriousWoundTickRate;
+	u8 GrievousWoundCount;
+	u8 GrievousWoundTickRate;
+	u16 burnIntensity;
+	i16 burnTickRate;
+	u16 chilledIntensity;
+	u16 feezeDuration;
+	u16 soakedDuration;
+} newStatusActorBlock;
+
+/*create a new array for holding counters associated with new status effects*/
+extern newStatusActorBlock statusConstantArray[10];
+extern int arc_enabled;
+extern int disable_burn;
 #endif

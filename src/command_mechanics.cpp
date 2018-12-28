@@ -9,8 +9,8 @@ SISTERRAY_API void CommandMainRewrite(u8* cmd) {
     attacker_id = cmd[2];
     character_id = gAiActorVariables[attacker_id].characterID;
     command_index = cmd[3];
-	bool actor_bleeding = (gAiActorVariables[attacker_id].unused10 & 0x8000);
-	bool actor_wounded = (gAiActorVariables[attacker_id].unused10 & 0x4000);
+	bool actor_bleeding = (gAiActorVariables[attacker_id].unused10 & STATUS_BLEED);
+	bool actor_wounded = (gAiActorVariables[attacker_id].unused10 & STATUS_WOUNDED);
 	u16 attack_elements_mask = gDamageContextPtr->attackElementsMask;
 
 	/*Tick Bleed and increase intensity when you attack*/
@@ -20,7 +20,7 @@ SISTERRAY_API void CommandMainRewrite(u8* cmd) {
 		/*At max intensiy, bleed converts to a persistent wound, up to 4*/
 		if (statusConstantArray[attacker_id].bleedIntensity == 0x02) {
 			statusConstantArray[attacker_id].bleedIntensity == 0x00;
-			gAiActorVariables[attacker_id].unused10 = gAiActorVariables[attacker_id].unused10 & ~0x8000;
+			gAiActorVariables[attacker_id].unused10 = gAiActorVariables[attacker_id].unused10 & ~STATUS_BLEED;
 			enqueueAction(attacker_id, 0, 0x23, 0x03, 0);
 			statusConstantArray[attacker_id].SeriousWoundCount++;
 		}
@@ -79,34 +79,34 @@ SISTERRAY_API void DecrementCountersRewrite() {
 		bool increment_ready = (SmallVTimerValue[actor] == 0x2D8);
 		/*Burn Handler*/
 		if (statusConstantArray[actor].burnTickRate == (u16)0x00) {
-			if (gAiActorVariables[actor].unused10 & 0x2000) {
+			if (gAiActorVariables[actor].unused10 & STATUS_BURN) {
 				statusConstantArray[actor].burnIntensity = ((statusConstantArray[actor].burnIntensity <= 0x0C) ? (statusConstantArray[actor].burnIntensity + 1) : statusConstantArray[actor].burnIntensity);
 				statusConstantArray[actor].burnTickRate = statusConstantArray[actor].burnIntensity;
 				if (statusConstantArray[actor].burnIntensity == 0x0C) {
-					gAiActorVariables[actor].unused10 = (gAiActorVariables[actor].unused10 & ~0x2000);
+					gAiActorVariables[actor].unused10 = (gAiActorVariables[actor].unused10 & ~STATUS_BURN);
 				}
 				enqueueAction(actor, 0, 0x23, 0x01, 0);
 			}
 		}
 		/*Bleed Handler*/
 		if (statusConstantArray[actor].bleedTickRate == (u16)0x00) {
-			if (gAiActorVariables[actor].unused10 & 0x8000) {
+			if (gAiActorVariables[actor].unused10 & STATUS_BLEED) {
 				statusConstantArray[actor].bleedIntensity = ((statusConstantArray[actor].bleedIntensity <= 0x0C) ? (statusConstantArray[actor].bleedIntensity + 2) : statusConstantArray[actor].bleedIntensity);
 				statusConstantArray[actor].bleedTickRate = statusConstantArray[actor].bleedIntensity;
 				if (statusConstantArray[actor].bleedIntensity == 0x0C) {
-					gAiActorVariables[actor].unused10 = (gAiActorVariables[actor].unused10 & ~0x8000);
+					gAiActorVariables[actor].unused10 = (gAiActorVariables[actor].unused10 & ~STATUS_BLEED);
 				}
 				enqueueAction(actor, 0, 0x23, 0x02, 0);
 			}
 		}
 		if (statusConstantArray[actor].SeriousWoundTickRate == (u16)0x00) {
-			if (gAiActorVariables[actor].unused10 & 0x4000) {
+			if (gAiActorVariables[actor].unused10 & STATUS_WOUNDED) {
 				statusConstantArray[actor].SeriousWoundTickRate = 0x04;
 				enqueueAction(actor, 0, 0x23, 0x03, 0);
 			}
 		}
 		if (statusConstantArray[actor].GrievousWoundTickRate == (u16)0x00) {
-			if (gAiActorVariables[actor].unused10 & 0x4000) {
+			if (gAiActorVariables[actor].unused10 & STATUS_WOUNDED) {
 				statusConstantArray[actor].GrievousWoundTickRate = 0x03;
 				enqueueAction(actor, 0, 0x23, 0x04, 0);
 			}

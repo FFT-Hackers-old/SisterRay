@@ -150,7 +150,7 @@ typedef struct {
     u32     expValue;
     u8      unused8;
     u8      unused9;
-    u16     unused10;
+    u16     unused10; //This is being used for the tactical elements mod, unused in original game
     u8      unused12;
     u8      unused13;
     u8      unused14;

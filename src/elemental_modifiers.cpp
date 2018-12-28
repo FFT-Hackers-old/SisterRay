@@ -87,11 +87,11 @@ SISTERRAY_API void InflictElementalStatus() {
 	/*Inflict burn if the attack is fire elemental*/
 	if ((attack_elements_mask & ELM_FIRE_BIT) && (!disable_burn)) {
 		/*If not soaked, chilled, or frozen inflict burn */
-		if (!((gAiActorVariables[target_id].unused10 & 0x0200) || (gAiActorVariables[target_id].unused10 & 0x0400)
-			|| (gAiActorVariables[target_id].unused10 & 0x0800))) {
+		if (!((gAiActorVariables[target_id].unused10 & STATUS_SOAKED) || (gAiActorVariables[target_id].unused10 & STATUS_FROZEN)
+			|| (gAiActorVariables[target_id].unused10 & STATUS_CHILLED))) {
 			/*If not already burned, initialize stuff*/
-			if (!(gAiActorVariables[target_id].unused10 & 0x2000)) {
-				gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x2000);
+			if (!(gAiActorVariables[target_id].unused10 & STATUS_BURN)) {
+				gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | STATUS_BURN);
 				statusConstantArray[target_id].burnTickRate = (u16)defaultBurnTick;
 				statusConstantArray[target_id].burnIntensity = (u16)defaultBurnTick;
 				enqueueAction(target_id, 0, 0x23, 0x01, 0);
@@ -106,28 +106,28 @@ SISTERRAY_API void InflictElementalStatus() {
 
 	/*inflict chilled if the attack is ice elemental*/
 	if (attack_elements_mask & ELM_ICE_BIT) {
-		if (!((gAiActorVariables[target_id].unused10 & 0x2000) || (gAiActorVariables[target_id].unused10 & 0x1000))) {
+		if (!((gAiActorVariables[target_id].unused10 & STATUS_BURN) || (gAiActorVariables[target_id].unused10 & STATUS_OVERHEAT))) {
 			/*If the target is soaked, inflict frozen*/
-			if (gAiActorVariables[target_id].unused10 & 0x0200) {
-				gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0400);
+			if (gAiActorVariables[target_id].unused10 & STATUS_SOAKED) {
+				gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | STATUS_FROZEN);
 			}
 			/*else inflict the chilled status*/
 			else {
-				gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0800);
+				gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | STATUS_CHILLED);
 			}
 		}
 	}
 	/*inflict soaked if the attack is water elemental*/
 	if (attack_elements_mask & ELM_WATER_BIT) {
-		if (!((gAiActorVariables[target_id].unused10 & 0x2000) || (gAiActorVariables[target_id].unused10 & 0x1000))) {
-			gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0200);
+		if (!((gAiActorVariables[target_id].unused10 & STATUS_BURN) || (gAiActorVariables[target_id].unused10 & STATUS_OVERHEAT))) {
+			gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | STATUS_SOAKED);
 		}
 	}
 
 	/*Allow Cut Attacks to inflict Bleed*/
 	if ((attack_elements_mask & ELM_CUT_BIT)) {
-		if (!(gAiActorVariables[target_id].unused10 & 0x8000)) {
-			gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x8000);
+		if (!(gAiActorVariables[target_id].unused10 & STATUS_BLEED)) {
+			gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | STATUS_BLEED);
 			statusConstantArray[target_id].bleedTickRate = (u16)defaultBleedTick;
 			statusConstantArray[target_id].bleedIntensity = (u16)defaultBleedTick;
 			enqueueAction(target_id, 0, 0x23, 0x02, 0);
@@ -142,30 +142,11 @@ SISTERRAY_API void InflictElementalStatus() {
 		u32 mask_of_source = gDamageContextPtr->targetMaskCopy;
 		srand(time(NULL));
 		int rand_int = (rand() % 2);
-		switch (target_id) {
-		case 0:
-			target_mask = 0x02;
-			break;
-		case 1:
-			switch (rand_int) {
-			case 0:
-				target_mask = 0x04;
-				break;
-			case 1:
-				target_mask = 0x01;
-				break;
-			}
-			break;
-		case 2:
-			target_mask = 0x02;
-			break;
-		default:
-			if (allowed_targets) {
-				target_mask = getRandomBit(allowed_targets);
-			}
-			if (target_mask) {
-				enqueueAction(target_id, 0, CMD_POISONTICK, 0x05, target_mask);
-			}
+		if (allowed_targets) {
+			target_mask = getRandomBit(allowed_targets);
+		}
+		if (target_mask) {
+			enqueueAction(target_id, 0, CMD_POISONTICK, 0x05, target_mask);
 		}
 	}
 	arc_enabled = 1;
@@ -190,10 +171,38 @@ int isBitSet(u16 vector, int bit) {
 u16 getAllowableArcTargets(u32 source_target) {
 	u16 allowable_targets = 0;
 	u32 source_state = gAiActorVariables[source_target].stateFlags;
-	for (int actor = 4; actor <= 9; actor++) {
-		u32 actor_state = gAiActorVariables[actor].stateFlags;
-		if ((actor_state & 0x0008) && (!(actor_state & 0x2000)) && (source_target != actor)) {
-			allowable_targets = allowable_targets | (1 << (actor));
+	switch (source_target) {
+	case 0:
+		u8 enabled = gAiActorVariables[0x02].stateFlags & 0x0008;
+		if (enabled) {
+			allowable_targets = 0x02; 
+		}
+		break;
+	case 1:
+		u8 enabled_left = gAiActorVariables[0x04].stateFlags & 0x0008;
+		u8 enabled_right = gAiActorVariables[0x01].stateFlags & 0x0008;
+		if (enabled_left && enabled_right) {
+			allowable_targets = (0x01 | 0x04);
+		}
+		else if (enabled_left) {
+			allowable_targets = 0x04;
+		}
+		else if (enabled_right) {
+			allowable_targets = 0x01;
+		}
+		break;
+	case 2:
+		u8 enabled = gAiActorVariables[0x02].stateFlags & 0x0008;
+		if (enabled) {
+			allowable_targets = 0x02;
+		}
+		break;
+	default:
+		for (int actor = 4; actor <= 9; actor++) {
+			u32 actor_state = gAiActorVariables[actor].stateFlags;
+			if ((actor_state & 0x0008) && (!(actor_state & 0x2000)) && (source_target != actor)) {
+				allowable_targets = allowable_targets | (1 << (actor));
+			}
 		}
 	}
 	return allowable_targets;
@@ -212,12 +221,12 @@ SISTERRAY_API void HandleElementalInteractions() {
     u16 new_actor_status_mask = gAiActorVariables[target_id].unused10;
 
     /*If the target is inflicted with Burn*/
-    if (new_actor_status_mask & 0x2000) {
+    if (new_actor_status_mask & STATUS_BURN) {
         applyBurnedInteractions(new_actor_status_mask, attack_elements_mask, target_id);
 
     }
     /*handle elemental interactions with the soaked status*/
-    if (new_actor_status_mask & 0x0200) {
+    if (new_actor_status_mask & STATUS_SOAKED) {
         applySoakedInteractions(new_actor_status_mask, attack_elements_mask, target_id);
     }
 }
@@ -228,14 +237,14 @@ void applyBurnedInteractions(u16 new_actor_status_mask, u32 attack_elements_mask
     if (attack_elements_mask & ELM_ICE_BIT) {
         gDamageContextPtr->currentDamage = (gDamageContextPtr->currentDamage) / 2;
         /*Flag soaked on the target*/
-        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0200);
+        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | STATUS_SOAKED);
         /*Unset burn on target*/
-        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 & ~0x2000);
+        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 & ~STATUS_BURN);
     }
     if (attack_elements_mask & ELM_WATER_BIT) {
         gDamageContextPtr->currentDamage = (gDamageContextPtr->currentDamage) / 2;
         /*Unset burn on target*/
-        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 & ~0x2000);
+        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 & ~STATUS_BURN);
     }
 }
 
@@ -244,7 +253,7 @@ void applySoakedInteractions(u16 new_actor_status_mask, u32 attack_elements_mask
     if (attack_elements_mask & ELM_FIRE_BIT) {
         gDamageContextPtr->currentDamage = (gDamageContextPtr->currentDamage) / 2;
         /*Unset soaked on target*/
-        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 & ~0x2000);
+        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 & ~STATUS_BURN);
     }
     if (attack_elements_mask & ELM_THUNDER_BIT) {
         /*Increase damage by 1.5*/
@@ -254,7 +263,7 @@ void applySoakedInteractions(u16 new_actor_status_mask, u32 attack_elements_mask
     if (attack_elements_mask & ELM_WIND_BIT) {
         gDamageContextPtr->currentDamage = ((gDamageContextPtr->currentDamage) * 4)/3;
         /*Set the chilled status on the target*/
-        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | 0x0800);
-        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 & ~0x2000);
+        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 | STATUS_CHILLED);
+        gAiActorVariables[target_id].unused10 = (gAiActorVariables[target_id].unused10 & ~STATUS_BURN);
     }
 }

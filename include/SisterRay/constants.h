@@ -55,7 +55,18 @@
 #define CMD_ENEMY_ACTION    ((u8)0x20)
 #define CMD_POISONTICK      ((u8)0x23)
 
-/*Defines for default valuesof new status effects*/
+/*Defines for new status effect masks*/
+#define STATUS_BLEED           ((u16)0x8000)
+#define STATUS_WOUNDED		   ((u16)0x4000)
+#define STATUS_BURN            ((u16)0x2000)
+#define STATUS_OVERHEAT        ((u16)0x1000)
+#define STATUS_CHILLED         ((u16)0x0800)
+#define STATUS_FROZEN          ((u16)0x0400)
+#define STATUS_SOAKED          ((u16)0x0200)
+#define STATUS_CHARGED         ((u16)0x0100)
+#define STATUS_FLOAT           ((u16)0x0080)
+
+/*Defines for default values of new status effects*/
 #define defaultBleedTick        ((u16)0x08)
 #define defaultBleedIntensity   ((u16)0x01)
 #define defaultBurnDuration     ((u16)0x80)

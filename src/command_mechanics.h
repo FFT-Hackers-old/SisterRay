@@ -1,3 +1,6 @@
+#ifndef COMMAND_HEADER_H
+#define COMMAND_HEADER_H
+
 #include <SisterRay/SisterRay.h>
 #include <SisterRay/constants.h>
 #include <SisterRay/game_structs.h>
@@ -42,3 +45,5 @@ newActorAnimPtr actorAnimArray[10] =  {
 	{0x00, 0x00, 0x00, (u32)&newAnimScriptEnemies, (u32)&newAnimScript},
 	{0x00, 0x00, 0x00, (u32)&newAnimScriptEnemies, (u32)&newAnimScript}
 };
+
+#endif COMMAND_HEADER_H

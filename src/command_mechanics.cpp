@@ -80,9 +80,9 @@ SISTERRAY_API void DecrementCountersRewrite() {
 		/*Burn Handler*/
 		if (statusConstantArray[actor].burnTickRate == (u16)0x00) {
 			if (gAiActorVariables[actor].unused10 & STATUS_BURN) {
-				statusConstantArray[actor].burnIntensity = ((statusConstantArray[actor].burnIntensity <= 0x0C) ? (statusConstantArray[actor].burnIntensity + 1) : statusConstantArray[actor].burnIntensity);
+				statusConstantArray[actor].burnIntensity = ((statusConstantArray[actor].burnIntensity <= defaultBurnExpiration) ? (statusConstantArray[actor].burnIntensity + 1) : statusConstantArray[actor].burnIntensity);
 				statusConstantArray[actor].burnTickRate = statusConstantArray[actor].burnIntensity;
-				if (statusConstantArray[actor].burnIntensity == 0x0C) {
+				if (statusConstantArray[actor].burnIntensity == defaultBurnExpiration) {
 					gAiActorVariables[actor].unused10 = (gAiActorVariables[actor].unused10 & ~STATUS_BURN);
 				}
 				enqueueAction(actor, 0, 0x23, 0x01, 0);
@@ -91,9 +91,9 @@ SISTERRAY_API void DecrementCountersRewrite() {
 		/*Bleed Handler*/
 		if (statusConstantArray[actor].bleedTickRate == (u16)0x00) {
 			if (gAiActorVariables[actor].unused10 & STATUS_BLEED) {
-				statusConstantArray[actor].bleedIntensity = ((statusConstantArray[actor].bleedIntensity <= 0x0C) ? (statusConstantArray[actor].bleedIntensity + 2) : statusConstantArray[actor].bleedIntensity);
+				statusConstantArray[actor].bleedIntensity = ((statusConstantArray[actor].bleedIntensity <= defaultBleedExpiration) ? (statusConstantArray[actor].bleedIntensity + 2) : statusConstantArray[actor].bleedIntensity);
 				statusConstantArray[actor].bleedTickRate = statusConstantArray[actor].bleedIntensity;
-				if (statusConstantArray[actor].bleedIntensity == 0x0C) {
+				if (statusConstantArray[actor].bleedIntensity == defaultBleedExpiration) {
 					gAiActorVariables[actor].unused10 = (gAiActorVariables[actor].unused10 & ~STATUS_BLEED);
 				}
 				enqueueAction(actor, 0, 0x23, 0x02, 0);
@@ -209,7 +209,7 @@ SISTERRAY_API void ModifyPoisonTest() {
 SISTERRAY_API void PoisonCallbackRewrite(u32 actor_id) {
 	if (gAiActorVariables[actor_id].statusMasks & 0x08) {
 		enqueueAction(actor_id, 0, 0x23, 0, 0);
-		gActorTimerBlock[actor_id].PoisonTimer = 0xA;
+		gActorTimerBlock[actor_id].PoisonTimer = defaultPoisonTimer;
 	}
 	//if (gAiActorVariables[actor_id].unused10 & 0x2000) {
 		//enqueueAction(actor_id, 0, 0x23, 0x01, 0);

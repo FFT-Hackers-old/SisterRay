@@ -187,17 +187,19 @@ typedef struct {
 
 /*Struct for holding actor data for new status effects*/
 typedef struct {
-	u16 bleedIntensity;
-	u16 bleedTickRate;
+	u8 bleedIntensity;
+	i8 bleedTickRate;
 	u8 SeriousWoundCount;
 	u8 SeriousWoundTickRate;
 	u8 GrievousWoundCount;
 	u8 GrievousWoundTickRate;
-	u16 burnIntensity;
-	i16 burnTickRate;
-	u16 chilledIntensity;
-	u16 feezeDuration;
-	u16 soakedDuration;
+	u8 burnIntensity;
+	i8 burnTickRate;
+	i8 chilledIntensity;
+	u8 feezeDuration;
+	u8 soakedDuration;
+	u8 floatDuration;
+	u8 chargeIntensity;
 } newStatusActorBlock;
 
 /*create a new array for holding counters associated with new status effects*/

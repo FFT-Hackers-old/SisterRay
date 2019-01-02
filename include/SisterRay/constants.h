@@ -67,11 +67,13 @@
 #define STATUS_FLOAT           ((u16)0x0080)
 
 /*Defines for default values of new status effects*/
-#define defaultBleedTick        ((u16)0x08)
-#define defaultBleedIntensity   ((u16)0x01)
-#define defaultBurnDuration     ((u16)0x80)
-#define defaultBurnTick         ((u16)0x08)
-#define defaultBurnIntensity    ((u16)0x01)
-#define defaultSoakedDuration   ((u16)0x60)
+#define defaultPoisonTimer      ((u16)0x08)
+#define defaultBleedIntensity   ((u16)0x06)
+#define defaultBleedExpiration  ((u16)0x0A)
+#define defaultBurnIntensity    ((u16)0x06)
+#define defaultBurnExpiration   ((u16)0x0A)
+#define defaultSoakedDuration   ((u16)0x0C)
+#define defaultFloatDuration    ((u16)0x20)
+#define defaultChilledIntensity ((u16)0x06)
 
 #endif

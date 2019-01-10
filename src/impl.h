@@ -1,6 +1,7 @@
 #ifndef IMPL_H
 #define IMPL_H
 
+#include <mog/mog.h>
 #include <SisterRay/SisterRay.h>
 
 typedef void (PFNCOMMANDMAINPROC)(u8*);
@@ -17,5 +18,7 @@ SISTERRAY_GLOBAL PFNAPPLYDAMAGE* oldApplyDamage;
 
 //typedef void (PFNANIMEFFECT)(u8);
 //SISTERRAY_GLOBAL PFNANIMEFFECT* oldAnimEffectLookUp;
+
+SISTERRAY_API void EnableNoCD(void);
 
 #endif

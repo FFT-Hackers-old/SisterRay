@@ -20,5 +20,9 @@ SISTERRAY_GLOBAL PFNAPPLYDAMAGE* oldApplyDamage;
 //SISTERRAY_GLOBAL PFNANIMEFFECT* oldAnimEffectLookUp;
 
 SISTERRAY_API void EnableNoCD(void);
+SISTERRAY_API void InitFunctionRegistry(void);
+
+SISTERRAY_API const void* srLoadFunction(const char* name);
+SISTERRAY_API const void* srRegisterFunction(const char* name, const void* func);
 
 #endif

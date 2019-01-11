@@ -1,6 +1,8 @@
 #ifndef SISTER_RAY_H
 #define SISTER_RAY_H
 
+#include <stddef.h>
+#include <stdint.h>
 #include <SisterRay/constants.h>
 #include <SisterRay/game_structs.h>
 #include <SisterRay/routines.h>
@@ -17,5 +19,16 @@
 #else
 # define SISTERRAY_GLOBAL extern
 #endif
+
+/* SisterRay API */
+typedef void* (*PFNSRLOADFUNCTIONPROC)(const char*);
+typedef void* (*PFNSRREGISTERFUNCTIONPROC)(const char*, const void*);
+
+/* Mog re-exports */
+typedef void  (*PFNSRREPLACEFUNCTIONPROC)(void* dst, void* newAddr);
+typedef void* (*PFNSRREDIRECTFUNCTIONPROC)(void* dst, void* newAddr);
+typedef void  (*PFNSRREPLACESKIPPROC)(void* dst, size_t len);
+typedef void  (*PFNSRREPLACENOPPROC)(void* dst, size_t len);
+typedef void* (*PFNSRVIRTUALADDRESSPROC)(uint32_t fixedAddr);
 
 #endif

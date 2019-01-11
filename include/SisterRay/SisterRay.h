@@ -21,8 +21,8 @@
 #endif
 
 /* SisterRay API */
-typedef void* (*PFNSRLOADFUNCTIONPROC)(const char*);
-typedef void* (*PFNSRREGISTERFUNCTIONPROC)(const char*, const void*);
+typedef const void* (*PFNSRLOADFUNCTIONPROC)(const char*);
+typedef const void* (*PFNSRREGISTERFUNCTIONPROC)(const char*, const void*);
 
 /* Mog re-exports */
 typedef void  (*PFNSRREPLACEFUNCTIONPROC)(void* dst, void* newAddr);

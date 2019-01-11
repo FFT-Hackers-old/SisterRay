@@ -24,4 +24,5 @@ __declspec(dllexport) void rayInit()
     mogReplaceFunction(PHYSICAL_DAMAGE_FORMULA, &PhysicalFormulaRewrite);
     mogReplaceFunction(POISON_SETUP_ROUTINE, &ModifyPoisonTest);
 	mogReplaceFunction(APPLY_ELEMENTAL_MODIFIERS, &ApplyElementalModifiers);
+    LoadMods();
 }

@@ -21,6 +21,7 @@ SISTERRAY_GLOBAL PFNAPPLYDAMAGE* oldApplyDamage;
 
 SISTERRAY_API void EnableNoCD(void);
 SISTERRAY_API void InitFunctionRegistry(void);
+SISTERRAY_API void LoadMods(void);
 
 SISTERRAY_API const void* srLoadFunction(const char* name);
 SISTERRAY_API const void* srRegisterFunction(const char* name, const void* func);

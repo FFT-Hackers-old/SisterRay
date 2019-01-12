@@ -1,13 +1,47 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+option(SUPERBUILD "Build this project using a superbuild" ON)
 
-set(CID_NAME        "FF7_SisterRay")
-set(CID_TARGET      "FF7.exe")
-set(CID_DLL         "SisterRay.dll")
-set(CID_INIT        "rayInit")
+if (SUPERBUILD)
+    project(SUPERBUILD)
 
-add_subdirectory(src)
-add_subdirectory(vendor)
+    include(ExternalProject)
+
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+    add_subdirectory(third_party)
+
+    ExternalProject_Add(
+        SisterRay
+        SOURCE_DIR      "${CMAKE_SOURCE_DIR}"
+        INSTALL_DIR     "${CMAKE_BINARY_DIR}"
+        CMAKE_ARGS
+            "-DSUPERBUILD=OFF"
+            "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+            "-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/third_party"
+            "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
+        DEPENDS
+        zlib
+    )
+    ExternalProject_Add_Step(
+		SisterRay
+		reconfigure
+		COMMAND ${CMAKE_COMMAND} -E echo "Forcing a superbuild reconfigure"
+		DEPENDEES download
+		DEPENDERS configure
+		ALWAYS ON
+	)
+else()
+    project(SisterRay)
+
+    set(CID_NAME        "FF7_SisterRay")
+    set(CID_TARGET      "FF7.exe")
+    set(CID_DLL         "SisterRay.dll")
+    set(CID_INIT        "rayInit")
+
+    add_subdirectory(src)
+    add_subdirectory(vendor)
+endif()

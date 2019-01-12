@@ -3,10 +3,17 @@ include(FindPackageHandleStandardArgs)
 if (NOT ZLIB_FOUND)
 	find_library(
 		ZLIB_LIBRARY
-		zlibstatic zlib
+		zlib
 		PATH_SUFFIXES
 		lib
-	)
+    )
+
+    find_file(
+        ZLIB_DLL
+        zlib.dll
+        PATH_SUFFIXES
+        bin
+    )
 
 	find_path(
 		ZLIB_INCLUDE_DIR
@@ -21,10 +28,12 @@ if (NOT ZLIB_FOUND)
 		ZLib::ZLib
 		PROPERTIES
 		IMPORTED_LOCATION
-		"${ZLIB_LIBRARY}"
+        "${ZLIB_LIBRARY}"
+        IMPORTED_IMPLIB
+        "${ZLIB_DLL}"
 		INTERFACE_INCLUDE_DIRECTORIES
 		"${ZLIB_INCLUDE_DIR}"
 	)
 
-	find_package_handle_standard_args(ZLib DEFAULT_MSG ZLIB_LIBRARY ZLIB_INCLUDE_DIR)
+	find_package_handle_standard_args(ZLib DEFAULT_MSG ZLIB_DLL ZLIB_LIBRARY ZLIB_INCLUDE_DIR)
 endif()

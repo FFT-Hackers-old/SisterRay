@@ -1,9 +1,11 @@
+#include <stdio.h>
 #include <mog/mog.h>
 #include <windows.h>
 #include "damage_formulas.h"
 #include "command_mechanics.h"
 #include "elemental_modifiers.h"
 #include "impl.h"
+#include <zlib.h>
 
 PFNCOMMANDMAINPROC* oldCommandMain;
 PFNRUNANIMSCRIPT* oldRunAnimationScript;
@@ -11,18 +13,46 @@ PFNDECREMENTCOUNTERS* oldDecrementCounters;
 PFNAPPLYDAMAGE*  oldApplyDamage;
 // PFNANIMEFFECT* oldAnimEffectLookUp;
 
+SrContext gContext;
+
+static const SrKernelStreamHandler kKernelBinHandlers[9] = {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    InitMateria,
+};
+
+static void srLoadKernelBin(void)
+{
+    FILE* kernel;
+    SrKernelStream stream;
+    SrKernelStreamHandler handler;
+
+    kernel = fopen(srGetGamePath("data/kernel/kernel.bin"), "rb");
+    for (int i = 0; i < 9; ++i)
+    {
+        srKernelStreamOpen(&stream, kernel);
+        handler = kKernelBinHandlers[i];
+        if (handler)
+            handler(&stream);
+        else
+            srKernelStreamSkip(&stream);
+        srKernelStreamClose(&stream);
+    }
+    fclose(kernel);
+}
+
 __declspec(dllexport) void rayInit()
 {
 	MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
-    InitFunctionRegistry();
+    InitLog();
     EnableNoCD();
-    oldCommandMain = mogRedirectFunction(MAIN_COMMAND_FORMULA, &CommandMainRewrite);
-	oldRunAnimationScript = mogRedirectFunction(RUN_ANIMATION_SCRIPT, &AnimationScriptRewrite);
-	oldDecrementCounters = mogRedirectFunction(DECREMENT_COUNTERS, &DecrementCountersRewrite);
-	oldApplyDamage = mogRedirectFunction(APPLY_DAMAGE_ROUTINE, &applyDamageHook);
-	//oldAnimEffectLookUp = mogRedirectFunction(LOOKUP_ADDITIONAL_EFFECT, &AnimationEffectRewrite);
-    mogReplaceFunction(PHYSICAL_DAMAGE_FORMULA, &PhysicalFormulaRewrite);
-    mogReplaceFunction(POISON_SETUP_ROUTINE, &ModifyPoisonTest);
-	mogReplaceFunction(APPLY_ELEMENTAL_MODIFIERS, &ApplyElementalModifiers);
+    InitFunctionRegistry();
+    srLoadKernelBin();
     LoadMods();
 }

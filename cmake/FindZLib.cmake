@@ -3,14 +3,14 @@ include(FindPackageHandleStandardArgs)
 if (NOT ZLIB_FOUND)
 	find_library(
 		ZLIB_LIBRARY
-		zlib
+		zlib zlibd
 		PATH_SUFFIXES
 		lib
     )
 
     find_file(
         ZLIB_DLL
-        zlib.dll
+        zlib.dll zlibd.dll
         PATH_SUFFIXES
         bin
     )

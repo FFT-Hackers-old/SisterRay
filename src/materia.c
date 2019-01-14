@@ -119,6 +119,18 @@ SISTERRAY_API void InitMateria(SrKernelStream* stream)
         materia = AllocMateria();
         memcpy(materia, &tmp, sizeof(tmp));
     }
+    // DEBUG add new materia
+    materia = AllocMateria();
+    memcpy(materia, gContext.materias.data + 0x48, sizeof(MateriaData));
+    materia->data[0] = 0x30;
+    materia->data[1] = 0x31;
+    materia->data[2] = 0x32;
+    materia->data[3] = 0x33;
+    materia->data[4] = 0x34;
+    materia->apLevel[0] = 10;
+    materia->apLevel[1] = 20;
+    materia->apLevel[2] = 30;
+    materia->apLevel[3] = 40;
     srLogWrite("kernel.bin: Loaded %lu Materias", (unsigned long)gContext.materias.count);
     PatchMateria();
     gContext.materias.data[0x48].data[0] = 0x35; // DEBUG

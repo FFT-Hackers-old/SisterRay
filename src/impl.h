@@ -29,6 +29,8 @@ SISTERRAY_GLOBAL PFNAPPLYDAMAGE* oldApplyDamage;
 //typedef void (PFNANIMEFFECT)(u8);
 //SISTERRAY_GLOBAL PFNANIMEFFECT* oldAnimEffectLookUp;
 
+SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
+
 SISTERRAY_API void InitMateria(SrKernelStream* stream);
 
 SISTERRAY_API void InitLog(void);

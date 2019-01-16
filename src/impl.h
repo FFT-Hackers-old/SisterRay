@@ -18,23 +18,7 @@ typedef struct {
 
 SISTERRAY_GLOBAL SrContext gContext;
 
-typedef void (PFNCOMMANDMAINPROC)(u8*);
-SISTERRAY_GLOBAL PFNCOMMANDMAINPROC* oldCommandMain;
-
-typedef void (PFNRUNANIMSCRIPT)(u16, u32, u32, u32);
-SISTERRAY_GLOBAL PFNRUNANIMSCRIPT* oldRunAnimationScript;
-
-typedef void (PFNDECREMENTCOUNTERS)();
-SISTERRAY_GLOBAL PFNDECREMENTCOUNTERS* oldDecrementCounters;
-
-typedef void (PFNAPPLYDAMAGE)();
-SISTERRAY_GLOBAL PFNAPPLYDAMAGE* oldApplyDamage;
-
-//typedef void (PFNANIMEFFECT)(u8);
-//SISTERRAY_GLOBAL PFNANIMEFFECT* oldAnimEffectLookUp;
-
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
-
 SISTERRAY_API void InitMateria(SrKernelStream* stream);
 SISTERRAY_API void InitArmor(SrKernelStream* stream);
 SISTERRAY_API void InitAccessory(SrKernelStream* stream);

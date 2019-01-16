@@ -185,25 +185,4 @@ typedef struct {
 #define gBigAnimBlock       ((BigAnimBlock*)0x00BE1170)
 #define gActorTimerBlock    ((ActorTimerBlock*)0x009A8B26)
 
-/*Struct for holding actor data for new status effects*/
-typedef struct {
-	u8 bleedIntensity;
-	i8 bleedTickRate;
-	u8 SeriousWoundCount;
-	u8 SeriousWoundTickRate;
-	u8 GrievousWoundCount;
-	u8 GrievousWoundTickRate;
-	u8 burnIntensity;
-	i8 burnTickRate;
-	i8 chilledIntensity;
-	u8 feezeDuration;
-	u8 soakedDuration;
-	u8 floatDuration;
-	u8 chargeIntensity;
-} newStatusActorBlock;
-
-/*create a new array for holding counters associated with new status effects*/
-extern newStatusActorBlock statusConstantArray[10];
-extern int arc_enabled;
-extern int disable_burn;
 #endif

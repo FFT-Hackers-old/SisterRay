@@ -1,17 +1,8 @@
 #include <stdio.h>
 #include <mog/mog.h>
 #include <windows.h>
-#include "damage_formulas.h"
-#include "command_mechanics.h"
-#include "elemental_modifiers.h"
 #include "impl.h"
 #include <zlib.h>
-
-PFNCOMMANDMAINPROC* oldCommandMain;
-PFNRUNANIMSCRIPT* oldRunAnimationScript;
-PFNDECREMENTCOUNTERS* oldDecrementCounters;
-PFNAPPLYDAMAGE*  oldApplyDamage;
-// PFNANIMEFFECT* oldAnimEffectLookUp;
 
 SrContext gContext;
 

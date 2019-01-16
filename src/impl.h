@@ -6,9 +6,13 @@
 
 #include "kernel.h"
 #include "materia.h"
+#include "armor.h"
+#include "accessory.h"
 
 typedef struct {
     FILE*               logFile;
+    SrArmorRegistry     armors;
+    SrAccessoryRegistry accessories;
     SrMateriaRegistry   materias;
 } SrContext;
 
@@ -32,6 +36,8 @@ SISTERRAY_GLOBAL PFNAPPLYDAMAGE* oldApplyDamage;
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
 
 SISTERRAY_API void InitMateria(SrKernelStream* stream);
+SISTERRAY_API void InitArmor(SrKernelStream* stream);
+SISTERRAY_API void InitAccessory(SrKernelStream* stream);
 
 SISTERRAY_API void InitLog(void);
 SISTERRAY_API void srLogWrite(const char* format, ...);

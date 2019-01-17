@@ -8,11 +8,11 @@
 SISTERRAY_API void InitAccessory(SrKernelStream* stream)
 {
     SrAccessoryRegistry* registry = &gContext.accessories;
-    initRegistry<AccessoryData, SrAccessoryRegistry>(
+    initRegistry<AccessoryData>(
         stream,
         registry,
         allocKernelObject<AccessoryData, SrAccessoryRegistry>,
-        initObjectRegistry<SrAccessoryRegistry>);
+        initObjectRegistry<AccessoryData, SrAccessoryRegistry>);
 
     srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.count);
 }

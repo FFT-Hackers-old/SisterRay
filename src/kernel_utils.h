@@ -7,10 +7,10 @@
 #include "impl.h"
 
 /*Allocate space for an initial 16 objects*/
-template<typename T> void initObjectRegistry(T* registry) {
+template<typename T, typename S> void initObjectRegistry(S* registry) {
     registry->capacity = 16;
     registry->count = 0;
-    registry->data = malloc(registry->capacity * sizeof(*registry->data));
+    registry->data = (T*)malloc(registry->capacity * sizeof(*registry->data));
 }
 
 /*Allocate space in the armor registry for a new armor, increasing the array size if necessary*/
@@ -21,7 +21,7 @@ template<typename T, typename S> T* allocKernelObject(S* registry) {
     if (registry->capacity == registry->count)
     {
         newCapacity = registry->capacity + registry->capacity / 2;
-        registry->data = realloc(registry->data, newCapacity * sizeof(*registry->data));
+        registry->data = (T*)realloc(registry->data, newCapacity * sizeof(*registry->data));
         registry->capacity = newCapacity;
     }
 

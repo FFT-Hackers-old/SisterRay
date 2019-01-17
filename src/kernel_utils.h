@@ -18,21 +18,21 @@ template<typename T, typename S> T* allocKernelObject(S* registry) {
     size_t newCapacity;
     T* object;
 
-    if (registry->capacity == reg->count)
+    if (registry->capacity == registry->count)
     {
         newCapacity = registry->capacity + registry->capacity / 2;
         registry->data = realloc(registry->data, newCapacity * sizeof(*registry->data));
         registry->capacity = newCapacity;
     }
 
-    armor = registry->data + registry->count;
+    object = registry->data + registry->count;
     registry->count++;
     memset(object, 0, sizeof(*object));
 
     return object;
 }
 
-/*template function to initialize the registry for a given type of object*/
+/*template function to initialize the registry for a given type of kernel object*/
 template<typename T, typename S, typename F, typename G> void initRegistry(SrKernelStream* stream, S* registry, F allocator, G initializer) {
     size_t ret;
     T tmp;

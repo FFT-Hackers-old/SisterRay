@@ -9,7 +9,7 @@ SISTERRAY_API void InitAccessory(SrKernelStream* stream)
 {
     SrAccessoryRegistry* registry = &gContext.accessories;
     initRegistry<AccessoryData, SrAccessoryRegistry>(
-        SrKernelStream* stream,
+        stream,
         registry,
         allocKernelObject<AccessoryData, SrAccessoryRegistry>,
         initObjectRegistry<SrAccessoryRegistry>);

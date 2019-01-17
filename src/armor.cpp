@@ -7,7 +7,11 @@
 
 SISTERRAY_API void InitArmor(SrKernelStream* stream)
 {
-    SrArmorRegistry* reg = &gContext.armors;
-    initRegistry<ArmorData, SrArmorRegistry>(SrKernelStream* stream, reg, allocKernelObject<ArmorData, SrArmorRegistry>, initObjectRegistry<SrArmorRegistry>);
+    SrArmorRegistry* registry = &gContext.armors;
+    initRegistry<ArmorData, SrArmorRegistry>(
+        stream,
+        registry,
+        allocKernelObject<ArmorData, SrArmorRegistry>,
+        initObjectRegistry<SrArmorRegistry>);
     srLogWrite("kernel.bin: Loaded %lu Armors", (unsigned long)gContext.armors.count);
 }

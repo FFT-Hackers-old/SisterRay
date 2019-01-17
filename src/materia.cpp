@@ -80,8 +80,14 @@ static void PatchMateria(void)
 
 SISTERRAY_API void InitMateria(SrKernelStream* stream) {
     SrMateriaRegistry* registry = &gContext.materias;
-    initRegistry<MateriaData, SrMateriaRegistry>(SrKernelStream* stream, registry, allocKernelObject<MateriaData, SrMateriaRegistry>, initObjectRegistry<SrMateriaRegistry>);
+    initRegistry<MateriaData, SrMateriaRegistry>(
+        stream,
+        registry,
+        allocKernelObject<MateriaData,SrMateriaRegistry>,
+        initObjectRegistry<SrMateriaRegistry>
+    );
 
+    /*Code to create a new materia*/
     auto materia = allocKernelObject<MateriaData, SrMateriaRegistry>(registry);
     memcpy(materia, gContext.materias.data + 0x48, sizeof(MateriaData));
     materia->data[0] = 0x30;

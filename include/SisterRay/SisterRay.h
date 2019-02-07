@@ -20,6 +20,8 @@
 # define SISTERRAY_GLOBAL extern
 #endif
 
+#define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*x))
+
 /* SisterRay API */
 typedef const void* (*PFNSRLOADFUNCTIONPROC)(const char*);
 typedef const void* (*PFNSRREGISTERFUNCTIONPROC)(const char*, const void*);

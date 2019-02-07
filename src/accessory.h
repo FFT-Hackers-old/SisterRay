@@ -2,6 +2,7 @@
 #define ACCESSORY_H
 
 #include <SisterRay/types.h>
+#include <SisterRay/data_addresses.h>
 
 #pragma pack(push, 1)
 typedef struct {

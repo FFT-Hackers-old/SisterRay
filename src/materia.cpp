@@ -90,7 +90,7 @@ SISTERRAY_API void InitMateria(SrKernelStream* stream) {
     /*Code to create a new materia*/
     auto materia = allocKernelObject<MateriaData, SrMateriaRegistry>(registry);
     memcpy(materia, gContext.materias.data + 0x48, sizeof(MateriaData));
-    materia->data[0] = 0x30;
+    materia->data[0] = 0x30; 
     materia->data[1] = 0x31;
     materia->data[2] = 0x32;
     materia->data[3] = 0x33;

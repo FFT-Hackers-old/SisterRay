@@ -10,6 +10,8 @@
 #include "accessory.h"
 
 typedef struct {
+    uint32_t            windowWidth;
+    uint32_t            windowHeight;
     FILE*               logFile;
     SrArmorRegistry     armors;
     SrAccessoryRegistry accessories;
@@ -19,6 +21,9 @@ typedef struct {
 SISTERRAY_GLOBAL SrContext gContext;
 
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
+
+SISTERRAY_API void InitRenderer(void);
+
 SISTERRAY_API void InitMateria(SrKernelStream* stream);
 SISTERRAY_API void InitArmor(SrKernelStream* stream);
 SISTERRAY_API void InitAccessory(SrKernelStream* stream);

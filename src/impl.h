@@ -8,12 +8,15 @@
 #include "materia.h"
 #include "armor.h"
 #include "accessory.h"
+#include "inventory.h"
 
 typedef struct {
     FILE*               logFile;
     SrArmorRegistry     armors;
     SrAccessoryRegistry accessories;
     SrMateriaRegistry   materias;
+    SrItemInventory       inventory;
+    SrBattleInventory     battle_inventory;
 } SrContext;
 
 SISTERRAY_GLOBAL SrContext gContext;

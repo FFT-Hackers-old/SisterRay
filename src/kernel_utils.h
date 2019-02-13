@@ -7,9 +7,15 @@
 #include "impl.h"
 
 /*Allocate space for an initial 16 objects*/
-template<typename T, typename S> void initObjectRegistry(S* registry) {
-    registry->capacity = 16;
+template<typename T, typename S> void initObjectRegistry(S* registry, int capacity = 16) {
+    registry->capacity = capacity;
     registry->count = 0;
+    registry->data = (T*)malloc(registry->capacity * sizeof(*registry->data));
+}
+
+/*Allocate space for an inventory-type object*/
+template<typename T, typename S> void initStaticObjectRegistry(S* registry, int capacity = 16) {
+    registry->capacity = capacity;
     registry->data = (T*)malloc(registry->capacity * sizeof(*registry->data));
 }
 
@@ -37,7 +43,7 @@ template<typename T, typename S, typename F, typename G> void initRegistry(SrKer
     size_t ret;
     T tmp;
     T* object;
-    initializer(registry);
+    initializer(registry, 16);
 
     for (;;)
     {

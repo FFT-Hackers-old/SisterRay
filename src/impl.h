@@ -20,6 +20,7 @@ typedef struct {
     SrItemInventory                   inventory;
     SrBattleInventory                 battle_inventory;
     std::map<u16, onUseCallback*>     on_use_handlers; /*Registry of function pointers for using items*/
+    std::map<u16, onUseItemData>      item_on_use_data;
 } SrContext;
 
 SISTERRAY_GLOBAL SrContext gContext;

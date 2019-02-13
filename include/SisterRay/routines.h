@@ -95,18 +95,24 @@ typedef i32(pfnsub41AB74)(i32);
 #define check_received_input            ((pfnsub41AB74)0x41AB74)
 
 typedef i32(pfnsub6F53F1)(i32);
-#define check_cancel_input            ((pfnsub6F53F1)0x6F53F1)
+#define check_cancel_input              ((pfnsub6F53F1)0x6F53F1)
 
 typedef void(pfnsub74580A)(i32);
 #define play_menu_sound                 ((pfnsub74580A)0x74580A)
 
 typedef void(pfnsub6F4DB2)(u32);
-#define update_cursor_position      ((pfnsub6F4DB2)0x6F4DB2)
+#define update_cursor_position          ((pfnsub6F4DB2)0x6F4DB2)
 
 typedef i32(pfnsub6CBA6A)(u8, u16);
-#define heal_character_at_index             ((pfnsub6CBA6A)0x6CBA6A)
+#define heal_character_at_index         ((pfnsub6CBA6A)0x6CBA6A)
 
 typedef i32(pfnsub6CBBBF)(u8, u16);
-#define restore_party_member_mp            ((pfnsub6CBBBF)0x6CBBBF)
+#define restore_party_member_mp         ((pfnsub6CBBBF)0x6CBBBF)
+
+typedef bool(pfnsub7178BF)(u32);
+#define check_member_HP_full            ((pfnsub7178BF)0x7178BF)
+
+typedef bool(pfnsub7178F1)(u32);
+#define check_member_MP_full                     ((pfnsub7178F1)0x7178F1)
 
 #endif

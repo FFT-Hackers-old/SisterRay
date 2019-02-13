@@ -2,7 +2,7 @@
 #define INVENTORY_H
 
 #include <SisterRay/types.h>
-#include <SisterRay/data_addresses.h>
+#include <SisterRay/SisterRay.h>
 
 #define INVENTORY_SIZE 1024
 

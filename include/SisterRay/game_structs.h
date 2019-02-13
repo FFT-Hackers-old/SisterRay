@@ -185,4 +185,66 @@ typedef struct {
 #define gBigAnimBlock       ((BigAnimBlock*)0x00BE1170)
 #define gActorTimerBlock    ((ActorTimerBlock*)0x009A8B26)
 
+typedef struct {
+    u16 something;
+    u16 something2;
+    u16 something3;
+} enabledCommandStruct;
+
+/*This is the structure of attack data*/
+typedef struct {
+    u8 padding[0x1C];
+} attackData;
+
+/*This contains a bit vector of flags for spells*/
+typedef struct {
+    u8 spellFlags;
+} spellFlags;
+
+#pragma pack(push, 1)
+/*Three of these are maintained for each active party member, they have size 0x440*/
+typedef struct {
+    u8 characterID;
+    u8 coverChance;
+    u8 strength;
+    u8 vitality;
+    u8 magic;
+    u8 spirit;
+    u8 speed;
+    u8 luck;
+    u16 physAttack;
+    u16 physDefense;
+    u16 magAttack;
+    u16 magDefense;
+    u16 currentHP;
+    u16 maxMP;
+    u16 currentMP;
+    u16 maxMP;
+    u32 timer;
+    u16 counterActionIndex;
+    u16 counterChance;
+    u16 unknownDiviosr;
+    u8 characterFlags;
+    u8 unknown24bitInts[24];
+    u16 attackElementsMask;
+    u16 halvedElementsMask;
+    u16 nulledElementsMask;
+    u16 absorbeElementsMask;
+    u32 attackStatusesMask;
+    u32 immuneStatusesMask;
+    enabledCommandStruct enabledCommandArray[0x10];
+    u8 unknownbytes[8];
+    attackData enabledLimitData[3];
+    spellFlags enabledMagicsData[54];
+    spellFlags enabledSummons[16];
+    spellFlags enabledEnemySkills[24];
+    u8 weaponData[11]; //Contains the first 11 bytes of data from the characters equipped weapon
+
+} activePartyMemberStruct;
+#pragma pack(pop)
+
+
+
+#define activePartyStructArray   ((activePartyMemberStruct*)0x00DBA498)
+
 #endif

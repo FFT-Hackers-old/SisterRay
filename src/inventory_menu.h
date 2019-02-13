@@ -1,11 +1,8 @@
 #ifndef INVENTORY_MENU_H
 #define INVENTORY_MENU_H
 
-#include <stdlib.h>
-#include <string.h>
-#include "impl.h"
-#include "kernel_utils.h"
-#include "inventory.h"
+#include <SisterRay/types.h>
+#include <SisterRay/SisterRay.h>
 
 SISTERRAY_API void new_inventory_menu_handler(int a1);
 void display_active_cursor_state(int a1);

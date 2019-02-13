@@ -1,5 +1,5 @@
 #include "inventory_menu.h"
-#include "usable_item_handlers.h"
+#include "impl.h"
 #include "windows.h"
 
 SISTERRAY_API void new_inventory_menu_handler(int a1)
@@ -526,7 +526,7 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
 
     /*Call the appropriate function handler */
-    auto item_was_used = gContext.on_use_handlers[item_ID]((u8)party_member_index, item_ID, inventory_index);
+    auto item_was_used = gContext.on_use_handlers[item_ID]((u16)party_member_index, item_ID, inventory_index);
     if (item_was_used) {
         handle_decrement_inventory(inventory_index, 1);
         if (gContext.inventory.data[inventory_index].item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
@@ -534,82 +534,6 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     }
 
     switch (item_ID) {
-    case 3:
-        if (!checkMPFull(partyMemberIndex_) && persistent_character_HP[544 * partyMemberIndex_])
-        {
-            play_menu_sound(263);
-            restore_party_member_mp(partyMemberIndex_, 100);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
-        }
-        else
-        {
-            play_menu_sound(3);
-        }
-        break;
-    case 4:
-        if (!checkMPFull(partyMemberIndex_) && persistent_character_HP[544 * partyMemberIndex_])
-        {
-            play_menu_sound(263);
-            restore_party_member_mp(partyMemberIndex_, 10000);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
-        }
-        else
-        {
-            play_menu_sound(3);
-        }
-        break;
-    case 5:
-        if (checkHPFull(partyMemberIndex_) && checkMPFull(partyMemberIndex_)
-            || !persistent_character_HP[544 * partyMemberIndex_])
-        {
-            play_menu_sound(3);
-        }
-        else
-        {
-            play_menu_sound(263);
-            heal_character_at_index(partyMemberIndex_, 10000);
-            restore_party_member_mp(partyMemberIndex_, 10000);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
-        }
-        break;
-    case 6:                             // Megalixir case
-        partyMemberID_1 = 0;
-        healableMemberExists = 0;
-        while (partyMemberID_1 < 3)
-        {
-            if (partyMember1[partyMemberID_1] != 255
-                && (!checkHPFull(partyMemberID_1) || !checkMPFull(partyMemberID_1)))
-            {
-                healableMemberExists = 1;
-            }
-            ++partyMemberID_1;
-        }
-        if (healableMemberExists)
-        {
-            for (i3 = 0; i3 < 3; ++i3)
-            {
-                if (persistent_character_HP[544 * i3] && partyMember1[i3] != 255)
-                {
-                    heal_character_at_index(i3, 10000);
-                    restore_party_member_mp(i3, 10000);
-                }
-            }
-            play_menu_sound(263);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
-        }
-        else
-        {
-            play_menu_sound(3);
-        }
-        break;
     case 7:                             // Phoenix Down
         if (persistent_character_HP[544 * partyMemberIndex_])
         {
@@ -666,7 +590,7 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
         v49 = 0;
         while (v55 < 3)
         {
-            if (partyMember1[v55] != 255 && (!checkHPFull(v55) || !checkMPFull(v55)))
+            if (partyMember1[v55] != 255 && (!check_member_HP_full(v55) || !check_member_MP_full(v55)))
                 v49 = 1;
             ++v55;
         }

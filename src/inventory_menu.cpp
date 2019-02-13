@@ -525,54 +525,20 @@ void handle_inventory_input(int a1) {
 void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
 
+    /*Call the appropriate function handler */
+    auto item_was_used = gContext.on_use_handlers[item_ID]((u8)party_member_index, item_ID, inventory_index);
+    if (item_was_used) {
+        handle_decrement_inventory(inventory_index, 1);
+        if (gContext.inventory.data[inventory_index].item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
+            *INVENTORY_MENU_STATE = 1;
+    }
+
     switch (item_ID) {
-    case 0:
-        if (!checkHPFull(party_member_index) && saveMapCharacterHP[544 * party_member_index])
-        {
-            play_menu_sound(263);
-            heal_character_at_index(party_member_index, 100);
-            handleDecrementInventoryQuantity(item_ID | 0x200);
-            if (getSMInventoryItemEntry(item_ID) == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
-                inventory_menu_state = 1;
-        }
-        else
-        {
-            play_menu_sound(3);
-        }
-        break;
-    case 1:
-        if (!checkHPFull(partyMemberIndex_) && saveMapCharacterHP[544 * partyMemberIndex_])
-        {
-            play_menu_sound(263);
-            heal_character_at_index(partyMemberIndex_, 500);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
-        }
-        else
-        {
-            play_menu_sound(3);
-        }
-        break;
-    case 2:
-        if (!checkHPFull(partyMemberIndex_) && saveMapCharacterHP[544 * partyMemberIndex_])
-        {
-            play_menu_sound(263);
-            heal_character_at_index(partyMemberIndex_, 10000);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
-        }
-        else
-        {
-            play_menu_sound(3);
-        }
-        break;
     case 3:
-        if (!checkMPFull(partyMemberIndex_) && saveMapCharacterHP[544 * partyMemberIndex_])
+        if (!checkMPFull(partyMemberIndex_) && persistent_character_HP[544 * partyMemberIndex_])
         {
             play_menu_sound(263);
-            healCharMPIndex(partyMemberIndex_, 100);
+            restore_party_member_mp(partyMemberIndex_, 100);
             handleDecrementInventoryQuantity(ItemID | 0x200);
             if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
                 inventory_menu_state = 1;
@@ -583,10 +549,10 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
         }
         break;
     case 4:
-        if (!checkMPFull(partyMemberIndex_) && saveMapCharacterHP[544 * partyMemberIndex_])
+        if (!checkMPFull(partyMemberIndex_) && persistent_character_HP[544 * partyMemberIndex_])
         {
             play_menu_sound(263);
-            healCharMPIndex(partyMemberIndex_, 10000);
+            restore_party_member_mp(partyMemberIndex_, 10000);
             handleDecrementInventoryQuantity(ItemID | 0x200);
             if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
                 inventory_menu_state = 1;
@@ -598,7 +564,7 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
         break;
     case 5:
         if (checkHPFull(partyMemberIndex_) && checkMPFull(partyMemberIndex_)
-            || !saveMapCharacterHP[544 * partyMemberIndex_])
+            || !persistent_character_HP[544 * partyMemberIndex_])
         {
             play_menu_sound(3);
         }
@@ -606,7 +572,7 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
         {
             play_menu_sound(263);
             heal_character_at_index(partyMemberIndex_, 10000);
-            healCharMPIndex(partyMemberIndex_, 10000);
+            restore_party_member_mp(partyMemberIndex_, 10000);
             handleDecrementInventoryQuantity(ItemID | 0x200);
             if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
                 inventory_menu_state = 1;
@@ -628,10 +594,10 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
         {
             for (i3 = 0; i3 < 3; ++i3)
             {
-                if (saveMapCharacterHP[544 * i3] && partyMember1[i3] != 255)
+                if (persistent_character_HP[544 * i3] && partyMember1[i3] != 255)
                 {
                     heal_character_at_index(i3, 10000);
-                    healCharMPIndex(i3, 10000);
+                    restore_party_member_mp(i3, 10000);
                 }
             }
             play_menu_sound(263);
@@ -645,7 +611,7 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
         }
         break;
     case 7:                             // Phoenix Down
-        if (saveMapCharacterHP[544 * partyMemberIndex_])
+        if (persistent_character_HP[544 * partyMemberIndex_])
         {
             play_menu_sound(3);
         }
@@ -708,10 +674,10 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
         {
             for (i4 = 0; i4 < 3; ++i4)
             {
-                if (saveMapCharacterHP[544 * i4] && partyMember1[i4] != 255)
+                if (persistent_character_HP[544 * i4] && partyMember1[i4] != 255)
                 {
                     heal_character_at_index(i4, 10000);
-                    healCharMPIndex(i4, 10000);
+                    restore_party_member_mp(i4, 10000);
                 }
             }
             play_menu_sound(263);

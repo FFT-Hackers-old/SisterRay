@@ -30,6 +30,8 @@
 #define word_DD17FA              (u32*)0xDD17FA
 #define word_DD17FC              (u32*)0xDD17FC
 
+#define persistent_character_HP       (u16*)0xDBA4A8
+
 #define CURSOR_STRUCT_VISIBLE_BASE_MEMBER     (u32*)0xDD1A2C
 
 #define CURRENT_PARTY_MEMBER_ARRAY     (u32*)0xDC0230 /*Length 3, contains party member ID, from the savemap*/

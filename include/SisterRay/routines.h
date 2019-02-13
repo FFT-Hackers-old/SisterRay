@@ -106,4 +106,7 @@ typedef void(pfnsub6F4DB2)(u32);
 typedef i32(pfnsub6CBA6A)(u8, u16);
 #define heal_character_at_index             ((pfnsub6CBA6A)0x6CBA6A)
 
+typedef i32(pfnsub6CBBBF)(u8, u16);
+#define restore_party_member_mp            ((pfnsub6CBBBF)0x6CBBBF)
+
 #endif

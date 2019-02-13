@@ -1,15 +1,30 @@
 #include "usable_item_handlers.h"
 
-void heal_party_member(u8 party_member_index, u32 heal_amount, u16 inventory_index) {
-    if (!checkHPFull(party_member_index) && saveMapCharacterHP[544 * party_member_index])
+/*On use callback for performing HP healing on the menu */
+bool heal_party_member(u16 party_member_index, u16 item_id, u16 inventory_index) {
+    if (!checkHPFull(party_member_index) && persistent_character_HP[544 * party_member_index]) {
         play_menu_sound(263);
-    heal_character_at_index(party_member_index, heal_amount);
-    handle_decrement_inventory(inventory_index, 1);
-    if (gContext.inventory.data[inventory_index].item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
-        *INVENTORY_MENU_STATE = 1;
-}
-    else {
-    play_menu_sound(3);
+        u16 heal_amount = gContext.item_on_use_data[item_id].heal_amount;
+        heal_character_at_index(party_member_index, heal_amount);
+        return true;
     }
-    break;
+    else {
+        play_menu_sound(3);
+        return false;
+    }
 };
+
+/*On use callback for performing MP healing on the menu*/
+bool restore_party_member_mp(u16 party_member_index, u16 item_id, u16 inventory_index) {
+    if (!checkMPFull(party_member_index) && persistent_character_HP[544 * party_member_index]) {
+        play_menu_sound(263);
+        u16 heal_amount = gContext.item_on_use_data[item_id].heal_amount;
+        restore_party_member_mp(party_member_index, heal amount);
+        return true;
+    }
+    else
+    {
+        play_menu_sound(3);
+        return false;
+    }
+}

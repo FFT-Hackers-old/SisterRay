@@ -9,14 +9,17 @@
 #include "armor.h"
 #include "accessory.h"
 #include "inventory.h"
+#include "usable_item_handlers.h"
+#include <map>
 
 typedef struct {
-    FILE*               logFile;
-    SrArmorRegistry     armors;
-    SrAccessoryRegistry accessories;
-    SrMateriaRegistry   materias;
-    SrItemInventory       inventory;
-    SrBattleInventory     battle_inventory;
+    FILE*                             logFile;
+    SrArmorRegistry                   armors;
+    SrAccessoryRegistry               accessories;
+    SrMateriaRegistry                 materias;
+    SrItemInventory                   inventory;
+    SrBattleInventory                 battle_inventory;
+    std::map<u16, onUseCallback*>     on_use_handlers; /*Registry of function pointers for using items*/
 } SrContext;
 
 SISTERRAY_GLOBAL SrContext gContext;

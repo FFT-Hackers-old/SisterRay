@@ -5,8 +5,10 @@
 #include <string.h>
 #include "impl.h"
 #include "windows.h"
-#include "inventory.h"
 
-void heal_party_member(u8 party_member_index, u32 heal_amount, u16 inventory_index);
+typedef bool(onUseCallback)(u16, u16, u16);
+
+
+bool heal_party_member(u16 party_member_index, u16 item_index, u16 inventory_index);
 
 #endif

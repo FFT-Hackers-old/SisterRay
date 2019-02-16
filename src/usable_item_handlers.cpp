@@ -30,7 +30,7 @@ bool heal_party_member_mp(u16 party_member_index, u16 item_id, u16 inventory_ind
     }
 }
 
-/*might make this a more generic "heal" method and just data drive it*/
+/*might the above methods a more generic "heal" method and just data drive it*/
 bool heal_party_member_hp_and_mp(u16 party_member_index, u16 item_id, u16 inventory_index) {
     if ((check_member_MP_full(party_member_index) && check_member_HP_full(party_member_index)) || activePartyStructArray[party_member_index].currentHP) {
         play_menu_sound(263);

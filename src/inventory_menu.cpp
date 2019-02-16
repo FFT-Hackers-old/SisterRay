@@ -543,9 +543,6 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
         {
             play_menu_sound(263);
             heal_character_at_index(partyMemberIndex_, word_DBA4AA[544 * partyMemberIndex_] / 4);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
         }
         break;
     case 13:
@@ -561,9 +558,6 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
                 v20 = characterStatusFlags[132 * partyMemberID] | 0x20;
             characterStatusFlags[132 * partyMemberID] = v20;
             play_menu_sound(263);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
         }
         break;
     case 14:
@@ -581,9 +575,6 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
             characterStatusFlags[132 * partyMemberID] |= 0x10u;
         }
         play_menu_sound(263);
-        handleDecrementInventoryQuantity(ItemID | 0x200);
-        if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-            inventory_menu_state = 1;
         break;
     case 70:
         v55 = 0;
@@ -605,9 +596,6 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
                 }
             }
             play_menu_sound(263);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
         }
         else
         {
@@ -675,13 +663,9 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
             play_menu_sound(263);
             addEquipmentStatBoosts(partyMemberIndex_);
             sub_5CB2CC(partyMemberIndex_);
-            handleDecrementInventoryQuantity(ItemID | 0x200);
-            if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                inventory_menu_state = 1;
-            break;
         }
         break;
-    case 87:
+    case 87: //Limit Break teaching items
     case 88:
     case 89:
     case 90:
@@ -696,9 +680,6 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
                 v21 = word_DBFDAE[66 * byte_921C19[ItemID]];
                 HIBYTE(v21) |= 2u;
                 word_DBFDAE[66 * byte_921C19[ItemID]] = v21;
-                handleDecrementInventoryQuantity(ItemID | 0x200);
-                if (getSMInventoryItemEntry(ItemID) == 0xFFFF)
-                    inventory_menu_state = 1;
                 sub_717923(&unk_9211F0 + 102 * (ItemID - 87));
                 sub_6C497C(&byte_DD18C8, 7);
             }

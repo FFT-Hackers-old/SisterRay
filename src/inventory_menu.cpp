@@ -4,116 +4,8 @@
 
 SISTERRAY_API void new_inventory_menu_handler(int a1)
 {
-    if (dword_DC130C == 1)
+    if (dword_DC130C == 1) // Unclear if this is actually ever set
     {
-        InventoryMenuCursorHandler(int a1);
-        NopInt32();
-        if (InventoryCursorPosition_[0] != 2)
-        {
-            for (j = 0; j < 3; ++j)
-            {
-                if (partyMember1[j] != 255)
-                {
-                    sub_6C66C8(67, 60 * j + 63, j, 1036831949);
-                    sub_6ECECE(19, 60 * j + 58, j, 1036831949);
-                }
-            }
-            initialize_some_struct(&v61, 0, 48, 150, 192);
-            sub_6EDE1D(&v61, 1036831949);
-        }
-        for (k = 0; k < 3; ++k)
-            sub_6FAB2F(47 * k + 29, 9, &byte_921168[12 * k], 7u, 1036966167);
-        sub_6FD9A3(0, 51, 320, 186);
-        if (InventoryCursorPosition_[0] == 2)
-        {
-            word_DD17F0 = 10;
-            word_DD17F2 = 32;
-            word_DD17F4 = dword_DD1AD4;
-            word_DD17F6 = 309;
-            word_DD17F8 = 51;
-            word_DD17FA = 9;
-            word_DD17FC = 186;
-            sub_6FC38C(&word_DD17F0, 0.1);
-            NopInt32();
-            for (l = 0; l < 12; ++l)
-            {
-                startOfVisibleItemWindowe = 2 * l + 2 * dword_DD1AD4;
-                for (m = 0; m < 2; ++m)
-                {
-                    if (byte_DD19D0[m + startOfVisibleItemWindowe] != 255)
-                    {
-                        v62 = load_kernel_object_text(0xEu, byte_DD19D0[m + startOfVisibleItemWindowe], 8);
-                        sub_6FAB2F(146 * m + 27, 18 * l + 5 * dword_DD1AE4 + 62, v62, 7u, 1036966167);
-                    }
-                }
-                v15 = l + 1;
-            }
-        }
-        else
-        {
-            if (inventoryMenuState == 5)
-            {
-                if (dword_DD1B6C)
-                {
-                    if (a1 & 2)
-                    {
-                        v46 = 19 * dword_DD1A14 - 19 * dword_DD1B44 + 5 * dword_DD1B54 - 5;
-                        if (v46 > -19 && v46 < 361)
-                            sub_6F0D7D(145, v46 + 57, 0.0);
-                    }
-                }
-                sub_6F0D7D(149, 19 * dword_DD1B34 + 57, 0.0099999998);
-                v60 = 5;
-            }
-            else
-            {
-                v60 = 1;
-            }
-            word_DD17F0 = 10;
-            word_DD17F2 = 320;
-            word_DD17F4 = menuStateArray_[14 * v60];
-            word_DD17F6 = 309;
-            word_DD17F8 = 51;
-            word_DD17FA = 9;
-            word_DD17FC = 186;
-            sub_6FC38C(&word_DD17F0, 0.1);
-            itemsInDisplaya = (dword_DD1A48[14 * v60] != 0) + 10;
-            NopInt32();
-            for (n = 0; ; ++n)
-            {
-                v15 = n;
-                if (n >= itemsInDisplaya)
-                    break;
-                startOfVisibleItemWindowc = n + menuStateArray_[14 * v60];
-                if (saveMapInventory[startOfVisibleItemWindowc] != 0xFFFF)
-                {
-                    v16 = saveMapInventory[startOfVisibleItemWindowc] & 0x1FF;
-                    v17 = -((sub_7150A0(v16) & 4) != 0);
-                    LOBYTE(v17) = v17 & 0xF9;
-                    v63 = v17 + 7;
-                    v62 = load_kernel_object_text(4u, v16, 8);
-                    sub_6FAB2F(186, 19 * n + 5 * dword_DD1A3C[14 * v60] + 55, v62, v63, 1036966167);
-                }
-            }
-            for (ii = 0; ii < itemsInDisplaya; ++ii)
-            {
-                startOfVisibleItemWindowd = ii + menuStateArray_[14 * v60];
-                v15 = saveMapInventory[startOfVisibleItemWindowd];
-                if (v15 != 0xFFFF)
-                {
-                    v18 = saveMapInventory[startOfVisibleItemWindowd] & 0x1FF;
-                    v19 = saveMapInventory[startOfVisibleItemWindowd] >> 9;
-                    v63 = (sub_7150A0(v18) & 4) != 0 ? 0 : 7;
-                    sub_7177A8(171, 19 * ii + 5 * dword_DD1A3C[14 * v60] + 53, v18, 0, 0.101);
-                    sub_6FAC38(274, 19 * ii + 5 * dword_DD1A3C[14 * v60] + 57, 0xD5u, v63, 0.101);
-                    sub_6FCF5B(275, 19 * ii + 5 * dword_DD1A3C[14 * v60] + 56, v19, 3, v63, 1036966167);
-                }
-            }
-        }
-        sub_6FDAEB(v15);
-        sub_6EDE1D(dword_DD18C0, 1038308344);
-        sub_6EDE1D(dword_DD18C0 + 8, 1045220557);
-        sub_6EDE1D(dword_DD18C0 + 16, 1050253722);
     }
     else
     {
@@ -129,41 +21,41 @@ SISTERRAY_API void new_inventory_menu_handler(int a1)
 void display_active_cursor_state(int a1) {
     u32 inventory_menu_state = *(INVENTORY_MENU_STATE);
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
-    u32 dword_DD1B68 = *(UNKNOWN_INVENTORY_MENU_GLOBAL_DD1B68);
+    u32 use_on_characters_enabled = *(UNKNOWN_INVENTORY_MENU_GLOBAL_DD1B68);
     u32 active_window_base_row = *(VISIBLE_ITEM_START);
     u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
-    int* inventory_cusrsor_position = (INVENTORY_CURSOR_POSITION);
+    int* inventory_cursor_position = (INVENTORY_CURSOR_POSITION);
     u8* MenuTexts[132] = MENU_TEXTS;
     void** fetched_description;
 
-    u16 itemID;
+    u16 item_ID;
 
     sub_6C98A6(dword_DC1210);
     if (inventory_menu_state == 2)
     {
-        if (!dword_DD1B68)
+        if (!use_on_characters_enabled)
         {
-            itemID = gContext.inventory.data[active_window_base_row + relative_item_index].item_id;;
-            if (itemID != 6 && itemID != 70)
+            item_ID = gContext.inventory.data[active_window_base_row + relative_item_index].item_id;;
+            if (item_ID != 6 && item_ID != 70)
                 sub_6EB3B8(0, 120 * party_member_index + 161, 0.0);
             else
                 sub_6EB3B8(0, 120 * (a1 % 3) + 161, 0.0);
         }
         if (a1 & 2)
             sub_6EB3B8(298, 37 * relative_item_index + 109, 0.1);
-        if (dword_DD1B68)
-            --dword_DD1B68;
+        if (use_on_characters_enabled)
+            --use_on_characters_enabled;
     }
     NopInt32();
     switch (inventory_menu_state)
     {
     case 0:                                   // Nothing Selected, Default State
-        sub_6EB3B8(93 * inventory_cusrsor_position[0] + 13, 26, 0.1);
+        sub_6EB3B8(93 * inventory_cursor_position[0] + 13, 26, 0.1);
         break;
     case 1:                                   // Use Selected - Selecting Item
         if (a1 & 2)
-            sub_6EB3B8(93 * inventory_cusrsor_position[0] + 13, 26, 0.1);
+            sub_6EB3B8(93 * inventory_cursor_position[0] + 13, 26, 0.1);
         sub_6EB3B8(298, 37 * relative_item_index + 109, 0.1);
         if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id != 0xFFFF)
         {
@@ -173,7 +65,7 @@ void display_active_cursor_state(int a1) {
         break;
     case 2:                                   // Use Selected - Targeting Party
         if (a1 & 2)
-            sub_6EB3B8(93 * inventory_cusrsor_position[0] + 13, 26, 0.0);
+            sub_6EB3B8(93 * inventory_cursor_position[0] + 13, 26, 0.0);
         if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id != 0xFFFF)
         {
             fetched_description = load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
@@ -182,7 +74,7 @@ void display_active_cursor_state(int a1) {
         break;
     case 3:                                   // Browsing Key Items
         if (a1 & 2)
-            sub_6EB3B8(93 * inventory_cusrsor_position[0] + 13, 26, 0.001);
+            sub_6EB3B8(93 * inventory_cursor_position[0] + 13, 26, 0.001);
         sub_6EB3B8(293 * (*KEY_ITEMS_COL_INDEX) + 5, 36 * (*KEY_ITEMS_ROW_INDEX) + 129, 0.001);
         if (KEY_ITEMS_INVENTORY_PTR[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)] != 0xFFFF) //If there is a key item at cursor matrix position
         {
@@ -193,7 +85,7 @@ void display_active_cursor_state(int a1) {
         break;
     case 4:                                   //Selecting an Arrange Method
         if (a1 & 2)
-            sub_6EB3B8(93 * inventory_cusrsor_position[0] + 13, 26, 0.001);
+            sub_6EB3B8(93 * inventory_cursor_position[0] + 13, 26, 0.001);
         sub_6EB3B8(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001);
         for (int j = 0; j < 8; ++j)            // Loop over arrange types
             fetched_description = &(MenuTexts[12 * (j + 3)]) //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
@@ -202,8 +94,8 @@ void display_active_cursor_state(int a1) {
         break;
     case 5:                                   // Inside Custom Sort
         if (a1 & 2)
-            sub_6EB3B8(93 * inventory_cusrsor_position[0] + 13, 26, 0.0);
-        if (saveMapInventory[dword_DD1B44 + dword_DD1B34] != 0xFFFF)
+            sub_6EB3B8(93 * inventory_cursor_position[0] + 13, 26, 0.0);
+        if (gContext.inventory.data[dword_DD1B44 + dword_DD1B34] != 0xFFFF)
         {
             fetched_description = load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
@@ -239,7 +131,7 @@ void display_inventory_views(int a1) {
     {
         if (inventory_menu_state == 5)            // if currently in custom sort
         {
-            if (dword_DD1B6C)
+            if (ITEM_TO_SWAP_SELECTED)
             {
                 if (a1 & 2)
                 {
@@ -324,10 +216,8 @@ void render_inventory_main_view(int custom_arrange_active) {
 void render_character_portraits() {
     u16* unk_local_struct[4];
 
-    for (int current_party_member = 0; current_party_member < 3; ++current_party_member) //loop over and render character portraits, probably
-    {
-        if (CURRENT_PARTY_MEMBER_ARRAY[current_party_member] != 0xFF) //if there is a party member in that slot
-        {
+    for (int current_party_member = 0; current_party_member < 3; ++current_party_member) { //loop over and render character portraits, probably
+        if (CURRENT_PARTY_MEMBER_ARRAY[current_party_member] != 0xFF) {         //if there is a party member in that slot
             render_HP_bar_and_status(133, 120 * current_party_member + 126, current_party_member, 1036831949); //possibly display picture?
             sub_6E6C5B(37, 120 * current_party_member + 116, current_party_member, 1036831949);
         }
@@ -361,11 +251,13 @@ void render_key_items_view() {
 }
 
 
-/*WIP here, need a more generic way to introduce "usable" items through sa function registry or something similar*/
+/*WIP here, need a more generic way to introduce "usable" items through a function registry or something similar*/
 void handle_inventory_input(int a1) {
     i32 inventory_menu_state = *(INVENTORY_MENU_STATE);
     i32 inventory_cursor_position = (INVENTORY_CURSOR_POSITION);
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
+    u32 active_window_base_row = *(VISIBLE_ITEM_START);
+    u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
     u16 item_ID;
 
     update_cursor_position(&inventory_cursor_position[14 * inventory_menu_state]);
@@ -376,11 +268,11 @@ void handle_inventory_input(int a1) {
             play_menu_sound(1);
             if (inventory_cursor_position[0]) {
                 if (inventory_cursor_position[0] == 1) {
-                    CopySomething(&unk_DD1AF8, 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0);
+                    set_unknown_struct_values(CURSOR_STRUCT_PTR, 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0);
                     inventory_menu_state = 4;         // Arrange Menu
                 }
                 else if (inventory_cursor_position[0] == 2) {
-                    CopySomething(&dword_DD1AC0, 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1);
+                    set_unknown_struct_values(KEY_ITEMS_COL_INDEX, 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1);
                     inventory_menu_state = 3;         // Key Items Menu
                 }
             }
@@ -390,12 +282,12 @@ void handle_inventory_input(int a1) {
         }
         else if (check_cancel_input(64)) {
             play_menu_sound(4);
-            sub_6C9812(5, 0);
-            sub_6C6AEE(0);
+            set_some_transition_data(5, 0); // These functions handle transitioning to different parts of the menu
+            set_more_transition_data(0);
         }
         break;
     case 1:
-        if (!dword_DD1A80) {
+        if (!(*dword_DD1A80)) {
             if (check_received_input(32)) {
                 if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id == 0xFFFF) {
                     play_menu_sound(3);
@@ -407,12 +299,12 @@ void handle_inventory_input(int a1) {
                     }
                     else if (item_ID == 98) {        //Save Crytal case
                         play_menu_sound(263);
-                        byte_DC0C3C |= 1u;
-                        sub_6C9812(5, 0);
-                        sub_6C6AEE(0);
-                        sub_6CA32D();
+                        *byte_DC0C3C |= 1u;  //Save Crystal used?
+                        set_some_transition_data(5, 0);
+                        set_more_transition_data(0);
+                        save_crystal_handler();
                     }
-                    else if (item_ID == 103) {       // GuideBook
+                    /*else if (item_ID == 103) {       //Earth Harp, disabled in the main game
                         play_menu_sound(263);
                         byte_DC00A5 = 1;
                         byte_DC00A4 = 6;
@@ -424,10 +316,10 @@ void handle_inventory_input(int a1) {
                         byte_DC0136 = 1;
                         byte_DC0137 = -1;
                         dword_DC0164 = 0xFFFFFF;
-                    }
-                    else {
+                    }*/
+                    else { //If the item is usable and not save crystal or guidebook, jump to the case 2 handler
                         play_menu_sound(1);
-                        dword_DD1B68 = 0;
+                        *use_on_characters_enabled = 0; //Setting this to 0 enables items to be used on characters in menu state 2
                         inventory_menu_state = 2;
                     }
                 }
@@ -439,7 +331,7 @@ void handle_inventory_input(int a1) {
         }
         break;
     case 2:
-        if (dword_DD1B68)
+        if (*use_on_characters_enabled)
             return;
         if (check_received_input(32)) {  //if "ok" input was received
             u16 inventory_index = active_window_base_row + relative_item_index;
@@ -468,18 +360,18 @@ void handle_inventory_input(int a1) {
         if (check_received_input(32))                // If OK received during arrange menu
         {
             play_menu_sound(1);
-            if (InventoryArrangeType)
+            if (*INVENTORY_ARRANGE_TYPE)
             {
-                arrangeInventory(InventoryArrangeType);
+                arrangeInventory(*INVENTORY_ARRANGE_TYPE);
                 inventory_menu_state = 0;
             }
             else
             {
-                CopySomething(&dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, 320, 0, 0, 0, 0, 0, 1);// Custom Sort
-                dword_DD1B6C = 0;
+                set_unknown_struct_values(&dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, 320, 0, 0, 0, 0, 0, 1);// Custom Sort
+                ITEM_TO_SWAP_SELECTED = 0; //Clear the globals that are used by the custom sort routine for swapping items
                 dword_DD1A10 = 0;
                 dword_DD1A14 = 0;
-                inventory_menu_state = 5;
+                inventory_menu_state = 5; //Move to custom sort state
             }
         }
         else if (check_received_input(64))           // Arrange Cancel Handler
@@ -491,15 +383,16 @@ void handle_inventory_input(int a1) {
     case 5:                                   // Custom Arrange Handler
         if (check_received_input(32))
         {
-            if (dword_DD1B6C)
+            if (*ITEM_TO_SWAP_SELECTED) // If this is already set when input is received, then switch the items. It's really a bool value
             {
-                if (dword_DD1B6C == 1)
+                if (*ITEM_TO_SWAP_SELECTED == 1)
                 {
                     play_menu_sound(1);
-                    v22 = saveMapInventory[dword_DD1A14];
-                    saveMapInventory[dword_DD1A14] = saveMapInventory[dword_DD1B44 + dword_DD1B34];
-                    saveMapInventory[dword_DD1B44 + dword_DD1B34] = v22;
-                    dword_DD1B6C = 0;
+                    /*This code swaps two items in the inventory*/
+                    v22 = gContext.inventory.data[dword_DD1A14]; //copy cursor start
+                    gContext.inventory.data[dword_DD1A14] = gContext.inventory.data[dword_DD1B44 + dword_DD1B34]; 
+                    gContext.inventory.data[dword_DD1B44 + dword_DD1B34] = v22;
+                    *ITEM_TO_SWAP_SELECTED = 0;
                 }
             }
             else
@@ -507,7 +400,7 @@ void handle_inventory_input(int a1) {
                 play_menu_sound(1);
                 dword_DD1A10 = dword_DD1B30;
                 dword_DD1A14 = dword_DD1B44 + dword_DD1B34;
-                ++dword_DD1B6C;
+                *ITEM_TO_SWAP_SELECTED = 1;
             }
         }
         else if (check_received_input(64))

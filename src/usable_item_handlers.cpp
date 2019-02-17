@@ -47,6 +47,7 @@ bool heal_party_member_hp_and_mp(u16 party_member_index, u16 item_id, u16 invent
     }
 };
 
+/*Can probably be merged with the above handlers and have the 'target-all' flag set */
 bool megalixir_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
     u16 current_party_member = 0;
     bool healable_exists = false;

@@ -20,6 +20,7 @@
 #define KEY_ITEMS_VIEW_BASE_ROW  (u32*)0xDD1AD4 //Moves as the cursor scrolls
 #define KEY_ITEMS_ROW_INDEX      (u32*)0xDD1AC4
 #define KEY_ITEMS_COL_INDEX      (u32*)0xDD1AC0 //Always 0 or 1
+#define dword_DD1A80             (u32*)0xDD1A80 //If 0, can't use items... maybe inventory empty?
 #define MENU_TEXTS               (u8*)0x921168
 
 #define GLOBAL_MENU_VIEW_SIZE    (u32*)0xDD17F0
@@ -29,11 +30,16 @@
 #define word_DD17F8              (u32*)0xDD17F8
 #define word_DD17FA              (u32*)0xDD17FA
 #define word_DD17FC              (u32*)0xDD17FC
+#define use_on_characters_enabled (u32*)0xDD1B68
+#define ITEM_TO_SWAP_SELECTED             (u32*)0xDD1B6C
 
+
+#define CURSOR_STRUCT_PTR        (u32*)0xDD1AF8
 #define CURSOR_STRUCT_VISIBLE_BASE_MEMBER     (u32*)0xDD1A2C
 
 #define CURRENT_PARTY_MEMBER_ARRAY     (u32*)0xDC0230 /*Length 3, contains party member ID, from the savemap*/
 
 #define dword_DD1AE4             (u32*)0xDD1AE4 // Not sure what this is, but it is only called in key-item view contexts
 #define dword_DD1A3C             (u32*)0xDD1A3C
+#define byte_DC0C3C              (u8*)0xDC0C3C
 #endif

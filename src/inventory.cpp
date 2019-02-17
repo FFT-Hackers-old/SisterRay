@@ -30,3 +30,7 @@ void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity) {
         gContext.inventory.data[inventory_index].quantity = 0;
     }
 };
+
+SISTERRAY_API i16 sort_inventory(i32 sort_type) {
+
+}

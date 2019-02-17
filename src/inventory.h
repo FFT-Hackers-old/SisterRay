@@ -41,5 +41,6 @@ SISTERRAY_API void InitBattleInventory();
 
 /*utility for decrementing the quantity of an item at a particular inventory index*/
 void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity);
+SISTERRAY_API i16 sort_inventory(i32 sort_type);
 
 #endif

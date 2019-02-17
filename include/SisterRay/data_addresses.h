@@ -8,13 +8,17 @@
 #define SAVEMAP_INVENTORY_PTR = (void*)0x00DC0234
 #define BATTLE_INVENTORY_PTR = (void*)0x009AC354
 
-#define INVENTORY_MENU_STATE                 (u32*)0x00DD19C8
-#define INVENTORY_CURRENT_PARTY_INDEX        (u32*)0x00DD1A8C
-#define UNKNOWN_INVENTORY_MENU_GLOBAL_DD1B68 (u32*)0x00DD1B68
-#define VISIBLE_ITEM_START                   (u32*)0x00DD1A64
-#define RELATIVE_ITEM_INDEX                  (u32*)0x00DD1A54
-#define INVENTORY_CURSOR_POSITION            (u32*)0x00DD1A18
-#define INVENTORY_ARRANGE_TYPE               (u32*)0x00DD1AFC
+#define INVENTORY_MENU_STATE                 (u32*)0xDD19C8
+#define INVENTORY_CURRENT_PARTY_INDEX        (u32*)0xDD1A8C
+#define UNKNOWN_INVENTORY_MENU_GLOBAL_DD1B68 (u32*)0xDD1B68
+#define VISIBLE_ITEM_START                   (u32*)0xDD1A64
+#define RELATIVE_ITEM_INDEX                  (u32*)0xDD1A54
+#define CUSTOM_SORT_VIEW_BASE                (u32*)0xDD1B44
+#define CUSTOM_SORT_RELATIVE_INDEX           (u32*)0xDD1B34
+#define UNKNOWN_CUSTOM_SORT_GLOBAL           (u32*)0xDD1A10
+#define CUSTOM_SORT_TEMP_INDEX               (u32*)0xDD1A14
+#define INVENTORY_CURSOR_POSITION            (u32*)0xDD1A18
+#define INVENTORY_ARRANGE_TYPE               (u32*)0xDD1AFC
 
 #define KEY_ITEMS_INVENTORY_PTR  (u8*)0xDD19D0
 #define KEY_ITEMS_VIEW_BASE_ROW  (u32*)0xDD1AD4 //Moves as the cursor scrolls

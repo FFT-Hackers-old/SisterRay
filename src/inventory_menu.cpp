@@ -95,7 +95,7 @@ void display_active_cursor_state(int a1) {
     case 5:                                   // Inside Custom Sort
         if (a1 & 2)
             sub_6EB3B8(93 * inventory_cursor_position[0] + 13, 26, 0.0);
-        if (gContext.inventory.data[dword_DD1B44 + dword_DD1B34] != 0xFFFF)
+        if (gContext.inventory.data[CUSTOM_SORT_VIEW_BASE + CUSTOM_SORT_RELATIVE_INDEX] != 0xFFFF)
         {
             fetched_description = load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
@@ -135,12 +135,12 @@ void display_inventory_views(int a1) {
             {
                 if (a1 & 2)
                 {
-                    v45 = 37 * dword_DD1A14 - 37 * dword_DD1B44 + 9 * dword_DD1B54 - 9;
+                    v45 = 37 * CUSTOM_SORT_TEMP_INDEX - 37 * CUSTOM_SORT_VIEW_BASE + 9 * dword_DD1B54 - 9;
                     if (v45 > -37 && v45 < 1369)
                         sub_6EB3B8(291, v45 + 113, 0.0);
                 }
             }
-            sub_6EB3B8(298, 37 * dword_DD1B34 + 113, 0.0099999998);
+            sub_6EB3B8(298, 37 * CUSTOM_SORT_RELATIVE_INDEX + 113, 0.0099999998);
             menu_state_local = 5;                 // Set the local to 5 if we're in custom sort
         }
         else
@@ -362,15 +362,15 @@ void handle_inventory_input(int a1) {
             play_menu_sound(1);
             if (*INVENTORY_ARRANGE_TYPE)
             {
-                arrangeInventory(*INVENTORY_ARRANGE_TYPE);
+                sort_inventory(*INVENTORY_ARRANGE_TYPE); //Arranging the inventory, this method will have to be rewritten
                 inventory_menu_state = 0;
             }
             else
             {
                 set_unknown_struct_values(&dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, 320, 0, 0, 0, 0, 0, 1);// Custom Sort
-                ITEM_TO_SWAP_SELECTED = 0; //Clear the globals that are used by the custom sort routine for swapping items
-                dword_DD1A10 = 0;
-                dword_DD1A14 = 0;
+                *ITEM_TO_SWAP_SELECTED = 0; //Clear the globals that are used by the custom sort routine for swapping items
+                *UNKNOWN_CUSTOM_SORT_GLOBAL = 0;
+                *CUSTOM_SORT_TEMP_INDEX = 0;
                 inventory_menu_state = 5; //Move to custom sort state
             }
         }
@@ -389,17 +389,17 @@ void handle_inventory_input(int a1) {
                 {
                     play_menu_sound(1);
                     /*This code swaps two items in the inventory*/
-                    v22 = gContext.inventory.data[dword_DD1A14]; //copy cursor start
-                    gContext.inventory.data[dword_DD1A14] = gContext.inventory.data[dword_DD1B44 + dword_DD1B34]; 
-                    gContext.inventory.data[dword_DD1B44 + dword_DD1B34] = v22;
+                    v22 = gContext.inventory.data[*CUSTOM_SORT_TEMP_INDEX]; //copy cursor start
+                    gContext.inventory.data[*CUSTOM_SORT_TEMP_INDEX] = gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX]; 
+                    gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX] = v22;
                     *ITEM_TO_SWAP_SELECTED = 0;
                 }
             }
             else
             {
                 play_menu_sound(1);
-                dword_DD1A10 = dword_DD1B30;
-                dword_DD1A14 = dword_DD1B44 + dword_DD1B34;
+                *UNKNOWN_CUSTOM_SORT_GLOBAL = dword_DD1B30;
+                *CUSTOM_SORT_TEMP_INDEX = *CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX; //custom sort base row and relative offsets copied when you select an item to swap
                 *ITEM_TO_SWAP_SELECTED = 1;
             }
         }
@@ -426,7 +426,7 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
             *INVENTORY_MENU_STATE = 1;
     }
 
-    switch (item_ID) {
+    /* switch (item_ID) {
     case 7:                             // Phoenix Down
         if (persistent_character_HP[544 * partyMemberIndex_])
         {
@@ -599,6 +599,6 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
         }
         break;
     default:
-        return;
+        return;*/
     }
 }

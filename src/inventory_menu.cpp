@@ -268,11 +268,11 @@ void handle_inventory_input(int a1) {
             play_menu_sound(1);
             if (inventory_cursor_position[0]) {
                 if (inventory_cursor_position[0] == 1) {
-                    set_unknown_struct_values(CURSOR_STRUCT_PTR, 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0);
+                    set_cursor_data_values(CURSOR_STRUCT_PTR, 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0); //Sets cursor data for the arrange menu
                     inventory_menu_state = 4;         // Arrange Menu
                 }
                 else if (inventory_cursor_position[0] == 2) {
-                    set_unknown_struct_values(KEY_ITEMS_COL_INDEX, 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1);
+                    set_cursor_data_values(KEY_ITEMS_COL_INDEX, 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1); //sets cursor data for the key items menu
                     inventory_menu_state = 3;         // Key Items Menu
                 }
             }
@@ -367,7 +367,7 @@ void handle_inventory_input(int a1) {
             }
             else
             {
-                set_unknown_struct_values(&dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, 320, 0, 0, 0, 0, 0, 1);// Custom Sort
+                set_cursor_data_values(&dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, 320, 0, 0, 0, 0, 0, 1);// Custom Sort Cursor Data Copy?
                 *ITEM_TO_SWAP_SELECTED = 0; //Clear the globals that are used by the custom sort routine for swapping items
                 *UNKNOWN_CUSTOM_SORT_GLOBAL = 0;
                 *CUSTOM_SORT_TEMP_INDEX = 0;
@@ -389,7 +389,7 @@ void handle_inventory_input(int a1) {
                 {
                     play_menu_sound(1);
                     /*This code swaps two items in the inventory*/
-                    v22 = gContext.inventory.data[*CUSTOM_SORT_TEMP_INDEX]; //copy cursor start
+                    i32 v22 = gContext.inventory.data[*CUSTOM_SORT_TEMP_INDEX]; //copy cursor start
                     gContext.inventory.data[*CUSTOM_SORT_TEMP_INDEX] = gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX]; 
                     gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX] = v22;
                     *ITEM_TO_SWAP_SELECTED = 0;
@@ -398,7 +398,7 @@ void handle_inventory_input(int a1) {
             else
             {
                 play_menu_sound(1);
-                *UNKNOWN_CUSTOM_SORT_GLOBAL = dword_DD1B30;
+                *UNKNOWN_CUSTOM_SORT_GLOBAL = dword_DD1B30; //copy first dword of struct set in previous state here, seems to always be 0
                 *CUSTOM_SORT_TEMP_INDEX = *CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX; //custom sort base row and relative offsets copied when you select an item to swap
                 *ITEM_TO_SWAP_SELECTED = 1;
             }

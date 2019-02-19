@@ -116,7 +116,7 @@ typedef bool(pfnsub7178F1)(u32);
 #define check_member_MP_full            ((pfnsub7178F1)0x7178F1)
 
 typedef i32(pfnsub6F4D30)(u32*, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32);
-#define set_unknown_struct_values       ((pfnsub6F4D30)0x6F4D30)
+#define set_cursor_data_values          ((pfnsub6F4D30)0x6F4D30)
 
 typedef i32(pfnsub6C9812)(i32, i32);
 #define set_some_transition_data        ((pfnsub6C9812)0x6C9812)
@@ -125,6 +125,9 @@ typedef i32(pfnsub6C6AEE)(i32);
 #define set_more_transition_data        ((pfnsub6C6AEE)0x6C6AEE)
 
 typedef i32(pfnsub6CA32D)(void);
-#define save_crystal_handler                      ((pfnsub6CA32D)0x6CA32D)
+#define save_crystal_handler            ((pfnsub6CA32D)0x6CA32D)
+
+typedef i32(pfnsub717923)(char*);
+#define display_menu_string                      ((pfnsub717923)0x717923)
 
 #endif

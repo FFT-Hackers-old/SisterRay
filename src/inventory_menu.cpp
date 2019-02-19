@@ -418,7 +418,7 @@ void handle_inventory_input(int a1) {
 void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
 
-    /*Call the appropriate function handler */
+    /*Call the appropriate function handler for using items on a character/the party*/
     auto item_was_used = gContext.on_use_handlers[item_ID]((u16)party_member_index, item_ID, inventory_index);
     if (item_was_used) {
         handle_decrement_inventory(inventory_index, 1);

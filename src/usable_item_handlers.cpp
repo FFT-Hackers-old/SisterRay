@@ -73,3 +73,183 @@ bool megalixir_handler(u16 party_member_index, u16 item_id, u16 inventory_index)
         return false;
     }
 };
+
+/*Merge into one handler with the healing handler and introduce "can revive" and "target_all" data flags*/
+bool revive_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
+    if (activePartyStructArray[party_member_index].currentHP) {
+        play_menu_sound(3);
+        return false;
+    }
+    else {
+        u16 heal_ratio = gContext.item_on_use_data[item_id].hp_heal_ratio;
+        heal_character_at_index(party_member_index, (activePartyStructArray[party_member_index].maxHP/heal_ratio));
+        play_menu_sound(263);
+        return true;
+    }
+};
+
+/*Perhaps redesign to make it possible to boost multiple stats, lower stats, or boost by variable amounts*/
+bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_index) {
+    u8 character_ID = CURRENT_PARTY_MEMBER_ARRAY[party_member_index];
+    u8 stat_to_boost = gContext.item_on_use_data[item_id].stat_to_boost;
+    bool stat_boosted = false;
+    switch (stat_to_boost) {
+        case 0: {
+            if (characterRecordArray[character_ID].strength < 255) {
+                ++characterRecordArray[character_ID].bonus_strength;
+                stat_boosted = true;
+            }
+            break;
+        }
+        case 1: {
+            if (characterRecordArray[character_ID].vitality < 255) {
+                ++characterRecordArray[character_ID].bonus_vitality;
+                stat_boosted = true;
+            }
+            break;
+        }
+        case 2: {
+            if (characterRecordArray[character_ID].magic < 255) {
+                ++characterRecordArray[character_ID].bonus_magic;
+                stat_boosted = true;
+            }
+            break;
+        }
+        case 3: {
+            if (characterRecordArray[character_ID].spirit < 255) {
+                ++characterRecordArray[character_ID].bonus_spirit;
+                stat_boosted = true;
+            }
+            break;
+        }
+        case 4: {
+            if (characterRecordArray[character_ID].dexterity < 255) {
+                ++characterRecordArray[character_ID].bonus_dexterity;
+                stat_boosted = true;
+            }
+            break;
+        }
+        case 5: {
+            if (characterRecordArray[character_ID].luck < 255) {
+                ++characterRecordArray[character_ID].bonus_luck;
+                stat_boosted = true;
+            }
+            break;
+        }
+    }
+
+    //If a stat was boosted, then play the correct sound and recalculate stats
+    if (stat_boosted) {
+        play_menu_sound(263);
+        addEquipmentStatBoosts(party_member_index);
+        sub_5CB2CC(party_member_index);
+    }
+    else {
+        play_menu_sound(3);
+    }
+
+    return stat_boosted
+}
+
+/*Introduce item restriction masks making items usable by some characters
+  Limit Breaks will be the first test, their usable flags will be checked.
+  Performing the same checks during battle will allow some "consumables" to have
+  per character restrictions*/
+bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index) {
+    u8 character_ID = CURRENT_PARTY_MEMBER_ARRAY[party_member_index];
+    u16 item_restriction_mask = gContext.item_on_use_data[item_id].character_restriction_mask; 
+    bool item_usable = character_can_use_item(character_ID, item_restriction_mask);
+    bool limit_taught = false;
+    if (item_usable) {
+        if (sub_715026(character_ID)) { //Check if requisite limits are learned
+            play_menu_sound(384);
+            characterRecordArray[character_ID].learned_limits = (characterRecordArray[character_ID].learned_limits | 0x0200);
+            display_menu_string(&unk_9211F0 + 102 * (item_id - 87)); //Get limit learned text, need to build out custom string storage
+            sub_6C497C(&byte_DD18C8, 7);
+            limit_taught = true;
+        }
+        else
+        {
+            display_menu_string(&unk_9211F0 + 34 * (3 * (item_id - 87) + 1)); //get can't learn limit yet text. Can fetch from our own managed text array
+            sub_6C497C(&byte_DD18C8, 7);
+            play_menu_sound(3);
+        }
+    }
+    else if (character_ID == 6) {
+        display_menu_string(aTS);
+        sub_6C497C(&byte_DD18C8, 7);
+        play_menu_sound(3);
+    }
+    else {
+        if (character_ID >= 6)
+            v21 = character_ID - 1;
+        else
+            v21 = CURRENT_PARTY_MEMBER_ARRAY[party_member_index];
+
+        display_menu_string(&unk_9211F0 + 34 * (3 * v21 + 2)); //get can't learn limit text
+        sub_6C497C(&byte_DD18C8, 7);
+        play_menu_sound(3);
+    }
+    return limit_taught;
+}
+
+    /* switch (item_ID) {
+case 13:
+    if (characterStatusFlags[132 * partyMemberID] & 0x20)
+    {
+        play_menu_sound(3);
+    }
+    else
+    {
+        if (characterStatusFlags[132 * partyMemberID] & 0x10)
+            v20 = characterStatusFlags[132 * partyMemberID] & 0xEF;
+        else
+            v20 = characterStatusFlags[132 * partyMemberID] | 0x20;
+        characterStatusFlags[132 * partyMemberID] = v20;
+        play_menu_sound(263);
+    }
+    break;
+case 14:
+    if (characterStatusFlags[132 * partyMemberID] & 0x20)
+    {
+        characterStatusFlags[132 * partyMemberID] &= 0xDFu;
+    }
+    else
+    {
+        if (characterStatusFlags[132 * partyMemberID] & 0x10)
+        {
+            play_menu_sound(3);
+            return;
+        }
+        characterStatusFlags[132 * partyMemberID] |= 0x10u;
+    }
+    play_menu_sound(263);
+    break;
+case 70:
+    v55 = 0;
+    v49 = 0;
+    while (v55 < 3)
+    {
+        if (partyMember1[v55] != 255 && (!check_member_HP_full(v55) || !check_member_MP_full(v55)))
+            v49 = 1;
+        ++v55;
+    }
+    if (v49)
+    {
+        for (i4 = 0; i4 < 3; ++i4)
+        {
+            if (persistent_character_HP[544 * i4] && partyMember1[i4] != 255)
+            {
+                heal_character_at_index(i4, 10000);
+                restore_party_member_mp(i4, 10000);
+            }
+        }
+        play_menu_sound(263);
+    }
+    else
+    {
+        play_menu_sound(3);
+    }
+    break;
+default:
+    return;*/

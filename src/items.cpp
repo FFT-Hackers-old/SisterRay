@@ -6,7 +6,7 @@ static void PatchItems(void) {
 
 }
 
-SISTERRAY_API void InitArmor(SrKernelStream* stream)
+SISTERRAY_API void InitItem(SrKernelStream* stream)
 {
     SrItemRegistry* registry = &gContext.items;
     initRegistry<ItemData>(

@@ -16,6 +16,7 @@
 
 typedef struct {
     FILE*                             logFile;
+    SrItemRegistry                    items;
     SrArmorRegistry                   armors;
     SrAccessoryRegistry               accessories;
     SrMateriaRegistry                 materias;
@@ -32,6 +33,7 @@ SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* s
 SISTERRAY_API void InitMateria(SrKernelStream* stream);
 SISTERRAY_API void InitArmor(SrKernelStream* stream);
 SISTERRAY_API void InitAccessory(SrKernelStream* stream);
+SISTERRAY_API void InitItem(SrKernelStream* stream);
 
 SISTERRAY_API void InitLog(void);
 SISTERRAY_API void srLogWrite(const char* format, ...);

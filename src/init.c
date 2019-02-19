@@ -11,7 +11,7 @@ static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     NULL,
     NULL,
     NULL,
-    NULL,
+    InitItem,
     NULL,
     InitArmor,
     InitAccessory,

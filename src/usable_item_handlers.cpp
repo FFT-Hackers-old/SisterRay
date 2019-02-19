@@ -13,7 +13,7 @@ bool heal_party_member(u16 party_member_index, u16 item_id, u16 inventory_index)
         play_menu_sound(3);
         return false;
     }
-};
+}
 
 /*On use callback for performing MP healing on the menu*/
 bool heal_party_member_mp(u16 party_member_index, u16 item_id, u16 inventory_index) {
@@ -45,7 +45,7 @@ bool heal_party_member_hp_and_mp(u16 party_member_index, u16 item_id, u16 invent
         play_menu_sound(3);
         return false;
     }
-};
+}
 
 /*Can probably be merged with the above handlers and have the 'target-all' flag set */
 bool megalixir_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
@@ -72,7 +72,7 @@ bool megalixir_handler(u16 party_member_index, u16 item_id, u16 inventory_index)
         play_menu_sound(3);
         return false;
     }
-};
+}
 
 /*Merge into one handler with the healing handler and introduce "can revive" and "target_all" data flags*/
 bool revive_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
@@ -86,7 +86,7 @@ bool revive_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
         play_menu_sound(263);
         return true;
     }
-};
+}
 
 /*Perhaps redesign to make it possible to boost multiple stats, lower stats, or boost by variable amounts*/
 bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_index) {

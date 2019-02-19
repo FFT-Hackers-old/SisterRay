@@ -5,11 +5,13 @@
 #include <SisterRay/SisterRay.h>
 
 #include "kernel.h"
+#include "items.h"
 #include "materia.h"
 #include "armor.h"
 #include "accessory.h"
 #include "inventory.h"
 #include "usable_item_handlers.h"
+#include "string_registry.h"
 #include <map>
 
 typedef struct {
@@ -21,6 +23,7 @@ typedef struct {
     SrBattleInventory                 battle_inventory;
     std::map<u16, onUseCallback*>     on_use_handlers; /*Registry of function pointers for using items*/
     std::map<u16, onUseItemData>      item_on_use_data;
+    SrGameStrings                     game_strings;
 } SrContext;
 
 SISTERRAY_GLOBAL SrContext gContext;

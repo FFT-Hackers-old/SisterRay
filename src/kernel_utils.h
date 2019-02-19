@@ -19,7 +19,7 @@ template<typename T, typename S> void initStaticObjectRegistry(S* registry, int 
     registry->data = (T*)malloc(registry->capacity * sizeof(*registry->data));
 }
 
-/*Allocate space in the armor registry for a new armor, increasing the array size if necessary*/
+/*Allocate space in the object registry for a new armor, increasing the array size if necessary*/
 template<typename T, typename S> T* allocKernelObject(S* registry) {
     size_t newCapacity;
     T* object;

@@ -191,7 +191,7 @@ void render_inventory_main_view(int custom_arrange_active) {
             text_color = -((item_is_usable(item_ID) & 4) != 0);
             LOBYTE(unk_local_1) = unk_local_1 & 0xF9;
             unk_local_3 = unk_local_1 + 7;
-            kernel_object_name = load_kernel_object_text(4u, item_ID, 8);
+            kernel_object_name = load_kernel_object_text(4u, item_ID, 8); //This needs to load texts from our registry.
             LOBYTE(unk_local_2) = unk_local_3;
             // End do some stuff to assemble argument for siplay text
             display_text_at_location(373, 37 * visible_item + 9 * dword_DD1A3C[14 * custom_arrange_active] + 109, kernel_object_name, unk_local_2, 1036966167);

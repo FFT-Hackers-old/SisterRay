@@ -31,6 +31,13 @@ void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity) {
     }
 }
 
+/*New sorting method, no longer sorts by index ranges, but instead items actually have associated "types"*/
 SISTERRAY_API i16 sort_inventory(i32 sort_type) {
 
+}
+
+/*Initialize the item_type mapping*/
+SISTERRAY_API void InitItemTypeData() {
+    ItemTypeData* registry = &gContext.item_type_data;
+    initObjectRegistry<ItemTypeData, SrItemTypeData>(registry);
 }

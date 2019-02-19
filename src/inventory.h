@@ -36,8 +36,22 @@ typedef struct {
     InventoryEntry*    data;
 } SrItemInventory;
 
+// indexed by global "item_id"
+typedef struct {
+    u8 item_type; //00 = normal item, 01 = weapon, 02=armor, 03=accessory
+    u16 type_relative_id;
+} ItemTypeData;
+
+// this array is maintained for accessing an the "type" and relative index of an SR added item 
+typedef struct {
+    size_t count;
+    size_t capacity;
+    ItemTypeData* data;
+} SrItemTypeData;
+
 SISTERRAY_API void InitInventory();
 SISTERRAY_API void InitBattleInventory();
+SISTERRAY_API void InitItemTypeData();
 
 /*utility for decrementing the quantity of an item at a particular inventory index*/
 void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity);

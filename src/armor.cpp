@@ -4,6 +4,14 @@
 #include "kernel_utils.h"
 #include "armor.h"
 
+static void InitializeAugmentedArmorData() {
+    for (int i = 0; i < gContext.armors.count; i++) {
+        ItemTypeData* object = allocKernelObject<ItemTypeData, SrItemTypeData>(&gContext.item_type_data);
+        object->item_type = 2;
+        object->type_relative_id = i; //relative ideas 0-31 for the armors
+    }
+}
+
 static const u32 kPatchStructBase[] = {
     0x005cf92b, 0x006cb977, 0x007ba088
 };
@@ -59,6 +67,7 @@ SISTERRAY_API void InitArmor(SrKernelStream* stream)
         registry,
         allocKernelObject<ArmorData, SrArmorRegistry>,
         initObjectRegistry<ArmorData, SrArmorRegistry>);
+    InitializeAugmentedArmorData();
     PatchArmor();
     srLogWrite("kernel.bin: Loaded %lu Armors", (unsigned long)gContext.armors.count);
 }

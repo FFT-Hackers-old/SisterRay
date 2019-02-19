@@ -23,16 +23,14 @@ typedef struct {
 } ItemData;
 #pragma pack(pop)
 
-typedef struct
-{
+typedef struct {
     size_t          count;
     size_t          capacity;
     ItemData*       data;
 } SrItemRegistry;
 
 /*new structure holding additional item_id indexed data*/
-typedef struct
-{
+typedef struct {
     u16 hp_heal_amount;
     u16 mp_heal_amount;
     u16 stat_to_boost;

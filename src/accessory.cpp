@@ -4,6 +4,14 @@
 #include "kernel_utils.h"
 #include "accessory.h"
 
+static void InitializeAugmentedAccessoryData() {
+    for (int i = 0; i < gContext.accessories.count; i++) {
+        ItemTypeData* object = allocKernelObject<ItemTypeData, SrItemTypeData>(&gContext.item_type_data);
+        object->item_type = 3;
+        object->type_relative_id = i; //relative ideas 0-31 for the accessories
+    }
+}
+
 static const u32 kPatchStructBase[] = {
     0x005d0317, 0x006cb987, 0x007ba08c
 };
@@ -36,6 +44,7 @@ SISTERRAY_API void InitAccessory(SrKernelStream* stream)
         registry,
         allocKernelObject<AccessoryData, SrAccessoryRegistry>,
         initObjectRegistry<AccessoryData, SrAccessoryRegistry>);
+    InitializeAugmentedAccessoryData();
     PatchAccessories();
     srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.count);
 }

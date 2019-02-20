@@ -30,12 +30,12 @@ void display_active_cursor_state(int a1) {
         if (!(*use_on_characters_enabled)) {
             item_ID = gContext.inventory.data[active_window_base_row + relative_item_index].item_id;;
             if (item_ID != 6 && item_ID != 70)
-                display_cursor(0, 120 * party_member_index + 161, 0.0); //if the cursor isn't targeting all
+                display_cursor(0, 120 * party_member_index + 161, 0.0f); //if the cursor isn't targeting all
             else
                 display_cursor(0, 120 * (a1 % 3) + 161, 0.0); // if the cursor is targeting all
         }
         if (a1 & 2)
-            display_cursor(298, 37 * relative_item_index + 109, 0.1);
+            display_cursor(298, 37 * relative_item_index + 109, 0.1f);
         if (*use_on_characters_enabled)
             --(*use_on_characters_enabled);
     }
@@ -43,12 +43,12 @@ void display_active_cursor_state(int a1) {
     switch (inventory_menu_state)
     {
     case 0:                                   // Nothing Selected, Default State
-        display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.1); //display cursor at the selected view
+        display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.1f); //display cursor at the selected view
         break;
     case 1:                                   // Use Selected - Selecting Item
         if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.1);
-        display_cursor(298, 37 * relative_item_index + 109, 0.1);
+            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.1f);
+        display_cursor(298, 37 * relative_item_index + 109, 0.1f);
         if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id != 0xFFFF)
         {
             fetched_description = (char*)load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
@@ -57,7 +57,7 @@ void display_active_cursor_state(int a1) {
         break;
     case 2:                                   // Use Selected - Targeting Party
         if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0);
+            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0f);
         if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id != 0xFFFF)
         {
             fetched_description = (char*)load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
@@ -66,8 +66,8 @@ void display_active_cursor_state(int a1) {
         break;
     case 3:                                   // Browsing Key Items
         if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.001);
-        display_cursor(293 * (*KEY_ITEMS_COL_INDEX) + 5, 36 * (*KEY_ITEMS_ROW_INDEX) + 129, 0.001);
+            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.001f);
+        display_cursor(293 * (*KEY_ITEMS_COL_INDEX) + 5, 36 * (*KEY_ITEMS_ROW_INDEX) + 129, 0.001f);
         if ((KEY_ITEMS_INVENTORY_PTR)[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)] != 0xFFFF) //If there is a key item at cursor matrix position
         {
             int cursor_array_position = (KEY_ITEMS_INVENTORY_PTR)[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)];
@@ -77,17 +77,17 @@ void display_active_cursor_state(int a1) {
         break;
     case 4:                                   //Selecting an Arrange Method
         if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.001);
-        display_cursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001);
+            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.001f);
+        display_cursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001f);
         for (int j = 0; j < 8; ++j)            // Loop over arrange types
             fetched_description = &(MenuTexts[12 * (j + 3)]) //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
             display_text_at_location(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetched_description, 7, 1008981770);
-        sub_6E7D20((i16*)(dword_DD18C0 + 24), 1008981770);
+        sub_6E7D20((i16*)(dword_DD18C0 + 24), (float)1008981770);
         break;
     case 5:                                   // Inside Custom Sort
         if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0);
-        if (gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX] != 0xFFFF)
+            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0f);
+        if (gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX].item_id != 0xFFFF)
         {
             fetched_description = (char*)load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
@@ -102,7 +102,7 @@ void display_active_cursor_state(int a1) {
 void display_inventory_views(int a1) {
     u32 inventory_menu_state = *(INVENTORY_MENU_STATE);
     int* inventory_cursor_position = (INVENTORY_CURSOR_POSITION); //might be better to call this 'current menu view'
-    u8* menu_texts[132] = MENU_TEXTS;
+    char menu_texts[132] = MENU_TEXTS;
 
     int menu_state_local;
 
@@ -132,7 +132,7 @@ void display_inventory_views(int a1) {
                         display_cursor(291, v45 + 113, 0.0);
                 }
             }
-            display_cursor(298, 37 * CUSTOM_SORT_RELATIVE_INDEX + 113, 0.0099999998);
+            display_cursor(298, 37 * (*CUSTOM_SORT_RELATIVE_INDEX) + 113, 0.0099999998f);
             menu_state_local = 5;                 // Set the local to 5 if we're in custom sort
         }
         else
@@ -143,9 +143,9 @@ void display_inventory_views(int a1) {
         render_inventory_main_view(menu_state_local);
     }
     sub_6FA347();
-    sub_6E7D20(dword_DD18C0, 1038308344);
-    sub_6E7D20(dword_DD18C0 + 8, 1045220557);
-    sub_6E7D20(dword_DD18C0 + 16, 1050253722);
+    sub_6E7D20((i16*)dword_DD18C0, 1038308344);
+    sub_6E7D20((i16*)dword_DD18C0 + 8, 1045220557);
+    sub_6E7D20((i16*)dword_DD18C0 + 16, 1050253722);
 }
 
 
@@ -171,7 +171,7 @@ void render_inventory_main_view(int custom_arrange_active) {
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
     *word_DD17FC = 372;
-    sub_6F7270(GLOBAL_MENU_VIEW_SIZE, 0.1); //Gets the number of rows in the current view and does something.
+    sub_6F7270(GLOBAL_MENU_VIEW_SIZE, 0.1f); //Gets the number of rows in the current view and does something.
     int displayed_row_count = (dword_DD1A48[14 * custom_arrange_active] != 0) + 10;
 
     NopInt32();
@@ -186,36 +186,36 @@ void render_inventory_main_view(int custom_arrange_active) {
             kernel_object_name = (char*)load_kernel_object_text(4u, item_ID, 8); //This needs to load texts from our registry.
             LOBYTE(unk_local_2) = unk_local_3;
             // End do some stuff to assemble argument for siplay text
-            display_text_at_location(373, 37 * visible_item + 9 * dword_DD1A3C[14 * custom_arrange_active] + 109, kernel_object_name, unk_local_2, 1036966167);
+            display_text_at_location(373, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 109, kernel_object_name, unk_local_2, 1036966167);
         }
     }
     for (int visible_item = 0; visible_item < displayed_row_count; ++visible_item) {
-        visible_item_inventory_index = visible_item + CURSOR_STRUCT_VISIBLE_BASE_MEMBER[14 * custom_arrange_active];
+        visible_item_inventory_index = visible_item + (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
         if (gContext.inventory.data[visible_item_inventory_index].item_id != 0xFFFF) {
             item_ID = gContext.inventory.data[visible_item_inventory_index + relative_item_index].item_id;
-            item_quantity = gContext.inventory.data[visible_item_inventory_indexm + relative_item_index].quantity;
+            item_quantity = gContext.inventory.data[visible_item_inventory_index + relative_item_index].quantity;
             text_color = (item_is_usable(item_ID) & 4) != 0 ? 0 : 7; // This sets something based on whether the item is usable, assuming it's text color
 
-            display_visible_item_icon(343, 37 * visible_item + 9 * dword_DD1A3C[14 * custom_arrange_active] + 105, item_ID, 0, 1036966167);
+            display_visible_item_icon(343, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 105, item_ID, 0, 1036966167);
             LOBYTE(single_byte_color) = text_color;
-            sub_6F5C0C(548, 37 * visible_item + 9 * dword_DD1A3C[14 * custom_arrange_active] + 114, 213, v10, 1036966167);
-            sub_6F9739(550, 37 * visible_item + 9 * dword_DD1A3C[14 * custom_arrange_active] + 112, item_quantity, 3, text_color, 1036966167);
+            sub_6F5C0C(548, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 114, 213, text_color, 1036966167);
+            sub_6F9739(550, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 112, item_quantity, 3, text_color, 1036966167);
         }
     }
 }
 
 
 void render_character_portraits() {
-    u16* unk_local_struct[4];
+    u16 unk_local_struct[4];
 
     for (int current_party_member = 0; current_party_member < 3; ++current_party_member) { //loop over and render character portraits, probably
-        if (CURRENT_PARTY_MEMBER_ARRAY[current_party_member] != 0xFF) {         //if there is a party member in that slot
+        if ((CURRENT_PARTY_MEMBER_ARRAY)[current_party_member] != 0xFF) {         //if there is a party member in that slot
             render_HP_bar_and_status(133, 120 * current_party_member + 126, current_party_member, 1036831949); //possibly display picture?
             sub_6E6C5B(37, 120 * current_party_member + 116, current_party_member, 1036831949);
         }
     }
-    initialize_some_struct(unk_local_struct, 0, 96, 300, 384); //set some values in a struct/array used in the next call
-    sub_6E7D20(unk_local_struct, 1036831949); //this does a bunch of shit with the above struct
+    initialize_some_struct((u16*)&unk_local_struct, 0, 96, 300, 384); //set some values in a struct/array used in the next call
+    sub_6E7D20((i16*)(&unk_local_struct), 1036831949); //this does a bunch of shit with the above struct
 }
 
 
@@ -229,7 +229,7 @@ void render_key_items_view() {
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
     *word_DD17FC = 372;
-    sub_6F7270((*GLOBAL_MENU_VIEW_SIZE), 0.1);
+    sub_6F7270((*GLOBAL_MENU_VIEW_SIZE), 0.1f);
 
     for (int visible_key_item_row = 0; visible_key_item_row < 12; ++visible_key_item_row) {
         int flat_key_item_index_base = 2 * visible_key_item_row + 2 * (*KEY_ITEMS_VIEW_BASE_ROW);

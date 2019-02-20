@@ -12,6 +12,7 @@ static void InitializeAugmentedItemData() {
     }
 }
 
+/*Patch references to items to reference to reference the new gContext objects*/
 static void PatchItems(void) {
 
 }

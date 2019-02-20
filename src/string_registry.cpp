@@ -1,5 +1,40 @@
 #include "string_registry.h"
 #include "string.h"
+#include "impl.h"
+
+/*initialize a string registry*/
+void initialize_string_registry(stringRegistry& registry, int initial_buffer_size=512) {
+    registry.insertion_point = 0;
+    registry.string_index_map = std::vector<u32>(128);
+    registry.string_buffer = malloc(&(registry.string_buffer), initial_buffer_size);
+}
+
+void InitGameStrings() {
+    stringRegistry& registry;
+
+    /*Allocate registries for the kernel2.bin stuff*/
+    registry = gContext.game_strings.item_descriptions;
+    initialize_string_registry(registry, 1024);
+    registry = gContext.game_strings.item_names;
+    initialize_string_registry(registry, 512);
+    registry = gContext.game_strings.weapon_descriptions;
+    initialize_string_registry(registry, 1024);
+    registry = gContext.game_strings.weapon_names;
+    initialize_string_registry(registry, 512);
+    registry = gContext.game_strings.armor_descriptions;
+    initialize_string_registry(registry, 1024);
+    registry = gContext.game_strings.armor_names;
+    initialize_string_registry(registry, 512);
+    registry = gContext.game_strings.accessory_descriptions;
+    initialize_string_registry(registry, 1024);
+    registry = gContext.game_strings.accessory_names;
+    initialize_string_registry(registry, 512);
+
+    /*Initialize the string registries for character specific strings*/
+    for (int i = 0; i <= 9; i++) {
+        initialize_string_registry(gContext.game_strings.character_specific_strings[i], 256);
+    }
+}
 
 //Pass this an ascii string to add an encoded FFVII string to the registry
 void register_string(stringRegistry& registry, char* string) {

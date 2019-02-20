@@ -226,7 +226,7 @@ typedef struct {
     u16 magAttack;
     u16 magDefense;
     u16 currentHP;
-    u16 maxMP;
+    u16 maxHP;
     u16 currentMP;
     u16 maxMP;
     u32 timer;

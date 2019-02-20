@@ -10,14 +10,13 @@
 
 #define INVENTORY_MENU_STATE                 (u32*)0xDD19C8
 #define INVENTORY_CURRENT_PARTY_INDEX        (u32*)0xDD1A8C
-#define UNKNOWN_INVENTORY_MENU_GLOBAL_DD1B68 (u32*)0xDD1B68
 #define VISIBLE_ITEM_START                   (u32*)0xDD1A64
 #define RELATIVE_ITEM_INDEX                  (u32*)0xDD1A54
 #define CUSTOM_SORT_VIEW_BASE                (u32*)0xDD1B44
 #define CUSTOM_SORT_RELATIVE_INDEX           (u32*)0xDD1B34
 #define UNKNOWN_CUSTOM_SORT_GLOBAL           (u32*)0xDD1A10
 #define CUSTOM_SORT_TEMP_INDEX               (u32*)0xDD1A14
-#define INVENTORY_CURSOR_POSITION            (u32*)0xDD1A18
+#define INVENTORY_CURSOR_POSITION            (i32*)0xDD1A18
 #define INVENTORY_ARRANGE_TYPE               (u32*)0xDD1AFC
 
 #define KEY_ITEMS_INVENTORY_PTR  (u8*)0xDD19D0
@@ -35,7 +34,7 @@
 #define word_DD17FA              (u32*)0xDD17FA
 #define word_DD17FC              (u32*)0xDD17FC
 #define use_on_characters_enabled (u32*)0xDD1B68
-#define ITEM_TO_SWAP_SELECTED             (u32*)0xDD1B6C
+#define ITEM_TO_SWAP_SELECTED    (u32*)0xDD1B6C
 
 
 #define CURSOR_STRUCT_PTR        (u32*)0xDD1AF8
@@ -45,5 +44,7 @@
 
 #define dword_DD1AE4             (u32*)0xDD1AE4 // Not sure what this is, but it is only called in key-item view contexts
 #define dword_DD1A3C             (u32*)0xDD1A3C
+#define dword_DD18C0             (u32*)0xDD18C0
+#define dword_DC1210             (u32*)0xDC1210
 #define byte_DC0C3C              (u8*)0xDC0C3C
 #endif

@@ -25,7 +25,7 @@ SISTERRAY_API void InitItem(SrKernelStream* stream)
         registry,
         allocKernelObject<ItemData, SrItemRegistry>,
         initObjectRegistry<ItemData, SrItemRegistry>);
-    InitializeAugmetedData();
+    InitializeAugmentedItemData();
     PatchItems();
     srLogWrite("kernel.bin: Loaded %lu items", (unsigned long)gContext.items.count);
 }

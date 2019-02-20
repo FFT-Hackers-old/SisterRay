@@ -22,7 +22,7 @@ SISTERRAY_API void InitBattleInventory()
 
 /*utility for decrementing the quantity of an item at a particular inventory index*/
 void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity) {
-    if (gContext.inventory.data[inventory_index].quantity + decrement_quantity = > 1) {
+    if (gContext.inventory.data[inventory_index].quantity + decrement_quantity > 1) {
         gContext.inventory.data[inventory_index].item_id = gContext.inventory.data[inventory_index].quantity - decrement_quantity;
     }
     else {
@@ -38,6 +38,6 @@ SISTERRAY_API i16 sort_inventory(i32 sort_type) {
 
 /*Initialize the item_type mapping*/
 SISTERRAY_API void InitItemTypeData() {
-    ItemTypeData* registry = &gContext.item_type_data;
+    SrItemTypeData* registry = &gContext.item_type_data;
     initObjectRegistry<ItemTypeData, SrItemTypeData>(registry);
 }

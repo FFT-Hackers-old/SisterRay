@@ -109,10 +109,10 @@ typedef i32(*pfnsub6CBA6A)(u8, u16);
 typedef i32(*pfnsub6CBBBF)(u8, u16);
 #define restore_party_member_mp         ((pfnsub6CBBBF)0x6CBBBF)
 
-typedef bool(*pfnsub7178BF)(u32);
+typedef i8(*pfnsub7178BF)(u32);
 #define check_member_HP_full            ((pfnsub7178BF)0x7178BF)
 
-typedef bool(*pfnsub7178F1)(u32);
+typedef i8(*pfnsub7178F1)(u32);
 #define check_member_MP_full            ((pfnsub7178F1)0x7178F1)
 
 typedef i32(*pfnsub6F4D30)(u32*, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32);

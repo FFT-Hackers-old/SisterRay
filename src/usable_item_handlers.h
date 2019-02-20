@@ -3,6 +3,6 @@
 
 #include <SisterRay/types.h>
 
-typedef bool(*onUseCallback)(u16, u16, u16);
+typedef i8(*onUseCallback)(u16, u16, u16);
 
 #endif

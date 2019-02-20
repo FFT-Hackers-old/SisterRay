@@ -4,14 +4,8 @@
 
 SISTERRAY_API void new_inventory_menu_handler(int a1)
 {
-    if (dword_DC130C == 1) // Unclear if this is actually ever set
-    {
-    }
-    else
-    {
-        display_active_cursor_state(a1);
-        display_inventory_views(a1);
-    }
+    display_active_cursor_state(a1);
+    display_inventory_views(a1);
     if (!sub_6C9808())
     {
         handle_inventory_input(a1);
@@ -24,9 +18,9 @@ void display_active_cursor_state(int a1) {
     u32 active_window_base_row = *(VISIBLE_ITEM_START);
     u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
-    u32* inventory_cursor_position = (INVENTORY_CURSOR_POSITION);
+    i32* inventory_cursor_position = (INVENTORY_CURSOR_POSITION);
     u8* MenuTexts[132] = MENU_TEXTS;
-    void** fetched_description;
+    char* fetched_description;
 
     u16 item_ID;
 
@@ -57,7 +51,7 @@ void display_active_cursor_state(int a1) {
         display_cursor(298, 37 * relative_item_index + 109, 0.1);
         if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id != 0xFFFF)
         {
-            fetched_description = load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
+            fetched_description = (char*)load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
         }
         break;
@@ -66,7 +60,7 @@ void display_active_cursor_state(int a1) {
             display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0);
         if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id != 0xFFFF)
         {
-            fetched_description = load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
+            fetched_description = (char*)load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
         }
         break;
@@ -74,10 +68,10 @@ void display_active_cursor_state(int a1) {
         if (a1 & 2)
             display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.001);
         display_cursor(293 * (*KEY_ITEMS_COL_INDEX) + 5, 36 * (*KEY_ITEMS_ROW_INDEX) + 129, 0.001);
-        if (KEY_ITEMS_INVENTORY_PTR[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)] != 0xFFFF) //If there is a key item at cursor matrix position
+        if ((KEY_ITEMS_INVENTORY_PTR)[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)] != 0xFFFF) //If there is a key item at cursor matrix position
         {
-            int cursor_array_position = KEY_ITEMS_INVENTORY_PTR[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)];
-            fetched_description = load_kernel_object_text(0xEu, cursor_array_position, 0); //The returned arg here is the item description
+            int cursor_array_position = (KEY_ITEMS_INVENTORY_PTR)[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)];
+            fetched_description = (char*)load_kernel_object_text(0xEu, cursor_array_position, 0); //The returned arg here is the item description
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
         }
         break;
@@ -88,14 +82,14 @@ void display_active_cursor_state(int a1) {
         for (int j = 0; j < 8; ++j)            // Loop over arrange types
             fetched_description = &(MenuTexts[12 * (j + 3)]) //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
             display_text_at_location(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetched_description, 7, 1008981770);
-        sub_6E7D20(dword_DD18C0 + 24, 1008981770);
+        sub_6E7D20((i16*)(dword_DD18C0 + 24), 1008981770);
         break;
     case 5:                                   // Inside Custom Sort
         if (a1 & 2)
             display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0);
-        if (gContext.inventory.data[CUSTOM_SORT_VIEW_BASE + CUSTOM_SORT_RELATIVE_INDEX] != 0xFFFF)
+        if (gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX] != 0xFFFF)
         {
-            fetched_description = load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
+            fetched_description = (char*)load_kernel_object_text(4u, gContext.inventory.data[active_window_base_row + relative_item_index].item_id, 0);
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
         }
         break;
@@ -127,13 +121,13 @@ void display_inventory_views(int a1) {
     }
     else
     {
-        if (inventory_menu_state == 5)            // if currently in custom sort
+        if (inventory_menu_state == 5)            // if currently in custom sort, animate flashing cursor?
         {
             if (ITEM_TO_SWAP_SELECTED)
             {
                 if (a1 & 2)
                 {
-                    v45 = 37 * CUSTOM_SORT_TEMP_INDEX - 37 * CUSTOM_SORT_VIEW_BASE + 9 * dword_DD1B54 - 9;
+                    i32 v45 = 37 * (*CUSTOM_SORT_TEMP_INDEX) - 37 * (*CUSTOM_SORT_VIEW_BASE) + 9 * dword_DD1B54 - 9;
                     if (v45 > -37 && v45 < 1369)
                         display_cursor(291, v45 + 113, 0.0);
                 }

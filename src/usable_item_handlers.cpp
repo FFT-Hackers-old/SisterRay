@@ -137,6 +137,7 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
             break;
         }
     }
+}
 
     //If a stat was boosted, then play the correct sound and recalculate stats
     if (stat_boosted) {

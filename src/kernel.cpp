@@ -7,8 +7,8 @@
 SISTERRAY_API void srKernelStreamOpen(SrKernelStream* stream, FILE* file)
 {
     memset(stream, 0, sizeof(*stream));
-    stream->inBuffer = malloc(CHUNK);
-    stream->outBuffer = malloc(CHUNK);
+    stream->inBuffer = (char*)malloc(CHUNK);
+    stream->outBuffer = (char*)malloc(CHUNK);
     fread(&stream->deflatedSize, 2, 1, file);
     fread(&stream->inflatedSize, 2, 1, file);
     fread(&stream->type, 2, 1, file);
@@ -19,11 +19,11 @@ SISTERRAY_API void srKernelStreamOpen(SrKernelStream* stream, FILE* file)
     stream->zstream.avail_in = CHUNK;
     if (stream->zstream.avail_in > stream->deflatedSize)
         stream->zstream.avail_in = stream->deflatedSize;
-    stream->zstream.next_in = stream->inBuffer;
+    stream->zstream.next_in = (Bytef *)stream->inBuffer;
     stream->cursor = stream->zstream.avail_in;
     fread(stream->inBuffer, stream->zstream.avail_in, 1, file);
     stream->zstream.avail_out = CHUNK;
-    stream->zstream.next_out = stream->outBuffer;
+    stream->zstream.next_out = (Bytef *)stream->outBuffer;
     stream->outStart = stream->outBuffer;
     inflateInit2(&stream->zstream, 31);
 }
@@ -74,7 +74,7 @@ SISTERRAY_API size_t srKernelStreamRead(SrKernelStream* stream, void* dst, size_
 
         /* Output buffer is empty, reset it */
         stream->outStart = stream->outBuffer;
-        stream->zstream.next_out = stream->outBuffer;
+        stream->zstream.next_out = (Bytef*)stream->outBuffer;
         stream->zstream.avail_out = CHUNK;
 
         if (stream->zstream.avail_in == 0)
@@ -90,7 +90,7 @@ SISTERRAY_API size_t srKernelStreamRead(SrKernelStream* stream, void* dst, size_
 
             avail = fread(stream->inBuffer, avail, 1, stream->file);
             stream->zstream.avail_in = avail;
-            stream->zstream.next_in = stream->inBuffer;
+            stream->zstream.next_in = (Bytef*)stream->inBuffer;
             stream->cursor += avail;
         }
 

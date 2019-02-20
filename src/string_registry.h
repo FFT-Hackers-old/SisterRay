@@ -9,7 +9,7 @@
 typedef struct {
     std::vector<u32> string_index_map;
     int buffer_length; //current maximum buffer_length
-    int insertion_point; //index to insert the next string
+    u32 insertion_point; //index to insert the next string
     char* string_buffer;
 } stringRegistry;
 
@@ -28,7 +28,7 @@ typedef struct {
 
 void register_string(stringRegistry& registry, char* string);
 char* get_string(stringRegistry& registry, int index);
-void* encode_ffvii_string(char* ascii_string); //encode an ascii string to ffvii form in place
+void encode_ffvii_string(char* ascii_string); //encode an ascii string to ffvii form in place
 void InitGameStrings();
 
 #endif

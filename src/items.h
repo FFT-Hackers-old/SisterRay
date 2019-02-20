@@ -35,5 +35,7 @@ typedef struct {
     u16 mp_heal_amount;
     u16 stat_to_boost;
     u16 character_restriction_mask; //Used to make certain items usable only by certain characters
+    u8 hp_heal_ratio;
 } onUseItemData;
+
 #endif

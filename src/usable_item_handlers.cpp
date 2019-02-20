@@ -20,7 +20,7 @@ bool heal_party_member_mp(u16 party_member_index, u16 item_id, u16 inventory_ind
     if (!check_member_MP_full(party_member_index) && activePartyStructArray[party_member_index].currentHP) {
         play_menu_sound(263);
         u16 heal_amount = gContext.item_on_use_data[item_id].mp_heal_amount;
-        restore_party_member_mp(party_member_index, heal amount);
+        restore_party_member_mp(party_member_index, heal_amount);
         return true;
     }
     else
@@ -35,9 +35,9 @@ bool heal_party_member_hp_and_mp(u16 party_member_index, u16 item_id, u16 invent
     if ((check_member_MP_full(party_member_index) && check_member_HP_full(party_member_index)) || activePartyStructArray[party_member_index].currentHP) {
         play_menu_sound(263);
         u16 heal_amount = gContext.item_on_use_data[item_id].hp_heal_amount;
-        restore_party_member_mp(party_member_index, heal amount);
+        restore_party_member_mp(party_member_index, heal_amount);
         heal_amount = gContext.item_on_use_data[item_id].mp_heal_amount;
-        restore_party_member_mp(party_member_index, heal amount);
+        restore_party_member_mp(party_member_index, heal_amount);
         return true;
     }
     else
@@ -52,7 +52,7 @@ bool megalixir_handler(u16 party_member_index, u16 item_id, u16 inventory_index)
     u16 current_party_member = 0;
     bool healable_exists = false;
     while (current_party_member < 3) {
-        if (CURRENT_PARTY_MEMBER_ARRAY[current_party_member] != 255 && (!check_member_HP_full(current_party_member)
+        if ((CURRENT_PARTY_MEMBER_ARRAY)[current_party_member] != 255 && (!check_member_HP_full(current_party_member)
             || !check_member_MP_full(current_party_member))) {
             healable_exists = true;
         }
@@ -60,7 +60,7 @@ bool megalixir_handler(u16 party_member_index, u16 item_id, u16 inventory_index)
     }
     if (healable_exists) {
         for (u16 member_to_heal = 0; member_to_heal < 3; ++member_to_heal) {
-            if (activePartyStructArray[party_member_index].currentHP && CURRENT_PARTY_MEMBER_ARRAY[member_to_heal] != 0xFF) {
+            if (activePartyStructArray[party_member_index].currentHP && (CURRENT_PARTY_MEMBER_ARRAY)[member_to_heal] != 0xFF) {
                 heal_character_at_index(member_to_heal, 10000);
                 restore_party_member_mp(member_to_heal, 10000);
             }
@@ -90,7 +90,7 @@ bool revive_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
 
 /*Perhaps redesign to make it possible to boost multiple stats, lower stats, or boost by variable amounts*/
 bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    u8 character_ID = CURRENT_PARTY_MEMBER_ARRAY[party_member_index];
+    u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
     u8 stat_to_boost = gContext.item_on_use_data[item_id].stat_to_boost;
     bool stat_boosted = false;
     switch (stat_to_boost) {
@@ -137,9 +137,6 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
             break;
         }
     }
-}
-
-    //If a stat was boosted, then play the correct sound and recalculate stats
     if (stat_boosted) {
         play_menu_sound(263);
         addEquipmentStatBoosts(party_member_index);
@@ -157,7 +154,7 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
   Performing the same checks during battle will allow some "consumables" to have
   per character restrictions*/
 bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    u8 character_ID = CURRENT_PARTY_MEMBER_ARRAY[party_member_index];
+    u8 character_ID = (u8)CURRENT_PARTY_MEMBER_ARRAY[party_member_index];
     u16 item_restriction_mask = gContext.item_on_use_data[item_id].character_restriction_mask; 
     bool item_usable = character_can_use_item(character_ID, item_restriction_mask);
     bool limit_taught = false;

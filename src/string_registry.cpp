@@ -9,6 +9,7 @@ void initialize_string_registry(stringRegistry& registry, int initial_buffer_siz
     registry.string_buffer = malloc(&(registry.string_buffer), initial_buffer_size);
 }
 
+/*Initialize all string registries for various string resources*/
 void InitGameStrings() {
     stringRegistry& registry;
 

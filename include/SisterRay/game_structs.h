@@ -203,6 +203,13 @@ typedef struct {
     u8 spellFlags;
 } spellFlags;
 
+#pragma pack(push,1)
+typedef struct {
+    u32 statToIncrease;
+    u32 increaseValue;
+} statIncrease;
+#pragma pack(pop)
+
 #pragma pack(push, 1)
 /*Three of these are maintained for each active party member, they have size 0x440*/
 typedef struct {
@@ -240,8 +247,16 @@ typedef struct {
     spellFlags enabledMagicsData[54];
     spellFlags enabledSummons[16];
     spellFlags enabledEnemySkills[24];
-    u8 weaponData[11]; //Contains the first 11 bytes of data from the characters equipped weapon
-
+    u8 weaponData[11]; //Contains the first 11 bytes of data from the characters equipped weapon, this is all a copy of weapon data
+    u16 weaponStatus;
+    u8 weaponAccuracy;
+    u8 paddin[7];
+    u32 additionalAttackElements;
+    statIncrease statsToIncrease[4];
+    u8 charGilBonus;
+    u8 encounterRate;
+    u8 chocoboChance;
+    u8 preEmptiveChance;
 } activePartyMemberStruct;
 #pragma pack(pop)
 

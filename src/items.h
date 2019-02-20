@@ -38,4 +38,6 @@ typedef struct {
     u8 hp_heal_ratio;
 } onUseItemData;
 
+bool character_can_use_item(u8 character_ID, u16 item_id);
+
 #endif

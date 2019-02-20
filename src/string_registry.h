@@ -29,6 +29,8 @@ typedef struct {
 void register_string(stringRegistry& registry, char* string);
 char* get_string(stringRegistry& registry, int index);
 void encode_ffvii_string(char* ascii_string); //encode an ascii string to ffvii form in place
+char* get_name_from_global_id(u16 item_id);
+char* get_description_from_global_id(u16 item_id);
 void InitGameStrings();
 
 #endif

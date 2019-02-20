@@ -58,6 +58,52 @@ char* get_string(stringRegistry& registry, int index) {
     return &(registry.string_buffer[buffer_index]);
 }
 
+char* get_name_from_global_id(u16 item_id) {
+    auto item_type = gContext.item_type_data.data[item_id].item_type;
+    auto relative_id = gContext.item_type_data.data[item_id].type_relative_id;
+    switch(item_type) {
+    case 0: 
+        return get_string(gContext.game_strings.item_names, relative_id);
+        break;
+    case 1:
+        return get_string(gContext.game_strings.weapon_names, relative_id);
+        break;
+    case 2:
+        return get_string(gContext.game_strings.armor_names, relative_id);
+        break;
+    case 3:
+        return get_string(gContext.game_strings.accessory_names, relative_id);
+        break;
+    default:
+        char * no_string = "no string found";
+        encode_ffvii_string(no_string);
+        return no_string;
+    }
+}
+
+char* get_description_from_global_id(u16 item_id) {
+    auto item_type = gContext.item_type_data.data[item_id].item_type;
+    auto relative_id = gContext.item_type_data.data[item_id].type_relative_id;
+    switch (item_type) {
+    case 0:
+        return get_string(gContext.game_strings.item_descriptions, relative_id);
+        break;
+    case 1:
+        return get_string(gContext.game_strings.weapon_descriptions, relative_id);
+        break;
+    case 2:
+        return get_string(gContext.game_strings.armor_descriptions, relative_id);
+        break;
+    case 3:
+        return get_string(gContext.game_strings.accessory_descriptions, relative_id);
+        break;
+    default:
+        char * no_string = "no string found";
+        encode_ffvii_string(no_string);
+        return no_string;
+    }
+}
+
 /*This method will be run to encode any ascii string into (non-null terminated) FFVII encoded strings
   ascii strings may be passed to the registry and will be encoded prior to storage*/
 void encode_ffvii_string(char* ascii_string) {

@@ -29,3 +29,11 @@ SISTERRAY_API void InitItem(SrKernelStream* stream)
     PatchItems();
     srLogWrite("kernel.bin: Loaded %lu items", (unsigned long)gContext.items.count);
 }
+
+bool character_can_use_item(u8 character_ID, u16 item_id) {
+    u16 item_restriction_mask = gContext.item_on_use_data[item_id].character_restriction_mask;
+    if (item_restriction_mask & (1 << (character_ID))) {
+        return true;
+    }
+    return false;
+}

@@ -1,4 +1,5 @@
 #include "usable_item_handlers.h"
+#include "items.h"
 #include "impl.h"
 
 /*On use callback for performing HP healing on the menu */
@@ -146,7 +147,7 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
         play_menu_sound(3);
     }
 
-    return stat_boosted
+    return stat_boosted;
 }
 
 /*Introduce item restriction masks making items usable by some characters
@@ -154,38 +155,31 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
   Performing the same checks during battle will allow some "consumables" to have
   per character restrictions*/
 bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    u8 character_ID = (u8)CURRENT_PARTY_MEMBER_ARRAY[party_member_index];
-    u16 item_restriction_mask = gContext.item_on_use_data[item_id].character_restriction_mask; 
-    bool item_usable = character_can_use_item(character_ID, item_restriction_mask);
+    u8 character_ID = (u8)(CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
+    bool item_usable = character_can_use_item(character_ID, item_id); //If the character can't use the item, give the old "nothing to do with me message"
     bool limit_taught = false;
+    auto registry = gContext.game_strings.character_specific_strings[character_ID];
     if (item_usable) {
         if (sub_715026(character_ID)) { //Check if requisite limits are learned
             play_menu_sound(384);
             characterRecordArray[character_ID].learned_limits = (characterRecordArray[character_ID].learned_limits | 0x0200);
-            display_menu_string(&unk_9211F0 + 102 * (item_id - 87)); //Get limit learned text, need to build out custom string storage
-            sub_6C497C(&byte_DD18C8, 7);
+            auto limit_learned_string = get_string(registry, 0); //String 0 is a characters "limit learned" string
+            display_menu_string(limit_learned_string); //Get limit learned text, need to build out custom string storage
+            sub_6C497C((int)byte_DD18C8, 7); //The game does this casting of a pointer as an arg... is ugly
             limit_taught = true;
         }
         else
         {
-            display_menu_string(&unk_9211F0 + 34 * (3 * (item_id - 87) + 1)); //get can't learn limit yet text. Can fetch from our own managed text array
-            sub_6C497C(&byte_DD18C8, 7);
+            auto not_ready_string = get_string(registry, 1);
+            display_menu_string(not_ready_string); //get can't learn limit yet text. Can fetch from our own managed text array
+            sub_6C497C((int)byte_DD18C8, 7);
             play_menu_sound(3);
         }
     }
-    else if (character_ID == 6) {
-        display_menu_string(aTS);
-        sub_6C497C(&byte_DD18C8, 7);
-        play_menu_sound(3);
-    }
     else {
-        if (character_ID >= 6)
-            v21 = character_ID - 1;
-        else
-            v21 = CURRENT_PARTY_MEMBER_ARRAY[party_member_index];
-
-        display_menu_string(&unk_9211F0 + 34 * (3 * v21 + 2)); //get can't learn limit text
-        sub_6C497C(&byte_DD18C8, 7);
+        auto cannot_learn_string = get_string(registry, 2);
+        display_menu_string(cannot_learn_string); //get can't learn limit text
+        sub_6C497C((int)byte_DD18C8, 7);
         play_menu_sound(3);
     }
     return limit_taught;

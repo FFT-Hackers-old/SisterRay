@@ -1,5 +1,5 @@
-#ifndef ITEMS_H
-#define ITEMS_H
+#ifndef REGISTRY_TEMPLATE_H
+#define REGISTRY_TEMPLATE_H
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>

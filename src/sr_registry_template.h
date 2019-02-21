@@ -9,7 +9,7 @@
   And unify our String Registry and all of our various item registries*/
 template<class T> class SrResourceRegistry {
 public:
-    T get_resource(resource index) {
+    T get_resource(int index) {
         return SrResourceRegistry::resource_registry[index];
     }
 

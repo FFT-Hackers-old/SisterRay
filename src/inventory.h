@@ -42,19 +42,18 @@ typedef struct {
     u16 type_relative_id;
 } ItemTypeData;
 
-// this array is maintained for accessing an the "type" and relative index of an SR added item 
-typedef struct {
-    size_t count;
-    size_t capacity;
-    ItemTypeData* data;
-} SrItemTypeData;
+class SrItemTypeRegistry : SrResourceRegistry<ItemTypeData> {
+public:
+    SrItemTypeRegistry() : SrResourceRegistry<ItemTypeData>::SrResourceRegistry() {};
+};
 
 SISTERRAY_API void InitInventory();
 SISTERRAY_API void InitBattleInventory();
-SISTERRAY_API void InitItemTypeData();
+SISTERRAY_API void init_item_type_data();
 
 /*utility for decrementing the quantity of an item at a particular inventory index*/
 void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity);
 SISTERRAY_API i16 sort_inventory(i32 sort_type);
+static void initialize_augmented_data(u8 item_type);
 
 #endif

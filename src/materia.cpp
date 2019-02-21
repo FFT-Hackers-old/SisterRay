@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "impl.h"
-#include "kernel_utils.h"
 
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*x))
 
@@ -65,7 +64,7 @@ static const u32 kPatchData1[] = {
     0x005cc961, 0x005cc983,
 };
 
-static void PatchMateria(void)
+static void patch_materia(void)
 {
     srPatchAddresses((void**)kPatchApLevel, ARRAY_SIZE(kPatchApLevel), (void*)0x00dbdf60, gContext.materias.data, offsetof(MateriaData, apLevel));
     srPatchAddresses((void**)kPatchEquipEffect, ARRAY_SIZE(kPatchEquipEffect), (void*)0x00dbdf60, gContext.materias.data, offsetof(MateriaData, equipEffect));
@@ -79,27 +78,7 @@ static void PatchMateria(void)
 }
 
 SISTERRAY_API void InitMateria(SrKernelStream* stream) {
-    SrMateriaRegistry* registry = &gContext.materias;
-    initRegistry<MateriaData>(
-        stream,
-        registry,
-        allocKernelObject<MateriaData,SrMateriaRegistry>,
-        initObjectRegistry<MateriaData, SrMateriaRegistry>
-    );
-
-    /*Code to create a new materia*/
-    auto materia = allocKernelObject<MateriaData, SrMateriaRegistry>(registry);
-    memcpy(materia, gContext.materias.data + 0x48, sizeof(MateriaData));
-    materia->data[0] = 0x30; 
-    materia->data[1] = 0x31;
-    materia->data[2] = 0x32;
-    materia->data[3] = 0x33;
-    materia->data[4] = 0x34;
-    materia->apLevel[0] = 10;
-    materia->apLevel[1] = 20;
-    materia->apLevel[2] = 30;
-    materia->apLevel[3] = 40;
-    srLogWrite("kernel.bin: Loaded %lu Materias", (unsigned long)gContext.materias.count);
-    PatchMateria();
-    gContext.materias.data[0x48].data[0] = 0x35; // DEBUG
+    gContext.materias = SrMateriaRegistry(stream);
+    srLogWrite("kernel.bin: Loaded %lu Materias", (unsigned long)gContext.materias.resource_count());
+    patch_materia();
 }

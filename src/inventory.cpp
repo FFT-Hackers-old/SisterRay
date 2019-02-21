@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "impl.h"
-#include "kernel_utils.h"
 #include "inventory.h"
 
 
@@ -37,7 +36,14 @@ SISTERRAY_API i16 sort_inventory(i32 sort_type) {
 }
 
 /*Initialize the item_type mapping*/
-SISTERRAY_API void InitItemTypeData() {
-    SrItemTypeData* registry = &gContext.item_type_data;
-    initObjectRegistry<ItemTypeData, SrItemTypeData>(registry);
+SISTERRAY_API void init_item_type_data() {
+    gContext.item_type_data = SrItemTypeRegistry();
+}
+
+static void initialize_augmented_data(u8 item_type) {
+    ItemTypeData item_type_data;
+    for (int i = 0; i < gContext.accessories.count; i++) {
+        ItemTypeData item_type_data{ item_type, (u16)i };
+        gContext.item_type_data.add_resource(item_type_data);
+    }
 }

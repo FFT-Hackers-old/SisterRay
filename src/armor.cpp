@@ -1,16 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "impl.h"
-#include "kernel_utils.h"
 #include "armor.h"
-
-static void InitializeAugmentedArmorData() {
-    for (int i = 0; i < gContext.armors.count; i++) {
-        ItemTypeData* object = allocKernelObject<ItemTypeData, SrItemTypeData>(&gContext.item_type_data);
-        object->item_type = 2;
-        object->type_relative_id = i; //relative ideas 0-31 for the armors
-    }
-}
 
 static const u32 kPatchStructBase[] = {
     0x005cf92b, 0x006cb977, 0x007ba088
@@ -47,7 +38,7 @@ static const u32 kPatchEquipMask[] = {
     0x00708548
 };
 
-static void PatchArmor(void)
+static void patch_armor(void)
 {
     srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, unknown));
     srPatchAddresses((void**)kPatchDefense, ARRAY_SIZE(kPatchDefense), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, defense));
@@ -59,15 +50,10 @@ static void PatchArmor(void)
     srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, equipMask));
 }
 
-SISTERRAY_API void InitArmor(SrKernelStream* stream)
+SISTERRAY_API void init_armor(SrKernelStream* stream)
 {
-    SrArmorRegistry* registry = &gContext.armors;
-    initRegistry<ArmorData>(
-        stream,
-        registry,
-        allocKernelObject<ArmorData, SrArmorRegistry>,
-        initObjectRegistry<ArmorData, SrArmorRegistry>);
-    InitializeAugmentedArmorData();
-    PatchArmor();
-    srLogWrite("kernel.bin: Loaded %lu Armors", (unsigned long)gContext.armors.count);
+    gContext.armors = SrArmorRegistry(stream);
+    initialize_augmented_data(2);
+    patch_armor();
+    srLogWrite("kernel.bin: Loaded %lu Armors", (unsigned long)gContext.armors.resource_count());
 }

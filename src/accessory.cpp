@@ -1,16 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "impl.h"
-#include "kernel_utils.h"
 #include "accessory.h"
 
-static void InitializeAugmentedAccessoryData() {
-    for (int i = 0; i < gContext.accessories.count; i++) {
-        ItemTypeData* object = allocKernelObject<ItemTypeData, SrItemTypeData>(&gContext.item_type_data);
-        object->item_type = 3;
-        object->type_relative_id = i; //relative ideas 0-31 for the accessories
-    }
-}
 
 static const u32 kPatchStructBase[] = {
     0x005d0317, 0x006cb987, 0x007ba08c
@@ -28,7 +20,7 @@ static const u32 kPatchEquipMask[] = {
     0x007085FF
 };
 
-static void PatchAccessories(void)
+static void patch_accessories(void)
 {
     srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ACCESSORY_DATA_PTR, gContext.accessories.data, offsetof(AccessoryData, statsToBoost));
     srPatchAddresses((void**)kSpecialEffect, ARRAY_SIZE(kSpecialEffect), ACCESSORY_DATA_PTR, gContext.accessories.data, offsetof(AccessoryData, specialEffect));
@@ -36,15 +28,10 @@ static void PatchAccessories(void)
     srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ACCESSORY_DATA_PTR, gContext.accessories.data, offsetof(AccessoryData, equipMask));
 }
 
-SISTERRAY_API void InitAccessory(SrKernelStream* stream)
+SISTERRAY_API void init_accessory(SrKernelStream* stream)
 {
-    SrAccessoryRegistry* registry = &gContext.accessories;
-    initRegistry<AccessoryData>(
-        stream,
-        registry,
-        allocKernelObject<AccessoryData, SrAccessoryRegistry>,
-        initObjectRegistry<AccessoryData, SrAccessoryRegistry>);
-    InitializeAugmentedAccessoryData();
-    PatchAccessories();
-    srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.count);
+    gContext.accessories = SrAccessoryRegistry(stream);
+    initialize_augmented_data((u8)3);
+    patch_accessories();
+    srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.resource_count());
 }

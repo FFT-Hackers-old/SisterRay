@@ -22,7 +22,7 @@ typedef struct {
     SrMateriaRegistry                 materias;
     SrItemInventory                   inventory;
     SrBattleInventory                 battle_inventory;
-    SrItemTypeData                    item_type_data;
+    SrItemTypeRegistry                item_type_data;
     std::map<u16, onUseCallback*>     on_use_handlers; /*Registry of function pointers for using items*/
     std::map<u16, onUseItemData>      item_on_use_data;
     SrGameStrings                     game_strings;
@@ -32,9 +32,9 @@ SISTERRAY_GLOBAL SrContext gContext;
 
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
 SISTERRAY_API void InitMateria(SrKernelStream* stream);
-SISTERRAY_API void InitArmor(SrKernelStream* stream);
-SISTERRAY_API void InitAccessory(SrKernelStream* stream);
-SISTERRAY_API void InitItem(SrKernelStream* stream);
+SISTERRAY_API void init_armor(SrKernelStream* stream);
+SISTERRAY_API void init_accessory(SrKernelStream* stream);
+SISTERRAY_API void init_item(SrKernelStream* stream);
 
 SISTERRAY_API void InitLog(void);
 SISTERRAY_API void srLogWrite(const char* format, ...);

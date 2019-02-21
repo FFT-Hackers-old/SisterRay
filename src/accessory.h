@@ -3,6 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
+#include "sr_registry_template.h"
 
 #pragma pack(push, 1)
 typedef struct {
@@ -17,11 +18,9 @@ typedef struct {
 } AccessoryData;
 #pragma pack(pop)
 
-typedef struct
-{
-    size_t          count;
-    size_t          capacity;
-    AccessoryData*  data;
-} SrAccessoryRegistry;
+class SrAccessoryRegistry : SrResourceRegistry<AccessoryData> {
+public:
+    SrAccessoryRegistry(SrKernelStream* stream) : SrResourceRegistry<AccessoryData>::SrResourceRegistry(SrKernelStream* stream) {};
+};
 
 #endif

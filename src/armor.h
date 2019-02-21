@@ -3,6 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
+#include "sr_registry_template.h"
 
 #pragma pack(push, 1)
 typedef struct {
@@ -26,11 +27,9 @@ typedef struct {
 } ArmorData;
 #pragma pack(pop)
 
-typedef struct
-{
-    size_t          count;
-    size_t          capacity;
-    ArmorData*      data;
-} SrArmorRegistry;
+class SrArmorRegistry : SrResourceRegistry<ArmorData> {
+public:
+    SrArmorRegistry(SrKernelStream* stream) : SrResourceRegistry<ArmorData>::SrResourceRegistry(SrKernelStream* stream) {};
+};
 
 #endif

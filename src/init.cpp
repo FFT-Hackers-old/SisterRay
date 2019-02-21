@@ -11,10 +11,10 @@ static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     NULL,
     NULL,
     NULL,
-    InitItem,
+    init_item,
     NULL,
-    InitArmor,
-    InitAccessory,
+    init_armor,
+    init_accessory,
     InitMateria,
 };
 
@@ -23,7 +23,7 @@ static void srLoadKernelBin(void)
     FILE* kernel;
     SrKernelStream stream;
     SrKernelStreamHandler handler;
-    InitItemTypeData(); //initially allocate the mapping used for inventory_id -> relative resource id
+    init_item_type_data(); //initially allocate the mapping used for inventory_id -> relative resource id
 
     kernel = fopen(srGetGamePath("data/kernel/kernel.bin"), "rb");
     for (int i = 0; i < 9; ++i)

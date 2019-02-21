@@ -46,7 +46,7 @@ __declspec(dllexport) void rayInit()
     InitFunctionRegistry();
     InitInventory();
     InitBattleInventory();
-    InitGameStrings();
+    init_game_strings();
     EnableNoCD();
     srLoadKernelBin();
     LoadMods();

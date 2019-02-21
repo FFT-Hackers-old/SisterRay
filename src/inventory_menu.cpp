@@ -19,7 +19,7 @@ void display_active_cursor_state(int a1) {
     u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
     i32* inventory_cursor_position = (INVENTORY_CURSOR_POSITION);
-    u8* MenuTexts[132] = MENU_TEXTS;
+    char MenuTexts[132] = MENU_TEXTS;
     char* fetched_description;
 
     u16 item_ID;

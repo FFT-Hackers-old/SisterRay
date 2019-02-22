@@ -19,7 +19,6 @@ void display_active_cursor_state(int a1) {
     u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
     i32* inventory_cursor_position = (INVENTORY_CURSOR_POSITION);
-    char MenuTexts[132] = MENU_TEXTS;
     char* fetched_description;
 
     u16 item_ID;
@@ -39,7 +38,6 @@ void display_active_cursor_state(int a1) {
         if (*use_on_characters_enabled)
             --(*use_on_characters_enabled);
     }
-    NopInt32();
     switch (inventory_menu_state)
     {
     case 0:                                   // Nothing Selected, Default State
@@ -79,9 +77,10 @@ void display_active_cursor_state(int a1) {
         if (a1 & 2)
             display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.001f);
         display_cursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001f);
-        for (int j = 0; j < 8; ++j)            // Loop over arrange types
-            fetched_description = &(MenuTexts[12 * (j + 3)]) //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
+        for (int j = 0; j < 8; ++j) {            // Loop over arrange types
+            fetched_description = gContext.game_strings.inventory_menu_texts.get_string(j + 3); //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
             display_text_at_location(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetched_description, 7, 1008981770);
+        }
         sub_6E7D20((i16*)(dword_DD18C0 + 24), (float)1008981770);
         break;
     case 5:                                   // Inside Custom Sort
@@ -102,7 +101,6 @@ void display_active_cursor_state(int a1) {
 void display_inventory_views(int a1) {
     u32 inventory_menu_state = *(INVENTORY_MENU_STATE);
     int* inventory_cursor_position = (INVENTORY_CURSOR_POSITION); //might be better to call this 'current menu view'
-    char menu_texts[132] = MENU_TEXTS;
 
     int menu_state_local;
 
@@ -112,7 +110,7 @@ void display_inventory_views(int a1) {
     }
 
     for (int menu_text_index = 0; menu_text_index < 3; ++menu_text_index) //display the "Use, Arrange, and Key Item fields
-        display_text_at_location(93 * menu_text_index + 57, 17, &menu_texts[12 * menu_text_index], 7, 1036966167);
+        display_text_at_location(93 * menu_text_index + 57, 17, gContext.game_strings.inventory_menu_texts.get_string(menu_text_index), 7, 1036966167);
     sub_6FA12F(0, 102, 640, 372);
 
     if (inventory_cursor_position[0] == 2)     // If cursor positioned on key items
@@ -127,7 +125,7 @@ void display_inventory_views(int a1) {
             {
                 if (a1 & 2)
                 {
-                    i32 v45 = 37 * (*CUSTOM_SORT_TEMP_INDEX) - 37 * (*CUSTOM_SORT_VIEW_BASE) + 9 * dword_DD1B54 - 9;
+                    i32 v45 = 37 * (*CUSTOM_SORT_TEMP_INDEX) - 37 * (*CUSTOM_SORT_VIEW_BASE) + 9 * (*dword_DD1B54) - 9;
                     if (v45 > -37 && v45 < 1369)
                         display_cursor(291, v45 + 113, 0.0);
                 }
@@ -160,7 +158,6 @@ void render_inventory_main_view(int custom_arrange_active) {
     u8 single_byte_color;
 
     // The next three locals are used in some computation I don't currently understand the point of, rewrite later
-    int unk_local_1;
     int unk_local_2;
     int unk_local_3;
 
@@ -171,18 +168,17 @@ void render_inventory_main_view(int custom_arrange_active) {
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
     *word_DD17FC = 372;
-    sub_6F7270(GLOBAL_MENU_VIEW_SIZE, 0.1f); //Gets the number of rows in the current view and does something.
-    int displayed_row_count = (dword_DD1A48[14 * custom_arrange_active] != 0) + 10;
+    sub_6F7270((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f); //The address here is passed as an int and then "casted" back and used as a ptr by the function at this point
+    int displayed_row_count = ((dword_DD1A48)[14 * custom_arrange_active] != 0) + 10;
 
-    NopInt32();
     for (int visible_item = 0; visible_item < displayed_row_count; ++visible_item) {
         visible_item_inventory_index = visible_item + (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
         if (gContext.inventory.get_resource(visible_item_inventory_index).item_id != 0xFFFF) {
             item_ID = gContext.inventory.get_resource(visible_item_inventory_index).item_id;
             // Do some stuff to assemble an argument for display text
             text_color = -((item_is_usable(item_ID) & 4) != 0); //This method needs to be rewritten to use our own systems
-            LOBYTE(unk_local_1) = unk_local_1 & 0xF9;
-            unk_local_3 = unk_local_1 + 7;
+            LOBYTE(text_color) = text_color & 0xF9;
+            unk_local_3 = text_color + 7;
             LOBYTE(unk_local_2) = unk_local_3;
             // End assemble said argument
             kernel_object_name = get_name_from_global_id(item_ID);
@@ -359,7 +355,7 @@ void handle_inventory_input(int a1) {
             }
             else
             {
-                set_cursor_data_values(&dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, 320, 0, 0, 0, 0, 0, 1);// Custom Sort Cursor Data Copy?
+                set_cursor_data_values(dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, 320, 0, 0, 0, 0, 0, 1);// Custom Sort Cursor Data Copy?
                 *ITEM_TO_SWAP_SELECTED = 0; //Clear the globals that are used by the custom sort routine for swapping items
                 *UNKNOWN_CUSTOM_SORT_GLOBAL = 0;
                 *CUSTOM_SORT_TEMP_INDEX = 0;
@@ -390,7 +386,7 @@ void handle_inventory_input(int a1) {
             else
             {
                 play_menu_sound(1);
-                *UNKNOWN_CUSTOM_SORT_GLOBAL = dword_DD1B30; //copy first dword of struct set in previous state here, seems to always be 0
+                *UNKNOWN_CUSTOM_SORT_GLOBAL = *dword_DD1B30; //copy first dword of struct set in previous state here, seems to always be 0
                 *CUSTOM_SORT_TEMP_INDEX = *CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX; //custom sort base row and relative offsets copied when you select an item to swap
                 *ITEM_TO_SWAP_SELECTED = 1;
             }

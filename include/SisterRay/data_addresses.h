@@ -46,6 +46,9 @@
 #define dword_DD1A3C             (u32*)0xDD1A3C
 #define dword_DD18C0             (u32*)0xDD18C0
 #define dword_DC1210             (u32*)0xDC1210
+#define dword_DD1B30             (u32*)0xDD1B30
+#define dword_DD1A48             (u32*)0xDD1A48
+#define dword_DD1B54             (u32*)0xDD1B54 
 #define byte_DC0C3C              (u8*)0xDC0C3C
 #define byte_DD18C8              (u8*)0xDD18C8
 

@@ -18,9 +18,9 @@ typedef struct {
 } AccessoryData;
 #pragma pack(pop)
 
-class SrAccessoryRegistry : SrResourceRegistry<AccessoryData> {
+class SrAccessoryRegistry : public SrResourceRegistry<AccessoryData> {
 public:
-    SrAccessoryRegistry(SrKernelStream* stream) : SrResourceRegistry<AccessoryData>::SrResourceRegistry(SrKernelStream* stream) {};
+    SrAccessoryRegistry(SrKernelStream* stream) : SrResourceRegistry<AccessoryData>(stream) {};
 };
 
 #endif

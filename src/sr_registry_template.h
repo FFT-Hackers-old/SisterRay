@@ -11,14 +11,14 @@
 template<class T> class SrResourceRegistry {
 public:
     /*Constructor for initializing a resource registry from a kernel stream*/
-    SrResourceRegistry(SrKernelStream stream) {
+    SrResourceRegistry(SrKernelStream* stream) {
         size_t read_size;
         T object;
 
         for (;;)
         {
-            read_size = srKernelStreamRead(stream, &object, sizeof(tmp));
-            if (read_size != sizeof(tmp))
+            read_size = srKernelStreamRead(stream, &object, sizeof(object));
+            if (read_size != sizeof(object))
                 break;
             SrResourceRegistry::add_resource(object);
         }
@@ -38,6 +38,10 @@ public:
 
     int resource_count() {
         return resource_registry.size();
+    }
+
+    T* get_data() {
+        return resource_registry.data();
     }
 
 private:

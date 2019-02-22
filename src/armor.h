@@ -27,9 +27,9 @@ typedef struct {
 } ArmorData;
 #pragma pack(pop)
 
-class SrArmorRegistry : SrResourceRegistry<ArmorData> {
+class SrArmorRegistry : public SrResourceRegistry<ArmorData> {
 public:
-    SrArmorRegistry(SrKernelStream* stream) : SrResourceRegistry<ArmorData>::SrResourceRegistry(SrKernelStream* stream) {};
+    SrArmorRegistry(SrKernelStream* stream) : SrResourceRegistry<ArmorData>(stream) {}
 };
 
 #endif

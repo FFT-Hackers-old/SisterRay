@@ -40,14 +40,14 @@ static const u32 kPatchEquipMask[] = {
 
 static void patch_armor(void)
 {
-    srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, unknown));
-    srPatchAddresses((void**)kPatchDefense, ARRAY_SIZE(kPatchDefense), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, defense));
-    srPatchAddresses((void**)kPatchMagicDefense, ARRAY_SIZE(kPatchMagicDefense), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, magicDefense));
-    srPatchAddresses((void**)kPatchEvade, ARRAY_SIZE(kPatchEvade), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, evade));
-    srPatchAddresses((void**)kPatchMagicEvade, ARRAY_SIZE(kPatchMagicEvade), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, magicEvade));
-    srPatchAddresses((void**)kPatchMateriaSlot1, ARRAY_SIZE(kPatchMateriaSlot1), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, materiaSlots));
-    srPatchAddresses((void**)kPatchRestrictMask, ARRAY_SIZE(kPatchRestrictMask), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, restrictionMask));
-    srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ARMOR_DATA_PTR, gContext.armors.data, offsetof(ArmorData, equipMask));
+    srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, unknown));
+    srPatchAddresses((void**)kPatchDefense, ARRAY_SIZE(kPatchDefense), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, defense));
+    srPatchAddresses((void**)kPatchMagicDefense, ARRAY_SIZE(kPatchMagicDefense), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, magicDefense));
+    srPatchAddresses((void**)kPatchEvade, ARRAY_SIZE(kPatchEvade), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, evade));
+    srPatchAddresses((void**)kPatchMagicEvade, ARRAY_SIZE(kPatchMagicEvade), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, magicEvade));
+    srPatchAddresses((void**)kPatchMateriaSlot1, ARRAY_SIZE(kPatchMateriaSlot1), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, materiaSlots));
+    srPatchAddresses((void**)kPatchRestrictMask, ARRAY_SIZE(kPatchRestrictMask), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, restrictionMask));
+    srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, equipMask));
 }
 
 SISTERRAY_API void init_armor(SrKernelStream* stream)

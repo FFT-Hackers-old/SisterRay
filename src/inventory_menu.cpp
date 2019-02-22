@@ -180,7 +180,7 @@ void render_inventory_main_view(int custom_arrange_active) {
         if (gContext.inventory.data[visible_item_inventory_index].item_id != 0xFFFF) {
             item_ID = gContext.inventory.data[visible_item_inventory_index].item_id;
             // Do some stuff to assemble an argument for display text
-            text_color = -((item_is_usable(item_ID) & 4) != 0);
+            text_color = -((item_is_usable(item_ID) & 4) != 0); //This method needs to be rewritten to use our own systems
             LOBYTE(unk_local_1) = unk_local_1 & 0xF9;
             unk_local_3 = unk_local_1 + 7;
             LOBYTE(unk_local_2) = unk_local_3;

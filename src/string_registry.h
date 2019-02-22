@@ -55,8 +55,6 @@ typedef struct {
     StringRegistry  weapon_names;
 } SrGameStrings;
 
-void register_string(stringRegistry& registry, char* string);
-char* get_string(stringRegistry& registry, int index);
 char* get_name_from_global_id(u16 item_id);
 char* get_description_from_global_id(u16 item_id);
 void init_game_strings();

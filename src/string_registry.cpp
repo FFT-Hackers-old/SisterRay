@@ -37,7 +37,7 @@ char* get_name_from_global_id(u16 item_id) {
         break;
     case 1:
         return gContext.game_strings.weapon_names.get_string(relative_id);
-        break;
+        break; 
     case 2:
         return gContext.game_strings.armor_names.get_string(relative_id);
         break;

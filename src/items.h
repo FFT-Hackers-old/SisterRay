@@ -24,9 +24,9 @@ typedef struct {
 } ItemData;
 #pragma pack(pop)
 
-class SrItemRegistry : SrResourceRegistry<ItemData> {
+class SrItemRegistry : public SrResourceRegistry<ItemData> {
 public:
- SrItemRegistry(SrKernelStream* stream) : SrResourceRegistry<ItemData>::SrResourceRegistry(SrKernelStream* stream) {};
+ SrItemRegistry(SrKernelStream* stream) : SrResourceRegistry<ItemData>(stream) {};
 };
 
 /*new structure holding additional item_id indexed data*/

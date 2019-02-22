@@ -15,9 +15,9 @@ typedef struct {
 } MateriaData;
 #pragma pack(pop)
 
-class SrMateriaRegistry : SrResourceRegistry<MateriaData> {
+class SrMateriaRegistry : public SrResourceRegistry<MateriaData> {
 public:
-    SrMateriaRegistry(SrKernelStream* stream) : SrResourceRegistry<MateriaData>::SrResourceRegistry(SrKernelStream* stream) {};
+    SrMateriaRegistry(SrKernelStream* stream) : SrResourceRegistry<MateriaData>(stream) {}
 };
 
 #endif

@@ -28,7 +28,7 @@ void display_active_cursor_state(int a1) {
     if (inventory_menu_state == 2)
     {
         if (!(*use_on_characters_enabled)) {
-            item_ID = gContext.inventory.data[active_window_base_row + relative_item_index].item_id;;
+            item_ID = gContext.inventory.get_resource(active_window_base_row + relative_item_index).item_id;;
             if (item_ID != 6 && item_ID != 70)
                 display_cursor(0, 120 * party_member_index + 161, 0.0f); //if the cursor isn't targeting all
             else
@@ -49,18 +49,18 @@ void display_active_cursor_state(int a1) {
         if (a1 & 2)
             display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.1f);
         display_cursor(298, 37 * relative_item_index + 109, 0.1f);
-        if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id != 0xFFFF)
+        if (gContext.inventory.get_resource(active_window_base_row + relative_item_index).item_id != 0xFFFF)
         {
-            fetched_description = get_description_from_global_id(gContext.inventory.data[active_window_base_row + relative_item_index].item_id);
+            fetched_description = get_description_from_global_id(gContext.inventory.get_resource(active_window_base_row + relative_item_index).item_id);
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
         }
         break;
     case 2:                                   // Use Selected - Targeting Party
         if (a1 & 2)
             display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0f);
-        if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id != 0xFFFF)
+        if (gContext.inventory.get_resource(active_window_base_row + relative_item_index).item_id != 0xFFFF)
         {
-            fetched_description = get_description_from_global_id(gContext.inventory.data[active_window_base_row + relative_item_index].item_id);
+            fetched_description = get_description_from_global_id(gContext.inventory.get_resource(active_window_base_row + relative_item_index).item_id);
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
         }
         break;
@@ -382,8 +382,8 @@ void handle_inventory_input(int a1) {
                     play_menu_sound(1);
                     /*This code swaps two items in the inventory*/
                     InventoryEntry temp_entry = gContext.inventory.data[*CUSTOM_SORT_TEMP_INDEX]; //copy cursor start
-                    gContext.inventory.data[*CUSTOM_SORT_TEMP_INDEX] = gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX]; 
-                    gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX] = temp_entry;
+                    gContext.inventory.get_resource(*CUSTOM_SORT_TEMP_INDEX) = gContext.inventory.get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX); 
+                    gContext.inventory.get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX) = temp_entry;
                     *ITEM_TO_SWAP_SELECTED = 0;
                 }
             }
@@ -414,7 +414,7 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     /*Call the appropriate function handler for using items on a character/the party*/
     item_was_used = gContext.on_use_handlers[item_ID]((u16)party_member_index, item_ID, inventory_index);
     if (item_was_used) {
-        handle_decrement_inventory(inventory_index, 1);
+        gContext.inventory.handle_decrement_inventory(inventory_index, 1);
         if (gContext.inventory.data[inventory_index].item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
             *INVENTORY_MENU_STATE = 1;
     }

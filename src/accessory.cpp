@@ -22,10 +22,10 @@ static const u32 kPatchEquipMask[] = {
 
 static void patch_accessories(void)
 {
-    srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, statsToBoost));
-    srPatchAddresses((void**)kSpecialEffect, ARRAY_SIZE(kSpecialEffect), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, specialEffect));
-    srPatchAddresses((void**)kPatchRestrictMask, ARRAY_SIZE(kPatchRestrictMask), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, restrictionMask));
-    srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, equipMask));
+    srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, stats_to_boost));
+    srPatchAddresses((void**)kSpecialEffect, ARRAY_SIZE(kSpecialEffect), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, special_effect));
+    srPatchAddresses((void**)kPatchRestrictMask, ARRAY_SIZE(kPatchRestrictMask), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, restriction_mask));
+    srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, equip_mask));
 }
 
 SISTERRAY_API void init_accessory(SrKernelStream* stream)

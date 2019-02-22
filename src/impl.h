@@ -7,6 +7,7 @@
 #include "kernel.h"
 #include "items.h"
 #include "materia.h"
+#include "weapons.h"
 #include "armor.h"
 #include "accessory.h"
 #include "inventory.h"
@@ -17,6 +18,7 @@
 typedef struct {
     FILE*                             logFile;
     SrItemRegistry                    items;
+    SrWeaponRegistry                  weapons;
     SrArmorRegistry                   armors;
     SrAccessoryRegistry               accessories;
     SrMateriaRegistry                 materias;
@@ -31,10 +33,11 @@ typedef struct {
 SISTERRAY_GLOBAL SrContext gContext;
 
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
-SISTERRAY_API void InitMateria(SrKernelStream* stream);
+SISTERRAY_API void init_materia(SrKernelStream* stream);
 SISTERRAY_API void init_armor(SrKernelStream* stream);
 SISTERRAY_API void init_accessory(SrKernelStream* stream);
 SISTERRAY_API void init_item(SrKernelStream* stream);
+SISTERRAY_API void init_weapon(SrKernelStream* stream);
 
 SISTERRAY_API void InitLog(void);
 SISTERRAY_API void srLogWrite(const char* format, ...);

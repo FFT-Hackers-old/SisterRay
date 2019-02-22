@@ -24,7 +24,11 @@ public:
         }
     };
 
-    /*Default Constructor if we need an empty registry*/
+    /*Constructor used for fized size arrays, like the inventory*/
+    SrResourceRegistry(int reserve_size) {
+        SrResourceRegistry::resource_registry.reserve(reserve_size);
+    }
+
     SrResourceRegistry() {};
     ~SrResourceRegistry() {};
 
@@ -44,7 +48,6 @@ public:
         return resource_registry.data();
     }
 
-private:
     std::vector<T> resource_registry;
 };
 

@@ -15,11 +15,10 @@ typedef struct {
     u8 padding;
 } BattleInventoryEntry;
 
-typedef struct {
-    size_t          count;
-    size_t          capacity;
-    BattleInventoryEntry* data;
-} SrBattleInventory;
+class SrBattleInventory : public SrResourceRegistry<BattleInventoryEntry> {
+public:
+    SrBattleInventory(int allocation_size) : SrResourceRegistry<BattleInventoryEntry>(allocation_size) {}
+};
 
 /*This does not match the original format of an FFVII item
   In order to enable more items, a new format is being introduced and
@@ -31,10 +30,11 @@ typedef struct {
 } InventoryEntry;
 #pragma pack(pop)
 
-typedef struct {
-    size_t          capacity;
-    InventoryEntry*    data;
-} SrItemInventory;
+class SrItemInventory : public SrResourceRegistry<InventoryEntry> {
+public:
+    SrItemInventory(int allocation_size) : SrResourceRegistry<InventoryEntry>(allocation_size) {}
+    void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity);
+};
 
 // indexed by global "item_id"
 typedef struct {
@@ -42,7 +42,7 @@ typedef struct {
     u16 type_relative_id;
 } ItemTypeData;
 
-class SrItemTypeRegistry : SrResourceRegistry<ItemTypeData> {
+class SrItemTypeRegistry : public SrResourceRegistry<ItemTypeData> {
 public:
     SrItemTypeRegistry() : SrResourceRegistry<ItemTypeData>::SrResourceRegistry() {};
 };
@@ -52,7 +52,6 @@ SISTERRAY_API void InitBattleInventory();
 SISTERRAY_API void init_item_type_data();
 
 /*utility for decrementing the quantity of an item at a particular inventory index*/
-void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity);
 SISTERRAY_API i16 sort_inventory(i32 sort_type);
 static void initialize_augmented_data(u8 item_type);
 

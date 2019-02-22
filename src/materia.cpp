@@ -77,7 +77,7 @@ static void patch_materia(void)
     srPatchAddresses((void**)kPatchData1, ARRAY_SIZE(kPatchData1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, data) + 1);
 }
 
-SISTERRAY_API void InitMateria(SrKernelStream* stream) {
+SISTERRAY_API void init_materia(SrKernelStream* stream) {
     gContext.materias = SrMateriaRegistry(stream);
     srLogWrite("kernel.bin: Loaded %lu Materias", (unsigned long)gContext.materias.resource_count());
     patch_materia();

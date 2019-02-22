@@ -7,14 +7,14 @@
 
 #pragma pack(push, 1)
 typedef struct {
-    u8      statsToBoost[2];
-    u8      statBoostAmounts[2];
-    u8      elementInteraction;
-    u8      specialEffect; /*We will hook in custom effects here*/
-    u16     elementsMask;
-    u32     statusDefenseMask;
-    u16     equipMask;
-    u16     restrictionMask;
+    u8      stats_to_boost[2];
+    u8      stat_boost_amounts[2];
+    u8      elemental_interaction;
+    u8      special_effect; /*We will hook in custom effects here*/
+    u16     elements_mask;
+    u32     status_defense_mask;
+    u16     equip_mask;
+    u16     restriction_mask;
 } AccessoryData;
 #pragma pack(pop)
 

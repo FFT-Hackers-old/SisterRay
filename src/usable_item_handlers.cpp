@@ -163,21 +163,21 @@ bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index
         if (sub_715026(character_ID)) { //Check if requisite limits are learned
             play_menu_sound(384);
             characterRecordArray[character_ID].learned_limits = (characterRecordArray[character_ID].learned_limits | 0x0200);
-            auto limit_learned_string = get_string(registry, 0); //String 0 is a characters "limit learned" string
+            auto limit_learned_string = gContext.game_strings.character_specific_strings[character_ID].get_string(0); //String 0 is a characters "limit learned" string
             display_menu_string(limit_learned_string); //Get limit learned text, need to build out custom string storage
             sub_6C497C((int)byte_DD18C8, 7); //The game does this casting of a pointer as an arg... is ugly
             limit_taught = true;
         }
         else
         {
-            auto not_ready_string = get_string(registry, 1);
+            auto not_ready_string = gContext.game_strings.character_specific_strings[character_ID].get_string(1);
             display_menu_string(not_ready_string); //get can't learn limit yet text. Can fetch from our own managed text array
             sub_6C497C((int)byte_DD18C8, 7);
             play_menu_sound(3);
         }
     }
     else {
-        auto cannot_learn_string = get_string(registry, 2);
+        auto cannot_learn_string = gContext.game_strings.character_specific_strings[character_ID].get_string(2);
         display_menu_string(cannot_learn_string); //get can't learn limit text
         sub_6C497C((int)byte_DD18C8, 7);
         play_menu_sound(3);

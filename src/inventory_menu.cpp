@@ -87,9 +87,9 @@ void display_active_cursor_state(int a1) {
     case 5:                                   // Inside Custom Sort
         if (a1 & 2)
             display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0f);
-        if (gContext.inventory.data[*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX].item_id != 0xFFFF)
+        if (gContext.inventory.get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX).item_id != 0xFFFF)
         {
-            fetched_description = get_description_from_global_id(gContext.inventory.data[active_window_base_row + relative_item_index].item_id);
+            fetched_description = get_description_from_global_id(gContext.inventory.get_resource(active_window_base_row + relative_item_index).item_id);
             display_text_at_location(27, 64, fetched_description, 7, 1036966167);
         }
         break;
@@ -177,8 +177,8 @@ void render_inventory_main_view(int custom_arrange_active) {
     NopInt32();
     for (int visible_item = 0; visible_item < displayed_row_count; ++visible_item) {
         visible_item_inventory_index = visible_item + (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
-        if (gContext.inventory.data[visible_item_inventory_index].item_id != 0xFFFF) {
-            item_ID = gContext.inventory.data[visible_item_inventory_index].item_id;
+        if (gContext.inventory.get_resource(visible_item_inventory_index).item_id != 0xFFFF) {
+            item_ID = gContext.inventory.get_resource(visible_item_inventory_index).item_id;
             // Do some stuff to assemble an argument for display text
             text_color = -((item_is_usable(item_ID) & 4) != 0); //This method needs to be rewritten to use our own systems
             LOBYTE(unk_local_1) = unk_local_1 & 0xF9;
@@ -191,9 +191,9 @@ void render_inventory_main_view(int custom_arrange_active) {
     }
     for (int visible_item = 0; visible_item < displayed_row_count; ++visible_item) {
         visible_item_inventory_index = visible_item + (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
-        if (gContext.inventory.data[visible_item_inventory_index].item_id != 0xFFFF) {
-            item_ID = gContext.inventory.data[visible_item_inventory_index + relative_item_index].item_id;
-            item_quantity = gContext.inventory.data[visible_item_inventory_index + relative_item_index].quantity;
+        if (gContext.inventory.get_resource(visible_item_inventory_index).item_id != 0xFFFF) {
+            item_ID = gContext.inventory.get_resource(visible_item_inventory_index + relative_item_index).item_id;
+            item_quantity = gContext.inventory.get_resource(visible_item_inventory_index + relative_item_index).quantity;
             text_color = (item_is_usable(item_ID) & 4) != 0 ? 0 : 7; // This sets something based on whether the item is usable, assuming it's text color
 
             display_visible_item_icon(343, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 105, item_ID, 0, 1036966167);
@@ -281,11 +281,11 @@ void handle_inventory_input(int a1) {
     case 1:
         if (!(*dword_DD1A80)) {
             if (check_received_input(32)) {
-                if (gContext.inventory.data[active_window_base_row + relative_item_index].item_id == 0xFFFF) {
+                if (gContext.inventory.get_resource(active_window_base_row + relative_item_index).item_id == 0xFFFF) {
                     play_menu_sound(3);
                 }
                 else {
-                    item_ID = gContext.inventory.data[active_window_base_row + relative_item_index].item_id;
+                    item_ID = gContext.inventory.get_resource(active_window_base_row + relative_item_index).item_id;
                     if (item_is_usable(item_ID) & 4) {
                         play_menu_sound(3);
                     }
@@ -327,7 +327,7 @@ void handle_inventory_input(int a1) {
             return;
         if (check_received_input(32)) {  //if "ok" input was received
             u16 inventory_index = active_window_base_row + relative_item_index;
-            item_ID = gContext.inventory.data[inventory_index].item_id;
+            item_ID = gContext.inventory.get_resource(inventory_index).item_id;
             u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
             if (character_ID == 0xFF && item_ID != 6 && item_ID != 70) { // Can't use item on empty party member unless it is megalixer or tent
                 play_menu_sound(3);
@@ -381,7 +381,7 @@ void handle_inventory_input(int a1) {
                 {
                     play_menu_sound(1);
                     /*This code swaps two items in the inventory*/
-                    InventoryEntry temp_entry = gContext.inventory.data[*CUSTOM_SORT_TEMP_INDEX]; //copy cursor start
+                    InventoryEntry temp_entry = gContext.inventory.get_resource(*CUSTOM_SORT_TEMP_INDEX); //copy cursor start
                     gContext.inventory.get_resource(*CUSTOM_SORT_TEMP_INDEX) = gContext.inventory.get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX); 
                     gContext.inventory.get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX) = temp_entry;
                     *ITEM_TO_SWAP_SELECTED = 0;
@@ -415,7 +415,7 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     item_was_used = gContext.on_use_handlers[item_ID]((u16)party_member_index, item_ID, inventory_index);
     if (item_was_used) {
         gContext.inventory.handle_decrement_inventory(inventory_index, 1);
-        if (gContext.inventory.data[inventory_index].item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
+        if (gContext.inventory.get_resource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
             *INVENTORY_MENU_STATE = 1;
     }
 }

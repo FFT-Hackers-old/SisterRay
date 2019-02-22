@@ -45,6 +45,7 @@ typedef struct {
 class SrItemTypeRegistry : public SrResourceRegistry<ItemTypeData> {
 public:
     SrItemTypeRegistry() : SrResourceRegistry<ItemTypeData>::SrResourceRegistry() {};
+    void initialize_augmented_data(u8 item_type, u16 number_to_initialize);
 };
 
 SISTERRAY_API void InitInventory();

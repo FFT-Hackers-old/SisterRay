@@ -53,7 +53,7 @@ static void patch_armor(void)
 SISTERRAY_API void init_armor(SrKernelStream* stream)
 {
     gContext.armors = SrArmorRegistry(stream);
-    initialize_augmented_data(2);
+    gContext.item_type_data.initialize_augmented_data((u8)2, gContext.armors.resource_count());
     patch_armor();
     srLogWrite("kernel.bin: Loaded %lu Armors", (unsigned long)gContext.armors.resource_count());
 }

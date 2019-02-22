@@ -9,7 +9,7 @@ static void patch_items() {
 SISTERRAY_API void init_item(SrKernelStream* stream)
 {
     gContext.items = SrItemRegistry(stream);
-    initialize_augmented_data(0);
+    gContext.item_type_data.initialize_augmented_data((u8)0, gContext.items.resource_count());
     patch_items();
     srLogWrite("kernel.bin: Loaded %lu items", (unsigned long)gContext.items.resource_count());
 }
@@ -21,7 +21,7 @@ bool character_can_use_item(u8 character_ID, u16 item_id) {
     u16 restriction_mask;
     switch(item_type) {
     case 0: {
-        restriction_mask = gContext.item_on_use_data[item_id].character_restriction_mask;
+        restriction_mask = gContext.item_on_use_data[relative_id].character_restriction_mask;
         if (restriction_mask & (1 << (character_ID))) {
             return true;
         }

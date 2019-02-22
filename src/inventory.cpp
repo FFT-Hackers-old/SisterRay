@@ -38,9 +38,9 @@ SISTERRAY_API void init_item_type_data() {
 }
 
 /*Probably should be moved inside the registry*/
-static void initialize_augmented_data(u8 item_type) {
+void SrItemTypeRegistry::initialize_augmented_data(u8 item_type, u16 number_to_initialize) {
     ItemTypeData item_type_data;
-    for (int i = 0; i < gContext.accessories.count; i++) {
+    for (u16 i = 0; i <= number_to_initialize; i++) {
         ItemTypeData item_type_data{ item_type, (u16)i };
         gContext.item_type_data.add_resource(item_type_data);
     }

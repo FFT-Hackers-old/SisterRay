@@ -6,7 +6,7 @@ SISTERRAY_API void new_inventory_menu_handler(int a1)
 {
     display_active_cursor_state(a1);
     display_inventory_views(a1);
-    if (!sub_6C9808())
+    if (!is_input_handling_enabled())
     {
         handle_inventory_input(a1);
     }
@@ -155,11 +155,6 @@ void render_inventory_main_view(int custom_arrange_active) {
     u8 item_quantity;
     int visible_item_inventory_index;
     int text_color;
-    u8 single_byte_color;
-
-    // The next three locals are used in some computation I don't currently understand the point of, rewrite later
-    int unk_local_2;
-    int unk_local_3;
 
     *GLOBAL_MENU_VIEW_SIZE = 10;                         // number of rows active in an inventory view
     *GLOBAL_MENU_ROW_COUNT = 320;                        // max size of the inventory.. let's change it
@@ -176,13 +171,11 @@ void render_inventory_main_view(int custom_arrange_active) {
         if (gContext.inventory.get_resource(visible_item_inventory_index).item_id != 0xFFFF) {
             item_ID = gContext.inventory.get_resource(visible_item_inventory_index).item_id;
             // Do some stuff to assemble an argument for display text
-            text_color = -((item_is_usable(item_ID) & 4) != 0); //This method needs to be rewritten to use our own systems
-            LOBYTE(text_color) = text_color & 0xF9;
-            unk_local_3 = text_color + 7;
-            LOBYTE(unk_local_2) = unk_local_3;
-            // End assemble said argument
+            text_color = -(usable_in_inventory_menu(item_ID)); //This method needs to be rewritten to use our own systems
+            text_color = text_color & 0xF9;
+            text_color = text_color + 7;
             kernel_object_name = get_name_from_global_id(item_ID);
-            display_text_at_location(373, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 109, kernel_object_name, unk_local_2, 1036966167);
+            display_text_at_location(373, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 109, kernel_object_name, (u8)text_color, 1036966167);
         }
     }
     for (int visible_item = 0; visible_item < displayed_row_count; ++visible_item) {
@@ -190,12 +183,11 @@ void render_inventory_main_view(int custom_arrange_active) {
         if (gContext.inventory.get_resource(visible_item_inventory_index).item_id != 0xFFFF) {
             item_ID = gContext.inventory.get_resource(visible_item_inventory_index + relative_item_index).item_id;
             item_quantity = gContext.inventory.get_resource(visible_item_inventory_index + relative_item_index).quantity;
-            text_color = (item_is_usable(item_ID) & 4) != 0 ? 0 : 7; // This sets something based on whether the item is usable, assuming it's text color
+            text_color = usable_in_inventory_menu(item_ID) ? 0 : 7; // This sets something based on whether the item is usable, assuming it's text color
 
             display_visible_item_icon(343, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 105, item_ID, 0, 1036966167);
-            LOBYTE(single_byte_color) = text_color;
-            sub_6F5C0C(548, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 114, 213, text_color, 1036966167);
-            sub_6F9739(550, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 112, item_quantity, 3, text_color, 1036966167);
+            sub_6F5C0C(548, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 114, 213, (u8)text_color, 1036966167);
+            sub_6F9739(550, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 112, item_quantity, 3, (u8)text_color, 1036966167);
         }
     }
 }
@@ -282,7 +274,7 @@ void handle_inventory_input(int a1) {
                 }
                 else {
                     item_ID = gContext.inventory.get_resource(active_window_base_row + relative_item_index).item_id;
-                    if (item_is_usable(item_ID) & 4) {
+                    if (usable_in_inventory_menu(item_ID)) {
                         play_menu_sound(3);
                     }
                     else if (item_ID == 98) {        //Save Crytal case

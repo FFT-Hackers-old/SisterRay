@@ -22,7 +22,7 @@ public:
                 ascii_string[i] = 0; //spaces are encoded as zeroes by FFVII
             }
         }
-    FF7EncodedString:encoded_string = ascii_string;
+    FF7EncodedString::encoded_string = ascii_string;
     }
 
     char* get_encoded_string() {

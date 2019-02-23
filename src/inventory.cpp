@@ -45,3 +45,36 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 item_type, u16 number_to_i
         gContext.item_type_data.add_resource(item_type_data);
     }
 }
+
+/*Utility check if an item is usable on the menu*/
+bool usable_in_inventory_menu(u16 item_id) {
+    u8 item_type = gContext.item_type_data.get_resource(item_id).item_type;
+    u16 relative_id = gContext.item_type_data.get_resource(item_id).item_type;
+    u16 restriction_mask;
+    switch (item_type) {
+    case 0: {
+        restriction_mask = gContext.items.get_resource(relative_id).restriction_mask;
+        break;
+    }
+    case 1: {
+        restriction_mask = gContext.weapons.get_resource(relative_id).restriction_mask;
+        break;
+    }
+    case 2: {
+        restriction_mask = gContext.armors.get_resource(relative_id).restriction_mask;
+        break;
+    }
+    case 3: {
+        restriction_mask = gContext.accessories.get_resource(relative_id).restriction_mask;
+        break;
+    }
+    default:
+        restriction_mask = 0x00;
+    }
+
+    if (restriction_mask & 4) {
+        return true;
+    }
+
+    return false;
+}

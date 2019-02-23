@@ -142,4 +142,7 @@ typedef i16*(*pfnsub6C98A6)(void);
 typedef void(*pfnsub6C497C)(i32, char);
 #define sub_6C497C                      ((pfnsub6C497C)0x6C497C)
 
+typedef i32(*pfnsub6C9808)(void);
+#define is_input_handling_enabled       ((pfnsub6C9808)0x6C9808)
+
 #endif

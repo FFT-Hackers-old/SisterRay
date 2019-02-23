@@ -6,7 +6,7 @@ static void patch_weapons() {
     u8 a = 1;
 }
 
-SISTERRAY_API void init_weapons(SrKernelStream* stream)
+SISTERRAY_API void init_weapon(SrKernelStream* stream)
 {
     gContext.weapons = SrWeaponRegistry(stream);
     gContext.item_type_data.initialize_augmented_data((u8)1, gContext.weapons.resource_count());

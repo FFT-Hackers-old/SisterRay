@@ -54,6 +54,6 @@ SISTERRAY_API void init_item_type_data();
 
 /*utility for decrementing the quantity of an item at a particular inventory index*/
 SISTERRAY_API i16 sort_inventory(i32 sort_type);
-static void initialize_augmented_data(u8 item_type);
+bool usable_in_inventory_menu(u16 item_id);
 
 #endif

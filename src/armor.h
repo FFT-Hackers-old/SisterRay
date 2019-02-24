@@ -30,6 +30,7 @@ typedef struct {
 class SrArmorRegistry : public SrResourceRegistry<ArmorData> {
 public:
     SrArmorRegistry(SrKernelStream* stream) : SrResourceRegistry<ArmorData>(stream) {}
+    SrArmorRegistry() : SrResourceRegistry<ArmorData>(){}
 };
 
 #endif

@@ -27,6 +27,7 @@ typedef struct {
 class SrItemRegistry : public SrResourceRegistry<ItemData> {
 public:
  SrItemRegistry(SrKernelStream* stream) : SrResourceRegistry<ItemData>(stream) {};
+ SrItemRegistry(): SrResourceRegistry<ItemData>() {}
 };
 
 /*new structure holding additional item_id indexed data*/

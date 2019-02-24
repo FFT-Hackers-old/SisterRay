@@ -37,7 +37,8 @@ typedef struct {
 
 class SrWeaponRegistry : public SrResourceRegistry<WeaponData> {
 public:
-    SrWeaponRegistry(SrKernelStream* stream) : SrResourceRegistry<WeaponData>(stream) {};
+    SrWeaponRegistry(SrKernelStream* stream) : SrResourceRegistry<WeaponData>(stream) {}
+    SrWeaponRegistry() : SrResourceRegistry<WeaponData>() {}
 };
 
 #endif

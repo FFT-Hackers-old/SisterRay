@@ -18,6 +18,7 @@ typedef struct {
 class SrBattleInventory : public SrResourceRegistry<BattleInventoryEntry> {
 public:
     SrBattleInventory(int allocation_size) : SrResourceRegistry<BattleInventoryEntry>(allocation_size) {}
+    SrBattleInventory(): SrResourceRegistry<BattleInventoryEntry>(){}
 };
 
 /*This does not match the original format of an FFVII item
@@ -33,6 +34,7 @@ typedef struct {
 class SrItemInventory : public SrResourceRegistry<InventoryEntry> {
 public:
     SrItemInventory(int allocation_size) : SrResourceRegistry<InventoryEntry>(allocation_size) {}
+    SrItemInventory(): SrResourceRegistry<InventoryEntry>(){}
     void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity);
 };
 

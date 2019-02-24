@@ -22,15 +22,16 @@ public:
                 break;
             SrResourceRegistry::add_resource(object);
         }
-    };
+    }
 
     /*Constructor used for fized size arrays, like the inventory*/
     SrResourceRegistry(int reserve_size) {
         SrResourceRegistry::resource_registry.reserve(reserve_size);
     }
 
-    SrResourceRegistry() {};
-    ~SrResourceRegistry() {};
+    /*Default constructor*/
+    SrResourceRegistry() {}
+    ~SrResourceRegistry() {}
 
     T get_resource(int index) {
         return SrResourceRegistry::resource_registry[index];

@@ -21,6 +21,7 @@ typedef struct {
 class SrAccessoryRegistry : public SrResourceRegistry<AccessoryData> {
 public:
     SrAccessoryRegistry(SrKernelStream* stream) : SrResourceRegistry<AccessoryData>(stream) {};
+    SrAccessoryRegistry() : SrResourceRegistry<AccessoryData>() {}
 };
 
 #endif

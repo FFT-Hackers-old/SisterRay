@@ -140,7 +140,7 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
     }
     if (stat_boosted) {
         play_menu_sound(263);
-        addEquipmentStatBoosts(party_member_index);
+        recalculate_party_stats(party_member_index); //This should be rewritten to allow stat penalties
         sub_5CB2CC(party_member_index);
     }
     else {
@@ -160,7 +160,7 @@ bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index
     bool limit_taught = false;
     auto registry = gContext.game_strings.character_specific_strings[character_ID];
     if (item_usable) {
-        if (sub_715026(character_ID)) { //Check if requisite limits are learned
+        if (knows_all_prereq_limits(character_ID)) { //Check if requisite limits are learned
             play_menu_sound(384);
             characterRecordArray[character_ID].learned_limits = (characterRecordArray[character_ID].learned_limits | 0x0200);
             auto limit_learned_string = gContext.game_strings.character_specific_strings[character_ID].get_string(0); //String 0 is a characters "limit learned" string

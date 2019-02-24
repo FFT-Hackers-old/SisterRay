@@ -18,6 +18,7 @@ typedef struct {
 class SrMateriaRegistry : public SrResourceRegistry<MateriaData> {
 public:
     SrMateriaRegistry(SrKernelStream* stream) : SrResourceRegistry<MateriaData>(stream) {}
+    SrMateriaRegistry() : SrResourceRegistry<MateriaData>() {}
 };
 
 #endif

@@ -145,4 +145,12 @@ typedef void(*pfnsub6C497C)(i32, char);
 typedef i32(*pfnsub6C9808)(void);
 #define is_input_handling_enabled       ((pfnsub6C9808)0x6C9808)
 
+typedef bool(*pfnsub715026)(i32);
+#define knows_all_prereq_limits         ((pfnsub715026)0x715026)
+
+typedef u8(*pfnsub6C545B)(i32);
+#define recalculate_party_stats         ((pfnsub6C545B)0x6C545B)
+
+typedef i32(*pfnsub5CB2CC)(u8);
+#define sub_5CB2CC                      ((pfnsub5CB2CC)0x5CB2CC)
 #endif

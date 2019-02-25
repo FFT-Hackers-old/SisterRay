@@ -5,8 +5,8 @@
 #define ARMOR_DATA_PTR (void*)0x00dbcce0
 #define ACCESSORY_DATA_PTR (void*)0x00dbcae0
 
-#define SAVEMAP_INVENTORY_PTR = (void*)0x00DC0234
-#define BATTLE_INVENTORY_PTR = (void*)0x009AC354
+#define SAVEMAP_INVENTORY_PTR  (void*)0x00DC0234
+#define BATTLE_INVENTORY_PTR  (void*)0x009AC354
 
 #define INVENTORY_MENU_STATE                 (u32*)0xDD19C8
 #define INVENTORY_CURRENT_PARTY_INDEX        (u32*)0xDD1A8C

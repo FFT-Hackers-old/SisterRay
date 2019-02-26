@@ -39,7 +39,7 @@ static void srLoadKernelBin(void)
     fclose(kernel);
 }
 
-__declspec(dllexport) void rayInit()
+SISTERRAY_API __declspec(dllexport) void rayInit()
 {
 	MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
     InitLog();

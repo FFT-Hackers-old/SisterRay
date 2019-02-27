@@ -28,13 +28,13 @@
 #define dword_DD1A80             (u32*)0xDD1A80 //If 0, can't use items... maybe inventory empty?
 #define MENU_TEXTS               (u8*)0x921168
 
-#define GLOBAL_MENU_VIEW_SIZE    (u32*)0xDD17F0
-#define GLOBAL_MENU_ROW_COUNT    (u32*)0xDD17F2
-#define GLOBAL_MENU_ROW_BASE     (u32*)0xDD17F4
-#define word_DD17F6              (u32*)0xDD17F6
-#define word_DD17F8              (u32*)0xDD17F8
-#define word_DD17FA              (u32*)0xDD17FA
-#define word_DD17FC              (u32*)0xDD17FC
+#define GLOBAL_MENU_VIEW_SIZE    (u16*)0xDD17F0
+#define GLOBAL_MENU_ROW_COUNT    (u16*)0xDD17F2
+#define GLOBAL_MENU_ROW_BASE     (u16*)0xDD17F4
+#define word_DD17F6              (u16*)0xDD17F6
+#define word_DD17F8              (u16*)0xDD17F8
+#define word_DD17FA              (u16*)0xDD17FA
+#define word_DD17FC              (u16*)0xDD17FC
 #define use_on_characters_enabled (u32*)0xDD1B68
 #define ITEM_TO_SWAP_SELECTED    (u32*)0xDD1B6C
 

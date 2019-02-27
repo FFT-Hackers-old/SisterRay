@@ -17,14 +17,18 @@ void SrItemInventory::handle_decrement_inventory(u16 inventory_index, u8 decreme
 /*Method to initialize the new inventories with an appropriate size*/
 SISTERRAY_API void InitInventory()
 {
-    gContext.inventory = SrItemInventory(INVENTORY_SIZE);
-    srLogWrite("sister ray: inventory initialized with size: ", (unsigned long)gContext.inventory.resource_count());
+    srLogWrite("sister ray: initializing inventory");
+    gContext.inventory = &(SrItemInventory(INVENTORY_SIZE));
+    srLogWrite("ptr to inventory instance: %p", gContext.inventory);
+    srLogWrite("ptr to std:vector underlying inventory: %p", &gContext.inventory->resource_registry);
+    srLogWrite("sister ray: inventory initialized with capacity: %lu", (unsigned long)gContext.inventory->current_capacity());
+    srLogWrite("inventory initialize");
 }
 
 SISTERRAY_API void InitBattleInventory()
 {
-    gContext.battle_inventory = SrBattleInventory(INVENTORY_SIZE);
-    srLogWrite("sister ray: in_battle inventory initialized with size: ", (unsigned long)gContext.battle_inventory.resource_count());
+    gContext.battle_inventory = &(SrBattleInventory(INVENTORY_SIZE));
+    srLogWrite("sister ray: in_battle inventory initialized with capacity: %lu", (unsigned long)gContext.battle_inventory->current_capacity());
 }
 
 /*New sorting method, no longer sorts by index ranges, but instead items actually have associated "types"*/

@@ -24,8 +24,8 @@ typedef struct {
     SrArmorRegistry                   armors;
     SrAccessoryRegistry               accessories;
     SrMateriaRegistry                 materias;
-    SrItemInventory                   inventory;
-    SrBattleInventory                 battle_inventory;
+    SrItemInventory*                  inventory;
+    SrBattleInventory*                battle_inventory;
     SrItemTypeRegistry                item_type_data;
     std::map<u16, onUseCallback>      on_use_handlers; /*Registry of function pointers for using items*/
     std::map<u16, onUseItemData>      item_on_use_data;

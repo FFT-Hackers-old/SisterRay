@@ -34,7 +34,7 @@ public:
     ~SrResourceRegistry() {}
 
     T get_resource(int index) {
-        if ((SrResourceRegistry::resource_count() == 0)||(index < SrResourceRegistry::resource_count())) {
+        if ((SrResourceRegistry::resource_count() == 0)||(index >= (SrResourceRegistry::resource_count() - 1))) {
             return T();
         }
         return SrResourceRegistry::resource_registry[index];

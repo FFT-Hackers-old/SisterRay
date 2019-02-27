@@ -2,6 +2,29 @@
 #include "string.h"
 #include "impl.h"
 
+char FF7EncodedString::default_string[10] = { 'b','a','d','s','t','r','i','n','g', (char)255 };
+
+void FF7EncodedString::encode_ascii_string(char* ascii_string) {
+    int str_size = strlen(ascii_string);
+    for (int i = 0; i < str_size; i++) {
+        // offset lowercase ascii characters to FFVII encoding
+        if (ascii_string[i] >= 'a' && ascii_string[i] <= 'z') {
+            ascii_string[i] = ascii_string[i] - 0x20;
+        }
+        // offset uppercase ascii character to FFVII encoding starting at 0x21
+        else if (ascii_string[i] >= 'A' && ascii_string[i] <= 'Z') {
+            ascii_string[i] = ascii_string[i] - 0x20;
+        }
+        else if (ascii_string[i] == ' ') {
+            ascii_string[i] = 0; //spaces are encoded as zeroes by FFVII
+        }
+    }
+}
+
+char* FF7EncodedString::get_encoded_string() {
+    return encoded_string;
+}
+
 char* StringRegistry::get_string(int index) {
     FF7EncodedString string = StringRegistry::get_resource(index);
     return string.get_encoded_string();

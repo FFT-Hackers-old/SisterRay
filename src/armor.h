@@ -2,35 +2,35 @@
 #define ARMOR_H
 
 #include <SisterRay/types.h>
-#include <SisterRay/data_addresses.h>
+#include <SisterRay/SisterRay.h>
+#include "sr_registry_template.h"
 
 #pragma pack(push, 1)
 typedef struct {
     u8      unknown;
-    u8      damageType;
+    u8      damage_type;
     u8      defense;
-    u8      magicDefense;
+    u8      magic_defense;
     u8      evade;
-    u8      magicEvade;
-    u8      statusDefense;
+    u8      magic_evade;
+    u8      status_defense;
     u16     unknown2;
-    u8      materiaSlots[8];
-    u8      materiaGrowth;
-    u16     equipMask;
-    u16     elementalDefenseMask;
+    u8      materia_slots[8];
+    u8      materia_growth;
+    u16     equip_mask;
+    u16     elemental_defense_mask;
     u16     unknown3;
-    u8      statsToBoost[4];
-    u8      statBoostAmounts[4];
-    u16     restrictionMask;
+    u8      stats_to_boost[4];
+    u8      stat_boost_amounts[4];
+    u16     restriction_mask;
     u16     unknown4;
 } ArmorData;
 #pragma pack(pop)
 
-typedef struct
-{
-    size_t          count;
-    size_t          capacity;
-    ArmorData*      data;
-} SrArmorRegistry;
+class SrArmorRegistry : public SrResourceRegistry<ArmorData> {
+public:
+    SrArmorRegistry(SrKernelStream* stream) : SrResourceRegistry<ArmorData>(stream) {}
+    SrArmorRegistry() : SrResourceRegistry<ArmorData>(){}
+};
 
 #endif

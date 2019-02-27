@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "impl.h"
-#include "kernel_utils.h"
 #include "accessory.h"
+
 
 static const u32 kPatchStructBase[] = {
     0x005d0317, 0x006cb987, 0x007ba08c
@@ -20,22 +20,19 @@ static const u32 kPatchEquipMask[] = {
     0x007085FF
 };
 
-static void PatchAccessories(void)
+static void patch_accessories(void)
 {
-    srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ACCESSORY_DATA_PTR, gContext.accessories.data, offsetof(AccessoryData, statsToBoost));
-    srPatchAddresses((void**)kSpecialEffect, ARRAY_SIZE(kSpecialEffect), ACCESSORY_DATA_PTR, gContext.accessories.data, offsetof(AccessoryData, specialEffect));
-    srPatchAddresses((void**)kPatchRestrictMask, ARRAY_SIZE(kPatchRestrictMask), ACCESSORY_DATA_PTR, gContext.accessories.data, offsetof(AccessoryData, restrictionMask));
-    srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ACCESSORY_DATA_PTR, gContext.accessories.data, offsetof(AccessoryData, equipMask));
+    srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, stats_to_boost));
+    srPatchAddresses((void**)kSpecialEffect, ARRAY_SIZE(kSpecialEffect), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, special_effect));
+    srPatchAddresses((void**)kPatchRestrictMask, ARRAY_SIZE(kPatchRestrictMask), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, restriction_mask));
+    srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ACCESSORY_DATA_PTR, gContext.accessories.get_data(), offsetof(AccessoryData, equip_mask));
 }
 
-SISTERRAY_API void InitAccessory(SrKernelStream* stream)
+SISTERRAY_API void init_accessory(SrKernelStream* stream)
 {
-    SrAccessoryRegistry* registry = &gContext.accessories;
-    initRegistry<AccessoryData>(
-        stream,
-        registry,
-        allocKernelObject<AccessoryData, SrAccessoryRegistry>,
-        initObjectRegistry<AccessoryData, SrAccessoryRegistry>);
-    PatchAccessories();
-    srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.count);
+    gContext.accessories = SrAccessoryRegistry(stream);
+    /*calling this method adds entries into the relative-entry look up for all accessories*/
+    gContext.item_type_data.initialize_augmented_data((u8)3, gContext.accessories.resource_count());
+    patch_accessories();
+    srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.resource_count());
 }

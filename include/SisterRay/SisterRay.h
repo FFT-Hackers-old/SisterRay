@@ -6,6 +6,7 @@
 #include <SisterRay/constants.h>
 #include <SisterRay/game_structs.h>
 #include <SisterRay/routines.h>
+#include <SisterRay/data_addresses.h>
 
 /*Macro for handling compilation in both C and C++*/
 #if defined(__cplusplus)

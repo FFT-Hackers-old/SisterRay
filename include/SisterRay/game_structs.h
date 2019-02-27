@@ -99,6 +99,8 @@ typedef struct {
 } DamageCalcStruct;
 #pragma pack(pop)
 
+#define gDamageContextPtr   ((DamageCalcStruct*)0x0099E308)
+
 //An array of size ACTOR_ARRAY_SIZE w/ elements of size 0x68 exists at ARRAY_ACTOR_START
 #pragma pack(push, 1)
 typedef struct {
@@ -159,6 +161,8 @@ typedef struct {
 } ActorBattleVars;
 #pragma pack(pop)
 
+#define gAiActorVariables   ((ActorBattleVars*)0x009AB0DC)
+
 /*Should  have size 0x1AEC*/
 #pragma pack(push, 1)
 typedef struct {
@@ -180,9 +184,128 @@ typedef struct {
 } ActorTimerBlock;
 #pragma pack(pop)
 
-#define gDamageContextPtr   ((DamageCalcStruct*)0x0099E308)
-#define gAiActorVariables   ((ActorBattleVars*)0x009AB0DC)
 #define gBigAnimBlock       ((BigAnimBlock*)0x00BE1170)
 #define gActorTimerBlock    ((ActorTimerBlock*)0x009A8B26)
+
+typedef struct {
+    u16 something;
+    u16 something2;
+    u16 something3;
+} enabledCommandStruct;
+
+/*This is the structure of attack data*/
+typedef struct {
+    u8 padding[0x1C];
+} attackData;
+
+/*This contains a bit vector of flags for spells*/
+typedef struct {
+    u8 spellFlags;
+} spellFlags;
+
+#pragma pack(push,1)
+typedef struct {
+    u32 statToIncrease;
+    u32 increaseValue;
+} statIncrease;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+/*Three of these are maintained for each active party member, they have size 0x440*/
+typedef struct {
+    u8 characterID;
+    u8 coverChance;
+    u8 strength;
+    u8 vitality;
+    u8 magic;
+    u8 spirit;
+    u8 speed;
+    u8 luck;
+    u16 physAttack;
+    u16 physDefense;
+    u16 magAttack;
+    u16 magDefense;
+    u16 currentHP;
+    u16 maxHP;
+    u16 currentMP;
+    u16 maxMP;
+    u32 timer;
+    u16 counterActionIndex;
+    u16 counterChance;
+    u16 unknownDiviosr;
+    u8 characterFlags;
+    u8 unknown24bitInts[24];
+    u16 attackElementsMask;
+    u16 halvedElementsMask;
+    u16 nulledElementsMask;
+    u16 absorbeElementsMask;
+    u32 attackStatusesMask;
+    u32 immuneStatusesMask;
+    enabledCommandStruct enabledCommandArray[0x10];
+    u8 unknownbytes[8];
+    attackData enabledLimitData[3];
+    spellFlags enabledMagicsData[54];
+    spellFlags enabledSummons[16];
+    spellFlags enabledEnemySkills[24];
+    u8 weaponData[11]; //Contains the first 11 bytes of data from the characters equipped weapon, this is all a copy of weapon data
+    u16 weaponStatus;
+    u8 weaponAccuracy;
+    u8 paddin[7];
+    u32 additionalAttackElements;
+    statIncrease statsToIncrease[4];
+    u8 charGilBonus;
+    u8 encounterRate;
+    u8 chocoboChance;
+    u8 preEmptiveChance;
+} activePartyMemberStruct;
+#pragma pack(pop)
+
+#define activePartyStructArray   ((activePartyMemberStruct*)0xDBA498)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 character_id;
+    u8 level;
+    u8 strength;
+    u8 vitality;
+    u8 magic;
+    u8 spirit;
+    u8 dexterity;
+    u8 luck;
+    u8 bonus_strength;
+    u8 bonus_vitality;
+    u8 bonus_magic;
+    u8 bonus_spirit;
+    u8 bonus_dexterity;
+    u8 bonus_luck;
+    u8 active_limit_level;
+    u8 limit_bar_progress;
+    u8 character_name[12];
+    u8 equipped_weapon;
+    u8 equipped_armor;
+    u8 equipped_accessory;
+    u8 out_of_battle_status;
+    u8 character_row;
+    u8 level_progress;
+    u16 learned_limits;
+    u16 character_kills;
+    u16 limit_1A_uses;
+    u16 limit_2A_uses;
+    u16 limit_3A_uses;
+    u16 current_HP;
+    u16 base_HP;
+    u16 current_MP;
+    u16 base_MP;
+    u8 unknown[4];
+    u16 max_HP;
+    u16 max_MP;
+    u32 current_EXP;
+    u32 weapon_materia_slots[8];
+    u32 armor_materia_slots[8];
+    u32 exp_to_next_level;
+} characterRecord;
+#pragma pack(pop)
+
+#define characterRecordArray ((characterRecord*)0xDBFD8C)
 
 #endif

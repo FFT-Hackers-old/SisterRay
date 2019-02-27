@@ -3,6 +3,7 @@
 #include <windows.h>
 #include "impl.h"
 #include <zlib.h>
+#include "inventory_menu.h"
 
 SrContext gContext;
 
@@ -49,5 +50,6 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     init_game_strings();
     EnableNoCD();
     srLoadKernelBin();
+    mogReplaceFunction(MAIN_INVENTORY_HANDLER, &new_inventory_menu_handler); //add our new menu handler
     LoadMods();
 }

@@ -9,7 +9,8 @@
 class FF7EncodedString {
 public:
     FF7EncodedString(char * ascii_string) {
-        for (int i = 0; ascii_string[i] != '\0'; i++) {
+        int str_size = strlen(ascii_string);
+        for (int i = 0; i < str_size; i++) {
             // offset lowercase ascii characters to FFVII encoding
             if (ascii_string[i] >= 'a' && ascii_string[i] <= 'z') {
                 ascii_string[i] = ascii_string[i] - 0x20;
@@ -23,6 +24,18 @@ public:
             }
         }
     FF7EncodedString::encoded_string = ascii_string;
+    }
+
+    FF7EncodedString(char* encoded_string, bool null_terminated) {
+        if (null_terminated) {
+            FF7EncodedString::encoded_string = encoded_string;
+        }
+    }
+
+    FF7EncodedString() {
+        char default_string[10] = {'b','a','d','s','t','r','i','n','g', (char)255};
+        char* string_ptr = &default_string[0];
+        FF7EncodedString::FF7EncodedString(string_ptr);
     }
 
     char* get_encoded_string() {

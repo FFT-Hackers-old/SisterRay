@@ -157,7 +157,7 @@ void render_inventory_main_view(int custom_arrange_active) {
     int text_color;
 
     *GLOBAL_MENU_VIEW_SIZE = 10;                         // number of rows active in an inventory view
-    *GLOBAL_MENU_ROW_COUNT = 320;                        // max size of the inventory.. let's change it
+    *GLOBAL_MENU_ROW_COUNT = gContext.inventory.resource_count();                        // max size of the inventory.. let's change it
     *GLOBAL_MENU_ROW_BASE = (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
     *word_DD17F6 = 618;
     *word_DD17F8 = 102;
@@ -347,7 +347,7 @@ void handle_inventory_input(int a1) {
             }
             else
             {
-                set_cursor_data_values(dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, 320, 0, 0, 0, 0, 0, 1);// Custom Sort Cursor Data Copy?
+                set_cursor_data_values(dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, gContext.inventory.resource_count(), 0, 0, 0, 0, 0, 1);// Custom Sort Cursor Data Copy?
                 *ITEM_TO_SWAP_SELECTED = 0; //Clear the globals that are used by the custom sort routine for swapping items
                 *UNKNOWN_CUSTOM_SORT_GLOBAL = 0;
                 *CUSTOM_SORT_TEMP_INDEX = 0;

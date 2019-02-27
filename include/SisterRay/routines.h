@@ -23,6 +23,7 @@
 #define DECREMENT_COUNTERS              ((void*)0x43526A)
 #define APPLY_DAMAGE_ROUTINE            ((void*)0x5D9940)
 #define LOAD_ABILITY_DATA               ((void*)0x5C94D3)
+#define MAIN_INVENTORY_HANDLER          ((void*)0x715105)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);

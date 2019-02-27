@@ -24,7 +24,7 @@ public:
         }
     }
 
-    /*Constructor used for fized size arrays, like the inventory*/
+    /*Constructor used for fixed size arrays, like the inventory*/
     SrResourceRegistry(int reserve_size) {
         SrResourceRegistry::resource_registry.reserve(reserve_size);
     }
@@ -34,6 +34,9 @@ public:
     ~SrResourceRegistry() {}
 
     T get_resource(int index) {
+        if ((SrResourceRegistry::resource_count() == 0)||(index < SrResourceRegistry::resource_count())) {
+            return T();
+        }
         return SrResourceRegistry::resource_registry[index];
     }
 

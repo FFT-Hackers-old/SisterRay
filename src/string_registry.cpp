@@ -45,8 +45,7 @@ char* get_name_from_global_id(u16 item_id) {
         return gContext.game_strings.accessory_names.get_string(relative_id);
         break;
     default:
-        char * no_string = "";
-        return no_string;
+        return gContext.game_strings.item_names.get_string(relative_id);
     }
 }
 
@@ -67,7 +66,6 @@ char* get_description_from_global_id(u16 item_id) {
         return gContext.game_strings.accessory_descriptions.get_string(relative_id);
         break;
     default:
-        char * no_string = "";
-        return no_string;
+        return gContext.game_strings.item_descriptions.get_string(relative_id);
     }
 }

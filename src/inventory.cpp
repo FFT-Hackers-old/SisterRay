@@ -61,7 +61,7 @@ bool usable_in_inventory_menu(u16 item_id) {
         break;
     }
     case 2: {
-        restriction_mask = gContext.armors.get_resource(relative_id).restriction_mask;
+        restriction_mask = gContext.items.get_resource(relative_id).restriction_mask;
         break;
     }
     case 3: {

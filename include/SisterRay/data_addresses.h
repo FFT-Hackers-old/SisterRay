@@ -1,9 +1,11 @@
 #ifndef SR_ADDRESSES_H
 #define SR_ADDRESSES_H
 
-#define MATERIA_DATA_PTR (void*)0x00dbdf60
-#define ARMOR_DATA_PTR (void*)0x00dbcce0
-#define ACCESSORY_DATA_PTR (void*)0x00dbcae0
+#define MATERIA_DATA_PTR   (void*)0xdbdf60
+#define ITEM_DATA_PTR      (void*)0xDBD160
+#define WEAPON_DATA_PTR    (void*)0xDBE730
+#define ARMOR_DATA_PTR     (void*)0xdbcce0
+#define ACCESSORY_DATA_PTR (void*)0xdbcae0
 
 #define SAVEMAP_INVENTORY_PTR  (void*)0x00DC0234
 #define BATTLE_INVENTORY_PTR  (void*)0x009AC354

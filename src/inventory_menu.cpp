@@ -217,7 +217,7 @@ void render_key_items_view() {
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
     *word_DD17FC = 372;
-    sub_6F7270((*GLOBAL_MENU_VIEW_SIZE), 0.1f);
+    sub_6F7270((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f);
 
     for (int visible_key_item_row = 0; visible_key_item_row < 12; ++visible_key_item_row) {
         int flat_key_item_index_base = 2 * visible_key_item_row + 2 * (*KEY_ITEMS_VIEW_BASE_ROW);
@@ -233,15 +233,15 @@ void render_key_items_view() {
 
 /*WIP here, need a more generic way to introduce "usable" items through a function registry or something similar*/
 void handle_inventory_input(int a1) {
-    i32 inventory_menu_state = *(INVENTORY_MENU_STATE);
+    u32* inventory_menu_state = INVENTORY_MENU_STATE;
     i32* inventory_cursor_position = INVENTORY_CURSOR_POSITION;
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
     u32 active_window_base_row = *(VISIBLE_ITEM_START);
     u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
     u16 item_ID;
 
-    update_cursor_position((u32*)&(inventory_cursor_position[14 * inventory_menu_state]));
-    switch (inventory_menu_state)
+    update_cursor_position((u32*)&(inventory_cursor_position[14 * (*inventory_menu_state)]));
+    switch ((*inventory_menu_state))
     {
     case 0:
         if (check_received_input(32)) {               // handling inputs?
@@ -249,15 +249,15 @@ void handle_inventory_input(int a1) {
             if (inventory_cursor_position[0]) {
                 if (inventory_cursor_position[0] == 1) {
                     set_cursor_data_values(CURSOR_STRUCT_PTR, 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0); //Sets cursor data for the arrange menu
-                    inventory_menu_state = 4;         // Arrange Menu
+                    *inventory_menu_state = 4;         // Arrange Menu
                 }
                 else if (inventory_cursor_position[0] == 2) {
                     set_cursor_data_values(KEY_ITEMS_COL_INDEX, 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1); //sets cursor data for the key items menu
-                    inventory_menu_state = 3;         // Key Items Menu
+                    *inventory_menu_state = 3;         // Key Items Menu
                 }
             }
             else {
-                inventory_menu_state = 1;             // use looking at item list
+                *inventory_menu_state = 1;             // use looking at item list
             }
         }
         else if (check_cancel_input(64)) {
@@ -300,13 +300,13 @@ void handle_inventory_input(int a1) {
                     else { //If the item is usable and not save crystal or guidebook, jump to the case 2 handler
                         play_menu_sound(1);
                         *use_on_characters_enabled = 0; //Setting this to 0 enables items to be used on characters in menu state 2
-                        inventory_menu_state = 2;
+                        *inventory_menu_state = 2;
                     }
                 }
             }
             else if (check_received_input(64)) {
                 play_menu_sound(4);
-                inventory_menu_state = 0;
+                *inventory_menu_state = 0;
             }
         }
         break;
@@ -326,14 +326,14 @@ void handle_inventory_input(int a1) {
         }
         else if (check_cancel_input(64)) {
             play_menu_sound(4);
-            inventory_menu_state = 1;
+            *inventory_menu_state = 1;
         }
         break;
     case 3:
         if (check_received_input(64))                // Exit Key Items
         {
             play_menu_sound(4);
-            inventory_menu_state = 0;
+            *inventory_menu_state = 0;
         }
         break;
     case 4:
@@ -343,7 +343,7 @@ void handle_inventory_input(int a1) {
             if (*INVENTORY_ARRANGE_TYPE)
             {
                 sort_inventory(*INVENTORY_ARRANGE_TYPE); //Arranging the inventory, this method will have to be rewritten
-                inventory_menu_state = 0;
+                *inventory_menu_state = 0;
             }
             else
             {
@@ -351,13 +351,13 @@ void handle_inventory_input(int a1) {
                 *ITEM_TO_SWAP_SELECTED = 0; //Clear the globals that are used by the custom sort routine for swapping items
                 *UNKNOWN_CUSTOM_SORT_GLOBAL = 0;
                 *CUSTOM_SORT_TEMP_INDEX = 0;
-                inventory_menu_state = 5; //Move to custom sort state
+                *inventory_menu_state = 5; //Move to custom sort state
             }
         }
         else if (check_received_input(64))           // Arrange Cancel Handler
         {
             play_menu_sound(4);
-            inventory_menu_state = 0;
+            *inventory_menu_state = 0;
         }
         break;
     case 5:                                   // Custom Arrange Handler
@@ -386,7 +386,7 @@ void handle_inventory_input(int a1) {
         else if (check_received_input(64))
         {
             play_menu_sound(4);
-            inventory_menu_state = 0;
+            *inventory_menu_state = 0;
         }
         break;
     default:

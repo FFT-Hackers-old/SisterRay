@@ -23,6 +23,7 @@
 #define DECREMENT_COUNTERS              ((void*)0x43526A)
 #define APPLY_DAMAGE_ROUTINE            ((void*)0x5D9940)
 #define LOAD_ABILITY_DATA               ((void*)0x5C94D3)
+#define INIT_INVENTORY_CURSOR_STATE     ((void*)0x714EF2)
 #define MAIN_INVENTORY_HANDLER          ((void*)0x715105)
 
 typedef void(*pfnnullmasks)();
@@ -154,4 +155,7 @@ typedef u8(*pfnsub6C545B)(i32);
 
 typedef i32(*pfnsub5CB2CC)(u8);
 #define sub_5CB2CC                      ((pfnsub5CB2CC)0x5CB2CC)
+
+typedef i32(*pfnsub714FA3)(void);
+#define sub_714FA3                      ((pfnsub714FA3)0x714FA3)
 #endif

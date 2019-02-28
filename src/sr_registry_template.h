@@ -5,6 +5,7 @@
 #include <SisterRay/SisterRay.h>
 #include "kernel.h"
 #include <vector>
+#include <memory>
 
 /*Simple C++ template to replace all the old school manually resized C arrays
   And unify our String Registry and all of our various item registries*/
@@ -33,8 +34,10 @@ public:
     }
 
     /*Default constructor*/
-    SrResourceRegistry() {}
-    ~SrResourceRegistry() {}
+    SrResourceRegistry() {
+    }
+    ~SrResourceRegistry() {
+    }
 
     T get_resource(int index) {
         if ((resource_count() == 0)||(index >= (resource_count() - 1))) {

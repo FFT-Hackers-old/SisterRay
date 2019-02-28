@@ -77,10 +77,10 @@ typedef u8*(*pfnsub6E6C5B)(i32, i32, i32, i32);
 #define sub_6E6C5B                      ((pfnsub6E6C5B)0x6E6C5B)
 
 typedef u16*(*pfnsub6E7BA1)(u16*, i16, i16, i16, i16);
-#define initialize_some_struct          ((pfnsub6E7BA1)0x6E7BA1)
+#define initialize_menu_window_struct          ((pfnsub6E7BA1)0x6E7BA1)
 
 typedef i32(*pfnsub6E7D20)(i16*, float);
-#define sub_6E7D20                      ((pfnsub6E7D20)0x6E7D20)
+#define draw_menu_box                      ((pfnsub6E7D20)0x6E7D20)
 
 /*This function sets a variable based on the icon type neede in the menu and then calls a function to display it*/
 typedef i32(*pfnsub717691)(i32, i32, i32, i32, i32);

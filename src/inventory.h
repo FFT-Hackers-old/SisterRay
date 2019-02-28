@@ -4,7 +4,7 @@
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 
-#define INVENTORY_SIZE 1024
+#define INVENTORY_SIZE (i16)1024 //maximum allowable inventory size within the menu engine
 
 /*This is the in-battle copy of the item inventory*/
 typedef struct {
@@ -17,7 +17,7 @@ typedef struct {
 
 class SrBattleInventory : public SrResourceRegistry<BattleInventoryEntry> {
 public:
-    SrBattleInventory(int allocation_size) : SrResourceRegistry<BattleInventoryEntry>(allocation_size) {}
+    SrBattleInventory(i16 allocation_size) : SrResourceRegistry<BattleInventoryEntry>(allocation_size) {}
     SrBattleInventory(): SrResourceRegistry<BattleInventoryEntry>(){}
 };
 
@@ -33,7 +33,7 @@ typedef struct {
 
 class SrItemInventory : public SrResourceRegistry<InventoryEntry> {
 public:
-    SrItemInventory(int allocation_size) : SrResourceRegistry<InventoryEntry>(allocation_size) {}
+    SrItemInventory(i16 allocation_size) : SrResourceRegistry<InventoryEntry>(allocation_size) {}
     SrItemInventory(): SrResourceRegistry<InventoryEntry>(){}
     void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity);
 };

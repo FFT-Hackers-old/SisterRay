@@ -5,6 +5,7 @@
 #include <SisterRay/SisterRay.h>
 #include "kernel.h"
 #include <vector>
+#include <memory>
 
 /*Simple C++ template to replace all the old school manually resized C arrays
   And unify our String Registry and all of our various item registries*/
@@ -20,32 +21,41 @@ public:
             read_size = srKernelStreamRead(stream, &object, sizeof(object));
             if (read_size != sizeof(object))
                 break;
-            SrResourceRegistry::add_resource(object);
+            add_resource(object);
         }
     }
 
     /*Constructor used for fixed size arrays, like the inventory*/
     SrResourceRegistry(int reserve_size) {
-        SrResourceRegistry::resource_registry.reserve(reserve_size);
+        resource_registry.reserve(reserve_size);
+        srLogWrite("ptr to class instance: %p", this);
+        srLogWrite("ptr to std:vector underlying instance: %p", &(this->resource_registry));
+        srLogWrite("initializing reserve registry with size: %lu", (unsigned long)resource_registry.capacity());
     }
 
     /*Default constructor*/
-    SrResourceRegistry() {}
-    ~SrResourceRegistry() {}
+    SrResourceRegistry() {
+    }
+    ~SrResourceRegistry() {
+    }
 
     T get_resource(int index) {
-        if ((SrResourceRegistry::resource_count() == 0)||(index >= (SrResourceRegistry::resource_count() - 1))) {
+        if ((resource_count() == 0)||(index >= (resource_count() - 1))) {
             return T();
         }
-        return SrResourceRegistry::resource_registry[index];
+        return resource_registry[index];
     }
 
     void add_resource(T resource) {
-        SrResourceRegistry::resource_registry.push_back(resource);
+        resource_registry.push_back(resource);
     }
 
     int resource_count() {
         return resource_registry.size();
+    }
+
+    int current_capacity() {
+        return resource_registry.capacity();
     }
 
     T* get_data() {

@@ -2,6 +2,26 @@
 #include "impl.h"
 #include "windows.h"
 
+#define SIZE_OF_CURSOR_STRUCT  (i32)0xE // this is the size in i32, for ptr arithmetic
+
+SISTERRAY_API i32 onEnterInventory() {
+    i32 ret;
+
+    *INVENTORY_MENU_STATE = 1;
+    i32* top_view_cursor_struct = INVENTORY_CURSOR_POSITION;
+    i32* main_item_view_cursor_struct = INVENTORY_CURSOR_POSITION + SIZE_OF_CURSOR_STRUCT;
+    i32* key_items_cursor_struct = INVENTORY_CURSOR_POSITION + 2 * SIZE_OF_CURSOR_STRUCT;
+    set_cursor_data_values((u32*)top_view_cursor_struct, 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0, 0);
+    set_cursor_data_values((u32*)main_item_view_cursor_struct, 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1);
+    set_cursor_data_values((u32*)key_items_cursor_struct, 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0); //Initialize Cursor for top menu pane
+    ret = sub_714FA3();
+    if (*dword_DC130C == 1)
+        *dword_DD18C0 = (u32)dword_921C98;
+    else
+        *dword_DD18C0 = (u32)dword_921C78;
+    return ret;
+}
+
 SISTERRAY_API void new_inventory_menu_handler(int a1)
 {
     display_active_cursor_state(a1);

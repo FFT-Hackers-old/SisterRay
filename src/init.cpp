@@ -51,5 +51,6 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     EnableNoCD();
     srLoadKernelBin();
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &new_inventory_menu_handler); //add our new menu handler
+    mogReplaceFunction(INIT_INVENTORY_CURSOR_STATE, &onEnterInventory);
     LoadMods();
 }

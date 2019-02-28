@@ -18,7 +18,7 @@ SISTERRAY_API i32 onEnterInventory() {
     if (*dword_DC130C == 1)
         *dword_DD18C0 = (u32)dword_921C98;
     else
-        *dword_DD18C0 = (u32)dword_921C78;
+        *dword_DD18C0 = (u32)&((menuWindowConfig)[0]);
     return ret;
 }
 
@@ -101,7 +101,7 @@ void display_active_cursor_state(int a1) {
             fetched_description = gContext.game_strings.inventory_menu_texts.get_string(j + 3); //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
             display_text_at_location(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetched_description, 7, 1008981770);
         }
-        sub_6E7D20((i16*)(dword_DD18C0 + 24), (float)1008981770);
+        draw_menu_box((i16*)(&(menuWindowConfig)[3]), (float)1008981770); //Does this display text boses?
         break;
     case 5:                                   // Inside Custom Sort
         if (a1 & 2)
@@ -161,9 +161,9 @@ void display_inventory_views(int a1) {
         render_inventory_main_view(menu_state_local);
     }
     sub_6FA347();
-    sub_6E7D20((i16*)dword_DD18C0, 1038308344);
-    sub_6E7D20((i16*)dword_DD18C0 + 8, 1045220557);
-    sub_6E7D20((i16*)dword_DD18C0 + 16, 1050253722);
+    draw_menu_box((i16*)(&(menuWindowConfig)[0]), 0.111f);
+    draw_menu_box(((i16*)&(menuWindowConfig)[1]), 0.2f);
+    draw_menu_box(((i16*)&(menuWindowConfig)[2]), 0.30000000f);
 }
 
 
@@ -214,7 +214,7 @@ void render_inventory_main_view(int custom_arrange_active) {
 
 
 void render_character_portraits() {
-    u16 unk_local_struct[4];
+    u16 unk_local_struct[4] = {0, (u16)96, (u16)300, u16(384)};
 
     for (int current_party_member = 0; current_party_member < 3; ++current_party_member) { //loop over and render character portraits, probably
         if ((CURRENT_PARTY_MEMBER_ARRAY)[current_party_member] != 0xFF) {         //if there is a party member in that slot
@@ -222,8 +222,9 @@ void render_character_portraits() {
             sub_6E6C5B(37, 120 * current_party_member + 116, current_party_member, 1036831949);
         }
     }
-    initialize_some_struct((u16*)&unk_local_struct, 0, 96, 300, 384); //set some values in a struct/array used in the next call
-    sub_6E7D20((i16*)(&unk_local_struct), 1036831949); //this does a bunch of shit with the above struct
+
+    // initialize_menu_window_struct((u16*)&unk_local_struct, (u16)0, (u16)96, (u16)300, (u16)384); //set some values in a struct/array used in the next call
+    draw_menu_box((i16*)(&unk_local_struct), 0.1f); //this does a bunch of shit with the above struct
 }
 
 

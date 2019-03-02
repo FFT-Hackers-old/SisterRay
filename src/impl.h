@@ -39,7 +39,7 @@ SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* s
 SISTERRAY_API void init_materia(SrKernelStream* stream);
 SISTERRAY_API void init_armor(SrKernelStream* stream);
 SISTERRAY_API void init_accessory(SrKernelStream* stream);
-SISTERRAY_API void init_item(SrKernelStream* stream);
+SISTERRAY_API void initItems(SrKernelStream* stream);
 SISTERRAY_API void init_weapon(SrKernelStream* stream);
 
 SISTERRAY_API void InitLog(void);

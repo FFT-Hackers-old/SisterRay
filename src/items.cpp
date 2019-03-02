@@ -22,7 +22,7 @@ static void patchItems(void)
 
 /*initialize on use data to match the vanilla game*/
 void initOnUseDataRegistry() {
-    for (int item_id; item_id < 320; item_id++) {
+    for (u16 item_id = 0; item_id < 320; item_id++) {
         switch (item_id) {
         case 0:
             createOnUseItemData(100, 0, 0, 0, 0, 0, false, false);

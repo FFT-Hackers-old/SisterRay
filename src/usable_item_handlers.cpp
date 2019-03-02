@@ -19,7 +19,7 @@ onUseCallback srOnUseCallbackRegistry::get_handler(u16 item_id) {
 }
 
 void initOnUseCallbackRegistry() {
-    for (int item_id; item_id < 320; item_id++) {
+    for (u16 item_id = 0; item_id < 320; item_id++) {
         switch (item_id) {
         case 0:
         case 1:

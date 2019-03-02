@@ -421,7 +421,7 @@ void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     auto item_was_used = false;
 
     /*Call the appropriate function handler for using items on a character/the party*/
-    item_was_used = gContext.on_use_handlers[item_ID]((u16)party_member_index, item_ID, inventory_index);
+    item_was_used = gContext.on_use_handlers.get_handler(item_ID)((u16)party_member_index, item_ID, inventory_index);
     if (item_was_used) {
         gContext.inventory->handle_decrement_inventory(inventory_index, 1);
         if (gContext.inventory->get_resource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up

@@ -19,18 +19,18 @@
 /*Game Context holds all the registries which contain
   Resources, in the form of either data or registered callback*/
 typedef struct {
-    FILE*                             logFile;
-    SrItemRegistry                    items;
-    SrWeaponRegistry                  weapons;
-    SrArmorRegistry                   armors;
-    SrAccessoryRegistry               accessories;
-    SrMateriaRegistry                 materias;
-    std::unique_ptr<SrItemInventory>  inventory;
+    FILE*                              logFile;
+    SrItemRegistry                     items;
+    SrWeaponRegistry                   weapons;
+    SrArmorRegistry                    armors;
+    SrAccessoryRegistry                accessories;
+    SrMateriaRegistry                  materias;
+    std::unique_ptr<SrItemInventory>   inventory;
     std::unique_ptr<SrBattleInventory> battle_inventory;
-    SrItemTypeRegistry                item_type_data;
-    std::map<u16, onUseCallback>      on_use_handlers; /*Registry of function pointers for using items*/
-    std::map<u16, onUseItemData>      item_on_use_data;
-    SrGameStrings                     game_strings;
+    SrItemTypeRegistry                 item_type_data;
+    srOnUseCallbackRegistry            on_use_handlers; /*Registry of function pointers for using items*/
+    SrOnUseItemDataRegistry            item_on_use_data;
+    SrGameStrings                      game_strings;
 } SrContext;
 
 SISTERRAY_GLOBAL SrContext gContext;

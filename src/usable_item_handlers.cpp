@@ -2,76 +2,104 @@
 #include "items.h"
 #include "impl.h"
 
+srOnUseCallbackRegistry::srOnUseCallbackRegistry() {
+    add_function("heal_party_member", heal_handler);
+}
+
+void srOnUseCallbackRegistry::add_function(std::string name, onUseCallback callback) {
+    handler_names[name] = callback;
+}
+
+onUseCallback srOnUseCallbackRegistry::get_handler(u16 item_id) {
+    auto& name = get_resource(item_id);
+    return handler_names[name];
+}
+/*Registers callback to a specific ID*/
+
+
 /*On use callback for performing HP healing on the menu */
-bool heal_party_member(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    if (!check_member_HP_full(party_member_index) && activePartyStructArray[party_member_index].currentHP) {
-        play_menu_sound(263);
-        u16 heal_amount = gContext.item_on_use_data[item_id].hp_heal_amount;
-        heal_character_at_index(party_member_index, heal_amount);
-        return true;
-    }
-    else {
-        play_menu_sound(3);
-        return false;
-    }
-}
+bool heal_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
+    bool did_something = false;
+    bool temp_bool;
+    auto target_all = gContext.item_on_use_data.get_resource(item_id).target_all;
 
-/*On use callback for performing MP healing on the menu*/
-bool heal_party_member_mp(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    if (!check_member_MP_full(party_member_index) && activePartyStructArray[party_member_index].currentHP) {
-        play_menu_sound(263);
-        u16 heal_amount = gContext.item_on_use_data[item_id].mp_heal_amount;
-        restore_party_member_mp(party_member_index, heal_amount);
-        return true;
-    }
-    else
-    {
-        play_menu_sound(3);
-        return false;
-    }
-}
-
-/*might the above methods a more generic "heal" method and just data drive it*/
-bool heal_party_member_hp_and_mp(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    if ((check_member_MP_full(party_member_index) && check_member_HP_full(party_member_index)) || activePartyStructArray[party_member_index].currentHP) {
-        play_menu_sound(263);
-        u16 heal_amount = gContext.item_on_use_data[item_id].hp_heal_amount;
-        restore_party_member_mp(party_member_index, heal_amount);
-        heal_amount = gContext.item_on_use_data[item_id].mp_heal_amount;
-        restore_party_member_mp(party_member_index, heal_amount);
-        return true;
-    }
-    else
-    {
-        play_menu_sound(3);
-        return false;
-    }
-}
-
-/*Can probably be merged with the above handlers and have the 'target-all' flag set */
-bool megalixir_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    u16 current_party_member = 0;
-    bool healable_exists = false;
-    while (current_party_member < 3) {
-        if ((CURRENT_PARTY_MEMBER_ARRAY)[current_party_member] != 255 && (!check_member_HP_full(current_party_member)
-            || !check_member_MP_full(current_party_member))) {
-            healable_exists = true;
-        }
-        ++current_party_member;
-    }
-    if (healable_exists) {
+    if (target_all) {
         for (u16 member_to_heal = 0; member_to_heal < 3; ++member_to_heal) {
-            if (activePartyStructArray[party_member_index].currentHP && (CURRENT_PARTY_MEMBER_ARRAY)[member_to_heal] != 0xFF) {
-                heal_character_at_index(member_to_heal, 10000);
-                restore_party_member_mp(member_to_heal, 10000);
+            temp_bool = heal_single_party_member(member_to_heal);
+            if (!did_something) {
+                did_something = temp_bool;
             }
         }
-        play_menu_sound(263);
-        return true;
+    }
+    else  {
+        did_something = heal_single_party_member(party_member_index, item_id);
+    }
+    play_success_or_failure_sound(did_something, 263, 3);
+
+    return did_something
+}
+
+bool heal_single_party_member(u16 party_member_index, u16 item_id) {
+    auto is_hp_healable = check_target_hp_healable(party_member_index, item_id);
+    auto is_mp_healable = check_target_mp_healable(party_member_index, item_id);
+
+    if (gContext.item_on_use_data[item_id].hp_heal_amount) {
+        if (is_hp_healable) {
+            u16 heal_amount = gContext.item_on_use_data[item_id].hp_heal_amount;
+            heal_character_at_index(party_member_index, heal_amount);
+            did_something = true;
+        }
+    }
+    if (gContext.item_on_use_data[item_id].mp_heal_amount) {
+        if (is_mp_healable) {
+            u16 heal_amount = gContext.item_on_use_data[item_id].mp_heal_amount;
+            restore_party_member_mp(party_member_index, heal_amount);
+            did_something = true;
+        }
+    }
+    return did_something;
+}
+
+bool check_target_hp_healable(u16 target, u16 item_id) {
+    bool can_target_dead = false;
+    if (gContext.item_on_use_data.get_resource(item_id).can_revive) {
+        can_target_dead = true;
+    }
+
+    bool is_healable = check_character_hp_full(target);
+
+    return (is_healable && can_target_dead);
+}
+
+bool check_target_mp_healable(u16 target, u16 item_id) {
+    bool can_target_dead = false;
+    if (gContext.item_on_use_data.get_resource(item_id).can_revive) {
+        can_target_dead = true;
+    }
+
+    bool is_healable = check_character_mp_full(target);
+
+    return (is_healable && can_target_dead);
+}
+
+bool check_character_hp_full(u16 party_member_index) {
+     return (!check_member_HP_full(party_member_index));
+}
+
+bool check_character_mp_full(u16 party_member_index) {
+    return (!check_member_MP_full(party_member_index));
+}
+
+bool check_character_dead(u16 party_member_index) {
+    return (bool)activePartyStructArray[party_member_index].currentHP
+}
+
+void play_success_or_failure_sound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id) {
+    if (did_succeed) {
+        play_menu_sound(success_sound_id);
     }
     else {
-        play_menu_sound(3);
-        return false;
+        play_menu_sound(failure_sound_id);
     }
 }
 

@@ -6,6 +6,7 @@
 
 /*utility for decrementing the quantity of an item at a particular inventory index*/
 void SrItemInventory::handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity) {
+    srLogWrite("decrementing inventory index %i", inventory_index);
     if (SrItemInventory::resource_registry[inventory_index].quantity + decrement_quantity > 1) {
         SrItemInventory::resource_registry[inventory_index].quantity = SrItemInventory::resource_registry[inventory_index].quantity - decrement_quantity;
     }

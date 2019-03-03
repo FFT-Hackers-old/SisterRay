@@ -2,25 +2,32 @@
 #define USABLE_ITEM_HANDLERS_H
 
 #include <SisterRay/types.h>
-#include "sr_registry_template.h"
+#include "function_registry_template.h"
 #include <unordered_map>
 #include <string>
 
 typedef bool(*onUseCallback)(u16, u16, u16);
+typedef bool(*noTargetCallback)();
 
 /*Hold the names of functions along with function ptrs*/
 void initOnUseCallbackRegistry();
+void initNoTargetCallbackRegistry();
 
-class srOnUseCallbackRegistry : public SrResourceRegistry<std::string> {
+/*Should refactor this into a template subclass function registry pattern*/
+class srOnUseCallbackRegistry : public SrFunctionResourceRegistry<onUseCallback> {
 public:
-    std::unordered_map<std::string, onUseCallback> handler_names;
     srOnUseCallbackRegistry();
+};
 
-    void add_function(std::string name, onUseCallback callback);
-    onUseCallback get_handler(u16 item_id);
+/*Holds functions to modularize items used that are not "targeted"*/
+class srNoTargetCallbackRegistry : public SrFunctionResourceRegistry<noTargetCallback> {
+public:
+    srNoTargetCallbackRegistry();
 };
 
 // these are actual callbacks
+bool default_no_target_use();
+bool save_crystal_on_use();
 bool default_item_use(u16 party_member_index, u16 item_id, u16 inventory_index);
 bool heal_handler(u16 party_member_index, u16 item_id, u16 inventory_index);
 bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_index);

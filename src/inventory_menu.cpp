@@ -201,8 +201,8 @@ void render_inventory_main_view(int custom_arrange_active) {
     for (int visible_item = 0; visible_item < displayed_row_count; ++visible_item) {
         visible_item_inventory_index = visible_item + (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
         if (gContext.inventory->get_resource(visible_item_inventory_index).item_id != 0xFFFF) {
-            item_ID = gContext.inventory->get_resource(visible_item_inventory_index + relative_item_index).item_id;
-            item_quantity = gContext.inventory->get_resource(visible_item_inventory_index + relative_item_index).quantity;
+            item_ID = gContext.inventory->get_resource(visible_item_inventory_index).item_id;
+            item_quantity = gContext.inventory->get_resource(visible_item_inventory_index).quantity;
             text_color = usable_in_inventory_menu(item_ID) ? 0 : 7; // This sets something based on whether the item is usable, assuming it's text color
 
             display_visible_item_icon(343, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 105, item_ID, 0, 1036966167);
@@ -259,7 +259,7 @@ void handle_inventory_input(int a1) {
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
     u32 active_window_base_row = *(VISIBLE_ITEM_START);
     u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
-    u16 item_ID;
+    u16 item_id;
 
     update_cursor_position((u32*)&(inventory_cursor_position[14 * (*inventory_menu_state)]));
     switch ((*inventory_menu_state))
@@ -294,31 +294,15 @@ void handle_inventory_input(int a1) {
                     play_menu_sound(3);
                 }
                 else {
-                    item_ID = gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id;
-                    if (usable_in_inventory_menu(item_ID)) {
+                    item_id = gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id;
+                    if (usable_in_inventory_menu(item_id)) {
                         play_menu_sound(3);
                     }
-                    else if (item_ID == 98) {        //Save Crytal case
-                        play_menu_sound(263);
-                        *byte_DC0C3C |= 1u;  //Save Crystal used?
-                        set_some_transition_data(5, 0);
-                        set_more_transition_data(0);
-                        save_crystal_handler();
+                    else if (!(gContext.item_on_use_data.get_resource(item_id).requires_target)) {  
+                        gContext.untargeted_handlers.get_handler(item_id)();
+
                     }
-                    /*else if (item_ID == 103) {       //Earth Harp, disabled in the main game
-                        play_menu_sound(263);
-                        byte_DC00A5 = 1;
-                        byte_DC00A4 = 6;
-                        byte_DC00B2 = 1;
-                        byte_DC00B3 = -1;
-                        dword_DC00E0 = 0xFFFFFF;
-                        byte_DC0129 = 1;
-                        byte_DC0128 = 7;
-                        byte_DC0136 = 1;
-                        byte_DC0137 = -1;
-                        dword_DC0164 = 0xFFFFFF;
-                    }*/
-                    else { //If the item is usable and not save crystal or guidebook, jump to the case 2 handler
+                    else { //If the item is usable, but requires a target, then jump to state 2
                         play_menu_sound(1);
                         *use_on_characters_enabled = 0; //Setting this to 0 enables items to be used on characters in menu state 2
                         *inventory_menu_state = 2;
@@ -336,14 +320,14 @@ void handle_inventory_input(int a1) {
             return;
         if (check_received_input(32)) {  //if "ok" input was received
             u16 inventory_index = active_window_base_row + relative_item_index;
-            item_ID = gContext.inventory->get_resource(inventory_index).item_id;
+            item_id = gContext.inventory->get_resource(inventory_index).item_id;
             u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
-            if (character_ID == 0xFF && !(gContext.item_on_use_data.get_resource(item_ID).target_all)) { // Can't use item on empty party member unless it is megalixer or tent
+            if (character_ID == 0xFF && !(gContext.item_on_use_data.get_resource(item_id).target_all)) { // Can't use item on empty party member unless it is megalixer or tent
                 play_menu_sound(3);
                 return;
             }
             /*Handle the on use effects for every item in the game, this needs to be made more generic*/
-            handle_usable_item_effects(item_ID, inventory_index);
+            handle_usable_item_effects(item_id, inventory_index);
         }
         else if (check_cancel_input(64)) {
             play_menu_sound(4);
@@ -418,8 +402,6 @@ void handle_inventory_input(int a1) {
 /*This routine handles executing menu usable item routines*/
 void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
-    srLogWrite("cursor over party member %i", (int)party_member_index);
-    srLogWrite("cursor over party member as word %i", (u16)party_member_index);
     auto item_was_used = false;
 
     /*Call the appropriate function handler for using items on a character/the party*/

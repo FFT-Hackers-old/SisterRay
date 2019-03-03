@@ -48,7 +48,7 @@ void display_active_cursor_state(int a1) {
     {
         if (!(*use_on_characters_enabled)) {
             item_ID = gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id;;
-            if (item_ID != 6 && item_ID != 70)
+            if (!(gContext.item_on_use_data.get_resource(item_ID).target_all))
                 display_cursor(0, 120 * party_member_index + 161, 0.0f); //if the cursor isn't targeting all
             else
                 display_cursor(0, 120 * (a1 % 3) + 161, 0.0); // if the cursor is targeting all
@@ -338,7 +338,7 @@ void handle_inventory_input(int a1) {
             u16 inventory_index = active_window_base_row + relative_item_index;
             item_ID = gContext.inventory->get_resource(inventory_index).item_id;
             u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
-            if (character_ID == 0xFF && item_ID != 6 && item_ID != 70) { // Can't use item on empty party member unless it is megalixer or tent
+            if (character_ID == 0xFF && !(gContext.item_on_use_data.get_resource(item_ID).target_all)) { // Can't use item on empty party member unless it is megalixer or tent
                 play_menu_sound(3);
                 return;
             }
@@ -418,10 +418,12 @@ void handle_inventory_input(int a1) {
 /*This routine handles executing menu usable item routines*/
 void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
+    srLogWrite("cursor over party member %i", (int)party_member_index);
+    srLogWrite("cursor over party member as word %i", (u16)party_member_index);
     auto item_was_used = false;
 
     /*Call the appropriate function handler for using items on a character/the party*/
-    item_was_used = gContext.on_use_handlers[item_ID]((u16)party_member_index, item_ID, inventory_index);
+    item_was_used = gContext.on_use_handlers.get_handler(item_ID)((u16)party_member_index, item_ID, inventory_index);
     if (item_was_used) {
         gContext.inventory->handle_decrement_inventory(inventory_index, 1);
         if (gContext.inventory->get_resource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up

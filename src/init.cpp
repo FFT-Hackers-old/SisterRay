@@ -12,7 +12,7 @@ static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     NULL,
     NULL,
     NULL,
-    init_item,
+    initItems,
     init_weapon,
     init_armor,
     init_accessory,
@@ -50,6 +50,9 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     init_game_strings();
     EnableNoCD();
     srLoadKernelBin();
+    initOnUseDataRegistry();
+    initOnUseCallbackRegistry();
+    testFillInventory();
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &new_inventory_menu_handler); //add our new menu handler
     mogReplaceFunction(INIT_INVENTORY_CURSOR_STATE, &onEnterInventory);
     LoadMods();

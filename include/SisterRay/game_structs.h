@@ -187,11 +187,13 @@ typedef struct {
 #define gBigAnimBlock       ((BigAnimBlock*)0x00BE1170)
 #define gActorTimerBlock    ((ActorTimerBlock*)0x009A8B26)
 
+#pragma pack(push, 1)
 typedef struct {
     u16 something;
     u16 something2;
     u16 something3;
 } enabledCommandStruct;
+#pragma pack(pop)
 
 /*This is the structure of attack data*/
 typedef struct {
@@ -199,9 +201,17 @@ typedef struct {
 } attackData;
 
 /*This contains a bit vector of flags for spells*/
+#pragma pack(push, 1)
 typedef struct {
-    u8 spellFlags;
+    u8 magicIndex;
+    u8 mpCost;
+    u8 allCount;
+    u8 quadEnabled;
+    u8 quadCount;
+    u8 targetData;
+    u16 propertiesMask;
 } spellFlags;
+#pragma pack(pop)
 
 #pragma pack(push,1)
 typedef struct {
@@ -213,43 +223,46 @@ typedef struct {
 #pragma pack(push, 1)
 /*Three of these are maintained for each active party member, they have size 0x440*/
 typedef struct {
-    u8 characterID;
-    u8 coverChance;
-    u8 strength;
-    u8 vitality;
-    u8 magic;
-    u8 spirit;
-    u8 speed;
-    u8 luck;
-    u16 physAttack;
-    u16 physDefense;
-    u16 magAttack;
-    u16 magDefense;
-    u16 currentHP;
-    u16 maxHP;
-    u16 currentMP;
-    u16 maxMP;
-    u32 timer;
-    u16 counterActionIndex;
-    u16 counterChance;
-    u16 unknownDiviosr;
-    u8 characterFlags;
-    u8 unknown24bitInts[24];
-    u16 attackElementsMask;
-    u16 halvedElementsMask;
-    u16 nulledElementsMask;
-    u16 absorbeElementsMask;
-    u32 attackStatusesMask;
-    u32 immuneStatusesMask;
-    enabledCommandStruct enabledCommandArray[0x10];
-    u8 unknownbytes[8];
-    attackData enabledLimitData[3];
-    spellFlags enabledMagicsData[54];
-    spellFlags enabledSummons[16];
-    spellFlags enabledEnemySkills[24];
-    u8 weaponData[11]; //Contains the first 11 bytes of data from the characters equipped weapon, this is all a copy of weapon data
-    u16 weaponStatus;
-    u8 weaponAccuracy;
+    u8 characterID; //0x00
+    u8 coverChance; //0x01
+    u8 strength; //0x02
+    u8 vitality; //0x03
+    u8 magic; //0x04
+    u8 spirit; //0x05
+    u8 speed; //0x06
+    u8 luck; //0x07
+    u16 physAttack; //0x08
+    u16 physDefense; //0x0A
+    u16 magAttack; //0x0C
+    u16 magDefense; //0x0E
+    u16 currentHP; //0x10
+    u16 maxHP; //0x12
+    u16 currentMP; //0x14
+    u16 maxMP; //0x16
+    u32 timer; //0x18
+    u16 counterActionIndex; //0x1C
+    u16 counterChance; //0x1E
+    u8 padding; //0x20
+    u16 unknownDiviosr; //0x21
+    u8 characterFlags; //0x23
+    u8 unknown24bitInts[24]; //0x24
+    u16 attackElementsMask; //0x3C
+    u16 halvedElementsMask; //003E
+    u16 nulledElementsMask; //0x40
+    u16 absorbeElementsMask; //0x42
+    u32 attackStatusesMask; //0x44
+    u32 immuneStatusesMask; //0x48
+    enabledCommandStruct enabledCommandArray[0x10]; //0x4C
+    u8 unknownbytes[8]; //0xAC
+    attackData enabledLimitData[3]; //0xB4
+    spellFlags enabledMagicsData[54]; //0x108
+    spellFlags unusedMagics[2]; //0x2B8
+    spellFlags enabledSummons[16]; //0x2C8
+    spellFlags enabledEnemySkills[24]; //0x348
+    u8 weaponData[5]; //0x408
+    u16 weaponStatus; //0x40D
+    u8 lepad;
+    u8 weaponAccuracy; //0x410
     u8 paddin[7];
     u32 additionalAttackElements;
     statIncrease statsToIncrease[4];

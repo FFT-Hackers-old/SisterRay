@@ -2,97 +2,167 @@
 #include "items.h"
 #include "impl.h"
 
-/*On use callback for performing HP healing on the menu */
-bool heal_party_member(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    if (!check_member_HP_full(party_member_index) && activePartyStructArray[party_member_index].currentHP) {
-        play_menu_sound(263);
-        u16 heal_amount = gContext.item_on_use_data[item_id].hp_heal_amount;
-        heal_character_at_index(party_member_index, heal_amount);
-        return true;
-    }
-    else {
-        play_menu_sound(3);
-        return false;
-    }
+srOnUseCallbackRegistry::srOnUseCallbackRegistry(): SrResourceRegistry<std::string>() {
+    add_function("heal_party_member", heal_handler);
+    add_function("increment_stat", permanently_boost_stat);
+    add_function("teach_limit", teach_limit_breaks);
+    add_function("no_function", default_item_use);
 }
 
-/*On use callback for performing MP healing on the menu*/
-bool heal_party_member_mp(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    if (!check_member_MP_full(party_member_index) && activePartyStructArray[party_member_index].currentHP) {
-        play_menu_sound(263);
-        u16 heal_amount = gContext.item_on_use_data[item_id].mp_heal_amount;
-        restore_party_member_mp(party_member_index, heal_amount);
-        return true;
-    }
-    else
-    {
-        play_menu_sound(3);
-        return false;
-    }
+void srOnUseCallbackRegistry::add_function(std::string name, onUseCallback callback) {
+    handler_names[name] = callback;
 }
 
-/*might the above methods a more generic "heal" method and just data drive it*/
-bool heal_party_member_hp_and_mp(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    if ((check_member_MP_full(party_member_index) && check_member_HP_full(party_member_index)) || activePartyStructArray[party_member_index].currentHP) {
-        play_menu_sound(263);
-        u16 heal_amount = gContext.item_on_use_data[item_id].hp_heal_amount;
-        restore_party_member_mp(party_member_index, heal_amount);
-        heal_amount = gContext.item_on_use_data[item_id].mp_heal_amount;
-        restore_party_member_mp(party_member_index, heal_amount);
-        return true;
-    }
-    else
-    {
-        play_menu_sound(3);
-        return false;
-    }
+onUseCallback srOnUseCallbackRegistry::get_handler(u16 item_id) {
+    auto& name = get_resource(item_id);
+    return handler_names[name];
 }
 
-/*Can probably be merged with the above handlers and have the 'target-all' flag set */
-bool megalixir_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    u16 current_party_member = 0;
-    bool healable_exists = false;
-    while (current_party_member < 3) {
-        if ((CURRENT_PARTY_MEMBER_ARRAY)[current_party_member] != 255 && (!check_member_HP_full(current_party_member)
-            || !check_member_MP_full(current_party_member))) {
-            healable_exists = true;
+void initOnUseCallbackRegistry() {
+    for (u16 item_id = 0; item_id < 320; item_id++) {
+        switch (item_id) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7: {
+            gContext.on_use_handlers.add_resource("heal_party_member");
+            break;
         }
-        ++current_party_member;
+        default:
+            gContext.on_use_handlers.add_resource("no_function");
+        }
     }
-    if (healable_exists) {
+}
+
+bool default_item_use(u16 party_member_index, u16 item_id, u16 inventory_index) {
+    return false;
+}
+
+/*On use callback for performing HP healing on the menu */
+bool heal_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
+    bool use_successful = false;
+    bool temp_bool;
+    auto target_all = gContext.item_on_use_data.get_resource(item_id).target_all;
+
+    if (target_all) {
         for (u16 member_to_heal = 0; member_to_heal < 3; ++member_to_heal) {
-            if (activePartyStructArray[party_member_index].currentHP && (CURRENT_PARTY_MEMBER_ARRAY)[member_to_heal] != 0xFF) {
-                heal_character_at_index(member_to_heal, 10000);
-                restore_party_member_mp(member_to_heal, 10000);
+            temp_bool = heal_single_party_member(member_to_heal, item_id);
+            if (!use_successful) {
+                use_successful = temp_bool;
             }
         }
-        play_menu_sound(263);
-        return true;
     }
     else {
-        play_menu_sound(3);
-        return false;
+        use_successful = heal_single_party_member(party_member_index, item_id);
     }
+    play_success_or_failure_sound(use_successful, 263, 3);
+
+    return use_successful;
 }
 
-/*Merge into one handler with the healing handler and introduce "can revive" and "target_all" data flags*/
-bool revive_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    if (activePartyStructArray[party_member_index].currentHP) {
-        play_menu_sound(3);
-        return false;
+bool heal_single_party_member(u16 party_member_index, u16 item_id) {
+    bool heal_was_performed = false;
+    auto is_hp_healable = check_target_hp_healable(party_member_index, item_id);
+    auto is_mp_healable = check_target_mp_healable(party_member_index, item_id);
+    auto item_heals_hp = (gContext.item_on_use_data.get_resource(item_id).hp_heal_amount || gContext.item_on_use_data.get_resource(item_id).hp_heal_percent);
+    auto item_heals_mp = (gContext.item_on_use_data.get_resource(item_id).mp_heal_amount || gContext.item_on_use_data.get_resource(item_id).mp_heal_percent);
+
+    if (item_heals_hp) {
+        if (is_hp_healable) {
+            u16 heal_amount = calculate_hp_heal_amount(party_member_index, item_id);
+            heal_character_at_index(party_member_index, heal_amount);
+            heal_was_performed = true;
+        }
+    }
+    if (item_heals_mp) {
+        if (is_mp_healable) {
+            u16 heal_amount = calculate_mp_heal_amount(party_member_index, item_id);
+            restore_party_member_mp(party_member_index, heal_amount);
+            heal_was_performed = true;
+        }
+    }
+    return heal_was_performed;
+}
+
+u16 calculate_hp_heal_amount(u16 party_member_index, u16 item_id) {
+    if (gContext.item_on_use_data.get_resource(item_id).hp_heal_amount) {
+        return gContext.item_on_use_data.get_resource(item_id).hp_heal_amount;
+    }
+    else if (gContext.item_on_use_data.get_resource(item_id).hp_heal_percent){
+        u8 heal_divisor = gContext.item_on_use_data.get_resource(item_id).hp_heal_percent;
+        return (((activePartyStructArray)[party_member_index].maxHP / heal_divisor) * 100);
+    }
+    return 0;
+}
+
+u16 calculate_mp_heal_amount(u16 party_member_index, u16 item_id) {
+    if (gContext.item_on_use_data.get_resource(item_id).mp_heal_amount) {
+        return gContext.item_on_use_data.get_resource(item_id).mp_heal_amount;
+    }
+    else if (gContext.item_on_use_data.get_resource(item_id).mp_heal_percent) {
+        u8 heal_divisor = gContext.item_on_use_data.get_resource(item_id).mp_heal_percent;
+        return (((activePartyStructArray)[party_member_index].maxMP / heal_divisor) * 100);
+    }
+    return 0;
+}
+
+bool check_target_hp_healable(u16 target, u16 item_id) {
+    srLogWrite("attempting to use item %i", (int)item_id);
+    srLogWrite("attempting to heal character %i", (int)target);
+    bool is_healable = check_character_hp_full(target);
+
+    if (gContext.item_on_use_data.get_resource(item_id).can_revive) {
+        srLogWrite("item can target the dead");
+        return is_healable;
+    }
+
+    bool is_alive = ((bool)((activePartyStructArray)[target].currentHP));
+    srLogWrite("is_alive_value:%s", (is_alive ? "true" : "false"));
+    srLogWrite("target_hp:%i", int((activePartyStructArray)[target].currentHP));
+    srLogWrite("is_healable_value:%s", (is_healable ? "true" : "false"));
+    return (is_healable && is_alive);
+}
+
+bool check_target_mp_healable(u16 target, u16 item_id) {
+    bool is_healable = check_character_mp_full(target);
+
+    if (gContext.item_on_use_data.get_resource(item_id).can_revive) {
+        return is_healable;
+    }
+
+    bool is_alive = ((bool)((activePartyStructArray)[target].currentHP));
+    return (is_healable && is_alive);
+}
+
+bool check_character_hp_full(u16 party_member_index) {
+     return (!check_member_HP_full(party_member_index));
+}
+
+bool check_character_mp_full(u16 party_member_index) {
+    return (!check_member_MP_full(party_member_index));
+}
+
+bool check_character_dead(u16 party_member_index) {
+    return (bool)activePartyStructArray[party_member_index].currentHP;
+}
+
+void play_success_or_failure_sound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id) {
+    if (did_succeed) {
+        play_menu_sound(success_sound_id);
     }
     else {
-        u16 heal_ratio = gContext.item_on_use_data[item_id].hp_heal_ratio;
-        heal_character_at_index(party_member_index, (activePartyStructArray[party_member_index].maxHP/heal_ratio));
-        play_menu_sound(263);
-        return true;
+        play_menu_sound(failure_sound_id);
     }
 }
 
 /*Perhaps redesign to make it possible to boost multiple stats, lower stats, or boost by variable amounts*/
 bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_index) {
     u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
-    u8 stat_to_boost = gContext.item_on_use_data[item_id].stat_to_boost;
+    u8 stat_to_boost = gContext.item_on_use_data.get_resource(item_id).stat_to_boost;
     bool stat_boosted = false;
     switch (stat_to_boost) {
         case 0: {

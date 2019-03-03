@@ -15,15 +15,26 @@ void SrItemInventory::handle_decrement_inventory(u16 inventory_index, u8 decreme
     }
 }
 
+void testFillInventory() {
+    for (u16 item_id = 0; item_id < 320; item_id++) {
+        addItemToInventory(item_id, 99);
+    }
+}
+
+void addItemToInventory(u16 item_id, u8 quantity) {
+    InventoryEntry entry = {
+        item_id,
+        quantity
+    };
+    gContext.inventory->add_resource(entry);
+}
+
 /*Method to initialize the new inventories with an appropriate size*/
 SISTERRAY_API void InitInventory()
 {
-    srLogWrite("sister ray: initializing inventory");
     gContext.inventory = std::make_unique<SrItemInventory>(INVENTORY_SIZE);
-    srLogWrite("ptr to inventory instance: %p", gContext.inventory.get());
-    srLogWrite("ptr to std:vector underlying inventory: %p", &gContext.inventory->resource_registry);
     srLogWrite("sister ray: inventory initialized with capacity: %lu", (unsigned long)gContext.inventory->current_capacity());
-    srLogWrite("inventory initialize");
+
 }
 
 SISTERRAY_API void InitBattleInventory()

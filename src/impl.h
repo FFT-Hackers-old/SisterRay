@@ -29,6 +29,7 @@ typedef struct {
     std::unique_ptr<SrBattleInventory> battle_inventory;
     SrItemTypeRegistry                 item_type_data;
     srOnUseCallbackRegistry            on_use_handlers; /*Registry of function pointers for using items*/
+    srNoTargetCallbackRegistry         untargeted_handlers;
     SrOnUseItemDataRegistry            item_on_use_data;
     SrGameStrings                      game_strings;
 } SrContext;

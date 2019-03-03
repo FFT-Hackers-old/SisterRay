@@ -2,20 +2,16 @@
 #include "items.h"
 #include "impl.h"
 
-srOnUseCallbackRegistry::srOnUseCallbackRegistry(): SrResourceRegistry<std::string>() {
+srOnUseCallbackRegistry::srOnUseCallbackRegistry(): SrFunctionResourceRegistry<onUseCallback>() {
     add_function("heal_party_member", heal_handler);
     add_function("increment_stat", permanently_boost_stat);
     add_function("teach_limit", teach_limit_breaks);
     add_function("no_function", default_item_use);
 }
 
-void srOnUseCallbackRegistry::add_function(std::string name, onUseCallback callback) {
-    handler_names[name] = callback;
-}
-
-onUseCallback srOnUseCallbackRegistry::get_handler(u16 item_id) {
-    auto& name = get_resource(item_id);
-    return handler_names[name];
+srNoTargetCallbackRegistry::srNoTargetCallbackRegistry() : SrFunctionResourceRegistry<noTargetCallback>() {
+    add_function("save_crystal_handler", save_crystal_on_use);
+    add_function("no_function", default_no_target_use);
 }
 
 void initOnUseCallbackRegistry() {
@@ -38,6 +34,34 @@ void initOnUseCallbackRegistry() {
     }
 }
 
+void initNoTargetCallbackRegistry() {
+    for (u16 item_id = 0; item_id < 320; item_id++) {
+        switch (item_id) {
+        case 98:
+            gContext.on_use_handlers.add_resource("save_crystal_handler");
+        default:
+            gContext.on_use_handlers.add_resource("no_function");
+        }
+    }
+}
+
+
+// un-targetd handlers
+bool default_no_target_use() {
+    return false;
+}
+
+bool save_crystal_on_use() {
+    play_menu_sound(263);
+    *byte_DC0C3C |= 1u;  //Save Crystal used?
+    set_some_transition_data(5, 0);
+    set_more_transition_data(0);
+    save_crystal_handler();
+    return true;
+}
+
+
+//targeted handlers
 bool default_item_use(u16 party_member_index, u16 item_id, u16 inventory_index) {
     return false;
 }
@@ -111,19 +135,13 @@ u16 calculate_mp_heal_amount(u16 party_member_index, u16 item_id) {
 }
 
 bool check_target_hp_healable(u16 target, u16 item_id) {
-    srLogWrite("attempting to use item %i", (int)item_id);
-    srLogWrite("attempting to heal character %i", (int)target);
     bool is_healable = check_character_hp_full(target);
 
     if (gContext.item_on_use_data.get_resource(item_id).can_revive) {
-        srLogWrite("item can target the dead");
         return is_healable;
     }
 
     bool is_alive = ((bool)((activePartyStructArray)[target].currentHP));
-    srLogWrite("is_alive_value:%s", (is_alive ? "true" : "false"));
-    srLogWrite("target_hp:%i", int((activePartyStructArray)[target].currentHP));
-    srLogWrite("is_healable_value:%s", (is_healable ? "true" : "false"));
     return (is_healable && is_alive);
 }
 

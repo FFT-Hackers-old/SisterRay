@@ -25,11 +25,18 @@ public:
   In order to enable more items, a new format is being introduced and
   all routines which touch the inventory are being rewritten */
 #pragma pack(push, 1)
-typedef struct {
+typedef struct InventoryEntry{
     u16 item_id;
     u8 quantity;
+    InventoryEntry(): item_id(0xFFFF), quantity(0) {
+    };
+    InventoryEntry(u16 item_id, u8 quantity): item_id(item_id), quantity(quantity) {
+    };
 } InventoryEntry;
 #pragma pack(pop)
+
+void testFillInventory();
+void addItemToInventory(u16 item_id, u8 quantity);
 
 class SrItemInventory : public SrResourceRegistry<InventoryEntry> {
 public:

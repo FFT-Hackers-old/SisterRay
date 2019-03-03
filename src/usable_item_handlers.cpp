@@ -65,10 +65,11 @@ bool heal_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
 }
 
 bool heal_single_party_member(u16 party_member_index, u16 item_id) {
-    bool heal_was_performed;
+    bool heal_was_performed = false;
     auto is_hp_healable = check_target_hp_healable(party_member_index, item_id);
     auto is_mp_healable = check_target_mp_healable(party_member_index, item_id);
     auto item_heals_hp = (gContext.item_on_use_data.get_resource(item_id).hp_heal_amount || gContext.item_on_use_data.get_resource(item_id).hp_heal_percent);
+    auto item_heals_mp = (gContext.item_on_use_data.get_resource(item_id).mp_heal_amount || gContext.item_on_use_data.get_resource(item_id).mp_heal_percent);
 
     if (item_heals_hp) {
         if (is_hp_healable) {
@@ -77,7 +78,7 @@ bool heal_single_party_member(u16 party_member_index, u16 item_id) {
             heal_was_performed = true;
         }
     }
-    if (gContext.item_on_use_data.get_resource(item_id).mp_heal_amount) {
+    if (item_heals_mp) {
         if (is_mp_healable) {
             u16 heal_amount = calculate_mp_heal_amount(party_member_index, item_id);
             restore_party_member_mp(party_member_index, heal_amount);
@@ -110,25 +111,31 @@ u16 calculate_mp_heal_amount(u16 party_member_index, u16 item_id) {
 }
 
 bool check_target_hp_healable(u16 target, u16 item_id) {
-    bool can_target_dead = false;
-    if (gContext.item_on_use_data.get_resource(item_id).can_revive) {
-        can_target_dead = true;
-    }
-
+    srLogWrite("attempting to use item %i", (int)item_id);
+    srLogWrite("attempting to heal character %i", (int)target);
     bool is_healable = check_character_hp_full(target);
 
-    return (is_healable && can_target_dead);
+    if (gContext.item_on_use_data.get_resource(item_id).can_revive) {
+        srLogWrite("item can target the dead");
+        return is_healable;
+    }
+
+    bool is_alive = ((bool)((activePartyStructArray)[target].currentHP));
+    srLogWrite("is_alive_value:%s", (is_alive ? "true" : "false"));
+    srLogWrite("target_hp:%i", int((activePartyStructArray)[target].currentHP));
+    srLogWrite("is_healable_value:%s", (is_healable ? "true" : "false"));
+    return (is_healable && is_alive);
 }
 
 bool check_target_mp_healable(u16 target, u16 item_id) {
-    bool can_target_dead = false;
-    if (gContext.item_on_use_data.get_resource(item_id).can_revive) {
-        can_target_dead = true;
-    }
-
     bool is_healable = check_character_mp_full(target);
 
-    return (is_healable && can_target_dead);
+    if (gContext.item_on_use_data.get_resource(item_id).can_revive) {
+        return is_healable;
+    }
+
+    bool is_alive = ((bool)((activePartyStructArray)[target].currentHP));
+    return (is_healable && is_alive);
 }
 
 bool check_character_hp_full(u16 party_member_index) {

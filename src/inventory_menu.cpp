@@ -418,6 +418,8 @@ void handle_inventory_input(int a1) {
 /*This routine handles executing menu usable item routines*/
 void handle_usable_item_effects(u16 item_ID, u16 inventory_index) {
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
+    srLogWrite("cursor over party member %i", (int)party_member_index);
+    srLogWrite("cursor over party member as word %i", (u16)party_member_index);
     auto item_was_used = false;
 
     /*Call the appropriate function handler for using items on a character/the party*/

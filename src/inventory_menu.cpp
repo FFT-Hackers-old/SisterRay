@@ -1,6 +1,7 @@
 #include "inventory_menu.h"
 #include "impl.h"
 #include "windows.h"
+#include "menu_utils.h"
 
 #define SIZE_OF_CURSOR_STRUCT  (i32)0xE // this is the size in i32, for ptr arithmetic
 
@@ -8,12 +9,13 @@ SISTERRAY_API i32 onEnterInventory() {
     i32 ret;
 
     *INVENTORY_MENU_STATE = 1;
-    i32* top_view_cursor_struct = INVENTORY_CURSOR_POSITION;
-    i32* main_item_view_cursor_struct = INVENTORY_CURSOR_POSITION + SIZE_OF_CURSOR_STRUCT;
-    i32* key_items_cursor_struct = INVENTORY_CURSOR_POSITION + 2 * SIZE_OF_CURSOR_STRUCT;
-    set_cursor_data_values((u32*)top_view_cursor_struct, 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0, 0);
-    set_cursor_data_values((u32*)main_item_view_cursor_struct, 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1);
-    set_cursor_data_values((u32*)key_items_cursor_struct, 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0); //Initialize Cursor for top menu pane
+    cursorContext* inventoryOptionCursorContext = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
+    cursorContext* inventoryViewCursorContext = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS + SIZE_OF_CURSOR_STRUCT;
+    cursorContext* characterViewCursorContext = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS + 2 * SIZE_OF_CURSOR_STRUCT;
+    setContextCursorData(inventoryOptionCursorContext, 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0, 0);
+    setContextCursorData(inventoryViewCursorContext, 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1);
+    setContextCursorData(characterViewCursorContext, 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0); //initialize cursor for character pane
+
     ret = sub_714FA3();
     if (*dword_DC130C == 1)
         *dword_DD18C0 = (u32)dword_921C98;
@@ -32,13 +34,19 @@ SISTERRAY_API void inventoryMenuUpdateHandler(int a1)
     }
 }
 
-void display_active_cursor_state(int a1) {
+void display_active_cursor_state(int updateStateMask) {
+    cursorContext* cursorContextArray = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
     u32 inventory_menu_state = *(INVENTORY_MENU_STATE);
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
-    u32 active_window_base_row = *(VISIBLE_ITEM_START);
-    u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
+    u32 baseRowIndex = cursorContextArray[1].baseRowIndex;
+    u32 relativeRowIndex = cursorContextArray[1].relativeRowIndex;
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
-    i32* inventory_cursor_position = (INVENTORY_CURSOR_POSITION);
+    u32 baseKeyItemRow;
+    u32 relativeKeyItemRow;
+    u32 relativeKeyItemColumn;
+    u32 baseSortRow;
+    u32 relativeSortRow;
+    i32 flatKeyItemInventoryIndex;
     char* fetched_description;
 
     u16 item_ID;
@@ -47,55 +55,62 @@ void display_active_cursor_state(int a1) {
     if (inventory_menu_state == 2)
     {
         if (!(*use_on_characters_enabled)) {
-            item_ID = gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id;;
+            item_ID = gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id;;
             if (!(gContext.item_on_use_data.get_resource(item_ID).target_all))
                 display_cursor(0, 120 * party_member_index + 161, 0.0f); //if the cursor isn't targeting all
             else
-                display_cursor(0, 120 * (a1 % 3) + 161, 0.0); // if the cursor is targeting all
+                display_cursor(0, 120 * (updateStateMask % 3) + 161, 0.0); // if the cursor is targeting all
         }
-        if (a1 & 2)
-            display_cursor(298, 37 * relative_item_index + 109, 0.1f);
+        if (updateStateMask & 2) //This and causes the cursor to flash on repeated updates
+            display_cursor(298, 37 * relativeRowIndex + 109, 0.1f);
         if (*use_on_characters_enabled)
             --(*use_on_characters_enabled);
     }
     switch (inventory_menu_state)
     {
     case 0:                                   // Nothing Selected, Default State
-        display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.1f); //display cursor at the selected view
+        display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f); //display cursor at the selected view
         break;
     case 1:                                   // Use Selected - Selecting Item
-        if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.1f);
-        display_cursor(298, 37 * relative_item_index + 109, 0.1f);
-        if (gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id != 0xFFFF)
+        if (updateStateMask & 2)
+            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f);
+        display_cursor(298, 37 * relativeRowIndex + 109, 0.1f);
+        if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
-            fetched_description = get_description_from_global_id(gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id);
+            fetched_description = get_description_from_global_id(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
             displayTextAtLocation(27, 64, fetched_description, 7, 1036966167);
         }
         break;
     case 2:                                   // Use Selected - Targeting Party
-        if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0f);
-        if (gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id != 0xFFFF)
+        if (updateStateMask & 2)
+            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
+        if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
-            fetched_description = get_description_from_global_id(gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id);
+            fetched_description = get_description_from_global_id(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
             displayTextAtLocation(27, 64, fetched_description, 7, 1036966167);
         }
         break;
     case 3:                                   // Browsing Key Items
-        if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.001f);
-        display_cursor(293 * (*KEY_ITEMS_COL_INDEX) + 5, 36 * (*KEY_ITEMS_ROW_INDEX) + 129, 0.001f);
-        if ((KEY_ITEMS_INVENTORY_PTR)[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)] != 0xFFFF) //If there is a key item at cursor matrix position
+        if (updateStateMask & 2)
+            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
+
+
+        baseKeyItemRow = cursorContextArray[2].baseRowIndex;
+        relativeKeyItemRow = cursorContextArray[2].relativeRowIndex;
+        relativeKeyItemColumn = cursorContextArray[2].relativeColumnIndex;
+        display_cursor(293 * relativeKeyItemColumn + 5, 36 * relativeKeyItemRow + 129, 0.001f);
+
+        flatKeyItemInventoryIndex = 2 * (baseKeyItemRow)+2 * (relativeKeyItemRow)+(relativeKeyItemColumn);
+        if ((KEY_ITEMS_INVENTORY_PTR)[flatKeyItemInventoryIndex] != 0xFFFF) //If there is a key item at cursor matrix position
         {
-            int cursor_array_position = (KEY_ITEMS_INVENTORY_PTR)[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)];
-            fetched_description = (char*)load_kernel_object_text(0xEu, cursor_array_position, 0); //The returned arg here is the item description
+            i32 keyItemID = (KEY_ITEMS_INVENTORY_PTR)[flatKeyItemInventoryIndex];
+            fetched_description = (char*)load_kernel_object_text(0xEu, keyItemID, 0); //The returned arg here is the item description
             displayTextAtLocation(27, 64, fetched_description, 7, 1036966167);
         }
         break;
     case 4:                                   //Selecting an Arrange Method
-        if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.001f);
+        if (updateStateMask & 2)
+            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
         display_cursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001f);
         for (int j = 0; j < 8; ++j) {            // Loop over arrange types
             fetched_description = gContext.game_strings.inventory_menu_texts.get_string(j + 3); //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
@@ -104,11 +119,15 @@ void display_active_cursor_state(int a1) {
         draw_menu_box((i16*)(&(menuWindowConfig)[3]), (float)1008981770); //Does this display text boses?
         break;
     case 5:                                   // Inside Custom Sort
-        if (a1 & 2)
-            display_cursor(93 * inventory_cursor_position[0] + 13, 26, 0.0f);
-        if (gContext.inventory->get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX).item_id != 0xFFFF)
+        if (updateStateMask & 2)
+            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
+
+        baseSortRow = cursorContextArray[5].baseRowIndex;
+        relativeSortRow = cursorContextArray[5].relativeRowIndex;
+
+        if (gContext.inventory->get_resource(baseSortRow + relativeSortRow).item_id != 0xFFFF)
         {
-            fetched_description = get_description_from_global_id(gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id);
+            fetched_description = get_description_from_global_id(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
             displayTextAtLocation(27, 64, fetched_description, 7, 1036966167);
         }
         break;
@@ -118,13 +137,13 @@ void display_active_cursor_state(int a1) {
 }
 
 /*This function displaces texts depending on current "view" in the menu*/
-void display_inventory_views(int a1) {
+void display_inventory_views(int updateStateMask) {
     u32 inventory_menu_state = *(INVENTORY_MENU_STATE);
-    int* inventory_cursor_position = (INVENTORY_CURSOR_POSITION); //might be better to call this 'current menu view'
+    cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS); //might be better to call this 'current menu view'
 
     int menu_state_local;
 
-    if (inventory_cursor_position[0] != 2)     // Something with party members unless on cursor positioned on key items
+    if (cursorContextArray[0].baseColumnIndex != 2)     // Something with party members unless on cursor positioned on key items
     {
         render_character_portraits();
     }
@@ -133,24 +152,24 @@ void display_inventory_views(int a1) {
         displayTextAtLocation(93 * menu_text_index + 57, 17, gContext.game_strings.inventory_menu_texts.get_string(menu_text_index), 7, 1036966167);
     sub_6FA12F(0, 102, 640, 372);
 
-    if (inventory_cursor_position[0] == 2)     // If cursor positioned on key items
+    if (cursorContextArray[0].baseColumnIndex == 2)     // If cursor positioned on key items
     {
         render_key_items_view();
     }
     else
     {
-        if (inventory_menu_state == 5)            // if currently in custom sort, animate flashing cursor?
-        {
-            if (ITEM_TO_SWAP_SELECTED)
-            {
-                if (a1 & 2)
-                {
-                    i32 v45 = 37 * (*CUSTOM_SORT_TEMP_INDEX) - 37 * (*CUSTOM_SORT_VIEW_BASE) + 9 * (*dword_DD1B54) - 9;
-                    if (v45 > -37 && v45 < 1369)
-                        display_cursor(291, v45 + 113, 0.0);
+        if (inventory_menu_state == 5) {
+
+            auto baseSortRow = cursorContextArray[5].baseRowIndex;
+            auto relativeSortRow = cursorContextArray[5].relativeRowIndex;
+            if (ITEM_TO_SWAP_SELECTED) {
+                if (updateStateMask & 2) {
+                    i32 pixelOffsetToSelectedItem = 37 * (*TEMP_ABSOLUTE_CURSOR_INDEX) - 37 * baseSortRow + 9 * (*dword_DD1B54) - 9;
+                    if (pixelOffsetToSelectedItem > -37 && pixelOffsetToSelectedItem < 1369) // display the flashing cursor if it's visible on the menu
+                        display_cursor(291, pixelOffsetToSelectedItem + 113, 0.0);
                 }
             }
-            display_cursor(298, 37 * (*CUSTOM_SORT_RELATIVE_INDEX) + 113, 0.0099999998f);
+            display_cursor(298, 37 * relativeSortRow + 113, 0.0099999998f);
             menu_state_local = 5;                 // Set the local to 5 if we're in custom sort
         }
         else
@@ -168,8 +187,8 @@ void display_inventory_views(int a1) {
 
 
 void render_inventory_main_view(int custom_arrange_active) {
-    u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
-
+    cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS);
+    u32 relativeRowIndex = cursorContextArray[1].relativeRowIndex;
     char* kernel_object_name;
     u16 item_ID;
     u8 item_quantity;
@@ -178,7 +197,7 @@ void render_inventory_main_view(int custom_arrange_active) {
 
     *GLOBAL_MENU_VIEW_SIZE = (u16)10;                         // number of rows active in an inventory view
     *GLOBAL_MENU_ROW_COUNT = (u16)gContext.inventory->current_capacity();                        // max size of the inventory.. let's change it
-    *GLOBAL_MENU_ROW_BASE = (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
+    *GLOBAL_MENU_ROW_BASE =  cursorContextArray[custom_arrange_active].baseRowIndex;
     *word_DD17F6 = 618;
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
@@ -187,7 +206,7 @@ void render_inventory_main_view(int custom_arrange_active) {
     int displayed_row_count = ((dword_DD1A48)[14 * custom_arrange_active] != 0) + 10;
 
     for (int visible_item = 0; visible_item < displayed_row_count; ++visible_item) {
-        visible_item_inventory_index = visible_item + (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
+        visible_item_inventory_index = visible_item + cursorContextArray[custom_arrange_active].baseRowIndex;
         if (gContext.inventory->get_resource(visible_item_inventory_index).item_id != 0xFFFF) {
             item_ID = gContext.inventory->get_resource(visible_item_inventory_index).item_id;
             item_quantity = gContext.inventory->get_resource(visible_item_inventory_index).quantity;
@@ -219,11 +238,12 @@ void render_character_portraits() {
 
 
 void render_key_items_view() {
+    cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS);
     char* key_item_name;
 
     *GLOBAL_MENU_VIEW_SIZE = 10;
     *GLOBAL_MENU_ROW_COUNT = 32; //Number of items in one column in key items menu
-    *GLOBAL_MENU_ROW_BASE = (*KEY_ITEMS_VIEW_BASE_ROW);
+    *GLOBAL_MENU_ROW_BASE = cursorContextArray[2].baseRowIndex;
     *word_DD17F6 = 618; /*Still need to figure out what these values do*/
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
@@ -231,7 +251,7 @@ void render_key_items_view() {
     renderSideScroller((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f);
 
     for (int visible_key_item_row = 0; visible_key_item_row < 12; ++visible_key_item_row) {
-        int flat_key_item_index_base = 2 * visible_key_item_row + 2 * (*KEY_ITEMS_VIEW_BASE_ROW);
+        int flat_key_item_index_base = 2 * visible_key_item_row + 2 * cursorContextArray[2].baseRowIndex;
         for (int key_item_column = 0; key_item_column < 2; ++key_item_column) {
             if ((KEY_ITEMS_INVENTORY_PTR)[key_item_column + flat_key_item_index_base] != 0xFF) {
                 key_item_name = (char *)load_kernel_object_text(0xEu, (KEY_ITEMS_INVENTORY_PTR)[(u8)(key_item_column + flat_key_item_index_base)], 8); //fetch the name of the key item
@@ -245,25 +265,27 @@ void render_key_items_view() {
 /*WIP here, need a more generic way to introduce "usable" items through a function registry or something similar*/
 void handle_inventory_input(int a1) {
     u32* inventory_menu_state = INVENTORY_MENU_STATE;
-    i32* inventory_cursor_position = INVENTORY_CURSOR_POSITION;
+    cursorContext* cursorContextArray = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
     u32 party_member_index = *(INVENTORY_CURRENT_PARTY_INDEX);
-    u32 active_window_base_row = *(VISIBLE_ITEM_START);
-    u32 relative_item_index = *(RELATIVE_ITEM_INDEX);
+    u32 baseRowIndex = cursorContextArray[1].baseRowIndex;
+    u32 relativeRowIndex = cursorContextArray[1].relativeRowIndex;
+    i32 baseSortRow;
+    i32 relativeSortRow;
     u16 item_id;
 
-    update_cursor_position((u32*)&(inventory_cursor_position[14 * (*inventory_menu_state)]));
+    update_cursor_position((u32*)&(cursorContextArray[*inventory_menu_state]));
     switch ((*inventory_menu_state))
     {
     case 0:
         if (check_received_input(32)) {               // handling inputs?
             playMenuSound(1);
-            if (inventory_cursor_position[0]) {
-                if (inventory_cursor_position[0] == 1) {
-                    set_cursor_data_values(CURSOR_STRUCT_PTR, 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0); //Sets cursor data for the arrange menu
+            if (cursorContextArray[0].baseColumnIndex) {
+                if (cursorContextArray[0].baseColumnIndex == 1) {
+                    setContextCursorData((cursorContext*)(&(cursorContextArray[3])), 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0); //Sets cursor data for the arrange menu
                     *inventory_menu_state = 4;         // Arrange Menu
                 }
-                else if (inventory_cursor_position[0] == 2) {
-                    set_cursor_data_values(KEY_ITEMS_COL_INDEX, 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1); //sets cursor data for the key items menu
+                else if (cursorContextArray[0].baseColumnIndex == 2) {
+                    setContextCursorData((cursorContext*)(&(cursorContextArray[2])), 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1); //sets cursor data for the key items menu
                     *inventory_menu_state = 3;         // Key Items Menu
                 }
             }
@@ -280,11 +302,11 @@ void handle_inventory_input(int a1) {
     case 1:
         if (!(*dword_DD1A80)) {
             if (check_received_input(32)) {
-                if (gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id == 0xFFFF) {
+                if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id == 0xFFFF) {
                     playMenuSound(3);
                 }
                 else {
-                    item_id = gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id;
+                    item_id = gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id;
                     if (usable_in_inventory_menu(item_id)) {
                         playMenuSound(3);
                     }
@@ -309,7 +331,7 @@ void handle_inventory_input(int a1) {
         if (*use_on_characters_enabled)
             return;
         if (check_received_input(32)) {  //if "ok" input was received
-            u16 inventory_index = active_window_base_row + relative_item_index;
+            u16 inventory_index = baseRowIndex + relativeRowIndex;
             item_id = gContext.inventory->get_resource(inventory_index).item_id;
             u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
             if (character_ID == 0xFF && !(gContext.item_on_use_data.get_resource(item_id).target_all)) { // Can't use item on empty party member unless it is megalixer or tent
@@ -342,10 +364,10 @@ void handle_inventory_input(int a1) {
             }
             else
             {
-                set_cursor_data_values(dword_DD1B30, 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1);// Custom Sort Cursor Data Copy?
+                setContextCursorData((cursorContext*)&(cursorContextArray[5]), 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1);// Custom Sort Cursor Data Copy?
                 *ITEM_TO_SWAP_SELECTED = 0; //Clear the globals that are used by the custom sort routine for swapping items
-                *UNKNOWN_CUSTOM_SORT_GLOBAL = 0;
-                *CUSTOM_SORT_TEMP_INDEX = 0;
+                *TEMP_COLUMN_INDEX = 0;
+                *TEMP_ABSOLUTE_CURSOR_INDEX = 0;
                 *inventory_menu_state = 5; //Move to custom sort state
             }
         }
@@ -360,21 +382,24 @@ void handle_inventory_input(int a1) {
         {
             if (*ITEM_TO_SWAP_SELECTED) // If this is already set when input is received, then switch the items. It's really a bool value
             {
+
+                baseSortRow = cursorContextArray[5].baseRowIndex;
+                relativeSortRow = cursorContextArray[5].relativeRowIndex;
                 if (*ITEM_TO_SWAP_SELECTED == 1)
                 {
                     playMenuSound(1);
                     /*This code swaps two items in the inventory*/
-                    InventoryEntry temp_entry = gContext.inventory->get_resource(*CUSTOM_SORT_TEMP_INDEX); //copy cursor start
-                    gContext.inventory->get_resource(*CUSTOM_SORT_TEMP_INDEX) = gContext.inventory->get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX); 
-                    gContext.inventory->get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX) = temp_entry;
+                    InventoryEntry temp_entry = gContext.inventory->get_resource(*TEMP_ABSOLUTE_CURSOR_INDEX); //copy cursor start
+                    gContext.inventory->get_resource(*TEMP_ABSOLUTE_CURSOR_INDEX) = gContext.inventory->get_resource(baseSortRow + relativeSortRow); 
+                    gContext.inventory->get_resource(baseSortRow + relativeSortRow) = temp_entry;
                     *ITEM_TO_SWAP_SELECTED = 0;
                 }
             }
             else
             {
                 playMenuSound(1);
-                *UNKNOWN_CUSTOM_SORT_GLOBAL = *dword_DD1B30; //copy first dword of struct set in previous state here, seems to always be 0
-                *CUSTOM_SORT_TEMP_INDEX = *CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX; //custom sort base row and relative offsets copied when you select an item to swap
+                *TEMP_COLUMN_INDEX = cursorContextArray[5].relativeColumnIndex; //copy first dword of struct set in previous state here, seems to always be 0
+                *TEMP_ABSOLUTE_CURSOR_INDEX = baseSortRow + relativeSortRow; //custom sort base row and relative offsets copied when you select an item to swap
                 *ITEM_TO_SWAP_SELECTED = 1;
             }
         }

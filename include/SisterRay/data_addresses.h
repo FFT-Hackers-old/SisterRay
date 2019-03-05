@@ -12,19 +12,12 @@
 
 #define INVENTORY_MENU_STATE                 (u32*)0xDD19C8
 #define INVENTORY_CURRENT_PARTY_INDEX        (u32*)0xDD1A8C
-#define VISIBLE_ITEM_START                   (u32*)0xDD1A64
-#define RELATIVE_ITEM_INDEX                  (u32*)0xDD1A54
-#define CUSTOM_SORT_VIEW_BASE                (u32*)0xDD1B44
-#define CUSTOM_SORT_RELATIVE_INDEX           (u32*)0xDD1B34
-#define UNKNOWN_CUSTOM_SORT_GLOBAL           (u32*)0xDD1A10
-#define CUSTOM_SORT_TEMP_INDEX               (u32*)0xDD1A14
-#define INVENTORY_CURSOR_POSITION            (i32*)0xDD1A18
+#define TEMP_COLUMN_INDEX                    (u32*)0xDD1A10
+#define TEMP_ABSOLUTE_CURSOR_INDEX           (u32*)0xDD1A14
+#define INVENTORY_MENU_CURSOR_CONTEXTS       (i32*)0xDD1A18
 #define INVENTORY_ARRANGE_TYPE               (u32*)0xDD1AFC
 
 #define KEY_ITEMS_INVENTORY_PTR              (u8*)0xDD19D0
-#define KEY_ITEMS_VIEW_BASE_ROW              (u32*)0xDD1AD4 //Moves as the cursor scrolls
-#define KEY_ITEMS_ROW_INDEX                  (u32*)0xDD1AC4
-#define KEY_ITEMS_COL_INDEX                  (u32*)0xDD1AC0 //Always 0 or 1
 #define dword_DD1A80                         (u32*)0xDD1A80 //If 0, can't use items... maybe inventory empty?
 #define MENU_TEXTS                           (u8*)0x921168
 
@@ -44,7 +37,7 @@
 #define ACTIVE_MENU_OWNER_PARTY_INDEX        (u8*)0xDC3C7C
 #define COMMAND_TRIGGER_INDEX                (u8*)0xDC3C74
 #define GLOBAL_BATTLE_ITEM_USED              (u16*)0xDC3C78
-#define GLOBAL_USED_ITEM_TARGET_DATA            (u16*)0xDC3C84
+#define GLOBAL_USED_ITEM_TARGET_DATA         (u16*)0xDC3C84
 #define GLOBAL_USED_INVENTORY_INDEX          (u16*)0xDC3C54
 #define GLOBAL_USED_ITEM_RESTORE             (u16*)0xDC2088
 #define ACCEPTING_BATTLE_INPUT               (u32*)0xDC35AC //checked in menu handlers to determine if input can be accepted. Maybe pause?
@@ -52,8 +45,6 @@
 #define byte_9AC111                          (u8*)0x9AC111
 // End
 
-#define CURSOR_STRUCT_PTR                    (u32*)0xDD1AF8
-#define CURSOR_STRUCT_VISIBLE_BASE_MEMBER    (u32*)0xDD1A2C
 #define CURRENT_PARTY_MEMBER_ARRAY           (u32*)0xDC0230 /*Length 3, contains party member ID, from the savemap*/
 
 
@@ -61,7 +52,6 @@
 #define dword_DD1A3C                         (u32*)0xDD1A3C
 #define dword_DD18C0                         (u32*)0xDD18C0
 #define dword_DC1210                         (u32*)0xDC1210
-#define dword_DD1B30                         (u32*)0xDD1B30
 #define dword_DD1A48                         (u32*)0xDD1A48
 #define dword_DD1B54                         (u32*)0xDD1B54
 #define dword_DC130C                         (u32*)0xDC130C
@@ -69,6 +59,6 @@
 #define byte_DC0C3C                          (u8*)0xDC0C3C
 #define byte_DD18C8                          (u8*)0xDD18C8
 #define dword_DC20D8                         (u32*)0xDC20D8
-#define dword_DC3C5C                         (u32*)0xDC3C5C
+#define REMEMBER_CURSOR_POSITION             (u32*)0xDC3C5C
 
 #endif

@@ -332,4 +332,22 @@ typedef struct {
 
 #define menuWindowConfig ((menuWindowData*)0x921C78)
 
+#pragma pack(push, 1)
+typedef struct {
+    u32 relativeColumnIndex;
+    u32 relativeRowIndex;
+    u32 viewColumnBound;
+    u32 viewRowBound;
+    u32 baseColumnIndex;
+    u32 baseRowIndex;
+    u32 maxColumnBound;
+    u32 maxRowBound;
+    u32 ninth_dword;
+    u32 tenth_dword;
+    u32 eleventh_dword;
+    u32 twelth_dword;
+    u32 thirteenth_dword;
+    u32 fourteenh_dword;
+} cursorContext;
+#pragma pack(pop)
 #endif

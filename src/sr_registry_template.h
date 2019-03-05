@@ -50,6 +50,12 @@ public:
         resource_registry.push_back(resource);
     }
 
+    void update_resource(int index, T resource) {
+        if (index < (resource_count() -1)){
+            resource_registry[index] = resource;
+        }
+    }
+
     int resource_count() {
         return resource_registry.size();
     }

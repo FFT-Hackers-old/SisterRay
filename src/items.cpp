@@ -89,7 +89,7 @@ bool character_can_use_item(u8 character_ID, u16 item_id) {
     u16 restriction_mask;
     switch(item_type) {
     case 0: {
-        restriction_mask = gContext.item_on_use_data.get_resource(item_id).character_restriction_mask;
+        restriction_mask = gContext.item_on_use_data.get_resource(item_id).characterRestrictionMask;
         if (restriction_mask & (1 << (character_ID))) {
             return true;
         }

@@ -22,7 +22,7 @@ SISTERRAY_API i32 onEnterInventory() {
     return ret;
 }
 
-SISTERRAY_API void new_inventory_menu_handler(int a1)
+SISTERRAY_API void inventoryMenuUpdateHandler(int a1)
 {
     display_active_cursor_state(a1);
     display_inventory_views(a1);
@@ -70,7 +70,7 @@ void display_active_cursor_state(int a1) {
         if (gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id != 0xFFFF)
         {
             fetched_description = get_description_from_global_id(gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id);
-            display_text_at_location(27, 64, fetched_description, 7, 1036966167);
+            displayTextAtLocation(27, 64, fetched_description, 7, 1036966167);
         }
         break;
     case 2:                                   // Use Selected - Targeting Party
@@ -79,7 +79,7 @@ void display_active_cursor_state(int a1) {
         if (gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id != 0xFFFF)
         {
             fetched_description = get_description_from_global_id(gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id);
-            display_text_at_location(27, 64, fetched_description, 7, 1036966167);
+            displayTextAtLocation(27, 64, fetched_description, 7, 1036966167);
         }
         break;
     case 3:                                   // Browsing Key Items
@@ -90,7 +90,7 @@ void display_active_cursor_state(int a1) {
         {
             int cursor_array_position = (KEY_ITEMS_INVENTORY_PTR)[2 * (*KEY_ITEMS_VIEW_BASE_ROW) + 2 * (*KEY_ITEMS_ROW_INDEX) + (*KEY_ITEMS_COL_INDEX)];
             fetched_description = (char*)load_kernel_object_text(0xEu, cursor_array_position, 0); //The returned arg here is the item description
-            display_text_at_location(27, 64, fetched_description, 7, 1036966167);
+            displayTextAtLocation(27, 64, fetched_description, 7, 1036966167);
         }
         break;
     case 4:                                   //Selecting an Arrange Method
@@ -99,7 +99,7 @@ void display_active_cursor_state(int a1) {
         display_cursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001f);
         for (int j = 0; j < 8; ++j) {            // Loop over arrange types
             fetched_description = gContext.game_strings.inventory_menu_texts.get_string(j + 3); //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
-            display_text_at_location(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetched_description, 7, 1008981770);
+            displayTextAtLocation(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetched_description, 7, 1008981770);
         }
         draw_menu_box((i16*)(&(menuWindowConfig)[3]), (float)1008981770); //Does this display text boses?
         break;
@@ -109,7 +109,7 @@ void display_active_cursor_state(int a1) {
         if (gContext.inventory->get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX).item_id != 0xFFFF)
         {
             fetched_description = get_description_from_global_id(gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id);
-            display_text_at_location(27, 64, fetched_description, 7, 1036966167);
+            displayTextAtLocation(27, 64, fetched_description, 7, 1036966167);
         }
         break;
     default:
@@ -130,7 +130,7 @@ void display_inventory_views(int a1) {
     }
 
     for (int menu_text_index = 0; menu_text_index < 3; ++menu_text_index) //display the "Use, Arrange, and Key Item fields
-        display_text_at_location(93 * menu_text_index + 57, 17, gContext.game_strings.inventory_menu_texts.get_string(menu_text_index), 7, 1036966167);
+        displayTextAtLocation(93 * menu_text_index + 57, 17, gContext.game_strings.inventory_menu_texts.get_string(menu_text_index), 7, 1036966167);
     sub_6FA12F(0, 102, 640, 372);
 
     if (inventory_cursor_position[0] == 2)     // If cursor positioned on key items
@@ -183,31 +183,21 @@ void render_inventory_main_view(int custom_arrange_active) {
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
     *word_DD17FC = 372;
-    sub_6F7270((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f); //The address here is passed as an int and then "casted" back and used as a ptr by the function at this point
+    renderSideScroller((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f); //The address here is passed as an int and then "casted" back and used as a ptr by the function at this point
     int displayed_row_count = ((dword_DD1A48)[14 * custom_arrange_active] != 0) + 10;
 
     for (int visible_item = 0; visible_item < displayed_row_count; ++visible_item) {
         visible_item_inventory_index = visible_item + (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
         if (gContext.inventory->get_resource(visible_item_inventory_index).item_id != 0xFFFF) {
             item_ID = gContext.inventory->get_resource(visible_item_inventory_index).item_id;
-            // Do some stuff to assemble an argument for display text
-            text_color = -(usable_in_inventory_menu(item_ID)); //This method needs to be rewritten to use our own systems
-            text_color = text_color & 0xF9;
-            text_color = text_color + 7;
-            kernel_object_name = get_name_from_global_id(item_ID);
-            display_text_at_location(373, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 109, kernel_object_name, (u8)text_color, 1036966167);
-        }
-    }
-    for (int visible_item = 0; visible_item < displayed_row_count; ++visible_item) {
-        visible_item_inventory_index = visible_item + (CURSOR_STRUCT_VISIBLE_BASE_MEMBER)[14 * custom_arrange_active];
-        if (gContext.inventory->get_resource(visible_item_inventory_index).item_id != 0xFFFF) {
-            item_ID = gContext.inventory->get_resource(visible_item_inventory_index).item_id;
             item_quantity = gContext.inventory->get_resource(visible_item_inventory_index).quantity;
             text_color = usable_in_inventory_menu(item_ID) ? 0 : 7; // This sets something based on whether the item is usable, assuming it's text color
+            kernel_object_name = getNameFromItemID(item_ID);
+            displayTextAtLocation(373, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 109, kernel_object_name, (u8)text_color, 1036966167);
 
-            display_visible_item_icon(343, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 105, item_ID, 0, 1036966167);
+            displayVisibleItemIcon(343, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 105, item_ID, 0, 1036966167);
             sub_6F5C0C(548, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 114, 213, (u8)text_color, 1036966167);
-            sub_6F9739(550, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 112, item_quantity, 3, (u8)text_color, 1036966167);
+            renderNumbers(550, 37 * visible_item + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 112, item_quantity, 3, (u8)text_color, 1036966167);
         }
     }
 }
@@ -238,14 +228,14 @@ void render_key_items_view() {
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
     *word_DD17FC = 372;
-    sub_6F7270((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f);
+    renderSideScroller((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f);
 
     for (int visible_key_item_row = 0; visible_key_item_row < 12; ++visible_key_item_row) {
         int flat_key_item_index_base = 2 * visible_key_item_row + 2 * (*KEY_ITEMS_VIEW_BASE_ROW);
         for (int key_item_column = 0; key_item_column < 2; ++key_item_column) {
             if ((KEY_ITEMS_INVENTORY_PTR)[key_item_column + flat_key_item_index_base] != 0xFF) {
                 key_item_name = (char *)load_kernel_object_text(0xEu, (KEY_ITEMS_INVENTORY_PTR)[(u8)(key_item_column + flat_key_item_index_base)], 8); //fetch the name of the key item
-                display_text_at_location(293 * key_item_column + 53, 36 * visible_key_item_row + 9 * (*dword_DD1AE4) + 124, key_item_name, 7, 1036966167); //display the text
+                displayTextAtLocation(293 * key_item_column + 53, 36 * visible_key_item_row + 9 * (*dword_DD1AE4) + 124, key_item_name, 7, 1036966167); //display the text
             }
         }
     }

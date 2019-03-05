@@ -10,15 +10,17 @@
 typedef struct {
     u16 item_id;
     u8 quantity;
-    u8 throwable;
+    u8 targetFlags;
     u8 restrictionMask;
     u8 padding;
 } BattleInventoryEntry;
 
 class SrBattleInventory : public SrResourceRegistry<BattleInventoryEntry> {
 public:
-    SrBattleInventory(i16 allocation_size) : SrResourceRegistry<BattleInventoryEntry>(allocation_size) {}
+    u16 slots_in_use;
+    SrBattleInventory(i16 allocation_size);
     SrBattleInventory(): SrResourceRegistry<BattleInventoryEntry>(){}
+    void setSlotsInUse(u16 slotsInUse);
 };
 
 /*This does not match the original format of an FFVII item
@@ -36,11 +38,11 @@ typedef struct InventoryEntry{
 #pragma pack(pop)
 
 void testFillInventory();
-void addItemToInventory(u16 item_id, u8 quantity);
+void addInventoryEntry(u16 item_id, u8 quantity);
 
 class SrItemInventory : public SrResourceRegistry<InventoryEntry> {
 public:
-    SrItemInventory(i16 allocation_size) : SrResourceRegistry<InventoryEntry>(allocation_size) {}
+    SrItemInventory(i16 allocation_size);
     SrItemInventory(): SrResourceRegistry<InventoryEntry>(){}
     void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity);
 };
@@ -64,5 +66,8 @@ SISTERRAY_API void init_item_type_data();
 /*utility for decrementing the quantity of an item at a particular inventory index*/
 SISTERRAY_API i16 sort_inventory(i32 sort_type);
 bool usable_in_inventory_menu(u16 item_id);
+u16 get_restriction_mask(u16 item_id);
+u16 get_target_flags(u16 item_id);
+void updateInventoryEntry(u16 item_id, u8 quantity);
 
 #endif

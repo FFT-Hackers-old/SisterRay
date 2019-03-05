@@ -25,7 +25,7 @@ public:
 
     void encode_ascii_string(char* ascii_string);
     char* get_encoded_string(); 
-    static char default_string[10];
+    static char default_string[];
 
 private:
     char* encoded_string;

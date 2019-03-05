@@ -6,12 +6,12 @@
 
 SISTERRAY_API i32 onEnterInventory();
 SISTERRAY_API void inventoryMenuUpdateHandler(int a1);
-void display_active_cursor_state(int a1);
-void display_inventory_views(int a1);
-void render_inventory_main_view(int custom_arrange_active);
-void render_character_portraits();
-void render_key_items_view();
-void handle_inventory_input(int a1);
-void handle_usable_item_effects(u16 item_ID, u16 inventory_index);
+void displayActiveCursorStates(int a1);
+void displayInventoryViews(int a1);
+void renderMainInventoryView(int custom_arrange_active);
+void renderCharacterPortraits();
+void renderKeyItemsView();
+void handleInventoryInput(int a1);
+void handleUsableItemEffects(u16 item_ID, u16 inventory_index);
 
 #endif

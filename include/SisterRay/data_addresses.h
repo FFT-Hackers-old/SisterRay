@@ -44,7 +44,7 @@
 #define ACTIVE_MENU_OWNER_PARTY_INDEX        (u8*)0xDC3C7C
 #define COMMAND_TRIGGER_INDEX                (u8*)0xDC3C74
 #define GLOBAL_BATTLE_ITEM_USED              (u16*)0xDC3C78
-#define GLOBAL_USED_ITEM_QUANTITY            (u16*)0xDC3C84
+#define GLOBAL_USED_ITEM_TARGET_DATA            (u16*)0xDC3C84
 #define GLOBAL_USED_INVENTORY_INDEX          (u16*)0xDC3C54
 #define GLOBAL_USED_ITEM_RESTORE             (u16*)0xDC2088
 #define ACCEPTING_BATTLE_INPUT               (u32*)0xDC35AC //checked in menu handlers to determine if input can be accepted. Maybe pause?

@@ -51,7 +51,7 @@ public:
     }
 
     void update_resource(int index, T resource) {
-        if (index < (resource_count() -1)){
+        if (index < (resource_count())){
             resource_registry[index] = resource;
         }
     }

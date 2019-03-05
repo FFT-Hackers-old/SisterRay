@@ -113,7 +113,7 @@ SISTERRAY_API void battleItemMenuInputHandler() {
     u8* viewContextPtr; 
     u16 flatInventoryIndex;
     u16 itemID;
-    u8 itemQuantity;
+    u8 targetData;
     bool actionSucceeded;
 
     viewContextPtr = (u8*)(dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX));
@@ -135,10 +135,10 @@ SISTERRAY_API void battleItemMenuInputHandler() {
 
                     if (actionSucceeded) {
                         playMenuSound(1);
-                        itemQuantity = gContext.battle_inventory->get_resource(flatInventoryIndex).item_id;
+                        targetData = gContext.battle_inventory->get_resource(flatInventoryIndex).targetFlags;
 
                         *GLOBAL_BATTLE_ITEM_USED = itemID;
-                        *GLOBAL_USED_ITEM_QUANTITY = itemQuantity;
+                        *GLOBAL_USED_ITEM_TARGET_DATA = targetData;
                         *GLOBAL_USED_INVENTORY_INDEX = flatInventoryIndex;
                         *BATTLE_MENU_STATE = 0;
                         *PREVIOUS_BATTLE_MENU_STATE = 5;

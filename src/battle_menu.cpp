@@ -3,8 +3,8 @@
 
 // Refactor this by implementing the structure in question so the code is not ugly
 SISTERRAY_API u32* initializeBattleItemMenuCursor() {
-    u32* cursorContextPtr = (dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX));
-    srLogWrite("ptr to cursor context: %p", cursorContextPtr);
+    u32* cursorContextPtr = (dword_DC20D8 + (448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)));
+    srLogWrite("ptr to cursor row max: %p", &cursorContextPtr[0]);
     if (!(*dword_DC3C5C))
     {
         cursorContextPtr[0] = 0;
@@ -18,6 +18,7 @@ SISTERRAY_API u32* initializeBattleItemMenuCursor() {
     cursorContextPtr[3] = 3;
     cursorContextPtr[6] = 1;
     cursorContextPtr[7] = gContext.battle_inventory->slots_in_use; //max number of cursor updates "down"
+    srLogWrite("ptr to cursor row max: %p", &cursorContextPtr[7]);
     cursorContextPtr[10] = 2;
     cursorContextPtr[11] = 0;
     cursorContextPtr[8] = 0;
@@ -25,10 +26,9 @@ SISTERRAY_API u32* initializeBattleItemMenuCursor() {
     cursorContextPtr[12] = 0;
     cursorContextPtr[13] = 1;
 
-    return cursorContextPtr;
+    return &(cursorContextPtr[0]);
 }
 
-// Rewrite this handler 
 SISTERRAY_API i32 renderBattleItemView() {
     char *fetchedName;
     u16* viewContexPtr;
@@ -40,7 +40,7 @@ SISTERRAY_API i32 renderBattleItemView() {
     u8 textColor;
     u16 renderContextStruct[7];
 
-    viewContexPtr = (u16*)(dword_DC20D8 + 896 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)); //Making the temporary assumption that this is a dword ptr
+    viewContexPtr = (u16*)(dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)); //Making the temporary assumption that this is a dword ptr
     if (gContext.battle_inventory->slots_in_use > 3)
     {
         renderContextStruct[0] = (u16)3;           // items_visible
@@ -92,7 +92,7 @@ bool isUsableInBattle(u16 itemID) {
 
     auto party_member_index = (*ACTIVE_MENU_OWNER_PARTY_INDEX);
     auto characterID = (activePartyStructArray)[party_member_index].characterID;
-    bool characterCanUse = bool(characterMask & (1 << characterID));
+    bool characterCanUse = (bool)!(characterMask & (1 << characterID));
 
     return (itemIsUsuable && characterCanUse);
 }
@@ -107,4 +107,8 @@ bool isThrowable(u16 itemID) {
     bool characterCanUse = bool(characterMask & (1 << characterID));
 
     return (itemIsThrowable && characterCanUse);
+}
+
+SISTERRAY_API void battleItemMenuInputHandler() {
+
 }

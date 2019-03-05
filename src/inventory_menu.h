@@ -5,7 +5,7 @@
 #include <SisterRay/SisterRay.h>
 
 SISTERRAY_API i32 onEnterInventory();
-SISTERRAY_API void new_inventory_menu_handler(int a1);
+SISTERRAY_API void inventoryMenuUpdateHandler(int a1);
 void display_active_cursor_state(int a1);
 void display_inventory_views(int a1);
 void render_inventory_main_view(int custom_arrange_active);

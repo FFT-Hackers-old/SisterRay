@@ -25,6 +25,9 @@
 #define LOAD_ABILITY_DATA               ((void*)0x5C94D3)
 #define INIT_INVENTORY_CURSOR_STATE     ((void*)0x714EF2)
 #define MAIN_INVENTORY_HANDLER          ((void*)0x715105)
+#define INIT_BATTLE_INVENTORY           ((void*)0x5D1520)
+#define RENDER_BATTLE_ITEM_MENU         ((void*)0x6DEBFE)
+#define INIT_BATTLE_ITEM_MENU_CURSOR    ((void*)0x6D982C)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);
@@ -61,13 +64,13 @@ typedef i32(*pfnsub6EB3B8)(i32, i32, float);
 #define display_cursor                  ((pfnsub6EB3B8)0x6EB3B8)
 
 typedef i32(*pfnsub6F5B03)(i32, i32, const char*, u8, u32); //The last argument might be a float, not sure yet
-#define display_text_at_location        ((pfnsub6F5B03)0x6F5B03)
+#define displayTextAtLocation        ((pfnsub6F5B03)0x6F5B03)
 
 typedef i32(*pfnsub7150A0)(u16);
 #define item_is_usable                  ((pfnsub7150A0)0x7150A0)
 
 typedef i32(*pfnsub6F7270)(i32, float);
-#define sub_6F7270                      ((pfnsub6F7270)0x6F7270)
+#define renderSideScroller                      ((pfnsub6F7270)0x6F7270)
 
 typedef i16(*pfnsub6C62A2)(i32, i32, i32, i32);
 #define render_HP_bar_and_status        ((pfnsub6C62A2)0x6C62A2)
@@ -84,14 +87,14 @@ typedef i32(*pfnsub6E7D20)(i16*, float);
 
 /*This function sets a variable based on the icon type neede in the menu and then calls a function to display it*/
 typedef i32(*pfnsub717691)(i32, i32, i32, i32, i32);
-#define display_visible_item_icon       ((pfnsub717691)0x717691)
+#define displayVisibleItemIcon       ((pfnsub717691)0x717691)
 
 /*Not sure what this function does*/
 typedef u8(*pfnsub6F5C0C)(i32, i32, i8, i8, i32);
 #define sub_6F5C0C                      ((pfnsub6F5C0C)0x6F5C0C)
 
 typedef i32(*pfnsub6F9739)(i32, i32, u32, u8, u8, i32);
-#define sub_6F9739                      ((pfnsub6F9739)0x6F9739)
+#define renderNumbers                      ((pfnsub6F9739)0x6F9739)
 
 typedef i32(*pfnsub41AB74)(i32);
 #define check_received_input            ((pfnsub41AB74)0x41AB74)

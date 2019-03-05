@@ -51,7 +51,7 @@ void init_game_strings() {
     }
 }
 
-char* get_name_from_global_id(u16 item_id) {
+char* getNameFromItemID(u16 item_id) {
     auto item_type = gContext.item_type_data.get_resource(item_id).item_type;
     auto relative_id = gContext.item_type_data.get_resource(item_id).type_relative_id;
     switch(item_type) {

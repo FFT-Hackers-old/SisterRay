@@ -20,6 +20,8 @@
 #define CUSTOM_SORT_TEMP_INDEX               (u32*)0xDD1A14
 #define INVENTORY_CURSOR_POSITION            (i32*)0xDD1A18
 #define INVENTORY_ARRANGE_TYPE               (u32*)0xDD1AFC
+#define ACTIVE_MENU_OWNER_PARTY_INDEX        (u8*)0xDC3C7C
+#define commandTriggerIndex                  (u8*)0xDC3C74
 
 #define KEY_ITEMS_INVENTORY_PTR  (u8*)0xDD19D0
 #define KEY_ITEMS_VIEW_BASE_ROW  (u32*)0xDD1AD4 //Moves as the cursor scrolls
@@ -44,6 +46,7 @@
 
 #define CURRENT_PARTY_MEMBER_ARRAY     (u32*)0xDC0230 /*Length 3, contains party member ID, from the savemap*/
 
+
 #define dword_DD1AE4             (u32*)0xDD1AE4 // Not sure what this is, but it is only called in key-item view contexts
 #define dword_DD1A3C             (u32*)0xDD1A3C
 #define dword_DD18C0             (u32*)0xDD18C0
@@ -55,5 +58,7 @@
 #define dword_921C98             (u32*)0x921C98
 #define byte_DC0C3C              (u8*)0xDC0C3C
 #define byte_DD18C8              (u8*)0xDD18C8
+#define dword_DC20D8             (u32*)0xDC20D8
+#define dword_DC3C5C             (u32*)0xDC3C5C
 
 #endif

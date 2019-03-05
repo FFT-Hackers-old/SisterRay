@@ -4,6 +4,8 @@
 #include "impl.h"
 #include <zlib.h>
 #include "inventory_menu.h"
+#include "inventory_functions.h"
+#include "battle_menu.h"
 
 SrContext gContext;
 
@@ -47,6 +49,7 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     InitFunctionRegistry();
     InitInventory();
     InitBattleInventory();
+    srLogWrite("Inventories initialized");
     init_game_strings();
     EnableNoCD();
     srLoadKernelBin();
@@ -54,7 +57,14 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();
     testFillInventory();
-    mogReplaceFunction(MAIN_INVENTORY_HANDLER, &new_inventory_menu_handler); //add our new menu handler
+    srLogWrite("test inventory filled");
+    mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
+    srLogWrite("Item handler replaced");
     mogReplaceFunction(INIT_INVENTORY_CURSOR_STATE, &onEnterInventory);
+    srLogWrite("inventory menu initializer replaced");
+    mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
+    mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
+    mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);
     LoadMods();
+    srLogWrite("mods successfully loaded");
 }

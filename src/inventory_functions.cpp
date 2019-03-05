@@ -3,27 +3,27 @@
 
 SISTERRAY_API u8 setupBattleInventory() {
     i32 inventorySize = gContext.inventory->current_capacity();
-    u16 item_id;
+    u16 itemID;
     u8 quantity;
     u8 targetFlags;
     u16 restrictionMask;
 
     u16 totalItemsCount = 0;
     for (i32 inventory_index = 0; inventory_index < inventorySize; inventory_index++) {
-        item_id = gContext.inventory->get_resource(inventory_index).item_id;
+        itemID = gContext.inventory->get_resource(inventory_index).item_id;
         quantity = gContext.inventory->get_resource(inventory_index).quantity;
-        targetFlags = get_target_flags(item_id);
-        restrictionMask = get_restriction_mask(item_id);
+        targetFlags = get_target_flags(itemID);
+        restrictionMask = get_restriction_mask(itemID);
 
-        if (item_id != 0xFFFF) {
+        if (itemID != 0xFFFF) {
             BattleInventoryEntry entry = {
-                item_id,
+                itemID,
                 quantity,
                 targetFlags,
-                restrictionMask,
+                (u8)restrictionMask,
                 0
             };
-            gContext.battle_inventory->update_resource(item_id, entry);
+            gContext.battle_inventory->update_resource(inventory_index, entry);
             totalItemsCount++;
         }
     }

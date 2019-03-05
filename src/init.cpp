@@ -49,7 +49,6 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     InitFunctionRegistry();
     InitInventory();
     InitBattleInventory();
-    srLogWrite("Inventories initialized");
     init_game_strings();
     EnableNoCD();
     srLoadKernelBin();
@@ -57,14 +56,11 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();
     testFillInventory();
-    srLogWrite("test inventory filled");
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
-    srLogWrite("Item handler replaced");
     mogReplaceFunction(INIT_INVENTORY_CURSOR_STATE, &onEnterInventory);
-    srLogWrite("inventory menu initializer replaced");
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
     mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
     mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);
+    mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);
     LoadMods();
-    srLogWrite("mods successfully loaded");
 }

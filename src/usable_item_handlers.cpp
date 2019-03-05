@@ -52,7 +52,7 @@ bool default_no_target_use() {
 }
 
 bool save_crystal_on_use() {
-    play_menu_sound(263);
+    playMenuSound(263);
     *byte_DC0C3C |= 1u;  //Save Crystal used?
     set_some_transition_data(5, 0);
     set_more_transition_data(0);
@@ -170,10 +170,10 @@ bool check_character_dead(u16 party_member_index) {
 
 void play_success_or_failure_sound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id) {
     if (did_succeed) {
-        play_menu_sound(success_sound_id);
+        playMenuSound(success_sound_id);
     }
     else {
-        play_menu_sound(failure_sound_id);
+        playMenuSound(failure_sound_id);
     }
 }
 
@@ -227,12 +227,12 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
         }
     }
     if (stat_boosted) {
-        play_menu_sound(263);
+        playMenuSound(263);
         recalculate_party_stats(party_member_index); //This should be rewritten to allow stat penalties
         sub_5CB2CC(party_member_index);
     }
     else {
-        play_menu_sound(3);
+        playMenuSound(3);
     }
 
     return stat_boosted;
@@ -249,7 +249,7 @@ bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index
     auto registry = gContext.game_strings.character_specific_strings[character_ID];
     if (item_usable) {
         if (knows_all_prereq_limits(character_ID)) { //Check if requisite limits are learned
-            play_menu_sound(384);
+            playMenuSound(384);
             characterRecordArray[character_ID].learned_limits = (characterRecordArray[character_ID].learned_limits | 0x0200);
             auto limit_learned_string = gContext.game_strings.character_specific_strings[character_ID].get_string(0); //String 0 is a characters "limit learned" string
             display_menu_string(limit_learned_string); //Get limit learned text, need to build out custom string storage
@@ -261,14 +261,14 @@ bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index
             auto not_ready_string = gContext.game_strings.character_specific_strings[character_ID].get_string(1);
             display_menu_string(not_ready_string); //get can't learn limit yet text. Can fetch from our own managed text array
             sub_6C497C((int)byte_DD18C8, 7);
-            play_menu_sound(3);
+            playMenuSound(3);
         }
     }
     else {
         auto cannot_learn_string = gContext.game_strings.character_specific_strings[character_ID].get_string(2);
         display_menu_string(cannot_learn_string); //get can't learn limit text
         sub_6C497C((int)byte_DD18C8, 7);
-        play_menu_sound(3);
+        playMenuSound(3);
     }
     return limit_taught;
 }

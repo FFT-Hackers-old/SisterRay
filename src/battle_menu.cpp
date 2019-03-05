@@ -3,10 +3,11 @@
 
 // Refactor this by implementing the structure in question so the code is not ugly
 SISTERRAY_API u32* initializeBattleItemMenuCursor() {
-    u32* cursorContextPtr = (dword_DC20D8 + 1792 * (*ACTIVE_MENU_OWNER_PARTY_INDEX));
-    if (!dword_DC3C5C)
+    u32* cursorContextPtr = (dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX));
+    srLogWrite("ptr to cursor context: %p", cursorContextPtr);
+    if (!(*dword_DC3C5C))
     {
-        *cursorContextPtr = 0;
+        cursorContextPtr[0] = 0;
         cursorContextPtr[1] = 0;
         cursorContextPtr[4] = 0;
         cursorContextPtr[5] = 0;
@@ -39,7 +40,7 @@ SISTERRAY_API i32 renderBattleItemView() {
     u8 textColor;
     u16 renderContextStruct[7];
 
-    viewContexPtr = (u16*)(dword_DC20D8 + 1792 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)); //Making the temporary assumption that this is a dword ptr
+    viewContexPtr = (u16*)(dword_DC20D8 + 896 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)); //Making the temporary assumption that this is a dword ptr
     if (gContext.battle_inventory->slots_in_use > 3)
     {
         renderContextStruct[0] = (u16)3;           // items_visible

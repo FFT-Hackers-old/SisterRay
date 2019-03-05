@@ -94,7 +94,7 @@ SISTERRAY_API void init_item_type_data() {
 /*Probably should be moved inside the registry*/
 void SrItemTypeRegistry::initialize_augmented_data(u8 item_type, u16 number_to_initialize) {
     ItemTypeData item_type_data;
-    for (u16 i = 0; i <= number_to_initialize; i++) {
+    for (u16 i = 0; i < number_to_initialize; i++) {
         ItemTypeData item_type_data{ item_type, (u16)i };
         gContext.item_type_data.add_resource(item_type_data);
     }
@@ -111,7 +111,7 @@ bool usable_in_inventory_menu(u16 item_id) {
 
 u16 get_restriction_mask(u16 item_id) {
     u8 item_type = gContext.item_type_data.get_resource(item_id).item_type;
-    u16 relative_id = gContext.item_type_data.get_resource(item_id).item_type;
+    u16 relative_id = gContext.item_type_data.get_resource(item_id).type_relative_id;
     u16 restriction_mask;
     switch (item_type) {
     case 0: {
@@ -123,7 +123,7 @@ u16 get_restriction_mask(u16 item_id) {
         break;
     }
     case 2: {
-        restriction_mask = gContext.items.get_resource(relative_id).restriction_mask;
+        restriction_mask = gContext.armors.get_resource(relative_id).restriction_mask;
         break;
     }
     case 3: {
@@ -136,10 +136,10 @@ u16 get_restriction_mask(u16 item_id) {
     return restriction_mask;
 }
 
-u16 get_target_flags(u16 item_id) {
+u8 get_target_flags(u16 item_id) {
     u8 item_type = gContext.item_type_data.get_resource(item_id).item_type;
-    u16 relative_id = gContext.item_type_data.get_resource(item_id).item_type;
-    u16 target_flags;
+    u16 relative_id = gContext.item_type_data.get_resource(item_id).type_relative_id;
+    u8 target_flags;
     switch (item_type) {
     case 0: {
         target_flags = gContext.items.get_resource(relative_id).target_flags;

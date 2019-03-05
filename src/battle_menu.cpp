@@ -67,10 +67,10 @@ SISTERRAY_API i32 renderBattleItemView() {
             itemID = gContext.battle_inventory->get_resource(flatInventoryIndex).item_id;
             itemQuantity = gContext.battle_inventory->get_resource(flatInventoryIndex).quantity;
 
-            if ((*commandTriggerIndex) != 3 && (*commandTriggerIndex) != 10)
-                textColor = (isThrowable(itemID) != 0) ? 0 : 7;
+            if ((*COMMAND_TRIGGER_INDEX) != 3 && (*COMMAND_TRIGGER_INDEX) != 10)
+                textColor = (isThrowable(itemID)) ? 7 : 0;
             else
-                textColor = (isUsableInBattle(itemID) != 0) ? 0 : 7;
+                textColor = (isUsableInBattle(itemID)) ? 7 : 0;
 
             displayVisibleItemIcon(94, unknown_local + 32 * visible_row + 356, itemID, 0, 0.40099999);
             sub_6F5C0C(366, unknown_local + 32 * visible_row + 364, 0xD5u, textColor, 0.40099999);
@@ -86,9 +86,9 @@ SISTERRAY_API i32 renderBattleItemView() {
 
 /*Return True if the character is usable by the character attempting to use it*/
 bool isUsableInBattle(u16 itemID) {
-    auto restrictionMask = gContext.battle_inventory->get_resource(itemID).restrictionMask;
+    auto restrictionMask = get_restriction_mask(itemID);
     auto characterMask = gContext.item_on_use_data.get_resource(itemID).characterRestrictionMask;
-    bool itemIsUsuable = (bool)(restrictionMask & 2);
+    bool itemIsUsuable = (bool)(!(restrictionMask & 2));
 
     auto party_member_index = (*ACTIVE_MENU_OWNER_PARTY_INDEX);
     auto characterID = (activePartyStructArray)[party_member_index].characterID;
@@ -98,9 +98,9 @@ bool isUsableInBattle(u16 itemID) {
 }
 
 bool isThrowable(u16 itemID) {
-    auto restrictionMask = gContext.battle_inventory->get_resource(itemID).restrictionMask;
+    auto restrictionMask = get_restriction_mask(itemID);
     auto characterMask = gContext.item_on_use_data.get_resource(itemID).characterRestrictionMask;
-    bool itemIsThrowable = (bool)(restrictionMask & 8); // Use new throwable variable
+    bool itemIsThrowable = (bool)(!(restrictionMask & 8)); // Use new throwable variable
 
     auto party_member_index = (*ACTIVE_MENU_OWNER_PARTY_INDEX);
     auto characterID = (activePartyStructArray)[party_member_index].characterID;
@@ -110,5 +110,86 @@ bool isThrowable(u16 itemID) {
 }
 
 SISTERRAY_API void battleItemMenuInputHandler() {
+    u8* viewContextPtr; 
+    u16 flatInventoryIndex;
+    u16 itemID;
+    u8 itemQuantity;
+    bool actionSucceeded;
 
+    viewContextPtr = (u8*)(dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX));
+    if (*BATTLE_MENU_STATE == 5) {
+        if (*byte_9AC111) {
+            *byte_9AC111 = 0;
+            *ACCEPTING_BATTLE_INPUT = 1;
+        }
+
+        if (!(*ACCEPTING_BATTLE_INPUT)) {
+            update_cursor_position((u32*)viewContextPtr);
+
+            if (!(*((u32*)viewContextPtr + 12))) {
+                if (checkInputReceived(32)) {
+                    *ACCEPTING_BATTLE_INPUT = 1;
+                    flatInventoryIndex = *((u16*)viewContextPtr + 10) + *((u16*)viewContextPtr + 2) + *((u16 *)viewContextPtr);
+                    itemID = gContext.battle_inventory->get_resource(flatInventoryIndex).item_id;
+                    actionSucceeded = didItemUseSucceed(itemID);
+
+                    if (actionSucceeded) {
+                        playMenuSound(1);
+                        itemQuantity = gContext.battle_inventory->get_resource(flatInventoryIndex).item_id;
+
+                        *GLOBAL_BATTLE_ITEM_USED = itemID;
+                        *GLOBAL_USED_ITEM_QUANTITY = itemQuantity;
+                        *GLOBAL_USED_INVENTORY_INDEX = flatInventoryIndex;
+                        *BATTLE_MENU_STATE = 0;
+                        *PREVIOUS_BATTLE_MENU_STATE = 5;
+
+                        handleActionCommandIssued();
+
+                        *GLOBAL_USED_ITEM_RESTORE = getRestoreTypeGlobal(itemID); //Display characters HP's if the item can heal
+                        if (*GLOBAL_USED_ITEM_RESTORE != -1)
+                            initHandlerCursorState(-1, -1, 21);
+                    }
+                    else {
+                        playMenuSound(3);
+                    }
+                }
+                else if (checkInputReceived(64)) {
+                    playMenuSound(4);
+                    *ACCEPTING_BATTLE_INPUT = 1;
+                    *BATTLE_MENU_STATE = 1;
+                    setHandlerState(5, 3);
+                }
+            }
+        }
+    }
+}
+
+bool didItemUseSucceed(u16 itemID) {
+    bool isItemUsable;
+    bool emptyItem = (itemID == 0xFFFF);
+
+    if (emptyItem)
+        return false;
+
+    if (*COMMAND_TRIGGER_INDEX != 3 && *COMMAND_TRIGGER_INDEX != 10)
+        isItemUsable = isThrowable(itemID);
+    else
+        isItemUsable = isUsableInBattle(itemID);
+
+    return isItemUsable;
+}
+
+//Set the restore type global used by executing healing actions
+u16 getRestoreTypeGlobal(i16 itemID) {
+    auto itemType = gContext.item_type_data.get_resource(itemID).item_type;
+    if(itemType != 0) {
+        return 0xFFFF;
+    }
+    return gContext.items.get_resource(itemID).resource_conditions;
+}
+
+// states should always boe 0 (inactive) 1 (prepare on next update) 2 (active) or 3 (executing)
+i32 setHandlerState(u16 handlerIndex, i8 state) {
+    (HANDLER_STATE_ARRAY)[handlerIndex] = state;
+    return handlerIndex;
 }

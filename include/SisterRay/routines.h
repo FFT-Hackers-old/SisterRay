@@ -28,6 +28,7 @@
 #define INIT_BATTLE_INVENTORY           ((void*)0x5D1520)
 #define RENDER_BATTLE_ITEM_MENU         ((void*)0x6DEBFE)
 #define INIT_BATTLE_ITEM_MENU_CURSOR    ((void*)0x6D982C)
+#define BATTLE_ITEM_MENU_INPUT_HANDLER  ((void*)0x6D98E3)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);
@@ -100,10 +101,10 @@ typedef i32(*pfnsub41AB74)(i32);
 #define check_received_input            ((pfnsub41AB74)0x41AB74)
 
 typedef i32(*pfnsub6F53F1)(i32);
-#define check_cancel_input              ((pfnsub6F53F1)0x6F53F1)
+#define checkInputReceived              ((pfnsub6F53F1)0x6F53F1)
 
 typedef void(*pfnsub74580A)(i32);
-#define play_menu_sound                 ((pfnsub74580A)0x74580A)
+#define playMenuSound                 ((pfnsub74580A)0x74580A)
 
 typedef void(*pfnsub6F4DB2)(u32*);
 #define update_cursor_position          ((pfnsub6F4DB2)0x6F4DB2)
@@ -161,4 +162,10 @@ typedef i32(*pfnsub5CB2CC)(u8);
 
 typedef i32(*pfnsub714FA3)(void);
 #define sub_714FA3                      ((pfnsub714FA3)0x714FA3)
+
+typedef u8(*pfnsub6E5C52)(void);
+#define handleActionCommandIssued       ((pfnsub6E5C52)0x6E5C52)
+
+typedef i32(*pfnsub6D0AF9)(i16, i16, i16);
+#define initHandlerCursorState          ((pfnsub6D0AF9)0x6D0AF9)
 #endif

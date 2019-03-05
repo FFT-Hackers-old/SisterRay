@@ -256,7 +256,7 @@ void handle_inventory_input(int a1) {
     {
     case 0:
         if (check_received_input(32)) {               // handling inputs?
-            play_menu_sound(1);
+            playMenuSound(1);
             if (inventory_cursor_position[0]) {
                 if (inventory_cursor_position[0] == 1) {
                     set_cursor_data_values(CURSOR_STRUCT_PTR, 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0); //Sets cursor data for the arrange menu
@@ -271,8 +271,8 @@ void handle_inventory_input(int a1) {
                 *inventory_menu_state = 1;             // use looking at item list
             }
         }
-        else if (check_cancel_input(64)) {
-            play_menu_sound(4);
+        else if (checkInputReceived(64)) {
+            playMenuSound(4);
             set_some_transition_data(5, 0); // These functions handle transitioning to different parts of the menu
             set_more_transition_data(0);
         }
@@ -281,26 +281,26 @@ void handle_inventory_input(int a1) {
         if (!(*dword_DD1A80)) {
             if (check_received_input(32)) {
                 if (gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id == 0xFFFF) {
-                    play_menu_sound(3);
+                    playMenuSound(3);
                 }
                 else {
                     item_id = gContext.inventory->get_resource(active_window_base_row + relative_item_index).item_id;
                     if (usable_in_inventory_menu(item_id)) {
-                        play_menu_sound(3);
+                        playMenuSound(3);
                     }
                     else if (!(gContext.item_on_use_data.get_resource(item_id).requires_target)) {  
                         gContext.untargeted_handlers.get_handler(item_id)();
 
                     }
                     else { //If the item is usable, but requires a target, then jump to state 2
-                        play_menu_sound(1);
+                        playMenuSound(1);
                         *use_on_characters_enabled = 0; //Setting this to 0 enables items to be used on characters in menu state 2
                         *inventory_menu_state = 2;
                     }
                 }
             }
             else if (check_received_input(64)) {
-                play_menu_sound(4);
+                playMenuSound(4);
                 *inventory_menu_state = 0;
             }
         }
@@ -313,28 +313,28 @@ void handle_inventory_input(int a1) {
             item_id = gContext.inventory->get_resource(inventory_index).item_id;
             u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
             if (character_ID == 0xFF && !(gContext.item_on_use_data.get_resource(item_id).target_all)) { // Can't use item on empty party member unless it is megalixer or tent
-                play_menu_sound(3);
+                playMenuSound(3);
                 return;
             }
             /*Handle the on use effects for every item in the game, this needs to be made more generic*/
             handle_usable_item_effects(item_id, inventory_index);
         }
-        else if (check_cancel_input(64)) {
-            play_menu_sound(4);
+        else if (checkInputReceived(64)) {
+            playMenuSound(4);
             *inventory_menu_state = 1;
         }
         break;
     case 3:
         if (check_received_input(64))                // Exit Key Items
         {
-            play_menu_sound(4);
+            playMenuSound(4);
             *inventory_menu_state = 0;
         }
         break;
     case 4:
         if (check_received_input(32))                // If OK received during arrange menu
         {
-            play_menu_sound(1);
+            playMenuSound(1);
             if (*INVENTORY_ARRANGE_TYPE)
             {
                 sort_inventory(*INVENTORY_ARRANGE_TYPE); //Arranging the inventory, this method will have to be rewritten
@@ -351,7 +351,7 @@ void handle_inventory_input(int a1) {
         }
         else if (check_received_input(64))           // Arrange Cancel Handler
         {
-            play_menu_sound(4);
+            playMenuSound(4);
             *inventory_menu_state = 0;
         }
         break;
@@ -362,7 +362,7 @@ void handle_inventory_input(int a1) {
             {
                 if (*ITEM_TO_SWAP_SELECTED == 1)
                 {
-                    play_menu_sound(1);
+                    playMenuSound(1);
                     /*This code swaps two items in the inventory*/
                     InventoryEntry temp_entry = gContext.inventory->get_resource(*CUSTOM_SORT_TEMP_INDEX); //copy cursor start
                     gContext.inventory->get_resource(*CUSTOM_SORT_TEMP_INDEX) = gContext.inventory->get_resource(*CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX); 
@@ -372,7 +372,7 @@ void handle_inventory_input(int a1) {
             }
             else
             {
-                play_menu_sound(1);
+                playMenuSound(1);
                 *UNKNOWN_CUSTOM_SORT_GLOBAL = *dword_DD1B30; //copy first dword of struct set in previous state here, seems to always be 0
                 *CUSTOM_SORT_TEMP_INDEX = *CUSTOM_SORT_VIEW_BASE + *CUSTOM_SORT_RELATIVE_INDEX; //custom sort base row and relative offsets copied when you select an item to swap
                 *ITEM_TO_SWAP_SELECTED = 1;
@@ -380,7 +380,7 @@ void handle_inventory_input(int a1) {
         }
         else if (check_received_input(64))
         {
-            play_menu_sound(4);
+            playMenuSound(4);
             *inventory_menu_state = 0;
         }
         break;

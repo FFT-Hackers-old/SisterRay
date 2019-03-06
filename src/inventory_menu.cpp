@@ -141,7 +141,7 @@ void displayActiveCursorStates(int updateStateMask) {
 void displayInventoryViews(int updateStateMask) {
     u32 inventoryMenuState = *(INVENTORY_MENU_STATE);
     cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS); //might be better to call this 'current menu view'
-    int menuStateLocal;
+    int mainViewContextIndex;
 
     if (cursorContextArray[0].relativeColumnIndex != 2)     // Something with party members unless on cursor positioned on key items
     {
@@ -170,14 +170,14 @@ void displayInventoryViews(int updateStateMask) {
                 }
             }
             display_cursor(298, 37 * relativeSortRow + 113, 0.0099999998f);
-            menuStateLocal = 5;                 // Set the local to 5 if we're in custom sort
+            mainViewContextIndex = 5;                 // Set the local to 5 if we're in custom sort
         }
         else
         {
-            menuStateLocal = 1;                 //Set it to 1 otherwise
+            mainViewContextIndex = 1;                 //Set it to 1 otherwise
         }
         /*Render the main "item list" view regardless of whether custom arrange is active or not*/
-        renderMainInventoryView(menuStateLocal);
+        renderMainInventoryView(mainViewContextIndex);
     }
     sub_6FA347();
     draw_menu_box((i16*)(&(menuWindowConfig)[0]), 0.111f);
@@ -186,44 +186,46 @@ void displayInventoryViews(int updateStateMask) {
 }
 
 
-void renderMainInventoryView(int custom_arrange_active) {
+void renderMainInventoryView(i32 mainViewContextIndex) {
     cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS);
     u32 relativeRowIndex = cursorContextArray[1].relativeRowIndex;
     char* kernelObjectName;
     u16 itemID;
     u8 itemQuantity;
-    int visibleItemInventoryIndex;
-    int textColor;
+    i32 visibleItemInventoryIndex;
+    i32 baseRowIndex;
+    i32 textColor;
 
     *GLOBAL_MENU_VIEW_SIZE = (u16)10;                         // number of rows active in an inventory view
     *GLOBAL_MENU_ROW_COUNT = (u16)gContext.inventory->current_capacity();                        // max size of the inventory.. let's change it
-    *GLOBAL_MENU_ROW_BASE =  cursorContextArray[custom_arrange_active].baseRowIndex;
+    *GLOBAL_MENU_ROW_BASE =  cursorContextArray[mainViewContextIndex].baseRowIndex;
     *word_DD17F6 = 618;
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
     *word_DD17FC = 372;
     renderSideScroller((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f); //The address here is passed as an int and then "casted" back and used as a ptr by the function at this point
-    int displayed_row_count = ((dword_DD1A48)[14 * custom_arrange_active] != 0) + 10;
+    int displayed_row_count = ((dword_DD1A48)[14 * mainViewContextIndex] != 0) + 10;
 
-    for (int visibleItem = 0; visibleItem < displayed_row_count; ++visibleItem) {
-        visibleItemInventoryIndex = visibleItem + cursorContextArray[custom_arrange_active].baseRowIndex;
+    baseRowIndex = cursorContextArray[mainViewContextIndex].baseRowIndex;
+    for (i32 visibleItem = 0; visibleItem < displayed_row_count; ++visibleItem) {
+        i32 baseRowIndex = cursorContextArray[mainViewContextIndex].baseRowIndex;
         if (gContext.inventory->get_resource(visibleItemInventoryIndex).item_id != 0xFFFF) {
             itemID = gContext.inventory->get_resource(visibleItemInventoryIndex).item_id;
             itemQuantity = gContext.inventory->get_resource(visibleItemInventoryIndex).quantity;
-            textColor = usableInInventoryMenu(itemID) ? 0 : 7; // This sets something based on whether the item is usable, assuming it's text color
+            textColor = usableInInventoryMenu(itemID) ? 0 : 7;
             kernelObjectName = getNameFromItemID(itemID);
-            displayTextAtLocation(373, 37 * visibleItem + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 109, kernelObjectName, (u8)textColor, 1036966167);
 
-            displayVisibleItemIcon(343, 37 * visibleItem + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 105, itemID, 0, 1036966167);
-            sub_6F5C0C(548, 37 * visibleItem + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 114, 213, (u8)textColor, 1036966167);
-            renderNumbers(550, 37 * visibleItem + 9 * (dword_DD1A3C)[14 * custom_arrange_active] + 112, itemQuantity, 3, (u8)textColor, 1036966167);
+            displayTextAtLocation(373, 37 * visibleItem + 9 * baseRowIndex + 109, kernelObjectName, (u8)textColor, 1036966167);
+            displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseRowIndex + 105, itemID, 0, 1036966167);
+            sub_6F5C0C(548, 37 * visibleItem + 9 * baseRowIndex + 114, 213, (u8)textColor, 1036966167);
+            renderNumbers(550, 37 * visibleItem + 9 * baseRowIndex + 112, itemQuantity, 3, (u8)textColor, 1036966167);
         }
     }
 }
 
 
 void renderCharacterPortraits() {
-    u16 unkLocalStruct[4] = {0, (u16)96, (u16)300, u16(384)};
+    u16 characterMenuBoxLocal[4] = {0, (u16)96, (u16)300, u16(384)}; //
 
     for (int currentPartyMember = 0; currentPartyMember < 3; ++currentPartyMember) { //loop over and render character portraits, probably
         if ((CURRENT_PARTY_MEMBER_ARRAY)[currentPartyMember] != 0xFF) {         //if there is a party member in that slot
@@ -233,7 +235,7 @@ void renderCharacterPortraits() {
     }
 
     // initialize_menu_window_struct((u16*)&unk_local_struct, (u16)0, (u16)96, (u16)300, (u16)384); //set some values in a struct/array used in the next call
-    draw_menu_box((i16*)(&unkLocalStruct), 0.1f); //this does a bunch of shit with the above struct
+    draw_menu_box((i16*)(&characterMenuBoxLocal), 0.1f); //this does a bunch of shit with the above struct
 }
 
 
@@ -277,7 +279,7 @@ void handleInventoryInput(int a1) {
     switch ((*inventoryMenuState))
     {
     case 0:
-        if (check_received_input(32)) {               // handling inputs?
+        if (checkInputReceived2(32)) {               // handling inputs?
             playMenuSound(1);
             if (cursorContextArray[0].relativeColumnIndex) {
                 if (cursorContextArray[0].relativeColumnIndex == 1) {
@@ -301,7 +303,7 @@ void handleInventoryInput(int a1) {
         break;
     case 1:
         if (!(*dword_DD1A80)) {
-            if (check_received_input(32)) {
+            if (checkInputReceived2(32)) {
                 if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id == 0xFFFF) {
                     playMenuSound(3);
                 }
@@ -321,7 +323,7 @@ void handleInventoryInput(int a1) {
                     }
                 }
             }
-            else if (check_received_input(64)) {
+            else if (checkInputReceived2(64)) {
                 playMenuSound(4);
                 *inventoryMenuState = 0;
             }
@@ -330,7 +332,7 @@ void handleInventoryInput(int a1) {
     case 2:
         if (*use_on_characters_enabled)
             return;
-        if (check_received_input(32)) {  //if "ok" input was received
+        if (checkInputReceived2(32)) {  //if "ok" input was received
             u16 inventory_index = baseRowIndex + relativeRowIndex;
             itemID = gContext.inventory->get_resource(inventory_index).item_id;
             u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[partyMemberIndex];
@@ -347,14 +349,14 @@ void handleInventoryInput(int a1) {
         }
         break;
     case 3:
-        if (check_received_input(64))                // Exit Key Items
+        if (checkInputReceived2(64))                // Exit Key Items
         {
             playMenuSound(4);
             *inventoryMenuState = 0;
         }
         break;
     case 4:
-        if (check_received_input(32))                // If OK received during arrange menu
+        if (checkInputReceived2(32))                // If OK received during arrange menu
         {
             playMenuSound(1);
             if (*INVENTORY_ARRANGE_TYPE)
@@ -371,14 +373,14 @@ void handleInventoryInput(int a1) {
                 *inventoryMenuState = 5; //Move to custom sort state
             }
         }
-        else if (check_received_input(64))           // Arrange Cancel Handler
+        else if (checkInputReceived2(64))           // Arrange Cancel Handler
         {
             playMenuSound(4);
             *inventoryMenuState = 0;
         }
         break;
     case 5:                                   // Custom Arrange Handler
-        if (check_received_input(32))
+        if (checkInputReceived2(32))
         {
             if (*ITEM_TO_SWAP_SELECTED) // If this is already set when input is received, then switch the items. It's really a bool value
             {
@@ -403,7 +405,7 @@ void handleInventoryInput(int a1) {
                 *ITEM_TO_SWAP_SELECTED = 1;
             }
         }
-        else if (check_received_input(64))
+        else if (checkInputReceived2(64))
         {
             playMenuSound(4);
             *inventoryMenuState = 0;

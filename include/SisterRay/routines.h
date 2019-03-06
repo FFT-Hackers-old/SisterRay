@@ -98,7 +98,7 @@ typedef i32(*pfnsub6F9739)(i32, i32, u32, u8, u8, i32);
 #define renderNumbers                      ((pfnsub6F9739)0x6F9739)
 
 typedef i32(*pfnsub41AB74)(i32);
-#define check_received_input            ((pfnsub41AB74)0x41AB74)
+#define checkInputReceived2            ((pfnsub41AB74)0x41AB74)
 
 typedef i32(*pfnsub6F53F1)(i32);
 #define checkInputReceived              ((pfnsub6F53F1)0x6F53F1)

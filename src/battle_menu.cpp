@@ -30,7 +30,7 @@ SISTERRAY_API u32* initializeBattleItemMenuCursor() {
 
 SISTERRAY_API i32 renderBattleItemView() {
     char *fetchedName;
-    u16* viewContexPtr;
+    cursorContext* cursorContextArray;
     u16 numberOfVisibleItems;
     u16 baseCursorPosition;
     u16 itemID;
@@ -39,28 +39,29 @@ SISTERRAY_API i32 renderBattleItemView() {
     u8 textColor;
     u16 renderContextStruct[7];
 
-    viewContexPtr = (u16*)(dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)); //Making the temporary assumption that this is a dword ptr
+    cursorContextArray = (cursorContext*)(dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)); //In battle each actor has their own array of menu context structures
     if (gContext.battle_inventory->slots_in_use > 3)
     {
         renderContextStruct[0] = (u16)3;           // items_visible
         renderContextStruct[1] = (u16)gContext.battle_inventory->slots_in_use;;// set the current items visible
-        renderContextStruct[2] = (u16)*(viewContexPtr + 10); // base row byte
+        renderContextStruct[2] = (u16)(cursorContextArray[0].baseRowIndex); // base row byte
         renderContextStruct[3] = (u16)614;
         renderContextStruct[4] = (u16)354;
         renderContextStruct[5] = (u16)20;
         renderContextStruct[6] = (u16)100;
         renderSideScroller((i32)&(renderContextStruct[0]), 0.40099999f);
     }
-    u16 unknown_local = 8 * *(viewContexPtr + 18);                        // This determines the number of items that are in view at a given time
-    baseCursorPosition = *(viewContexPtr + 10);
-    if (unknown_local)
+    u16 unknownLocal = 8 * cursorContextArray[0].ninth_dword;            // This determines the number of items that are in view at a given time
+    baseCursorPosition = cursorContextArray[0].baseRowIndex;
+
+    if (unknownLocal)
         numberOfVisibleItems = 4;
     else
         numberOfVisibleItems = 3;
 
-    for (int visible_row = 0; visible_row < numberOfVisibleItems; ++visible_row)// relative_index
+    for (int visibleRow = 0; visibleRow < numberOfVisibleItems; ++visibleRow)// relative_index
     {
-        flatInventoryIndex = visible_row + baseCursorPosition;
+        flatInventoryIndex = visibleRow + baseCursorPosition;
         if (gContext.battle_inventory->get_resource(flatInventoryIndex).item_id != 0xFFFF)// if there is no item in the inventory at this index
         {
             itemID = gContext.battle_inventory->get_resource(flatInventoryIndex).item_id;
@@ -71,13 +72,13 @@ SISTERRAY_API i32 renderBattleItemView() {
             else
                 textColor = (isUsableInBattle(itemID)) ? 7 : 0;
 
-            displayVisibleItemIcon(94, unknown_local + 32 * visible_row + 356, itemID, 0, 0.40099999);
-            sub_6F5C0C(366, unknown_local + 32 * visible_row + 364, 0xD5u, textColor, 0.40099999);
-            renderNumbers(378, unknown_local + 32 * visible_row + 364, itemQuantity, 2, textColor, 1053642719);
+            displayVisibleItemIcon(94, unknownLocal + 32 * visibleRow + 356, itemID, 0, 0.40099999);
+            sub_6F5C0C(366, unknownLocal + 32 * visibleRow + 364, 0xD5u, textColor, 0.40099999);
+            renderNumbers(378, unknownLocal + 32 * visibleRow + 364, itemQuantity, 2, textColor, 1053642719);
 
             //Now display the item names
             fetchedName = getNameFromItemID(itemID);
-            displayTextAtLocation(130, unknown_local + 32 * visible_row + 360, fetchedName, textColor, 1053642719);
+            displayTextAtLocation(130, unknownLocal + 32 * visibleRow + 360, fetchedName, textColor, 1053642719);
         }
     }
     return 0;

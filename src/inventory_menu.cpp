@@ -25,7 +25,7 @@ SISTERRAY_API i32 onEnterInventory() {
     return ret;
 }
 
-SISTERRAY_API void inventoryMenuUpdateHandler(int updateStateMask)
+SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask)
 {
     displayActiveCursorStates(updateStateMask);
     displayInventoryViews(updateStateMask);
@@ -35,7 +35,7 @@ SISTERRAY_API void inventoryMenuUpdateHandler(int updateStateMask)
     }
 }
 
-void displayActiveCursorStates(int updateStateMask) {
+void displayActiveCursorStates(i32 updateStateMask) {
     cursorContext* cursorContextArray = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
     u32 inventoryMenuState = *(INVENTORY_MENU_STATE);
     u32 partyMemberIndex = *(INVENTORY_CURRENT_PARTY_INDEX);
@@ -138,7 +138,7 @@ void displayActiveCursorStates(int updateStateMask) {
 }
 
 /*This function displaces texts depending on current "view" in the menu*/
-void displayInventoryViews(int updateStateMask) {
+void displayInventoryViews(i32 updateStateMask) {
     u32 inventoryMenuState = *(INVENTORY_MENU_STATE);
     cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS); //might be better to call this 'current menu view'
     int mainViewContextIndex;
@@ -265,7 +265,7 @@ void renderKeyItemsView() {
 
 
 /*WIP here, need a more generic way to introduce "usable" items through a function registry or something similar*/
-void handleInventoryInput(int a1) {
+void handleInventoryInput(i32 a1) {
     cursorContext* cursorContextArray = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
     u32* inventoryMenuState = INVENTORY_MENU_STATE;
     u32 partyMemberIndex = *(INVENTORY_CURRENT_PARTY_INDEX);

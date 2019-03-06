@@ -101,7 +101,7 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 item_type, u16 number_to_i
 }
 
 /*Utility check if an item is usable on the menu*/
-bool usable_in_inventory_menu(u16 item_id) {
+bool usableInInventoryMenu(u16 item_id) {
     u16 restriction_mask = get_restriction_mask(item_id);
     if (restriction_mask & 4) {
         return true;

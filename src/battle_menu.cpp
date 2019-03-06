@@ -3,30 +3,29 @@
 
 // Refactor this by implementing the structure in question so the code is not ugly
 SISTERRAY_API u32* initializeBattleItemMenuCursor() {
-    u32* cursorContextPtr = (dword_DC20D8 + (448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)));
+    cursorContext* cursorContextPtr = (cursorContext*)(dword_DC20D8 + (448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)));
     srLogWrite("ptr to cursor row max: %p", &cursorContextPtr[0]);
-    if (!(*dword_DC3C5C))
+    if (!(*REMEMBER_CURSOR_POSITION)) 
     {
-        cursorContextPtr[0] = 0;
-        cursorContextPtr[1] = 0;
-        cursorContextPtr[4] = 0;
-        cursorContextPtr[5] = 0;
+        cursorContextPtr->relativeRowIndex = 0;
+        cursorContextPtr->relativeColumnIndex = 0;
+        cursorContextPtr->baseRowIndex = 0;
+        cursorContextPtr->baseColumnIndex = 0;
     }
 
     /*Initialize Cursor Context for the battle menu*/
-    cursorContextPtr[2] = 1;
-    cursorContextPtr[3] = 3;
-    cursorContextPtr[6] = 1;
-    cursorContextPtr[7] = gContext.battle_inventory->slots_in_use; //max number of cursor updates "down"
-    srLogWrite("ptr to cursor row max: %p", &cursorContextPtr[7]);
-    cursorContextPtr[10] = 2;
-    cursorContextPtr[11] = 0;
-    cursorContextPtr[8] = 0;
-    cursorContextPtr[9] = 0;
-    cursorContextPtr[12] = 0;
-    cursorContextPtr[13] = 1;
+    cursorContextPtr->viewColumnBound = 1;
+    cursorContextPtr->viewRowBound = 3;
+    cursorContextPtr->maxColumnBound = 1;
+    cursorContextPtr->maxRowBound = gContext.battle_inventory->slots_in_use; //max number of cursor updates "down"
+    cursorContextPtr->ninth_dword = 0;
+    cursorContextPtr->tenth_dword = 0;
+    cursorContextPtr->eleventh_dword = 2;
+    cursorContextPtr->twelth_dword = 0;
+    cursorContextPtr->thirteenth_dword = 0;
+    cursorContextPtr->fourteenh_dword = 1;
 
-    return &(cursorContextPtr[0]);
+    return (u32*)&(cursorContextPtr[0]);
 }
 
 SISTERRAY_API i32 renderBattleItemView() {

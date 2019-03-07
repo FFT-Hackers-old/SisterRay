@@ -10,7 +10,8 @@
 #include "weapons.h"
 #include "armor.h"
 #include "accessory.h"
-#include "inventory.h"
+#include "inventories/inventory.h"
+#include "inventories/battle_inventory.h"
 #include "usable_item_handlers.h"
 #include "string_registry.h"
 #include <map>

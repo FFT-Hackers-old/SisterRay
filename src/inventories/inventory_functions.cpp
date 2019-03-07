@@ -1,5 +1,5 @@
 #include "inventory_functions.h"
-#include "impl.h"
+#include "../impl.h"
 
 SISTERRAY_API u8 setupBattleInventory() {
     i32 inventorySize = gContext.inventory->current_capacity();

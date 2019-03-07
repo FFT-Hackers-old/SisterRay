@@ -27,7 +27,7 @@ static void srLoadKernelBin(void)
     FILE* kernel;
     SrKernelStream stream;
     SrKernelStreamHandler handler;
-    init_item_type_data(); //initially allocate the mapping used for inventory_id -> relative resource id
+    initItemTypeData(); //initially allocate the mapping used for inventory_id -> relative resource id
 
     kernel = fopen(srGetGamePath("data/kernel/kernel.bin"), "rb");
     for (int i = 0; i < 9; ++i)

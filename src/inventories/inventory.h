@@ -4,6 +4,7 @@
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "sr_inventory_template.h"
+#include <vector>
 
 #define INVENTORY_SIZE (i16)1024 //maximum allowable inventory size within the menu engine
 
@@ -35,9 +36,13 @@ typedef struct {
 
 class SrItemTypeRegistry : public SrResourceRegistry<ItemTypeData> {
 public:
+    std::vector<i16> reverseItemRegistry;
+    std::vector<i16> reverseArmorRegistry;
+    std::vector<i16> reverseAccessoryRegistry;
+    std::vector<i16> reverseWeaponRegistry;
     SrItemTypeRegistry() : SrResourceRegistry<ItemTypeData>::SrResourceRegistry() {};
-    void initialize_augmented_data(u8 item_type, u16 number_to_initialize);
-    u16 get_absolute_id(u8 gear_type, u8 relative_index);
+    void initialize_augmented_data(u8 itemType, u16 numberToInitialize);
+    u16 get_absolute_id(u8 itemType, u8 relativeIndex);
 };
 
 //The data structure stores information
@@ -54,6 +59,6 @@ public:
 };
 
 SISTERRAY_API void InitInventory();
-SISTERRAY_API void init_item_type_data();
+SISTERRAY_API void initItemTypeData();
 
 #endif

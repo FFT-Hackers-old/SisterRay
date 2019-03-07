@@ -48,15 +48,43 @@ SISTERRAY_API i16 sort_inventory(i32 sort_type) {
 }
 
 /*Initialize the item_type mapping*/
-SISTERRAY_API void init_item_type_data() {
+SISTERRAY_API void initItemTypeData() {
     gContext.itemTypeData = SrItemTypeRegistry();
 }
 
 /*Probably should be moved inside the registry*/
-void SrItemTypeRegistry::initialize_augmented_data(u8 item_type, u16 number_to_initialize) {
+void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInitialize) {
     ItemTypeData item_type_data;
-    for (u16 i = 0; i < number_to_initialize; i++) {
-        ItemTypeData item_type_data{ item_type, (u16)i };
+    u16 absoluteBase = resource_count() - 1;
+    u16 absoluteIndex;
+
+    for (u16 i = 0; i < numberToInitialize; i++) {
+        ItemTypeData item_type_data{ itemType, (u16)i };
         gContext.itemTypeData.add_resource(item_type_data);
+
+        absoluteIndex = absoluteBase + i;
+        switch (itemType) {
+        case 0:
+            reverseItemRegistry.push_back(absoluteIndex);
+        case 1:
+            reverseWeaponRegistry.push_back(absoluteIndex);
+        case 2:
+            reverseArmorRegistry.push_back(absoluteIndex);
+        case 3:
+            reverseAccessoryRegistry.push_back(absoluteIndex);
+        }
+    }
+}
+
+u16 SrItemTypeRegistry::get_absolute_id(u8 itemType, u8 relativeIndex) {
+    switch (itemType) {
+    case 0:
+        return reverseItemRegistry.at(relativeIndex);
+    case 1:
+        return reverseWeaponRegistry.at(relativeIndex);
+    case 2:
+        return reverseArmorRegistry.at(relativeIndex);
+    case 3:
+        return reverseAccessoryRegistry.at(relativeIndex);
     }
 }

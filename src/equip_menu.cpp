@@ -15,7 +15,7 @@ void handleEquipMenuInput(i32 updateStateMask) {
     u8 equippedGearItemType;
 
 
-    characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(u8*)(CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX]];
+    characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX]];
     handleCursorPositionUpdate((u32*)(&(cursorContextArray[equipMenuState])));
     if (equipMenuState == 1) {
         if (checkInputReceived(32)) {
@@ -76,7 +76,7 @@ void handleEquipMenuInput(i32 updateStateMask) {
         }
         else if (checkInputReceived(32)) {
             equippableGearCount = setupGearMenu(equippedGearItemType);
-            if (equippableGearCount && !(byte_DC0B4B & 1)) {
+            if (equippableGearCount && !(*byte_DC0B4B & 1)) {
                 playMenuSound(1);
                 *EQUIP_MENU_STATE = 1;
                 if (equippableGearCount <= 8) //Sets the "single view" size
@@ -95,7 +95,7 @@ void handleEquipMenuInput(i32 updateStateMask) {
             sub_6C6AEE(3);
             *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
         }
-        else if (checkInputReceived(16) && !(byte_DC0B4B & 1) && dword_DCA5C4 == 2) { //unequip accessory
+        else if (checkInputReceived(16) && !(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2) { //unequip accessory
             playMenuSound(4);
             if (characterRecordArray[characterRecordArrayIndex].equipped_accessory != 0xFF) {
                 removedGearRelativeIndex = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
@@ -119,7 +119,6 @@ void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordA
     u8 removedGearRelativeID;
     u16 removedGearAbsoluteID;
     u16 equippedGearAbsoluteID;
-    u16 inventoryIndex;
 
     switch (gearType) {
     case 1: {
@@ -155,21 +154,26 @@ void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u1
     ArmorData newArmorData;
     AccessoryData newAccessoryData;
     u32* equippedMateriaData;
-    u8 materiaSlots[8];
+    u8* materiaSlots;
     bool shouldRemove = false;
 
     for (i32 materiaSlotIndex = 0; materiaSlotIndex < 8; ++materiaSlotIndex) {
         switch (gearType) {
-        case 0:
+        case 0: {
             newWeaponData = gContext.weapons.get_resource(gearRelativeIndex);
-            materiaSlots[8] = newWeaponData.materia_slots;
+            materiaSlots = &(newWeaponData.materia_slots[0]);
             equippedMateriaData = (u32*)&(activeCharacterRecord.weapon_materia_slots);
-            shouldRemove = (!(materiaSlots[materiaSlotIndex] && activeCharacterRecord.weapon_materia_slots[materiaSlotIndex]) != 0xFFFFFFFF);
-        case 1:
+            shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.weapon_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
+            break;
+        }
+        case 1: {
             newArmorData = gContext.armors.get_resource(gearRelativeIndex);
-            materiaSlots[8] = newArmorData.materia_slots;
+            materiaSlots = &(newArmorData.materia_slots[0]);
             equippedMateriaData = (u32*)&(activeCharacterRecord.armor_materia_slots);
-            shouldRemove = (!(materiaSlots[materiaSlotIndex] && activeCharacterRecord.armor_materia_slots[materiaSlotIndex]) != 0xFFFFFFFF);
+            shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.armor_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
+            break;
+        }
+        default:{}
         }
 
         if (shouldRemove) {

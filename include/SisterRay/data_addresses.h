@@ -54,6 +54,9 @@
 #define word_DD1BC0                          (u16*)0xDD1BC0
 #define dword_DC1290                         (u32*)0xDC1290
 #define byte_DC1148                          (u8*)0xDC1148
+#define RECYCLE_SLOT_OFFSET_TABLE            (u32*)0x919928
+#define byte_DC0B4B                          (u8*)0xDC0B4B
+#define dword_DCA5C4                         (u32*)0xDCA5C4 //Stops one from de-equipping accessories if set to 2... Sephiroth maybe?
 // End
 
 #define CURRENT_PARTY_MEMBER_ARRAY           (u32*)0xDC0230 /*Length 3, contains party member ID, from the savemap*/

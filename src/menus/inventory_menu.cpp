@@ -1,5 +1,5 @@
 #include "inventory_menu.h"
-#include "impl.h"
+#include "../impl.h"
 #include "windows.h"
 #include "menu_utils.h"
 

@@ -3,9 +3,9 @@
 #include <windows.h>
 #include "impl.h"
 #include <zlib.h>
-#include "inventory_menu.h"
+#include "menus/inventory_menu.h"
 #include "inventory_functions.h"
-#include "battle_menu.h"
+#include "menus/battle_menu.h"
 
 SrContext gContext;
 

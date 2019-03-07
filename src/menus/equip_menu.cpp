@@ -1,5 +1,5 @@
 #include "equip_menu.h"
-#include "impl.h"
+#include "../impl.h"
 #include "menu_utils.h"
 
 void handleEquipMenuInput(i32 updateStateMask) {

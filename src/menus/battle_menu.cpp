@@ -1,5 +1,5 @@
 #include "battle_menu.h"
-#include "impl.h"
+#include "../impl.h"
 
 // Refactor this by implementing the structure in question so the code is not ugly
 SISTERRAY_API u32* initializeBattleItemMenuCursor() {

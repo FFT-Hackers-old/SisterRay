@@ -178,7 +178,7 @@ void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u1
 
         if (shouldRemove) {
             *byte_DC1148 = 0;
-            incrementMateriaInventory(equippedMateriaData[materiaSlotIndex]); //put any materia removed back on, needs to work with the SR materia
+            gContext.materia_inventory->insertIntoMateriaInventory((MateriaInventoryEntry*)equippedMateriaData[materiaSlotIndex]); //put any materia removed back on, needs to work with the SR materia
             *byte_DC1148 = 0;
             equippedMateriaData[materiaSlotIndex] = 0xFFFFFFFF;
         }

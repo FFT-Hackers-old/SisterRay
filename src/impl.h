@@ -12,6 +12,7 @@
 #include "accessory.h"
 #include "inventories/inventory.h"
 #include "inventories/battle_inventory.h"
+#include "inventories/materia_inventory.h"
 #include "usable_item_handlers.h"
 #include "string_registry.h"
 #include <map>
@@ -21,19 +22,20 @@
   Resources, in the form of either data or registered callback*/
 typedef struct {
     FILE*                              logFile;
-    SrItemRegistry                     items;
-    SrWeaponRegistry                   weapons;
-    SrArmorRegistry                    armors;
-    SrAccessoryRegistry                accessories;
-    SrMateriaRegistry                  materias;
-    std::unique_ptr<SrItemInventory>   inventory;
-    std::unique_ptr<SrBattleInventory> battle_inventory;
-    std::unique_ptr<SrGearViewData>    gear_view_data;
-    SrItemTypeRegistry                 itemTypeData;
-    srOnUseCallbackRegistry            on_use_handlers; /*Registry of function pointers for using items*/
-    srNoTargetCallbackRegistry         untargeted_handlers;
-    SrOnUseItemDataRegistry            item_on_use_data;
-    SrGameStrings                      game_strings;
+    SrItemRegistry                      items;
+    SrWeaponRegistry                    weapons;
+    SrArmorRegistry                     armors;
+    SrAccessoryRegistry                 accessories;
+    SrMateriaRegistry                   materias;
+    std::unique_ptr<SrItemInventory>    inventory;
+    std::unique_ptr<SrBattleInventory>  battle_inventory;
+    std::unique_ptr<SrMateriaInventory> materia_inventory;
+    std::unique_ptr<SrGearViewData>     gear_view_data;
+    SrItemTypeRegistry                  itemTypeData;
+    srOnUseCallbackRegistry             on_use_handlers; /*Registry of function pointers for using items*/
+    srNoTargetCallbackRegistry          untargeted_handlers;
+    SrOnUseItemDataRegistry             item_on_use_data;
+    SrGameStrings                       game_strings;
 } SrContext;
 
 SISTERRAY_GLOBAL SrContext gContext;

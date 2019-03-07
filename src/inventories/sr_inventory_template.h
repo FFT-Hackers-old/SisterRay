@@ -34,8 +34,6 @@ public:
     }
 
     u16 findItemInventoryIndex(u16 itemID) {
-        u16 inventoryIndex;
-
         for (auto it = begin(resource_registry); it != end(resource_registry); ++it) {
             if ((*it).item_id == itemID) {
                 return distance(resource_registry.begin(), it);

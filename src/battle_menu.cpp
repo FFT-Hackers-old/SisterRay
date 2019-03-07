@@ -124,7 +124,7 @@ SISTERRAY_API void battleItemMenuInputHandler() {
         }
 
         if (!(*ACCEPTING_BATTLE_INPUT)) {
-            update_cursor_position((u32*)viewContextPtr);
+            handleCursorPositionUpdate((u32*)viewContextPtr);
 
             if (!(*((u32*)viewContextPtr + 12))) {
                 if (checkInputReceived(32)) {
@@ -137,13 +137,13 @@ SISTERRAY_API void battleItemMenuInputHandler() {
                         playMenuSound(1);
                         targetData = gContext.battle_inventory->get_resource(flatInventoryIndex).targetFlags;
 
-                        *GLOBAL_BATTLE_ITEM_USED = itemID;
-                        *GLOBAL_USED_ITEM_TARGET_DATA = targetData;
-                        *GLOBAL_USED_INVENTORY_INDEX = flatInventoryIndex;
+                        *GLOBAL_ACTION_USED = itemID;
+                        *GLOBAL_USED_ACTION_TARGET_DATA = targetData;
+                        *GLOBAL_USED_MENU_INDEX = flatInventoryIndex;
                         *BATTLE_MENU_STATE = 0;
                         *PREVIOUS_BATTLE_MENU_STATE = 5;
 
-                        handleActionCommandIssued();
+                        setCursorTargetingData();
 
                         *GLOBAL_USED_ITEM_RESTORE = getRestoreTypeGlobal(itemID); //Display characters HP's if the item can heal
                         if (*GLOBAL_USED_ITEM_RESTORE != -1)
@@ -181,7 +181,7 @@ bool didItemUseSucceed(u16 itemID) {
 
 //Set the restore type global used by executing healing actions
 u16 getRestoreTypeGlobal(i16 itemID) {
-    auto itemType = gContext.item_type_data.get_resource(itemID).item_type;
+    auto itemType = gContext.itemTypeData.get_resource(itemID).item_type;
     if(itemType != 0) {
         return 0xFFFF;
     }

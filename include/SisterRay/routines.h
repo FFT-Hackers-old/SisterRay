@@ -107,7 +107,7 @@ typedef void(*pfnsub74580A)(i32);
 #define playMenuSound                 ((pfnsub74580A)0x74580A)
 
 typedef void(*pfnsub6F4DB2)(u32*);
-#define update_cursor_position          ((pfnsub6F4DB2)0x6F4DB2)
+#define handleCursorPositionUpdate          ((pfnsub6F4DB2)0x6F4DB2)
 
 typedef i32(*pfnsub6CBA6A)(u8, u16);
 #define heal_character_at_index         ((pfnsub6CBA6A)0x6CBA6A)
@@ -155,17 +155,27 @@ typedef bool(*pfnsub715026)(i32);
 #define knows_all_prereq_limits         ((pfnsub715026)0x715026)
 
 typedef u8(*pfnsub6C545B)(i32);
-#define recalculate_party_stats         ((pfnsub6C545B)0x6C545B)
+#define recalculateBaseStats            ((pfnsub6C545B)0x6C545B)
 
 typedef i32(*pfnsub5CB2CC)(u8);
-#define sub_5CB2CC                      ((pfnsub5CB2CC)0x5CB2CC)
+#define recalculateDerivedStats         ((pfnsub5CB2CC)0x5CB2CC)
 
 typedef i32(*pfnsub714FA3)(void);
 #define sub_714FA3                      ((pfnsub714FA3)0x714FA3)
 
 typedef u8(*pfnsub6E5C52)(void);
-#define handleActionCommandIssued       ((pfnsub6E5C52)0x6E5C52)
+#define setCursorTargetingData          ((pfnsub6E5C52)0x6E5C52)
 
 typedef i32(*pfnsub6D0AF9)(i16, i16, i16);
 #define initHandlerCursorState          ((pfnsub6D0AF9)0x6D0AF9)
+
+typedef i32(*pfnsub6C9812)(i32, i32);
+#define sub_6C9812                      ((pfnsub6C9812)0x6C9812) //Sets some data for transition from EQUIP to main menu
+
+typedef i32(*pfnsub6C6AEE)(i32);
+#define sub_6C6AEE                      ((pfnsub6C6AEE)0x6C6AEE) //Sets some data for transition from EQUIP to main menu
+
+typedef i8(*pfnsub5CB127)(void);   
+#define updateMiscPartyStats            ((pfnsub5CB127)0x5CB127)
+
 #endif

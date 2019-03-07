@@ -9,7 +9,7 @@ static void patch_weapons() {
 SISTERRAY_API void init_weapon(SrKernelStream* stream)
 {
     gContext.weapons = SrWeaponRegistry(stream);
-    gContext.item_type_data.initialize_augmented_data((u8)1, gContext.weapons.resource_count());
+    gContext.itemTypeData.initialize_augmented_data((u8)1, gContext.weapons.resource_count());
     patch_weapons();
     srLogWrite("kernel.bin: Loaded %lu weapons", (unsigned long)gContext.weapons.resource_count());
 }

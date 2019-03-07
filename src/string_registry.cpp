@@ -52,8 +52,8 @@ void init_game_strings() {
 }
 
 char* getNameFromItemID(u16 item_id) {
-    auto item_type = gContext.item_type_data.get_resource(item_id).item_type;
-    auto relative_id = gContext.item_type_data.get_resource(item_id).type_relative_id;
+    auto item_type = gContext.itemTypeData.get_resource(item_id).item_type;
+    auto relative_id = gContext.itemTypeData.get_resource(item_id).type_relative_id;
     switch(item_type) {
     case 0: 
         return gContext.game_strings.item_names.get_string(relative_id);
@@ -73,8 +73,8 @@ char* getNameFromItemID(u16 item_id) {
 }
 
 char* get_description_from_global_id(u16 item_id) {
-    auto item_type = gContext.item_type_data.get_resource(item_id).item_type;
-    auto relative_id = gContext.item_type_data.get_resource(item_id).type_relative_id;
+    auto item_type = gContext.itemTypeData.get_resource(item_id).item_type;
+    auto relative_id = gContext.itemTypeData.get_resource(item_id).type_relative_id;
     switch (item_type) {
     case 0:
         return gContext.game_strings.item_descriptions.get_string(relative_id);

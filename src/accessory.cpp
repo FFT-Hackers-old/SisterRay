@@ -32,7 +32,7 @@ SISTERRAY_API void init_accessory(SrKernelStream* stream)
 {
     gContext.accessories = SrAccessoryRegistry(stream);
     /*calling this method adds entries into the relative-entry look up for all accessories*/
-    gContext.item_type_data.initialize_augmented_data((u8)3, gContext.accessories.resource_count());
+    gContext.itemTypeData.initialize_augmented_data((u8)3, gContext.accessories.resource_count());
     patch_accessories();
     srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.resource_count());
 }

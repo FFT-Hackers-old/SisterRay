@@ -44,7 +44,11 @@ class SrItemInventory : public SrResourceRegistry<InventoryEntry> {
 public:
     SrItemInventory(i16 allocation_size);
     SrItemInventory(): SrResourceRegistry<InventoryEntry>(){}
-    void handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity);
+    void decrementInventoryEntry(u16 inventory_index, u8 stepSize);
+    void incrementInventoryEntry(u16 inventory_index, u8 stepSize);
+    u16 findItemInventoryIndex(u16 itemID);
+    bool incrementInventoryByItemID(u16 item_id, u8 stepSize);
+    bool decrementInventoryByItemID(u16 item_id, u8 stepSize);
 };
 
 // indexed by global "item_id"
@@ -57,6 +61,20 @@ class SrItemTypeRegistry : public SrResourceRegistry<ItemTypeData> {
 public:
     SrItemTypeRegistry() : SrResourceRegistry<ItemTypeData>::SrResourceRegistry() {};
     void initialize_augmented_data(u8 item_type, u16 number_to_initialize);
+    u16 get_absolute_id(u8 gear_type, u8 relative_index);
+};
+
+//The data structure stores information
+typedef struct {
+    u16 relative_item_id;
+} GearViewData;
+
+class SrGearViewData : public SrResourceRegistry<GearViewData> {
+public:
+    u16 slots_in_use;
+    SrGearViewData(i16 allocation_size);
+    SrGearViewData() : SrResourceRegistry<GearViewData>() {}
+    void setSlotsInUse(u16 slotsInUse);
 };
 
 SISTERRAY_API void InitInventory();
@@ -69,5 +87,7 @@ bool usableInInventoryMenu(u16 item_id);
 u16 get_restriction_mask(u16 item_id);
 u8 get_target_flags(u16 item_id);
 void updateInventoryEntry(u16 item_id, u8 quantity);
+void incrementInventoryByItemID(u16 absoluteID, u8 itemType);
+void decrementInventoryByItemID(u16 absoluteID, u8 itemType);
 
 #endif

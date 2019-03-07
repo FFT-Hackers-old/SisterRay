@@ -16,15 +16,54 @@ SrItemInventory::SrItemInventory(i16 allocation_size): SrResourceRegistry<Invent
 }
 
 /*utility for decrementing the quantity of an item at a particular inventory index*/
-void SrItemInventory::handle_decrement_inventory(u16 inventory_index, u8 decrement_quantity) {
-    srLogWrite("decrementing inventory index %i", inventory_index);
-    if (SrItemInventory::resource_registry[inventory_index].quantity + decrement_quantity > 1) {
-        SrItemInventory::resource_registry[inventory_index].quantity = SrItemInventory::resource_registry[inventory_index].quantity - decrement_quantity;
+void SrItemInventory::decrementInventoryEntry(u16 inventory_index, u8 stepSize) {
+    if (SrItemInventory::resource_registry[inventory_index].quantity + stepSize > 1) {
+        SrItemInventory::resource_registry[inventory_index].quantity = SrItemInventory::resource_registry[inventory_index].quantity - stepSize;
     }
     else {
         SrItemInventory::resource_registry[inventory_index].item_id = 0xFFFF;
         SrItemInventory::resource_registry[inventory_index].quantity = 0;
     }
+}
+
+
+void SrItemInventory::incrementInventoryEntry(u16 inventory_index, u8 stepSize) {
+    if (SrItemInventory::resource_registry[inventory_index].quantity + stepSize < 99) {
+        SrItemInventory::resource_registry[inventory_index].quantity = SrItemInventory::resource_registry[inventory_index].quantity + stepSize;
+    }
+    else {
+        SrItemInventory::resource_registry[inventory_index].quantity = 99;
+    }
+}
+
+u16 SrItemInventory::findItemInventoryIndex(u16 itemID) {
+    u16 inventoryIndex;
+
+    for (auto it = begin(resource_registry); it != end(resource_registry); ++it) {
+        if ((*it).item_id == itemID) {
+            return distance(resource_registry.begin(), it);
+        }
+    }
+    return 0xFFFF;
+}
+
+//Utility function for incrementing an item from its absolute item ID
+bool SrItemInventory::incrementInventoryByItemID(u16 absoluteID, u8 stepSize) {
+    u16 inventoryIndex = findItemInventoryIndex(absoluteID);
+    if (inventoryIndex !=  0xFFFF){
+        incrementInventoryEntry(inventoryIndex, stepSize);
+        return true;
+    }
+    return false;
+}
+
+bool SrItemInventory::decrementInventoryByItemID(u16 absoluteID, u8 stepSize) {
+    u16 inventoryIndex = findItemInventoryIndex(absoluteID);
+    if (inventoryIndex != 0xFFFF) {
+        decrementInventoryEntry(inventoryIndex, stepSize);
+        return true;
+    }
+    return false;
 }
 
 /*We want the Battle Inventory to construct itself with default (empty) values*/
@@ -43,6 +82,25 @@ SrBattleInventory::SrBattleInventory(i16 allocation_size) : SrResourceRegistry<B
 
 void SrBattleInventory::setSlotsInUse(u16 slotsInUse) {
     slots_in_use = slotsInUse;
+}
+
+/*Construct with default values*/
+SrGearViewData::SrGearViewData(i16 allocation_size) : SrResourceRegistry<GearViewData>(allocation_size) {
+    for (i32 i = 0; i < INVENTORY_SIZE; i++) {
+        GearViewData entry = {
+            0
+        };
+        add_resource(entry);
+    }
+}
+
+void SrGearViewData::setSlotsInUse(u16 slotsInUse) {
+    slots_in_use = slotsInUse;
+}
+
+void initGearViewStorage() {
+    gContext.gear_view_data = std::make_unique<SrGearViewData>((INVENTORY_SIZE)/2);
+    srLogWrite("sister ray: initialized equip view with size: %lu", (unsigned long)gContext.gear_view_data->current_capacity());
 }
 
 void testFillInventory() {
@@ -88,7 +146,7 @@ SISTERRAY_API i16 sort_inventory(i32 sort_type) {
 
 /*Initialize the item_type mapping*/
 SISTERRAY_API void init_item_type_data() {
-    gContext.item_type_data = SrItemTypeRegistry();
+    gContext.itemTypeData = SrItemTypeRegistry();
 }
 
 /*Probably should be moved inside the registry*/
@@ -96,7 +154,7 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 item_type, u16 number_to_i
     ItemTypeData item_type_data;
     for (u16 i = 0; i < number_to_initialize; i++) {
         ItemTypeData item_type_data{ item_type, (u16)i };
-        gContext.item_type_data.add_resource(item_type_data);
+        gContext.itemTypeData.add_resource(item_type_data);
     }
 }
 
@@ -110,8 +168,8 @@ bool usableInInventoryMenu(u16 item_id) {
 }
 
 u16 get_restriction_mask(u16 item_id) {
-    u8 item_type = gContext.item_type_data.get_resource(item_id).item_type;
-    u16 relative_id = gContext.item_type_data.get_resource(item_id).type_relative_id;
+    u8 item_type = gContext.itemTypeData.get_resource(item_id).item_type;
+    u16 relative_id = gContext.itemTypeData.get_resource(item_id).type_relative_id;
     u16 restriction_mask;
     switch (item_type) {
     case 0: {
@@ -137,8 +195,8 @@ u16 get_restriction_mask(u16 item_id) {
 }
 
 u8 get_target_flags(u16 item_id) {
-    u8 item_type = gContext.item_type_data.get_resource(item_id).item_type;
-    u16 relative_id = gContext.item_type_data.get_resource(item_id).type_relative_id;
+    u8 item_type = gContext.itemTypeData.get_resource(item_id).item_type;
+    u16 relative_id = gContext.itemTypeData.get_resource(item_id).type_relative_id;
     u8 target_flags;
     switch (item_type) {
     case 0: {

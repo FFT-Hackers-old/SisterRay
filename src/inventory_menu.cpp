@@ -275,7 +275,7 @@ void handleInventoryInput(i32 a1) {
     i32 relativeSortRow;
     u16 itemID;
 
-    update_cursor_position((u32*)&(cursorContextArray[*inventoryMenuState]));
+    handleCursorPositionUpdate((u32*)&(cursorContextArray[*inventoryMenuState]));
     switch ((*inventoryMenuState))
     {
     case 0:
@@ -424,7 +424,7 @@ void handleUsableItemEffects(u16 item_ID, u16 inventory_index) {
     /*Call the appropriate function handler for using items on a character/the party*/
     itemWasUsed = gContext.on_use_handlers.get_handler(item_ID)((u16)partyMemberIndex, item_ID, inventory_index);
     if (itemWasUsed) {
-        gContext.inventory->handle_decrement_inventory(inventory_index, 1);
+        gContext.inventory->decrementInventoryEntry(inventory_index, 1);
         if (gContext.inventory->get_resource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
             *INVENTORY_MENU_STATE = 1;
     }

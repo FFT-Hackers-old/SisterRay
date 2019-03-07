@@ -5,6 +5,7 @@
 #include <zlib.h>
 #include "menus/inventory_menu.h"
 #include "inventories/inventory_functions.h"
+#include "inventories/inventory_utils.h"
 #include "menus/battle_menu.h"
 
 SrContext gContext;

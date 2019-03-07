@@ -1,0 +1,4 @@
+#ifndef MATERIA_INVENTORY_H
+#define MATERIA_INVENTORY_H
+
+#endif

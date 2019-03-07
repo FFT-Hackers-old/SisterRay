@@ -2,6 +2,7 @@
 #include "../impl.h"
 #include "windows.h"
 #include "menu_utils.h"
+#include "../inventories/inventory_utils.h"
 
 #define SIZE_OF_CURSOR_STRUCT  (i32)0xE // this is the size in i32, for ptr arithmetic
 
@@ -209,6 +210,7 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
     baseRowIndex = cursorContextArray[mainViewContextIndex].baseRowIndex;
     for (i32 visibleItem = 0; visibleItem < displayed_row_count; ++visibleItem) {
         i32 baseRowIndex = cursorContextArray[mainViewContextIndex].baseRowIndex;
+        visibleItemInventoryIndex = baseRowIndex + visibleItem;
         if (gContext.inventory->get_resource(visibleItemInventoryIndex).item_id != 0xFFFF) {
             itemID = gContext.inventory->get_resource(visibleItemInventoryIndex).item_id;
             itemQuantity = gContext.inventory->get_resource(visibleItemInventoryIndex).quantity;
@@ -382,11 +384,11 @@ void handleInventoryInput(i32 a1) {
     case 5:                                   // Custom Arrange Handler
         if (checkInputReceived2(32))
         {
+
+            baseSortRow = cursorContextArray[5].baseRowIndex;
+            relativeSortRow = cursorContextArray[5].relativeRowIndex;
             if (*ITEM_TO_SWAP_SELECTED) // If this is already set when input is received, then switch the items. It's really a bool value
             {
-
-                baseSortRow = cursorContextArray[5].baseRowIndex;
-                relativeSortRow = cursorContextArray[5].relativeRowIndex;
                 if (*ITEM_TO_SWAP_SELECTED == 1)
                 {
                     playMenuSound(1);

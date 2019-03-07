@@ -3,6 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
+#include "sr_inventory_template.h"
 
 #define INVENTORY_SIZE (i16)1024 //maximum allowable inventory size within the menu engine
 
@@ -20,18 +21,10 @@ typedef struct InventoryEntry{
 } InventoryEntry;
 #pragma pack(pop)
 
-void testFillInventory();
-void addInventoryEntry(u16 item_id, u8 quantity);
-
-class SrItemInventory : public SrResourceRegistry<InventoryEntry> {
+class SrItemInventory : public SrInventory<InventoryEntry> {
 public:
     SrItemInventory(i16 allocation_size);
-    SrItemInventory(): SrResourceRegistry<InventoryEntry>(){}
-    void decrementInventoryEntry(u16 inventory_index, u8 stepSize);
-    void incrementInventoryEntry(u16 inventory_index, u8 stepSize);
-    u16 findItemInventoryIndex(u16 itemID);
-    bool incrementInventoryByItemID(u16 item_id, u8 stepSize);
-    bool decrementInventoryByItemID(u16 item_id, u8 stepSize);
+    SrItemInventory(): SrInventory<InventoryEntry>(){}
 };
 
 // indexed by global "item_id"
@@ -62,12 +55,5 @@ public:
 
 SISTERRAY_API void InitInventory();
 SISTERRAY_API void init_item_type_data();
-
-/*utility for decrementing the quantity of an item at a particular inventory index*/
-SISTERRAY_API i16 sort_inventory(i32 sort_type);
-bool usableInInventoryMenu(u16 item_id);
-u16 get_restriction_mask(u16 item_id);
-u8 get_target_flags(u16 item_id);
-void updateInventoryEntry(u16 item_id, u8 quantity);
 
 #endif

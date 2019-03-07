@@ -10,6 +10,22 @@ bool usableInInventoryMenu(u16 item_id) {
     return false;
 }
 
+void updateInventoryEntry(u16 item_id, u8 quantity) {
+    InventoryEntry entry = {
+        item_id,
+        quantity
+    };
+    gContext.inventory->update_resource(item_id, entry);
+}
+
+void addInventoryEntry(u16 item_id, u8 quantity) {
+    InventoryEntry entry = {
+        item_id,
+        quantity
+    };
+    gContext.inventory->add_resource(entry);
+}
+
 u16 get_restriction_mask(u16 item_id) {
     u8 item_type = gContext.itemTypeData.get_resource(item_id).item_type;
     u16 relative_id = gContext.itemTypeData.get_resource(item_id).type_relative_id;
@@ -62,4 +78,10 @@ u8 get_target_flags(u16 item_id) {
         target_flags = 0x00;
     }
     return target_flags;
+}
+
+void testFillInventory() {
+    for (u16 item_id = 0; item_id < 320; item_id++) {
+        updateInventoryEntry(item_id, 99);
+    }
 }

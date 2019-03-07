@@ -1,4 +1,5 @@
 #include "inventory_functions.h"
+#include "inventory_utils.h"
 #include "../impl.h"
 
 SISTERRAY_API u8 setupBattleInventory() {

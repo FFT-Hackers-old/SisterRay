@@ -5,7 +5,7 @@
 #include <memory>
 
 /*We want the inventory to construct itself with default (empty) values*/
-SrItemInventory::SrItemInventory(i16 allocation_size): SrResourceRegistry<InventoryEntry>(allocation_size) {
+SrItemInventory::SrItemInventory(i16 allocation_size): SrInventory<InventoryEntry>(allocation_size) {
     for (i32 i = 0; i < INVENTORY_SIZE; i++) {
         InventoryEntry entry = {
             0xFFFF,
@@ -13,57 +13,6 @@ SrItemInventory::SrItemInventory(i16 allocation_size): SrResourceRegistry<Invent
         };
         add_resource(entry);
     }
-}
-
-/*utility for decrementing the quantity of an item at a particular inventory index*/
-void SrItemInventory::decrementInventoryEntry(u16 inventory_index, u8 stepSize) {
-    if (SrItemInventory::resource_registry[inventory_index].quantity + stepSize > 1) {
-        SrItemInventory::resource_registry[inventory_index].quantity = SrItemInventory::resource_registry[inventory_index].quantity - stepSize;
-    }
-    else {
-        SrItemInventory::resource_registry[inventory_index].item_id = 0xFFFF;
-        SrItemInventory::resource_registry[inventory_index].quantity = 0;
-    }
-}
-
-
-void SrItemInventory::incrementInventoryEntry(u16 inventory_index, u8 stepSize) {
-    if (SrItemInventory::resource_registry[inventory_index].quantity + stepSize < 99) {
-        SrItemInventory::resource_registry[inventory_index].quantity = SrItemInventory::resource_registry[inventory_index].quantity + stepSize;
-    }
-    else {
-        SrItemInventory::resource_registry[inventory_index].quantity = 99;
-    }
-}
-
-u16 SrItemInventory::findItemInventoryIndex(u16 itemID) {
-    u16 inventoryIndex;
-
-    for (auto it = begin(resource_registry); it != end(resource_registry); ++it) {
-        if ((*it).item_id == itemID) {
-            return distance(resource_registry.begin(), it);
-        }
-    }
-    return 0xFFFF;
-}
-
-//Utility function for incrementing an item from its absolute item ID
-bool SrItemInventory::incrementInventoryByItemID(u16 absoluteID, u8 stepSize) {
-    u16 inventoryIndex = findItemInventoryIndex(absoluteID);
-    if (inventoryIndex !=  0xFFFF){
-        incrementInventoryEntry(inventoryIndex, stepSize);
-        return true;
-    }
-    return false;
-}
-
-bool SrItemInventory::decrementInventoryByItemID(u16 absoluteID, u8 stepSize) {
-    u16 inventoryIndex = findItemInventoryIndex(absoluteID);
-    if (inventoryIndex != 0xFFFF) {
-        decrementInventoryEntry(inventoryIndex, stepSize);
-        return true;
-    }
-    return false;
 }
 
 /*Construct with default values*/
@@ -83,28 +32,6 @@ void SrGearViewData::setSlotsInUse(u16 slotsInUse) {
 void initGearViewStorage() {
     gContext.gear_view_data = std::make_unique<SrGearViewData>((INVENTORY_SIZE)/2);
     srLogWrite("sister ray: initialized equip view with size: %lu", (unsigned long)gContext.gear_view_data->current_capacity());
-}
-
-void testFillInventory() {
-    for (u16 item_id = 0; item_id < 320; item_id++) {
-        updateInventoryEntry(item_id, 99);
-    }
-}
-
-void updateInventoryEntry(u16 item_id, u8 quantity) {
-    InventoryEntry entry = {
-        item_id,
-        quantity
-    };
-    gContext.inventory->update_resource(item_id, entry);
-}
-
-void addInventoryEntry(u16 item_id, u8 quantity) {
-    InventoryEntry entry = {
-        item_id,
-        quantity
-    };
-    gContext.inventory->add_resource(entry);
 }
 
 /*Method to initialize the new inventories with an appropriate size*/
@@ -132,67 +59,4 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 item_type, u16 number_to_i
         ItemTypeData item_type_data{ item_type, (u16)i };
         gContext.itemTypeData.add_resource(item_type_data);
     }
-}
-
-/*Utility check if an item is usable on the menu*/
-bool usableInInventoryMenu(u16 item_id) {
-    u16 restriction_mask = get_restriction_mask(item_id);
-    if (restriction_mask & 4) {
-        return true;
-    }
-    return false;
-}
-
-u16 get_restriction_mask(u16 item_id) {
-    u8 item_type = gContext.itemTypeData.get_resource(item_id).item_type;
-    u16 relative_id = gContext.itemTypeData.get_resource(item_id).type_relative_id;
-    u16 restriction_mask;
-    switch (item_type) {
-    case 0: {
-        restriction_mask = gContext.items.get_resource(relative_id).restriction_mask;
-        break;
-    }
-    case 1: {
-        restriction_mask = gContext.weapons.get_resource(relative_id).restriction_mask;
-        break;
-    }
-    case 2: {
-        restriction_mask = gContext.armors.get_resource(relative_id).restriction_mask;
-        break;
-    }
-    case 3: {
-        restriction_mask = gContext.accessories.get_resource(relative_id).restriction_mask;
-        break;
-    }
-    default:
-        restriction_mask = 0x00;
-    }
-    return restriction_mask;
-}
-
-u8 get_target_flags(u16 item_id) {
-    u8 item_type = gContext.itemTypeData.get_resource(item_id).item_type;
-    u16 relative_id = gContext.itemTypeData.get_resource(item_id).type_relative_id;
-    u8 target_flags;
-    switch (item_type) {
-    case 0: {
-        target_flags = gContext.items.get_resource(relative_id).target_flags;
-        break;
-    }
-    case 1: {
-        target_flags = gContext.weapons.get_resource(relative_id).target_flags;
-        break;
-    }
-    case 2: {
-        target_flags = 3;
-        break;
-    }
-    case 3: {
-        target_flags = 3;
-        break;
-    }
-    default:
-        target_flags = 0x00;
-    }
-    return target_flags;
 }

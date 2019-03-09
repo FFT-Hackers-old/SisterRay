@@ -54,8 +54,10 @@ typedef struct {
     StringRegistry  weapon_names;
 } SrGameStrings;
 
+char* getNameFromRelativeID(u16 relativeID, u8 itemType);
 char* getNameFromItemID(u16 item_id);
-char* get_description_from_global_id(u16 item_id);
+char* getDescriptionFromRelativeID(u16 relativeId, u8 itemType);
+char* getDescriptionFromID(u16 item_id);
 void init_game_strings();
 
 #endif

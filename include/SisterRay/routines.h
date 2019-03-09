@@ -74,7 +74,7 @@ typedef i32(*pfnsub6F7270)(i32, float);
 #define renderSideScroller                      ((pfnsub6F7270)0x6F7270)
 
 typedef i16(*pfnsub6C62A2)(i32, i32, i32, i32);
-#define render_HP_bar_and_status        ((pfnsub6C62A2)0x6C62A2)
+#define renderHPAndStatus        ((pfnsub6C62A2)0x6C62A2)
 
 /*This function sets some structs of size 0x70 based on the party member ID, not sure what they are yet*/
 typedef u8*(*pfnsub6E6C5B)(i32, i32, i32, i32);
@@ -84,7 +84,7 @@ typedef u16*(*pfnsub6E7BA1)(u16*, i16, i16, i16, i16);
 #define initialize_menu_window_struct          ((pfnsub6E7BA1)0x6E7BA1)
 
 typedef i32(*pfnsub6E7D20)(i16*, float);
-#define draw_menu_box                      ((pfnsub6E7D20)0x6E7D20)
+#define drawMenuBox                      ((pfnsub6E7D20)0x6E7D20)
 
 /*This function sets a variable based on the icon type neede in the menu and then calls a function to display it*/
 typedef i32(*pfnsub717691)(i32, i32, i32, i32, i32);
@@ -178,4 +178,9 @@ typedef i32(*pfnsub6C6AEE)(i32);
 typedef i8(*pfnsub5CB127)(void);   
 #define updateMiscPartyStats            ((pfnsub5CB127)0x5CB127)
 
+typedef i32(*pfnsub6CBCF3)(i8);
+#define returnMateriaType               ((pfnsub6CBCF3)0x6CBCF3)
+
+typedef i32(*pfnsub6CC2C9)(i8);
+#define sub_6CC2C9                      ((pfnsub6CC2C9)0x6CC2C9)
 #endif

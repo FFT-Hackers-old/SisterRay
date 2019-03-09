@@ -1,6 +1,185 @@
 #include "equip_menu.h"
 #include "../impl.h"
 #include "menu_utils.h"
+#include "../party/party_utils.h"
+
+void displayEquipMenuViews() {
+    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
+    u8 characterRecordArrayIndex;
+    u16 kernelObjectID;
+    u16 baseRowIndex;
+    u8 materiaGrowth;
+    u8* materiaSlots;
+    char* fetchedName;
+    char* fetchedDescription;
+    char* materiaGrowthText;
+
+    sub_6C98A6();
+    characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX]];
+    if (*EQUIP_MENU_STATE == 1) {
+        sub_6FA12F(316, 171, 324, 303);
+        if (EquippableItemsCount > 8) {
+            word_DCA490 = 8;
+            word_DCA492 = EquippableItemsCount;
+            word_DCA494 = dword_DCA60C;
+            word_DCA496 = 618;
+            word_DCA498 = 171;
+            word_DCA49A = 17;
+            word_DCA49C = 303;
+            renderSideScroller((int)&word_DCA490, 0.2);
+        }
+        if (EquippableItemsCount <= 8)
+            v43 = EquippableItemsCount;
+        else
+            v43 = 8;
+        v55 = v43;
+        if (dword_DCA628)
+            v55 = v43 + 1;
+
+
+        if (a1 & 2) //animate flashing cursor
+            sub_6EB3B8(207, 36 * dword_DCA5C4 + 17, 0.101);
+        sub_6EB3B8(385, 36 * dword_DCA5FC + 197, 0.101);
+
+        baseRowIndex = cursorContextArray[1].baseRowIndex;
+        for (i32 visibleRow = 0; visibleRow < v55; ++visibleRow) {
+            kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + visibleRow);
+            fetchedName = getNameFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
+            displayTextAtLocation(427, 36 * visibleRow + 9 * baseRowIndex + 193, fetchedName, 7u, 1045220557);
+        }
+        sub_6FA347();
+    }
+    else {
+        sub_6EB3B8(207, 36 * dword_DCA5C4 + 17, 0.101);
+    }
+
+    switch (*EQUIP_MENU_STATE) {
+    case 0:
+        kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
+        break;
+    case 1:
+        kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id);
+        break;
+    default: {
+    }
+    }
+    if (cursorContextArray[0].relativeRowIndex != 2) {
+        displayTextAtLocation(27, *(u16*)(dword_DCA4A0 + 18) + 21, a3lot_0, 5u, 1036966167);
+        displayTextAtLocation(27, *(u16*)(dword_DCA4A0 + 18) + 64, aRowth, 5u, 1036966167);
+        switch (cursorContextArray[0].relativeRowIndex) {
+        case 0: {
+            materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
+            materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
+            break;
+        }
+        case 1: {
+            materiaSlots = &(gContext.armors.get_resource(kernelObjectID).materia_slots[0]);
+            materiaGrowth = gContext.armors.get_resource(kernelObjectID).materia_growth;
+            break;
+        }
+        default: {}
+        }
+        sub_70760F(153, *(i16*)(dword_DCA4A0 + 18) + 21, (i32)materiaSlots);
+
+        if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
+            materiaGrowth = 4;
+
+        v8 = *(u16*)(dword_DCA4A0 + 18) + 64;
+        v9 = sub_6F54A2(&byte_9209A8[12 * (materiaGrowth + 19)]);
+        displayTextAtLocation(243 - v9 / 2, v8, &byte_9209A8[12 * (materiaGrowth + 19)], 7u, 1045220557); //we do some materia growth text right here
+    }
+    for (i32 m = 0; m < 3; ++m)
+        displayTextAtLocation(250, 34 * m + 13, &byte_9209A8[12 * m], 5u, 1045220557); // display "weapon" "armor" and "accessory"
+
+    sub_707891(53, *(i16*)(dword_DCA4A0 + 26) + 26); //Now we display the currently equipped weapons kernel data
+    renderHPAndStatus(110, 17, *EQUIP_MENU_PARTY_INDEX, 1045220557);
+    sub_6E6C5B(17, 9, *EQUIP_MENU_PARTY_INDEX, 1045220557);
+
+    kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
+    fetchedName = getNameFromRelativeID(kernelObjectID);
+    switch (cursorContextArray[0].relativeRowIndex) { //Refactor later after constants moved into enums/data structures
+    case 0: {
+        displayTextAtLocation(303, 13, fetchedName, 7u, 1045220557);
+        break;
+    }
+    case 1: {
+        displayTextAtLocation(303, 47, fetchedName, 7u, 1045220557);
+        break;
+    }
+    case 2: {
+        displayTextAtLocation(303, 81, fetchedName, 7u, 1045220557);
+        break;
+    }
+    default: {
+    }
+    }
+
+    if (*EQUIP_MENU_STATE == 1) { // display the descritpion of the current item
+        kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+    }
+    else {
+        kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
+    }
+    fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
+    displayTextAtLocation(24, *(u16*)(dword_DCA4A0 + 10) + 13, fetchedDescription, 7u, 1045220557);
+
+    for (u32 n = 0; n < 2; ++n) //index into box data structs and draw dem boxes
+        drawMenuBox((u16*)(dword_DCA4A0 + 8 * n), 1050253722);
+    drawMenuBox((u16*)(dword_DCA4A0 + 16), 1053609165);
+    drawMenuBox((u16*)(dword_DCA4A0 + 24), 1056964608);
+    drawMenuBox((u16*)(dword_DCA4A0 + 32), 1058642330);
+}
+
+//This function can be registered to a particular menu state to modularize modding the menus
+void renderSelectingEquipment(i32 stateControlMask) {
+    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
+    u8 characterRecordArrayIndex;
+    u16 kernelObjectID;
+    u16 baseRowIndex;
+    u8 materiaGrowth;
+    u8* materiaSlots;
+    char* fetchedName;
+    char* fetchedDescription;
+    char* materiaGrowthText;
+
+    sub_6FA12F(316, 171, 324, 303);
+    if (EquippableItemsCount > 8) {
+        word_DCA490 = 8;
+        word_DCA492 = EquippableItemsCount;
+        word_DCA494 = dword_DCA60C;
+        word_DCA496 = 618;
+        word_DCA498 = 171;
+        word_DCA49A = 17;
+        word_DCA49C = 303;
+        renderSideScroller((int)&word_DCA490, 0.2);
+    }
+    if (EquippableItemsCount <= 8)
+        v43 = EquippableItemsCount;
+    else
+        v43 = 8;
+    v55 = v43;
+    if (dword_DCA628)
+        v55 = v43 + 1;
+
+
+    if (stateControlMask & 2) //animate flashing cursor
+        sub_6EB3B8(207, 36 * dword_DCA5C4 + 17, 0.101);
+    sub_6EB3B8(385, 36 * dword_DCA5FC + 197, 0.101);
+
+    baseRowIndex = cursorContextArray[1].baseRowIndex;
+    for (i32 visibleRow = 0; visibleRow < v55; ++visibleRow) {
+        kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + visibleRow);
+        fetchedName = getNameFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
+        displayTextAtLocation(427, 36 * visibleRow + 9 * baseRowIndex + 193, fetchedName, 7u, 1045220557);
+    }
+    sub_6FA347();
+
+    kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+    fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
+    displayTextAtLocation(24, *(u16*)(dword_DCA4A0 + 10) + 13, fetchedDescription, 7u, 1045220557);
+}
 
 void handleEquipMenuInput(i32 updateStateMask) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;

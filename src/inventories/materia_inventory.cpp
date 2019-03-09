@@ -12,13 +12,19 @@ SrMateriaInventory::SrMateriaInventory(i16 allocation_size) : SrResourceRegistry
     }
 }
 
-
+/*there's some other things that normally happen when this is called*/
 void SrMateriaInventory::insertIntoMateriaInventory(MateriaInventoryEntry* entry) {
     u16 inventoryIndex;
     for (auto it = begin(resource_registry); it != end(resource_registry); ++it) {
         if ((*it).item_id == 0xFFFF) {
             inventoryIndex = distance(resource_registry.begin(), it);
             update_resource(inventoryIndex, *entry);
+
+            if (returnMateriaType(entry->item_id) == 10) // if Summon Materia
+                *enabledSpellTypeMask = *enabledSpellTypeMask | 1u; //enable summons on magic menu
+            if (entry->item_id == 44)   // Enemy Skill Case
+                *enabledSpellTypeMask = *enabledSpellTypeMask | 2u; //enable eskill on magic menu
+            sub_6CC2C9(entry->item_id);
         }
     }
 }

@@ -79,7 +79,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
         display_cursor(298, 37 * relativeRowIndex + 109, 0.1f);
         if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
-            fetchedDescription = get_description_from_global_id(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
+            fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
             displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
         }
         break;
@@ -88,7 +88,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
             display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
         if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
-            fetchedDescription = get_description_from_global_id(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
+            fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
             displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
         }
         break;
@@ -118,7 +118,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
             fetchedDescription = gContext.game_strings.inventory_menu_texts.get_string(j + 3); //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
             displayTextAtLocation(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetchedDescription, 7, 1008981770);
         }
-        draw_menu_box((i16*)(&(menuWindowConfig)[3]), (float)1008981770); //Does this display text boses?
+        drawMenuBox((i16*)(&(menuWindowConfig)[3]), (float)1008981770);
         break;
     case 5:                                   // Inside Custom Sort
         if (updateStateMask & 2)
@@ -129,7 +129,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
 
         if (gContext.inventory->get_resource(baseSortRow + relativeSortRow).item_id != 0xFFFF)
         {
-            fetchedDescription = get_description_from_global_id(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
+            fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
             displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
         }
         break;
@@ -181,9 +181,9 @@ void displayInventoryViews(i32 updateStateMask) {
         renderMainInventoryView(mainViewContextIndex);
     }
     sub_6FA347();
-    draw_menu_box((i16*)(&(menuWindowConfig)[0]), 0.111f);
-    draw_menu_box(((i16*)&(menuWindowConfig)[1]), 0.2f);
-    draw_menu_box(((i16*)&(menuWindowConfig)[2]), 0.30000000f);
+    drawMenuBox((i16*)(&(menuWindowConfig)[0]), 0.111f);
+    drawMenuBox(((i16*)&(menuWindowConfig)[1]), 0.2f);
+    drawMenuBox(((i16*)&(menuWindowConfig)[2]), 0.30000000f);
 }
 
 
@@ -231,13 +231,13 @@ void renderCharacterPortraits() {
 
     for (int currentPartyMember = 0; currentPartyMember < 3; ++currentPartyMember) { //loop over and render character portraits, probably
         if ((CURRENT_PARTY_MEMBER_ARRAY)[currentPartyMember] != 0xFF) {         //if there is a party member in that slot
-            render_HP_bar_and_status(133, 120 * currentPartyMember + 126, currentPartyMember, 1036831949); //possibly display picture?
+            renderHPAndStatus(133, 120 * currentPartyMember + 126, currentPartyMember, 1036831949); //possibly display picture?
             sub_6E6C5B(37, 120 * currentPartyMember + 116, currentPartyMember, 1036831949);
         }
     }
 
     // initialize_menu_window_struct((u16*)&unk_local_struct, (u16)0, (u16)96, (u16)300, (u16)384); //set some values in a struct/array used in the next call
-    draw_menu_box((i16*)(&characterMenuBoxLocal), 0.1f); //this does a bunch of shit with the above struct
+    drawMenuBox((i16*)(&characterMenuBoxLocal), 0.1f); //this does a bunch of shit with the above struct
 }
 
 

@@ -57,7 +57,12 @@
 #define RECYCLE_SLOT_OFFSET_TABLE            (u32*)0x919928
 #define byte_DC0B4B                          (u8*)0xDC0B4B
 #define dword_DCA5C4                         (u32*)0xDCA5C4 //Stops one from de-equipping accessories if set to 2... Sephiroth maybe?
+#define dword_DCA4A0                         (u32*)0xDCA4A0 //points to some constants which are used to draw strings athe right places. relocate in future
 // End
+
+//These Globals are used to communicate between update loops by the magic menu
+#define enabledSpellTypeMask                 (u8*)0xDC0927
+//
 
 #define CURRENT_PARTY_MEMBER_ARRAY           (u32*)0xDC0230 /*Length 3, contains party member ID, from the savemap*/
 

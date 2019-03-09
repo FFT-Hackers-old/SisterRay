@@ -59,24 +59,24 @@ void displayActiveCursorStates(i32 updateStateMask) {
         if (!(*use_on_characters_enabled)) {
             item_ID = gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id;;
             if (!(gContext.item_on_use_data.get_resource(item_ID).target_all))
-                display_cursor(0, 120 * partyMemberIndex + 161, 0.0f); //if the cursor isn't targeting all
+                displayCursor(0, 120 * partyMemberIndex + 161, 0.0f); //if the cursor isn't targeting all
             else
-                display_cursor(0, 120 * (updateStateMask % 3) + 161, 0.0); // if the cursor is targeting all
+                displayCursor(0, 120 * (updateStateMask % 3) + 161, 0.0); // if the cursor is targeting all
         }
         if (updateStateMask & 2) //This and causes the cursor to flash on repeated updates
-            display_cursor(298, 37 * relativeRowIndex + 109, 0.1f);
+            displayCursor(298, 37 * relativeRowIndex + 109, 0.1f);
         if (*use_on_characters_enabled)
             --(*use_on_characters_enabled);
     }
     switch (inventoryMenuState)
     {
     case 0:                                   // Nothing Selected, Default State
-        display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f); //display cursor at the selected view
+        displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f); //display cursor at the selected view
         break;
     case 1:                                   // Use Selected - Selecting Item
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f);
-        display_cursor(298, 37 * relativeRowIndex + 109, 0.1f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f);
+        displayCursor(298, 37 * relativeRowIndex + 109, 0.1f);
         if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
             fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
@@ -85,7 +85,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
         break;
     case 2:                                   // Use Selected - Targeting Party
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
         if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
             fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
@@ -94,13 +94,13 @@ void displayActiveCursorStates(i32 updateStateMask) {
         break;
     case 3:                                   // Browsing Key Items
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
 
 
         baseKeyItemRow = cursorContextArray[3].baseRowIndex;
         relativeKeyItemRow = cursorContextArray[3].relativeRowIndex;
         relativeKeyItemColumn = cursorContextArray[3].relativeColumnIndex;
-        display_cursor(293 * relativeKeyItemColumn + 5, 36 * relativeKeyItemRow + 129, 0.001f);
+        displayCursor(293 * relativeKeyItemColumn + 5, 36 * relativeKeyItemRow + 129, 0.001f);
 
         flatKeyItemInventoryIndex = 2 * (baseKeyItemRow)+2 * (relativeKeyItemRow)+(relativeKeyItemColumn);
         if ((KEY_ITEMS_INVENTORY_PTR)[flatKeyItemInventoryIndex] != 0xFFFF) //If there is a key item at cursor matrix position
@@ -112,8 +112,8 @@ void displayActiveCursorStates(i32 updateStateMask) {
         break;
     case 4:                                   //Selecting an Arrange Method
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
-        display_cursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
+        displayCursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001f);
         for (int j = 0; j < 8; ++j) {            // Loop over arrange types
             fetchedDescription = gContext.game_strings.inventory_menu_texts.get_string(j + 3); //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
             displayTextAtLocation(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetchedDescription, 7, 1008981770);
@@ -122,7 +122,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
         break;
     case 5:                                   // Inside Custom Sort
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
 
         baseSortRow = cursorContextArray[5].baseRowIndex;
         relativeSortRow = cursorContextArray[5].relativeRowIndex;
@@ -167,10 +167,10 @@ void displayInventoryViews(i32 updateStateMask) {
                 if (updateStateMask & 2) {
                     i32 pixelOffsetToSelectedItem = 37 * (*TEMP_ABSOLUTE_CURSOR_INDEX) - 37 * baseSortRow + 9 * (*dword_DD1B54) - 9;
                     if (pixelOffsetToSelectedItem > -37 && pixelOffsetToSelectedItem < 1369) // display the flashing cursor if it's visible on the menu
-                        display_cursor(291, pixelOffsetToSelectedItem + 113, 0.0);
+                        displayCursor(291, pixelOffsetToSelectedItem + 113, 0.0);
                 }
             }
-            display_cursor(298, 37 * relativeSortRow + 113, 0.0099999998f);
+            displayCursor(298, 37 * relativeSortRow + 113, 0.0099999998f);
             mainViewContextIndex = 5;                 // Set the local to 5 if we're in custom sort
         }
         else

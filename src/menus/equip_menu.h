@@ -5,6 +5,9 @@
 #include <SisterRay/SisterRay.h>
 
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask);
+void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask);
+void displayMenuObjects(cursorContext* cursorContextArray, u32 menuState, i32 stateControlMask);
+void displayMenuCursors(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask);
 void displayActiveCursorStates(i32 updateStateMask);
 void displayEquipMenuViews(i32 updateStateMask);
 void handleEquipMenuInput(i32 updateStateMask);

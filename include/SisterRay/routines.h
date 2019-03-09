@@ -62,7 +62,7 @@ typedef void**(*pfnsub41963C)(u32, i32, i32);
 #define load_kernel_object_text         ((pfnsub41963C)0x41963C)
 
 typedef i32(*pfnsub6EB3B8)(i32, i32, float);
-#define display_cursor                  ((pfnsub6EB3B8)0x6EB3B8)
+#define displayCursor                  ((pfnsub6EB3B8)0x6EB3B8)
 
 typedef i32(*pfnsub6F5B03)(i32, i32, const char*, u8, u32); //The last argument might be a float, not sure yet
 #define displayTextAtLocation        ((pfnsub6F5B03)0x6F5B03)

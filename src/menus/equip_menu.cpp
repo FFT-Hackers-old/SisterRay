@@ -3,6 +3,14 @@
 #include "menu_utils.h"
 #include "../party/party_utils.h"
 
+
+SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
+    displayEquipMenuViews(updateStateMask);
+    if (!is_input_handling_enabled()) {
+        handleEquipMenuInput(updateStateMask);
+    }
+}
+
 //TODO: All of the magic numbers need to be pulled out and data driven
 void displayEquipMenuViews(i32 stateControlMask) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
@@ -307,7 +315,7 @@ void handleEquipMenuInput(i32 updateStateMask) {
     }
 }
 
-//There are originally 32 slots for the equipment view, this interfaces with a new global 
+//There are originally 32 slots for the equipment view, this interfaces with a new global gear registry instead
 u16 setupGearMenu(u8 itemType) {
     return 0;
 }

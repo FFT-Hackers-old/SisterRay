@@ -96,7 +96,6 @@ void displayActiveCursorStates(i32 updateStateMask) {
         if (updateStateMask & 2)
             displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
 
-
         baseKeyItemRow = cursorContextArray[3].baseRowIndex;
         relativeKeyItemRow = cursorContextArray[3].relativeRowIndex;
         relativeKeyItemColumn = cursorContextArray[3].relativeColumnIndex;
@@ -194,6 +193,7 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
     u16 itemID;
     u8 itemQuantity;
     i32 visibleItemInventoryIndex;
+    i32 baseColumnIndex;
     i32 baseRowIndex;
     i32 textColor;
 
@@ -208,6 +208,7 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
     int displayed_row_count = ((dword_DD1A48)[14 * mainViewContextIndex] != 0) + 10;
 
     baseRowIndex = cursorContextArray[mainViewContextIndex].baseRowIndex;
+    baseColumnIndex = cursorContextArray[mainViewContextIndex].baseColumnIndex;
     for (i32 visibleItem = 0; visibleItem < displayed_row_count; ++visibleItem) {
         i32 baseRowIndex = cursorContextArray[mainViewContextIndex].baseRowIndex;
         visibleItemInventoryIndex = baseRowIndex + visibleItem;
@@ -217,10 +218,10 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
             textColor = usableInInventoryMenu(itemID) ? 0 : 7;
             kernelObjectName = getNameFromItemID(itemID);
 
-            displayTextAtLocation(373, 37 * visibleItem + 9 * baseRowIndex + 109, kernelObjectName, (u8)textColor, 1036966167);
-            displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseRowIndex + 105, itemID, 0, 1036966167);
-            sub_6F5C0C(548, 37 * visibleItem + 9 * baseRowIndex + 114, 213, (u8)textColor, 1036966167);
-            renderNumbers(550, 37 * visibleItem + 9 * baseRowIndex + 112, itemQuantity, 3, (u8)textColor, 1036966167);
+            displayTextAtLocation(373, 37 * visibleItem + 9 * baseColumnIndex + 109, kernelObjectName, (u8)textColor, 1036966167);
+            displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseColumnIndex + 105, itemID, 0, 1036966167);
+            sub_6F5C0C(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, 1036966167);
+            renderNumbers(550, 37 * visibleItem + 9 * baseColumnIndex + 112, itemQuantity, 3, (u8)textColor, 1036966167);
         }
     }
 }

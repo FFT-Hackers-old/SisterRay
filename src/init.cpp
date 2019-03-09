@@ -3,10 +3,11 @@
 #include <windows.h>
 #include "impl.h"
 #include <zlib.h>
-#include "menus/inventory_menu.h"
 #include "inventories/inventory_functions.h"
 #include "inventories/inventory_utils.h"
+#include "menus/inventory_menu.h"
 #include "menus/battle_menu.h"
+#include "menus/equip_menu.h"
 
 SrContext gContext;
 
@@ -63,5 +64,6 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
     mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);
     mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);
+    mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     LoadMods();
 }

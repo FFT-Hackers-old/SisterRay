@@ -29,6 +29,7 @@
 #define RENDER_BATTLE_ITEM_MENU         ((void*)0x6DEBFE)
 #define INIT_BATTLE_ITEM_MENU_CURSOR    ((void*)0x6D982C)
 #define BATTLE_ITEM_MENU_INPUT_HANDLER  ((void*)0x6D98E3)
+#define EQUIP_MENU_UPDATE_HANDLER       ((void*)0x705D16)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);

@@ -183,4 +183,13 @@ typedef i32(*pfnsub6CBCF3)(i8);
 
 typedef i32(*pfnsub6CC2C9)(i8);
 #define sub_6CC2C9                      ((pfnsub6CC2C9)0x6CC2C9)
+
+typedef i32(*pfnsub707891)(i32, i32);
+#define displayGearStats                ((pfnsub707891)0x707891)
+
+typedef i32(*pfnsub70760F)(i32, i32, i32);
+#define renderMateriaSlots              ((pfnsub70760F)0x70760F)
+
+typedef i32(*pfnsub6F54A2)(u8*);
+#define sub_6F54A2                      ((pfnsub6F54A2)0x6F54A2) //Does returns x position from a text ptr, probably a centering util
 #endif

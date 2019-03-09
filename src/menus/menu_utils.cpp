@@ -32,3 +32,7 @@ void setSideScrollerArguments(sideScrollerArguments* arguments, u16 viewSize, u1
 void renderMenuSideScroller(sideScrollerArguments* arguments, float floatArg) {
     renderSideScroller((i32)arguments, floatArg);
 }
+
+void renderGearMateriaSlots(u32 xbase, u32 ybase, u8* slotsToRender) {
+    renderMateriaSlots(xbase, ybase, (i32)slotsToRender);
+};

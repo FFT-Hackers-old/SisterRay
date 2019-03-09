@@ -1,6 +1,6 @@
 #include "party_utils.h"
 
-u16 getGearEquipped(u8 characterID, u8 gearType) {
+u16 getEquippedGear(u8 characterID, u8 gearType) {
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u16 kernelObjectID;
 

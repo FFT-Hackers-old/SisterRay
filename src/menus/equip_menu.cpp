@@ -25,11 +25,10 @@ void displayMenuObjects(cursorContext* cursorContextArray, u32 menuState, i32 st
     char* fetchedDescription;
     u16 maxRowsInView;
 
-
     switch (menuState) {
         case 1: {
             sub_6FA12F(316, 171, 324, 303);
-            sideScrollerArguments* arguments = word_DCA490;
+            sideScrollerArguments* arguments = (sideScrollerArguments*)word_DCA490;
             setSideScrollerArguments(arguments, 8, equippableGearCount, cursorContextArray[1].baseRowIndex, 618, 171, 17, 303);
             renderMenuSideScroller(arguments, 0.2);
             sub_6FA347();
@@ -38,22 +37,22 @@ void displayMenuObjects(cursorContext* cursorContextArray, u32 menuState, i32 st
     }
 
     //HP bars and the like
-    sub_707891(53, *(i16*)(dword_DCA4A0 + 26) + 26); //Now we display the currently equipped weapons kernel data
     renderHPAndStatus(110, 17, *EQUIP_MENU_PARTY_INDEX, 1045220557);
     sub_6E6C5B(17, 9, *EQUIP_MENU_PARTY_INDEX, 1045220557);
 
     //Draw Menu Boxes -- this part can be data driven
     for (u32 boxDataIndex = 0; boxDataIndex < 2; ++boxDataIndex) //index into box data structs and draw dem boxes
-        drawMenuBox((u16*)(dword_DCA4A0 + 8 * boxDataIndex), 1050253722);
-    drawMenuBox((u16*)(dword_DCA4A0 + 16), 1053609165);
-    drawMenuBox((u16*)(dword_DCA4A0 + 24), 1056964608);
-    drawMenuBox((u16*)(dword_DCA4A0 + 32), 1058642330);
+        drawMenuBox((i16*)(dword_DCA4A0 + 8 * boxDataIndex), 1050253722);
+    drawMenuBox((i16*)(dword_DCA4A0 + 16), 1053609165);
+    drawMenuBox((i16*)(dword_DCA4A0 + 24), 1056964608);
+    drawMenuBox((i16*)(dword_DCA4A0 + 32), 1058642330);
 }
 
 void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
     u16 kernelObjectID;
     u16 baseRowIndex;
     u16 equippableGearCount;
+    char *menuText;
     char* fetchedName;
     char* fetchedDescription;
     u16 maxRowsInView;
@@ -77,7 +76,7 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
 
             baseRowIndex = cursorContextArray[1].baseRowIndex;
             for (i32 visibleRow = 0; visibleRow < maxRowsInView; ++visibleRow) {
-                kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + visibleRow);
+                kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + visibleRow).relative_item_id;
                 fetchedName = getNameFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
                 displayTextAtLocation(427, 36 * visibleRow + 9 * baseRowIndex + 193, fetchedName, 7u, 1045220557);
             }
@@ -88,12 +87,16 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
         }
     }
 
-    for (i32 m = 0; m < 3; ++m)
-        displayTextAtLocation(250, 34 * m + 13, &byte_9209A8[12 * m], 5u, 1045220557); // display "weapon" "armor" and "accessory"
+    //Display weapon, armor, and accessory
+    for (i32 menuTextIndex = 0; menuTextIndex < 3; ++menuTextIndex) {
+        menuText = gContext.game_strings.equip_menu_texts.get_string(menuTextIndex);
+        displayTextAtLocation(250, 34 * menuTextIndex + 13, menuText, 5u, 1045220557);
+    }
 
-    //display strings common to all states
+    displayEquipGearStats();
+
     kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
-    fetchedName = getNameFromRelativeID(kernelObjectID);
+    fetchedName = getNameFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1);
     switch (cursorContextArray[0].relativeRowIndex) { //Refactor later after constants moved into enums/data structures
         case 0: {
             displayTextAtLocation(303, 13, fetchedName, 7u, 1045220557);
@@ -145,20 +148,24 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
     u16 kernelObjectID;
     u8 materiaGrowth;
     u8* materiaSlots;
+    char* menuText;
+
     switch (menuState) {
         case 0:
             kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
             break;
         case 1:
-            kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id);
+            kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
             break;
         default: {
         }
     }
 
     if (cursorContextArray[0].relativeRowIndex != 2) {
-        displayTextAtLocation(27, *(u16*)(dword_DCA4A0 + 18) + 21, a3lot_0, 5u, 1036966167);
-        displayTextAtLocation(27, *(u16*)(dword_DCA4A0 + 18) + 64, aRowth, 5u, 1036966167);
+        menuText = gContext.game_strings.equip_menu_texts.get_string(4);
+        displayTextAtLocation(27, *(u16*)(dword_DCA4A0 + 18) + 21, menuText, 5u, 1036966167);
+        menuText = gContext.game_strings.equip_menu_texts.get_string(5);
+        displayTextAtLocation(27, *(u16*)(dword_DCA4A0 + 18) + 64, menuText, 5u, 1036966167);
         switch (cursorContextArray[0].relativeRowIndex) {
             case 0: {
                 materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
@@ -173,13 +180,21 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
             default: {
             }
         }
-        sub_70760F(153, *(i16*)(dword_DCA4A0 + 18) + 21, (i32)materiaSlots);
+        renderGearMateriaSlots(153, *(i16*)(dword_DCA4A0 + 18) + 21, materiaSlots); //render the materia slots, convert into a shared reusable utility and merge with materia handler
         if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
             materiaGrowth = 4;
-        v8 = *(u16*)(dword_DCA4A0 + 18) + 64;
-        v9 = sub_6F54A2(&byte_9209A8[12 * (materiaGrowth + 19)]);
-        displayTextAtLocation(243 - v9 / 2, v8, &byte_9209A8[12 * (materiaGrowth + 19)], 7u, 1045220557); //we do some materia growth text right here
+        menuText = gContext.game_strings.equip_menu_texts.get_string(materiaGrowth + 4);
+
+        i32 growthTypeY = *(u16*)(dword_DCA4A0 + 18) + 64;
+        i32 growthTypeX = sub_6F54A2((u8*)menuText);
+
+        displayTextAtLocation(243 - growthTypeX / 2, growthTypeY, menuText, 7u, 1045220557); //we do some materia growth text right here
     }
+}
+
+//This is a wrapper function, the method that this points add will be rewritten and split up in the futre
+void displayEquipGearStats() {
+    displayGearStats(53, *(i16*)(dword_DCA4A0 + 26) + 26);
 }
 
 void handleEquipMenuInput(i32 updateStateMask) {

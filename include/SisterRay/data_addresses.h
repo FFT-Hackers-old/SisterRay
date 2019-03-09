@@ -59,6 +59,7 @@
 #define dword_DCA5C4                         (u32*)0xDCA5C4 //Stops one from de-equipping accessories if set to 2... Sephiroth maybe?
 #define dword_DCA4A0                         (u32*)0xDCA4A0 //points to some constants which are used to draw strings athe right places. relocate in future
 #define word_DCA490                          (u16*)0xDCA490
+#define dword_DCA628                         (u32*)0xDCA628
 // End
 
 //These Globals are used to communicate between update loops by the magic menu

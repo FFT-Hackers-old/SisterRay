@@ -27,7 +27,7 @@ u16 getEquippedGear(u8 characterID, u8 gearType) {
 
 bool characterCanEquipItem(u8 characterID, u16 item_id){
     auto characterMask = getCharacterRestrictionMask(item_id);
-    bool characterCanUse = (bool)!(characterMask & (1 << characterID));
+    bool characterCanUse = (bool)(characterMask & (1 << characterID));
 
     return characterCanUse;
 }

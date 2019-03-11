@@ -30,7 +30,7 @@ typedef struct {
     std::unique_ptr<SrItemInventory>    inventory;
     std::unique_ptr<SrBattleInventory>  battle_inventory;
     std::unique_ptr<SrMateriaInventory> materia_inventory;
-    std::unique_ptr<SrGearViewData>     gearViewData;
+    SrGearViewData                      gearViewData;
     SrItemTypeRegistry                  itemTypeData;
     srOnUseCallbackRegistry             on_use_handlers; /*Registry of function pointers for using items*/
     srNoTargetCallbackRegistry          untargeted_handlers;

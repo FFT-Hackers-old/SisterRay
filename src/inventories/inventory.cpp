@@ -30,8 +30,8 @@ void SrGearViewData::setSlotsInUse(u16 slotsInUse) {
 }
 
 void initGearViewStorage() {
-    gContext.gearViewData = std::make_unique<SrGearViewData>((INVENTORY_SIZE)/2);
-    srLogWrite("sister ray: initialized equip view with size: %lu", (unsigned long)gContext.gearViewData->current_capacity());
+    gContext.gearViewData = SrGearViewData();
+    srLogWrite("sister ray: initialized equip view with size: %lu", (unsigned long)gContext.gearViewData.current_capacity());
 }
 
 /*Method to initialize the new inventories with an appropriate size*/

@@ -11,7 +11,7 @@
   It cannot inherit from the base as it has per unique materia data*/
 typedef struct {
     u8 item_id;
-    u32 materia_ap; //u24 originally 
+    i24 materia_ap; //u24 originally 
 } MateriaInventoryEntry;
 
 class SrMateriaInventory : public SrResourceRegistry<MateriaInventoryEntry> {

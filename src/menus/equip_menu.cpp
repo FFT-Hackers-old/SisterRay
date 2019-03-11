@@ -2,6 +2,7 @@
 #include "../impl.h"
 #include "menu_utils.h"
 #include "../party/party_utils.h"
+#include <memory>
 
 
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
@@ -50,10 +51,10 @@ void displayMenuObjects(cursorContext* cursorContextArray, u32 menuState, i32 st
 
     //Draw Menu Boxes -- this part can be data driven
     for (u32 boxDataIndex = 0; boxDataIndex < 2; ++boxDataIndex) //index into box data structs and draw dem boxes
-        drawMenuBox((i16*)(dword_DCA4A0 + 8 * boxDataIndex), 1050253722);
-    drawMenuBox((i16*)(dword_DCA4A0 + 16), 1053609165);
-    drawMenuBox((i16*)(dword_DCA4A0 + 24), 1056964608);
-    drawMenuBox((i16*)(dword_DCA4A0 + 32), 1058642330);
+        drawMenuBox((i16*)(&(equipMenuWindowConfig)[boxDataIndex]), .3f);
+    drawMenuBox((i16*)(&(equipMenuWindowConfig)[2]), .4f);
+    drawMenuBox((i16*)(&(equipMenuWindowConfig)[3]), .5f);
+    drawMenuBox((i16*)(&(equipMenuWindowConfig)[4]), .6f);
 }
 
 void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
@@ -67,14 +68,14 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
     u8 characterRecordArrayIndex;
 
 
-    characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX]];
+    characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     //Display state specific strings
     switch (menuState) {
         case 0:{
             break;
         }
         case 1:{
-            equippableGearCount = gContext.gear_view_data->slots_in_use;
+            equippableGearCount = gContext.gearViewData->slots_in_use;
             if (equippableGearCount <= 8)
                 maxRowsInView = equippableGearCount;
             else
@@ -84,7 +85,7 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
 
             baseRowIndex = cursorContextArray[1].baseRowIndex;
             for (i32 visibleRow = 0; visibleRow < maxRowsInView; ++visibleRow) {
-                kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + visibleRow).relative_item_id;
+                kernelObjectID = gContext.gearViewData->get_resource(cursorContextArray[1].baseRowIndex + visibleRow).relative_item_id;
                 fetchedName = getNameFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
                 displayTextAtLocation(427, 36 * visibleRow + 9 * baseRowIndex + 193, fetchedName, 7u, 1045220557);
             }
@@ -103,28 +104,22 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
 
     displayEquipGearStats();
 
-    kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
-    fetchedName = getNameFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1);
-    switch (cursorContextArray[0].relativeRowIndex) { //Refactor later after constants moved into enums/data structures
-        case 0: {
-            displayTextAtLocation(303, 13, fetchedName, 7u, 1045220557);
-            break;
-        }
-        case 1: {
-            displayTextAtLocation(303, 47, fetchedName, 7u, 1045220557);
-            break;
-        }
-        case 2: {
-            displayTextAtLocation(303, 81, fetchedName, 7u, 1045220557);
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    kernelObjectID = getEquippedGear(characterRecordArrayIndex, 1);
+    fetchedName = getNameFromRelativeID(kernelObjectID, 1);
+    displayTextAtLocation(303, 13, fetchedName, 7u, 1045220557);
+
+    kernelObjectID = getEquippedGear(characterRecordArrayIndex, 2);
+    fetchedName = getNameFromRelativeID(kernelObjectID, 2);
+    displayTextAtLocation(303, 47, fetchedName, 7u, 1045220557);
+
+    kernelObjectID = getEquippedGear(characterRecordArrayIndex, 3);
+    fetchedName = getNameFromRelativeID(kernelObjectID, 3);
+    displayTextAtLocation(303, 81, fetchedName, 7u, 1045220557);
+      
+
 
     if (*EQUIP_MENU_STATE == 1) { // display the descritpion of the current item based on menu state
-        kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+        kernelObjectID = gContext.gearViewData->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
     }
     else {
         kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
@@ -152,7 +147,7 @@ void displayMenuCursors(cursorContext* cursorContextArray, u16 menuState, u32 st
 }
 
 void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
-    u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX]];
+    u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u16 kernelObjectID;
     u8 materiaGrowth;
     u8* materiaSlots;
@@ -163,7 +158,7 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
             kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
             break;
         case 1:
-            kernelObjectID = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+            kernelObjectID = gContext.gearViewData->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
             break;
         default: {
         }
@@ -218,13 +213,13 @@ void handleEquipMenuInput(i32 updateStateMask) {
     u8 equippedGearItemType;
 
 
-    characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX]];
+    characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX]];
     handleCursorPositionUpdate((u32*)(&(cursorContextArray[equipMenuState])));
     if (equipMenuState == 1) {
         if (checkInputReceived(32)) {
             playMenuSound(447);
             *EQUIP_MENU_STATE = 0;
-            u8 equippedGearRelativeIndex = gContext.gear_view_data->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+            u8 equippedGearRelativeIndex = gContext.gearViewData->get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
 
             switch (equipSlotRelativeRow) { //
                 case 0: { //equip WEAPON
@@ -279,8 +274,8 @@ void handleEquipMenuInput(i32 updateStateMask) {
             }
         }
         else if (checkInputReceived(32)) {
-            gContext.gear_view_data->setSlotsInUse(setupGearMenu(equippedGearItemType));
-            equippableGearCount = gContext.gear_view_data->slots_in_use;
+            gContext.gearViewData->setSlotsInUse(setupGearMenu(equippedGearItemType));
+            equippableGearCount = gContext.gearViewData->slots_in_use;
             if (equippableGearCount && !(*byte_DC0B4B & 1)) {
                 playMenuSound(1);
                 *EQUIP_MENU_STATE = 1;
@@ -315,9 +310,24 @@ void handleEquipMenuInput(i32 updateStateMask) {
     }
 }
 
-//There are originally 32 slots for the equipment view, this interfaces with a new global gear registry instead
+/*There are originally 32 slots for the equipment view, this interfaces with a new global. We construct
+  We do this by just constructing a new object and binding it to the gContext, since this is an emphemeral struct*/
 u16 setupGearMenu(u8 itemType) {
-    return 0;
+    u8 characterID = (CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX];
+    u16 equippableGearCount = 0;
+    gContext.gearViewData = std::make_unique<SrGearViewData>();
+    for (i32 inventoryEntry = 0; inventoryEntry < gContext.inventory->current_capacity(); inventoryEntry++) {
+        if (gContext.itemTypeData.get_resource(inventoryEntry).item_type != itemType) {
+            continue;
+        }
+        if (characterCanEquipItem(characterID, gContext.inventory->get_resource(inventoryEntry).item_id)) {
+            GearViewData data = { gContext.itemTypeData.get_resource(inventoryEntry).type_relative_id };
+            gContext.gearViewData->add_resource(data);
+            equippableGearCount++;
+        }
+    }
+    gContext.gearViewData->setSlotsInUse(equippableGearCount);
+    return equippableGearCount;
 }
 
 void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex) {

@@ -26,6 +26,33 @@ void addInventoryEntry(u16 item_id, u8 quantity) {
     gContext.inventory->add_resource(entry);
 }
 
+u16 getCharacterRestrictionMask(u16 item_id) {
+    u8 item_type = gContext.itemTypeData.get_resource(item_id).item_type;
+    u16 relative_id = gContext.itemTypeData.get_resource(item_id).type_relative_id;
+    u16 restriction_mask;
+    switch (item_type) {
+    case 0: {
+        restriction_mask = gContext.item_on_use_data.get_resource(relative_id).characterRestrictionMask;
+        break;
+    }
+    case 1: {
+        restriction_mask = gContext.weapons.get_resource(relative_id).equip_mask;
+        break;
+    }
+    case 2: {
+        restriction_mask = gContext.armors.get_resource(relative_id).equip_mask;
+        break;
+    }
+    case 3: {
+        restriction_mask = gContext.accessories.get_resource(relative_id).equip_mask;
+        break;
+    }
+    default:
+        restriction_mask = 0x00;
+    }
+    return restriction_mask;
+}
+
 u16 get_restriction_mask(u16 item_id) {
     u8 item_type = gContext.itemTypeData.get_resource(item_id).item_type;
     u16 relative_id = gContext.itemTypeData.get_resource(item_id).type_relative_id;

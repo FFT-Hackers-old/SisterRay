@@ -47,10 +47,10 @@ SISTERRAY_API void init_accessory(SrKernelStream* stream);
 SISTERRAY_API void initItems(SrKernelStream* stream);
 SISTERRAY_API void init_weapon(SrKernelStream* stream);
 
-SISTERRAY_API void InitLog(void);
+SISTERRAY_API void initLog(void);
 SISTERRAY_API void srLogWrite(const char* format, ...);
-SISTERRAY_API void EnableNoCD(void);
-SISTERRAY_API void InitFunctionRegistry(void);
+SISTERRAY_API void enableNoCD(void);
+SISTERRAY_API void initFunctionRegistry(void);
 SISTERRAY_API void LoadMods(void);
 SISTERRAY_API void LoadKernelFile(void** dst, size_t sectionCount, const char* path);
 

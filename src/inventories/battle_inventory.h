@@ -23,7 +23,7 @@ public:
     void setSlotsInUse(u16 slotsInUse);
 };
 
-SISTERRAY_API void InitBattleInventory();
+SISTERRAY_API void initBattleInventory();
 
 /*utility for decrementing the quantity of an item at a particular inventory index*/
 

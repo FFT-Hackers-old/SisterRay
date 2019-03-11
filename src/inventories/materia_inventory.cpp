@@ -32,7 +32,7 @@ void SrMateriaInventory::insertIntoMateriaInventory(MateriaInventoryEntry* entry
 void SrMateriaInventory::removeFromMateriaInventory(u8* inventory_index) {
 }
 
-SISTERRAY_API void InitMateriaInventory() {
+SISTERRAY_API void initMateriaInventory() {
     gContext.materia_inventory = std::make_unique<SrMateriaInventory>(MATERIA_INVENTORY_SIZE);
     srLogWrite("sister ray: inventory initialized with capacity: %lu", (unsigned long)gContext.inventory->current_capacity());
 }

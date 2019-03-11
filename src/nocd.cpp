@@ -10,7 +10,7 @@ static int PatchedGetInsertedCD(void)
     return requiredCD;
 }
 
-SISTERRAY_API void EnableNoCD(void)
+SISTERRAY_API void enableNoCD(void)
 {
     mogReplaceFunction((void*)0x404A7D, &PatchedGetInsertedCD);
 }

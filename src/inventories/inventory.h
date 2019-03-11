@@ -58,7 +58,7 @@ public:
     void setSlotsInUse(u16 slotsInUse);
 };
 
-SISTERRAY_API void InitInventory();
+SISTERRAY_API void initInventory();
 SISTERRAY_API void initItemTypeData();
 
 #endif

@@ -35,7 +35,7 @@ void initGearViewStorage() {
 }
 
 /*Method to initialize the new inventories with an appropriate size*/
-SISTERRAY_API void InitInventory()
+SISTERRAY_API void initInventory()
 {
     gContext.inventory = std::make_unique<SrItemInventory>(INVENTORY_SIZE);
     srLogWrite("sister ray: inventory initialized with capacity: %lu", (unsigned long)gContext.inventory->current_capacity());

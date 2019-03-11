@@ -22,6 +22,6 @@ public:
     void removeFromMateriaInventory(u8* inventory_index);
 };
 
-SISTERRAY_API void InitMateriaInventory();
+SISTERRAY_API void initMateriaInventory();
 
 #endif

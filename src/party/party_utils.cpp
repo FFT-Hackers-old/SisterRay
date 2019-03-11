@@ -6,15 +6,15 @@ u16 getEquippedGear(u8 characterID, u8 gearType) {
     u16 kernelObjectID;
 
     switch (gearType) { //probably refactor this into a utility
-    case 0: {
+    case 1: {
         kernelObjectID = characterRecordArray[characterID].equipped_weapon;
         break;
     }
-    case 1: {
+    case 2: {
         kernelObjectID = characterRecordArray[characterID].equipped_armor;
         break;
     }
-    case 2: {
+    case 3: {
         kernelObjectID = characterRecordArray[characterID].equipped_weapon;
         break;
     }

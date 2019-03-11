@@ -33,7 +33,7 @@ char* StringRegistry::get_string(int index) {
 /*Initialize all string registries for various string resources
   This change this to take a kernel2 stream and create a constructor
   overload for String Registry which inits it with the right strings*/
-void init_game_strings() {
+void initGameStrings() {
 
     /*Allocate registries for the kernel2.bin stuff*/
     gContext.game_strings.item_descriptions = StringRegistry();

@@ -206,7 +206,6 @@ void displayEquipGearStats() {
 void handleEquipMenuInput(i32 updateStateMask) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
-    u32 equipSlotRelativeRow = cursorContextArray[0].relativeRowIndex;
     u32 equipMenuState = *EQUIP_MENU_STATE;
     i32 cursorViewBound = 0;
     u16 equippableGearCount = 0;
@@ -224,7 +223,7 @@ void handleEquipMenuInput(i32 updateStateMask) {
             *EQUIP_MENU_STATE = 0;
             u8 equippedGearRelativeIndex = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
 
-            switch (equipSlotRelativeRow) { //
+            switch (cursorContextArray[0].relativeRowIndex) { //
                 case 0: { //equip WEAPON
                     equippedGearItemType = 1;
                     handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
@@ -232,6 +231,8 @@ void handleEquipMenuInput(i32 updateStateMask) {
                 }
                 case 1: { //equip ARMOR
                     equippedGearItemType = 2;
+                    srLogWrite("trying to equip armor with relative index %i", equippedGearRelativeIndex);
+                    srLogWrite("trying to equip item with type %i", equippedGearItemType);
                     handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
                     break;
                 }
@@ -332,6 +333,7 @@ u16 setupGearMenu(u8 itemType) {
     return equippableGearCount;
 }
 
+//Test this to make sure we actually equipping the right stuff after strings are fixed
 void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex) {
     u8 removedGearRelativeID;
     u16 removedGearAbsoluteID;
@@ -348,8 +350,13 @@ void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordA
     case 2: {
         removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_armor;
         removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
+        srLogWrite("item type being removed %i", gearType);
+        srLogWrite("relative ID being removed %i", equippedGearRelativeIndex);
         equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
+        srLogWrite("item type being equipped %i", gearType);
+        srLogWrite("relative ID being equipped %i", equippedGearRelativeIndex);
         characterRecordArray[characterRecordArrayIndex].equipped_armor = equippedGearRelativeIndex;
+        srLogWrite("addr of save ptr %p", &characterRecordArray[equippedGearRelativeIndex].equipped_armor);
         handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
     }
     case 3: {

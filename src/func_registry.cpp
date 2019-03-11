@@ -6,7 +6,7 @@
 
 static std::unordered_map<std::string, const void*> gFuncReg;
 
-SISTERRAY_API void InitFunctionRegistry(void)
+SISTERRAY_API void initFunctionRegistry(void)
 {
     REGISTER(srLoadFunction);
     REGISTER(srRegisterFunction);

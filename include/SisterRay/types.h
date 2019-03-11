@@ -11,4 +11,10 @@ typedef uint8_t     u8;
 typedef uint16_t    u16;
 typedef uint32_t    u32;
 
+#pragma pack(push, 1)
+struct i24 {
+    unsigned int data : 24;
+};
+#pragma pack(pop)
+
 #endif

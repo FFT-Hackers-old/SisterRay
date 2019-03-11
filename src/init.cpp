@@ -3,9 +3,11 @@
 #include <windows.h>
 #include "impl.h"
 #include <zlib.h>
-#include "inventory_menu.h"
-#include "inventory_functions.h"
-#include "battle_menu.h"
+#include "inventories/inventory_functions.h"
+#include "inventories/inventory_utils.h"
+#include "menus/inventory_menu.h"
+#include "menus/battle_menu.h"
+#include "menus/equip_menu.h"
 
 SrContext gContext;
 
@@ -26,7 +28,7 @@ static void srLoadKernelBin(void)
     FILE* kernel;
     SrKernelStream stream;
     SrKernelStreamHandler handler;
-    init_item_type_data(); //initially allocate the mapping used for inventory_id -> relative resource id
+    initItemTypeData(); //initially allocate the mapping used for inventory_id -> relative resource id
 
     kernel = fopen(srGetGamePath("data/kernel/kernel.bin"), "rb");
     for (int i = 0; i < 9; ++i)
@@ -45,12 +47,13 @@ static void srLoadKernelBin(void)
 SISTERRAY_API __declspec(dllexport) void rayInit()
 {
 	MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
-    InitLog();
-    InitFunctionRegistry();
-    InitInventory();
-    InitBattleInventory();
-    init_game_strings();
-    EnableNoCD();
+    initLog();
+    initFunctionRegistry();
+    initInventory();
+    initBattleInventory();
+    initMateriaInventory();
+    initGameStrings();
+    enableNoCD();
     srLoadKernelBin();
     initOnUseDataRegistry();
     initOnUseCallbackRegistry();
@@ -62,5 +65,6 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
     mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);
     mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);
+    mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     LoadMods();
 }

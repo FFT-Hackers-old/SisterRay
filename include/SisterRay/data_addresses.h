@@ -36,14 +36,35 @@
 #define PREVIOUS_BATTLE_MENU_STATE           (u32*)0x91EF98
 #define ACTIVE_MENU_OWNER_PARTY_INDEX        (u8*)0xDC3C7C
 #define COMMAND_TRIGGER_INDEX                (u8*)0xDC3C74
-#define GLOBAL_BATTLE_ITEM_USED              (u16*)0xDC3C78
-#define GLOBAL_USED_ITEM_TARGET_DATA         (u16*)0xDC3C84
-#define GLOBAL_USED_INVENTORY_INDEX          (u16*)0xDC3C54
+#define GLOBAL_ACTION_USED                   (u16*)0xDC3C78
+#define GLOBAL_USED_ACTION_TARGET_DATA       (u16*)0xDC3C84
+#define GLOBAL_USED_MENU_INDEX               (u16*)0xDC3C54
 #define GLOBAL_USED_ITEM_RESTORE             (u16*)0xDC2088
 #define ACCEPTING_BATTLE_INPUT               (u32*)0xDC35AC //checked in menu handlers to determine if input can be accepted. Maybe pause?
 #define HANDLER_STATE_ARRAY                  (u8*)0xDC2068
 #define byte_9AC111                          (u8*)0x9AC111
 // End
+
+//These Globals are used to communicate between update loops by the Equip Menu
+#define EQUIP_MENU_STATE                     (u32*)0xDCA6A0
+#define EQUIP_MENU_PARTY_INDEX               (u32*)0xDCA4A4
+#define EQUIP_MENU_CURSOR_CONTEXTS           (u32*)0xDCA5C0
+#define DID_MATERIA_GEAR_CHANGE              (u32*)0xDCA7E8 // set immediately after an item is equiped
+#define VIEW_PERSISTENT_ACTOR_INDEX          (u32*)0xDC1288
+#define word_DD1BC0                          (u16*)0xDD1BC0
+#define dword_DC1290                         (u32*)0xDC1290
+#define byte_DC1148                          (u8*)0xDC1148
+#define RECYCLE_SLOT_OFFSET_TABLE            (u32*)0x919928
+#define byte_DC0B4B                          (u8*)0xDC0B4B
+#define dword_DCA5C4                         (u32*)0xDCA5C4 //Stops one from de-equipping accessories if set to 2... Sephiroth maybe?
+#define dword_DCA4A0                         (u32*)0xDCA4A0 //points to some constants which are used to draw strings athe right places. relocate in future
+#define word_DCA490                          (u16*)0xDCA490
+#define dword_DCA628                         (u32*)0xDCA628
+// End
+
+//These Globals are used to communicate between update loops by the magic menu
+#define enabledSpellTypeMask                 (u8*)0xDC0927
+//
 
 #define CURRENT_PARTY_MEMBER_ARRAY           (u32*)0xDC0230 /*Length 3, contains party member ID, from the savemap*/
 

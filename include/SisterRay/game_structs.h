@@ -319,7 +319,7 @@ typedef struct {
 } characterRecord;
 #pragma pack(pop)
 
-#define characterRecordArray ((characterRecord*)0xDBFD8C)
+#define CHARACTER_RECORD_ARRAY ((characterRecord*)0xDBFD8C)
 
 #pragma pack(push, 1)
 typedef struct {
@@ -331,6 +331,7 @@ typedef struct {
 #pragma pack(pop)
 
 #define menuWindowConfig ((menuWindowData*)0x921C78)
+#define equipMenuWindowConfig ((menuWindowData*)0x920AC8)
 
 #pragma pack(push, 1)
 typedef struct {

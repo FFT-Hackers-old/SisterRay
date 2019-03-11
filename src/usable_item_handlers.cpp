@@ -184,43 +184,43 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
     bool stat_boosted = false;
     switch (stat_to_boost) {
         case 0: {
-            if (characterRecordArray[character_ID].strength < 255) {
-                ++characterRecordArray[character_ID].bonus_strength;
+            if (CHARACTER_RECORD_ARRAY[character_ID].strength < 255) {
+                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_strength;
                 stat_boosted = true;
             }
             break;
         }
         case 1: {
-            if (characterRecordArray[character_ID].vitality < 255) {
-                ++characterRecordArray[character_ID].bonus_vitality;
+            if (CHARACTER_RECORD_ARRAY[character_ID].vitality < 255) {
+                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_vitality;
                 stat_boosted = true;
             }
             break;
         }
         case 2: {
-            if (characterRecordArray[character_ID].magic < 255) {
-                ++characterRecordArray[character_ID].bonus_magic;
+            if (CHARACTER_RECORD_ARRAY[character_ID].magic < 255) {
+                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_magic;
                 stat_boosted = true;
             }
             break;
         }
         case 3: {
-            if (characterRecordArray[character_ID].spirit < 255) {
-                ++characterRecordArray[character_ID].bonus_spirit;
+            if (CHARACTER_RECORD_ARRAY[character_ID].spirit < 255) {
+                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_spirit;
                 stat_boosted = true;
             }
             break;
         }
         case 4: {
-            if (characterRecordArray[character_ID].dexterity < 255) {
-                ++characterRecordArray[character_ID].bonus_dexterity;
+            if (CHARACTER_RECORD_ARRAY[character_ID].dexterity < 255) {
+                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_dexterity;
                 stat_boosted = true;
             }
             break;
         }
         case 5: {
-            if (characterRecordArray[character_ID].luck < 255) {
-                ++characterRecordArray[character_ID].bonus_luck;
+            if (CHARACTER_RECORD_ARRAY[character_ID].luck < 255) {
+                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_luck;
                 stat_boosted = true;
             }
             break;
@@ -228,8 +228,8 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
     }
     if (stat_boosted) {
         playMenuSound(263);
-        recalculate_party_stats(party_member_index); //This should be rewritten to allow stat penalties
-        sub_5CB2CC(party_member_index);
+        recalculateBaseStats(party_member_index); //This should be rewritten to allow stat penalties
+        recalculateDerivedStats(party_member_index);
     }
     else {
         playMenuSound(3);
@@ -250,7 +250,7 @@ bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index
     if (item_usable) {
         if (knows_all_prereq_limits(character_ID)) { //Check if requisite limits are learned
             playMenuSound(384);
-            characterRecordArray[character_ID].learned_limits = (characterRecordArray[character_ID].learned_limits | 0x0200);
+            CHARACTER_RECORD_ARRAY[character_ID].learned_limits = (CHARACTER_RECORD_ARRAY[character_ID].learned_limits | 0x0200);
             auto limit_learned_string = gContext.game_strings.character_specific_strings[character_ID].get_string(0); //String 0 is a characters "limit learned" string
             display_menu_string(limit_learned_string); //Get limit learned text, need to build out custom string storage
             sub_6C497C((int)byte_DD18C8, 7); //The game does this casting of a pointer as an arg... is ugly

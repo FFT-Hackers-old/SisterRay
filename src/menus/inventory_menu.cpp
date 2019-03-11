@@ -1,7 +1,8 @@
 #include "inventory_menu.h"
-#include "impl.h"
+#include "../impl.h"
 #include "windows.h"
 #include "menu_utils.h"
+#include "../inventories/inventory_utils.h"
 
 #define SIZE_OF_CURSOR_STRUCT  (i32)0xE // this is the size in i32, for ptr arithmetic
 
@@ -58,48 +59,47 @@ void displayActiveCursorStates(i32 updateStateMask) {
         if (!(*use_on_characters_enabled)) {
             item_ID = gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id;;
             if (!(gContext.item_on_use_data.get_resource(item_ID).target_all))
-                display_cursor(0, 120 * partyMemberIndex + 161, 0.0f); //if the cursor isn't targeting all
+                displayCursor(0, 120 * partyMemberIndex + 161, 0.0f); //if the cursor isn't targeting all
             else
-                display_cursor(0, 120 * (updateStateMask % 3) + 161, 0.0); // if the cursor is targeting all
+                displayCursor(0, 120 * (updateStateMask % 3) + 161, 0.0); // if the cursor is targeting all
         }
         if (updateStateMask & 2) //This and causes the cursor to flash on repeated updates
-            display_cursor(298, 37 * relativeRowIndex + 109, 0.1f);
+            displayCursor(298, 37 * relativeRowIndex + 109, 0.1f);
         if (*use_on_characters_enabled)
             --(*use_on_characters_enabled);
     }
     switch (inventoryMenuState)
     {
     case 0:                                   // Nothing Selected, Default State
-        display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f); //display cursor at the selected view
+        displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f); //display cursor at the selected view
         break;
     case 1:                                   // Use Selected - Selecting Item
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f);
-        display_cursor(298, 37 * relativeRowIndex + 109, 0.1f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f);
+        displayCursor(298, 37 * relativeRowIndex + 109, 0.1f);
         if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
-            fetchedDescription = get_description_from_global_id(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
+            fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
             displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
         }
         break;
     case 2:                                   // Use Selected - Targeting Party
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
         if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
-            fetchedDescription = get_description_from_global_id(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
+            fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
             displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
         }
         break;
     case 3:                                   // Browsing Key Items
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
-
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
 
         baseKeyItemRow = cursorContextArray[3].baseRowIndex;
         relativeKeyItemRow = cursorContextArray[3].relativeRowIndex;
         relativeKeyItemColumn = cursorContextArray[3].relativeColumnIndex;
-        display_cursor(293 * relativeKeyItemColumn + 5, 36 * relativeKeyItemRow + 129, 0.001f);
+        displayCursor(293 * relativeKeyItemColumn + 5, 36 * relativeKeyItemRow + 129, 0.001f);
 
         flatKeyItemInventoryIndex = 2 * (baseKeyItemRow)+2 * (relativeKeyItemRow)+(relativeKeyItemColumn);
         if ((KEY_ITEMS_INVENTORY_PTR)[flatKeyItemInventoryIndex] != 0xFFFF) //If there is a key item at cursor matrix position
@@ -111,24 +111,24 @@ void displayActiveCursorStates(i32 updateStateMask) {
         break;
     case 4:                                   //Selecting an Arrange Method
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
-        display_cursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.001f);
+        displayCursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001f);
         for (int j = 0; j < 8; ++j) {            // Loop over arrange types
             fetchedDescription = gContext.game_strings.inventory_menu_texts.get_string(j + 3); //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
             displayTextAtLocation(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetchedDescription, 7, 1008981770);
         }
-        draw_menu_box((i16*)(&(menuWindowConfig)[3]), (float)1008981770); //Does this display text boses?
+        drawMenuBox((i16*)(&(menuWindowConfig)[3]), (float)1008981770);
         break;
     case 5:                                   // Inside Custom Sort
         if (updateStateMask & 2)
-            display_cursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
 
         baseSortRow = cursorContextArray[5].baseRowIndex;
         relativeSortRow = cursorContextArray[5].relativeRowIndex;
 
         if (gContext.inventory->get_resource(baseSortRow + relativeSortRow).item_id != 0xFFFF)
         {
-            fetchedDescription = get_description_from_global_id(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
+            fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
             displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
         }
         break;
@@ -166,10 +166,10 @@ void displayInventoryViews(i32 updateStateMask) {
                 if (updateStateMask & 2) {
                     i32 pixelOffsetToSelectedItem = 37 * (*TEMP_ABSOLUTE_CURSOR_INDEX) - 37 * baseSortRow + 9 * (*dword_DD1B54) - 9;
                     if (pixelOffsetToSelectedItem > -37 && pixelOffsetToSelectedItem < 1369) // display the flashing cursor if it's visible on the menu
-                        display_cursor(291, pixelOffsetToSelectedItem + 113, 0.0);
+                        displayCursor(291, pixelOffsetToSelectedItem + 113, 0.0);
                 }
             }
-            display_cursor(298, 37 * relativeSortRow + 113, 0.0099999998f);
+            displayCursor(298, 37 * relativeSortRow + 113, 0.0099999998f);
             mainViewContextIndex = 5;                 // Set the local to 5 if we're in custom sort
         }
         else
@@ -180,9 +180,9 @@ void displayInventoryViews(i32 updateStateMask) {
         renderMainInventoryView(mainViewContextIndex);
     }
     sub_6FA347();
-    draw_menu_box((i16*)(&(menuWindowConfig)[0]), 0.111f);
-    draw_menu_box(((i16*)&(menuWindowConfig)[1]), 0.2f);
-    draw_menu_box(((i16*)&(menuWindowConfig)[2]), 0.30000000f);
+    drawMenuBox((i16*)(&(menuWindowConfig)[0]), 0.111f);
+    drawMenuBox(((i16*)&(menuWindowConfig)[1]), 0.2f);
+    drawMenuBox(((i16*)&(menuWindowConfig)[2]), 0.30000000f);
 }
 
 
@@ -193,6 +193,7 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
     u16 itemID;
     u8 itemQuantity;
     i32 visibleItemInventoryIndex;
+    i32 baseColumnIndex;
     i32 baseRowIndex;
     i32 textColor;
 
@@ -207,18 +208,20 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
     int displayed_row_count = ((dword_DD1A48)[14 * mainViewContextIndex] != 0) + 10;
 
     baseRowIndex = cursorContextArray[mainViewContextIndex].baseRowIndex;
+    baseColumnIndex = cursorContextArray[mainViewContextIndex].baseColumnIndex;
     for (i32 visibleItem = 0; visibleItem < displayed_row_count; ++visibleItem) {
         i32 baseRowIndex = cursorContextArray[mainViewContextIndex].baseRowIndex;
+        visibleItemInventoryIndex = baseRowIndex + visibleItem;
         if (gContext.inventory->get_resource(visibleItemInventoryIndex).item_id != 0xFFFF) {
             itemID = gContext.inventory->get_resource(visibleItemInventoryIndex).item_id;
             itemQuantity = gContext.inventory->get_resource(visibleItemInventoryIndex).quantity;
             textColor = usableInInventoryMenu(itemID) ? 0 : 7;
             kernelObjectName = getNameFromItemID(itemID);
 
-            displayTextAtLocation(373, 37 * visibleItem + 9 * baseRowIndex + 109, kernelObjectName, (u8)textColor, 1036966167);
-            displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseRowIndex + 105, itemID, 0, 1036966167);
-            sub_6F5C0C(548, 37 * visibleItem + 9 * baseRowIndex + 114, 213, (u8)textColor, 1036966167);
-            renderNumbers(550, 37 * visibleItem + 9 * baseRowIndex + 112, itemQuantity, 3, (u8)textColor, 1036966167);
+            displayTextAtLocation(373, 37 * visibleItem + 9 * baseColumnIndex + 109, kernelObjectName, (u8)textColor, 1036966167);
+            displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseColumnIndex + 105, itemID, 0, 1036966167);
+            sub_6F5C0C(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, 1036966167);
+            renderNumbers(550, 37 * visibleItem + 9 * baseColumnIndex + 112, itemQuantity, 3, (u8)textColor, 1036966167);
         }
     }
 }
@@ -229,13 +232,13 @@ void renderCharacterPortraits() {
 
     for (int currentPartyMember = 0; currentPartyMember < 3; ++currentPartyMember) { //loop over and render character portraits, probably
         if ((CURRENT_PARTY_MEMBER_ARRAY)[currentPartyMember] != 0xFF) {         //if there is a party member in that slot
-            render_HP_bar_and_status(133, 120 * currentPartyMember + 126, currentPartyMember, 1036831949); //possibly display picture?
+            renderHPAndStatus(133, 120 * currentPartyMember + 126, currentPartyMember, 1036831949); //possibly display picture?
             sub_6E6C5B(37, 120 * currentPartyMember + 116, currentPartyMember, 1036831949);
         }
     }
 
     // initialize_menu_window_struct((u16*)&unk_local_struct, (u16)0, (u16)96, (u16)300, (u16)384); //set some values in a struct/array used in the next call
-    draw_menu_box((i16*)(&characterMenuBoxLocal), 0.1f); //this does a bunch of shit with the above struct
+    drawMenuBox((i16*)(&characterMenuBoxLocal), 0.1f); //this does a bunch of shit with the above struct
 }
 
 
@@ -275,7 +278,7 @@ void handleInventoryInput(i32 a1) {
     i32 relativeSortRow;
     u16 itemID;
 
-    update_cursor_position((u32*)&(cursorContextArray[*inventoryMenuState]));
+    handleCursorPositionUpdate((u32*)&(cursorContextArray[*inventoryMenuState]));
     switch ((*inventoryMenuState))
     {
     case 0:
@@ -382,11 +385,11 @@ void handleInventoryInput(i32 a1) {
     case 5:                                   // Custom Arrange Handler
         if (checkInputReceived2(32))
         {
+
+            baseSortRow = cursorContextArray[5].baseRowIndex;
+            relativeSortRow = cursorContextArray[5].relativeRowIndex;
             if (*ITEM_TO_SWAP_SELECTED) // If this is already set when input is received, then switch the items. It's really a bool value
             {
-
-                baseSortRow = cursorContextArray[5].baseRowIndex;
-                relativeSortRow = cursorContextArray[5].relativeRowIndex;
                 if (*ITEM_TO_SWAP_SELECTED == 1)
                 {
                     playMenuSound(1);
@@ -424,7 +427,7 @@ void handleUsableItemEffects(u16 item_ID, u16 inventory_index) {
     /*Call the appropriate function handler for using items on a character/the party*/
     itemWasUsed = gContext.on_use_handlers.get_handler(item_ID)((u16)partyMemberIndex, item_ID, inventory_index);
     if (itemWasUsed) {
-        gContext.inventory->handle_decrement_inventory(inventory_index, 1);
+        gContext.inventory->decrementInventoryEntry(inventory_index, 1);
         if (gContext.inventory->get_resource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
             *INVENTORY_MENU_STATE = 1;
     }

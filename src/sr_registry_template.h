@@ -64,6 +64,7 @@ public:
         return resource_registry.capacity();
     }
 
+
     T* get_data() {
         return resource_registry.data();
     }

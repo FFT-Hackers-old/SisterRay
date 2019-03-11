@@ -10,7 +10,9 @@
 #include "weapons.h"
 #include "armor.h"
 #include "accessory.h"
-#include "inventory.h"
+#include "inventories/inventory.h"
+#include "inventories/battle_inventory.h"
+#include "inventories/materia_inventory.h"
 #include "usable_item_handlers.h"
 #include "string_registry.h"
 #include <map>
@@ -20,18 +22,20 @@
   Resources, in the form of either data or registered callback*/
 typedef struct {
     FILE*                              logFile;
-    SrItemRegistry                     items;
-    SrWeaponRegistry                   weapons;
-    SrArmorRegistry                    armors;
-    SrAccessoryRegistry                accessories;
-    SrMateriaRegistry                  materias;
-    std::unique_ptr<SrItemInventory>   inventory;
-    std::unique_ptr<SrBattleInventory> battle_inventory;
-    SrItemTypeRegistry                 item_type_data;
-    srOnUseCallbackRegistry            on_use_handlers; /*Registry of function pointers for using items*/
-    srNoTargetCallbackRegistry         untargeted_handlers;
-    SrOnUseItemDataRegistry            item_on_use_data;
-    SrGameStrings                      game_strings;
+    SrItemRegistry                      items;
+    SrWeaponRegistry                    weapons;
+    SrArmorRegistry                     armors;
+    SrAccessoryRegistry                 accessories;
+    SrMateriaRegistry                   materias;
+    std::unique_ptr<SrItemInventory>    inventory;
+    std::unique_ptr<SrBattleInventory>  battle_inventory;
+    std::unique_ptr<SrMateriaInventory> materia_inventory;
+    SrGearViewData                      gearViewData;
+    SrItemTypeRegistry                  itemTypeData;
+    srOnUseCallbackRegistry             on_use_handlers; /*Registry of function pointers for using items*/
+    srNoTargetCallbackRegistry          untargeted_handlers;
+    SrOnUseItemDataRegistry             item_on_use_data;
+    SrGameStrings                       game_strings;
 } SrContext;
 
 SISTERRAY_GLOBAL SrContext gContext;
@@ -43,10 +47,10 @@ SISTERRAY_API void init_accessory(SrKernelStream* stream);
 SISTERRAY_API void initItems(SrKernelStream* stream);
 SISTERRAY_API void init_weapon(SrKernelStream* stream);
 
-SISTERRAY_API void InitLog(void);
+SISTERRAY_API void initLog(void);
 SISTERRAY_API void srLogWrite(const char* format, ...);
-SISTERRAY_API void EnableNoCD(void);
-SISTERRAY_API void InitFunctionRegistry(void);
+SISTERRAY_API void enableNoCD(void);
+SISTERRAY_API void initFunctionRegistry(void);
 SISTERRAY_API void LoadMods(void);
 SISTERRAY_API void LoadKernelFile(void** dst, size_t sectionCount, const char* path);
 

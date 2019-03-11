@@ -44,6 +44,7 @@ public:
 typedef struct {
     StringRegistry  character_specific_strings[9];
     StringRegistry  inventory_menu_texts; //Stores texts displayed by the inventory menu handler
+    StringRegistry  equip_menu_texts;
     StringRegistry  item_descriptions;
     StringRegistry  item_names;
     StringRegistry  armor_descriptions;
@@ -54,8 +55,10 @@ typedef struct {
     StringRegistry  weapon_names;
 } SrGameStrings;
 
+char* getNameFromRelativeID(u16 relativeID, u8 itemType);
 char* getNameFromItemID(u16 item_id);
-char* get_description_from_global_id(u16 item_id);
-void init_game_strings();
+char* getDescriptionFromRelativeID(u16 relativeId, u8 itemType);
+char* getDescriptionFromID(u16 item_id);
+void initGameStrings();
 
 #endif

@@ -8,7 +8,7 @@ static void LogExitHandler(void)
     fclose(gContext.logFile);
 }
 
-SISTERRAY_API void InitLog(void)
+SISTERRAY_API void initLog(void)
 {
     gContext.logFile = fopen(srGetGamePath("SisterRay.log"), "wb");
     atexit(LogExitHandler);

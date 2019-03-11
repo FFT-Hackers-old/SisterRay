@@ -29,6 +29,7 @@
 #define RENDER_BATTLE_ITEM_MENU         ((void*)0x6DEBFE)
 #define INIT_BATTLE_ITEM_MENU_CURSOR    ((void*)0x6D982C)
 #define BATTLE_ITEM_MENU_INPUT_HANDLER  ((void*)0x6D98E3)
+#define EQUIP_MENU_UPDATE_HANDLER       ((void*)0x705D16)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);
@@ -62,7 +63,7 @@ typedef void**(*pfnsub41963C)(u32, i32, i32);
 #define load_kernel_object_text         ((pfnsub41963C)0x41963C)
 
 typedef i32(*pfnsub6EB3B8)(i32, i32, float);
-#define display_cursor                  ((pfnsub6EB3B8)0x6EB3B8)
+#define displayCursor                  ((pfnsub6EB3B8)0x6EB3B8)
 
 typedef i32(*pfnsub6F5B03)(i32, i32, const char*, u8, u32); //The last argument might be a float, not sure yet
 #define displayTextAtLocation        ((pfnsub6F5B03)0x6F5B03)
@@ -74,7 +75,7 @@ typedef i32(*pfnsub6F7270)(i32, float);
 #define renderSideScroller                      ((pfnsub6F7270)0x6F7270)
 
 typedef i16(*pfnsub6C62A2)(i32, i32, i32, i32);
-#define render_HP_bar_and_status        ((pfnsub6C62A2)0x6C62A2)
+#define renderHPAndStatus        ((pfnsub6C62A2)0x6C62A2)
 
 /*This function sets some structs of size 0x70 based on the party member ID, not sure what they are yet*/
 typedef u8*(*pfnsub6E6C5B)(i32, i32, i32, i32);
@@ -84,7 +85,7 @@ typedef u16*(*pfnsub6E7BA1)(u16*, i16, i16, i16, i16);
 #define initialize_menu_window_struct          ((pfnsub6E7BA1)0x6E7BA1)
 
 typedef i32(*pfnsub6E7D20)(i16*, float);
-#define draw_menu_box                      ((pfnsub6E7D20)0x6E7D20)
+#define drawMenuBox                      ((pfnsub6E7D20)0x6E7D20)
 
 /*This function sets a variable based on the icon type neede in the menu and then calls a function to display it*/
 typedef i32(*pfnsub717691)(i32, i32, i32, i32, i32);
@@ -107,7 +108,7 @@ typedef void(*pfnsub74580A)(i32);
 #define playMenuSound                 ((pfnsub74580A)0x74580A)
 
 typedef void(*pfnsub6F4DB2)(u32*);
-#define update_cursor_position          ((pfnsub6F4DB2)0x6F4DB2)
+#define handleCursorPositionUpdate          ((pfnsub6F4DB2)0x6F4DB2)
 
 typedef i32(*pfnsub6CBA6A)(u8, u16);
 #define heal_character_at_index         ((pfnsub6CBA6A)0x6CBA6A)
@@ -155,17 +156,41 @@ typedef bool(*pfnsub715026)(i32);
 #define knows_all_prereq_limits         ((pfnsub715026)0x715026)
 
 typedef u8(*pfnsub6C545B)(i32);
-#define recalculate_party_stats         ((pfnsub6C545B)0x6C545B)
+#define recalculateBaseStats            ((pfnsub6C545B)0x6C545B)
 
 typedef i32(*pfnsub5CB2CC)(u8);
-#define sub_5CB2CC                      ((pfnsub5CB2CC)0x5CB2CC)
+#define recalculateDerivedStats         ((pfnsub5CB2CC)0x5CB2CC)
 
 typedef i32(*pfnsub714FA3)(void);
 #define sub_714FA3                      ((pfnsub714FA3)0x714FA3)
 
 typedef u8(*pfnsub6E5C52)(void);
-#define handleActionCommandIssued       ((pfnsub6E5C52)0x6E5C52)
+#define setCursorTargetingData          ((pfnsub6E5C52)0x6E5C52)
 
 typedef i32(*pfnsub6D0AF9)(i16, i16, i16);
 #define initHandlerCursorState          ((pfnsub6D0AF9)0x6D0AF9)
+
+typedef i32(*pfnsub6C9812)(i32, i32);
+#define sub_6C9812                      ((pfnsub6C9812)0x6C9812) //Sets some data for transition from EQUIP to main menu
+
+typedef i32(*pfnsub6C6AEE)(i32);
+#define sub_6C6AEE                      ((pfnsub6C6AEE)0x6C6AEE) //Sets some data for transition from EQUIP to main menu
+
+typedef i8(*pfnsub5CB127)(void);   
+#define updateMiscPartyStats            ((pfnsub5CB127)0x5CB127)
+
+typedef i32(*pfnsub6CBCF3)(i8);
+#define returnMateriaType               ((pfnsub6CBCF3)0x6CBCF3)
+
+typedef i32(*pfnsub6CC2C9)(i8);
+#define sub_6CC2C9                      ((pfnsub6CC2C9)0x6CC2C9)
+
+typedef i32(*pfnsub707891)(i32, i32);
+#define displayGearStats                ((pfnsub707891)0x707891)
+
+typedef i32(*pfnsub70760F)(i32, i32, i32);
+#define renderMateriaSlots              ((pfnsub70760F)0x70760F)
+
+typedef i32(*pfnsub6F54A2)(u8*);
+#define sub_6F54A2                      ((pfnsub6F54A2)0x6F54A2) //Does returns x position from a text ptr, probably a centering util
 #endif

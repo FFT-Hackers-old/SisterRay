@@ -77,15 +77,15 @@ void createOnUseItemData(u16 hp_heal_amount, u16 mp_heal_amount,
 SISTERRAY_API void initItems(SrKernelStream* stream)
 {
     gContext.items = SrItemRegistry(stream);
-    gContext.item_type_data.initialize_augmented_data((u8)0, gContext.items.resource_count());
+    gContext.itemTypeData.initialize_augmented_data((u8)0, gContext.items.resource_count());
     patchItems();
     srLogWrite("kernel.bin: Loaded %lu items", (unsigned long)gContext.items.resource_count());
 }
 
 /*Utility check if an item is usable globally*/
 bool character_can_use_item(u8 character_ID, u16 item_id) {
-    u8 item_type = gContext.item_type_data.get_resource(item_id).item_type;
-    u16 relative_id = gContext.item_type_data.get_resource(item_id).item_type;
+    u8 item_type = gContext.itemTypeData.get_resource(item_id).item_type;
+    u16 relative_id = gContext.itemTypeData.get_resource(item_id).item_type;
     u16 restriction_mask;
     switch(item_type) {
     case 0: {

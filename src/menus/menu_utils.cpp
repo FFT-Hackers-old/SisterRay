@@ -18,3 +18,21 @@ void setContextCursorData(cursorContext* cursorContext, u32 relativeColumn, u32 
     cursorContext->thirteenth_dword = unk_13;
     cursorContext->fourteenh_dword = unk_14;
 }
+
+void setSideScrollerArguments(sideScrollerArguments* arguments, u16 viewSize, u16 maxRows, u16 baseRow, u16 pos1, u16 pos2, u16 pos3, u16 pos4){
+    arguments->viewSize = viewSize;
+    arguments->maxRows = maxRows;
+    arguments->baseRow = baseRow;
+    arguments->position1 = pos1;
+    arguments->position2 = pos2;
+    arguments->position3 = pos3;
+    arguments->position4 = pos4;
+}
+
+void renderMenuSideScroller(sideScrollerArguments* arguments, float floatArg) {
+    renderSideScroller((i32)arguments, floatArg);
+}
+
+void renderGearMateriaSlots(u32 xbase, u32 ybase, u8* slotsToRender) {
+    renderMateriaSlots(xbase, ybase, (i32)slotsToRender);
+};

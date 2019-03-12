@@ -21,7 +21,7 @@
 #define dword_DD1A80                         (u32*)0xDD1A80 //If 0, can't use items... maybe inventory empty?
 #define MENU_TEXTS                           (u8*)0x921168
 
-#define GLOBAL_MENU_VIEW_SIZE                (u16*)0xDD17F0
+#define dword_DD17F0                (u16*)0xDD17F0
 #define GLOBAL_MENU_ROW_COUNT                (u16*)0xDD17F2
 #define GLOBAL_MENU_ROW_BASE                 (u16*)0xDD17F4
 #define word_DD17F6                          (u16*)0xDD17F6

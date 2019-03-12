@@ -197,14 +197,9 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
     i32 baseRowIndex;
     i32 textColor;
 
-    *GLOBAL_MENU_VIEW_SIZE = (u16)10;                         // number of rows active in an inventory view
-    *GLOBAL_MENU_ROW_COUNT = (u16)gContext.inventory->current_capacity();                        // max size of the inventory.. let's change it
-    *GLOBAL_MENU_ROW_BASE =  cursorContextArray[mainViewContextIndex].baseRowIndex;
-    *word_DD17F6 = 618;
-    *word_DD17F8 = 102;
-    *word_DD17FA = 17;
-    *word_DD17FC = 372;
-    renderSideScroller((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f); //The address here is passed as an int and then "casted" back and used as a ptr by the function at this point
+    sideScrollerArguments* arguments = (sideScrollerArguments*)dword_DD17F0;
+    setSideScrollerArguments(arguments, 10, gContext.inventory->current_capacity(), cursorContextArray[mainViewContextIndex].baseRowIndex, 618, 102, 17, 372);
+    renderMenuSideScroller(arguments, 0.2);
     int displayed_row_count = ((dword_DD1A48)[14 * mainViewContextIndex] != 0) + 10;
 
     baseRowIndex = cursorContextArray[mainViewContextIndex].baseRowIndex;
@@ -246,14 +241,14 @@ void renderKeyItemsView() {
     cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS);
     char* keyItemName;
 
-    *GLOBAL_MENU_VIEW_SIZE = 10;
+    *dword_DD17F0 = 10;
     *GLOBAL_MENU_ROW_COUNT = 32; //Number of items in one column in key items menu
     *GLOBAL_MENU_ROW_BASE = cursorContextArray[2].baseRowIndex;
     *word_DD17F6 = 618; /*Still need to figure out what these values do*/
     *word_DD17F8 = 102;
     *word_DD17FA = 17;
     *word_DD17FC = 372;
-    renderSideScroller((i32)GLOBAL_MENU_VIEW_SIZE, 0.1f);
+    renderSideScroller((i32)dword_DD17F0, 0.1f);
 
     for (int visibleItemItemRow = 0; visibleItemItemRow < 12; ++visibleItemItemRow) {
         int flat_key_item_index_base = 2 * visibleItemItemRow + 2 * cursorContextArray[3].baseRowIndex;

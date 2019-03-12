@@ -89,26 +89,26 @@ typedef i32(*pfnsub6E7D20)(i16*, float);
 
 /*This function sets a variable based on the icon type neede in the menu and then calls a function to display it*/
 typedef i32(*pfnsub717691)(i32, i32, i32, i32, i32);
-#define displayVisibleItemIcon       ((pfnsub717691)0x717691)
+#define displayVisibleItemIcon           ((pfnsub717691)0x717691)
 
 /*Not sure what this function does*/
 typedef u8(*pfnsub6F5C0C)(i32, i32, i8, i8, i32);
 #define sub_6F5C0C                      ((pfnsub6F5C0C)0x6F5C0C)
 
-typedef i32(*pfnsub6F9739)(i32, i32, u32, u8, u8, i32);
-#define renderNumbers                      ((pfnsub6F9739)0x6F9739)
+typedef i32(*pfnsub6F9739)(i32, i32, u32, u8, u8, float);
+#define renderNumbers                   ((pfnsub6F9739)0x6F9739)
 
 typedef i32(*pfnsub41AB74)(i32);
-#define checkInputReceived2            ((pfnsub41AB74)0x41AB74)
+#define checkInputReceived2             ((pfnsub41AB74)0x41AB74)
 
 typedef i32(*pfnsub6F53F1)(i32);
 #define checkInputReceived              ((pfnsub6F53F1)0x6F53F1)
 
 typedef void(*pfnsub74580A)(i32);
-#define playMenuSound                 ((pfnsub74580A)0x74580A)
+#define playMenuSound                   ((pfnsub74580A)0x74580A)
 
 typedef void(*pfnsub6F4DB2)(u32*);
-#define handleCursorPositionUpdate          ((pfnsub6F4DB2)0x6F4DB2)
+#define handleCursorPositionUpdate      ((pfnsub6F4DB2)0x6F4DB2)
 
 typedef i32(*pfnsub6CBA6A)(u8, u16);
 #define heal_character_at_index         ((pfnsub6CBA6A)0x6CBA6A)

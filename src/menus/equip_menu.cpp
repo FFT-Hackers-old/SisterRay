@@ -1,6 +1,5 @@
 #include "equip_menu.h"
 #include "../impl.h"
-#include "menu_utils.h"
 #include "../party/party_utils.h"
 #include <memory>
 
@@ -23,6 +22,7 @@ void displayEquipMenuViews(i32 stateControlMask) {
     displayMenuCursors(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
     displayMateriaSlots(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
     displayMenuTexts(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
+    displayEquipGearStats(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
 }
 
 //This function can be registered to a particular menu state to modularize modding the menus
@@ -67,10 +67,10 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
     char* fetchedName;
     char* fetchedDescription;
     u16 maxRowsInView;
-    u8 characterRecordArrayIndex;
+    u8 characterID;
 
 
-    characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     //Display state specific strings
     switch (menuState) {
         case 0:{
@@ -90,7 +90,7 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
             for (i32 visibleRow = 0; visibleRow < maxRowsInView; ++visibleRow) {
                 kernelObjectID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + visibleRow).relative_item_id;
                 fetchedName = getNameFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
-                displayTextAtLocation(427, 36 * visibleRow + 9 * baseColumnIndex + 193, fetchedName, 7u, 1045220557);
+                displayTextAtLocation(427, 36 * visibleRow + 9 * baseColumnIndex + 193, fetchedName, COLOR_WHITE, 0.2f);
             }
             break;
         }
@@ -102,22 +102,20 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
     //Display weapon, armor, and accessory
     for (i32 menuTextIndex = 0; menuTextIndex < 3; ++menuTextIndex) {
         menuText = gContext.game_strings.equip_menu_texts.get_string(menuTextIndex);
-        displayTextAtLocation(250, 34 * menuTextIndex + 13, menuText, 5u, 1045220557);
+        displayTextAtLocation(250, 34 * menuTextIndex + 13, menuText, COLOR_TEAL, 0.2f);
     }
 
-    displayEquipGearStats();
-
-    kernelObjectID = getEquippedGear(characterRecordArrayIndex, 1);
+    kernelObjectID = getEquippedGear(characterID, 1);
     fetchedName = getNameFromRelativeID(kernelObjectID, 1);
-    displayTextAtLocation(303, 13, fetchedName, 7u, 1045220557);
+    displayTextAtLocation(303, 13, fetchedName, COLOR_WHITE, 0.2f);
 
-    kernelObjectID = getEquippedGear(characterRecordArrayIndex, 2);
+    kernelObjectID = getEquippedGear(characterID, 2);
     fetchedName = getNameFromRelativeID(kernelObjectID, 2);
-    displayTextAtLocation(303, 47, fetchedName, 7u, 1045220557);
+    displayTextAtLocation(303, 47, fetchedName, COLOR_WHITE, 0.2f);
 
-    kernelObjectID = getEquippedGear(characterRecordArrayIndex, 3);
+    kernelObjectID = getEquippedGear(characterID, 3);
     fetchedName = getNameFromRelativeID(kernelObjectID, 3);
-    displayTextAtLocation(303, 81, fetchedName, 7u, 1045220557);
+    displayTextAtLocation(303, 81, fetchedName, COLOR_WHITE, 0.2f);
       
 
 
@@ -125,10 +123,10 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
         kernelObjectID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
     }
     else {
-        kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
+        kernelObjectID = getEquippedGear(characterID, cursorContextArray[0].relativeRowIndex + 1);
     }
     fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
-    displayTextAtLocation(24, equipMenuWindowConfig[1].unknown_element_2 + 13, fetchedDescription, 7u, 1045220557);
+    displayTextAtLocation(24, equipMenuWindowConfig[1].unknown_element_2 + 13, fetchedDescription, COLOR_WHITE, 1045220557);
 }
 
 void displayMenuCursors(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
@@ -169,9 +167,9 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
 
     if (cursorContextArray[0].relativeRowIndex != 2) {
         menuText = gContext.game_strings.equip_menu_texts.get_string(4);
-        displayTextAtLocation(27, equipMenuWindowConfig[2].unknown_element_2 + 21, menuText, 5u, 1036966167);
+        displayTextAtLocation(27, equipMenuWindowConfig[2].unknown_element_2 + 21, menuText, COLOR_TEAL, 0.1f);
         menuText = gContext.game_strings.equip_menu_texts.get_string(5);
-        displayTextAtLocation(27, equipMenuWindowConfig[2].unknown_element_2 + 64, menuText, 5u, 1036966167);
+        displayTextAtLocation(27, equipMenuWindowConfig[2].unknown_element_2 + 64, menuText, COLOR_TEAL, 0.1f);
         switch (cursorContextArray[0].relativeRowIndex) {
             case 0: {
                 materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
@@ -194,13 +192,92 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
         i32 growthTypeY = equipMenuWindowConfig[2].unknown_element_2 + 64;
         i32 growthTypeX = sub_6F54A2((u8*)menuText);
 
-        displayTextAtLocation(243 - growthTypeX / 2, growthTypeY, menuText, 7u, 1045220557); //we do some materia growth text right here
+        displayTextAtLocation(243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 1045220557); //we do some materia growth text right here
     }
 }
 
 //This is a wrapper function, the method that this points add will be rewritten and split up in the futre
-void displayEquipGearStats() {
-    displayGearStats(53, equipMenuWindowConfig[3].unknown_element_2 + 26);
+void displayEquipGearStats(cursorContext* cursorContextArray, u16 menuState, u16 stateControlMask) {
+    u8 characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    u16 equippedWeaponID = (CHARACTER_RECORD_ARRAY)[characterID].equipped_weapon;
+    u16 equippedArmorID = (CHARACTER_RECORD_ARRAY)[characterID].equipped_armor;
+    u16 equippedAccessoryID = (CHARACTER_RECORD_ARRAY)[characterID].equipped_accessory;
+    u16 toEquipWeaponID;
+    u16 toEquipArmorID;
+    u16 toEquipAccessoryID;
+    u8 equippedStats[8];
+    u8 statToEquip[8];
+    u8 statDisplayColor;
+    u16 windowTop = equipMenuWindowConfig[3].unknown_element_2 + 26;
+    char* menuText;
+
+    for (i32 i = 0; i < 7; ++i) {
+        menuText = gContext.game_strings.equip_menu_texts.get_string(5 + i);
+        displayTextAtLocation(53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
+    }
+    for (i32 j = 0; j < 7; ++j)
+        sub_6F5C0C(53 + 194, 26 * j + windowTop, 0xDAu, 5u, 0.2f);
+
+    equippedStats[0] = gContext.weapons.get_resource(equippedWeaponID).weapon_strength;
+    renderNumbers(200, windowTop, equippedStats[0], 3, COLOR_WHITE, 0.2f);
+    equippedStats[1] = gContext.weapons.get_resource(equippedWeaponID).weapon_hit_rate;
+    renderNumbers(200, windowTop + 26, equippedStats[1], 3, COLOR_WHITE, 0.2f);
+    equippedStats[2] = gContext.armors.get_resource(equippedArmorID).defense;
+    renderNumbers(200, windowTop + 52, equippedStats[2], 3, COLOR_WHITE, 0.2f);
+    equippedStats[3] = gContext.armors.get_resource(equippedArmorID).evade;
+    renderNumbers(200, windowTop + 78, equippedStats[3], 3, COLOR_WHITE, 0.2f);
+    equippedStats[4] = 0;
+    renderNumbers(200, windowTop + 104, 0, 3, COLOR_WHITE, 0.2f);
+    equippedStats[5] = gContext.armors.get_resource(equippedArmorID).magic_defense;
+    renderNumbers(200, windowTop + 130, equippedStats[4], 3, COLOR_WHITE, 0.2f);
+    equippedStats[6] = gContext.armors.get_resource(equippedArmorID).magic_evade;
+    renderNumbers(200, windowTop + 154, equippedStats[5], 3, COLOR_WHITE, 0.2f);
+
+    if (menuState == 1) {
+        switch (cursorContextArray[0].relativeRowIndex) {
+            case 0: {
+                toEquipWeaponID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+                statToEquip[0] = gContext.weapons.get_resource(toEquipWeaponID).weapon_strength;
+                statToEquip[1] = gContext.weapons.get_resource(toEquipWeaponID).weapon_hit_rate;
+                statToEquip[2] = equippedStats[2];
+                statToEquip[3] = equippedStats[3];
+                statToEquip[4] = 0;
+                statToEquip[5] = equippedStats[4];
+                statToEquip[6] = equippedStats[5];
+                break;
+            }
+            case 1: {
+                toEquipArmorID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+                statToEquip[0] = equippedStats[0];
+                statToEquip[1] = equippedStats[1];
+                statToEquip[2] = gContext.armors.get_resource(toEquipArmorID).defense;
+                statToEquip[3] = gContext.armors.get_resource(toEquipArmorID).evade;
+                statToEquip[4] = 0;
+                statToEquip[5] = gContext.armors.get_resource(toEquipArmorID).magic_defense;
+                statToEquip[6] = gContext.armors.get_resource(toEquipArmorID).magic_evade;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        for (i32 stat = 0; stat < 7; stat++) {
+            statDisplayColor = getStatDisplayColor(equippedStats[stat], statToEquip[stat]);
+            renderNumbers(270, windowTop + (26 * stat), statToEquip[stat], 3, statDisplayColor, 0.2f);
+        }
+    }
+}
+
+color getStatDisplayColor(u8 equippedStat, u8 toEquipStat) {
+    if (toEquipStat == equippedStat) {
+        return COLOR_WHITE;
+    }
+    if (toEquipStat > equippedStat) {
+        return COLOR_GREEN;
+    }
+    if (toEquipStat < equippedStat) {
+        return COLOR_RED;
+    }
 }
 
 void handleEquipMenuInput(i32 updateStateMask) {
@@ -231,8 +308,6 @@ void handleEquipMenuInput(i32 updateStateMask) {
                 }
                 case 1: { //equip ARMOR
                     equippedGearItemType = 2;
-                    srLogWrite("trying to equip armor with relative index %i", equippedGearRelativeIndex);
-                    srLogWrite("trying to equip item with type %i", equippedGearItemType);
                     handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
                     break;
                 }
@@ -350,13 +425,8 @@ void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordA
     case 2: {
         removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_armor;
         removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-        srLogWrite("item type being removed %i", gearType);
-        srLogWrite("relative ID being removed %i", equippedGearRelativeIndex);
         equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-        srLogWrite("item type being equipped %i", gearType);
-        srLogWrite("relative ID being equipped %i", equippedGearRelativeIndex);
         characterRecordArray[characterRecordArrayIndex].equipped_armor = equippedGearRelativeIndex;
-        srLogWrite("addr of save ptr %p", &characterRecordArray[equippedGearRelativeIndex].equipped_armor);
         handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
     }
     case 3: {

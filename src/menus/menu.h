@@ -14,16 +14,16 @@ typedef struct {
     u16 position2;
     u16 position3;
     u16 position4;
-} sideScrollerArguments;
+} drawScrollerParams;
 #pragma pack(pop)
 
 // Todo: Pixel count to figure out which draw distance is which
 #pragma pack(push, 1)
 typedef struct {
-    u16 drawDistance1;
-    u16 drawDistance2;
-    u16 drawDistance3;
-    u16 drawDistance4;
+    i16 drawDistance1;
+    i16 drawDistance2;
+    i16 drawDistance3;
+    i16 drawDistance4;
     float boxFloat;
 } drawBoxParams;
 #pragma pack(pop)
@@ -45,7 +45,15 @@ typedef struct {
     float numberThickness;
 } drawNumberParams;
 
-#define menuWindowConfig ((drawBoxParams*)0x921C78)
-#define equipMenuWindowConfig ((drawBoxParams*)0x920AC8)
+typedef struct {
+    i16 drawDistance1;
+    i16 drawDistance2;
+    i16 drawDistance3;
+    i16 drawDistance4;
+} oldDrawBoxParams;
+
+#pragma pack(pop)
+#define menuWindowConfig ((oldDrawBoxParams*)0x921C78)
+#define equipMenuWindowConfig ((oldDrawBoxParams*)0x920AC8)
 
 #endif

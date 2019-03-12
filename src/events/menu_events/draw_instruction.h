@@ -14,21 +14,21 @@ public:
 class DrawTextInstruction: DrawInstruction {
 public:
     drawTextParams instructionParams;
-    void DrawTextInstruction(drawTextParams);
+    DrawTextInstruction(drawTextParams);
     void draw();
 };
 
 class DrawNumberInstruction : DrawInstruction {
 public:
     drawNumberParams instructionParams;
-    void DrawNumberInstruction(drawNumberParams);
+    DrawNumberInstruction(drawNumberParams);
     void draw();
 };
 
 class DrawBoxInstruction: DrawInstruction {
 public:
     drawBoxParams instructionParams;
-    void DrawBoxInstruction(drawBoxParams);
+    DrawBoxInstruction(drawBoxParams);
     void draw();
 };
 #endif

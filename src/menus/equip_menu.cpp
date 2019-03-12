@@ -36,9 +36,9 @@ void displayMenuObjects(cursorContext* cursorContextArray, u32 menuState, i32 st
 
     switch (menuState) {
         case 1: {
-            sub_6FA12F(316, 171, 324, 303);
+            //sub_6FA12F(316, 171, 324, 303);
             equippableGearCount = gContext.gearViewData.slots_in_use;
-            sideScrollerArguments* arguments = (sideScrollerArguments*)word_DCA490;
+            drawScrollerParams* arguments = (drawScrollerParams*)word_DCA490;
             setSideScrollerArguments(arguments, 8, equippableGearCount, cursorContextArray[1].baseRowIndex, 618, 171, 17, 303);
             renderMenuSideScroller(arguments, 0.2);
             sub_6FA347();
@@ -126,7 +126,7 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
         kernelObjectID = getEquippedGear(characterID, cursorContextArray[0].relativeRowIndex + 1);
     }
     fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
-    displayTextAtLocation(24, equipMenuWindowConfig[1].drawDistance2 + 13, fetchedDescription, COLOR_WHITE, 1045220557);
+    displayTextAtLocation(24, equipMenuWindowConfig[1].drawDistance2 + 13, fetchedDescription, COLOR_WHITE, 0.2f);
 }
 
 void displayMenuCursors(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
@@ -192,7 +192,7 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
         i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
         i32 growthTypeX = sub_6F54A2((u8*)menuText);
 
-        displayTextAtLocation(243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 1045220557); //we do some materia growth text right here
+        displayTextAtLocation(243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 0.2f); //we do some materia growth text right here
     }
 }
 

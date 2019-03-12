@@ -1,6 +1,6 @@
 #include "draw_instruction.h"
 
-void DrawTextInstruction::DrawTextInstruction(drawTextParams params) {
+DrawTextInstruction::DrawTextInstruction(drawTextParams params) {
     instructionParams = params;
 }
 
@@ -10,12 +10,12 @@ void DrawTextInstruction::draw() {
         instructionParams.yCoordinate,
         instructionParams.stringToDraw,
         instructionParams.textColor,
-        instructionParams.thickness
+        instructionParams.textThickness
     );
 }
 
 
-void DrawNumberInstruction::DrawNumberInstruction(drawNumberParams params) {
+DrawNumberInstruction::DrawNumberInstruction(drawNumberParams params) {
     instructionParams = params;
 }
 
@@ -25,17 +25,17 @@ void DrawNumberInstruction::draw() {
         instructionParams.yCoordinate,
         instructionParams.numberToDraw,
         instructionParams.charCount,
-        instructionParams.textColor,
-        instructionParams.thickness
+        instructionParams.numberColor,
+        instructionParams.numberThickness
     );
 }
 
-void DrawBoxInstruction::DrawBoxInstruction(drawBoxParams params) {
+DrawBoxInstruction::DrawBoxInstruction(drawBoxParams params) {
     instructionParams = params;
 }
 
 void DrawBoxInstruction::draw() {
-    i16* drawDistances[4] = { instructionParams.drawDistance1, instructionParams.drawDistance2, instructionParams.drawDistance3, instructionParams.drawDistance4 };
+    i16 drawDistances[4] = { instructionParams.drawDistance1, instructionParams.drawDistance2, instructionParams.drawDistance3, instructionParams.drawDistance4 };
     gameDrawBox(
         drawDistances,
         instructionParams.boxFloat

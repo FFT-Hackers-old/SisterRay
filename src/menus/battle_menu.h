@@ -3,6 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
+#include "menu_utils.h"
 
 SISTERRAY_API i32 renderBattleItemView();
 SISTERRAY_API u32* initializeBattleItemMenuCursor();

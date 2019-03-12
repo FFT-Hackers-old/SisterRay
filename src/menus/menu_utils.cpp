@@ -29,6 +29,10 @@ void setSideScrollerArguments(sideScrollerArguments* arguments, u16 viewSize, u1
     arguments->position4 = pos4;
 }
 
+i32 displayTextAtLocation(i32 x_start, i32 y_start, const char* stringToDisplay, color textColor, float thickness) {
+    gameDrawString(x_start, y_start, stringToDisplay, textColor, thickness)
+}
+
 void renderMenuSideScroller(sideScrollerArguments* arguments, float floatArg) {
     renderSideScroller((i32)arguments, floatArg);
 }

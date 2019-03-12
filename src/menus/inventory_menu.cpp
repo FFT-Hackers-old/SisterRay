@@ -117,7 +117,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
             fetchedDescription = gContext.game_strings.inventory_menu_texts.get_string(j + 3); //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
             displayTextAtLocation(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetchedDescription, 7, 1008981770);
         }
-        drawMenuBox((i16*)(&(menuWindowConfig)[3]), (float)1008981770);
+        gameDrawBox((i16*)(&(menuWindowConfig)[3]), (float)1008981770);
         break;
     case 5:                                   // Inside Custom Sort
         if (updateStateMask & 2)
@@ -180,9 +180,9 @@ void displayInventoryViews(i32 updateStateMask) {
         renderMainInventoryView(mainViewContextIndex);
     }
     sub_6FA347();
-    drawMenuBox((i16*)(&(menuWindowConfig)[0]), 0.111f);
-    drawMenuBox(((i16*)&(menuWindowConfig)[1]), 0.2f);
-    drawMenuBox(((i16*)&(menuWindowConfig)[2]), 0.30000000f);
+    gameDrawBox((i16*)(&(menuWindowConfig)[0]), 0.111f);
+    gameDrawBox(((i16*)&(menuWindowConfig)[1]), 0.2f);
+    gameDrawBox(((i16*)&(menuWindowConfig)[2]), 0.30000000f);
 }
 
 
@@ -216,7 +216,7 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
             displayTextAtLocation(373, 37 * visibleItem + 9 * baseColumnIndex + 109, kernelObjectName, (u8)textColor, 1036966167);
             displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseColumnIndex + 105, itemID, 0, 1036966167);
             sub_6F5C0C(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, 1036966167);
-            renderNumbers(550, 37 * visibleItem + 9 * baseColumnIndex + 112, itemQuantity, 3, (u8)textColor, 1036966167);
+            gameDrawNumbers(550, 37 * visibleItem + 9 * baseColumnIndex + 112, itemQuantity, 3, (u8)textColor, 1036966167);
         }
     }
 }
@@ -233,7 +233,7 @@ void renderCharacterPortraits() {
     }
 
     // initialize_menu_window_struct((u16*)&unk_local_struct, (u16)0, (u16)96, (u16)300, (u16)384); //set some values in a struct/array used in the next call
-    drawMenuBox((i16*)(&characterMenuBoxLocal), 0.1f); //this does a bunch of shit with the above struct
+    gameDrawBox((i16*)(&characterMenuBoxLocal), 0.1f); //this does a bunch of shit with the above struct
 }
 
 

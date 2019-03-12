@@ -323,18 +323,6 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u16 unknown_element_1;
-    u16 unknown_element_2;
-    u16 unknown_element_3;
-    u16 unknown_elmeent_4;
-} menuWindowData;
-#pragma pack(pop)
-
-#define menuWindowConfig ((menuWindowData*)0x921C78)
-#define equipMenuWindowConfig ((menuWindowData*)0x920AC8)
-
-#pragma pack(push, 1)
-typedef struct {
     u32 relativeColumnIndex;
     u32 relativeRowIndex;
     u32 viewColumnBound;

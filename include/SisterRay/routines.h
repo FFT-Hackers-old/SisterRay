@@ -65,8 +65,8 @@ typedef void**(*pfnsub41963C)(u32, i32, i32);
 typedef i32(*pfnsub6EB3B8)(i32, i32, float);
 #define displayCursor                  ((pfnsub6EB3B8)0x6EB3B8)
 
-typedef i32(*pfnsub6F5B03)(i32, i32, const char*, u8, u32); //The last argument might be a float, not sure yet
-#define displayTextAtLocation        ((pfnsub6F5B03)0x6F5B03)
+typedef i32(*pfnsub6F5B03)(i32, i32, const char*, u8, float); //The last argument might be a float, not sure yet
+#define gameDrawString        ((pfnsub6F5B03)0x6F5B03)
 
 typedef i32(*pfnsub7150A0)(u16);
 #define item_is_usable                  ((pfnsub7150A0)0x7150A0)
@@ -85,7 +85,7 @@ typedef u16*(*pfnsub6E7BA1)(u16*, i16, i16, i16, i16);
 #define initialize_menu_window_struct          ((pfnsub6E7BA1)0x6E7BA1)
 
 typedef i32(*pfnsub6E7D20)(i16*, float);
-#define drawMenuBox                      ((pfnsub6E7D20)0x6E7D20)
+#define gameDrawBox                      ((pfnsub6E7D20)0x6E7D20)
 
 /*This function sets a variable based on the icon type neede in the menu and then calls a function to display it*/
 typedef i32(*pfnsub717691)(i32, i32, i32, i32, i32);
@@ -96,7 +96,7 @@ typedef u8(*pfnsub6F5C0C)(i32, i32, i8, i8, i32);
 #define sub_6F5C0C                      ((pfnsub6F5C0C)0x6F5C0C)
 
 typedef i32(*pfnsub6F9739)(i32, i32, u32, u8, u8, float);
-#define renderNumbers                   ((pfnsub6F9739)0x6F9739)
+#define gameDrawNumbers                   ((pfnsub6F9739)0x6F9739)
 
 typedef i32(*pfnsub41AB74)(i32);
 #define checkInputReceived2             ((pfnsub41AB74)0x41AB74)

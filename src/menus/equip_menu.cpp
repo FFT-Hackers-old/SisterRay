@@ -52,10 +52,10 @@ void displayMenuObjects(cursorContext* cursorContextArray, u32 menuState, i32 st
 
     //Draw Menu Boxes -- this part can be data driven
     for (u32 boxDataIndex = 0; boxDataIndex < 2; ++boxDataIndex) //index into box data structs and draw dem boxes
-        drawMenuBox((i16*)(&(equipMenuWindowConfig)[boxDataIndex]), .3f);
-    drawMenuBox((i16*)(&(equipMenuWindowConfig)[2]), .4f);
-    drawMenuBox((i16*)(&(equipMenuWindowConfig)[3]), .5f);
-    drawMenuBox((i16*)(&(equipMenuWindowConfig)[4]), .6f);
+        gameDrawBox((i16*)(&(equipMenuWindowConfig)[boxDataIndex]), .3f);
+    gameDrawBox((i16*)(&(equipMenuWindowConfig)[2]), .4f);
+    gameDrawBox((i16*)(&(equipMenuWindowConfig)[3]), .5f);
+    gameDrawBox((i16*)(&(equipMenuWindowConfig)[4]), .6f);
 }
 
 void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
@@ -126,7 +126,7 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
         kernelObjectID = getEquippedGear(characterID, cursorContextArray[0].relativeRowIndex + 1);
     }
     fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
-    displayTextAtLocation(24, equipMenuWindowConfig[1].unknown_element_2 + 13, fetchedDescription, COLOR_WHITE, 1045220557);
+    displayTextAtLocation(24, equipMenuWindowConfig[1].drawDistance2 + 13, fetchedDescription, COLOR_WHITE, 1045220557);
 }
 
 void displayMenuCursors(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
@@ -167,9 +167,9 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
 
     if (cursorContextArray[0].relativeRowIndex != 2) {
         menuText = gContext.game_strings.equip_menu_texts.get_string(4);
-        displayTextAtLocation(27, equipMenuWindowConfig[2].unknown_element_2 + 21, menuText, COLOR_TEAL, 0.1f);
+        displayTextAtLocation(27, equipMenuWindowConfig[2].drawDistance2 + 21, menuText, COLOR_TEAL, 0.1f);
         menuText = gContext.game_strings.equip_menu_texts.get_string(5);
-        displayTextAtLocation(27, equipMenuWindowConfig[2].unknown_element_2 + 64, menuText, COLOR_TEAL, 0.1f);
+        displayTextAtLocation(27, equipMenuWindowConfig[2].drawDistance2 + 64, menuText, COLOR_TEAL, 0.1f);
         switch (cursorContextArray[0].relativeRowIndex) {
             case 0: {
                 materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
@@ -184,12 +184,12 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
             default: {
             }
         }
-        renderGearMateriaSlots(153, equipMenuWindowConfig[2].unknown_element_2 + 21, materiaSlots); //render the materia slots, convert into a shared reusable utility and merge with materia handler
+        renderGearMateriaSlots(153, equipMenuWindowConfig[2].drawDistance2 + 21, materiaSlots); //render the materia slots, convert into a shared reusable utility and merge with materia handler
         if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
             materiaGrowth = 4;
         menuText = gContext.game_strings.equip_menu_texts.get_string(materiaGrowth + 4);
 
-        i32 growthTypeY = equipMenuWindowConfig[2].unknown_element_2 + 64;
+        i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
         i32 growthTypeX = sub_6F54A2((u8*)menuText);
 
         displayTextAtLocation(243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 1045220557); //we do some materia growth text right here
@@ -208,7 +208,7 @@ void displayEquipGearStats(cursorContext* cursorContextArray, u16 menuState, u16
     u8 equippedStats[8];
     u8 statToEquip[8];
     u8 statDisplayColor;
-    u16 windowTop = equipMenuWindowConfig[3].unknown_element_2 + 26;
+    u16 windowTop = equipMenuWindowConfig[3].drawDistance2 + 26;
     char* menuText;
 
     for (i32 i = 0; i < 7; ++i) {
@@ -219,19 +219,19 @@ void displayEquipGearStats(cursorContext* cursorContextArray, u16 menuState, u16
         sub_6F5C0C(53 + 194, 26 * j + windowTop, 0xDAu, 5u, 0.2f);
 
     equippedStats[0] = gContext.weapons.get_resource(equippedWeaponID).weapon_strength;
-    renderNumbers(200, windowTop, equippedStats[0], 3, COLOR_WHITE, 0.2f);
+    gameDrawNumbers(200, windowTop, equippedStats[0], 3, COLOR_WHITE, 0.2f);
     equippedStats[1] = gContext.weapons.get_resource(equippedWeaponID).weapon_hit_rate;
-    renderNumbers(200, windowTop + 26, equippedStats[1], 3, COLOR_WHITE, 0.2f);
+    gameDrawNumbers(200, windowTop + 26, equippedStats[1], 3, COLOR_WHITE, 0.2f);
     equippedStats[2] = gContext.armors.get_resource(equippedArmorID).defense;
-    renderNumbers(200, windowTop + 52, equippedStats[2], 3, COLOR_WHITE, 0.2f);
+    gameDrawNumbers(200, windowTop + 52, equippedStats[2], 3, COLOR_WHITE, 0.2f);
     equippedStats[3] = gContext.armors.get_resource(equippedArmorID).evade;
-    renderNumbers(200, windowTop + 78, equippedStats[3], 3, COLOR_WHITE, 0.2f);
+    gameDrawNumbers(200, windowTop + 78, equippedStats[3], 3, COLOR_WHITE, 0.2f);
     equippedStats[4] = 0;
-    renderNumbers(200, windowTop + 104, 0, 3, COLOR_WHITE, 0.2f);
+    gameDrawNumbers(200, windowTop + 104, 0, 3, COLOR_WHITE, 0.2f);
     equippedStats[5] = gContext.armors.get_resource(equippedArmorID).magic_defense;
-    renderNumbers(200, windowTop + 130, equippedStats[4], 3, COLOR_WHITE, 0.2f);
+    gameDrawNumbers(200, windowTop + 130, equippedStats[4], 3, COLOR_WHITE, 0.2f);
     equippedStats[6] = gContext.armors.get_resource(equippedArmorID).magic_evade;
-    renderNumbers(200, windowTop + 154, equippedStats[5], 3, COLOR_WHITE, 0.2f);
+    gameDrawNumbers(200, windowTop + 154, equippedStats[5], 3, COLOR_WHITE, 0.2f);
 
     if (menuState == 1) {
         switch (cursorContextArray[0].relativeRowIndex) {
@@ -263,7 +263,7 @@ void displayEquipGearStats(cursorContext* cursorContextArray, u16 menuState, u16
         }
         for (i32 stat = 0; stat < 7; stat++) {
             statDisplayColor = getStatDisplayColor(equippedStats[stat], statToEquip[stat]);
-            renderNumbers(270, windowTop + (26 * stat), statToEquip[stat], 3, statDisplayColor, 0.2f);
+            gameDrawNumbers(270, windowTop + (26 * stat), statToEquip[stat], 3, statDisplayColor, 0.2f);
         }
     }
 }

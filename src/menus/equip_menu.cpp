@@ -36,12 +36,12 @@ void displayMenuObjects(cursorContext* cursorContextArray, u32 menuState, i32 st
 
     switch (menuState) {
         case 1: {
-            //sub_6FA12F(316, 171, 324, 303);
+            //sub_6FA12F(316, 171, 324, 303); //I can't figure out what this does...
             equippableGearCount = gContext.gearViewData.slots_in_use;
             drawScrollerParams* arguments = (drawScrollerParams*)word_DCA490;
             setSideScrollerArguments(arguments, 8, equippableGearCount, cursorContextArray[1].baseRowIndex, 618, 171, 17, 303);
             renderMenuSideScroller(arguments, 0.2);
-            sub_6FA347();
+            //sub_6FA347();
             break;
         }
     }
@@ -132,13 +132,13 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
 void displayMenuCursors(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
     switch (menuState) {
         case 0: {
-            displayCursor(207, 36 * cursorContextArray[0].relativeRowIndex + 17, 0.101);
+            displayCursor(207, 36 * cursorContextArray[0].relativeRowIndex + 17, 0.1f);
             break;
         }
         case 1: {
             if (stateControlMask & 2) //animate flashing cursor
-                displayCursor(207, 36 * cursorContextArray[0].relativeRowIndex + 17, 0.101);
-            displayCursor(385, 36 * cursorContextArray[1].relativeRowIndex + 197, 0.101);
+                displayCursor(207, 36 * cursorContextArray[0].relativeRowIndex + 17, 0.1f);
+            displayCursor(385, 36 * cursorContextArray[1].relativeRowIndex + 197, 0.1f);
             break;
         }
         default: {
@@ -216,7 +216,7 @@ void displayEquipGearStats(cursorContext* cursorContextArray, u16 menuState, u16
         displayTextAtLocation(53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
     }
     for (i32 j = 0; j < 7; ++j)
-        sub_6F5C0C(53 + 194, 26 * j + windowTop, 0xDAu, 5u, 0.2f);
+        sub_6F5C0C(53 + 194, 26 * j + windowTop, 0xDAu, 5u, 0.2f); //This function draws the arrows
 
     equippedStats[0] = gContext.weapons.get_resource(equippedWeaponID).weapon_strength;
     gameDrawNumbers(200, windowTop, equippedStats[0], 3, COLOR_WHITE, 0.2f);
@@ -331,12 +331,12 @@ void handleEquipMenuInput(i32 updateStateMask) {
     else {
         if (checkInputReceived(4)) {
             do {
-                *EQUIP_MENU_PARTY_INDEX = (((*EQUIP_MENU_PARTY_INDEX) - 1) < 0) ? 2 : (*EQUIP_MENU_PARTY_INDEX) - 1;
+                *EQUIP_MENU_PARTY_INDEX = (((i32)(*EQUIP_MENU_PARTY_INDEX) - 1) < 0) ? 2 : ((*EQUIP_MENU_PARTY_INDEX) - 1);
             } while ((CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX] == 0xFF);
         }
         else if (checkInputReceived(8)) {
             do {
-                *EQUIP_MENU_PARTY_INDEX = (((*EQUIP_MENU_PARTY_INDEX) - 1) > 2) ? 0 : (*EQUIP_MENU_PARTY_INDEX) + 1;
+                *EQUIP_MENU_PARTY_INDEX = (((*EQUIP_MENU_PARTY_INDEX) + 1) > 2) ? 0 : ((*EQUIP_MENU_PARTY_INDEX) + 1);
             } while ((CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX] == 0xFF);
         }
         if (checkInputReceived(64)) {

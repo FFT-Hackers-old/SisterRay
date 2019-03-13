@@ -52,7 +52,6 @@ typedef struct {
     i16 drawDistance4;
 } oldDrawBoxParams;
 
-#pragma pack(pop)
 #define menuWindowConfig ((oldDrawBoxParams*)0x921C78)
 #define equipMenuWindowConfig ((oldDrawBoxParams*)0x920AC8)
 

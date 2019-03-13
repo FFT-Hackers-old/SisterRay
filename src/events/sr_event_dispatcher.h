@@ -7,7 +7,7 @@
 #include "sr_event_base.h"
 
 /*maintain registered event-listeners which will be triggered when a particular event is dispatched
- One of these will be constructed for each "menu" pane. T must be the eventTYpe of the event W*/
+ One of these will be constructed for each "menu" pane. T must be the eventType of the event W*/
 template<class EVENT_TYPE_TYPE, class LISTENER_TYPE, class EVENT_TYPE, typename DISPATCH_ARGS_TYPE> class SrEventDispatcher {
 public:
     std::unordered_map<EVENT_TYPE_TYPE, std::vector<LISTENER_TYPE>> eventCallbacks;
@@ -20,7 +20,6 @@ public:
         eventCallbacks[eventType].erase(eventCallbacks[eventType].begin() + index);
     }
 
-    /*Invoke every callback registered to the eventType of the event*/
     void dispatchEvent(EVENT_TYPE event, DISPATCH_ARGS_TYPE eventArgs) {
         auto eventType = event.eventType;
         for (auto callback = eventCallbacks[eventType]; callback != eventCallbacks[eventType].end(); callback++) {

@@ -1,25 +1,22 @@
 #include "menu_draw_event.h"
 
 
-MenuDrawEvent::MenuDrawEvent() {}
+MenuDrawEvent::MenuDrawEvent(EquipMenuEvent event_type): SrEvent(event_type) {}
 
 void MenuDrawEvent::clearDrawInstructions() {
     instructions.clear();
 }
 
 void MenuDrawEvent::addDrawInstruction(drawBoxParams params) {
-    std::unique_ptr<DrawBoxInstruction> instruction_ptr = std::make_unique<DrawBoxInstruction>(params);
-    instructions.emplace_back(instruction_ptr);
+    instructions.emplace_back(std::make_unique<DrawBoxInstruction>(params));
 }
 
 void MenuDrawEvent::addDrawInstruction(drawTextParams params) {
-    std::unique_ptr<DrawTextInstruction> instruction_ptr = std::make_unique<DrawTextInstruction>(params);
-    instructions.emplace_back(instruction_ptr);
+    instructions.emplace_back(std::make_unique<DrawTextInstruction>(params));
 }
 
 void MenuDrawEvent::addDrawInstruction(drawNumberParams params) {
-    std::unique_ptr<DrawNumberInstruction> instruction_ptr = std::make_unique<DrawNumberInstruction>(params);
-    instructions.emplace_back(instruction_ptr);
+    instructions.emplace_back(std::make_unique<DrawNumberInstruction>(params));
 }
 
 void MenuDrawEvent::execute() {

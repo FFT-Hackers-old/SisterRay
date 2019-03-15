@@ -69,17 +69,17 @@ SISTERRAY_API i32 renderBattleItemView() {
             itemQuantity = gContext.battle_inventory->get_resource(flatInventoryIndex).quantity;
 
             if ((*COMMAND_TRIGGER_INDEX) != 3 && (*COMMAND_TRIGGER_INDEX) != 10)
-                textColor = (isThrowable(itemID)) ? 7 : 0;
+                textColor = (isThrowable(itemID)) ? COLOR_WHITE : COLOR_GRAY;
             else
-                textColor = (isUsableInBattle(itemID)) ? 7 : 0;
+                textColor = (isUsableInBattle(itemID)) ? COLOR_WHITE : COLOR_GRAY;
 
             displayVisibleItemIcon(94, unknownLocal + 32 * visibleRow + 356, itemID, 0, 0.40099999);
             sub_6F5C0C(366, unknownLocal + 32 * visibleRow + 364, 0xD5u, textColor, 0.40099999);
-            renderNumbers(378, unknownLocal + 32 * visibleRow + 364, itemQuantity, 2, textColor, 1053642719);
+            gameDrawNumbers(378, unknownLocal + 32 * visibleRow + 364, itemQuantity, 2, textColor, 1053642719);
 
             //Now display the item names
             fetchedName = getNameFromItemID(itemID);
-            displayTextAtLocation(130, unknownLocal + 32 * visibleRow + 360, fetchedName, textColor, 1053642719);
+            displayTextAtLocation(130, unknownLocal + 32 * visibleRow + 360, fetchedName, (color)textColor, 1053642719);
         }
     }
     return 0;

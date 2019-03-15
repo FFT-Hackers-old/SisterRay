@@ -9,12 +9,12 @@
 
 /*Simple C++ template to replace all the old school manually resized C arrays
   And unify our String Registry and all of our various item registries*/
-template<class T> class SrResourceRegistry {
+template<class EVENT_TYPE_TYPE> class SrResourceRegistry {
 public:
     /*Constructor for initializing a resource registry from a kernel stream*/
     SrResourceRegistry(SrKernelStream* stream) {
         size_t read_size;
-        T object;
+        EVENT_TYPE_TYPE object;
 
         for (;;)
         {
@@ -39,18 +39,18 @@ public:
     ~SrResourceRegistry() {
     }
 
-    T get_resource(int index) {
+    EVENT_TYPE_TYPE get_resource(int index) {
         if ((resource_count() == 0)||(index >= (resource_count() - 1))) {
-            return T();
+            return EVENT_TYPE_TYPE();
         }
         return resource_registry[index];
     }
 
-    void add_resource(T resource) {
+    void add_resource(EVENT_TYPE_TYPE resource) {
         resource_registry.push_back(resource);
     }
 
-    void update_resource(int index, T resource) {
+    void update_resource(int index, EVENT_TYPE_TYPE resource) {
         if (index < (resource_count())){
             resource_registry[index] = resource;
         }
@@ -65,11 +65,11 @@ public:
     }
 
 
-    T* get_data() {
+    EVENT_TYPE_TYPE* get_data() {
         return resource_registry.data();
     }
 
-    std::vector<T> resource_registry;
+    std::vector<EVENT_TYPE_TYPE> resource_registry;
 };
 
 #endif

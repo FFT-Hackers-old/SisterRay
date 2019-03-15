@@ -80,7 +80,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
         if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
             fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
-            displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
+            displayTextAtLocation(27, 64, fetchedDescription, COLOR_WHITE, 0.1f);
         }
         break;
     case 2:                                   // Use Selected - Targeting Party
@@ -89,7 +89,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
         if (gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id != 0xFFFF)
         {
             fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
-            displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
+            displayTextAtLocation(27, 64, fetchedDescription, COLOR_WHITE, 0.1f);
         }
         break;
     case 3:                                   // Browsing Key Items
@@ -106,7 +106,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
         {
             i32 keyItemID = (KEY_ITEMS_INVENTORY_PTR)[flatKeyItemInventoryIndex];
             fetchedDescription = (char*)load_kernel_object_text(0xEu, keyItemID, 0); //The returned arg here is the item description
-            displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
+            displayTextAtLocation(27, 64, fetchedDescription, COLOR_WHITE, 0.1f);
         }
         break;
     case 4:                                   //Selecting an Arrange Method
@@ -115,13 +115,13 @@ void displayActiveCursorStates(i32 updateStateMask) {
         displayCursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * inventory_arrange_type + 17, 0.001f);
         for (int j = 0; j < 8; ++j) {            // Loop over arrange types
             fetchedDescription = gContext.game_strings.inventory_menu_texts.get_string(j + 3); //read the arrange type text from an in memory 12 char byte array skipping "use, arrange, and key item"
-            displayTextAtLocation(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetchedDescription, 7, 1008981770);
+            displayTextAtLocation(*(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * j + 13, fetchedDescription, COLOR_WHITE, 0.001f);
         }
-        drawMenuBox((i16*)(&(menuWindowConfig)[3]), (float)1008981770);
+        gameDrawBox((i16*)(&(menuWindowConfig)[3]), 0.001f);
         break;
     case 5:                                   // Inside Custom Sort
         if (updateStateMask & 2)
-            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.0f);
+            displayCursor(93 * cursorContextArray[0].relativeColumnIndex + 13, 26, 0.1f);
 
         baseSortRow = cursorContextArray[5].baseRowIndex;
         relativeSortRow = cursorContextArray[5].relativeRowIndex;
@@ -129,7 +129,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
         if (gContext.inventory->get_resource(baseSortRow + relativeSortRow).item_id != 0xFFFF)
         {
             fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(baseRowIndex + relativeRowIndex).item_id);
-            displayTextAtLocation(27, 64, fetchedDescription, 7, 1036966167);
+            displayTextAtLocation(27, 64, fetchedDescription, COLOR_WHITE, .1f);
         }
         break;
     default:
@@ -149,7 +149,7 @@ void displayInventoryViews(i32 updateStateMask) {
     }
 
     for (int menu_text_index = 0; menu_text_index < 3; ++menu_text_index) //display the "Use, Arrange, and Key Item fields
-        displayTextAtLocation(93 * menu_text_index + 57, 17, gContext.game_strings.inventory_menu_texts.get_string(menu_text_index), 7, 1036966167);
+        displayTextAtLocation(93 * menu_text_index + 57, 17, gContext.game_strings.inventory_menu_texts.get_string(menu_text_index), COLOR_WHITE, .1f);
     sub_6FA12F(0, 102, 640, 372);
 
     if (cursorContextArray[0].relativeColumnIndex == 2)     // If cursor positioned on key items
@@ -169,7 +169,7 @@ void displayInventoryViews(i32 updateStateMask) {
                         displayCursor(291, pixelOffsetToSelectedItem + 113, 0.0);
                 }
             }
-            displayCursor(298, 37 * relativeSortRow + 113, 0.0099999998f);
+            displayCursor(298, 37 * relativeSortRow + 113, 0.001f);
             mainViewContextIndex = 5;                 // Set the local to 5 if we're in custom sort
         }
         else
@@ -180,9 +180,9 @@ void displayInventoryViews(i32 updateStateMask) {
         renderMainInventoryView(mainViewContextIndex);
     }
     sub_6FA347();
-    drawMenuBox((i16*)(&(menuWindowConfig)[0]), 0.111f);
-    drawMenuBox(((i16*)&(menuWindowConfig)[1]), 0.2f);
-    drawMenuBox(((i16*)&(menuWindowConfig)[2]), 0.30000000f);
+    gameDrawBox((i16*)(&(menuWindowConfig)[0]), 0.111f);
+    gameDrawBox(((i16*)&(menuWindowConfig)[1]), 0.2f);
+    gameDrawBox(((i16*)&(menuWindowConfig)[2]), 0.30000000f);
 }
 
 
@@ -197,7 +197,7 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
     i32 baseRowIndex;
     i32 textColor;
 
-    sideScrollerArguments* arguments = (sideScrollerArguments*)dword_DD17F0;
+    drawScrollerParams* arguments = (drawScrollerParams*)dword_DD17F0;
     setSideScrollerArguments(arguments, 10, gContext.inventory->current_capacity(), cursorContextArray[mainViewContextIndex].baseRowIndex, 618, 102, 17, 372);
     renderMenuSideScroller(arguments, 0.2);
     int displayed_row_count = ((dword_DD1A48)[14 * mainViewContextIndex] != 0) + 10;
@@ -213,10 +213,10 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
             textColor = usableInInventoryMenu(itemID) ? 0 : 7;
             kernelObjectName = getNameFromItemID(itemID);
 
-            displayTextAtLocation(373, 37 * visibleItem + 9 * baseColumnIndex + 109, kernelObjectName, (u8)textColor, 1036966167);
-            displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseColumnIndex + 105, itemID, 0, 1036966167);
-            sub_6F5C0C(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, 1036966167);
-            renderNumbers(550, 37 * visibleItem + 9 * baseColumnIndex + 112, itemQuantity, 3, (u8)textColor, 1036966167);
+            displayTextAtLocation(373, 37 * visibleItem + 9 * baseColumnIndex + 109, kernelObjectName, (color)textColor, .1f);
+            displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseColumnIndex + 105, itemID, 0, .1f);
+            sub_6F5C0C(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, .1f);
+            gameDrawNumbers(550, 37 * visibleItem + 9 * baseColumnIndex + 112, itemQuantity, 3, (u8)textColor, .1f);
         }
     }
 }
@@ -233,7 +233,7 @@ void renderCharacterPortraits() {
     }
 
     // initialize_menu_window_struct((u16*)&unk_local_struct, (u16)0, (u16)96, (u16)300, (u16)384); //set some values in a struct/array used in the next call
-    drawMenuBox((i16*)(&characterMenuBoxLocal), 0.1f); //this does a bunch of shit with the above struct
+    gameDrawBox((i16*)(&characterMenuBoxLocal), 0.1f); //this does a bunch of shit with the above struct
 }
 
 
@@ -255,7 +255,7 @@ void renderKeyItemsView() {
         for (int keyItemColumn = 0; keyItemColumn < 2; ++keyItemColumn) {
             if ((KEY_ITEMS_INVENTORY_PTR)[keyItemColumn + flat_key_item_index_base] != 0xFF) {
                 keyItemName = (char *)load_kernel_object_text(0xEu, (KEY_ITEMS_INVENTORY_PTR)[(u8)(keyItemColumn + flat_key_item_index_base)], 8); //fetch the name of the key item
-                displayTextAtLocation(293 * keyItemColumn + 53, 36 * visibleItemItemRow + 9 * (*dword_DD1AE4) + 124, keyItemName, 7, 1036966167); //display the text
+                displayTextAtLocation(293 * keyItemColumn + 53, 36 * visibleItemItemRow + 9 * (*dword_DD1AE4) + 124, keyItemName, COLOR_WHITE, .1f); //display the text
             }
         }
     }

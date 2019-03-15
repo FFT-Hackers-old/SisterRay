@@ -19,7 +19,7 @@ void setContextCursorData(cursorContext* cursorContext, u32 relativeColumn, u32 
     cursorContext->fourteenh_dword = unk_14;
 }
 
-void setSideScrollerArguments(sideScrollerArguments* arguments, u16 viewSize, u16 maxRows, u16 baseRow, u16 pos1, u16 pos2, u16 pos3, u16 pos4){
+void setSideScrollerArguments(drawScrollerParams* arguments, u16 viewSize, u16 maxRows, u16 baseRow, u16 pos1, u16 pos2, u16 pos3, u16 pos4){
     arguments->viewSize = viewSize;
     arguments->maxRows = maxRows;
     arguments->baseRow = baseRow;
@@ -29,7 +29,12 @@ void setSideScrollerArguments(sideScrollerArguments* arguments, u16 viewSize, u1
     arguments->position4 = pos4;
 }
 
-void renderMenuSideScroller(sideScrollerArguments* arguments, float floatArg) {
+i32 displayTextAtLocation(i32 x_start, i32 y_start, const char* stringToDisplay, color textColor, float thickness) {
+    gameDrawString(x_start, y_start, stringToDisplay, textColor, thickness);
+    return 0;
+}
+
+void renderMenuSideScroller(drawScrollerParams* arguments, float floatArg) {
     renderSideScroller((i32)arguments, floatArg);
 }
 

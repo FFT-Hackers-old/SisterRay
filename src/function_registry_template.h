@@ -9,16 +9,16 @@
 
 /*Simple C++ template to replace all the old school manually resized C arrays
   And unify our String Registry and all of our various item registries*/
-template<class T> class SrFunctionResourceRegistry: public SrResourceRegistry<std::string> {
+template<class EVENT_TYPE_TYPE> class SrFunctionResourceRegistry: public SrResourceRegistry<std::string> {
 public:
-    std::unordered_map<std::string, T> handler_names;
+    std::unordered_map<std::string, EVENT_TYPE_TYPE> handler_names;
     SrFunctionResourceRegistry(): SrResourceRegistry() {};
 
-    void add_function(std::string name, T callback) {
+    void add_function(std::string name, EVENT_TYPE_TYPE callback) {
         handler_names[name] = callback;
     }
 
-    T get_handler(u16 item_id) {
+    EVENT_TYPE_TYPE get_handler(u16 item_id) {
         auto& name = get_resource(item_id);
         return handler_names[name];
     }

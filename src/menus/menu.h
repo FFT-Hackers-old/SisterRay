@@ -14,8 +14,16 @@ typedef struct {
     u16 position2;
     u16 position3;
     u16 position4;
+    float priority;
 } drawScrollerParams;
 #pragma pack(pop)
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 partyIndex;
+    float priority;
+} drawPortraitParams;
 
 // Todo: Pixel count to figure out which draw distance is which
 #pragma pack(push, 1)

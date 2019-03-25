@@ -25,6 +25,13 @@ typedef struct {
     float priority;
 } drawPortraitParams;
 
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 partyIndex;
+    float priority;
+} drawHPBarParams;
+
 // Todo: Pixel count to figure out which draw distance is which
 #pragma pack(push, 1)
 typedef struct {

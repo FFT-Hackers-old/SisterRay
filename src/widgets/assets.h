@@ -30,4 +30,15 @@ static void drawPortraitWidget(PortraitWidget* portraitWidget);
 static const WidgetClass kPortraitWidgetClass = { (SRWIDGETDRAWPROC)drawPortraitWidget };
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name);
 
+typedef struct {
+    Widget widget;
+    u8 partyIndex;
+    float priority;
+} HPBarWidget;
+
+static void drawHPBarWidget(HPBarWidget* hpBarWidget);
+static const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
+HPBarWidget* createPortraitWidget(drawHPBarParams params, std::string name);
+
+
 #endif

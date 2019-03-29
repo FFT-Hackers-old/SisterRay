@@ -38,7 +38,7 @@ typedef struct {
 
 static void drawHPBarWidget(HPBarWidget* hpBarWidget);
 static const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
-HPBarWidget* createPortraitWidget(drawHPBarParams params, std::string name);
+HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name);
 
 
 #endif

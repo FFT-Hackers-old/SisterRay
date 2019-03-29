@@ -1,0 +1,30 @@
+#ifndef EVENT_BUS_H
+#define EVENT_BUS_H
+
+#include <vector>
+#include <unordered_map>
+#include "non_copyable.h"
+#include "event.h"
+
+typedef void(*SrEventCallback)(const void*);
+
+class EventBus : private NonCopyable
+{
+public:
+    EventBus();
+    ~EventBus();
+
+    void dispatch(SrEventType type, void* event);
+    SrEventListener addListener(SrEventType eventType, SrEventCallback callback);
+    void removeListener(SrEventListener listener);
+
+private:
+    size_t _listenerCount;
+    size_t _listenerCapacity;
+    std::vector<SrEventType> _listenerTypes;
+    std::vector<SrEventCallback> _listenerCallbacks;
+    std::vector<std::vector<size_t>> _listenerRegistry; //vector of vectors containing listeners, i.e indexes into the callback array
+    std::vector<size_t> _freeListeners;
+};
+
+#endif

@@ -52,8 +52,8 @@ static void drawHPBarWidget(HPBarWidget* hpBarWidget) {
     );
 }
 
-HPBarWidget* createPortraitWidget(drawHPBarParams params, std::string name) {
-    HPBarWidget* widget = (HPBarWidget*)createWidget(&kPortraitWidgetClass, name, sizeof(HPBarWidget));
+HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name) {
+    HPBarWidget* widget = (HPBarWidget*)createWidget(&kHPBarWidgetClass, name, sizeof(HPBarWidget));
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->partyIndex = params.partyIndex;

@@ -228,7 +228,7 @@ void renderCharacterPortraits() {
     for (int currentPartyMember = 0; currentPartyMember < 3; ++currentPartyMember) { //loop over and render character portraits, probably
         if ((CURRENT_PARTY_MEMBER_ARRAY)[currentPartyMember] != 0xFF) {         //if there is a party member in that slot
             renderHPAndStatus(133, 120 * currentPartyMember + 126, currentPartyMember, 1036831949); //possibly display picture?
-            sub_6E6C5B(37, 120 * currentPartyMember + 116, currentPartyMember, 1036831949);
+            displayPortrait(37, 120 * currentPartyMember + 116, currentPartyMember, 1036831949);
         }
     }
 

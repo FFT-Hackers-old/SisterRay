@@ -79,7 +79,7 @@ typedef i16(*pfnsub6C62A2)(i32, i32, i32, i32);
 
 /*This function sets some structs of size 0x70 based on the party member ID, not sure what they are yet*/
 typedef u8*(*pfnsub6E6C5B)(i32, i32, i32, i32);
-#define sub_6E6C5B                      ((pfnsub6E6C5B)0x6E6C5B)
+#define displayPortrait                      ((pfnsub6E6C5B)0x6E6C5B)
 
 typedef u16*(*pfnsub6E7BA1)(u16*, i16, i16, i16, i16);
 #define initialize_menu_window_struct          ((pfnsub6E7BA1)0x6E7BA1)

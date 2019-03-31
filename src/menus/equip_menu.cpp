@@ -47,8 +47,8 @@ void displayMenuObjects(cursorContext* cursorContextArray, u32 menuState, i32 st
     }
 
     //HP bars and the like
-    renderHPAndStatus(110, 17, *EQUIP_MENU_PARTY_INDEX, 1045220557);
-    sub_6E6C5B(17, 9, *EQUIP_MENU_PARTY_INDEX, 1045220557);
+    renderHPAndStatus(110, 17, *EQUIP_MENU_PARTY_INDEX, 1045220557); //HP bar
+    displayPortrait(17, 9, *EQUIP_MENU_PARTY_INDEX, 1045220557); //Character Portrait
 
     //Draw Menu Boxes -- this part can be data driven
     for (u32 boxDataIndex = 0; boxDataIndex < 2; ++boxDataIndex) //index into box data structs and draw dem boxes

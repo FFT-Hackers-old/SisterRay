@@ -14,6 +14,7 @@
 #include "inventories/battle_inventory.h"
 #include "inventories/materia_inventory.h"
 #include "usable_item_handlers.h"
+#include "events/event_bus.h"
 #include "string_registry.h"
 #include <map>
 #include <memory>
@@ -21,7 +22,7 @@
 /*Game Context holds all the registries which contain
   Resources, in the form of either data or registered callback*/
 typedef struct {
-    FILE*                              logFile;
+    FILE*                               logFile;
     SrItemRegistry                      items;
     SrWeaponRegistry                    weapons;
     SrArmorRegistry                     armors;
@@ -36,6 +37,7 @@ typedef struct {
     srNoTargetCallbackRegistry          untargeted_handlers;
     SrOnUseItemDataRegistry             item_on_use_data;
     SrGameStrings                       game_strings;
+    EventBus                            eventBus;
 } SrContext;
 
 SISTERRAY_GLOBAL SrContext gContext;

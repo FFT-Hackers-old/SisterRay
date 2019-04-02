@@ -11,7 +11,7 @@ typedef struct {
     float priority;
 } TextWidget;
 
-static void drawTextWidget(TextWidget* textWidget);
+void drawTextWidget(TextWidget* textWidget);
 static const WidgetClass kTextWidgetClass = { (SRWIDGETDRAWPROC)drawTextWidget };
 TextWidget* createTextWidget(drawTextParams params, std::string name);
 
@@ -24,7 +24,7 @@ typedef struct {
     float priority;
 } NumberWidget;
 
-static void drawNumberWidget(NumberWidget* numberWidget);
+void drawNumberWidget(NumberWidget* numberWidget);
 static const WidgetClass kNumberWidgetClass = { (SRWIDGETDRAWPROC)drawNumberWidget };
 NumberWidget* createNumberWidget(drawNumberParams params, std::string name);
 
@@ -37,7 +37,7 @@ typedef struct {
     float priority;
 } BoxWidget;
 
-static void drawBoxWidget(BoxWidget* boxWidget);
+void drawBoxWidget(BoxWidget* boxWidget);
 static const WidgetClass kBoxWidgetClass = { (SRWIDGETDRAWPROC)drawBoxWidget };
 BoxWidget* createBoxWidget(drawBoxParams params, std::string name);
 

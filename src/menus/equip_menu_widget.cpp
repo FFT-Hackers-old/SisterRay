@@ -13,6 +13,7 @@ Widget* initEquipMenuWidget() {
     // create the equipment Widget and add it's default children
     initCurrentEqupWidget(mainWidget);
     initStatDiffWidget(mainWidget);
+    return mainWidget;
 }
 
 void initCurrentEqupWidget(Widget* mainWidget) {

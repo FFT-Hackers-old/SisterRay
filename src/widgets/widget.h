@@ -22,6 +22,7 @@ struct Widget_ {
     std::unordered_map<std::string, u32> children_names; //Name Index Lookup
     u32 xCoordinate;
     u32 yCoordinate;
+    bool enabled;
 };
 
 Widget* createWidget(std::string name, size_t size=sizeof(Widget), const WidgetClass* klass=&kBaseWidgetClass);
@@ -29,5 +30,9 @@ void addChildWidget(Widget* widget, Widget* child_widget, std::string name);
 Widget* getChild(Widget* parent, std::string name);
 void setChildWidget(Widget* parent, Widget* newChild, std::string name);
 bool checkWidgetTypes(Widget* a, Widget* b);
+
+void moveWidget(Widget* widget, u32 x, u32 y);
+void enableWidget(Widget* widget);
+void disableWidget(Widget* widget);
 
 #endif

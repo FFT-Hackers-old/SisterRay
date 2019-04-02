@@ -13,6 +13,9 @@ Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass)
 //Recursively draw a widget and all of its sub-widgets
 void drawWidget(Widget* widget)
 {
+    if (!widget->enabled)
+        return;
+
     if (widget->klass->draw != NULL) {
         widget->klass->draw(widget);
     }
@@ -49,4 +52,17 @@ void setChildWidget(Widget* parent, Widget* newChild, std::string name) {
 
 bool checkWidgetTypes(Widget* a, Widget* b) {
     return ((a->klass) == (b->klass));
+}
+
+void moveWidget(Widget * widget, u32 x, u32 y) {
+    widget->xCoordinate = x;
+    widget->yCoordinate = y;
+}
+
+void enableWidget(Widget * widget) {
+    widget->enabled = true;
+}
+
+void enableWidget(Widget* widget) {
+    widget->enabled = false;
 }

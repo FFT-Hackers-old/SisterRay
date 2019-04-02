@@ -296,116 +296,34 @@ void handleEquipMenuInput(i32 updateStateMask) {
 
     characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX]];
     handleCursorPositionUpdate((u32*)(&(cursorContextArray[equipMenuState])));
-    if (equipMenuState == 1) {
-        if (checkInputReceived(32)) {
-            playMenuSound(447);
-            *EQUIP_MENU_STATE = 0;
-            u8 equippedGearRelativeIndex = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
-
-            switch (cursorContextArray[0].relativeRowIndex) { //
-                case 0: { //equip WEAPON
-                    equippedGearItemType = 1;
-                    handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
-                    break;
-                }
-                case 1: { //equip ARMOR
-                    equippedGearItemType = 2;
-                    handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
-                    break;
-                }
-                case 2: { //equip Accessory
-                    equippedGearItemType = 3;
-                    handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
-                    break;
-                }
-                default: {
-                }
-            }
-            recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
-            recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
-            updateMiscPartyStats();
-        }
-        else if (checkInputReceived(64))
-        {
-            *EQUIP_MENU_STATE = 0;
-        }
+    if (checkInputReceived(32)) {
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_OK, nullptr);
     }
-    else {
-        if (checkInputReceived(4)) {
-            do {
-                *EQUIP_MENU_PARTY_INDEX = (((i32)(*EQUIP_MENU_PARTY_INDEX) - 1) < 0) ? 2 : ((*EQUIP_MENU_PARTY_INDEX) - 1);
-            } while ((CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX] == 0xFF);
-        }
-        else if (checkInputReceived(8)) {
-            do {
-                *EQUIP_MENU_PARTY_INDEX = (((*EQUIP_MENU_PARTY_INDEX) + 1) > 2) ? 0 : ((*EQUIP_MENU_PARTY_INDEX) + 1);
-            } while ((CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX] == 0xFF);
-        }
-        if (checkInputReceived(64)) {
-            if (*DID_MATERIA_GEAR_CHANGE && (*word_DD1BC0 || *dword_DC1290)) {
-                playMenuSound(1);
-                sub_6C9812(4, 3);
-                sub_6C6AEE(3);
-                *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
-            }
-            else {
-                playMenuSound(4);
-                sub_6C9812(5, 0);
-                sub_6C6AEE(0);
-            }
-        }
-        else if (checkInputReceived(32)) {
-            equippableGearCount = setupGearMenu(cursorContextArray[0].relativeRowIndex + 1);
-            if (equippableGearCount && !(*byte_DC0B4B & 1)) {
-                playMenuSound(1);
-                *EQUIP_MENU_STATE = 1;
-                if (equippableGearCount <= 8) //Sets the "single view" size
-                    cursorViewBound = equippableGearCount;
-                else
-                    cursorViewBound = 8;
-                setContextCursorData((cursorContext*)(&cursorContextArray[1]), 0, 0, 1, cursorViewBound, 0, 0, 1, equippableGearCount, 0, 0, 0, 0, 0, 1);
-            }
-            else {
-                playMenuSound(3);
-            }
-        }
-        else if (checkInputReceived(128) && (*word_DD1BC0 || *dword_DC1290)) { //When switching to the materia view
-            playMenuSound(1);
-            sub_6C9812(4, 3);
-            sub_6C6AEE(3);
-            *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
-        }
-        else if (checkInputReceived(16) && !(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2) { //unequip accessory
-            playMenuSound(4);
-            if (characterRecordArray[characterRecordArrayIndex].equipped_accessory != 0xFF) {
-                removedGearRelativeIndex = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
-                removedGearAbsoluteIndex = gContext.itemTypeData.get_absolute_id(3, removedGearRelativeIndex);
-                gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteIndex, 1); //can only unequip
-            }
-            characterRecordArray[characterRecordArrayIndex].equipped_accessory = 0xFF;
-            recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
-            recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
-            updateMiscPartyStats();
-        }
+    else if (checkInputReceived(64)) {
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_CANCEL, nullptr);
     }
-}
-
-/*There are originally 32 slots for the equipment view, this interfaces with a new global. We construct
-  We do this by just constructing a new object and binding it to the gContext, since this is an emphemeral struct*/
-u16 setupGearMenu(u8 itemType) {
-    u8 characterID = (CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX];
-    u16 equippableGearCount = 0;
-    gContext.gearViewData = SrGearViewData();
-    for (i32 inventoryEntry = 0; inventoryEntry < gContext.inventory->current_capacity(); inventoryEntry++) {
-        if (gContext.itemTypeData.get_resource(inventoryEntry).item_type != itemType) {
-            continue;
-        }
-        if (characterCanEquipItem(characterID, gContext.inventory->get_resource(inventoryEntry).item_id)) {
-            GearViewData data = { gContext.itemTypeData.get_resource(inventoryEntry).type_relative_id };
-            gContext.gearViewData.add_resource(data);
-            equippableGearCount++;
-        }
+    else if (checkInputReceived(4)) {
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_L1, nullptr);
     }
-    gContext.gearViewData.setSlotsInUse(equippableGearCount);
-    return equippableGearCount;
+    else if (checkInputReceived(8)) {
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_R1, nullptr);
+    }
+    else if (checkInputReceived(128) && (*word_DD1BC0 || *dword_DC1290)) { //When switching to the materia view, square
+        playMenuSound(1);
+        sub_6C9812(4, 3);
+        sub_6C6AEE(3);
+        *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
+    }
+    else if (checkInputReceived(16) && !(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2) { //unequip accessory
+        playMenuSound(4);
+        if (characterRecordArray[characterRecordArrayIndex].equipped_accessory != 0xFF) {
+            removedGearRelativeIndex = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
+            removedGearAbsoluteIndex = gContext.itemTypeData.get_absolute_id(3, removedGearRelativeIndex);
+            gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteIndex, 1); //can only unequip
+        }
+        characterRecordArray[characterRecordArrayIndex].equipped_accessory = 0xFF;
+        recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
+        recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
+        updateMiscPartyStats();
+    }
 }

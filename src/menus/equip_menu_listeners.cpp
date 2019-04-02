@@ -1,8 +1,9 @@
 #include "equip_menu_listeners.h"
 #include "../impl.h"
 #include "../party/party_utils.h"
+//-----------------------------------------------------Input Handler Callbacks-------------------------------------------------------------//
 
-//Handler for MENU_STATE = 1, inject any on equipEffects similarly
+/*Handlers for "OK" inputs, one per menu State*/
 void equipGearHandler(const void* params) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
@@ -40,6 +41,77 @@ void equipGearHandler(const void* params) {
     recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
     updateMiscPartyStats();
 }
+
+void selectGearHandler(const void* params) {
+    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
+    u32 equipMenuState = *EQUIP_MENU_STATE;
+    i32 cursorViewBound = 0;
+    u16 equippableGearCount = 0;
+
+    if (*EQUIP_MENU_STATE != 0)
+        return;
+
+    equippableGearCount = setupGearMenu(cursorContextArray[0].relativeRowIndex + 1);
+    if (equippableGearCount && !(*byte_DC0B4B & 1)) {
+        playMenuSound(1);
+        *EQUIP_MENU_STATE = 1;
+        if (equippableGearCount <= 8) //Sets the "single view" size
+            cursorViewBound = equippableGearCount;
+        else
+            cursorViewBound = 8;
+        setContextCursorData((cursorContext*)(&cursorContextArray[1]), 0, 0, 1, cursorViewBound, 0, 0, 1, equippableGearCount, 0, 0, 0, 0, 0, 1);
+        // add the list widget
+        // 
+    }
+    else {
+        playMenuSound(3);
+    }
+
+}
+
+/*Handlers for "Cancel" inputs, one per menu State*/
+void exitEquipViewListener(const void* params) {
+    *EQUIP_MENU_STATE = 0;
+    //Remove Equip Menu Widgets for showing the List of Items
+    //Reset stat diffs, descriptions, etc to currently equipped values
+}
+
+void exitMenuListener(const void* params) {
+    if (*EQUIP_MENU_STATE != 0)
+        return;
+
+    if (*DID_MATERIA_GEAR_CHANGE && (*word_DD1BC0 || *dword_DC1290)) {
+        playMenuSound(1);
+        sub_6C9812(4, 3);
+        sub_6C6AEE(3);
+        *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
+    }
+    else {
+        playMenuSound(4);
+        sub_6C9812(5, 0);
+        sub_6C6AEE(0);
+    }
+}
+
+/*Handlers for L1/R1 "switching" inputs, for states where they function*/
+void changeCharLeft(const void* params) {
+    do {
+        *EQUIP_MENU_PARTY_INDEX = (((i32)(*EQUIP_MENU_PARTY_INDEX) - 1) < 0) ? 2 : ((*EQUIP_MENU_PARTY_INDEX) - 1);
+    } while ((CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX] == 0xFF);
+
+    //update displayed character Data in the Widget
+}
+
+void changeCHarRight(const void* params) {
+    do {
+        *EQUIP_MENU_PARTY_INDEX = (((*EQUIP_MENU_PARTY_INDEX) + 1) > 2) ? 0 : ((*EQUIP_MENU_PARTY_INDEX) + 1);
+    } while ((CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX] == 0xFF);
+
+    //update displayed character Data in the Widget
+}
+
+//-----------------------------------------------------End Input Handler Callbacks-------------------------------------------------------------//
 
 void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex) {
     u8 removedGearRelativeID;
@@ -109,4 +181,24 @@ void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u1
             equippedMateriaData[materiaSlotIndex] = 0xFFFFFFFF;
         }
     }
+}
+
+/*There are originally 32 slots for the equipment view, this interfaces with a new global. We construct
+  We do this by just constructing a new object and binding it to the gContext, since this is an emphemeral struct*/
+u16 setupGearMenu(u8 itemType) {
+    u8 characterID = (CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX];
+    u16 equippableGearCount = 0;
+    gContext.gearViewData = SrGearViewData();
+    for (i32 inventoryEntry = 0; inventoryEntry < gContext.inventory->current_capacity(); inventoryEntry++) {
+        if (gContext.itemTypeData.get_resource(inventoryEntry).item_type != itemType) {
+            continue;
+        }
+        if (characterCanEquipItem(characterID, gContext.inventory->get_resource(inventoryEntry).item_id)) {
+            GearViewData data = { gContext.itemTypeData.get_resource(inventoryEntry).type_relative_id };
+            gContext.gearViewData.add_resource(data);
+            equippableGearCount++;
+        }
+    }
+    gContext.gearViewData.setSlotsInUse(equippableGearCount);
+    return equippableGearCount;
 }

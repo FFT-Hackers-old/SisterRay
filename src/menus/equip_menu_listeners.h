@@ -8,7 +8,12 @@
 #include "../widgets/primitives.h"
 #include "../widgets/assets.h"
 
-void equipGearHandler(const void* params);
+
+typedef struct {
+    Widget* equipMenuWidget;
+} equipMenuListenerParams;
+
+void equipGearHandler(const void* params); //Signature of Listener Callback
 void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex);
 void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex);
 

@@ -2,7 +2,7 @@
 #include "event_bus.h"
 
 EventBus::EventBus(): _listenerCount(0), _listenerCapacity(1) {
-    _listenerTypes.push_back(0);
+    _listenerTypes.push_back(NO_TYPE);
     _listenerCallbacks.push_back(nullptr);
 }
 
@@ -67,7 +67,7 @@ void EventBus::removeListener(SrEventListener listener)
 
     std::vector<size_t>& eventListeners = _listenerRegistry[eventType];
     std::remove(eventListeners.begin(), eventListeners.end(), listener);
-    _listenerTypes[listener] = 0;
+    _listenerTypes[listener] = NO_TYPE;
     _listenerCallbacks[listener] = nullptr;
     _freeListeners.push_back(listener);
     _listenerCount--;

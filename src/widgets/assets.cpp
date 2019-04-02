@@ -14,7 +14,7 @@ static void drawScrollerWidget(ScrollerWidget* scrollerPortrait) {
 }
 
 ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name) {
-    ScrollerWidget* widget = (ScrollerWidget*)createWidget(&kScrollerWidgetClass, name, sizeof(ScrollerWidget));
+    ScrollerWidget* widget = (ScrollerWidget*)createWidget(name, sizeof(ScrollerWidget), &kScrollerWidgetClass);
     widget->viewSize = params.viewSize;
     widget->baseRows = params.baseRow;
     widget->maxRows = params.maxRows;
@@ -35,13 +35,19 @@ static void drawPortraitWidget(PortraitWidget* portraitWidget) {
 }
 
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name) {
-    PortraitWidget* widget = (PortraitWidget*)createWidget(&kPortraitWidgetClass, name, sizeof(PortraitWidget));
+    PortraitWidget* widget = (PortraitWidget*)createWidget(name, sizeof(PortraitWidget), &kPortraitWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->partyIndex = params.partyIndex;
     widget->priority = params.priority;
     return widget;
 }
+
+
+void addChildWidget(Widget* widget, PortraitWidget* child_widget, std::string name) {
+    addChildWidget(widget, (Widget*)child_widget, name);
+}
+
 
 static void drawHPBarWidget(HPBarWidget* hpBarWidget) {
     displayPortrait(
@@ -53,10 +59,55 @@ static void drawHPBarWidget(HPBarWidget* hpBarWidget) {
 }
 
 HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name) {
-    HPBarWidget* widget = (HPBarWidget*)createWidget(&kHPBarWidgetClass, name, sizeof(HPBarWidget));
+    HPBarWidget* widget = (HPBarWidget*)createWidget(name, sizeof(HPBarWidget), &kHPBarWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->partyIndex = params.partyIndex;
     widget->priority = params.priority;
     return widget;
 }
+
+static void drawArrowWidget(ArrowWidget* arrowWidget) {
+    gameDrawAsset(
+        arrowWidget->widget.xCoordinate,
+        arrowWidget->widget.yCoordinate,
+        arrowWidget->code,
+        arrowWidget->arrowColor,
+        arrowWidget->priority
+    );
+}
+
+ArrowWidget* createArrowWidget(drawArrowParams params, std::string name) {
+    ArrowWidget* widget = (ArrowWidget*)createWidget(name, sizeof(ArrowWidget), &kArrowWidgetClass);
+    widget->widget.xCoordinate = params.xCoordinate;
+    widget->widget.yCoordinate = params.yCoordinate;
+    widget->code = params.arrowCode;
+    widget->priority = params.arrowPriority;
+    return widget;
+}
+
+void addChildWidget(Widget* widget, ArrowWidget* child_widget, std::string name) {
+    addChildWidget(widget, (Widget*)child_widget, name);
+}
+
+static void drawSlotsWidget(SlotsWidget* slotsWidget) {
+    renderMateriaSlots(
+        slotsWidget->widget.xCoordinate,
+        slotsWidget->widget.yCoordinate,
+        (i32)slotsWidget->materiaSlotsData
+    );
+}
+
+SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
+    SlotsWidget* widget = (SlotsWidget*)createWidget(name, sizeof(SlotsWidget), &kSlotsWidgetClass);
+    widget->widget.xCoordinate = params.xCoordinate;
+    widget->widget.yCoordinate = params.yCoordinate;
+    widget->materiaSlotsData = params.materiaSlotData;
+    return widget;
+}
+
+// This will not compile, need to fix underlying Widget data struct //
+void addChildWidget(Widget* widget, SlotsWidget* child_widget, std::string name) {
+    addChildWidget(widget, (Widget*)child_widget, name);
+}
+

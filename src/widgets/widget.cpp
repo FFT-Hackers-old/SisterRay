@@ -1,7 +1,7 @@
 #include "widget.h"
 
 //Create a default Widget on the heap, be sure to free this memory
-Widget* createWidget(const WidgetClass* wclass, std::string name, size_t size)
+Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass)
 {
     Widget* widget = (Widget*)malloc(size);
     memset(widget, 0, size);

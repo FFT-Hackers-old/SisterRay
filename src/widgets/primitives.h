@@ -40,4 +40,11 @@ typedef struct {
 static void drawBoxWidget(BoxWidget* boxWidget);
 static const WidgetClass kBoxWidgetClass = { (SRWIDGETDRAWPROC)drawBoxWidget };
 BoxWidget* createBoxWidget(drawBoxParams params, std::string name);
+
+
+void addChildWidget(Widget* widget, TextWidget* child_widget, std::string name);
+void addChildWidget(Widget* widget, NumberWidget* child_widget, std::string name);
+void addChildWidget(Widget* widget, BoxWidget* child_widget, std::string name);
 #endif
+
+

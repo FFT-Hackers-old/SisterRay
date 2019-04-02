@@ -11,6 +11,8 @@ SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
     }
 }
 
+
+
 //TODO: All of the magic numbers need to be pulled out and data driven
 void displayEquipMenuViews(i32 stateControlMask) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
@@ -116,7 +118,7 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
     kernelObjectID = getEquippedGear(characterID, 3);
     fetchedName = getNameFromRelativeID(kernelObjectID, 3);
     displayTextAtLocation(303, 81, fetchedName, COLOR_WHITE, 0.2f);
-      
+    // End Texts for current Equip Widget  
 
 
     if (*EQUIP_MENU_STATE == 1) { // display the descritpion of the current item based on menu state
@@ -216,7 +218,7 @@ void displayEquipGearStats(cursorContext* cursorContextArray, u16 menuState, u16
         displayTextAtLocation(53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
     }
     for (i32 j = 0; j < 7; ++j)
-        sub_6F5C0C(53 + 194, 26 * j + windowTop, 0xDAu, 5u, 0.2f); //This function draws the arrows
+        gameDrawAsset(53 + 194, 26 * j + windowTop, 0xDAu, 5u, 0.2f); //This function draws the arrows
 
     equippedStats[0] = gContext.weapons.get_resource(equippedWeaponID).weapon_strength;
     gameDrawNumbers(200, windowTop, equippedStats[0], 3, COLOR_WHITE, 0.2f);
@@ -406,75 +408,4 @@ u16 setupGearMenu(u8 itemType) {
     }
     gContext.gearViewData.setSlotsInUse(equippableGearCount);
     return equippableGearCount;
-}
-
-//Test this to make sure we actually equipping the right stuff after strings are fixed
-void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex) {
-    u8 removedGearRelativeID;
-    u16 removedGearAbsoluteID;
-    u16 equippedGearAbsoluteID;
-
-    switch (gearType) {
-    case 1: {
-        removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_weapon;
-        removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-        equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-        characterRecordArray[characterRecordArrayIndex].equipped_weapon = equippedGearRelativeIndex;
-        handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
-    }
-    case 2: {
-        removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_armor;
-        removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-        equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-        characterRecordArray[characterRecordArrayIndex].equipped_armor = equippedGearRelativeIndex;
-        handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
-    }
-    case 3: {
-        removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
-        removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-        equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-        characterRecordArray[characterRecordArrayIndex].equipped_accessory = equippedGearRelativeIndex;
-    }
-    }
-
-    *DID_MATERIA_GEAR_CHANGE = 1;
-    gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteID, 1);
-    gContext.inventory->decrementInventoryByItemID(equippedGearAbsoluteID, 1);
-}
-
-//Update Materia after new items are equipped
-void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
-    WeaponData newWeaponData;
-    ArmorData newArmorData;
-    AccessoryData newAccessoryData;
-    u32* equippedMateriaData;
-    u8* materiaSlots;
-    bool shouldRemove = false;
-
-    for (i32 materiaSlotIndex = 0; materiaSlotIndex < 8; ++materiaSlotIndex) {
-        switch (gearType) {
-        case 0: {
-            newWeaponData = gContext.weapons.get_resource(gearRelativeIndex);
-            materiaSlots = &(newWeaponData.materia_slots[0]);
-            equippedMateriaData = (u32*)&(activeCharacterRecord.weapon_materia_slots);
-            shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.weapon_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
-            break;
-        }
-        case 1: {
-            newArmorData = gContext.armors.get_resource(gearRelativeIndex);
-            materiaSlots = &(newArmorData.materia_slots[0]);
-            equippedMateriaData = (u32*)&(activeCharacterRecord.armor_materia_slots);
-            shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.armor_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
-            break;
-        }
-        default:{}
-        }
-
-        if (shouldRemove) {
-            *byte_DC1148 = 0;
-            gContext.materia_inventory->insertIntoMateriaInventory((MateriaInventoryEntry*)equippedMateriaData[materiaSlotIndex]); //put any materia removed back on, needs to work with the SR materia
-            *byte_DC1148 = 0;
-            equippedMateriaData[materiaSlotIndex] = 0xFFFFFFFF;
-        }
-    }
 }

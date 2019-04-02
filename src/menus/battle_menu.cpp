@@ -74,7 +74,7 @@ SISTERRAY_API i32 renderBattleItemView() {
                 textColor = (isUsableInBattle(itemID)) ? COLOR_WHITE : COLOR_GRAY;
 
             displayVisibleItemIcon(94, unknownLocal + 32 * visibleRow + 356, itemID, 0, 0.40099999);
-            sub_6F5C0C(366, unknownLocal + 32 * visibleRow + 364, 0xD5u, textColor, 0.40099999);
+            gameDrawAsset(366, unknownLocal + 32 * visibleRow + 364, 0xD5u, textColor, 0.40099999);
             gameDrawNumbers(378, unknownLocal + 32 * visibleRow + 364, itemQuantity, 2, textColor, 1053642719);
 
             //Now display the item names

@@ -14,6 +14,9 @@ typedef struct {
 void drawTextWidget(TextWidget* textWidget);
 static const WidgetClass kTextWidgetClass = { (SRWIDGETDRAWPROC)drawTextWidget };
 TextWidget* createTextWidget(drawTextParams params, std::string name);
+bool isTextWidget(Widget* widget);
+void updateText(Widget* widget, char* text);
+void updateTextColor(Widget* widget, color textColor);
 
 
 typedef struct {
@@ -27,6 +30,9 @@ typedef struct {
 void drawNumberWidget(NumberWidget* numberWidget);
 static const WidgetClass kNumberWidgetClass = { (SRWIDGETDRAWPROC)drawNumberWidget };
 NumberWidget* createNumberWidget(drawNumberParams params, std::string name);
+bool isNumberWidget(Widget* widget);
+void updateNumber(Widget* widget, u32 number);
+void updateNumberColor(Widget* widget, color numberColor);
 
 typedef struct {
     Widget widget;
@@ -40,11 +46,7 @@ typedef struct {
 void drawBoxWidget(BoxWidget* boxWidget);
 static const WidgetClass kBoxWidgetClass = { (SRWIDGETDRAWPROC)drawBoxWidget };
 BoxWidget* createBoxWidget(drawBoxParams params, std::string name);
-
-
-void addChildWidget(Widget* widget, TextWidget* child_widget, std::string name);
-void addChildWidget(Widget* widget, NumberWidget* child_widget, std::string name);
-void addChildWidget(Widget* widget, BoxWidget* child_widget, std::string name);
+bool isBoxWidget(Widget* widget);
 #endif
 
 

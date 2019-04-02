@@ -20,6 +20,30 @@ TextWidget* createTextWidget(drawTextParams params, std::string name) {
     return widget;
 }
 
+bool isTextWidget(Widget* widget) {
+    return (widget->klass == &kTextWidgetClass);
+}
+
+void updateText(Widget* widgetToUpdate, char* text) {
+    if (isTextWidget) {
+        auto typedPtr = (TextWidget*)widgetToUpdate;
+        typedPtr->text = text;
+    }
+    else {
+        ///YA DONE MESSED UP
+    }
+}
+
+void updateTextColor(Widget* widgetToUpdate, color textColor) {
+    if (isTextWidget) {
+        auto typedPtr = (TextWidget*)widgetToUpdate;
+        typedPtr->textColor = textColor;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
+}
+
 static void drawNumberWidget(NumberWidget* numberWidget) {
     gameDrawNumbers(
         numberWidget->widget.xCoordinate,
@@ -42,6 +66,31 @@ NumberWidget* createNumberWidget(drawNumberParams params, std::string name) {
     return widget;
 }
 
+bool isNumberWidget(Widget* widget) {
+    return (widget->klass == &kNumberWidgetClass);
+}
+
+void updateNumber(Widget* widgetToUpdate, u32 number) {
+    if (isNumberWidget) {
+        auto typedPtr = (NumberWidget*)widgetToUpdate;
+        typedPtr->text = text;
+    }
+    else {
+        ///YA DONE MESSED UP
+    }
+}
+
+void updateNumberColor(Widget* widgetToUpdate, color numberColor) {
+    if (isNumberWidget) {
+        auto typedPtr = (NumberWidget*)widgetToUpdate;
+        typedPtr->numberColor = numberColor;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
+}
+
+
 static void drawBoxWidget(BoxWidget* boxWidget) {
     drawBoxParams params = {
         boxWidget->drawDistanceXa,
@@ -62,16 +111,8 @@ BoxWidget* createBoxWidget(drawBoxParams params, std::string name) {
     return widget;
 }
 
-void addChildWidget(Widget* widget, TextWidget* child_widget, std::string name) {
-    addChildWidget(widget, (Widget*)child_widget, name);
-}
-
-void addChildWidget(Widget* widget, NumberWidget* child_widget, std::string name) {
-    addChildWidget(widget, (Widget*)child_widget, name);
-}
-
-void addChildWidget(Widget* widget, BoxWidget* child_widget, std::string name) {
-    addChildWidget(widget, (Widget*)child_widget, name);
+bool isBoxWidget(Widget* widget) {
+    return (widget->klass == &kBoxWidgetClass);
 }
 
 

@@ -19,6 +19,7 @@ typedef struct {
 void drawScrollerWidget(ScrollerWidget* scrollerWidget);
 static const WidgetClass kScrollerWidgetClass = { (SRWIDGETDRAWPROC)drawScrollerWidget };
 ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name);
+bool isScrollerWidget(Widget* widget);
 
 typedef struct {
     Widget widget;
@@ -29,6 +30,7 @@ typedef struct {
 void drawPortraitWidget(PortraitWidget* portraitWidget);
 static const WidgetClass kPortraitWidgetClass = { (SRWIDGETDRAWPROC)drawPortraitWidget };
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name);
+bool isPortraitWidget(Widget* widget);
 
 typedef struct {
     Widget widget;
@@ -39,6 +41,7 @@ typedef struct {
 void drawHPBarWidget(HPBarWidget* hpBarWidget);
 static const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
 HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name);
+bool isHpBarWidget(Widget* widget);
 
 typedef struct {
     Widget widget;
@@ -50,6 +53,7 @@ typedef struct {
 void drawArrowWidget(ArrowWidget* arrowWidget);
 static const WidgetClass kArrowWidgetClass = { (SRWIDGETDRAWPROC)drawArrowWidget };
 ArrowWidget* createArrowWidget(drawArrowParams params, std::string name);
+bool isArrowWidget(Widget* widget);
 
 typedef struct {
     Widget widget;
@@ -59,10 +63,6 @@ typedef struct {
 void drawSlotsWidget(SlotsWidget* slotsWidget);
 static const WidgetClass kSlotsWidgetClass = { (SRWIDGETDRAWPROC)drawSlotsWidget };
 SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name);
-
-
-void addChildWidget(Widget* widget, SlotsWidget* child_widget, std::string name);
-void addChildWidget(Widget* widget, ArrowWidget* child_widget, std::string name);
-void addChildWidget(Widget* widget, PortraitWidget* child_widget, std::string name);
+bool isSlotsWidget(Widget* widget);
 
 #endif

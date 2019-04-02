@@ -25,6 +25,10 @@ ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name
     return widget;
 }
 
+bool isScrollerWidget(Widget* widget) {
+    return ((widget->klass == &kScrollerWidgetClass))
+}
+
 static void drawPortraitWidget(PortraitWidget* portraitWidget) {
     displayPortrait(
         portraitWidget->widget.xCoordinate,
@@ -43,9 +47,18 @@ PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name
     return widget;
 }
 
+bool isPortraitWidget(Widget* widget) {
+    return ((widget->klass == &kPortraitWidgetClass))
+}
 
-void addChildWidget(Widget* widget, PortraitWidget* child_widget, std::string name) {
-    addChildWidget(widget, (Widget*)child_widget, name);
+void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
+    if (isPortraitWidget) {
+        auto typedPtr = (PortraitWidget*)widget;
+        typedPtr->partyIndex = portraitIndex;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
 }
 
 
@@ -67,6 +80,21 @@ HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name) {
     return widget;
 }
 
+
+bool isHPBarWidget(Widget* widget) {
+    return ((widget->klass == &kHPBarWidgetClass))
+}
+
+void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
+    if (isHPBarWidget) {
+        auto typedPtr = (HPBarWidget*)widget;
+        typedPtr->partyIndex = partyIndex;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
+}
+
 static void drawArrowWidget(ArrowWidget* arrowWidget) {
     gameDrawAsset(
         arrowWidget->widget.xCoordinate,
@@ -86,9 +114,10 @@ ArrowWidget* createArrowWidget(drawArrowParams params, std::string name) {
     return widget;
 }
 
-void addChildWidget(Widget* widget, ArrowWidget* child_widget, std::string name) {
-    addChildWidget(widget, (Widget*)child_widget, name);
+bool isArrowWidget(Widget* widget) {
+    return ((widget->klass == &kArrowWidgetClass))
 }
+
 
 static void drawSlotsWidget(SlotsWidget* slotsWidget) {
     renderMateriaSlots(
@@ -106,8 +135,8 @@ SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
     return widget;
 }
 
-// This will not compile, need to fix underlying Widget data struct //
-void addChildWidget(Widget* widget, SlotsWidget* child_widget, std::string name) {
-    addChildWidget(widget, (Widget*)child_widget, name);
+bool isSlotsWidget(Widget* widget) {
+    return ((widget->klass == &kSlotsWidgetClass))
 }
+
 

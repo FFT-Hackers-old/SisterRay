@@ -12,7 +12,7 @@ typedef struct {
     SRWIDGETDRAWPROC draw;
 } WidgetClass;
 
-static const WidgetClass kDefaultWidgetClass = { nullptr };
+static const WidgetClass kBaseWidgetClass = { nullptr };
 
 //Basic Widet structure
 struct Widget_ {
@@ -24,7 +24,10 @@ struct Widget_ {
     u32 yCoordinate;
 };
 
-Widget* createWidget(std::string name, size_t size=sizeof(Widget), const WidgetClass* klass=&kDefaultWidgetClass);
+Widget* createWidget(std::string name, size_t size=sizeof(Widget), const WidgetClass* klass=&kBaseWidgetClass);
 void addChildWidget(Widget* widget, Widget* child_widget, std::string name);
+Widget* getChild(Widget* parent, std::string name);
+void setChildWidget(Widget* parent, Widget* newChild, std::string name);
+bool checkWidgetTypes(Widget* a, Widget* b);
 
 #endif

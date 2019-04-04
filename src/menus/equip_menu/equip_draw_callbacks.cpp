@@ -77,6 +77,58 @@ void handleUpdateGearSlotsWidget(const EquipDrawEventParams* params) {
 void handleUpdateStatMenuWidget(const EquipDrawEventParams* params) {
     auto menuWidget = params->equipMenuWidget;
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    u8 kernelObjectID;
+    u8* materiaSlots;
+    u8 statsToDisplay[8];
+    auto statDiffWidget = getChild(menuWidget, STAT_DIFF_WIDGET_NAME);
+
+    if (*EQUIP_MENU_STATE == 1) {
+        switch (cursorContextArray[0].relativeRowIndex) {
+            case 0: {
+                auto toEquipWeaponID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+                statsToDisplay[0] = gContext.weapons.get_resource(toEquipWeaponID).weapon_strength;
+                statsToDisplay[1] = gContext.weapons.get_resource(toEquipWeaponID).weapon_hit_rate;
+                std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
+                for (int row = 0; row < 2; row++) {
+                    updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
+                }
+                break;
+            }
+            case 1: {
+                auto toEquipArmorID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+                statsToDisplay[2] = gContext.armors.get_resource(toEquipArmorID).defense;
+                statsToDisplay[3] = gContext.armors.get_resource(toEquipArmorID).evade;
+                statsToDisplay[4] = 0;
+                statsToDisplay[5] = gContext.armors.get_resource(toEquipArmorID).magic_defense;
+                statsToDisplay[6] = gContext.armors.get_resource(toEquipArmorID).magic_evade;
+                std::vector<std::string> listNames = { NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
+                for (int row = 2; row < 7; row++) {
+                    updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
+                }
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        return;
+    }
+       
+    u16 equippedArmorID = (CHARACTER_RECORD_ARRAY)[characterRecordArrayIndex].equipped_armor;
+    u16 equippedWeaponID = (CHARACTER_RECORD_ARRAY)[characterRecordArrayIndex].equipped_weapon;
+
+    std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
+    statsToDisplay[0] = gContext.weapons.get_resource(equippedWeaponID).weapon_strength;
+    statsToDisplay[1] = gContext.weapons.get_resource(equippedWeaponID).weapon_hit_rate;
+    statsToDisplay[2] = gContext.armors.get_resource(equippedArmorID).defense;
+    statsToDisplay[3] = gContext.armors.get_resource(equippedArmorID).evade;
+    statsToDisplay[4] = 0;
+    statsToDisplay[5] = gContext.armors.get_resource(equippedArmorID).magic_defense;
+    statsToDisplay[6] = gContext.armors.get_resource(equippedArmorID).magic_evade;
+    for (int row = 0; row < 0; row++) {
+        updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
+    }
 
 }
 //--------------------------------------------------End Widget Draw Callbacks---------------------------------------------------------//

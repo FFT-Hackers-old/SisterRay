@@ -7,7 +7,7 @@
 #include "inventories/inventory_utils.h"
 #include "menus/inventory_menu.h"
 #include "menus/battle_menu.h"
-#include "menus/equip_menu.h"
+#include "menus/equip_menu/equip_menu.h"
 
 SrContext gContext;
 

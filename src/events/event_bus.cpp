@@ -6,7 +6,7 @@ EventBus::EventBus(): _listenerCount(0), _listenerCapacity(1) {
     _listenerCallbacks.push_back(nullptr);
 }
 
-EventBus::~EventBus(){
+EventBus::~EventBus() {
 }
 
 void EventBus::dispatch(SrEventType eventType, void* event) {
@@ -24,8 +24,7 @@ void EventBus::dispatch(SrEventType eventType, void* event) {
     }
 }
 
-SrEventListener EventBus::addListener(SrEventType eventType, SrEventCallback callback)
-{
+SrEventListener EventBus::addListener(SrEventType eventType, SrEventCallback callback) {
     size_t listenerID;
 
     if (!eventType)
@@ -53,8 +52,7 @@ SrEventListener EventBus::addListener(SrEventType eventType, SrEventCallback cal
     return SrEventListener(listenerID);
 }
 
-void EventBus::removeListener(SrEventListener listener)
-{
+void EventBus::removeListener(SrEventListener listener) {
     if (!listener)
         return;
 

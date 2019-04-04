@@ -1,8 +1,7 @@
 #include "widget.h"
 
 //Create a default Widget on the heap, be sure to free this memory
-Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass)
-{
+Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass) {
     Widget* widget = (Widget*)malloc(size);
     memset(widget, 0, size);
     widget->name = name;
@@ -11,19 +10,27 @@ Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass)
 }
 
 //Recursively draw a widget and all of its sub-widgets
-void drawWidget(Widget* widget)
-{
+void drawWidget(Widget* widget) {
     if (!widget->enabled)
         return;
 
     if (widget->klass->draw != NULL) {
         widget->klass->draw(widget);
     }
-    else {
-        for (auto iterator = begin(widget->children); iterator != end(widget->children); ++iterator) {
-            drawWidget(*iterator);
+    else if(!widget->children.empty()) {
+        for (auto it = begin(widget->children); it != end(widget->children); ++it) {
+            drawWidget(*it);
         }
     }
+}
+
+//Frees a Widget and destroys all of its children
+void destroyWidget(Widget* widget) {
+    if (!widget->children.empty()) {
+        for (auto child : widget->children)
+            destroyWidget(child);
+    }
+    free(widget);
 }
 
 //Utility to add a child widget to a parent;
@@ -42,8 +49,9 @@ Widget* getChild(Widget* parent, std::string name) {
 void setChildWidget(Widget* parent, Widget* newChild, std::string name) {
     auto widgetToUpdate = getChild(parent, name);
     if (checkWidgetTypes(widgetToUpdate, newChild)) {
+        auto index = parent->children_names[name];
         free(widgetToUpdate);
-        parent->children[parent] = newChild;
+        parent->children[index] = newChild;
     }
     else {
         //YOU DID SOMETHING REAL BAD IF THIS EVER RUNS
@@ -59,10 +67,10 @@ void moveWidget(Widget * widget, u32 x, u32 y) {
     widget->yCoordinate = y;
 }
 
-void enableWidget(Widget * widget) {
+void enableWidget(Widget* widget) {
     widget->enabled = true;
 }
 
-void enableWidget(Widget* widget) {
+void disableWidget(Widget* widget) {
     widget->enabled = false;
 }

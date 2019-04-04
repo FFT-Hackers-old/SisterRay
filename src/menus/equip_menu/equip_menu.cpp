@@ -1,6 +1,6 @@
 #include "equip_menu.h"
-#include "../impl.h"
-#include "../party/party_utils.h"
+#include "../../impl.h"
+#include "../../party/party_utils.h"
 #include <memory>
 
 
@@ -103,7 +103,7 @@ void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stat
 
     //Display weapon, armor, and accessory
     for (i32 menuTextIndex = 0; menuTextIndex < 3; ++menuTextIndex) {
-        menuText = gContext.game_strings.equip_menu_texts.get_string(menuTextIndex);
+        menuText = gContext.game_strings.equipMenuTexts.get_string(menuTextIndex);
         displayTextAtLocation(250, 34 * menuTextIndex + 13, menuText, COLOR_TEAL, 0.2f);
     }
 
@@ -168,9 +168,9 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
     }
 
     if (cursorContextArray[0].relativeRowIndex != 2) {
-        menuText = gContext.game_strings.equip_menu_texts.get_string(4);
+        menuText = gContext.game_strings.equipMenuTexts.get_string(4);
         displayTextAtLocation(27, equipMenuWindowConfig[2].drawDistance2 + 21, menuText, COLOR_TEAL, 0.1f);
-        menuText = gContext.game_strings.equip_menu_texts.get_string(5);
+        menuText = gContext.game_strings.equipMenuTexts.get_string(5);
         displayTextAtLocation(27, equipMenuWindowConfig[2].drawDistance2 + 64, menuText, COLOR_TEAL, 0.1f);
         switch (cursorContextArray[0].relativeRowIndex) {
             case 0: {
@@ -189,7 +189,7 @@ void displayMateriaSlots(cursorContext* cursorContextArray, u16 menuState, u32 s
         renderGearMateriaSlots(153, equipMenuWindowConfig[2].drawDistance2 + 21, materiaSlots); //render the materia slots, convert into a shared reusable utility and merge with materia handler
         if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
             materiaGrowth = 4;
-        menuText = gContext.game_strings.equip_menu_texts.get_string(materiaGrowth + 4);
+        menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);
 
         i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
         i32 growthTypeX = sub_6F54A2((u8*)menuText);
@@ -214,7 +214,7 @@ void displayEquipGearStats(cursorContext* cursorContextArray, u16 menuState, u16
     char* menuText;
 
     for (i32 i = 0; i < 7; ++i) {
-        menuText = gContext.game_strings.equip_menu_texts.get_string(5 + i);
+        menuText = gContext.game_strings.equipMenuTexts.get_string(5 + i);
         displayTextAtLocation(53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
     }
     for (i32 j = 0; j < 7; ++j)

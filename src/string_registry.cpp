@@ -44,7 +44,7 @@ void initGameStrings() {
     gContext.game_strings.armor_names = StringRegistry();
     gContext.game_strings.accessory_descriptions = StringRegistry();
     gContext.game_strings.accessory_names = StringRegistry();
-    gContext.game_strings.equip_menu_texts = StringRegistry();
+    gContext.game_strings.equipMenuTexts = StringRegistry();
 
     /*Initialize the string registries for character specific strings*/
     for (int i = 0; i <= 9; i++) {

@@ -73,7 +73,7 @@ bool isNumberWidget(Widget* widget) {
 void updateNumber(Widget* widgetToUpdate, u32 number) {
     if (isNumberWidget) {
         auto typedPtr = (NumberWidget*)widgetToUpdate;
-        typedPtr->text = text;
+        typedPtr->number = number;
     }
     else {
         ///YA DONE MESSED UP

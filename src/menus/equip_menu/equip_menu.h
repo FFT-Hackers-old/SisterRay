@@ -3,7 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "menu_utils.h"
+#include "../menu_utils.h"
 
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask);
 void displayMenuTexts(cursorContext* cursorContextArray, u16 menuState, u32 stateControlMask);

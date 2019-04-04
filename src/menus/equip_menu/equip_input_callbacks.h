@@ -1,17 +1,15 @@
-#ifndef EQUIP_MENU_LISTENERS
-#define EQUIP_MENU_LISTENERS
+#ifndef EQUIP_INPUT_CALLBACKS
+#define EQUIP_INPUT_CALLBACKS
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "menu_utils.h"
-#include "../widgets/widget.h"
-#include "../widgets/primitives.h"
-#include "../widgets/assets.h"
+#include "../menu_utils.h"
+#include "equip_menu_widget.h"
 
 
 typedef struct {
     Widget* equipMenuWidget;
-} EquipMenuEventParams;
+} EquipInputEventParams;
 
 void equipGearHandler(const void* params); //Signature of Listener Callback
 void exitMenuListener(const void* params);

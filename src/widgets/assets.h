@@ -31,6 +31,7 @@ void drawPortraitWidget(PortraitWidget* portraitWidget);
 static const WidgetClass kPortraitWidgetClass = { (SRWIDGETDRAWPROC)drawPortraitWidget };
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name);
 bool isPortraitWidget(Widget* widget);
+void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex);
 
 typedef struct {
     Widget widget;
@@ -41,7 +42,8 @@ typedef struct {
 void drawHPBarWidget(HPBarWidget* hpBarWidget);
 static const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
 HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name);
-bool isHpBarWidget(Widget* widget);
+bool isHPBarWidget(Widget* widget);
+void updateHPBarPartyIndex(Widget* widget, u8 portraitIndex);
 
 typedef struct {
     Widget widget;
@@ -64,5 +66,6 @@ void drawSlotsWidget(SlotsWidget* slotsWidget);
 static const WidgetClass kSlotsWidgetClass = { (SRWIDGETDRAWPROC)drawSlotsWidget };
 SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name);
 bool isSlotsWidget(Widget* widget);
+void updateMateriaSlots(Widget* widget, u8* materiaSlotsData);
 
 #endif

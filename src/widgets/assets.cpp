@@ -26,7 +26,7 @@ ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name
 }
 
 bool isScrollerWidget(Widget* widget) {
-    return ((widget->klass == &kScrollerWidgetClass))
+    return ((widget->klass == &kScrollerWidgetClass));
 }
 
 static void drawPortraitWidget(PortraitWidget* portraitWidget) {
@@ -48,7 +48,7 @@ PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name
 }
 
 bool isPortraitWidget(Widget* widget) {
-    return ((widget->klass == &kPortraitWidgetClass))
+    return ((widget->klass == &kPortraitWidgetClass));
 }
 
 void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
@@ -82,7 +82,7 @@ HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name) {
 
 
 bool isHPBarWidget(Widget* widget) {
-    return ((widget->klass == &kHPBarWidgetClass))
+    return ((widget->klass == &kHPBarWidgetClass));
 }
 
 void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
@@ -115,7 +115,7 @@ ArrowWidget* createArrowWidget(drawArrowParams params, std::string name) {
 }
 
 bool isArrowWidget(Widget* widget) {
-    return ((widget->klass == &kArrowWidgetClass))
+    return ((widget->klass == &kArrowWidgetClass));
 }
 
 
@@ -136,7 +136,17 @@ SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
 }
 
 bool isSlotsWidget(Widget* widget) {
-    return ((widget->klass == &kSlotsWidgetClass))
+    return ((widget->klass == &kSlotsWidgetClass));
+}
+
+void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
+    if (isHPBarWidget) {
+        auto typedPtr = (SlotsWidget*)widget;
+        typedPtr->materiaSlotsData = materiaSlotsData;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
 }
 
 

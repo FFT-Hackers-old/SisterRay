@@ -1,10 +1,10 @@
-#include "equip_menu_callbacks.h"
-#include "../impl.h"
-#include "../party/party_utils.h"
+#include "equip_input_callbacks.h"
+#include "../../impl.h"
+#include "../../party/party_utils.h"
 //-----------------------------------------------------Input Handler Callbacks-------------------------------------------------------------//
 
 /*Handlers for "OK" inputs, one per menu State*/
-void equipGearHandler(const void* params) {
+void equipGearHandler(const EquipInputEventParams* params) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u8 characterRecordArrayIndex;
@@ -13,8 +13,7 @@ void equipGearHandler(const void* params) {
     if (*EQUIP_MENU_STATE != 1)
         return;
 
-    auto typedParams = (EquipMenuEventParams*)params;
-    auto menuWidget = (typedParams)->equipMenuWidget;
+    auto menuWidget = params->equipMenuWidget;
 
     playMenuSound(447);
     *EQUIP_MENU_STATE = 0;
@@ -44,7 +43,7 @@ void equipGearHandler(const void* params) {
     updateMiscPartyStats();
 }
 
-void selectGearHandler(const void* params) {
+void selectGearHandler(const EquipInputEventParams* params) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u32 equipMenuState = *EQUIP_MENU_STATE;
@@ -54,8 +53,7 @@ void selectGearHandler(const void* params) {
     if (*EQUIP_MENU_STATE != 0)
         return;
 
-    auto typedParams = (EquipMenuEventParams*)params;
-    auto menuWidget = (typedParams)->equipMenuWidget;
+    auto menuWidget = params->equipMenuWidget;
 
     equippableGearCount = setupGearMenu(cursorContextArray[0].relativeRowIndex + 1);
     if (equippableGearCount && !(*byte_DC0B4B & 1)) {
@@ -76,22 +74,20 @@ void selectGearHandler(const void* params) {
 }
 
 /*Handlers for "Cancel" inputs, one per menu State*/
-void exitEquipViewListener(const void* params) {
+void exitEquipViewListener(const EquipInputEventParams* params) {
 
-    auto typedParams = (EquipMenuEventParams*)params;
-    auto menuWidget = (typedParams)->equipMenuWidget;
+    auto menuWidget = params->equipMenuWidget;
     
     *EQUIP_MENU_STATE = 0;
     //Remove Equip Menu Widgets for showing the List of Items
     //Reset stat diffs, descriptions, etc to currently equipped values
 }
 
-void exitMenuListener(const void* params) {
+void exitMenuListener(const EquipInputEventParams* params) {
     if (*EQUIP_MENU_STATE != 0)
         return;
 
-    auto typedParams = (EquipMenuEventParams*)params;
-    auto menuWidget = (typedParams)->equipMenuWidget;
+    auto menuWidget = params->equipMenuWidget;
 
     if (*DID_MATERIA_GEAR_CHANGE && (*word_DD1BC0 || *dword_DC1290)) {
         playMenuSound(1);
@@ -107,9 +103,9 @@ void exitMenuListener(const void* params) {
 }
 
 /*Handlers for L1/R1 "switching" inputs, for states where they function*/
-void changeCharLeft(const void* params) {
-    auto typedParams = (EquipMenuEventParams*)params;
-    auto menuWidget = (typedParams)->equipMenuWidget;
+void changeCharLeft(const EquipInputEventParams* params) {
+
+    auto menuWidget = params->equipMenuWidget;
  
     do {
         *EQUIP_MENU_PARTY_INDEX = (((i32)(*EQUIP_MENU_PARTY_INDEX) - 1) < 0) ? 2 : ((*EQUIP_MENU_PARTY_INDEX) - 1);
@@ -118,9 +114,8 @@ void changeCharLeft(const void* params) {
     //update displayed character Data in the Widget
 }
 
-void changeCharRight(const void* params) {
-    auto typedParams = (EquipMenuEventParams*)params;
-    auto menuWidget = (typedParams)->equipMenuWidget;
+void changeCharRight(const EquipInputEventParams* params) {
+    auto menuWidget = params->equipMenuWidget;
 
     do {
         *EQUIP_MENU_PARTY_INDEX = (((*EQUIP_MENU_PARTY_INDEX) + 1) > 2) ? 0 : ((*EQUIP_MENU_PARTY_INDEX) + 1);
@@ -131,13 +126,7 @@ void changeCharRight(const void* params) {
 
 //-----------------------------------------------------End Input Handler Callbacks-------------------------------------------------------------//
 
-//-----------------------------------------------------Begin Widget Mutating Callbacks---------------------------------------------------------//
-void handleChangeCharacter(const void* params) {
-    auto typedParams = (EquipMenuEventParams*)params;
-    auto menuWidget = (typedParams)->equipMenuWidget;
 
-    
-}
 //-----------------------------------------------------End Widget Mutating Callbacks-----------------------------------------------------------//
 
 void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex) {

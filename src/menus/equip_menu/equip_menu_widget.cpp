@@ -1,22 +1,25 @@
 #include "equip_menu_widget.h"
-#include "../impl.h"
-#include "../party/party_utils.h"
+#include "../../impl.h"
+#include "../../party/party_utils.h"
 
 /* This Module contains code which initializes the Widget that represents the equip menu internally
    You can mutate this widget prior to draw by registered your listeners to the "OnEquipMenuDraw" event
    The Widget is also mutated by listeners registered to the Equip-Menu's input Handlers.
 */
 
+using namespace EquipWidgetNames;
+
 /* Returns a pointer to a Widget representing the Equipment menu*/
 Widget* initEquipMenuWidget() {
-    auto mainWidget = createWidget("equipMenuMain");
+    auto mainWidget = createWidget(EQUIP_MENU_NAME);
     // create the equipment Widget and add it's default children
-    initCurrentEqupWidget(mainWidget);
+    initCharDataWidget(mainWidget);
     initStatDiffWidget(mainWidget);
+    initGearDescWidget(mainWidget);
     return mainWidget;
 }
 
-void initCurrentEqupWidget(Widget* mainWidget) {
+void initCharDataWidget(Widget* mainWidget) {
     char * menuText;
     char* fetchedName;
     u16 kernelObjectID;
@@ -27,30 +30,66 @@ void initCurrentEqupWidget(Widget* mainWidget) {
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
 
-    auto currentEquipWidget = createWidget("equipNamesWidgets");
+    auto currentEquipWidget = createWidget(CHAR_DATA_WIDGET_NAME);
 
-    // Now add the base Box
-    // Need to figure out actual params for this box in the game
-    boxParams = { 0, 0, 0, 0, 0.3f };
-    auto boxWidget = createBoxWidget(boxParams, "BoundingBox");
-    addChildWidget(currentEquipWidget, (Widget*)boxWidget, "BoundingBox");
+    boxParams = {
+       equipMenuWindowConfig[0].drawDistance1,
+       equipMenuWindowConfig[0].drawDistance2,
+       equipMenuWindowConfig[0].drawDistance3,
+       equipMenuWindowConfig[0].drawDistance4,
+       0.1f
+    };
+    boxWidget = createBoxWidget(boxParams, CHAR_DATA_BOX_NAME);
+    addChildWidget(currentEquipWidget, (Widget*)boxWidget, CHAR_DATA_BOX_NAME);
 
-    std::vector<char*> gearNames = { "Wpn", "Arm", "Acc" };
-    std::vector<char*> equippedGearNames = { "eWpn", "eArm", "eAcc" };
-    for (int i = 0; i < 3; i++) {
-        menuText = gContext.game_strings.equip_menu_texts.get_string(i);
-        textParams = { 250, 13 + (34 * i), menuText, COLOR_TEAL, 0.2f };
-        textWidget = createTextWidget(textParams, gearNames[i]);
-        addChildWidget(currentEquipWidget, (Widget*)textWidget, gearNames[i]);
+    std::vector<std::string> gearNames = { GEAR_SLOT_1_NAME, GEAR_SLOT_2_NAME, GEAR_SLOT_3_NAME };
+    std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
+    for (int row = 0; row < 3; row++) {
+        menuText = gContext.game_strings.equipMenuTexts.get_string(row);
+        textParams = { 250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f };
+        textWidget = createTextWidget(textParams, gearNames[row]);
+        addChildWidget(currentEquipWidget, (Widget*)textWidget, gearNames[row]);
 
-        kernelObjectID = getEquippedGear(characterID, i + 1);
-        fetchedName = getNameFromRelativeID(kernelObjectID, i + 1);
+        kernelObjectID = getEquippedGear(characterID, row + 1);
+        fetchedName = getNameFromRelativeID(kernelObjectID, row + 1);
         textParams = { 303, 13, fetchedName, COLOR_WHITE, 0.2f };
-        textWidget = createTextWidget(textParams, equippedGearNames[i]);
-        addChildWidget(currentEquipWidget, (Widget*)textWidget, equippedGearNames[i]);
+        textWidget = createTextWidget(textParams, equippedGearNames[row]);
+        addChildWidget(currentEquipWidget, (Widget*)textWidget, equippedGearNames[row]);
     }
 
-    addChildWidget(mainWidget, currentEquipWidget, "equipmentNames");
+    addChildWidget(mainWidget, currentEquipWidget, CHAR_DATA_WIDGET_NAME);
+}
+
+void initGearDescWidget(Widget* mainWidget) {
+    char * menuText;
+    char* fetchedName;
+    u16 kernelObjectID;
+    auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+
+    TextWidget* textWidget;
+    drawTextParams textParams;
+    BoxWidget* boxWidget;
+    drawBoxParams boxParams;
+
+    auto GearDescWidget = createWidget(GEAR_DESC_WIDGET_NAME);
+
+    boxParams = {
+        equipMenuWindowConfig[1].drawDistance1,
+        equipMenuWindowConfig[1].drawDistance2,
+        equipMenuWindowConfig[1].drawDistance3,
+        equipMenuWindowConfig[1].drawDistance4,
+        0.1f
+    };
+    boxWidget = createBoxWidget(boxParams, GEAR_DESC_BOX);
+    addChildWidget(mainWidget, (Widget*)boxWidget, GEAR_DESC_BOX);
+
+    kernelObjectID = getEquippedGear(characterID, 1);
+    fetchedName = getNameFromRelativeID(kernelObjectID, 1);
+    textParams = { 24, equipMenuWindowConfig[1].drawDistance2 + 13, fetchedName, COLOR_WHITE, 0.2f };
+    textWidget = createTextWidget(textParams, GEAR_DESCRIPTION);
+    addChildWidget(GearDescWidget, (Widget*)textWidget, GEAR_DESCRIPTION);
+
+    addChildWidget(mainWidget, (Widget*)textWidget, GEAR_DESC_WIDGET_NAME);
 }
 
 /* Initialize the Widget for the characters Materia Slots. This will be updated when Handling in Handlers*/
@@ -70,21 +109,21 @@ void initGearMateriaSlotWidget(Widget* mainWidget) {
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
 
-    auto equipMateraSlotWidget = createWidget("equipNamesWidgets");
+    auto equipMateraSlotWidget = createWidget(GEAR_SLOTS_WIDGET_NAME);
 
     boxParams = {
-      equipMenuWindowConfig[2].drawDistance1,
-      equipMenuWindowConfig[2].drawDistance2,
-      equipMenuWindowConfig[2].drawDistance3,
-      equipMenuWindowConfig[2].drawDistance4,
-      0.1f
+        equipMenuWindowConfig[2].drawDistance1,
+        equipMenuWindowConfig[2].drawDistance2,
+        equipMenuWindowConfig[2].drawDistance3,
+        equipMenuWindowConfig[2].drawDistance4,
+        0.1f
     };
-    boxWidget = createBoxWidget(boxParams, "BoundingBox");
-    addChildWidget(equipMateraSlotWidget, (Widget*)boxWidget, "BoundingBox");
+    boxWidget = createBoxWidget(boxParams, GEAR_SLOTS_BOX);
+    addChildWidget(equipMateraSlotWidget, (Widget*)boxWidget, GEAR_SLOTS_BOX);
 
-    std::vector<char*> equipSlotDataNames = { "Slots", "Growth" };
+    std::vector<std::string> equipSlotDataNames = { SLOTS_NAME, GROWTH_NAME };
     for (int i = 0; i < 2; i++) {
-        menuText = gContext.game_strings.equip_menu_texts.get_string(4 + i);
+        menuText = gContext.game_strings.equipMenuTexts.get_string(4 + i);
         textParams.set(27, 42 * i + equipMenuWindowConfig[2].drawDistance2 + 21, menuText, COLOR_TEAL, 0.1f);
         textWidget = createTextWidget(textParams, equipSlotDataNames[i]);
         addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, equipSlotDataNames[i]);
@@ -95,22 +134,22 @@ void initGearMateriaSlotWidget(Widget* mainWidget) {
     //Display current weapon slots & growth by default -- overridden in handlers to behave correctly
     materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
     slotsParams = { 153, equipMenuWindowConfig[2].drawDistance2 + 21, materiaSlots };
-    slotsWidget = createSlotsWidget(slotsParams, "gearMateriaSlots");
-    addChildWidget(equipMateraSlotWidget, (Widget*)slotsWidget, "gearMateriaSlots");
+    slotsWidget = createSlotsWidget(slotsParams, GEAR_SLOTS);
+    addChildWidget(equipMateraSlotWidget, (Widget*)slotsWidget, GEAR_SLOTS);
 
     materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
         materiaGrowth = 4;
 
-    menuText = gContext.game_strings.equip_menu_texts.get_string(materiaGrowth + 4);
+    menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);
     i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
     i32 growthTypeX = sub_6F54A2((u8*)menuText);
     textParams.set(243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 0.2f);
-    textWidget = createTextWidget(textParams, "gearGrowthValue");
-    addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, "gearGrwothValue");
+    textWidget = createTextWidget(textParams, GEAR_GROWTH);
+    addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, GEAR_GROWTH);
 
 
-    addChildWidget(mainWidget, equipMateraSlotWidget, "equipmentNames");
+    addChildWidget(mainWidget, equipMateraSlotWidget, GEAR_SLOTS_BOX);
 }
 
 /*Initialize the Widget That displays stats*/
@@ -132,7 +171,7 @@ void initStatDiffWidget(Widget* mainWidget) {
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
 
-    auto statDiffWidget = createWidget("statDiffWidget");
+    auto statDiffWidget = createWidget(STAT_DIFF_WIDGET_NAME);
 
     boxParams.set(
         equipMenuWindowConfig[3].drawDistance1,
@@ -141,8 +180,8 @@ void initStatDiffWidget(Widget* mainWidget) {
         equipMenuWindowConfig[3].drawDistance4,
         0.5f
     );
-    boxWidget = createBoxWidget(boxParams, "BoundingBox");
-    addChildWidget(statDiffWidget, (Widget*)boxWidget, "BoundingBox");
+    boxWidget = createBoxWidget(boxParams, STAT_DIFF_BOX);
+    addChildWidget(statDiffWidget, (Widget*)boxWidget, STAT_DIFF_BOX);
 
 
     equippedStats[0] = gContext.weapons.get_resource(equippedWeaponID).weapon_strength;
@@ -153,12 +192,14 @@ void initStatDiffWidget(Widget* mainWidget) {
     equippedStats[5] = gContext.armors.get_resource(equippedArmorID).magic_defense;
     equippedStats[6] = gContext.armors.get_resource(equippedArmorID).magic_evade;
 
-    std::vector<char*> statNames = { "WpnStrength", "WpnHit", "Defense", "Evade", "MagAtk", "mDefense", "mEvade" };
-    std::vector<char*> numberNames = { "WpnStrength#A", "WpnHit#A", "Defense#A", "Evade#A", "MagAtk#A", "mDefense#A", "mEvade#A" };
-    std::vector<char*> candidateNumberNames = { "WpnStrength#B", "WpnHit#B", "Defense#B", "Evade#B", "MagAtk#B", "mDefense#B", "mEvade#B" };
-    std::vector<char*> arrowNames = { "WpnStrength->", "WpnHit->", "Defense->", "Evade->", "MagAtk->", "mDefense->", "mEvade->" };
+
+
+    std::vector<std::string> statNames = { STAT_NAME_1, STAT_NAME_2, STAT_NAME_3, STAT_NAME_4, STAT_NAME_5, STAT_NAME_6, STAT_NAME_7 };
+    std::vector<std::string> numberNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
+    std::vector<std::string> candidateNumberNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
+    std::vector<std::string> arrowNames = { ARROW_1, ARROW_2, ARROW_3, ARROW_4, ARROW_5, ARROW_6, ARROW_7 };
     for (i32 i = 0; i < 7; ++i) {
-        menuText = gContext.game_strings.equip_menu_texts.get_string(2);
+        menuText = gContext.game_strings.equipMenuTexts.get_string(2);
         textParams.set(53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
         textWidget = createTextWidget(textParams, statNames[i]);
         addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[i]);
@@ -175,5 +216,6 @@ void initStatDiffWidget(Widget* mainWidget) {
         numberWidget = createNumberWidget(numberParams, numberNames[i]);
         addChildWidget(statDiffWidget, (Widget*)numberWidget, numberNames[i]);
     }
-    addChildWidget(mainWidget, statDiffWidget, "statDiffWidget");
+    addChildWidget(mainWidget, statDiffWidget, STAT_DIFF_WIDGET_NAME);
 }
+

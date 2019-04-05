@@ -52,7 +52,7 @@ bool isPortraitWidget(Widget* widget) {
 }
 
 void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
-    if (isPortraitWidget) {
+    if (isPortraitWidget(widget)) {
         auto typedPtr = (PortraitWidget*)widget;
         typedPtr->partyIndex = portraitIndex;
     }
@@ -86,7 +86,7 @@ bool isHPBarWidget(Widget* widget) {
 }
 
 void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
-    if (isHPBarWidget) {
+    if (isHPBarWidget(widget)) {
         auto typedPtr = (HPBarWidget*)widget;
         typedPtr->partyIndex = partyIndex;
     }
@@ -140,7 +140,7 @@ bool isSlotsWidget(Widget* widget) {
 }
 
 void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
-    if (isHPBarWidget) {
+    if (isHPBarWidget(widget)) {
         auto typedPtr = (SlotsWidget*)widget;
         typedPtr->materiaSlotsData = materiaSlotsData;
     }

@@ -1,7 +1,7 @@
 #ifndef PRIMITIVES_H
 #define PRIMITIVES_H
 
-#include "widget.h"
+#include "base_widget.h"
 #include "../menus/menu.h"
 
 typedef struct {

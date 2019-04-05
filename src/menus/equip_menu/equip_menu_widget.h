@@ -5,8 +5,6 @@
 #include <SisterRay/SisterRay.h>
 #include "../menu_utils.h"
 #include "../../widgets/widget.h"
-#include "../../widgets/primitives.h"
-#include "../../widgets/assets.h"
 
 // by using this namespace in a mod, you may access the Widgets
 // in your own callbacks to mutate them however you like
@@ -17,6 +15,7 @@ namespace EquipWidgetNames {
     const std::string GEAR_DESC_WIDGET_NAME = "GEAR_DESC_WIDGET";
     const std::string GEAR_SLOTS_WIDGET_NAME = "GEAR_SLOTS_WIDGET";
     const std::string STAT_DIFF_WIDGET_NAME = "STAT_DIFF_WIDGET";
+    const std::string GEAR_LIST_WIDGET_NAME = "GEAR_LIST_WIDGET";
     //Names of CHAR_DATA children
     const std::string GEAR_SLOT_1_NAME = "WPN_SLOT_NAME";
     const std::string GEAR_SLOT_2_NAME = "ARM_SLOT_NAME";
@@ -66,6 +65,10 @@ namespace EquipWidgetNames {
     const std::string NEW_STAT_VALUE_6 = "N_STAT_VALUE_6";
     const std::string NEW_STAT_VALUE_7 = "N_STAT_VALUE_7";
     const std::string STAT_DIFF_BOX = "STAT_DIFF_BOX";
+    //Names of all gear list Widgets;
+    const std::string GEAR_LIST_BOX = "GEAR_LIST_BOX";
+    const std::string EQUIP_LIST = "EQUIP_LIST";
+
 }
 
 Widget* initEquipMenuWidget();

@@ -1,7 +1,7 @@
 #ifndef ASSETS_H
 #define ASSETS_H
 
-#include "widget.h"
+#include "base_widget.h"
 #include "../menus/menu.h"
 
 typedef struct {

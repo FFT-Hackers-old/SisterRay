@@ -13,3 +13,7 @@ typedef struct {
 
 
 #endif
+void handleChangeCharacter(const EquipDrawEventParams* params);
+void handleUpdateDescription(const EquipDrawEventParams* params);
+void handleUpdateGearSlotsWidget(const EquipDrawEventParams* params);
+void handleUpdateStatMenuWidget(const EquipDrawEventParams* params);

@@ -219,3 +219,31 @@ void initStatDiffWidget(Widget* mainWidget) {
     addChildWidget(mainWidget, statDiffWidget, STAT_DIFF_WIDGET_NAME);
 }
 
+
+//Initialize the gear list with just a box and a series of disabled widgets.
+void initGearListWidget(Widget* mainWidget) {
+    char * menuText;
+    char* fetchedName;
+    u16 kernelObjectID;
+    auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+
+    TextWidget* textWidget;
+    drawTextParams textParams;
+    BoxWidget* boxWidget;
+    drawBoxParams boxParams;
+
+    auto gearListWidget = createWidget(GEAR_LIST_WIDGET_NAME);
+
+    boxParams.set(
+        equipMenuWindowConfig[4].drawDistance1,
+        equipMenuWindowConfig[4].drawDistance2,
+        equipMenuWindowConfig[4].drawDistance3,
+        equipMenuWindowConfig[4].drawDistance4,
+        0.5f
+    );
+    boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
+    addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
+
+    addChildWidget(mainWidget, gearListWidget, GEAR_LIST_WIDGET_NAME);
+}
+

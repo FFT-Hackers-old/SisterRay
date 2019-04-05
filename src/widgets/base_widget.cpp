@@ -1,4 +1,4 @@
-#include "widget.h"
+#include "base_widget.h"
 
 //Create a default Widget on the heap, be sure to free this memory
 Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass) {
@@ -9,12 +9,27 @@ Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass) {
     return widget;
 }
 
+CollectionWidget* createCollectionWidget(std::string name, const WidgetClass* collectionType, const WidgetClass* containedType) {
+    CollectionWidget* widget = (CollectionWidget*)createWidget(name, sizeof(CollectionWidget), &kCollectionWidgetClass);
+    widget->collectionType = collectionType;
+    widget->containedKlass = containedType;
+    return widget;
+}
+
 //Recursively draw a widget and all of its sub-widgets
 void drawWidget(Widget* widget) {
     if (!widget->enabled)
         return;
 
-    if (widget->klass->draw != NULL) {
+    if (widget->klass == &kCollectionWidgetClass) {
+        auto typedPtr = (CollectionWidget *)widget;
+        if (typedPtr->collectionType->draw) {
+            typedPtr->collectionType->draw(widget);
+        }
+        return;
+    }
+
+    if (widget->klass->draw) {
         widget->klass->draw(widget);
     }
     else if(!widget->children.empty()) {
@@ -34,14 +49,31 @@ void destroyWidget(Widget* widget) {
 }
 
 //Utility to add a child widget to a parent;
-void addChildWidget(Widget* widget, Widget* childWidget, std::string name) {
-    widget->children.push_back(childWidget);
-    widget->children_names[name] = widget->children.size() - 1;
+void addChildWidget(Widget* parent, Widget* child, std::string name) {
+    if (parent->klass == &kCollectionWidgetClass) {
+        auto typedPtr = (CollectionWidget*)parent;
+        if (child->klass != typedPtr->containedKlass) {
+            //Cannot add different types to a collection Widget
+            return;
+        }
+    }
+    parent->children.push_back(child);
+    parent->children_names[name] = parent->children.size() - 1;
 }
 
 Widget* getChild(Widget* parent, std::string name) {
     auto child = parent->children[parent->children_names[name]];
     return child;
+}
+
+Widget* getChild(Widget* parent, u16 index) {
+    if (parent->children.size() > index) {
+        auto child = parent->children[index];
+        return child;
+    }
+    else {
+        return nullptr;
+    }
 }
 
 //update the values of the named child widget

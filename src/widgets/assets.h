@@ -17,7 +17,7 @@ typedef struct {
 } ScrollerWidget;
 
 void drawScrollerWidget(ScrollerWidget* scrollerWidget);
-static const WidgetClass kScrollerWidgetClass = { (SRWIDGETDRAWPROC)drawScrollerWidget };
+const WidgetClass kScrollerWidgetClass = { (SRWIDGETDRAWPROC)drawScrollerWidget };
 ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name);
 bool isScrollerWidget(Widget* widget);
 
@@ -28,7 +28,7 @@ typedef struct {
 } PortraitWidget;
 
 void drawPortraitWidget(PortraitWidget* portraitWidget);
-static const WidgetClass kPortraitWidgetClass = { (SRWIDGETDRAWPROC)drawPortraitWidget };
+const WidgetClass kPortraitWidgetClass = { (SRWIDGETDRAWPROC)drawPortraitWidget };
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name);
 bool isPortraitWidget(Widget* widget);
 void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex);
@@ -40,7 +40,7 @@ typedef struct {
 } HPBarWidget;
 
 void drawHPBarWidget(HPBarWidget* hpBarWidget);
-static const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
+const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
 HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name);
 bool isHPBarWidget(Widget* widget);
 void updateHPBarPartyIndex(Widget* widget, u8 portraitIndex);
@@ -53,7 +53,7 @@ typedef struct {
 } ArrowWidget;
 
 void drawArrowWidget(ArrowWidget* arrowWidget);
-static const WidgetClass kArrowWidgetClass = { (SRWIDGETDRAWPROC)drawArrowWidget };
+const WidgetClass kArrowWidgetClass = { (SRWIDGETDRAWPROC)drawArrowWidget };
 ArrowWidget* createArrowWidget(drawArrowParams params, std::string name);
 bool isArrowWidget(Widget* widget);
 
@@ -63,7 +63,7 @@ typedef struct {
 } SlotsWidget;
 
 void drawSlotsWidget(SlotsWidget* slotsWidget);
-static const WidgetClass kSlotsWidgetClass = { (SRWIDGETDRAWPROC)drawSlotsWidget };
+const WidgetClass kSlotsWidgetClass = { (SRWIDGETDRAWPROC)drawSlotsWidget };
 SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name);
 bool isSlotsWidget(Widget* widget);
 void updateMateriaSlots(Widget* widget, u8* materiaSlotsData);

@@ -2,6 +2,7 @@
 #define CONTAINERS_H
 
 #include "base_widget.h"
+#include "container_table.h"
 #include "../menus/menu.h"
 
 typedef struct {
@@ -21,7 +22,7 @@ typedef struct {
     u16 columnSpacing;
 } GridWidgetParams;
 
-void drawGridWidget(CursorGridWidget* listWidget); //draw visibleRow # of child widgets
+void drawGridWidget(CursorGridWidget* gridWidget); //draw visibleRow # of child widgets
 static const WidgetClass kGridWidgetClass = { (SRWIDGETDRAWPROC)drawGridWidget };
 CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, WidgetClass* childType);
 bool isGridWidget(Widget* widget);

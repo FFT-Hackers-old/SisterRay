@@ -5,12 +5,11 @@ static void drawGridWidget(CursorGridWidget* cursorGrid) {
     for (auto rowIndex = 0; rowIndex < cursorGrid->cursorContext->viewRowBound; ++rowIndex) {
         for (auto columnIndex = 0; columnIndex < cursorGrid->cursorContext->viewColumnBound; ++columnIndex) {
             u16 flatIndex = (cursorGrid->cursorContext->maxColumnBound) * (rowIndex + 1) + (columnIndex + 1);
-            if (getChild((Widget*)cursorGrid, flatIndex)) {
-                auto child = getChild((Widget*)cursorGrid, flatIndex);
-                auto elementX = cursorGrid->columnSpacing * columnIndex + cursorGrid->widget.widget.xCoordinate; //Calculate the flat X and why to display the viewed asset with
+            auto child = getChild((Widget*)cursorGrid, flatIndex);
+            if (child) {
+                auto elementX = cursorGrid->columnSpacing * columnIndex + cursorGrid->widget.widget.xCoordinate;
                 auto elementY = cursorGrid->rowSpacing * rowIndex + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
-                //function which updates the actual values in the Widget
                 cursorGrid->updater((CollectionWidget*)cursorGrid, child, flatIndex);
                 drawWidget(getChild((Widget*)cursorGrid, flatIndex));
             }

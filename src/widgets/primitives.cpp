@@ -1,6 +1,6 @@
 #include "primitives.h"
 
-static void drawTextWidget(TextWidget* textWidget){
+void drawTextWidget(TextWidget* textWidget){
     gameDrawString(
         textWidget->widget.xCoordinate,
         textWidget->widget.yCoordinate,
@@ -44,7 +44,7 @@ void updateTextColor(Widget* widgetToUpdate, color textColor) {
     }
 }
 
-static void drawNumberWidget(NumberWidget* numberWidget) {
+void drawNumberWidget(NumberWidget* numberWidget) {
     gameDrawNumbers(
         numberWidget->widget.xCoordinate,
         numberWidget->widget.yCoordinate,
@@ -91,7 +91,7 @@ void updateNumberColor(Widget* widgetToUpdate, color numberColor) {
 }
 
 
-static void drawBoxWidget(BoxWidget* boxWidget) {
+void drawBoxWidget(BoxWidget* boxWidget) {
     drawBoxParams params = {
         boxWidget->drawDistanceXa,
         boxWidget->drawDistanceXb,

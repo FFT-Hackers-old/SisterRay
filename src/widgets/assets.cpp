@@ -1,6 +1,6 @@
 #include "assets.h"
 
-static void drawScrollerWidget(ScrollerWidget* scrollerPortrait) {
+void drawScrollerWidget(ScrollerWidget* scrollerPortrait) {
     drawScrollerParams params = {
         scrollerPortrait->viewSize,
         scrollerPortrait->maxRows,
@@ -29,7 +29,7 @@ bool isScrollerWidget(Widget* widget) {
     return ((widget->klass == &kScrollerWidgetClass));
 }
 
-static void drawPortraitWidget(PortraitWidget* portraitWidget) {
+void drawPortraitWidget(PortraitWidget* portraitWidget) {
     displayPortrait(
         portraitWidget->widget.xCoordinate,
         portraitWidget->widget.yCoordinate,
@@ -62,7 +62,7 @@ void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
 }
 
 
-static void drawHPBarWidget(HPBarWidget* hpBarWidget) {
+void drawHPBarWidget(HPBarWidget* hpBarWidget) {
     displayPortrait(
         hpBarWidget->widget.xCoordinate,
         hpBarWidget->widget.yCoordinate,
@@ -95,7 +95,7 @@ void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
     }
 }
 
-static void drawArrowWidget(ArrowWidget* arrowWidget) {
+void drawArrowWidget(ArrowWidget* arrowWidget) {
     gameDrawAsset(
         arrowWidget->widget.xCoordinate,
         arrowWidget->widget.yCoordinate,
@@ -119,7 +119,7 @@ bool isArrowWidget(Widget* widget) {
 }
 
 
-static void drawSlotsWidget(SlotsWidget* slotsWidget) {
+void drawSlotsWidget(SlotsWidget* slotsWidget) {
     renderMateriaSlots(
         slotsWidget->widget.xCoordinate,
         slotsWidget->widget.yCoordinate,

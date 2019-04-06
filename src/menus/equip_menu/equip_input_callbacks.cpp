@@ -92,13 +92,13 @@ void exitMenuListener(const EquipInputEventParams* params) {
     if (*DID_MATERIA_GEAR_CHANGE && (*word_DD1BC0 || *dword_DC1290)) {
         playMenuSound(1);
         sub_6C9812(4, 3);
-        sub_6C6AEE(3);
+        setActiveMenu(3);
         *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
     }
     else {
         playMenuSound(4);
         sub_6C9812(5, 0);
-        sub_6C6AEE(0);
+        setActiveMenu(0);
     }
 }
 
@@ -215,6 +215,7 @@ u16 setupGearMenu(u8 itemType) {
             equippableGearCount++;
         }
     }
+    gContext.gearViewData.setItemType(itemType);
     gContext.gearViewData.setSlotsInUse(equippableGearCount);
     return equippableGearCount;
 }

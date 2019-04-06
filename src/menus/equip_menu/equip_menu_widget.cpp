@@ -61,7 +61,6 @@ void initCharDataWidget(Widget* mainWidget) {
 }
 
 void initGearDescWidget(Widget* mainWidget) {
-    char * menuText;
     char* fetchedName;
     u16 kernelObjectID;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
@@ -102,8 +101,6 @@ void initGearMateriaSlotWidget(Widget* mainWidget) {
 
     TextWidget* textWidget;
     drawTextParams textParams;
-    NumberWidget* numberWidget;
-    drawNumberParams numberParams;
     SlotsWidget* slotsWidget;
     drawSlotsParams slotsParams;
     BoxWidget* boxWidget;
@@ -226,9 +223,9 @@ void initGearListWidget(Widget* mainWidget) {
     char* fetchedName;
     u16 kernelObjectID;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
 
-    TextWidget* textWidget;
-    drawTextParams textParams;
+    GridWidgetParams gridParams;
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
 
@@ -243,6 +240,12 @@ void initGearListWidget(Widget* mainWidget) {
     );
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
+
+    gridParams = {(cursorContext*)&(cursorContextArray[1]), &gearViewNameUpdater, 427, 193, 36, 0};
+    auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, &kTextWidgetClass);
+    addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
+
+
 
     addChildWidget(mainWidget, gearListWidget, GEAR_LIST_WIDGET_NAME);
 }

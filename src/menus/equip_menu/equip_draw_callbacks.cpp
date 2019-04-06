@@ -78,8 +78,6 @@ void handleUpdateStatMenuWidget(const EquipDrawEventParams* params) {
     auto menuWidget = params->equipMenuWidget;
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
-    u8 kernelObjectID;
-    u8* materiaSlots;
     u8 statsToDisplay[8];
     auto statDiffWidget = getChild(menuWidget, STAT_DIFF_WIDGET_NAME);
 

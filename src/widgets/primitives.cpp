@@ -90,7 +90,6 @@ void updateNumberColor(Widget* widgetToUpdate, color numberColor) {
     }
 }
 
-
 void drawBoxWidget(BoxWidget* boxWidget) {
     drawBoxParams params = {
         boxWidget->drawDistanceXa,

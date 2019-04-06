@@ -2,7 +2,7 @@
 #define USABLE_ITEM_HANDLERS_H
 
 #include <SisterRay/types.h>
-#include "function_registry_template.h"
+#include "named_resource_registry.h"
 #include <unordered_map>
 #include <string>
 
@@ -14,13 +14,13 @@ void initOnUseCallbackRegistry();
 void initNoTargetCallbackRegistry();
 
 /*Should refactor this into a template subclass function registry pattern*/
-class srOnUseCallbackRegistry : public SrFunctionResourceRegistry<onUseCallback> {
+class srOnUseCallbackRegistry : public SrNamedResourceRegistry<onUseCallback> {
 public:
     srOnUseCallbackRegistry();
 };
 
 /*Holds functions to modularize items used that are not "targeted"*/
-class srNoTargetCallbackRegistry : public SrFunctionResourceRegistry<noTargetCallback> {
+class srNoTargetCallbackRegistry : public SrNamedResourceRegistry<noTargetCallback> {
 public:
     srNoTargetCallbackRegistry();
 };

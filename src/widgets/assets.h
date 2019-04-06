@@ -2,7 +2,57 @@
 #define ASSETS_H
 
 #include "base_widget.h"
-#include "../menus/menu.h"
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 viewSize;
+    u16 maxRows;
+    u16 baseRow;
+    u16 position1;
+    u16 position2;
+    u16 position3;
+    u16 position4;
+    float priority;
+    void set(u16 viewSizeArg, u16 maxRowArg, u16 baseRowArg, u16 position1Arg, u16 position2Arg, u16 position3Arg, u16 position4Arg, float priorityArg) {
+        viewSize = viewSizeArg;
+        maxRows = maxRowArg;
+        baseRow = baseRowArg;
+        position1 = position1Arg;
+        position2 = position2Arg;
+        position3 = position3Arg;
+        position4 = position4Arg;
+        priority = priorityArg;
+    }
+} drawScrollerParams;
+#pragma pack(pop)
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 partyIndex;
+    float priority;
+} drawPortraitParams;
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 arrowCode;
+    color arrowColor;
+    float arrowPriority;
+} drawArrowParams;
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8* materiaSlotData;
+} drawSlotsParams;
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 partyIndex;
+    float priority;
+} drawHPBarParams;
 
 typedef struct {
     Widget widget;

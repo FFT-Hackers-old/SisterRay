@@ -5,34 +5,35 @@
 
 
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
-    displayEquipMenuViews(updateStateMask);
+    Widget* menuWidget = gContext.menuWidgets.get_element("EQUIP_MENU"); //Need to actually allocate/init this
+    displayEquipMenuViews(updateStateMask, menuWidget);
     if (!is_input_handling_enabled()) {
         handleEquipMenuInput(updateStateMask);
     }
 }
 
-
-
 //TODO: All of the magic numbers need to be pulled out and data driven
-void displayEquipMenuViews(i32 stateControlMask) {
+void displayEquipMenuViews(i32 stateControlMask, Widget* menuWidget) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u8 characterRecordArrayIndex;
 
+    EquipDrawEventParams event = { menuWidget };
+    gContext.eventBus.dispatch(DRAW_EQUIP_MENU, &event);
+    drawWidget(menuWidget);
+
     sub_6C98A6();
-    displayMenuObjects(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
-    displayMenuCursors(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
-    displayMateriaSlots(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
-    displayMenuTexts(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
-    displayEquipGearStats(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
+    //displayMenuObjects(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
+    //displayMenuCursors(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
+    //displayMateriaSlots(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
+    //displayMenuTexts(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
+    //displayEquipGearStats(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
 }
 
 //This function can be registered to a particular menu state to modularize modding the menus
 void displayMenuObjects(cursorContext* cursorContextArray, u32 menuState, i32 stateControlMask) {
-    u16 kernelObjectID;
     u16 baseRowIndex;
     u16 equippableGearCount;
-    char* fetchedName;
     char* fetchedDescription;
     u16 maxRowsInView;
 
@@ -206,7 +207,6 @@ void displayEquipGearStats(cursorContext* cursorContextArray, u16 menuState, u16
     u16 equippedAccessoryID = (CHARACTER_RECORD_ARRAY)[characterID].equipped_accessory;
     u16 toEquipWeaponID;
     u16 toEquipArmorID;
-    u16 toEquipAccessoryID;
     u8 equippedStats[8];
     u8 statToEquip[8];
     u8 statDisplayColor;
@@ -280,6 +280,7 @@ color getStatDisplayColor(u8 equippedStat, u8 toEquipStat) {
     if (toEquipStat < equippedStat) {
         return COLOR_RED;
     }
+    return COLOR_WHITE;
 }
 
 void handleEquipMenuInput(i32 updateStateMask) {
@@ -311,7 +312,7 @@ void handleEquipMenuInput(i32 updateStateMask) {
     else if (checkInputReceived(128) && (*word_DD1BC0 || *dword_DC1290)) { //When switching to the materia view, square
         playMenuSound(1);
         sub_6C9812(4, 3);
-        sub_6C6AEE(3);
+        setActiveMenu(3);
         *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
     }
     else if (checkInputReceived(16) && !(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2) { //unequip accessory

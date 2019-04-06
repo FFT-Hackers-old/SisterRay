@@ -4,5 +4,6 @@
 #include "primitives.h"
 #include "assets.h"
 #include "containers.h"
+#include "updaters.h"
 
 #endif

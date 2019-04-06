@@ -15,6 +15,7 @@ typedef enum SrEventType {
     EQUIP_MENU_INPUT_R1,
     EQUIP_MENU_INPUT_L1
 };
+
 typedef u32 SrEventListener;
 
 #endif

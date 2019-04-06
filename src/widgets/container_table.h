@@ -3,9 +3,7 @@
 
 #include "assets.h"
 #include "primitives.h"
-#include "../menus/menu.h"
 
-Widget* typeAllocate(WidgetClass* type, std::string name);
-
+Widget* typeAllocate(const WidgetClass* type, std::string name);
 
 #endif

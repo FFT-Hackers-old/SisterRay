@@ -2,7 +2,7 @@
 #include "string.h"
 #include "impl.h"
 
-char FF7EncodedString::default_string[] = "\x01\x01\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x00\x01\x01\x01\xFF";
+char FF7EncodedString::default_string[] = "\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x00\x01\xFF";
 
 void FF7EncodedString::encode_ascii_string(char* ascii_string) {
     int str_size = strlen(ascii_string);

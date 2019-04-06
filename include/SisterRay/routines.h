@@ -174,7 +174,7 @@ typedef i32(*pfnsub6C9812)(i32, i32);
 #define sub_6C9812                      ((pfnsub6C9812)0x6C9812) //Sets some data for transition from EQUIP to main menu
 
 typedef i32(*pfnsub6C6AEE)(i32);
-#define sub_6C6AEE                      ((pfnsub6C6AEE)0x6C6AEE) //Sets some data for transition from EQUIP to main menu
+#define setActiveMenu                      ((pfnsub6C6AEE)0x6C6AEE) //Sets some data for transition from EQUIP to main menu
 
 typedef i8(*pfnsub5CB127)(void);   
 #define updateMiscPartyStats            ((pfnsub5CB127)0x5CB127)

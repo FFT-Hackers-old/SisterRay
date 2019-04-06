@@ -16,6 +16,7 @@
 #include "usable_item_handlers.h"
 #include "events/event_bus.h"
 #include "string_registry.h"
+#include "menus/menu.h"
 #include <map>
 #include <memory>
 
@@ -37,6 +38,7 @@ typedef struct {
     srNoTargetCallbackRegistry          untargeted_handlers;
     SrOnUseItemDataRegistry             item_on_use_data;
     SrGameStrings                       game_strings;
+    MenuWidgetRegistry                  menuWidgets;
     EventBus                            eventBus;
 } SrContext;
 

@@ -6,6 +6,7 @@ Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass) {
     memset(widget, 0, size);
     widget->name = name;
     widget->klass = wclass;
+    widget->enabled = true;
     return widget;
 }
 
@@ -58,11 +59,11 @@ void addChildWidget(Widget* parent, Widget* child, std::string name) {
         }
     }
     parent->children.push_back(child);
-    parent->children_names[name] = parent->children.size() - 1;
+    parent->childrenNames[name] = parent->children.size() - 1;
 }
 
 Widget* getChild(Widget* parent, std::string name) {
-    auto child = parent->children[parent->children_names[name]];
+    auto child = parent->children[parent->childrenNames[name]];
     return child;
 }
 
@@ -81,7 +82,7 @@ Widget* getChild(Widget* parent, u16 index) {
 void setChildWidget(Widget* parent, Widget* newChild, std::string name) {
     auto widgetToUpdate = getChild(parent, name);
     if (checkWidgetTypes(widgetToUpdate, newChild)) {
-        auto index = parent->children_names[name];
+        auto index = parent->childrenNames[name];
         free(widgetToUpdate);
         parent->children[index] = newChild;
     }

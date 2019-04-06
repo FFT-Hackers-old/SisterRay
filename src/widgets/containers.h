@@ -3,7 +3,6 @@
 
 #include "base_widget.h"
 #include "container_table.h"
-#include "../menus/menu.h"
 
 typedef struct {
     CollectionWidget widget;
@@ -23,7 +22,8 @@ typedef struct {
 } GridWidgetParams;
 
 void drawGridWidget(CursorGridWidget* gridWidget); //draw visibleRow # of child widgets
-static const WidgetClass kGridWidgetClass = { (SRWIDGETDRAWPROC)drawGridWidget };
-CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, WidgetClass* childType);
+const WidgetClass kGridWidgetClass = { (SRWIDGETDRAWPROC)drawGridWidget };
+CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, const WidgetClass* childType);
 bool isGridWidget(Widget* widget);
+
 #endif

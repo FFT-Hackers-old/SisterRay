@@ -1,4 +1,5 @@
 #include "containers.h"
+#include <string>
 
 /*Grid widgets positions are automatically updated*/
 static void drawGridWidget(CursorGridWidget* cursorGrid) {
@@ -24,6 +25,12 @@ CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, Wi
     widget->cursorContext = params.cursorContext;
     widget->rowSpacing = params.rowSpacing;
     widget->columnSpacing = params.columnSpacing;
+    auto slotCount = (widget->cursorContext->maxRowBound + 1) * (widget->cursorContext->maxColumnBound + 1);
+    for (int slot = 0; slot < slotCount; slot++) {
+        auto name = std::to_string(slot);
+        auto widgetSlot = typeAllocate(childType, name);
+        addChildWidget((Widget*)widget, widgetSlot, name);
+    }
     return widget;
 }
 

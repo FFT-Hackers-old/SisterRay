@@ -1,10 +1,21 @@
 #include "equip_menu.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
+#include "../menu.h"
 #include <memory>
 
+using namespace EquipWidgetNames;
+
+void initializeEquipMenu() {
+    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    Menu equipMenu = Menu(cursorContextArray, 2, INIT_EQUIP_MENU, EQUIP_MENU_NAME);
+    //run the initializing callbacks to create the default menu
+    equipMenu.initializeMenu();
+    gContext.menuWidgets.add_element("EQUIP_MENU", equipMenu);
+}
+
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
-    auto menuObject = gContext.menuWidgets.get_element("EQUIP_MENU"); //Need to actually allocate/init this
+    auto menuObject = gContext.menuWidgets.get_element("EQUIP_MENU"); 
     auto menuWidget = menuObject.getWidget();
     displayEquipMenuViews(updateStateMask, menuWidget);
     if (!is_input_handling_enabled()) {
@@ -18,6 +29,8 @@ void displayEquipMenuViews(i32 stateControlMask, Widget* menuWidget) {
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u8 characterRecordArrayIndex;
 
+    EquipDrawEvent event = { menuWidget };
+    gContext.eventBus.dispatch(DRAW_EQUIP_MENU, &event);
     drawWidget(menuWidget);
 
     sub_6C98A6();

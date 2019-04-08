@@ -38,7 +38,7 @@ typedef struct {
     srNoTargetCallbackRegistry          untargeted_handlers;
     SrOnUseItemDataRegistry             item_on_use_data;
     SrGameStrings                       game_strings;
-    MenuWidgetRegistry                  menuWidgets;
+    MenuRegistry                        menuWidgets;
     EventBus                            eventBus;
 } SrContext;
 

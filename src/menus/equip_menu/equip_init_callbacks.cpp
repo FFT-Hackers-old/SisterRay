@@ -1,4 +1,4 @@
-#include "equip_menu_widget.h"
+#include "equip_init_callbacks.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
 
@@ -9,21 +9,13 @@
 
 using namespace EquipWidgetNames;
 
-/* Returns a pointer to a Widget representing the Equipment menu*/
-Widget* initEquipMenuWidget() {
-    auto mainWidget = createWidget(EQUIP_MENU_NAME);
-    // create the equipment Widget and add it's default children
-    initCharDataWidget(mainWidget);
-    initStatDiffWidget(mainWidget);
-    initGearDescWidget(mainWidget);
-    return mainWidget;
-}
-
-void initCharDataWidget(Widget* mainWidget) {
+void initCharDataWidget(const EquipInitEvent* event) {
     char * menuText;
     char* fetchedName;
     u16 kernelObjectID;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    auto menuObject = event->menuObject;
+    auto mainWidget = menuObject->getWidget();
 
     TextWidget* textWidget;
     drawTextParams textParams;
@@ -60,7 +52,7 @@ void initCharDataWidget(Widget* mainWidget) {
     addChildWidget(mainWidget, currentEquipWidget, CHAR_DATA_WIDGET_NAME);
 }
 
-void initGearDescWidget(Widget* mainWidget) {
+void initGearDescWidget(const EquipInitEvent* event) {
     char* fetchedName;
     u16 kernelObjectID;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
@@ -69,6 +61,8 @@ void initGearDescWidget(Widget* mainWidget) {
     drawTextParams textParams;
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
+    auto menuObject = event->menuObject;
+    auto mainWidget = menuObject->getWidget();
 
     auto GearDescWidget = createWidget(GEAR_DESC_WIDGET_NAME);
 
@@ -92,7 +86,7 @@ void initGearDescWidget(Widget* mainWidget) {
 }
 
 /* Initialize the Widget for the characters Materia Slots. This will be updated when Handling in Handlers*/
-void initGearMateriaSlotWidget(Widget* mainWidget) {
+void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     char * menuText;
     u16 kernelObjectID;
     u8 materiaGrowth;
@@ -105,6 +99,8 @@ void initGearMateriaSlotWidget(Widget* mainWidget) {
     drawSlotsParams slotsParams;
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
+    auto menuObject = event->menuObject;
+    auto mainWidget = menuObject->getWidget();
 
     auto equipMateraSlotWidget = createWidget(GEAR_SLOTS_WIDGET_NAME);
 
@@ -150,7 +146,7 @@ void initGearMateriaSlotWidget(Widget* mainWidget) {
 }
 
 /*Initialize the Widget That displays stats*/
-void initStatDiffWidget(Widget* mainWidget) {
+void initStatDiffWidget(const EquipInitEvent* event) {
     u8 characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u16 equippedWeaponID = (CHARACTER_RECORD_ARRAY)[characterID].equipped_weapon;
     u16 equippedArmorID = (CHARACTER_RECORD_ARRAY)[characterID].equipped_armor;
@@ -167,6 +163,8 @@ void initStatDiffWidget(Widget* mainWidget) {
     drawArrowParams arrowParams;
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
+    auto menuObject = event->menuObject;
+    auto mainWidget = menuObject->getWidget();
 
     auto statDiffWidget = createWidget(STAT_DIFF_WIDGET_NAME);
 
@@ -218,7 +216,7 @@ void initStatDiffWidget(Widget* mainWidget) {
 
 
 //Initialize the gear list with just a box and a series of disabled widgets.
-void initGearListWidget(Widget* mainWidget) {
+void initGearListWidget(const EquipInitEvent* event) {
     char * menuText;
     char* fetchedName;
     u16 kernelObjectID;
@@ -228,6 +226,8 @@ void initGearListWidget(Widget* mainWidget) {
     GridWidgetParams gridParams;
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
+    auto menuObject = event->menuObject;
+    auto mainWidget = menuObject->getWidget();
 
     auto gearListWidget = createWidget(GEAR_LIST_WIDGET_NAME);
 
@@ -244,8 +244,6 @@ void initGearListWidget(Widget* mainWidget) {
     gridParams = {(cursorContext*)&(cursorContextArray[1]), &gearViewNameUpdater, 427, 193, 36, 0};
     auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, &kTextWidgetClass);
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
-
-
 
     addChildWidget(mainWidget, gearListWidget, GEAR_LIST_WIDGET_NAME);
 }

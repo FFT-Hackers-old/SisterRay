@@ -5,7 +5,7 @@
 //-----------------------------------------------------Begin Widget Draw Callbacks---------------------------------------------------------//
 using namespace EquipWidgetNames;
 
-void handleChangeCharacter(const EquipDrawEventParams* params) {
+void handleChangeCharacter(const EquipDrawEvent* params) {
     auto menuWidget = params->equipMenuWidget;
     u8 kernelObjectID;
     char* fetchedName;
@@ -24,7 +24,7 @@ void handleChangeCharacter(const EquipDrawEventParams* params) {
     }
 }
 
-void handleUpdateDescription(const EquipDrawEventParams* params) {
+void handleUpdateDescription(const EquipDrawEvent* params) {
     auto menuWidget = params->equipMenuWidget;
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
@@ -45,7 +45,7 @@ void handleUpdateDescription(const EquipDrawEventParams* params) {
     updateText(descrptionWidget, fetchedDescription);
 }
 
-void handleUpdateGearSlotsWidget(const EquipDrawEventParams* params) {
+void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
     auto menuWidget = params->equipMenuWidget;
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
@@ -74,7 +74,7 @@ void handleUpdateGearSlotsWidget(const EquipDrawEventParams* params) {
     updateText(growthWidget, menuText);
 }
 
-void handleUpdateStatMenuWidget(const EquipDrawEventParams* params) {
+void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
     auto menuWidget = params->equipMenuWidget;
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];

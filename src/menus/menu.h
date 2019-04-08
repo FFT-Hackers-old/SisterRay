@@ -5,11 +5,33 @@
 #include <SisterRay/SisterRay.h>
 #include "../named_resource_registry.h"
 #include "../widgets/widget.h"
+#include "../events/event.h"
 
-class MenuWidgetRegistry : public SrNamedResourceRegistry<Widget*> {
+/*Menu objects consist of a widget, a current menu state, and a registry of cursorContexts one per state*/
+class Menu {
 public:
-    ~MenuWidgetRegistry();
+    Menu(cursorContext* cursorContextArray, i32 menuStateCount, SrEventType initEvent, const std::string equipName);
+    Menu();
+    ~Menu();
+    i32 menuState;
+    i32 menuStateCount;
+    SrEventType initEvent;
+    Widget* widgetPtr;
+
+    std::unordered_map<i32, cursorContext> cursorContextRegistry;
+    void initializeMenu();
+    i32 getMenuState();
+    void setMenuState(i32 value);
+    Widget* getWidget();
+    
 };
+
+class MenuRegistry : public SrNamedResourceRegistry<Menu> {
+public:
+    void initializeMenu(std::string menuName); //dispatches handlers registered to "init", restoring the widget to its original state
+};
+
+
 
 typedef struct {
     i16 drawDistance1;

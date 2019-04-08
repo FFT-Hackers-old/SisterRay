@@ -4,7 +4,7 @@
 //-----------------------------------------------------Input Handler Callbacks-------------------------------------------------------------//
 
 /*Handlers for "OK" inputs, one per menu State*/
-void equipGearHandler(const EquipInputEventParams* params) {
+void equipGearHandler(const EquipInputEvent* event) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u8 characterRecordArrayIndex;
@@ -13,7 +13,7 @@ void equipGearHandler(const EquipInputEventParams* params) {
     if (*EQUIP_MENU_STATE != 1)
         return;
 
-    auto menuWidget = params->equipMenuWidget;
+    auto menuWidget = event->equipMenuWidget;
 
     playMenuSound(447);
     *EQUIP_MENU_STATE = 0;
@@ -43,7 +43,7 @@ void equipGearHandler(const EquipInputEventParams* params) {
     updateMiscPartyStats();
 }
 
-void selectGearHandler(const EquipInputEventParams* params) {
+void selectGearHandler(const EquipInputEvent* event) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u32 equipMenuState = *EQUIP_MENU_STATE;
@@ -53,7 +53,7 @@ void selectGearHandler(const EquipInputEventParams* params) {
     if (*EQUIP_MENU_STATE != 0)
         return;
 
-    auto menuWidget = params->equipMenuWidget;
+    auto menuWidget = event->equipMenuWidget;
 
     equippableGearCount = setupGearMenu(cursorContextArray[0].relativeRowIndex + 1);
     if (equippableGearCount && !(*byte_DC0B4B & 1)) {
@@ -74,20 +74,20 @@ void selectGearHandler(const EquipInputEventParams* params) {
 }
 
 /*Handlers for "Cancel" inputs, one per menu State*/
-void exitEquipViewListener(const EquipInputEventParams* params) {
+void exitEquipViewListener(const EquipInputEvent* event) {
 
-    auto menuWidget = params->equipMenuWidget;
+    auto menuWidget = event->equipMenuWidget;
     
     *EQUIP_MENU_STATE = 0;
     //Remove Equip Menu Widgets for showing the List of Items
     //Reset stat diffs, descriptions, etc to currently equipped values
 }
 
-void exitMenuListener(const EquipInputEventParams* params) {
+void exitMenuListener(const EquipInputEvent* event) {
     if (*EQUIP_MENU_STATE != 0)
         return;
 
-    auto menuWidget = params->equipMenuWidget;
+    auto menuWidget = event->equipMenuWidget;
 
     if (*DID_MATERIA_GEAR_CHANGE && (*word_DD1BC0 || *dword_DC1290)) {
         playMenuSound(1);
@@ -103,9 +103,9 @@ void exitMenuListener(const EquipInputEventParams* params) {
 }
 
 /*Handlers for L1/R1 "switching" inputs, for states where they function*/
-void changeCharLeft(const EquipInputEventParams* params) {
+void changeCharLeft(const EquipInputEvent* event) {
 
-    auto menuWidget = params->equipMenuWidget;
+    auto menuWidget = event->equipMenuWidget;
  
     do {
         *EQUIP_MENU_PARTY_INDEX = (((i32)(*EQUIP_MENU_PARTY_INDEX) - 1) < 0) ? 2 : ((*EQUIP_MENU_PARTY_INDEX) - 1);
@@ -114,8 +114,8 @@ void changeCharLeft(const EquipInputEventParams* params) {
     //update displayed character Data in the Widget
 }
 
-void changeCharRight(const EquipInputEventParams* params) {
-    auto menuWidget = params->equipMenuWidget;
+void changeCharRight(const EquipInputEvent* event) {
+    auto menuWidget = event->equipMenuWidget;
 
     do {
         *EQUIP_MENU_PARTY_INDEX = (((*EQUIP_MENU_PARTY_INDEX) + 1) > 2) ? 0 : ((*EQUIP_MENU_PARTY_INDEX) + 1);

@@ -3,9 +3,9 @@
 #include "../../party/party_utils.h"
 #include <memory>
 
-
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
-    Widget* menuWidget = gContext.menuWidgets.get_element("EQUIP_MENU"); //Need to actually allocate/init this
+    auto menuObject = gContext.menuWidgets.get_element("EQUIP_MENU"); //Need to actually allocate/init this
+    auto menuWidget = menuObject.getWidget();
     displayEquipMenuViews(updateStateMask, menuWidget);
     if (!is_input_handling_enabled()) {
         handleEquipMenuInput(updateStateMask);
@@ -18,8 +18,6 @@ void displayEquipMenuViews(i32 stateControlMask, Widget* menuWidget) {
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u8 characterRecordArrayIndex;
 
-    EquipDrawEventParams event = { menuWidget };
-    gContext.eventBus.dispatch(DRAW_EQUIP_MENU, &event);
     drawWidget(menuWidget);
 
     sub_6C98A6();

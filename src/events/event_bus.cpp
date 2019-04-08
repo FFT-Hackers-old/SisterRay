@@ -9,7 +9,7 @@ EventBus::EventBus(): _listenerCount(0), _listenerCapacity(1) {
 EventBus::~EventBus() {
 }
 
-void EventBus::dispatch(SrEventType eventType, void* event) {
+void EventBus::dispatch(SrEventType eventType, const void* event) {
     if (!eventType)
         return;
 

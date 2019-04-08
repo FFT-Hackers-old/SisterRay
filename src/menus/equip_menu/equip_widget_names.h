@@ -1,13 +1,6 @@
-#ifndef EQUIP_MENU_WIDGET
-#define EQUIP_MENU_WIDGET
+#ifndef EQUIP_WIDGET_NAMES_H
+#define EQUIP_WIDGET_NAMES_H
 
-#include <SisterRay/types.h>
-#include <SisterRay/SisterRay.h>
-#include "../menu_utils.h"
-#include "../../widgets/widget.h"
-
-// by using this namespace in a mod, you may access the Widgets
-// in your own callbacks to mutate them however you like
 namespace EquipWidgetNames {
     //Names of TOP LEVEL WIDGETS
     const std::string EQUIP_MENU_NAME = "EQUIP_MENU_WIDGET";
@@ -68,13 +61,5 @@ namespace EquipWidgetNames {
     //Names of all gear list Widgets;
     const std::string GEAR_LIST_BOX = "GEAR_LIST_BOX";
     const std::string EQUIP_LIST = "EQUIP_LIST";
-
 }
-
-Widget* initEquipMenuWidget();
-void initCharDataWidget(Widget* mainWidget);
-void initGearMateriaSlotWidget(Widget* mainWidget);
-void initGearDescWidget(Widget* mainWidget);
-void initStatDiffWidget(Widget* mainWidget);
-
 #endif

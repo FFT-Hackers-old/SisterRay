@@ -7,7 +7,7 @@
 using namespace EquipWidgetNames;
 
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
-    auto menuObject = gContext.menuWidgets.get_element("EQUIP_MENU"); 
+    Menu& menuObject = gContext.menuWidgets.getElementRef("EQUIP_MENU"); 
     auto menuWidget = menuObject.getWidget();
     displayEquipMenuViews(updateStateMask, menuWidget);
     if (!is_input_handling_enabled()) {

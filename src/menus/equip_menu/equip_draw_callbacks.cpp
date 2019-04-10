@@ -10,6 +10,8 @@ void handleChangeCharacter(const EquipDrawEvent* params) {
     u8 kernelObjectID;
     char* fetchedName;
 
+    srLogWrite("CHANGE CHARACTER HANDLER CALLED");
+
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
 
     auto topWidget = getChild(menuWidget, CHAR_DATA_WIDGET_NAME);
@@ -17,9 +19,12 @@ void handleChangeCharacter(const EquipDrawEvent* params) {
     updateHPBarPartyIndex(getChild(topWidget, HPBAR_WIDGET_NAME), *EQUIP_MENU_PARTY_INDEX);
 
     std::vector<std::string> listNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
-    for (int row = 0; row < 0; row++) {
+    for (int row = 0; row < listNames.size(); row++) {
+        srLogWrite("INSIDE CHANGE CHARACTER CALLBACK HANDLER LOOP");
         kernelObjectID = getEquippedGear(characterRecordArrayIndex, row + 1);
         fetchedName = getNameFromRelativeID(kernelObjectID, row + 1);
+
+        srLogWrite("trying to update Widget %s value to text: %s", getChild(topWidget, listNames[row])->name.c_str(), fetchedName);
         updateText(getChild(topWidget, listNames[row]), fetchedName);
     }
 }
@@ -78,6 +83,8 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
             break;
         }
         default: {
+            materiaSlots = nullptr;
+            materiaGrowth = 4;
         }
     }
 
@@ -85,6 +92,7 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
 
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
         materiaGrowth = 4;
+
     char * menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);
     i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
     i32 growthTypeX = sub_6F54A2((u8*)menuText);
@@ -106,7 +114,7 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
                 statsToDisplay[0] = gContext.weapons.get_resource(toEquipWeaponID).weapon_strength;
                 statsToDisplay[1] = gContext.weapons.get_resource(toEquipWeaponID).weapon_hit_rate;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
-                for (int row = 0; row < 2; row++) {
+                for (int row = 0; row < listNames.size(); row++) {
                     updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
                 }
                 break;
@@ -119,7 +127,7 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
                 statsToDisplay[5] = gContext.armors.get_resource(toEquipArmorID).magic_defense;
                 statsToDisplay[6] = gContext.armors.get_resource(toEquipArmorID).magic_evade;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
-                for (int row = 2; row < 7; row++) {
+                for (int row = 2; row < listNames.size(); row++) {
                     updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
                 }
                 break;
@@ -142,7 +150,7 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
     statsToDisplay[4] = 0;
     statsToDisplay[5] = gContext.armors.get_resource(equippedArmorID).magic_defense;
     statsToDisplay[6] = gContext.armors.get_resource(equippedArmorID).magic_evade;
-    for (int row = 0; row < 0; row++) {
+    for (int row = 0; row < listNames.size(); row++) {
         updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
     }
 

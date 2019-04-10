@@ -121,11 +121,13 @@ bool isArrowWidget(Widget* widget) {
 
 
 void drawSlotsWidget(SlotsWidget* slotsWidget) {
-    renderMateriaSlots(
-        slotsWidget->widget.xCoordinate,
-        slotsWidget->widget.yCoordinate,
-        (i32)slotsWidget->materiaSlotsData
-    );
+    if (slotsWidget->materiaSlotsData) {
+        renderMateriaSlots(
+            slotsWidget->widget.xCoordinate,
+            slotsWidget->widget.yCoordinate,
+            (i32)slotsWidget->materiaSlotsData
+        );
+    }
 }
 
 SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
@@ -137,18 +139,11 @@ SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
 }
 
 bool isSlotsWidget(Widget* widget) {
-    srLogWrite("attempting to update widget %p", widget);
-    srLogWrite("widget class pointer: %p", widget->klass);
-    srLogWrite("slots class address: %p", &kSlotsWidgetClass);
     return ((widget->klass == &kSlotsWidgetClass));
 }
 
 void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
-    srLogWrite("attempting to update materia slots pointer to: %p", materiaSlotsData);
-
-    srLogWrite("is the input valid: %s", isSlotsWidget(widget)?"true":"false");
     if (isSlotsWidget(widget)) {
-        srLogWrite("Updating Slots Widget pointer to new value: %p", materiaSlotsData);
         auto typedPtr = (SlotsWidget*)widget;
         typedPtr->materiaSlotsData = materiaSlotsData;
     }

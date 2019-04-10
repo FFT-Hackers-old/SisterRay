@@ -22,6 +22,10 @@ public:
         return named_registry[name];
     }
 
+    T& getElementRef(std::string name) {
+        return named_registry.at(name);
+    }
+
     T get_handler(u16 item_id) {
         auto& name = get_resource(item_id);
         return named_registry[name];

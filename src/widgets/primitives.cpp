@@ -1,4 +1,5 @@
 #include "primitives.h"
+#include "../impl.h"
 
 void drawTextWidget(TextWidget* textWidget){
     gameDrawString(
@@ -14,7 +15,7 @@ TextWidget* createTextWidget(drawTextParams params, std::string name) {
     TextWidget* widget = (TextWidget*)createWidget(name, sizeof(TextWidget), &kTextWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
-    widget->text = strdup(params.stringToDraw);
+    widget->text = params.stringToDraw;
     widget->textColor = params.textColor;
     widget->priority = params.textThickness;
     return widget;
@@ -25,7 +26,10 @@ bool isTextWidget(Widget* widget) {
 }
 
 void updateText(Widget* widgetToUpdate, char* text) {
-    if (isTextWidget) {
+    srLogWrite("trying to update text widget: %s", widgetToUpdate->name.c_str());
+    if (isTextWidget(widgetToUpdate)) {
+        srLogWrite("updating widget: %s", widgetToUpdate->name.c_str());
+        srLogWrite("updating text widget: %s", text);
         auto typedPtr = (TextWidget*)widgetToUpdate;
         typedPtr->text = text;
     }
@@ -35,7 +39,7 @@ void updateText(Widget* widgetToUpdate, char* text) {
 }
 
 void updateTextColor(Widget* widgetToUpdate, color textColor) {
-    if (isTextWidget) {
+    if (isTextWidget(widgetToUpdate)) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
         typedPtr->textColor = textColor;
     }
@@ -71,7 +75,10 @@ bool isNumberWidget(Widget* widget) {
 }
 
 void updateNumber(Widget* widgetToUpdate, u32 number) {
-    if (isNumberWidget) {
+    srLogWrite("trying to update number widget: %s", widgetToUpdate->name.c_str());
+    if (isNumberWidget(widgetToUpdate)) {
+        srLogWrite("updating widget: %s", widgetToUpdate->name.c_str());
+        srLogWrite("updating number widget: %i", number);
         auto typedPtr = (NumberWidget*)widgetToUpdate;
         typedPtr->number = number;
     }
@@ -81,7 +88,7 @@ void updateNumber(Widget* widgetToUpdate, u32 number) {
 }
 
 void updateNumberColor(Widget* widgetToUpdate, color numberColor) {
-    if (isNumberWidget) {
+    if (isNumberWidget(widgetToUpdate)) {
         auto typedPtr = (NumberWidget*)widgetToUpdate;
         typedPtr->numberColor = numberColor;
     }

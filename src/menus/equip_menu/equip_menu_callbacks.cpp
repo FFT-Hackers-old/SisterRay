@@ -26,7 +26,9 @@ void registerEquipMenuListeners() {
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateStatMenuWidget);
 
     gContext.eventBus.addListener(EQUIP_MENU_INPUT_OK, (SrEventCallback)&equipGearHandler);
+    gContext.eventBus.addListener(EQUIP_MENU_INPUT_OK, (SrEventCallback)&selectGearHandler);
     gContext.eventBus.addListener(EQUIP_MENU_INPUT_CANCEL, (SrEventCallback)&exitMenuListener);
+    gContext.eventBus.addListener(EQUIP_MENU_INPUT_CANCEL, (SrEventCallback)&exitEquipViewListener);
     gContext.eventBus.addListener(EQUIP_MENU_INPUT_SQUARE, (SrEventCallback)&changeToMateriaMenu);
     gContext.eventBus.addListener(EQUIP_MENU_INPUT_TRIANGLE, (SrEventCallback)&handleUnequipAcc);
     gContext.eventBus.addListener(EQUIP_MENU_INPUT_L1, (SrEventCallback)&changeCharLeft);

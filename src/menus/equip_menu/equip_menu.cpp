@@ -27,7 +27,7 @@ void displayEquipMenuViews(i32 stateControlMask, Widget* menuWidget) {
     drawWidget(menuWidget);
 
     //displayMenuObjects(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
-    //displayMenuCursors(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
+    displayMenuCursors(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
     //displayMateriaSlots(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
     //displayMenuTexts(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
     //displayEquipGearStats(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);

@@ -21,6 +21,7 @@ void initCharDataWidget(const EquipInitEvent* event) {
     drawTextParams textParams;
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
+    PortraitWidget* portraitWidget;
 
     auto currentEquipWidget = createWidget(CHAR_DATA_WIDGET_NAME);
 
@@ -29,22 +30,25 @@ void initCharDataWidget(const EquipInitEvent* event) {
        equipMenuWindowConfig[0].drawDistance2,
        equipMenuWindowConfig[0].drawDistance3,
        equipMenuWindowConfig[0].drawDistance4,
-       0.1f
+       0.3f
     };
     boxWidget = createBoxWidget(boxParams, CHAR_DATA_BOX_NAME);
     addChildWidget(currentEquipWidget, (Widget*)boxWidget, CHAR_DATA_BOX_NAME);
 
+    drawPortraitParams portraitParams = { 17, 9, 0, 0.2f };
+    portraitWidget = createPortraitWidget(portraitParams, PORTRAIT_WIDGET_NAME);
+    addChildWidget(currentEquipWidget, (Widget*)portraitWidget, PORTRAIT_WIDGET_NAME);
+
     std::vector<std::string> gearNames = { GEAR_SLOT_1_NAME, GEAR_SLOT_2_NAME, GEAR_SLOT_3_NAME };
     std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
-    for (int row = 0; row < 3; row++) {
+    for (int row = 0; row < gearNames.size(); row++) {
+        srLogWrite("INSIDE LOOP CREATING CHAR DATA TEXT WIDGETS");
         menuText = gContext.game_strings.equipMenuTexts.get_string(row);
-        textParams = { 250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f };
+        textParams.set(250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f);
         textWidget = createTextWidget(textParams, gearNames[row]);
         addChildWidget(currentEquipWidget, (Widget*)textWidget, gearNames[row]);
 
-        kernelObjectID = getEquippedGear(characterID, row + 1);
-        fetchedName = getNameFromRelativeID(kernelObjectID, row + 1);
-        textParams = { 303, 13, fetchedName, COLOR_WHITE, 0.2f };
+        textParams.set(303, 13 + (34 * row), menuText, COLOR_WHITE, 0.2f);
         textWidget = createTextWidget(textParams, equippedGearNames[row]);
         addChildWidget(currentEquipWidget, (Widget*)textWidget, equippedGearNames[row]);
     }
@@ -71,14 +75,14 @@ void initGearDescWidget(const EquipInitEvent* event) {
         equipMenuWindowConfig[1].drawDistance2,
         equipMenuWindowConfig[1].drawDistance3,
         equipMenuWindowConfig[1].drawDistance4,
-        0.1f
+        0.3f
     };
     boxWidget = createBoxWidget(boxParams, GEAR_DESC_BOX);
     addChildWidget(mainWidget, (Widget*)boxWidget, GEAR_DESC_BOX);
 
     kernelObjectID = getEquippedGear(characterID, 1);
     fetchedName = getNameFromRelativeID(kernelObjectID, 1);
-    textParams = { 24, equipMenuWindowConfig[1].drawDistance2 + 13, fetchedName, COLOR_WHITE, 0.2f };
+    textParams.set(4, equipMenuWindowConfig[1].drawDistance2 + 13, fetchedName, COLOR_WHITE, 0.2f);
     textWidget = createTextWidget(textParams, GEAR_DESCRIPTION);
     addChildWidget(GearDescWidget, (Widget*)textWidget, GEAR_DESCRIPTION);
 
@@ -109,7 +113,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
         equipMenuWindowConfig[2].drawDistance2,
         equipMenuWindowConfig[2].drawDistance3,
         equipMenuWindowConfig[2].drawDistance4,
-        0.1f
+        0.3f
     };
     boxWidget = createBoxWidget(boxParams, GEAR_SLOTS_BOX);
     addChildWidget(equipMateraSlotWidget, (Widget*)boxWidget, GEAR_SLOTS_BOX);

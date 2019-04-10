@@ -9,6 +9,8 @@
 #include "equip_widget_names.h"
 
 void equipGearHandler(const EquipInputEvent* event); //Signature of Listener Callback
+void selectGearHandler(const EquipInputEvent* event);
+void exitEquipViewListener(const EquipInputEvent* event);
 void exitMenuListener(const EquipInputEvent* event);
 void changeCharLeft(const EquipInputEvent* event);
 void changeCharRight(const EquipInputEvent* event);

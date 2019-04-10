@@ -63,16 +63,16 @@ void addChildWidget(Widget* parent, Widget* child, std::string name) {
     }
 
 
-    srLogWrite("adding child at: %p to parent at: %p" , child, parent);
+    //srLogWrite("adding child at: %p to parent at: %p" , child, parent);
     parent->children.push_back(child);
     parent->childrenNames[name] = parent->children.size() - 1;
-    srLogWrite("assigning to name %s index %i", name.c_str(), (int)parent->children.size() -1 );
+    //srLogWrite("assigning to name %s index %i", name.c_str(), (int)parent->children.size() -1 );
 }
 
 Widget* getChild(Widget* parent, std::string name) {
     auto child = parent->children[parent->childrenNames[name]];
-    srLogWrite("returning child at: %p from parent at: %p", child, parent);
-    srLogWrite("Index of assigned name %s is %i", name.c_str(), (int)parent->childrenNames[name]);
+    //srLogWrite("returning child at: %p from parent at: %p", child, parent);
+    //srLogWrite("Index of assigned name %s is %i", name.c_str(), (int)parent->childrenNames[name]);
     return child;
 }
 

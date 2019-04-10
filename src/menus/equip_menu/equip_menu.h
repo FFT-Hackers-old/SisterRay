@@ -14,7 +14,7 @@ void initializeEquipMenu();
 color getStatDisplayColor(u8 equippedStat, u8 toEquipStat);
 void displayActiveCursorStates(i32 updateStateMask);
 void displayEquipMenuViews(i32 updateStateMask, Widget* equipWidget);
-void handleEquipMenuInput(i32 updateStateMask);
+void handleEquipMenuInput(i32 updateStateMask, Widget* equipWidget);
 void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex);
 void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex);
 u16 setupGearMenu(u8 itemType);

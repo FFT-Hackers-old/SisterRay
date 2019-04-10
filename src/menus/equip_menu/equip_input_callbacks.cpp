@@ -124,6 +124,36 @@ void changeCharRight(const EquipInputEvent* event) {
     //update displayed character Data in the Widget
 }
 
+void changeToMateriaMenu(const EquipInputEvent* event) {
+    if ((*word_DD1BC0 || *dword_DC1290)) { //When switching to the materia view, square
+        playMenuSound(1);
+        sub_6C9812(4, 3);
+        setActiveMenu(3);
+        *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
+    }
+}
+
+void handleUnequipAcc(const EquipInputEvent* event) {
+    characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
+    auto characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    if (!(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2){
+        playMenuSound(4);
+        if (characterRecordArray[characterRecordArrayIndex].equipped_accessory != 0xFF) {
+            auto removedGearRelativeIndex = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
+            auto removedGearAbsoluteIndex = gContext.itemTypeData.get_absolute_id(3, removedGearRelativeIndex);
+            gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteIndex, 1); //can only unequip
+        }
+        
+        characterRecordArray[characterRecordArrayIndex].equipped_accessory = 0xFF;
+        recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
+        recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
+        updateMiscPartyStats();
+    }
+}
+
+
+
+
 //-----------------------------------------------------End Input Handler Callbacks-------------------------------------------------------------//
 
 

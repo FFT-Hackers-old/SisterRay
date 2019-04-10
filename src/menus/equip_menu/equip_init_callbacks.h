@@ -13,5 +13,6 @@ void initCharDataWidget(const EquipInitEvent* event);
 void initGearMateriaSlotWidget(const EquipInitEvent* event);
 void initGearDescWidget(const EquipInitEvent* event);
 void initStatDiffWidget(const EquipInitEvent* event);
+void initGearListWidget(const EquipInitEvent* event);
 
 #endif

@@ -71,6 +71,9 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
         materiaGrowth = 4;
     char * menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);
+    i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
+    i32 growthTypeX = sub_6F54A2((u8*)menuText);
+    moveWidget(growthWidget, 243 - growthTypeX / 2, growthTypeY);
     updateText(growthWidget, menuText);
 }
 

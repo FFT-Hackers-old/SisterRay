@@ -19,7 +19,7 @@ SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
     auto menuWidget = menuObject.getWidget();
     displayEquipMenuViews(updateStateMask, menuWidget);
     if (!is_input_handling_enabled()) {
-        handleEquipMenuInput(updateStateMask);
+        handleEquipMenuInput(updateStateMask, menuWidget);
     }
 }
 
@@ -29,11 +29,11 @@ void displayEquipMenuViews(i32 stateControlMask, Widget* menuWidget) {
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u8 characterRecordArrayIndex;
 
+    sub_6C98A6();
     EquipDrawEvent event = { menuWidget };
     gContext.eventBus.dispatch(DRAW_EQUIP_MENU, &event);
     drawWidget(menuWidget);
 
-    sub_6C98A6();
     //displayMenuObjects(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
     //displayMenuCursors(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
     //displayMateriaSlots(cursorContextArray, *EQUIP_MENU_STATE, stateControlMask);
@@ -294,48 +294,29 @@ color getStatDisplayColor(u8 equippedStat, u8 toEquipStat) {
     return COLOR_WHITE;
 }
 
-void handleEquipMenuInput(i32 updateStateMask) {
+void handleEquipMenuInput(i32 updateStateMask, Widget* menuWidget) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u32 equipMenuState = *EQUIP_MENU_STATE;
-    i32 cursorViewBound = 0;
-    u16 equippableGearCount = 0;
-    u16 removedGearAbsoluteIndex;
-    u16 removedGearRelativeIndex;
-    u8 characterRecordArrayIndex;
-    u8 equippedGearItemType;
 
-
-    characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX]];
+    EquipInputEvent event = { menuWidget };
     handleCursorPositionUpdate((u32*)(&(cursorContextArray[equipMenuState])));
     if (checkInputReceived(32)) {
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_OK, nullptr);
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_OK, &event);
     }
     else if (checkInputReceived(64)) {
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_CANCEL, nullptr);
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_CANCEL, &event);
     }
     else if (checkInputReceived(4)) {
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_L1, nullptr);
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_L1, &event);
     }
     else if (checkInputReceived(8)) {
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_R1, nullptr);
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_R1, &event);
     }
-    else if (checkInputReceived(128) && (*word_DD1BC0 || *dword_DC1290)) { //When switching to the materia view, square
-        playMenuSound(1);
-        sub_6C9812(4, 3);
-        setActiveMenu(3);
-        *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
+    else if (checkInputReceived(128)) { //When switching to the materia view, square
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_SQUARE, &event);
     }
-    else if (checkInputReceived(16) && !(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2) { //unequip accessory
-        playMenuSound(4);
-        if (characterRecordArray[characterRecordArrayIndex].equipped_accessory != 0xFF) {
-            removedGearRelativeIndex = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
-            removedGearAbsoluteIndex = gContext.itemTypeData.get_absolute_id(3, removedGearRelativeIndex);
-            gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteIndex, 1); //can only unequip
-        }
-        characterRecordArray[characterRecordArrayIndex].equipped_accessory = 0xFF;
-        recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
-        recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
-        updateMiscPartyStats();
+    else if (checkInputReceived(16)) { //unequip accessory
+        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_TRIANGLE, &event);
     }
 }

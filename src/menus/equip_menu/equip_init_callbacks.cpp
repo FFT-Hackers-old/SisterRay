@@ -122,21 +122,18 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
         addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, equipSlotDataNames[i]);
     }
 
-    kernelObjectID = getEquippedGear(characterID, 1);
-
-    //Display current weapon slots & growth by default -- overridden in handlers to behave correctly
-    materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
-    slotsParams = { 153, equipMenuWindowConfig[2].drawDistance2 + 21, materiaSlots };
+    //create a default static variable later to a valid bytearray representing materia slot data
+    slotsParams = { 153, equipMenuWindowConfig[2].drawDistance2 + 21, nullptr};
     slotsWidget = createSlotsWidget(slotsParams, GEAR_SLOTS);
     addChildWidget(equipMateraSlotWidget, (Widget*)slotsWidget, GEAR_SLOTS);
 
-    materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
+    materiaGrowth = 1;
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
         materiaGrowth = 4;
 
     menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);
     i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
-    i32 growthTypeX = sub_6F54A2((u8*)menuText);
+    i32 growthTypeX = 35;
     textParams.set(243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 0.2f);
     textWidget = createTextWidget(textParams, GEAR_GROWTH);
     addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, GEAR_GROWTH);
@@ -147,11 +144,6 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
 
 /*Initialize the Widget That displays stats*/
 void initStatDiffWidget(const EquipInitEvent* event) {
-    u8 characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
-    u16 equippedWeaponID = (CHARACTER_RECORD_ARRAY)[characterID].equipped_weapon;
-    u16 equippedArmorID = (CHARACTER_RECORD_ARRAY)[characterID].equipped_armor;
-    u16 equippedAccessoryID = (CHARACTER_RECORD_ARRAY)[characterID].equipped_accessory;
-    u8 equippedStats[8];
     u16 windowTop = equipMenuWindowConfig[3].drawDistance2 + 26;
     char* menuText;
 
@@ -178,17 +170,6 @@ void initStatDiffWidget(const EquipInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, STAT_DIFF_BOX);
     addChildWidget(statDiffWidget, (Widget*)boxWidget, STAT_DIFF_BOX);
 
-
-    equippedStats[0] = gContext.weapons.get_resource(equippedWeaponID).weapon_strength;
-    equippedStats[1] = gContext.weapons.get_resource(equippedWeaponID).weapon_hit_rate;
-    equippedStats[2] = gContext.armors.get_resource(equippedArmorID).defense;
-    equippedStats[3] = gContext.armors.get_resource(equippedArmorID).evade;
-    equippedStats[4] = 0;
-    equippedStats[5] = gContext.armors.get_resource(equippedArmorID).magic_defense;
-    equippedStats[6] = gContext.armors.get_resource(equippedArmorID).magic_evade;
-
-
-
     std::vector<std::string> statNames = { STAT_NAME_1, STAT_NAME_2, STAT_NAME_3, STAT_NAME_4, STAT_NAME_5, STAT_NAME_6, STAT_NAME_7 };
     std::vector<std::string> numberNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
     std::vector<std::string> candidateNumberNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
@@ -203,11 +184,11 @@ void initStatDiffWidget(const EquipInitEvent* event) {
         arrowWidget = createArrowWidget(arrowParams, arrowNames[i]);
         addChildWidget(statDiffWidget, (Widget*)arrowWidget, arrowNames[i]);
 
-        numberParams.set(53, windowTop + 26 * i, equippedStats[i], 3, COLOR_WHITE, 0.2f);
+        numberParams.set(53, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);
         numberWidget = createNumberWidget(numberParams, numberNames[i]);
         addChildWidget(statDiffWidget, (Widget*)numberWidget, numberNames[i]);
 
-        numberParams.set(270, windowTop + 26 * i, equippedStats[i], 3, COLOR_WHITE, 0.2f);
+        numberParams.set(270, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);
         numberWidget = createNumberWidget(numberParams, numberNames[i]);
         addChildWidget(statDiffWidget, (Widget*)numberWidget, numberNames[i]);
     }
@@ -217,10 +198,6 @@ void initStatDiffWidget(const EquipInitEvent* event) {
 
 //Initialize the gear list with just a box and a series of disabled widgets.
 void initGearListWidget(const EquipInitEvent* event) {
-    char * menuText;
-    char* fetchedName;
-    u16 kernelObjectID;
-    auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
 
     GridWidgetParams gridParams;

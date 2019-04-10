@@ -12,6 +12,8 @@ void equipGearHandler(const EquipInputEvent* event); //Signature of Listener Cal
 void exitMenuListener(const EquipInputEvent* event);
 void changeCharLeft(const EquipInputEvent* event);
 void changeCharRight(const EquipInputEvent* event);
+void changeToMateriaMenu(const EquipInputEvent* event);
+void handleUnequipAcc(const EquipInputEvent* event);
 void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex);
 void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex);
 u16 setupGearMenu(u8 itemType);

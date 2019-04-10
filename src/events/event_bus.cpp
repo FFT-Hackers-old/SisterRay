@@ -31,7 +31,7 @@ SrEventListener EventBus::addListener(SrEventType eventType, SrEventCallback cal
         return 0;
 
     if (_listenerRegistry.size() <= eventType)
-        _listenerRegistry.resize((size_t)eventType);
+        _listenerRegistry.resize((size_t)eventType + 1);
 
     std::vector<size_t>& eventListeners = _listenerRegistry[eventType];
 
@@ -41,8 +41,8 @@ SrEventListener EventBus::addListener(SrEventType eventType, SrEventCallback cal
     }
     else {
         listenerID = _listenerCapacity++;
-        _listenerCallbacks.resize(listenerID);
-        _listenerTypes.resize(listenerID);
+        _listenerCallbacks.resize(listenerID + 1);
+        _listenerTypes.resize(listenerID + 1);
     }
     _listenerCallbacks[listenerID] = callback;
     _listenerTypes[listenerID] = eventType;

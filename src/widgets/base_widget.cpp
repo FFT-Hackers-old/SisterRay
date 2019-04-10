@@ -7,6 +7,8 @@ Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass) {
     widget->name = name;
     widget->klass = wclass;
     widget->enabled = true;
+    new (&widget->childrenNames) std::unordered_map<std::string, u32>;
+    new (&widget->children) std::vector<Widget*>;
     return widget;
 }
 

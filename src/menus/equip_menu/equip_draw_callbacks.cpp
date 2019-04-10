@@ -54,7 +54,9 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
     u8 materiaGrowth;
 
     auto gearSlotsWidget = getChild(menuWidget, GEAR_SLOTS_WIDGET_NAME);
+    //Perhaps get child is off in some way?
     auto materiaSlotsWidget = getChild(gearSlotsWidget, GEAR_SLOTS);
+    srLogWrite("inside handler, updating materia slot widget at: %p", materiaSlotsWidget);
     auto growthWidget = getChild(gearSlotsWidget, GEAR_GROWTH);
 
     if (*EQUIP_MENU_STATE == 1) {

@@ -29,8 +29,8 @@ public:
 class MenuRegistry : public SrNamedResourceRegistry<Menu> {
 public:
     void initializeMenu(std::string menuName, const std::string widgetName); //dispatches handlers registered to "init", restoring the widget to its original state
+    
 };
-
 
 
 typedef struct {

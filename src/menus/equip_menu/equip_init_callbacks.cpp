@@ -125,6 +125,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     //create a default static variable later to a valid bytearray representing materia slot data
     slotsParams = { 153, equipMenuWindowConfig[2].drawDistance2 + 21, nullptr};
     slotsWidget = createSlotsWidget(slotsParams, GEAR_SLOTS);
+    srLogWrite("inside create handler, creating materia slot widget at: %p", slotsWidget);
     addChildWidget(equipMateraSlotWidget, (Widget*)slotsWidget, GEAR_SLOTS);
 
     materiaGrowth = 1;
@@ -139,7 +140,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, GEAR_GROWTH);
 
 
-    addChildWidget(mainWidget, equipMateraSlotWidget, GEAR_SLOTS_BOX);
+    addChildWidget(mainWidget, equipMateraSlotWidget, GEAR_SLOTS_WIDGET_NAME);
 }
 
 /*Initialize the Widget That displays stats*/

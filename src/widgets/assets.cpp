@@ -137,6 +137,7 @@ SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
 }
 
 bool isSlotsWidget(Widget* widget) {
+    srLogWrite("attempting to update widget %p", widget);
     srLogWrite("widget class pointer: %p", widget->klass);
     srLogWrite("slots class address: %p", &kSlotsWidgetClass);
     return ((widget->klass == &kSlotsWidgetClass));

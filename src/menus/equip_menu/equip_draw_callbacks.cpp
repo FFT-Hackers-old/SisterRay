@@ -51,23 +51,36 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u8 kernelObjectID;
     u8* materiaSlots;
+    u8 materiaGrowth;
 
     auto gearSlotsWidget = getChild(menuWidget, GEAR_SLOTS_WIDGET_NAME);
     auto materiaSlotsWidget = getChild(gearSlotsWidget, GEAR_SLOTS);
     auto growthWidget = getChild(gearSlotsWidget, GEAR_GROWTH);
 
-    if (*EQUIP_MENU_STATE == 1) { // display the descritpion of the current item based on menu state
+    if (*EQUIP_MENU_STATE == 1) {
         kernelObjectID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
     }
     else {
         kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
     }
 
-    //Display current weapon slots & growth by default -- overridden in handlers to behave correctly
-    materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
+    switch (cursorContextArray[0].relativeRowIndex) {
+        case 0: {
+            materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
+            materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
+            break;
+        }
+        case 1: {
+            materiaSlots = &(gContext.armors.get_resource(kernelObjectID).materia_slots[0]);
+            materiaGrowth = gContext.armors.get_resource(kernelObjectID).materia_growth;
+            break;
+        }
+        default: {
+        }
+    }
+
     updateMateriaSlots(materiaSlotsWidget, materiaSlots);
 
-    auto materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
         materiaGrowth = 4;
     char * menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);

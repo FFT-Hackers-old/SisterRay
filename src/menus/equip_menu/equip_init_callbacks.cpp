@@ -82,7 +82,7 @@ void initGearDescWidget(const EquipInitEvent* event) {
     textWidget = createTextWidget(textParams, GEAR_DESCRIPTION);
     addChildWidget(GearDescWidget, (Widget*)textWidget, GEAR_DESCRIPTION);
 
-    addChildWidget(mainWidget, (Widget*)textWidget, GEAR_DESC_WIDGET_NAME);
+    addChildWidget(mainWidget, GearDescWidget, GEAR_DESC_WIDGET_NAME);
 }
 
 /* Initialize the Widget for the characters Materia Slots. This will be updated when Handling in Handlers*/

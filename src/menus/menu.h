@@ -10,7 +10,7 @@
 /*Menu objects consist of a widget, a current menu state, and a registry of cursorContexts one per state*/
 class Menu {
 public:
-    Menu(cursorContext* cursorContextArray, i32 menuStateCount, SrEventType initEvent, const std::string equipName);
+    Menu(cursorContext* cursorContextArray, i32 menuStateCount, SrEventType initEvent);
     Menu();
     ~Menu();
     i32 menuState;
@@ -19,7 +19,7 @@ public:
     Widget* widgetPtr;
 
     std::unordered_map<i32, cursorContext> cursorContextRegistry;
-    void initializeMenu();
+    void _buildWidget(const std::string menuName);
     i32 getMenuState();
     void setMenuState(i32 value);
     Widget* getWidget();
@@ -28,7 +28,7 @@ public:
 
 class MenuRegistry : public SrNamedResourceRegistry<Menu> {
 public:
-    void initializeMenu(std::string menuName); //dispatches handlers registered to "init", restoring the widget to its original state
+    void initializeMenu(std::string menuName, const std::string widgetName); //dispatches handlers registered to "init", restoring the widget to its original state
 };
 
 

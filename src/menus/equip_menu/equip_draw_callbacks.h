@@ -8,9 +8,8 @@
 #include "../../events/menu_events.h"
 #include "equip_widget_names.h"
 
-
-#endif
 void handleChangeCharacter(const EquipDrawEvent* params);
 void handleUpdateDescription(const EquipDrawEvent* params);
 void handleUpdateGearSlotsWidget(const EquipDrawEvent* params);
 void handleUpdateStatMenuWidget(const EquipDrawEvent* params);
+#endif

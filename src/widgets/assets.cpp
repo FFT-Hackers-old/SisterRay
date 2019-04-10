@@ -1,4 +1,5 @@
 #include "assets.h"
+#include "../impl.h"
 
 void drawScrollerWidget(ScrollerWidget* scrollerPortrait) {
     drawScrollerParams params = {
@@ -136,11 +137,17 @@ SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
 }
 
 bool isSlotsWidget(Widget* widget) {
+    srLogWrite("widget class pointer: %p", widget->klass);
+    srLogWrite("slots class address: %p", &kSlotsWidgetClass);
     return ((widget->klass == &kSlotsWidgetClass));
 }
 
 void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
-    if (isHPBarWidget(widget)) {
+    srLogWrite("attempting to update materia slots pointer to: %p", materiaSlotsData);
+
+    srLogWrite("is the input valid: %s", isSlotsWidget(widget)?"true":"false");
+    if (isSlotsWidget(widget)) {
+        srLogWrite("Updating Slots Widget pointer to new value: %p", materiaSlotsData);
         auto typedPtr = (SlotsWidget*)widget;
         typedPtr->materiaSlotsData = materiaSlotsData;
     }

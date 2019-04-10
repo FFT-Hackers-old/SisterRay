@@ -4,6 +4,15 @@
 
 using namespace EquipWidgetNames;
 
+
+void initializeEquipMenu() {
+    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    Menu equipMenu = Menu(cursorContextArray, 2, INIT_EQUIP_MENU, EQUIP_MENU_NAME);
+    //run the initializing callbacks to create the default menu
+    equipMenu.initializeMenu();
+    gContext.menuWidgets.add_element("EQUIP_MENU", equipMenu);
+}
+
 void registerEquipMenuListeners() {
     gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initCharDataWidget);
     gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initGearMateriaSlotWidget);

@@ -7,6 +7,8 @@
 #include "equip_input_callbacks.h"
 #include "equip_draw_callbacks.h"
 
+
+void initializeEquipMenu();
 void registerEquipMenuListeners();
 
 #endif

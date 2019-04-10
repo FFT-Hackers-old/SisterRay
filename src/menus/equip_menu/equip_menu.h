@@ -10,7 +10,6 @@
 #include "../../events/menu_events.h"
 
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask);
-void initializeEquipMenu();
 color getStatDisplayColor(u8 equippedStat, u8 toEquipStat);
 void displayActiveCursorStates(i32 updateStateMask);
 void displayEquipMenuViews(i32 updateStateMask, Widget* equipWidget);

@@ -6,14 +6,6 @@
 
 using namespace EquipWidgetNames;
 
-void initializeEquipMenu() {
-    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
-    Menu equipMenu = Menu(cursorContextArray, 2, INIT_EQUIP_MENU, EQUIP_MENU_NAME);
-    //run the initializing callbacks to create the default menu
-    equipMenu.initializeMenu();
-    gContext.menuWidgets.add_element("EQUIP_MENU", equipMenu);
-}
-
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
     auto menuObject = gContext.menuWidgets.get_element("EQUIP_MENU"); 
     auto menuWidget = menuObject.getWidget();

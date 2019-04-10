@@ -28,7 +28,8 @@ Menu::Menu() {
 }
 
 Menu::~Menu() {
-    destroyWidget(widgetPtr);
+    if (widgetPtr)
+        destroyWidget(widgetPtr);
 }
 
 //This dispatches the current Menu instance through initializing callbacks

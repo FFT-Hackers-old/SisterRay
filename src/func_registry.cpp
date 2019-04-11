@@ -1,6 +1,7 @@
 #include <unordered_map>
 #include <string>
 #include "impl.h"
+#include "api.h"
 
 #define REGISTER(x) srRegisterFunction(#x, &x)
 
@@ -10,6 +11,8 @@ SISTERRAY_API void initFunctionRegistry(void)
 {
     REGISTER(srLoadFunction);
     REGISTER(srRegisterFunction);
+
+    REGISTER(srAddListener);
 
     /* Mog */
     srRegisterFunction("srRedirectFunction", &mogRedirectFunction);

@@ -6,8 +6,6 @@
 #include "non_copyable.h"
 #include "event.h"
 
-typedef void(*SrEventCallback)(const void*);
-
 class EventBus : private NonCopyable
 {
 public:

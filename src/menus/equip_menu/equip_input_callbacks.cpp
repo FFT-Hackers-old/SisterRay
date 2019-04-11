@@ -7,18 +7,16 @@
 void equipGearHandler(const EquipInputEvent* event) {
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
-    u8 characterRecordArrayIndex;
+    auto characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u8 equippedGearItemType;
 
-    if (*EQUIP_MENU_STATE != 1)
+    if (event->menuState != 1)
         return;
-
-    auto menuWidget = event->equipMenuWidget;
 
     playMenuSound(447);
     *EQUIP_MENU_STATE = 0;
-    u8 equippedGearRelativeIndex = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
-
+    auto menuWidget = event->equipMenuWidget;
+    u16 equippedGearRelativeIndex = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
     switch (cursorContextArray[0].relativeRowIndex) { //
         case 0: { //equip WEAPON
             equippedGearItemType = 1;
@@ -41,6 +39,7 @@ void equipGearHandler(const EquipInputEvent* event) {
     recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
     recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
     updateMiscPartyStats();
+
 }
 
 void selectGearHandler(const EquipInputEvent* event) {
@@ -50,7 +49,7 @@ void selectGearHandler(const EquipInputEvent* event) {
     i32 cursorViewBound = 0;
     u16 equippableGearCount = 0;
 
-    if (*EQUIP_MENU_STATE != 0)
+    if (event->menuState != 0)
         return;
 
     auto menuWidget = event->equipMenuWidget;
@@ -104,6 +103,8 @@ void exitMenuListener(const EquipInputEvent* event) {
 
 /*Handlers for L1/R1 "switching" inputs, for states where they function*/
 void changeCharLeft(const EquipInputEvent* event) {
+    if (*EQUIP_MENU_STATE != 0)
+        return;
 
     auto menuWidget = event->equipMenuWidget;
  
@@ -115,6 +116,9 @@ void changeCharLeft(const EquipInputEvent* event) {
 }
 
 void changeCharRight(const EquipInputEvent* event) {
+    if (*EQUIP_MENU_STATE != 0)
+        return;
+
     auto menuWidget = event->equipMenuWidget;
 
     do {
@@ -196,7 +200,6 @@ void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordA
 void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
     WeaponData newWeaponData;
     ArmorData newArmorData;
-    AccessoryData newAccessoryData;
     u32* equippedMateriaData;
     u8* materiaSlots;
     bool shouldRemove = false;

@@ -125,7 +125,7 @@ void drawSlotsWidget(SlotsWidget* slotsWidget) {
         renderMateriaSlots(
             slotsWidget->widget.xCoordinate,
             slotsWidget->widget.yCoordinate,
-            (i32)slotsWidget->materiaSlotsData
+            (i32)(slotsWidget->materiaSlotsData)
         );
     }
 }

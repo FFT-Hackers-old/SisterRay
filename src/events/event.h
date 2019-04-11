@@ -4,7 +4,7 @@
 #include <SisterRay/types.h>
 
 
-typedef enum SrEventType {
+typedef enum {
     NO_TYPE,
     INIT_EQUIP_MENU,
     DRAW_EQUIP_MENU,
@@ -14,7 +14,7 @@ typedef enum SrEventType {
     EQUIP_MENU_INPUT_TRIANGLE,
     EQUIP_MENU_INPUT_R1,
     EQUIP_MENU_INPUT_L1
-};
+} SrEventType;
 
 typedef u32 SrEventListener;
 

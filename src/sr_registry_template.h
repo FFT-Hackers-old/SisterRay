@@ -26,7 +26,7 @@ public:
     }
 
     /*Constructor used for fixed size arrays, like the inventory*/
-    SrResourceRegistry(int reserve_size) {
+    SrResourceRegistry(u32 reserve_size) {
         resource_registry.reserve(reserve_size);
     }
 
@@ -36,18 +36,22 @@ public:
     ~SrResourceRegistry() {
     }
 
-    T get_resource(int index) {
+    T get_resource(i32 index) {
         if ((resource_count() == 0)||(index >= (resource_count() - 1))) {
             return T();
         }
         return resource_registry[index];
     }
 
+    T& get_resource_ref(i32 index) {
+        return resource_registry.at(index);
+    }
+
     void add_resource(T resource) {
         resource_registry.push_back(resource);
     }
 
-    void update_resource(int index, T resource) {
+    void update_resource(u32 index, T resource) {
         if (index < (resource_count())){
             resource_registry[index] = resource;
         }

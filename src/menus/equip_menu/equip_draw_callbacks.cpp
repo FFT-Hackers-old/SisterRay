@@ -7,10 +7,8 @@ using namespace EquipWidgetNames;
 
 void handleChangeCharacter(const EquipDrawEvent* params) {
     auto menuWidget = params->equipMenuWidget;
-    u8 kernelObjectID;
+    u16 kernelObjectID;
     char* fetchedName;
-
-    srLogWrite("CHANGE CHARACTER HANDLER CALLED");
 
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
 
@@ -19,12 +17,9 @@ void handleChangeCharacter(const EquipDrawEvent* params) {
     updateHPBarPartyIndex(getChild(topWidget, HPBAR_WIDGET_NAME), *EQUIP_MENU_PARTY_INDEX);
 
     std::vector<std::string> listNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
-    for (int row = 0; row < listNames.size(); row++) {
-        srLogWrite("INSIDE CHANGE CHARACTER CALLBACK HANDLER LOOP");
+    for (u32 row = 0; row < listNames.size(); row++) {
         kernelObjectID = getEquippedGear(characterRecordArrayIndex, row + 1);
         fetchedName = getNameFromRelativeID(kernelObjectID, row + 1);
-
-        srLogWrite("trying to update Widget %s value to text: %s", getChild(topWidget, listNames[row])->name.c_str(), fetchedName);
         updateText(getChild(topWidget, listNames[row]), fetchedName);
     }
 }
@@ -33,7 +28,7 @@ void handleUpdateDescription(const EquipDrawEvent* params) {
     auto menuWidget = params->equipMenuWidget;
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
-    u8 kernelObjectID;
+    u16 kernelObjectID;
     char * fetchedDescription;
 
     auto gearDescWidget = getChild(menuWidget, GEAR_DESC_WIDGET_NAME);
@@ -54,14 +49,12 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
     auto menuWidget = params->equipMenuWidget;
     cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
-    u8 kernelObjectID;
+    u16 kernelObjectID;
     u8* materiaSlots;
     u8 materiaGrowth;
 
     auto gearSlotsWidget = getChild(menuWidget, GEAR_SLOTS_WIDGET_NAME);
-    //Perhaps get child is off in some way?
     auto materiaSlotsWidget = getChild(gearSlotsWidget, GEAR_SLOTS);
-    srLogWrite("inside handler, updating materia slot widget at: %p", materiaSlotsWidget);
     auto growthWidget = getChild(gearSlotsWidget, GEAR_GROWTH);
 
     if (*EQUIP_MENU_STATE == 1) {
@@ -71,14 +64,15 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
         kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
     }
 
+
     switch (cursorContextArray[0].relativeRowIndex) {
         case 0: {
-            materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
+            materiaSlots = &(gContext.weapons.get_resource_ref(kernelObjectID).materia_slots[0]);
             materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
             break;
         }
         case 1: {
-            materiaSlots = &(gContext.armors.get_resource(kernelObjectID).materia_slots[0]);
+            materiaSlots = &(gContext.armors.get_resource_ref(kernelObjectID).materia_slots[0]);
             materiaGrowth = gContext.armors.get_resource(kernelObjectID).materia_growth;
             break;
         }
@@ -87,6 +81,7 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
             materiaGrowth = 4;
         }
     }
+
 
     updateMateriaSlots(materiaSlotsWidget, materiaSlots);
 
@@ -114,7 +109,7 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
                 statsToDisplay[0] = gContext.weapons.get_resource(toEquipWeaponID).weapon_strength;
                 statsToDisplay[1] = gContext.weapons.get_resource(toEquipWeaponID).weapon_hit_rate;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
-                for (int row = 0; row < listNames.size(); row++) {
+                for (u32 row = 0; row < listNames.size(); row++) {
                     updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
                 }
                 break;
@@ -127,8 +122,8 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
                 statsToDisplay[5] = gContext.armors.get_resource(toEquipArmorID).magic_defense;
                 statsToDisplay[6] = gContext.armors.get_resource(toEquipArmorID).magic_evade;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
-                for (int row = 2; row < listNames.size(); row++) {
-                    updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
+                for (u32 row = 0; row < listNames.size(); row++) {
+                    updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row + 2]);
                 }
                 break;
             }
@@ -143,6 +138,7 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
     u16 equippedWeaponID = (CHARACTER_RECORD_ARRAY)[characterRecordArrayIndex].equipped_weapon;
 
     std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
+    std::vector<std::string> baseNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
     statsToDisplay[0] = gContext.weapons.get_resource(equippedWeaponID).weapon_strength;
     statsToDisplay[1] = gContext.weapons.get_resource(equippedWeaponID).weapon_hit_rate;
     statsToDisplay[2] = gContext.armors.get_resource(equippedArmorID).defense;
@@ -150,8 +146,9 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
     statsToDisplay[4] = 0;
     statsToDisplay[5] = gContext.armors.get_resource(equippedArmorID).magic_defense;
     statsToDisplay[6] = gContext.armors.get_resource(equippedArmorID).magic_evade;
-    for (int row = 0; row < listNames.size(); row++) {
+    for (u32 row = 0; row < listNames.size(); row++) {
         updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
+        updateNumber(getChild(statDiffWidget, baseNames[row]), statsToDisplay[row]);
     }
 
 }

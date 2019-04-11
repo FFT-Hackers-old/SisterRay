@@ -26,10 +26,7 @@ bool isTextWidget(Widget* widget) {
 }
 
 void updateText(Widget* widgetToUpdate, char* text) {
-    srLogWrite("trying to update text widget: %s", widgetToUpdate->name.c_str());
     if (isTextWidget(widgetToUpdate)) {
-        srLogWrite("updating widget: %s", widgetToUpdate->name.c_str());
-        srLogWrite("updating text widget: %s", text);
         auto typedPtr = (TextWidget*)widgetToUpdate;
         typedPtr->text = text;
     }
@@ -53,8 +50,8 @@ void drawNumberWidget(NumberWidget* numberWidget) {
         numberWidget->widget.xCoordinate,
         numberWidget->widget.yCoordinate,
         numberWidget->number,
-        numberWidget->numberColor,
         numberWidget->digitCount,
+        numberWidget->numberColor,
         numberWidget->priority
     );
 }
@@ -75,10 +72,7 @@ bool isNumberWidget(Widget* widget) {
 }
 
 void updateNumber(Widget* widgetToUpdate, u32 number) {
-    srLogWrite("trying to update number widget: %s", widgetToUpdate->name.c_str());
     if (isNumberWidget(widgetToUpdate)) {
-        srLogWrite("updating widget: %s", widgetToUpdate->name.c_str());
-        srLogWrite("updating number widget: %i", number);
         auto typedPtr = (NumberWidget*)widgetToUpdate;
         typedPtr->number = number;
     }

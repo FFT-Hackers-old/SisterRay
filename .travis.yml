@@ -1,0 +1,4 @@
+os: windows
+language: bash
+
+script: ./travis-build.sh

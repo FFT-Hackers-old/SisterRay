@@ -14,7 +14,7 @@ public:
     EventBus();
     ~EventBus();
 
-    void dispatch(SrEventType type, void* event);
+    void dispatch(SrEventType type, const void* event);
     SrEventListener addListener(SrEventType eventType, SrEventCallback callback);
     void removeListener(SrEventListener listener);
 

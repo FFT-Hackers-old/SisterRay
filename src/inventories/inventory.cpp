@@ -16,17 +16,27 @@ SrItemInventory::SrItemInventory(i16 allocation_size): SrInventory<InventoryEntr
 }
 
 /*Construct with default values*/
-SrGearViewData::SrGearViewData(i16 allocation_size) : SrResourceRegistry<GearViewData>(allocation_size) {
-    for (i32 i = 0; i < INVENTORY_SIZE; i++) {
+SrGearViewData::SrGearViewData(i16 allocation_size, u8 type) : SrResourceRegistry<GearViewData>(allocation_size) {
+    for (i32 i = 0; i < allocation_size; i++) {
         GearViewData entry = {
             0
         };
         add_resource(entry);
     }
+    itemType = type;
+
 }
 
 void SrGearViewData::setSlotsInUse(u16 slotsInUse) {
     slots_in_use = slotsInUse;
+}
+
+void SrGearViewData::setItemType(u8 type) {
+    itemType = type;
+}
+
+u8 SrGearViewData::getItemType() {
+    return itemType;
 }
 
 void initGearViewStorage() {

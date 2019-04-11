@@ -3,7 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "menu.h"
+#include "../widgets/widget.h"
 
 
 void renderMenuSideScroller(drawScrollerParams* arguments, float floatArg);

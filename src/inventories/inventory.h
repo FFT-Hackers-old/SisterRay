@@ -52,10 +52,13 @@ typedef struct {
 
 class SrGearViewData : public SrResourceRegistry<GearViewData> {
 public:
+    u8 itemType;
     u16 slots_in_use;
-    SrGearViewData(i16 allocation_size);
+    SrGearViewData(i16 allocation_size, u8 itemType);
     SrGearViewData() : SrResourceRegistry<GearViewData>() {}
     void setSlotsInUse(u16 slotsInUse);
+    void setItemType(u8 itemType);
+    u8 getItemType();
 };
 
 SISTERRAY_API void initInventory();

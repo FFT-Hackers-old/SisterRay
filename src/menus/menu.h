@@ -3,62 +3,35 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
+#include "../named_resource_registry.h"
+#include "../widgets/widget.h"
+#include "../events/event.h"
 
-enum color { COLOR_GRAY, COLOR_UNKNOWN_1, COLOR_RED, COLOR_UNKNOWN_2, COLOR_UNKNOWN_3, COLOR_TEAL, COLOR_GREEN, COLOR_WHITE };
-#pragma pack(push, 1)
-typedef struct {
-    u16 viewSize;
-    u16 maxRows;
-    u16 baseRow;
-    u16 position1;
-    u16 position2;
-    u16 position3;
-    u16 position4;
-    float priority;
-} drawScrollerParams;
-#pragma pack(pop)
+/*Menu objects consist of a widget, a current menu state, and a registry of cursorContexts one per state*/
+class Menu {
+public:
+    Menu(cursorContext* cursorContextArray, i32 menuStateCount, SrEventType initEvent);
+    Menu();
+    ~Menu();
+    i32 menuState;
+    i32 menuStateCount;
+    SrEventType initEvent;
+    Widget* widgetPtr;
 
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8 partyIndex;
-    float priority;
-} drawPortraitParams;
+    std::unordered_map<i32, cursorContext> cursorContextRegistry;
+    void _buildWidget(const std::string menuName);
+    i32 getMenuState();
+    void setMenuState(i32 value);
+    Widget* getWidget();
+    
+};
 
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8 partyIndex;
-    float priority;
-} drawHPBarParams;
+class MenuRegistry : public SrNamedResourceRegistry<Menu> {
+public:
+    void initializeMenu(std::string menuName, const std::string widgetName); //dispatches handlers registered to "init", restoring the widget to its original state
+    
+};
 
-// Todo: Pixel count to figure out which draw distance is which
-#pragma pack(push, 1)
-typedef struct {
-    i16 drawDistance1;
-    i16 drawDistance2;
-    i16 drawDistance3;
-    i16 drawDistance4;
-    float boxFloat;
-} drawBoxParams;
-#pragma pack(pop)
-
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    char* stringToDraw;
-    color textColor;
-    float textThickness;
-} drawTextParams;
-
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u32 numberToDraw;
-    u8 charCount;
-    color numberColor;
-    float numberThickness;
-} drawNumberParams;
 
 typedef struct {
     i16 drawDistance1;

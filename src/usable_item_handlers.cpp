@@ -2,16 +2,16 @@
 #include "items.h"
 #include "impl.h"
 
-srOnUseCallbackRegistry::srOnUseCallbackRegistry(): SrFunctionResourceRegistry<onUseCallback>() {
-    add_function("heal_party_member", heal_handler);
-    add_function("increment_stat", permanently_boost_stat);
-    add_function("teach_limit", teach_limit_breaks);
-    add_function("no_function", default_item_use);
+srOnUseCallbackRegistry::srOnUseCallbackRegistry(): SrNamedResourceRegistry<onUseCallback>() {
+    add_element("heal_party_member", heal_handler);
+    add_element("increment_stat", permanently_boost_stat);
+    add_element("teach_limit", teach_limit_breaks);
+    add_element("no_function", default_item_use);
 }
 
-srNoTargetCallbackRegistry::srNoTargetCallbackRegistry() : SrFunctionResourceRegistry<noTargetCallback>() {
-    add_function("save_crystal_handler", save_crystal_on_use);
-    add_function("no_function", default_no_target_use);
+srNoTargetCallbackRegistry::srNoTargetCallbackRegistry() : SrNamedResourceRegistry<noTargetCallback>() {
+    add_element("save_crystal_handler", save_crystal_on_use);
+    add_element("no_function", default_no_target_use);
 }
 
 void initOnUseCallbackRegistry() {

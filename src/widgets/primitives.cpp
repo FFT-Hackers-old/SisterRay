@@ -1,6 +1,7 @@
 #include "primitives.h"
+#include "../impl.h"
 
-static void drawTextWidget(TextWidget* textWidget){
+void drawTextWidget(TextWidget* textWidget){
     gameDrawString(
         textWidget->widget.xCoordinate,
         textWidget->widget.yCoordinate,
@@ -11,28 +12,52 @@ static void drawTextWidget(TextWidget* textWidget){
 }
 
 TextWidget* createTextWidget(drawTextParams params, std::string name) {
-    TextWidget* widget = (TextWidget*)createWidget(&kTextWidgetClass, name, sizeof(TextWidget));
+    TextWidget* widget = (TextWidget*)createWidget(name, sizeof(TextWidget), &kTextWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
-    widget->text = strdup(params.stringToDraw);
+    widget->text = params.stringToDraw;
     widget->textColor = params.textColor;
     widget->priority = params.textThickness;
     return widget;
 }
 
-static void drawNumberWidget(NumberWidget* numberWidget) {
+bool isTextWidget(Widget* widget) {
+    return (widget->klass == &kTextWidgetClass);
+}
+
+void updateText(Widget* widgetToUpdate, char* text) {
+    if (isTextWidget(widgetToUpdate)) {
+        auto typedPtr = (TextWidget*)widgetToUpdate;
+        typedPtr->text = text;
+    }
+    else {
+        ///YA DONE MESSED UP
+    }
+}
+
+void updateTextColor(Widget* widgetToUpdate, color textColor) {
+    if (isTextWidget(widgetToUpdate)) {
+        auto typedPtr = (TextWidget*)widgetToUpdate;
+        typedPtr->textColor = textColor;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
+}
+
+void drawNumberWidget(NumberWidget* numberWidget) {
     gameDrawNumbers(
         numberWidget->widget.xCoordinate,
         numberWidget->widget.yCoordinate,
         numberWidget->number,
-        numberWidget->numberColor,
         numberWidget->digitCount,
+        numberWidget->numberColor,
         numberWidget->priority
     );
 }
 
 NumberWidget* createNumberWidget(drawNumberParams params, std::string name) {
-    NumberWidget* widget = (NumberWidget*)createWidget(&kNumberWidgetClass, name, sizeof(NumberWidget));
+    NumberWidget* widget = (NumberWidget*)createWidget(name, sizeof(NumberWidget), &kNumberWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->number = params.numberToDraw;
@@ -42,7 +67,31 @@ NumberWidget* createNumberWidget(drawNumberParams params, std::string name) {
     return widget;
 }
 
-static void drawBoxWidget(BoxWidget* boxWidget) {
+bool isNumberWidget(Widget* widget) {
+    return (widget->klass == &kNumberWidgetClass);
+}
+
+void updateNumber(Widget* widgetToUpdate, u32 number) {
+    if (isNumberWidget(widgetToUpdate)) {
+        auto typedPtr = (NumberWidget*)widgetToUpdate;
+        typedPtr->number = number;
+    }
+    else {
+        ///YA DONE MESSED UP
+    }
+}
+
+void updateNumberColor(Widget* widgetToUpdate, color numberColor) {
+    if (isNumberWidget(widgetToUpdate)) {
+        auto typedPtr = (NumberWidget*)widgetToUpdate;
+        typedPtr->numberColor = numberColor;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
+}
+
+void drawBoxWidget(BoxWidget* boxWidget) {
     drawBoxParams params = {
         boxWidget->drawDistanceXa,
         boxWidget->drawDistanceXb,
@@ -53,13 +102,17 @@ static void drawBoxWidget(BoxWidget* boxWidget) {
 }
 
 BoxWidget* createBoxWidget(drawBoxParams params, std::string name) {
-    BoxWidget* widget = (BoxWidget*)createWidget(&kBoxWidgetClass, name, sizeof(BoxWidget));
+    BoxWidget* widget = (BoxWidget*)createWidget(name, sizeof(BoxWidget), &kBoxWidgetClass);
     widget->drawDistanceXa = params.drawDistance1;
     widget->drawDistanceXb = params.drawDistance2;
     widget->drawDistanceYa = params.drawDistance3;
     widget->drawDistanceYb = params.drawDistance4;
     widget->priority = params.boxFloat;
     return widget;
+}
+
+bool isBoxWidget(Widget* widget) {
+    return (widget->klass == &kBoxWidgetClass);
 }
 
 

@@ -215,7 +215,7 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
 
             displayTextAtLocation(373, 37 * visibleItem + 9 * baseColumnIndex + 109, kernelObjectName, (color)textColor, .1f);
             displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseColumnIndex + 105, itemID, 0, .1f);
-            sub_6F5C0C(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, .1f);
+            gameDrawAsset(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, .1f);
             gameDrawNumbers(550, 37 * visibleItem + 9 * baseColumnIndex + 112, itemQuantity, 3, (u8)textColor, .1f);
         }
     }

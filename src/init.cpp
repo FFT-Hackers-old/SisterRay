@@ -7,7 +7,8 @@
 #include "inventories/inventory_utils.h"
 #include "menus/inventory_menu.h"
 #include "menus/battle_menu.h"
-#include "menus/equip_menu.h"
+#include "menus/equip_menu/equip_menu.h"
+#include "menus/equip_menu//equip_menu_callbacks.h"
 
 SrContext gContext;
 
@@ -59,6 +60,10 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();
     testFillInventory();
+    //Register base callbacks
+    registerEquipMenuListeners();
+    initializeEquipMenu();
+    //End Register base callbacks
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
     mogReplaceFunction(INIT_INVENTORY_CURSOR_STATE, &onEnterInventory);
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);

@@ -93,10 +93,10 @@ typedef i32(*pfnsub717691)(i32, i32, i32, i32, i32);
 
 /*Not sure what this function does*/
 typedef u8(*pfnsub6F5C0C)(i32, i32, i8, i8, i32);
-#define sub_6F5C0C                      ((pfnsub6F5C0C)0x6F5C0C)
+#define gameDrawAsset                   ((pfnsub6F5C0C)0x6F5C0C)
 
 typedef i32(*pfnsub6F9739)(i32, i32, u32, u8, u8, float);
-#define gameDrawNumbers                   ((pfnsub6F9739)0x6F9739)
+#define gameDrawNumbers                 ((pfnsub6F9739)0x6F9739)
 
 typedef i32(*pfnsub41AB74)(i32);
 #define checkInputReceived2             ((pfnsub41AB74)0x41AB74)
@@ -174,7 +174,7 @@ typedef i32(*pfnsub6C9812)(i32, i32);
 #define sub_6C9812                      ((pfnsub6C9812)0x6C9812) //Sets some data for transition from EQUIP to main menu
 
 typedef i32(*pfnsub6C6AEE)(i32);
-#define sub_6C6AEE                      ((pfnsub6C6AEE)0x6C6AEE) //Sets some data for transition from EQUIP to main menu
+#define setActiveMenu                      ((pfnsub6C6AEE)0x6C6AEE) //Sets some data for transition from EQUIP to main menu
 
 typedef i8(*pfnsub5CB127)(void);   
 #define updateMiscPartyStats            ((pfnsub5CB127)0x5CB127)

@@ -1,6 +1,7 @@
 #include "assets.h"
+#include "../impl.h"
 
-static void drawScrollerWidget(ScrollerWidget* scrollerPortrait) {
+void drawScrollerWidget(ScrollerWidget* scrollerPortrait) {
     drawScrollerParams params = {
         scrollerPortrait->viewSize,
         scrollerPortrait->maxRows,
@@ -14,7 +15,7 @@ static void drawScrollerWidget(ScrollerWidget* scrollerPortrait) {
 }
 
 ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name) {
-    ScrollerWidget* widget = (ScrollerWidget*)createWidget(&kScrollerWidgetClass, name, sizeof(ScrollerWidget));
+    ScrollerWidget* widget = (ScrollerWidget*)createWidget(name, sizeof(ScrollerWidget), &kScrollerWidgetClass);
     widget->viewSize = params.viewSize;
     widget->baseRows = params.baseRow;
     widget->maxRows = params.maxRows;
@@ -25,7 +26,11 @@ ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name
     return widget;
 }
 
-static void drawPortraitWidget(PortraitWidget* portraitWidget) {
+bool isScrollerWidget(Widget* widget) {
+    return ((widget->klass == &kScrollerWidgetClass));
+}
+
+void drawPortraitWidget(PortraitWidget* portraitWidget) {
     displayPortrait(
         portraitWidget->widget.xCoordinate,
         portraitWidget->widget.yCoordinate,
@@ -35,7 +40,7 @@ static void drawPortraitWidget(PortraitWidget* portraitWidget) {
 }
 
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name) {
-    PortraitWidget* widget = (PortraitWidget*)createWidget(&kPortraitWidgetClass, name, sizeof(PortraitWidget));
+    PortraitWidget* widget = (PortraitWidget*)createWidget(name, sizeof(PortraitWidget), &kPortraitWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->partyIndex = params.partyIndex;
@@ -43,7 +48,22 @@ PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name
     return widget;
 }
 
-static void drawHPBarWidget(HPBarWidget* hpBarWidget) {
+bool isPortraitWidget(Widget* widget) {
+    return ((widget->klass == &kPortraitWidgetClass));
+}
+
+void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
+    if (isPortraitWidget(widget)) {
+        auto typedPtr = (PortraitWidget*)widget;
+        typedPtr->partyIndex = portraitIndex;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
+}
+
+
+void drawHPBarWidget(HPBarWidget* hpBarWidget) {
     displayPortrait(
         hpBarWidget->widget.xCoordinate,
         hpBarWidget->widget.yCoordinate,
@@ -53,10 +73,83 @@ static void drawHPBarWidget(HPBarWidget* hpBarWidget) {
 }
 
 HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name) {
-    HPBarWidget* widget = (HPBarWidget*)createWidget(&kHPBarWidgetClass, name, sizeof(HPBarWidget));
+    HPBarWidget* widget = (HPBarWidget*)createWidget(name, sizeof(HPBarWidget), &kHPBarWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->partyIndex = params.partyIndex;
     widget->priority = params.priority;
     return widget;
 }
+
+
+bool isHPBarWidget(Widget* widget) {
+    return ((widget->klass == &kHPBarWidgetClass));
+}
+
+void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
+    if (isHPBarWidget(widget)) {
+        auto typedPtr = (HPBarWidget*)widget;
+        typedPtr->partyIndex = partyIndex;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
+}
+
+void drawArrowWidget(ArrowWidget* arrowWidget) {
+    gameDrawAsset(
+        arrowWidget->widget.xCoordinate,
+        arrowWidget->widget.yCoordinate,
+        arrowWidget->code,
+        arrowWidget->arrowColor,
+        arrowWidget->priority
+    );
+}
+
+ArrowWidget* createArrowWidget(drawArrowParams params, std::string name) {
+    ArrowWidget* widget = (ArrowWidget*)createWidget(name, sizeof(ArrowWidget), &kArrowWidgetClass);
+    widget->widget.xCoordinate = params.xCoordinate;
+    widget->widget.yCoordinate = params.yCoordinate;
+    widget->code = params.arrowCode;
+    widget->priority = params.arrowPriority;
+    return widget;
+}
+
+bool isArrowWidget(Widget* widget) {
+    return ((widget->klass == &kArrowWidgetClass));
+}
+
+
+void drawSlotsWidget(SlotsWidget* slotsWidget) {
+    if (slotsWidget->materiaSlotsData) {
+        renderMateriaSlots(
+            slotsWidget->widget.xCoordinate,
+            slotsWidget->widget.yCoordinate,
+            (i32)(slotsWidget->materiaSlotsData)
+        );
+    }
+}
+
+SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
+    SlotsWidget* widget = (SlotsWidget*)createWidget(name, sizeof(SlotsWidget), &kSlotsWidgetClass);
+    widget->widget.xCoordinate = params.xCoordinate;
+    widget->widget.yCoordinate = params.yCoordinate;
+    widget->materiaSlotsData = params.materiaSlotData;
+    return widget;
+}
+
+bool isSlotsWidget(Widget* widget) {
+    return ((widget->klass == &kSlotsWidgetClass));
+}
+
+void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
+    if (isSlotsWidget(widget)) {
+        auto typedPtr = (SlotsWidget*)widget;
+        typedPtr->materiaSlotsData = materiaSlotsData;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
+}
+
+

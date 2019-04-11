@@ -1,4 +1,12 @@
 os: windows
 language: bash
-
-script: ./travis-build.sh
+script: "./travis-build.sh"
+deploy:
+  provider: releases
+  api_key:
+    secure: VjsKinC3jgAyKok+vLiV43G4JOXIlU36ywqrs/pSRWlGMtCGW1OeXgjTM+I2jOKg6mCrQZ8VoTNY6Hb+BkeYYvqXlXsPkVFmM9MO/G075UtX7apLYnIKnboITyxyZ24XJxx93UNlvb11XnjR1FoIJBmuIlq4vLvKXy9Iz8Q3MpnOOGNid8wsM9lyjtvgChAKacI2c6o2Ybp+zNqCDQOrXXkmoLuHXvwV3L+hlq7BvId74O/0XzaPUZaW/ppLd4ZnMNFb0A3t3yc9ZZ/S1oce/ag4yetUHDm85OheC88oTJEz0KAU8bHs4ZcoHXBQShH1SANoc4Ipbx39rCa6Dsg2m/PYOMsKjcjY+H4d7x5ecg+1FbbEk7v1irjstcTJnmhlvPYnsGIbd8BIEgykHcyo+krYZzyGhvEp1tuEErbiFBQg4pPPEMPAwOYD6f1trpXyimZIciuXk0KoL5h+ZJ6/MHIsMqtnhW03PSv+y2RVZwJgahhfpRsmlYLIK7R0V9zapNaZvEspO48qQK+BMwbJrCPE9yl9jyi5iseLQzzkKxwLOPr4lgy4+h4/0oYgbN6FgQWRvQayecopxhm2NjNlt48/FygJyQ7+LlBPuBspIVgZaL1XGsF+/MBTjSGgvWjygE+D/PLiIPYHVTdCoSPd/S+Yn3060u9K6G7erduA2BQ=
+  file_glob: true
+  file: build/packages/*
+  skip_cleanup: true
+  on:
+    tags: true

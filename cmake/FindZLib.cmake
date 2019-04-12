@@ -22,15 +22,15 @@ if (NOT ZLIB_FOUND)
 		include
 	)
 
-	add_library(ZLib::ZLib STATIC IMPORTED)
+	add_library(ZLib::ZLib SHARED IMPORTED)
 
 	set_target_properties(
 		ZLib::ZLib
 		PROPERTIES
 		IMPORTED_LOCATION
-        "${ZLIB_LIBRARY}"
-        IMPORTED_IMPLIB
         "${ZLIB_DLL}"
+        IMPORTED_IMPLIB
+        "${ZLIB_LIBRARY}"
 		INTERFACE_INCLUDE_DIRECTORIES
 		"${ZLIB_INCLUDE_DIR}"
 	)

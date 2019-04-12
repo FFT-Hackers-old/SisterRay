@@ -28,6 +28,7 @@ if (SUPERBUILD)
             "-DVERSION=${VERSION}"
         DEPENDS
         zlib
+        lua
     )
     ExternalProject_Add_Step(
 		SisterRay

@@ -1,6 +1,18 @@
 #ifndef IMPL_H
 #define IMPL_H
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+#include <lua/lua.h>
+#include <lua/lauxlib.h>
+#include <lua/lualib.h>
+
+#if defined(__cplusplus)
+}
+#endif
+
 #include <mog/mog.h>
 #include <SisterRay/SisterRay.h>
 
@@ -23,6 +35,7 @@
 /*Game Context holds all the registries which contain
   Resources, in the form of either data or registered callback*/
 typedef struct {
+    lua_State*                          L;
     FILE*                               logFile;
     SrItemRegistry                      items;
     SrWeaponRegistry                    weapons;
@@ -43,6 +56,8 @@ typedef struct {
 } SrContext;
 
 SISTERRAY_GLOBAL SrContext gContext;
+
+SISTERRAY_API void srInitLua(void);
 
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
 SISTERRAY_API void init_materia(SrKernelStream* stream);

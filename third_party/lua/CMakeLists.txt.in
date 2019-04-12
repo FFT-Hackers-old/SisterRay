@@ -1,0 +1,40 @@
+cmake_minimum_required(VERSION 3.10)
+project(Lua C)
+
+set(
+    SOURCES
+    lapi.c lcode.c lctype.c ldebug.c ldo.c ldump.c lfunc.c lgc.c llex.c
+	lmem.c lobject.c lopcodes.c lparser.c lstate.c lstring.c ltable.c
+	ltm.c lundump.c lvm.c lzio.c
+    lauxlib.c lbaselib.c lbitlib.c lcorolib.c ldblib.c liolib.c
+	lmathlib.c loslib.c lstrlib.c ltablib.c lutf8lib.c loadlib.c linit.c
+)
+
+set(
+    HEADERS
+    lauxlib.h
+    lua.h
+    luaconf.h
+    lualib.h
+)
+
+list(TRANSFORM SOURCES PREPEND "${CMAKE_SOURCE_DIR}/src/")
+list(TRANSFORM HEADERS PREPEND "${CMAKE_SOURCE_DIR}/src/")
+
+add_library(lua53 SHARED ${SOURCES})
+target_compile_definitions(
+    lua53
+    PRIVATE
+    LUA_BUILD_AS_DLL
+    LUA_COMPAT_5_2
+)
+target_include_directories(lua53 PRIVATE "${CMAKE_SOURCE_DIR}/src")
+
+install(
+    TARGETS lua53
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+install(FILES ${HEADERS} DESTINATION include/lua)

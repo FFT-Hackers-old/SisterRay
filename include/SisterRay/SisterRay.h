@@ -43,6 +43,7 @@ typedef SrEventListener (PFNSRADDLISTENERPROC)(SrEventType eventType, SrEventCal
 
 typedef const void* (*PFNSRLOADFUNCTIONPROC)(const char*);
 typedef const void* (*PFNSRREGISTERFUNCTIONPROC)(const char*, const void*);
+typedef struct _Menu Menu;
 
 /* Mog re-exports */
 typedef void  (*PFNSRREPLACEFUNCTIONPROC)(void* dst, void* newAddr);

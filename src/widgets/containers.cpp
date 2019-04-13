@@ -1,13 +1,18 @@
 #include "containers.h"
 #include <string>
+#include "../impl.h"
 
 /*Grid widgets positions are automatically updated*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
-    for (auto rowIndex = 0; rowIndex < cursorGrid->cursorContext->viewRowBound; ++rowIndex) {
-        for (auto columnIndex = 0; columnIndex < cursorGrid->cursorContext->viewColumnBound; ++columnIndex) {
-            u16 flatIndex = (cursorGrid->cursorContext->maxColumnBound) * (rowIndex + 1) + (columnIndex + 1);
+    srLogWrite("inside draw");
+    for (auto rowIndex = 0; rowIndex < cursorGrid->CursorContext->viewRowBound; ++rowIndex) {
+        for (auto columnIndex = 0; columnIndex < cursorGrid->CursorContext->viewColumnBound; ++columnIndex) {
+            srLogWrite("draw loop row: %i, column %i", rowIndex, columnIndex);
+            u16 flatIndex = (cursorGrid->CursorContext->maxColumnBound) * (rowIndex + 1) + (columnIndex + 1);
             auto child = getChild((Widget*)cursorGrid, flatIndex);
+            srLogWrite("considering child %p", child);
             if (child) {
+                srLogWrite("child %p exists for row: %i, column %i", child, rowIndex, columnIndex);
                 auto elementX = cursorGrid->columnSpacing * columnIndex + cursorGrid->widget.widget.xCoordinate;
                 auto elementY = cursorGrid->rowSpacing * rowIndex + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
@@ -26,13 +31,17 @@ CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, co
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType);
     widget->widget.widget.xCoordinate = params.xCoordinate;
     widget->widget.widget.yCoordinate = params.yCoordinate;
-    widget->cursorContext = params.cursorContext;
+    widget->CursorContext = params.CursorContext;
     widget->rowSpacing = params.rowSpacing;
     widget->columnSpacing = params.columnSpacing;
-    auto slotCount = (widget->cursorContext->viewRowBound) * (widget->cursorContext->viewColumnBound + 1);
+
+    srLogWrite("address of cursor context struct: %p", widget->CursorContext);
+    auto slotCount = (widget->CursorContext->viewRowBound) * (widget->CursorContext->viewColumnBound + 1);
+    srLogWrite("number of slots in collection: %i", slotCount);
     for (u32 slot = 0; slot < slotCount; slot++) {
         auto name = std::to_string(slot);
         auto widgetSlot = typeAllocate(childType, name);
+        srLogWrite("creating managed child %p for slot %i", widgetSlot, slot);
         addChildWidget((Widget*)widget, widgetSlot, name);
     }
     return widget;

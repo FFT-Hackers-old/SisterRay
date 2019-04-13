@@ -9,11 +9,11 @@
 SISTERRAY_API i32 onEnterInventory() {
     i32 ret;
 
-    cursorContext* cursorContextArray = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
+    CursorContext* cursorContextArray = (CursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
     *INVENTORY_MENU_STATE = 1;
-    cursorContext* inventoryOptionCursorContext = &(cursorContextArray[0]);
-    cursorContext* inventoryViewCursorContext = &(cursorContextArray[1]);
-    cursorContext* characterViewCursorContext = &(cursorContextArray[2]);
+    CursorContext* inventoryOptionCursorContext = &(cursorContextArray[0]);
+    CursorContext* inventoryViewCursorContext = &(cursorContextArray[1]);
+    CursorContext* characterViewCursorContext = &(cursorContextArray[2]);
     setContextCursorData(inventoryOptionCursorContext, 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0, 0);
     setContextCursorData(inventoryViewCursorContext, 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1);
     setContextCursorData(characterViewCursorContext, 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0); //initialize cursor for character pane
@@ -37,7 +37,7 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask)
 }
 
 void displayActiveCursorStates(i32 updateStateMask) {
-    cursorContext* cursorContextArray = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
+    CursorContext* cursorContextArray = (CursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
     u32 inventoryMenuState = *(INVENTORY_MENU_STATE);
     u32 partyMemberIndex = *(INVENTORY_CURRENT_PARTY_INDEX);
     u32 baseRowIndex = cursorContextArray[1].baseRowIndex;
@@ -140,7 +140,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
 /*This function displaces texts depending on current "view" in the menu*/
 void displayInventoryViews(i32 updateStateMask) {
     u32 inventoryMenuState = *(INVENTORY_MENU_STATE);
-    cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS); //might be better to call this 'current menu view'
+    CursorContext* cursorContextArray = (CursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS); //might be better to call this 'current menu view'
     int mainViewContextIndex;
 
     if (cursorContextArray[0].relativeColumnIndex != 2)     // Something with party members unless on cursor positioned on key items
@@ -187,7 +187,7 @@ void displayInventoryViews(i32 updateStateMask) {
 
 
 void renderMainInventoryView(i32 mainViewContextIndex) {
-    cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS);
+    CursorContext* cursorContextArray = (CursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS);
     u32 relativeRowIndex = cursorContextArray[1].relativeRowIndex;
     char* kernelObjectName;
     u16 itemID;
@@ -238,7 +238,7 @@ void renderCharacterPortraits() {
 
 
 void renderKeyItemsView() {
-    cursorContext* cursorContextArray = (cursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS);
+    CursorContext* cursorContextArray = (CursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS);
     char* keyItemName;
 
     *dword_DD17F0 = 10;
@@ -264,7 +264,7 @@ void renderKeyItemsView() {
 
 /*WIP here, need a more generic way to introduce "usable" items through a function registry or something similar*/
 void handleInventoryInput(i32 a1) {
-    cursorContext* cursorContextArray = (cursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
+    CursorContext* cursorContextArray = (CursorContext*)INVENTORY_MENU_CURSOR_CONTEXTS;
     u32* inventoryMenuState = INVENTORY_MENU_STATE;
     u32 partyMemberIndex = *(INVENTORY_CURRENT_PARTY_INDEX);
     u32 baseRowIndex = cursorContextArray[1].baseRowIndex;
@@ -281,11 +281,11 @@ void handleInventoryInput(i32 a1) {
             playMenuSound(1);
             if (cursorContextArray[0].relativeColumnIndex) {
                 if (cursorContextArray[0].relativeColumnIndex == 1) {
-                    setContextCursorData((cursorContext*)(&(cursorContextArray[4])), 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0); //Sets cursor data for the arrange menu
+                    setContextCursorData((CursorContext*)(&(cursorContextArray[4])), 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0); //Sets cursor data for the arrange menu
                     *inventoryMenuState = 4;         // Arrange Menu
                 }
                 else if (cursorContextArray[0].relativeColumnIndex == 2) {
-                    setContextCursorData((cursorContext*)(&(cursorContextArray[3])), 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1); //sets cursor data for the key items menu
+                    setContextCursorData((CursorContext*)(&(cursorContextArray[3])), 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1); //sets cursor data for the key items menu
                     *inventoryMenuState = 3;         // Key Items Menu
                 }
             }
@@ -364,7 +364,7 @@ void handleInventoryInput(i32 a1) {
             }
             else
             {
-                setContextCursorData((cursorContext*)&(cursorContextArray[5]), 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1);// Custom Sort Cursor Data Copy?
+                setContextCursorData((CursorContext*)&(cursorContextArray[5]), 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1);// Custom Sort Cursor Data Copy?
                 *ITEM_TO_SWAP_SELECTED = 0; //Clear the globals that are used by the custom sort routine for swapping items
                 *TEMP_COLUMN_INDEX = 0;
                 *TEMP_ABSOLUTE_CURSOR_INDEX = 0;

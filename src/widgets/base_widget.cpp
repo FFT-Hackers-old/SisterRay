@@ -26,8 +26,10 @@ void drawWidget(Widget* widget) {
         return;
 
     if (widget->klass == &kCollectionWidgetClass) {
+        srLogWrite("drawing collection widget");
         auto typedPtr = (CollectionWidget *)widget;
         if (typedPtr->collectionType->draw) {
+            srLogWrite("execution collection draw");
             typedPtr->collectionType->draw(widget);
         }
         return;
@@ -36,7 +38,7 @@ void drawWidget(Widget* widget) {
     if (widget->klass->draw) {
         widget->klass->draw(widget);
     }
-    else if(!widget->children.empty()) {
+    else if (!widget->children.empty()) {
         for (auto it = begin(widget->children); it != end(widget->children); ++it) {
             drawWidget(*it);
         }

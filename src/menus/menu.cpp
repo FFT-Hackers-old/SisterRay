@@ -4,56 +4,72 @@
 #include "../events/menu_events.h"
 
 void MenuRegistry::initializeMenu(std::string menuName, const std::string widgetName) {
-    named_registry[menuName]._buildWidget(widgetName);
+    auto menu = get_element(widgetName);
+    EquipInitEvent event = { menu };
+    gContext.eventBus.dispatch(menu->initEvent, &event);
+
 }
 
-
-Menu::Menu(cursorContext* cursorContextArray, i32 stateCount, SrEventType eventType) {
-    widgetPtr = nullptr;
-    // create the equipment Widget and add it's default children
-    for (auto menuState = 0; menuState < stateCount; menuState++) {
-        cursorContext context = cursorContextArray[menuState];
-        cursorContextRegistry[menuState] = context;
+MenuRegistry::~MenuRegistry() {
+    for (auto element : named_registry) {
+        destroyMenu(element.second);
     }
-    initEvent = eventType;
-    menuStateCount = stateCount;
-    menuState = 0;
 }
 
-Menu::Menu() {
-    widgetPtr = nullptr;
-    // create the equipment Widget and add it's default children
-    initEvent = NO_TYPE;
+Menu* createMenu(SrEventType initEvent, i32 stateCount, CursorContext* contexts) {
+    Menu* menu = (Menu*)malloc(sizeof(Menu));
+    menu->stateCount = stateCount;
+    menu->initEvent = initEvent;
+    menu->contextCapacity = stateCount;
+    menu->contexts = (CursorContext*)malloc(sizeof(CursorContext)*stateCount);
+    memcpy(menu->contexts, contexts, sizeof(contexts));
+    menu->contextSize = stateCount;
+    menu->menuWidget = nullptr;
+    return menu;
 }
 
-Menu::~Menu() {
-    if (widgetPtr)
-        destroyWidget(widgetPtr);
+void destroyMenu(Menu* menu) {
+    free(menu->contexts);
+    destroyWidget(menu->menuWidget);
+    free(menu);
 }
 
-//This dispatches the current Menu instance through initializing callbacks
-void Menu::_buildWidget(const std::string equipName) {
-    auto menuWidget = createWidget(equipName);
-    widgetPtr = menuWidget;
-    const EquipInitEvent params = { this };
-    const EquipInitEvent* event = &params;
-    gContext.eventBus.dispatch(initEvent, event);
-}
-
-i32 Menu::getMenuState() {
-    return menuState;
-}
-
-void Menu::setMenuState(i32 value) {
-    if (value >= menuStateCount) {
-        //Invalid Menu State, return to 0
-        menuState = 0;
+void addState(Menu* menu, CursorContext* context) {
+    if (menu->contextSize < menu->contextCapacity) {
+        memcpy(&(menu->contexts[menu->contextSize]), context, sizeof(CursorContext));
+        menu->contextSize++;
+        menu->stateCount++;
         return;
     }
-    menuState = value;
+    menu->contexts = (CursorContext*)realloc(menu->contexts, sizeof(CursorContext) * menu->contextCapacity * 2);
+    menu->contextCapacity = 2 * menu->contextCapacity;
+    memcpy(&(menu->contexts[menu->contextSize]), context, sizeof(CursorContext));
+    menu->contextSize++;
+    menu->stateCount++;
 }
 
+CursorContext* getStateCursor(Menu* menu, i32 menuState) {
+    if (menuState < menu->stateCount) {
+        return &(menu->contexts[menuState]);
+    }
+}
 
-Widget* Menu::getWidget() {
-    return widgetPtr;
+void setStateCursor(Menu* menu, i32 menuState, CursorContext* context) {
+    if (menuState < menu->stateCount) {
+        memcpy(&(menu->contexts[menuState]), context, sizeof(CursorContext));
+    }
+}
+
+i32 getMenuState(Menu* menu) {
+    return menu->currentState;
+}
+
+void setMenuState(Menu* menu, i32 value) {
+    if (value < menu->stateCount) {
+        menu->currentState = value;
+    }
+}
+
+Widget* getWidget(Menu* menu) {
+    return menu->menuWidget;
 }

@@ -6,14 +6,14 @@
 
 typedef struct {
     CollectionWidget widget;
-    cursorContext* cursorContext;
+    CursorContext* CursorContext;
     SRLISTUPDATERPROC updater;
     u16 rowSpacing;
     u16 columnSpacing;
 } CursorGridWidget;
 
 typedef struct {
-    cursorContext* cursorContext;
+    CursorContext* CursorContext;
     SRLISTUPDATERPROC updater;
     u32 xCoordinate;
     u32 yCoordinate;

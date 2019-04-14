@@ -5,9 +5,7 @@ static char* defaultString = "\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x
 
 // create default objects from a type -- used to pre-allocate CursorContext objects
 Widget* typeAllocate(const WidgetClass* type, std::string name) {
-    srLogWrite("checking type, text type: %p", TextClass());
     if (type == TextClass()) {
-        srLogWrite("type allocating a text widget");
         drawTextParams params = {0, 0, defaultString, COLOR_RED, 0.2f};
         return (Widget*)createTextWidget(params, name);
     }

@@ -4,15 +4,11 @@
 
 /*Grid widgets positions are automatically updated*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
-    srLogWrite("inside draw");
     for (auto rowIndex = 0; rowIndex < cursorGrid->cursor->viewRowBound; ++rowIndex) {
         for (auto columnIndex = 0; columnIndex < cursorGrid->cursor->viewColumnBound; ++columnIndex) {
-            srLogWrite("draw loop row: %i, column %i", rowIndex, columnIndex);
             u16 flatIndex = (cursorGrid->cursor->maxColumnBound) * (rowIndex) + (columnIndex); //Fix this math
             auto child = getChild((Widget*)cursorGrid, flatIndex);
-            srLogWrite("considering child %p", child);
             if (child) {
-                srLogWrite("child %p exists for row: %i, column %i", child, rowIndex, columnIndex);
                 auto elementX = cursorGrid->columnSpacing * columnIndex + cursorGrid->widget.widget.xCoordinate;
                 auto elementY = cursorGrid->rowSpacing * rowIndex + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
@@ -36,15 +32,10 @@ CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, co
     widget->columnSpacing = params.columnSpacing;
     widget->updater = params.updater;
 
-    srLogWrite("address of cursor context struct: %p", widget->cursor);
     auto slotCount = (widget->cursor->viewRowBound) * (widget->cursor->viewColumnBound);
-    srLogWrite("row bound: %i, column bound: %i", widget->cursor->viewRowBound, widget->cursor->viewColumnBound);
-    srLogWrite("number of slots in collection: %i", slotCount);
     for (u32 slot = 0; slot < slotCount; slot++) {
         auto name = std::to_string(slot);
-        srLogWrite("childtype %p", childType);
         auto child = typeAllocate(childType, name);
-        srLogWrite("creating managed child %p for slot %i", child, slot);
         addChildWidget((Widget*)widget, child, name);
     }
     return widget;

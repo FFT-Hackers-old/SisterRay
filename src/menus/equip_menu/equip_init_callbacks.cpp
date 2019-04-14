@@ -219,7 +219,6 @@ void initGearListWidget(const EquipInitEvent* event) {
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
     gridParams = { gearChoice, &gearViewNameUpdater, 427, 193, 36, 0 };
-    srLogWrite("address of our updater function %p", &gearViewNameUpdater);
     auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextClass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 

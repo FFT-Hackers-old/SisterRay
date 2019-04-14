@@ -26,10 +26,8 @@ void drawWidget(Widget* widget) {
         return;
 
     if (widget->klass == &kCollectionWidgetClass) {
-        srLogWrite("drawing collection widget");
         auto typedPtr = (CollectionWidget *)widget;
         if (typedPtr->collectionType->draw) {
-            srLogWrite("execution collection draw");
             typedPtr->collectionType->draw(widget);
         }
         return;

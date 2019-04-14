@@ -13,6 +13,7 @@ void drawTextWidget(TextWidget* textWidget){
 
 TextWidget* createTextWidget(drawTextParams params, std::string name) {
     TextWidget* widget = (TextWidget*)createWidget(name, sizeof(TextWidget), &kTextWidgetClass);
+    srLogWrite("text widget class: %p", &kTextWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->text = params.stringToDraw;
@@ -23,6 +24,10 @@ TextWidget* createTextWidget(drawTextParams params, std::string name) {
 
 bool isTextWidget(Widget* widget) {
     return (widget->klass == &kTextWidgetClass);
+}
+
+const WidgetClass* TextClass() {
+    return &kTextWidgetClass;
 }
 
 void updateText(Widget* widgetToUpdate, char* text) {

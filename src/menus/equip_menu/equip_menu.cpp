@@ -43,13 +43,6 @@ void displayMenuObjects(CursorContext* cursorContextArray, u32 menuState, i32 st
     //HP bars and the like
     renderHPAndStatus(110, 17, *EQUIP_MENU_PARTY_INDEX, 1045220557); //HP bar
     displayPortrait(17, 9, *EQUIP_MENU_PARTY_INDEX, 1045220557); //Character Portrait
-
-    //Draw Menu Boxes -- this part can be data driven
-    for (u32 boxDataIndex = 0; boxDataIndex < 2; ++boxDataIndex) //index into box data structs and draw dem boxes
-        gameDrawBox((i16*)(&(equipMenuWindowConfig)[boxDataIndex]), .3f);
-    gameDrawBox((i16*)(&(equipMenuWindowConfig)[2]), .4f);
-    gameDrawBox((i16*)(&(equipMenuWindowConfig)[3]), .5f);
-    gameDrawBox((i16*)(&(equipMenuWindowConfig)[4]), .6f);
 }
 
 /*Create a Focus object making this configurable*/

@@ -34,6 +34,7 @@ CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, co
     widget->cursor = params.cursor;
     widget->rowSpacing = params.rowSpacing;
     widget->columnSpacing = params.columnSpacing;
+    widget->updater = params.updater;
 
     srLogWrite("address of cursor context struct: %p", widget->cursor);
     auto slotCount = (widget->cursor->viewRowBound) * (widget->cursor->viewColumnBound);
@@ -41,9 +42,10 @@ CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, co
     srLogWrite("number of slots in collection: %i", slotCount);
     for (u32 slot = 0; slot < slotCount; slot++) {
         auto name = std::to_string(slot);
-        auto widgetSlot = typeAllocate(childType, name);
-        srLogWrite("creating managed child %p for slot %i", widgetSlot, slot);
-        addChildWidget((Widget*)widget, widgetSlot, name);
+        srLogWrite("childtype %p", childType);
+        auto child = typeAllocate(childType, name);
+        srLogWrite("creating managed child %p for slot %i", child, slot);
+        addChildWidget((Widget*)widget, child, name);
     }
     return widget;
 }

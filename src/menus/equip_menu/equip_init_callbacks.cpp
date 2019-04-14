@@ -1,6 +1,7 @@
 #include "equip_init_callbacks.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
+#include "../../widgets/updaters.h"
 
 /* This Module contains code which initializes the Widget that represents the equip menu internally
    You can mutate this widget prior to draw by registered your listeners to the "OnEquipMenuDraw" event
@@ -51,7 +52,6 @@ void initCharDataWidget(const EquipInitEvent* event) {
     }
 
     addChildWidget(mainWidget, currentEquipWidget, CHAR_DATA_WIDGET_NAME);
-    srLogWrite("Running first init callback");
 }
 
 void initGearDescWidget(const EquipInitEvent* event) {
@@ -85,7 +85,6 @@ void initGearDescWidget(const EquipInitEvent* event) {
     addChildWidget(GearDescWidget, (Widget*)textWidget, GEAR_DESCRIPTION);
 
     addChildWidget(mainWidget, GearDescWidget, GEAR_DESC_WIDGET_NAME);
-    srLogWrite("Running second callback");
 }
 
 /* Initialize the Widget for the characters Materia Slots. This will be updated when Handling in Handlers*/
@@ -140,7 +139,6 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, GEAR_GROWTH);
 
     addChildWidget(mainWidget, equipMateraSlotWidget, GEAR_SLOTS_WIDGET_NAME);
-    srLogWrite("third callback running");
 }
 
 /*Initialize the Widget That displays stats*/
@@ -194,7 +192,6 @@ void initStatDiffWidget(const EquipInitEvent* event) {
         addChildWidget(statDiffWidget, (Widget*)numberWidget, candidateNumberNames[i]);
     }
     addChildWidget(mainWidget, statDiffWidget, STAT_DIFF_WIDGET_NAME);
-    srLogWrite("fourth callback running");
 }
 
 
@@ -222,10 +219,10 @@ void initGearListWidget(const EquipInitEvent* event) {
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
     gridParams = { gearChoice, &gearViewNameUpdater, 427, 193, 36, 0 };
-    auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, &kTextWidgetClass);
+    srLogWrite("address of our updater function %p", &gearViewNameUpdater);
+    auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextClass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 
     addChildWidget(mainWidget, gearListWidget, GEAR_LIST_WIDGET_NAME);
-    srLogWrite("sixth callback running");
 }
 

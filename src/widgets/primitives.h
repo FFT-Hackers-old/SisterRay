@@ -61,7 +61,8 @@ typedef struct {
 } TextWidget;
 
 void drawTextWidget(TextWidget* textWidget);
-const WidgetClass kTextWidgetClass = { (SRWIDGETDRAWPROC)drawTextWidget };
+static const WidgetClass kTextWidgetClass = { (SRWIDGETDRAWPROC)drawTextWidget };
+const WidgetClass* TextClass();
 TextWidget* createTextWidget(drawTextParams params, std::string name);
 bool isTextWidget(Widget* widget);
 void updateText(Widget* widget, char* text);

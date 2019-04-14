@@ -8,7 +8,8 @@ using namespace EquipWidgetNames;
 
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
     Menu* menuObject = gContext.menuWidgets.get_element("EQUIP_MENU");
-    CursorContext* cursorContextArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    auto equipMenuState = menuObject->currentState;
+    auto cursorArray = getStateCursor(menuObject, 0);
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
 
     sub_6C98A6();
@@ -16,10 +17,10 @@ SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
     EquipDrawEvent event = { menuObject, menuObject->currentState };
     gContext.eventBus.dispatch(DRAW_EQUIP_MENU, &event);
     drawWidget(menuWidget);
-    displayMenuCursors(cursorContextArray, *EQUIP_MENU_STATE, updateStateMask);
+    displayMenuCursors(cursorArray, equipMenuState, updateStateMask);
 
     if (!is_input_handling_enabled()) {
-        handleEquipMenuInput(updateStateMask, menuWidget);
+        handleEquipMenuInput(updateStateMask, menuObject);
     }
 }
 
@@ -28,15 +29,15 @@ void displayMenuObjects(CursorContext* cursorContextArray, u32 menuState, i32 st
     u16 equippableGearCount;
 
     switch (menuState) {
-    case 1: {
-        //sub_6FA12F(316, 171, 324, 303); //I can't figure out what this does...
-        equippableGearCount = gContext.gearViewData.slots_in_use;
-        drawScrollerParams* arguments = (drawScrollerParams*)word_DCA490;
-        setSideScrollerArguments(arguments, 8, equippableGearCount, cursorContextArray[1].baseRowIndex, 618, 171, 17, 303);
-        renderMenuSideScroller(arguments, 0.2);
-        //sub_6FA347();
-        break;
-    }
+        case 1: {
+            //sub_6FA12F(316, 171, 324, 303); //I can't figure out what this does...
+            equippableGearCount = gContext.gearViewData.slots_in_use;
+            drawScrollerParams* arguments = (drawScrollerParams*)word_DCA490;
+            setSideScrollerArguments(arguments, 8, equippableGearCount, cursorContextArray[1].baseRowIndex, 618, 171, 17, 303);
+            renderMenuSideScroller(arguments, 0.2);
+            //sub_6FA347();
+            break;
+        }
     }
 
     //HP bars and the like
@@ -51,21 +52,22 @@ void displayMenuObjects(CursorContext* cursorContextArray, u32 menuState, i32 st
     gameDrawBox((i16*)(&(equipMenuWindowConfig)[4]), .6f);
 }
 
+/*Create a Focus object making this configurable*/
 void displayMenuCursors(CursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
     switch (menuState) {
-    case 0: {
-        displayCursor(207, 36 * cursorContextArray[0].relativeRowIndex + 17, 0.1f);
-        break;
-    }
-    case 1: {
-        if (stateControlMask & 2) //animate flashing cursor
+        case 0: {
             displayCursor(207, 36 * cursorContextArray[0].relativeRowIndex + 17, 0.1f);
-        displayCursor(385, 36 * cursorContextArray[1].relativeRowIndex + 197, 0.1f);
-        break;
-    }
-    default: {
-        break;
-    }
+            break;
+        }
+        case 1: {
+            if (stateControlMask & 2) //animate flashing cursor
+                displayCursor(207, 36 * cursorContextArray[0].relativeRowIndex + 17, 0.1f);
+            displayCursor(385, 36 * cursorContextArray[1].relativeRowIndex + 197, 0.1f);
+            break;
+        }
+        default: {
+            break;
+        }
     }
 }
 
@@ -82,13 +84,14 @@ color getStatDisplayColor(u8 equippedStat, u8 toEquipStat) {
     return COLOR_WHITE;
 }
 
-void handleEquipMenuInput(i32 updateStateMask, Widget* menuWidget) {
-    CursorContext* cursorContextArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+void handleEquipMenuInput(i32 updateStateMask, Menu* menuObject) {
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
-    u32 equipMenuState = *EQUIP_MENU_STATE;
+    auto equipMenuState = menuObject->currentState;
+    auto cursorArray = getStateCursor(menuObject, equipMenuState);
+    auto menuWidget = menuObject->menuWidget;
 
-    EquipInputEvent event = { menuWidget, *EQUIP_MENU_STATE };
-    handleCursorPositionUpdate((u32*)(&(cursorContextArray[equipMenuState])));
+    EquipInputEvent event = { menuObject, equipMenuState };
+    handleCursorPositionUpdate((u32*)cursorArray);
     if (checkInputReceived(32)) {
         gContext.eventBus.dispatch(EQUIP_MENU_INPUT_OK, &event);
     }

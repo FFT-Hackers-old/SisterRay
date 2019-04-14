@@ -5,7 +5,8 @@
 
 /*Handlers for "OK" inputs, one per menu State*/
 void equipGearHandler(const EquipInputEvent* event) {
-    CursorContext* cursorContextArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    auto slotChoice = getStateCursor(event->menu, 0);
+    auto gearChoice = getStateCursor(event->menu, 1);
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     auto characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u8 equippedGearItemType;
@@ -14,10 +15,9 @@ void equipGearHandler(const EquipInputEvent* event) {
         return;
 
     playMenuSound(447);
-    *EQUIP_MENU_STATE = 0;
-    auto menuWidget = event->menu;
-    u16 equippedGearRelativeIndex = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
-    switch (cursorContextArray[0].relativeRowIndex) { //
+    setMenuState(event->menu, 0);
+    u16 equippedGearRelativeIndex = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
+    switch (slotChoice->relativeRowIndex) { //
         case 0: { //equip WEAPON
             equippedGearItemType = 1;
             handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
@@ -43,28 +43,24 @@ void equipGearHandler(const EquipInputEvent* event) {
 }
 
 void selectGearHandler(const EquipInputEvent* event) {
-    CursorContext* cursorContextArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
-    characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
-    u32 equipMenuState = *EQUIP_MENU_STATE;
+    CursorContext* cursorArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    auto slotChoice = getStateCursor(event->menu, 0);
     i32 cursorViewBound = 0;
     u16 equippableGearCount = 0;
 
     if (event->menuState != 0)
         return;
 
-    auto menuWidget = event->menu;
-
-    equippableGearCount = setupGearMenu(cursorContextArray[0].relativeRowIndex + 1);
+    equippableGearCount = setupGearMenu(slotChoice->relativeRowIndex + 1);
     if (equippableGearCount && !(*byte_DC0B4B & 1)) {
         playMenuSound(1);
-        *EQUIP_MENU_STATE = 1;
+        setMenuState(event->menu, 1);
         if (equippableGearCount <= 8) //Sets the "single view" size
             cursorViewBound = equippableGearCount;
         else
             cursorViewBound = 8;
-        setContextCursorData((CursorContext*)(&cursorContextArray[1]), 0, 0, 1, cursorViewBound, 0, 0, 1, equippableGearCount, 0, 0, 0, 0, 0, 1);
-        // add the list widget (this widget updates it's own elements based on a cursorContext*)
-        // 
+
+        setContextCursorData(getStateCursor(event->menu, 1), 0, 0, 1, cursorViewBound, 0, 0, 1, equippableGearCount, 0, 0, 0, 0, 0, 1);
     }
     else {
         playMenuSound(3);
@@ -74,19 +70,12 @@ void selectGearHandler(const EquipInputEvent* event) {
 
 /*Handlers for "Cancel" inputs, one per menu State*/
 void exitEquipViewListener(const EquipInputEvent* event) {
-
-    auto menuWidget = event->menu;
-    
-    *EQUIP_MENU_STATE = 0;
-    //Remove Equip Menu Widgets for showing the List of Items
-    //Reset stat diffs, descriptions, etc to currently equipped values
+    setMenuState(event->menu, 0);
 }
 
 void exitMenuListener(const EquipInputEvent* event) {
-    if (*EQUIP_MENU_STATE != 0)
+    if (event->menuState != 0)
         return;
-
-    auto menuWidget = event->menu;
 
     if (*DID_MATERIA_GEAR_CHANGE && (*word_DD1BC0 || *dword_DC1290)) {
         playMenuSound(1);
@@ -103,7 +92,7 @@ void exitMenuListener(const EquipInputEvent* event) {
 
 /*Handlers for L1/R1 "switching" inputs, for states where they function*/
 void changeCharLeft(const EquipInputEvent* event) {
-    if (*EQUIP_MENU_STATE != 0)
+    if (event->menuState != 0)
         return;
 
     auto menuWidget = event->menu;
@@ -116,7 +105,7 @@ void changeCharLeft(const EquipInputEvent* event) {
 }
 
 void changeCharRight(const EquipInputEvent* event) {
-    if (*EQUIP_MENU_STATE != 0)
+    if (event->menuState != 0)
         return;
 
     auto menuWidget = event->menu;

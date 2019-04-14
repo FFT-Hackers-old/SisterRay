@@ -5,10 +5,10 @@
 /*Grid widgets positions are automatically updated*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
     srLogWrite("inside draw");
-    for (auto rowIndex = 0; rowIndex < cursorGrid->CursorContext->viewRowBound; ++rowIndex) {
-        for (auto columnIndex = 0; columnIndex < cursorGrid->CursorContext->viewColumnBound; ++columnIndex) {
+    for (auto rowIndex = 0; rowIndex < cursorGrid->cursor->viewRowBound; ++rowIndex) {
+        for (auto columnIndex = 0; columnIndex < cursorGrid->cursor->viewColumnBound; ++columnIndex) {
             srLogWrite("draw loop row: %i, column %i", rowIndex, columnIndex);
-            u16 flatIndex = (cursorGrid->CursorContext->maxColumnBound) * (rowIndex + 1) + (columnIndex + 1);
+            u16 flatIndex = (cursorGrid->cursor->maxColumnBound) * (rowIndex + 1) + (columnIndex + 1);
             auto child = getChild((Widget*)cursorGrid, flatIndex);
             srLogWrite("considering child %p", child);
             if (child) {
@@ -31,12 +31,13 @@ CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, co
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType);
     widget->widget.widget.xCoordinate = params.xCoordinate;
     widget->widget.widget.yCoordinate = params.yCoordinate;
-    widget->CursorContext = params.CursorContext;
+    widget->cursor = params.cursor;
     widget->rowSpacing = params.rowSpacing;
     widget->columnSpacing = params.columnSpacing;
 
-    srLogWrite("address of cursor context struct: %p", widget->CursorContext);
-    auto slotCount = (widget->CursorContext->viewRowBound) * (widget->CursorContext->viewColumnBound + 1);
+    srLogWrite("address of cursor context struct: %p", widget->cursor);
+    auto slotCount = (widget->cursor->viewRowBound) * (widget->cursor->viewColumnBound);
+    srLogWrite("row bound: %i, column bound: %i", widget->cursor->viewRowBound, widget->cursor->viewColumnBound);
     srLogWrite("number of slots in collection: %i", slotCount);
     for (u32 slot = 0; slot < slotCount; slot++) {
         auto name = std::to_string(slot);

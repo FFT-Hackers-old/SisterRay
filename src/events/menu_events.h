@@ -12,7 +12,7 @@ typedef struct {
 
 
 typedef struct {
-    Widget* menu;
+    Menu* menu;
     u32 menuState;
 } EquipInputEvent;
 

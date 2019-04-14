@@ -51,6 +51,7 @@ void initCharDataWidget(const EquipInitEvent* event) {
     }
 
     addChildWidget(mainWidget, currentEquipWidget, CHAR_DATA_WIDGET_NAME);
+    srLogWrite("Running first init callback");
 }
 
 void initGearDescWidget(const EquipInitEvent* event) {
@@ -84,6 +85,7 @@ void initGearDescWidget(const EquipInitEvent* event) {
     addChildWidget(GearDescWidget, (Widget*)textWidget, GEAR_DESCRIPTION);
 
     addChildWidget(mainWidget, GearDescWidget, GEAR_DESC_WIDGET_NAME);
+    srLogWrite("Running second callback");
 }
 
 /* Initialize the Widget for the characters Materia Slots. This will be updated when Handling in Handlers*/
@@ -137,8 +139,8 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     textWidget = createTextWidget(textParams, GEAR_GROWTH);
     addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, GEAR_GROWTH);
 
-
     addChildWidget(mainWidget, equipMateraSlotWidget, GEAR_SLOTS_WIDGET_NAME);
+    srLogWrite("third callback running");
 }
 
 /*Initialize the Widget That displays stats*/
@@ -192,12 +194,14 @@ void initStatDiffWidget(const EquipInitEvent* event) {
         addChildWidget(statDiffWidget, (Widget*)numberWidget, candidateNumberNames[i]);
     }
     addChildWidget(mainWidget, statDiffWidget, STAT_DIFF_WIDGET_NAME);
+    srLogWrite("fourth callback running");
 }
 
 
 //Initialize the gear list with just a box and a series of disabled widgets.
 void initGearListWidget(const EquipInitEvent* event) {
     CursorContext* cursorContextArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    auto gearChoice = getStateCursor(event->menuObject, 1);
 
     GridWidgetParams gridParams;
     BoxWidget* boxWidget;
@@ -217,10 +221,11 @@ void initGearListWidget(const EquipInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
-    gridParams = { (CursorContext*)&(cursorContextArray[1]), &gearViewNameUpdater, 427, 193, 36, 0 };
+    gridParams = { gearChoice, &gearViewNameUpdater, 427, 193, 36, 0 };
     auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, &kTextWidgetClass);
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 
     addChildWidget(mainWidget, gearListWidget, GEAR_LIST_WIDGET_NAME);
+    srLogWrite("sixth callback running");
 }
 

@@ -7,6 +7,8 @@
 #include "../widgets/widget.h"
 #include "../events/event.h"
 
+/*The Menu type is exposed via the public API, and therefore is defined only in terms of C types
+  It is in encapsulated via opaque pointer, and should be interacted with the provided functions*/
 struct _Menu {
     i32 currentState;
     i32 stateCount;
@@ -28,7 +30,7 @@ void setMenuState(Menu* menu, i32 value);
 class MenuRegistry : public SrNamedResourceRegistry<Menu*> {
 public:
     ~MenuRegistry();
-    void initializeMenu(std::string menuName, const std::string widgetName); 
+    void initializeMenu(std::string menuName, const std::string widgetName);
 };
 
 

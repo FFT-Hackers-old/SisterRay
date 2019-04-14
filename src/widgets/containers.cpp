@@ -8,7 +8,7 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
     for (auto rowIndex = 0; rowIndex < cursorGrid->cursor->viewRowBound; ++rowIndex) {
         for (auto columnIndex = 0; columnIndex < cursorGrid->cursor->viewColumnBound; ++columnIndex) {
             srLogWrite("draw loop row: %i, column %i", rowIndex, columnIndex);
-            u16 flatIndex = (cursorGrid->cursor->maxColumnBound) * (rowIndex + 1) + (columnIndex + 1);
+            u16 flatIndex = (cursorGrid->cursor->maxColumnBound) * (rowIndex) + (columnIndex); //Fix this math
             auto child = getChild((Widget*)cursorGrid, flatIndex);
             srLogWrite("considering child %p", child);
             if (child) {

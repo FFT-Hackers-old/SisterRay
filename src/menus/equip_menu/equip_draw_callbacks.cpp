@@ -154,3 +154,18 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* event) {
     }
 
 }
+
+void enableListWidget(const EquipDrawEvent* event) {
+    auto widget = getChild(getChild(event->menu->menuWidget, GEAR_LIST_WIDGET_NAME), EQUIP_LIST);
+    switch (event->menuState) {
+        case 0:
+            disableWidget(widget);
+            break;
+        case 1:
+            enableWidget(widget);
+            break;
+        default: {
+        }
+    }
+}
+

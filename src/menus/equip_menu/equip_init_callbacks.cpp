@@ -1,6 +1,7 @@
 #include "equip_init_callbacks.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
+#include "../../widgets/updaters.h"
 
 /* This Module contains code which initializes the Widget that represents the equip menu internally
    You can mutate this widget prior to draw by registered your listeners to the "OnEquipMenuDraw" event
@@ -13,7 +14,7 @@ void initCharDataWidget(const EquipInitEvent* event) {
     char * menuText;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     auto menuObject = event->menuObject;
-    auto mainWidget = menuObject->getWidget();
+    auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
     drawTextParams textParams;
@@ -36,6 +37,10 @@ void initCharDataWidget(const EquipInitEvent* event) {
     drawPortraitParams portraitParams = { 17, 9, 0, 0.2f };
     portraitWidget = createPortraitWidget(portraitParams, PORTRAIT_WIDGET_NAME);
     addChildWidget(currentEquipWidget, (Widget*)portraitWidget, PORTRAIT_WIDGET_NAME);
+
+    drawHPBarParams hpBarParams = { 110, 17, 0, 0.2f };
+    auto HPBarWidget = createHPBarWidget(hpBarParams, HPBAR_WIDGET_NAME);
+    addChildWidget(currentEquipWidget, (Widget*)HPBarWidget, HPBAR_WIDGET_NAME);
 
     std::vector<std::string> gearNames = { GEAR_SLOT_1_NAME, GEAR_SLOT_2_NAME, GEAR_SLOT_3_NAME };
     std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
@@ -63,7 +68,7 @@ void initGearDescWidget(const EquipInitEvent* event) {
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
     auto menuObject = event->menuObject;
-    auto mainWidget = menuObject->getWidget();
+    auto mainWidget = menuObject->menuWidget;
 
     auto GearDescWidget = createWidget(GEAR_DESC_WIDGET_NAME);
 
@@ -99,7 +104,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
     auto menuObject = event->menuObject;
-    auto mainWidget = menuObject->getWidget();
+    auto mainWidget = menuObject->menuWidget;
 
     auto equipMateraSlotWidget = createWidget(GEAR_SLOTS_WIDGET_NAME);
 
@@ -122,7 +127,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     }
 
     //create a default static variable later to a valid bytearray representing materia slot data
-    slotsParams = { 153, equipMenuWindowConfig[2].drawDistance2 + 21, nullptr};
+    slotsParams = { 153, equipMenuWindowConfig[2].drawDistance2 + 21, nullptr };
     slotsWidget = createSlotsWidget(slotsParams, GEAR_SLOTS);
     addChildWidget(equipMateraSlotWidget, (Widget*)slotsWidget, GEAR_SLOTS);
 
@@ -136,7 +141,6 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     textParams.set(243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 0.2f);
     textWidget = createTextWidget(textParams, GEAR_GROWTH);
     addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, GEAR_GROWTH);
-
 
     addChildWidget(mainWidget, equipMateraSlotWidget, GEAR_SLOTS_WIDGET_NAME);
 }
@@ -155,7 +159,7 @@ void initStatDiffWidget(const EquipInitEvent* event) {
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
     auto menuObject = event->menuObject;
-    auto mainWidget = menuObject->getWidget();
+    auto mainWidget = menuObject->menuWidget;
 
     auto statDiffWidget = createWidget(STAT_DIFF_WIDGET_NAME);
 
@@ -170,8 +174,8 @@ void initStatDiffWidget(const EquipInitEvent* event) {
     addChildWidget(statDiffWidget, (Widget*)boxWidget, STAT_DIFF_BOX);
 
     std::vector<std::string> statNames = { STAT_NAME_1, STAT_NAME_2, STAT_NAME_3, STAT_NAME_4, STAT_NAME_5, STAT_NAME_6, STAT_NAME_7 };
-    std::vector<std::string> numberNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
-    std::vector<std::string> candidateNumberNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
+    std::vector<std::string> numberNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
+    std::vector<std::string> candidateNumberNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
     std::vector<std::string> arrowNames = { ARROW_1, ARROW_2, ARROW_3, ARROW_4, ARROW_5, ARROW_6, ARROW_7 };
     for (i32 i = 0; i < 7; ++i) {
         menuText = gContext.game_strings.equipMenuTexts.get_string(2);
@@ -197,13 +201,14 @@ void initStatDiffWidget(const EquipInitEvent* event) {
 
 //Initialize the gear list with just a box and a series of disabled widgets.
 void initGearListWidget(const EquipInitEvent* event) {
-    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    CursorContext* cursorContextArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    auto gearChoice = getStateCursor(event->menuObject, 1);
 
     GridWidgetParams gridParams;
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
     auto menuObject = event->menuObject;
-    auto mainWidget = menuObject->getWidget();
+    auto mainWidget = menuObject->menuWidget;
 
     auto gearListWidget = createWidget(GEAR_LIST_WIDGET_NAME);
 
@@ -217,8 +222,8 @@ void initGearListWidget(const EquipInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
-    gridParams = {(cursorContext*)&(cursorContextArray[1]), &gearViewNameUpdater, 427, 193, 36, 0};
-    auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, &kTextWidgetClass);
+    gridParams = { gearChoice, &gearViewNameUpdater, 427, 193, 36, 0 };
+    auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextWidgetKlass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 
     addChildWidget(mainWidget, gearListWidget, GEAR_LIST_WIDGET_NAME);

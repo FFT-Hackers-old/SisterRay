@@ -37,7 +37,7 @@ typedef struct {
 
 typedef void(*SRLISTUPDATERPROC)(CollectionWidget*, Widget*, u16);
 
-Widget* createWidget(std::string name, size_t size=sizeof(Widget), const WidgetClass* klass=&kBaseWidgetClass);
+Widget* createWidget(std::string name, size_t size = sizeof(Widget), const WidgetClass* klass = &kBaseWidgetClass);
 CollectionWidget* createCollectionWidget(std::string name, const WidgetClass* collectionType, const WidgetClass* containedType);
 void destroyWidget(Widget* widget);
 

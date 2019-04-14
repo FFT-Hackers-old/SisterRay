@@ -7,29 +7,30 @@
 #include "../widgets/widget.h"
 #include "../events/event.h"
 
-/*Menu objects consist of a widget, a current menu state, and a registry of cursorContexts one per state*/
-class Menu {
-public:
-    Menu(cursorContext* cursorContextArray, i32 menuStateCount, SrEventType initEvent);
-    Menu();
-    ~Menu();
-    i32 menuState;
-    i32 menuStateCount;
+/*The Menu type is exposed via the public API, and therefore is defined only in terms of C types
+  It is in encapsulated via opaque pointer, and should be interacted with the provided functions*/
+struct _Menu {
+    i32 currentState;
+    i32 stateCount;
+    Widget* menuWidget;
     SrEventType initEvent;
-    Widget* widgetPtr;
-
-    std::unordered_map<i32, cursorContext> cursorContextRegistry;
-    void _buildWidget(const std::string menuName);
-    i32 getMenuState();
-    void setMenuState(i32 value);
-    Widget* getWidget();
-    
+    CursorContext* contexts;
+    i32 contextCapacity;
+    i32 contextSize;
 };
 
-class MenuRegistry : public SrNamedResourceRegistry<Menu> {
+Menu* createMenu(SrEventType initEvent, i32 stateCount, CursorContext* contexts);
+void destroyMenu(Menu* menu);
+void addState(Menu* menu, CursorContext* context);
+CursorContext* getStateCursor(Menu* menu, i32 menuState);
+void setStateCursor(Menu* menu, i32 menuState, CursorContext* context);
+i32 getMenuState(Menu* menu);
+void setMenuState(Menu* menu, i32 value);
+
+class MenuRegistry : public SrNamedResourceRegistry<Menu*> {
 public:
-    void initializeMenu(std::string menuName, const std::string widgetName); //dispatches handlers registered to "init", restoring the widget to its original state
-    
+    ~MenuRegistry();
+    void initializeMenu(std::string menuName, const std::string widgetName);
 };
 
 

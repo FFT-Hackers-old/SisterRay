@@ -36,7 +36,7 @@ void drawWidget(Widget* widget) {
     if (widget->klass->draw) {
         widget->klass->draw(widget);
     }
-    else if(!widget->children.empty()) {
+    else if (!widget->children.empty()) {
         for (auto it = begin(widget->children); it != end(widget->children); ++it) {
             drawWidget(*it);
         }

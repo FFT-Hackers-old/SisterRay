@@ -26,33 +26,6 @@ typedef struct {
 } drawScrollerParams;
 #pragma pack(pop)
 
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8 partyIndex;
-    float priority;
-} drawPortraitParams;
-
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8 arrowCode;
-    color arrowColor;
-    float arrowPriority;
-} drawArrowParams;
-
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8* materiaSlotData;
-} drawSlotsParams;
-
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8 partyIndex;
-    float priority;
-} drawHPBarParams;
 
 typedef struct {
     Widget widget;
@@ -68,8 +41,17 @@ typedef struct {
 
 void drawScrollerWidget(ScrollerWidget* scrollerWidget);
 const WidgetClass kScrollerWidgetClass = { (SRWIDGETDRAWPROC)drawScrollerWidget };
+const WidgetClass* ScrollerWidgetKlass();
 ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name);
 bool isScrollerWidget(Widget* widget);
+
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 partyIndex;
+    float priority;
+} drawPortraitParams;
 
 typedef struct {
     Widget widget;
@@ -79,9 +61,18 @@ typedef struct {
 
 void drawPortraitWidget(PortraitWidget* portraitWidget);
 const WidgetClass kPortraitWidgetClass = { (SRWIDGETDRAWPROC)drawPortraitWidget };
+const WidgetClass* PortraitWidgetKlass();
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name);
 bool isPortraitWidget(Widget* widget);
 void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex);
+
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 partyIndex;
+    float priority;
+} drawHPBarParams;
 
 typedef struct {
     Widget widget;
@@ -91,9 +82,19 @@ typedef struct {
 
 void drawHPBarWidget(HPBarWidget* hpBarWidget);
 const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
+const WidgetClass* HPBarWidgetKlass();
 HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name);
 bool isHPBarWidget(Widget* widget);
 void updateHPBarPartyIndex(Widget* widget, u8 portraitIndex);
+
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 arrowCode;
+    color arrowColor;
+    float arrowPriority;
+} drawArrowParams;
 
 typedef struct {
     Widget widget;
@@ -104,8 +105,16 @@ typedef struct {
 
 void drawArrowWidget(ArrowWidget* arrowWidget);
 const WidgetClass kArrowWidgetClass = { (SRWIDGETDRAWPROC)drawArrowWidget };
+const WidgetClass* ArrowWidgetKlass();
 ArrowWidget* createArrowWidget(drawArrowParams params, std::string name);
 bool isArrowWidget(Widget* widget);
+
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8* materiaSlotData;
+} drawSlotsParams;
 
 typedef struct {
     Widget widget;
@@ -114,6 +123,7 @@ typedef struct {
 
 void drawSlotsWidget(SlotsWidget* slotsWidget);
 const WidgetClass kSlotsWidgetClass = { (SRWIDGETDRAWPROC)drawSlotsWidget };
+const WidgetClass* SlotsWidgetKlass();
 SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name);
 bool isSlotsWidget(Widget* widget);
 void updateMateriaSlots(Widget* widget, u8* materiaSlotsData);

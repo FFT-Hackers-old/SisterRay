@@ -2,11 +2,10 @@
 #include "../../impl.h"
 #include "../../party/party_utils.h"
 
-//-----------------------------------------------------Begin Widget Draw Callbacks---------------------------------------------------------//
 using namespace EquipWidgetNames;
 
-void handleChangeCharacter(const EquipDrawEvent* params) {
-    auto menuWidget = params->equipMenuWidget;
+void handleChangeCharacter(const EquipDrawEvent* event) {
+    auto menuWidget = event->menu->menuWidget;
     u16 kernelObjectID;
     char* fetchedName;
 
@@ -24,9 +23,8 @@ void handleChangeCharacter(const EquipDrawEvent* params) {
     }
 }
 
-void handleUpdateDescription(const EquipDrawEvent* params) {
-    auto menuWidget = params->equipMenuWidget;
-    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+void handleUpdateDescription(const EquipDrawEvent* event) {
+    auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u16 kernelObjectID;
     char * fetchedDescription;
@@ -34,20 +32,22 @@ void handleUpdateDescription(const EquipDrawEvent* params) {
     auto gearDescWidget = getChild(menuWidget, GEAR_DESC_WIDGET_NAME);
     auto descrptionWidget = getChild(gearDescWidget, GEAR_DESCRIPTION);
 
-    if (*EQUIP_MENU_STATE == 1) { // display the descritpion of the current item based on menu state
-        kernelObjectID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+
+    auto slotChoice = getStateCursor(event->menu, 0);
+    if (event->menuState == 1) { // display the descritpion of the current item based on menu state
+        auto gearChoice = getStateCursor(event->menu, 1);
+        kernelObjectID = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
     }
     else {
-        kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
+        kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice->relativeRowIndex + 1);
     }
 
-    fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, cursorContextArray[0].relativeRowIndex + 1); //relative row here is offset by 1 from item_type
+    fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, slotChoice->relativeRowIndex + 1); //relative row here is offset by 1 from item_type
     updateText(descrptionWidget, fetchedDescription);
 }
 
-void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
-    auto menuWidget = params->equipMenuWidget;
-    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+void handleUpdateGearSlotsWidget(const EquipDrawEvent* event) {
+    auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u16 kernelObjectID;
     u8* materiaSlots;
@@ -57,15 +57,17 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
     auto materiaSlotsWidget = getChild(gearSlotsWidget, GEAR_SLOTS);
     auto growthWidget = getChild(gearSlotsWidget, GEAR_GROWTH);
 
-    if (*EQUIP_MENU_STATE == 1) {
-        kernelObjectID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+
+    auto slotChoice = getStateCursor(event->menu, 0);
+    if (event->menuState == 1) {
+        auto gearChoice = getStateCursor(event->menu, 1);
+        kernelObjectID = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
     }
     else {
-        kernelObjectID = getEquippedGear(characterRecordArrayIndex, cursorContextArray[0].relativeRowIndex + 1);
+        kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice->relativeRowIndex + 1);
     }
 
-
-    switch (cursorContextArray[0].relativeRowIndex) {
+    switch (slotChoice->relativeRowIndex) {
         case 0: {
             materiaSlots = &(gContext.weapons.get_resource_ref(kernelObjectID).materia_slots[0]);
             materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
@@ -82,7 +84,6 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
         }
     }
 
-
     updateMateriaSlots(materiaSlotsWidget, materiaSlots);
 
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
@@ -95,34 +96,41 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* params) {
     updateText(growthWidget, menuText);
 }
 
-void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
-    auto menuWidget = params->equipMenuWidget;
-    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+void handleUpdateStatMenuWidget(const EquipDrawEvent* event) {
+    auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
-    u8 statsToDisplay[8];
+    u8 statsToDisplay[7];
     auto statDiffWidget = getChild(menuWidget, STAT_DIFF_WIDGET_NAME);
 
-    if (*EQUIP_MENU_STATE == 1) {
-        switch (cursorContextArray[0].relativeRowIndex) {
+    if (event->menuState == 1) {
+        auto slotChoice = getStateCursor(event->menu, 0);
+        auto gearChoice = getStateCursor(event->menu, 1);
+        switch (slotChoice->relativeRowIndex) {
             case 0: {
-                auto toEquipWeaponID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+                auto toEquipWeaponID = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
                 statsToDisplay[0] = gContext.weapons.get_resource(toEquipWeaponID).weapon_strength;
                 statsToDisplay[1] = gContext.weapons.get_resource(toEquipWeaponID).weapon_hit_rate;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
+                std::vector<std::string> currentGearNames = { STAT_VALUE_1, STAT_VALUE_2 };
                 for (u32 row = 0; row < listNames.size(); row++) {
+                    //auto currentStat = getNumber(getChild(statDiffWidget, currentGearNames[row]));
+                    //updateNumberColor(getChild(statDiffWidget, listNames[row]), getStatDisplayColor(currentStat, statsToDisplay[row]));
                     updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
                 }
                 break;
             }
             case 1: {
-                auto toEquipArmorID = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
+                auto toEquipArmorID = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
                 statsToDisplay[2] = gContext.armors.get_resource(toEquipArmorID).defense;
                 statsToDisplay[3] = gContext.armors.get_resource(toEquipArmorID).evade;
                 statsToDisplay[4] = 0;
                 statsToDisplay[5] = gContext.armors.get_resource(toEquipArmorID).magic_defense;
                 statsToDisplay[6] = gContext.armors.get_resource(toEquipArmorID).magic_evade;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
+                std::vector<std::string> currentGearNames = { STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
                 for (u32 row = 0; row < listNames.size(); row++) {
+                    //auto currentStat = getNumber(getChild(statDiffWidget, currentGearNames[row]));
+                    //updateNumberColor(getChild(statDiffWidget, listNames[row]), getStatDisplayColor(currentStat, statsToDisplay[row]));
                     updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row + 2]);
                 }
                 break;
@@ -133,7 +141,7 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
         }
         return;
     }
-       
+
     u16 equippedArmorID = (CHARACTER_RECORD_ARRAY)[characterRecordArrayIndex].equipped_armor;
     u16 equippedWeaponID = (CHARACTER_RECORD_ARRAY)[characterRecordArrayIndex].equipped_weapon;
 
@@ -152,4 +160,31 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* params) {
     }
 
 }
-//--------------------------------------------------End Widget Draw Callbacks---------------------------------------------------------//
+
+void enableListWidget(const EquipDrawEvent* event) {
+    auto widget = getChild(getChild(event->menu->menuWidget, GEAR_LIST_WIDGET_NAME), EQUIP_LIST);
+    switch (event->menuState) {
+        case 0:
+            disableWidget(widget);
+            break;
+        case 1:
+            enableWidget(widget);
+            break;
+        default: {
+        }
+    }
+}
+
+color getStatDisplayColor(u8 equippedStat, u8 toEquipStat) {
+    if (toEquipStat == equippedStat) {
+        return COLOR_WHITE;
+    }
+    if (toEquipStat > equippedStat) {
+        return COLOR_GREEN;
+    }
+    if (toEquipStat < equippedStat) {
+        return COLOR_RED;
+    }
+    return COLOR_WHITE;
+}
+

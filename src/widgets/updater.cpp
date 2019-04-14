@@ -2,7 +2,7 @@
 #include "../impl.h"
 
 void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
-    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    CursorContext* cursorContextArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     if (self->collectionType != &kGridWidgetClass)
         return;
 

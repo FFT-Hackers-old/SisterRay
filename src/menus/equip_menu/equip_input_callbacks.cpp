@@ -1,11 +1,10 @@
 #include "equip_input_callbacks.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
-//-----------------------------------------------------Input Handler Callbacks-------------------------------------------------------------//
 
-/*Handlers for "OK" inputs, one per menu State*/
 void equipGearHandler(const EquipInputEvent* event) {
-    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
+    auto slotChoice = getStateCursor(event->menu, 0);
+    auto gearChoice = getStateCursor(event->menu, 1);
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     auto characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u8 equippedGearItemType;
@@ -14,10 +13,9 @@ void equipGearHandler(const EquipInputEvent* event) {
         return;
 
     playMenuSound(447);
-    *EQUIP_MENU_STATE = 0;
-    auto menuWidget = event->equipMenuWidget;
-    u16 equippedGearRelativeIndex = gContext.gearViewData.get_resource(cursorContextArray[1].baseRowIndex + cursorContextArray[1].relativeRowIndex).relative_item_id;
-    switch (cursorContextArray[0].relativeRowIndex) { //
+    setMenuState(event->menu, 0);
+    u16 equippedGearRelativeIndex = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
+    switch (slotChoice->relativeRowIndex) { //
         case 0: { //equip WEAPON
             equippedGearItemType = 1;
             handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
@@ -43,28 +41,23 @@ void equipGearHandler(const EquipInputEvent* event) {
 }
 
 void selectGearHandler(const EquipInputEvent* event) {
-    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
-    characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
-    u32 equipMenuState = *EQUIP_MENU_STATE;
+    auto slotChoice = getStateCursor(event->menu, 0);
     i32 cursorViewBound = 0;
     u16 equippableGearCount = 0;
 
     if (event->menuState != 0)
         return;
 
-    auto menuWidget = event->equipMenuWidget;
-
-    equippableGearCount = setupGearMenu(cursorContextArray[0].relativeRowIndex + 1);
+    equippableGearCount = setupGearMenu(slotChoice->relativeRowIndex + 1);
     if (equippableGearCount && !(*byte_DC0B4B & 1)) {
         playMenuSound(1);
-        *EQUIP_MENU_STATE = 1;
+        setMenuState(event->menu, 1);
         if (equippableGearCount <= 8) //Sets the "single view" size
             cursorViewBound = equippableGearCount;
         else
             cursorViewBound = 8;
-        setContextCursorData((cursorContext*)(&cursorContextArray[1]), 0, 0, 1, cursorViewBound, 0, 0, 1, equippableGearCount, 0, 0, 0, 0, 0, 1);
-        // add the list widget (this widget updates it's own elements based on a cursorContext*)
-        // 
+
+        setContextCursorData(getStateCursor(event->menu, 1), 0, 0, 1, cursorViewBound, 0, 0, 1, equippableGearCount, 0, 0, 0, 0, 0, 1);
     }
     else {
         playMenuSound(3);
@@ -74,19 +67,12 @@ void selectGearHandler(const EquipInputEvent* event) {
 
 /*Handlers for "Cancel" inputs, one per menu State*/
 void exitEquipViewListener(const EquipInputEvent* event) {
-
-    auto menuWidget = event->equipMenuWidget;
-    
-    *EQUIP_MENU_STATE = 0;
-    //Remove Equip Menu Widgets for showing the List of Items
-    //Reset stat diffs, descriptions, etc to currently equipped values
+    setMenuState(event->menu, 0);
 }
 
 void exitMenuListener(const EquipInputEvent* event) {
-    if (*EQUIP_MENU_STATE != 0)
+    if (event->menuState != 0)
         return;
-
-    auto menuWidget = event->equipMenuWidget;
 
     if (*DID_MATERIA_GEAR_CHANGE && (*word_DD1BC0 || *dword_DC1290)) {
         playMenuSound(1);
@@ -103,11 +89,9 @@ void exitMenuListener(const EquipInputEvent* event) {
 
 /*Handlers for L1/R1 "switching" inputs, for states where they function*/
 void changeCharLeft(const EquipInputEvent* event) {
-    if (*EQUIP_MENU_STATE != 0)
+    if (event->menuState != 0)
         return;
 
-    auto menuWidget = event->equipMenuWidget;
- 
     do {
         *EQUIP_MENU_PARTY_INDEX = (((i32)(*EQUIP_MENU_PARTY_INDEX) - 1) < 0) ? 2 : ((*EQUIP_MENU_PARTY_INDEX) - 1);
     } while ((CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX] == 0xFF);
@@ -116,10 +100,8 @@ void changeCharLeft(const EquipInputEvent* event) {
 }
 
 void changeCharRight(const EquipInputEvent* event) {
-    if (*EQUIP_MENU_STATE != 0)
+    if (event->menuState != 0)
         return;
-
-    auto menuWidget = event->equipMenuWidget;
 
     do {
         *EQUIP_MENU_PARTY_INDEX = (((*EQUIP_MENU_PARTY_INDEX) + 1) > 2) ? 0 : ((*EQUIP_MENU_PARTY_INDEX) + 1);
@@ -140,14 +122,14 @@ void changeToMateriaMenu(const EquipInputEvent* event) {
 void handleUnequipAcc(const EquipInputEvent* event) {
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     auto characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
-    if (!(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2){
+    if (!(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2) {
         playMenuSound(4);
         if (characterRecordArray[characterRecordArrayIndex].equipped_accessory != 0xFF) {
             auto removedGearRelativeIndex = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
             auto removedGearAbsoluteIndex = gContext.itemTypeData.get_absolute_id(3, removedGearRelativeIndex);
             gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteIndex, 1); //can only unequip
         }
-        
+
         characterRecordArray[characterRecordArrayIndex].equipped_accessory = 0xFF;
         recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
         recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
@@ -155,40 +137,32 @@ void handleUnequipAcc(const EquipInputEvent* event) {
     }
 }
 
-
-
-
-//-----------------------------------------------------End Input Handler Callbacks-------------------------------------------------------------//
-
-
-//-----------------------------------------------------End Widget Mutating Callbacks-----------------------------------------------------------//
-
 void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex) {
     u8 removedGearRelativeID;
     u16 removedGearAbsoluteID;
     u16 equippedGearAbsoluteID;
 
     switch (gearType) {
-    case 1: {
-        removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_weapon;
-        removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-        equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-        characterRecordArray[characterRecordArrayIndex].equipped_weapon = equippedGearRelativeIndex;
-        handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
-    }
-    case 2: {
-        removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_armor;
-        removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-        equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-        characterRecordArray[characterRecordArrayIndex].equipped_armor = equippedGearRelativeIndex;
-        handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
-    }
-    case 3: {
-        removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
-        removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-        equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-        characterRecordArray[characterRecordArrayIndex].equipped_accessory = equippedGearRelativeIndex;
-    }
+        case 1: {
+            removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_weapon;
+            removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
+            equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
+            characterRecordArray[characterRecordArrayIndex].equipped_weapon = equippedGearRelativeIndex;
+            handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
+        }
+        case 2: {
+            removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_armor;
+            removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
+            equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
+            characterRecordArray[characterRecordArrayIndex].equipped_armor = equippedGearRelativeIndex;
+            handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
+        }
+        case 3: {
+            removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
+            removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
+            equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
+            characterRecordArray[characterRecordArrayIndex].equipped_accessory = equippedGearRelativeIndex;
+        }
     }
 
     *DID_MATERIA_GEAR_CHANGE = 1;
@@ -206,21 +180,21 @@ void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u1
 
     for (i32 materiaSlotIndex = 0; materiaSlotIndex < 8; ++materiaSlotIndex) {
         switch (gearType) {
-        case 0: {
-            newWeaponData = gContext.weapons.get_resource(gearRelativeIndex);
-            materiaSlots = &(newWeaponData.materia_slots[0]);
-            equippedMateriaData = (u32*)&(activeCharacterRecord.weapon_materia_slots);
-            shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.weapon_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
-            break;
-        }
-        case 1: {
-            newArmorData = gContext.armors.get_resource(gearRelativeIndex);
-            materiaSlots = &(newArmorData.materia_slots[0]);
-            equippedMateriaData = (u32*)&(activeCharacterRecord.armor_materia_slots);
-            shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.armor_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
-            break;
-        }
-        default: {}
+            case 0: {
+                newWeaponData = gContext.weapons.get_resource(gearRelativeIndex);
+                materiaSlots = &(newWeaponData.materia_slots[0]);
+                equippedMateriaData = (u32*)&(activeCharacterRecord.weapon_materia_slots);
+                shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.weapon_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
+                break;
+            }
+            case 1: {
+                newArmorData = gContext.armors.get_resource(gearRelativeIndex);
+                materiaSlots = &(newArmorData.materia_slots[0]);
+                equippedMateriaData = (u32*)&(activeCharacterRecord.armor_materia_slots);
+                shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.armor_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
+                break;
+            }
+            default: {}
         }
 
         if (shouldRemove) {

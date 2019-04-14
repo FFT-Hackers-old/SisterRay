@@ -337,6 +337,6 @@ typedef struct {
     u32 twelth_dword;
     u32 thirteenth_dword;
     u32 fourteenh_dword;
-} cursorContext;
+} CursorContext;
 #pragma pack(pop)
 #endif

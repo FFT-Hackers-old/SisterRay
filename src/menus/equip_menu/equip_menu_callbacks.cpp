@@ -1,14 +1,16 @@
 
 #include "equip_menu_callbacks.h"
+#include "../menu.h"
 #include "../../impl.h"
 
 using namespace EquipWidgetNames;
 
 
 void initializeEquipMenu() {
-    cursorContext* cursorContextArray = (cursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
-    Menu equipMenu = Menu(cursorContextArray, 2, INIT_EQUIP_MENU);
-    //run the initializing callbacks to create the default menu
+    CursorContext gearTypeSelection = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0};
+    CursorContext gearSelection = { 0, 0, 1, 8, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };
+    CursorContext cursorContextArray[2] = {gearTypeSelection, gearSelection};
+    auto equipMenu = createMenu(INIT_EQUIP_MENU, 2, &cursorContextArray[0]);
     gContext.menuWidgets.add_element("EQUIP_MENU", equipMenu);
     gContext.menuWidgets.initializeMenu("EQUIP_MENU", EQUIP_MENU_NAME);
 }
@@ -24,6 +26,7 @@ void registerEquipMenuListeners() {
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateDescription);
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateGearSlotsWidget);
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateStatMenuWidget);
+    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&enableListWidget);
 
     gContext.eventBus.addListener(EQUIP_MENU_INPUT_OK, (SrEventCallback)&equipGearHandler);
     gContext.eventBus.addListener(EQUIP_MENU_INPUT_OK, (SrEventCallback)&selectGearHandler);

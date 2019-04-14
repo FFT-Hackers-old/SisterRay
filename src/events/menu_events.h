@@ -6,12 +6,13 @@
 #include "../menus/menu.h"
 
 typedef struct {
-    Widget* equipMenuWidget;
+    Menu* menu;
+    u32 menuState;
 } EquipDrawEvent;
 
 
 typedef struct {
-    Widget* equipMenuWidget;
+    Menu* menu;
     u32 menuState;
 } EquipInputEvent;
 

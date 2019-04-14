@@ -4,7 +4,7 @@
 
 // Refactor this by implementing the structure in question so the code is not ugly
 SISTERRAY_API u32* initializeBattleItemMenuCursor() {
-    cursorContext* cursorContextPtr = (cursorContext*)(dword_DC20D8 + (448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)));
+    CursorContext* cursorContextPtr = (CursorContext*)(dword_DC20D8 + (448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)));
     srLogWrite("ptr to cursor row max: %p", &cursorContextPtr[0]);
     if (!(*REMEMBER_CURSOR_POSITION)) 
     {
@@ -31,7 +31,7 @@ SISTERRAY_API u32* initializeBattleItemMenuCursor() {
 
 SISTERRAY_API i32 renderBattleItemView() {
     char *fetchedName;
-    cursorContext* cursorContextArray;
+    CursorContext* cursorContextArray;
     u16 numberOfVisibleItems;
     u16 baseCursorPosition;
     u16 itemID;
@@ -40,7 +40,7 @@ SISTERRAY_API i32 renderBattleItemView() {
     u8 textColor;
     u16 renderContextStruct[7];
 
-    cursorContextArray = (cursorContext*)(dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)); //In battle each actor has their own array of menu context structures
+    cursorContextArray = (CursorContext*)(dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)); //In battle each actor has their own array of menu context structures
     if (gContext.battle_inventory->slots_in_use > 3)
     {
         renderContextStruct[0] = (u16)3;           // items_visible

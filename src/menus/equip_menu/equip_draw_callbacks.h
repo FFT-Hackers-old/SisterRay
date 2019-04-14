@@ -13,4 +13,5 @@ void handleUpdateDescription(const EquipDrawEvent* event);
 void handleUpdateGearSlotsWidget(const EquipDrawEvent* event);
 void handleUpdateStatMenuWidget(const EquipDrawEvent* event);
 void enableListWidget(const EquipDrawEvent* event);
+color getStatDisplayColor(u8 equippedStat, u8 toEquipStat);
 #endif

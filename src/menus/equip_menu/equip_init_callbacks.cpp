@@ -38,6 +38,10 @@ void initCharDataWidget(const EquipInitEvent* event) {
     portraitWidget = createPortraitWidget(portraitParams, PORTRAIT_WIDGET_NAME);
     addChildWidget(currentEquipWidget, (Widget*)portraitWidget, PORTRAIT_WIDGET_NAME);
 
+    drawHPBarParams hpBarParams = { 110, 17, 0, 0.2f };
+    auto HPBarWidget = createHPBarWidget(hpBarParams, HPBAR_WIDGET_NAME);
+    addChildWidget(currentEquipWidget, (Widget*)HPBarWidget, HPBAR_WIDGET_NAME);
+
     std::vector<std::string> gearNames = { GEAR_SLOT_1_NAME, GEAR_SLOT_2_NAME, GEAR_SLOT_3_NAME };
     std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
     for (int row = 0; row < gearNames.size(); row++) {
@@ -219,7 +223,7 @@ void initGearListWidget(const EquipInitEvent* event) {
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
     gridParams = { gearChoice, &gearViewNameUpdater, 427, 193, 36, 0 };
-    auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextClass());
+    auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextWidgetKlass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 
     addChildWidget(mainWidget, gearListWidget, GEAR_LIST_WIDGET_NAME);

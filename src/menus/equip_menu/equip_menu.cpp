@@ -64,19 +64,6 @@ void displayMenuCursors(CursorContext* cursorContextArray, u16 menuState, u32 st
     }
 }
 
-color getStatDisplayColor(u8 equippedStat, u8 toEquipStat) {
-    if (toEquipStat == equippedStat) {
-        return COLOR_WHITE;
-    }
-    if (toEquipStat > equippedStat) {
-        return COLOR_GREEN;
-    }
-    if (toEquipStat < equippedStat) {
-        return COLOR_RED;
-    }
-    return COLOR_WHITE;
-}
-
 void handleEquipMenuInput(i32 updateStateMask, Menu* menuObject) {
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     auto equipMenuState = menuObject->currentState;

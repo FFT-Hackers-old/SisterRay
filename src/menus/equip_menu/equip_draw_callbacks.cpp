@@ -111,7 +111,10 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* event) {
                 statsToDisplay[0] = gContext.weapons.get_resource(toEquipWeaponID).weapon_strength;
                 statsToDisplay[1] = gContext.weapons.get_resource(toEquipWeaponID).weapon_hit_rate;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
+                std::vector<std::string> currentGearNames = { STAT_VALUE_1, STAT_VALUE_2 };
                 for (u32 row = 0; row < listNames.size(); row++) {
+                    //auto currentStat = getNumber(getChild(statDiffWidget, currentGearNames[row]));
+                    //updateNumberColor(getChild(statDiffWidget, listNames[row]), getStatDisplayColor(currentStat, statsToDisplay[row]));
                     updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
                 }
                 break;
@@ -124,7 +127,10 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* event) {
                 statsToDisplay[5] = gContext.armors.get_resource(toEquipArmorID).magic_defense;
                 statsToDisplay[6] = gContext.armors.get_resource(toEquipArmorID).magic_evade;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
+                std::vector<std::string> currentGearNames = { STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
                 for (u32 row = 0; row < listNames.size(); row++) {
+                    //auto currentStat = getNumber(getChild(statDiffWidget, currentGearNames[row]));
+                    //updateNumberColor(getChild(statDiffWidget, listNames[row]), getStatDisplayColor(currentStat, statsToDisplay[row]));
                     updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row + 2]);
                 }
                 break;
@@ -167,5 +173,18 @@ void enableListWidget(const EquipDrawEvent* event) {
         default: {
         }
     }
+}
+
+color getStatDisplayColor(u8 equippedStat, u8 toEquipStat) {
+    if (toEquipStat == equippedStat) {
+        return COLOR_WHITE;
+    }
+    if (toEquipStat > equippedStat) {
+        return COLOR_GREEN;
+    }
+    if (toEquipStat < equippedStat) {
+        return COLOR_RED;
+    }
+    return COLOR_WHITE;
 }
 

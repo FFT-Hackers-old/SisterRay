@@ -30,6 +30,10 @@ bool isScrollerWidget(Widget* widget) {
     return ((widget->klass == &kScrollerWidgetClass));
 }
 
+const WidgetClass* ScrollerWidgetKlass() {
+    return &kScrollerWidgetClass;
+}
+
 void drawPortraitWidget(PortraitWidget* portraitWidget) {
     displayPortrait(
         portraitWidget->widget.xCoordinate,
@@ -52,6 +56,10 @@ bool isPortraitWidget(Widget* widget) {
     return ((widget->klass == &kPortraitWidgetClass));
 }
 
+const WidgetClass* PortraitWidgetKlass() {
+    return &kPortraitWidgetClass;
+}
+
 void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
     if (isPortraitWidget(widget)) {
         auto typedPtr = (PortraitWidget*)widget;
@@ -64,7 +72,7 @@ void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
 
 
 void drawHPBarWidget(HPBarWidget* hpBarWidget) {
-    displayPortrait(
+    renderHPAndStatus(
         hpBarWidget->widget.xCoordinate,
         hpBarWidget->widget.yCoordinate,
         hpBarWidget->partyIndex,
@@ -81,6 +89,9 @@ HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name) {
     return widget;
 }
 
+const WidgetClass* HPBarWidgetKlass() {
+    return &kHPBarWidgetClass;
+}
 
 bool isHPBarWidget(Widget* widget) {
     return ((widget->klass == &kHPBarWidgetClass));
@@ -119,6 +130,9 @@ bool isArrowWidget(Widget* widget) {
     return ((widget->klass == &kArrowWidgetClass));
 }
 
+const WidgetClass* ArrowWidgetKlass() {
+    return &kArrowWidgetClass;
+}
 
 void drawSlotsWidget(SlotsWidget* slotsWidget) {
     if (slotsWidget->materiaSlotsData) {
@@ -140,6 +154,10 @@ SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
 
 bool isSlotsWidget(Widget* widget) {
     return ((widget->klass == &kSlotsWidgetClass));
+}
+
+const WidgetClass* SlotsWidgetKlass() {
+    return &kSlotsWidgetClass;
 }
 
 void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {

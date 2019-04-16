@@ -26,13 +26,11 @@ struct Widget_ {
     bool enabled;
 };
 
-typedef struct {
+struct CollectionWidget_ {
     Widget widget;
     const WidgetClass* collectionType;
     const WidgetClass * containedKlass;
-} CollectionWidget;
-
-typedef void(*SRLISTUPDATERPROC)(CollectionWidget*, Widget*, u16);
+};
 
 Widget* createWidget(std::string name, size_t size = sizeof(Widget), const WidgetClass* klass = &kBaseWidgetClass);
 CollectionWidget* createCollectionWidget(std::string name, const WidgetClass* collectionType, const WidgetClass* containedType);

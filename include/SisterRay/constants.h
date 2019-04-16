@@ -55,4 +55,9 @@
 #define CMD_ENEMY_ACTION    ((u8)0x20)
 #define CMD_POISONTICK      ((u8)0x23)
 
+#define SR_WIDGET_TEXT_TYPE   ((u16)0x00)
+#define SR_WIDGET_NUMBER_TYPE ((u16)0x01)
+#define SR_WIDGET_BOX_TYPE    ((u16)0x02)
+#define SR_WIDGET_ARROW_TYPE  ((u16)0x03)
+
 #endif

@@ -125,6 +125,20 @@ typedef void(*PFNSLOTSPARAMSPROC)(drawSlotsParams*, i32, i32, u8*);
 
 typedef struct SlotsWidget_ SlotsWidget;
 
+typedef struct CollectionWidget_ CollectionWidget;
+
+typedef void(*SRLISTUPDATERPROC)(CollectionWidget*, Widget*, u16);
+typedef struct {
+    CursorContext* cursor;
+    SRLISTUPDATERPROC updater;
+    u32 xCoordinate;
+    u32 yCoordinate;
+    u16 rowSpacing;
+    u16 columnSpacing;
+} drawGridParams;
+
+typedef struct CursorGridWidget_ CursorGridWidget;
+
 /* Mog re-exports */
 typedef void  (*PFNSRREPLACEFUNCTIONPROC)(void* dst, void* newAddr);
 typedef void* (*PFNSRREDIRECTFUNCTIONPROC)(void* dst, void* newAddr);

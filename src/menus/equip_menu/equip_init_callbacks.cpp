@@ -204,7 +204,7 @@ void initGearListWidget(const EquipInitEvent* event) {
     CursorContext* cursorContextArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     auto gearChoice = getStateCursor(event->menuObject, 1);
 
-    GridWidgetParams gridParams;
+    drawGridParams gridParams;
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
     auto menuObject = event->menuObject;

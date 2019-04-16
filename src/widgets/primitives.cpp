@@ -74,7 +74,7 @@ SISTERRAY_API char* getText(Widget* widgetToUpdate) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
         if(typedPtr->text)
             return typedPtr->text;
-        return NULL
+        return NULL;
     }
     else {
         throw std::invalid_argument("attempting to fetch TextWidget text property of an invalid Widget type");
@@ -175,7 +175,7 @@ SISTERRAY_API void updateNumberPriority(Widget* widgetToUpdate, float priority) 
 SISTERRAY_API u32 getNumber(Widget* widgetToUpdate) {
     if (isNumberWidget(widgetToUpdate)) {
         auto typedPtr = (NumberWidget*)widgetToUpdate;
-        return typedPtr->number
+        return typedPtr->number;
     }
     else {
         throw std::invalid_argument("attempting to fetch NumberWidget number property from an invalid Widget type");

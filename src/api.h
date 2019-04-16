@@ -34,7 +34,7 @@ SISTERRAY_API void srNewNumberWidget(Widget* parent, drawNumberParams params, ch
 SISTERRAY_API void updateNumber(Widget* widget, u32 number);
 SISTERRAY_API void updateNumberColor(Widget* widget, color numberColor);
 SISTERRAY_API void updateNumberPriority(Widget* widget, float priority);
-SISTERRAY_API char* getNumber(Widget* widget);
+SISTERRAY_API u32 getNumber(Widget* widget);
 SISTERRAY_API color getNumberColor(Widget* widget);
 SISTERRAY_API float getNumberPriority(Widget* widget);
 
@@ -59,6 +59,8 @@ SISTERRAY_API void updateMateriaSlots(Widget* widget, u8* materiaSlotsData);
 
 SISTERRAY_API void srNewArrowWidget(Widget* parent, drawArrowParams params, char* name);
 SISTERRAY_API void setArrowParams(drawArrowParams* params, i32 xCoordinate, i32 yCoordinate, u8 arrowCode, color arrowColor, float priority);
+
+SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, char* name, u16 srWidgetTypeID);
 
 //Menu Manipulation API
 

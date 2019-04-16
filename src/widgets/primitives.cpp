@@ -88,7 +88,7 @@ SISTERRAY_API color getTextColor(Widget* widgetToUpdate) {
     }
     else {
         srLogWrite("attempting to fetch TextWidget color property of an invalid Widget type");
-        return COLOR_WHITE
+        return COLOR_WHITE;
     }
 }
 
@@ -204,7 +204,7 @@ SISTERRAY_API float getNumberPriority(Widget* widgetToUpdate) {
     }
     else {
         srLogWrite("attempting to fetch NumberWidget priority property from an invalid Widget type");
-        return 0.0f
+        return 0.0f;
     }
 }
 
@@ -299,7 +299,7 @@ SISTERRAY_API float getBoxPriority(Widget* widgetToUpdate) {
     }
     else {
         srLogWrite("attempting to fetch the Box priority property of not a Box Widget");
-        return 0.0f
+        return 0.0f;
     }
 }
 

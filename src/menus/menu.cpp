@@ -18,6 +18,10 @@ MenuRegistry::~MenuRegistry() {
     }
 }
 
+SISTERRAY_API Menu* getMenu(char* menuName) {
+    return gContext.menuWidgets.get_element(std::string(menuName));
+}
+
 Menu* createMenu(SrEventType initEvent, i32 stateCount, CursorContext* contexts) {
     Menu* menu = (Menu*)malloc(sizeof(Menu));
     menu->stateCount = stateCount;
@@ -37,7 +41,7 @@ void destroyMenu(Menu* menu) {
     free(menu);
 }
 
-void addState(Menu* menu, CursorContext* context) {
+SISTERRAY_API void addState(Menu* menu, CursorContext* context) {
     if (menu->contextSize < menu->contextCapacity) {
         memcpy(&(menu->contexts[menu->contextSize]), context, sizeof(CursorContext));
         menu->contextSize++;
@@ -51,7 +55,7 @@ void addState(Menu* menu, CursorContext* context) {
     menu->stateCount++;
 }
 
-CursorContext* getStateCursor(Menu* menu, i32 menuState) {
+SISTERRAY_API CursorContext* getStateCursor(Menu* menu, i32 menuState) {
     if (menuState < menu->stateCount) {
         srLogWrite("returning addr of cursor for state %i", menuState);
         srLogWrite("addr of cursor %p:", &(menu->contexts[menuState]));
@@ -60,22 +64,22 @@ CursorContext* getStateCursor(Menu* menu, i32 menuState) {
     return nullptr;
 }
 
-void setStateCursor(Menu* menu, i32 menuState, CursorContext* context) {
+SISTERRAY_API void setStateCursor(Menu* menu, i32 menuState, CursorContext* context) {
     if (menuState < menu->stateCount) {
         memcpy(&(menu->contexts[menuState]), context, sizeof(CursorContext));
     }
 }
 
-i32 getMenuState(Menu* menu) {
+SISTERRAY_API i32 getMenuState(Menu* menu) {
     return menu->currentState;
 }
 
-void setMenuState(Menu* menu, i32 value) {
+SISTERRAY_API void setMenuState(Menu* menu, i32 value) {
     if (value < menu->stateCount) {
         menu->currentState = value;
     }
 }
 
-Widget* getWidget(Menu* menu) {
+SISTERRAY_API Widget* getWidget(Menu* menu) {
     return menu->menuWidget;
 }

@@ -47,7 +47,6 @@ typedef const void* (*PFNSRREGISTERFUNCTIONPROC)(const char*, const void*);
 
 enum color { COLOR_GRAY, COLOR_UNKNOWN_1, COLOR_RED, COLOR_UNKNOWN_2, COLOR_UNKNOWN_3, COLOR_TEAL, COLOR_GREEN, COLOR_WHITE };
 /*SisterRay Menu/Widget API*/
-typedef struct _Menu Menu;
 
 typedef struct Widget_ Widget;
 typedef Widget* (*PFNSRGETCHILDPROC)(Widget*, char*);
@@ -180,6 +179,15 @@ typedef struct {
 
 typedef struct CursorGridWidget_ CursorGridWidget;
 typedef void (*PFNSRNEWGRIDWIDGETPROC)(Widget*, drawGridParams, char*, u16);
+
+typedef struct _Menu Menu;
+typedef Menu* (*PFNSRGETMENUPROC)(char*);
+typedef void(*PFNSRADDSTATEPROC)(Menu*, CursorContext*);
+typedef CursorContext* (*PFNSRGETSTATECURSORPROC)(Menu*, i32);
+typedef void(*PFNSRSETSTATECURSORPROC)(Menu*, i32, CursorContext*);
+typedef i32(*PFNSRGETMENUSTATEPROC)(Menu*);
+typedef void(*PFNSRSETMENUSTATEPROC)(Menu*, i32);
+typedef Widget* (*PFNSRGETWIDGETPROC)(Menu*);
 
 /* Mog re-exports */
 typedef void  (*PFNSRREPLACEFUNCTIONPROC)(void* dst, void* newAddr);

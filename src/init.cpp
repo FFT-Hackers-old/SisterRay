@@ -24,6 +24,25 @@ static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     init_materia,
 };
 
+static void srLoadKernel2Bin(void)
+{
+    FILE* out;
+    FILE* kernel2;
+    char* buffer;
+    uint32_t bufferLen;
+
+    bufferLen = 65536;
+    buffer = new char[bufferLen];
+
+    kernel2 = fopen(srGetGamePath("data/kernel/kernel2.bin"), "rb");
+    lzssDecompress(buffer, bufferLen, kernel2);
+    fclose(kernel2);
+    out = fopen("kernel2_decomp.bin", "wb");
+    fwrite(buffer, bufferLen, 1, out);
+    fclose(out);
+    delete[] buffer;
+}
+
 static void srLoadKernelBin(void)
 {
     FILE* kernel;
@@ -57,6 +76,7 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     initGameStrings();
     enableNoCD();
     srLoadKernelBin();
+    srLoadKernel2Bin();
     initOnUseDataRegistry();
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();

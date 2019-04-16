@@ -2,39 +2,9 @@
 #include "string.h"
 #include "impl.h"
 
-char FF7EncodedString::default_string[] = "\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x00\x01\xFF";
-
-void FF7EncodedString::encode_ascii_string(char* ascii_string) {
-    int str_size = strlen(ascii_string);
-    for (int i = 0; i < str_size; i++) {
-        // offset lowercase ascii characters to FFVII encoding
-        if (ascii_string[i] >= 'a' && ascii_string[i] <= 'z') {
-            ascii_string[i] = ascii_string[i] - 0x20;
-        }
-        // offset uppercase ascii character to FFVII encoding starting at 0x21
-        else if (ascii_string[i] >= 'A' && ascii_string[i] <= 'Z') {
-            ascii_string[i] = ascii_string[i] - 0x20;
-        }
-        else if (ascii_string[i] == ' ') {
-            ascii_string[i] = 0; //spaces are encoded as zeroes by FFVII
-        }
-    }
-}
-
-char* FF7EncodedString::get_encoded_string() {
-    return encoded_string;
-}
-
-/*
- * KLUDGE: This violates the standard in at least a thousand different ways.
- * Please fix string consumption upstream so we don't have to force
- * un-const like we do here.
- * This WILL break and will either leak memory or segfault on exit,
- * and may probably do both.
- */
-char* StringRegistry::get_string(int index)
+const char* StringRegistry::get_string(int index)
 {
-    return (char*)get_resource(index).str();
+    return get_resource(index).str();
 }
 
 /*Initialize all string registries for various string resources
@@ -59,7 +29,7 @@ void initGameStrings() {
     }
 }
 
-char* getNameFromRelativeID(u16 relativeID, u8 itemType) {
+const char* getNameFromRelativeID(u16 relativeID, u8 itemType) {
     switch (itemType) {
     case 0:
         return gContext.game_strings.item_names.get_string(relativeID);
@@ -78,7 +48,7 @@ char* getNameFromRelativeID(u16 relativeID, u8 itemType) {
     }
 }
 
-char* getDescriptionFromRelativeID(u16 relativeID, u8 itemType) {
+const char* getDescriptionFromRelativeID(u16 relativeID, u8 itemType) {
     switch (itemType) {
     case 0:
         return gContext.game_strings.item_descriptions.get_string(relativeID);
@@ -97,13 +67,13 @@ char* getDescriptionFromRelativeID(u16 relativeID, u8 itemType) {
     }
 }
 
-char* getNameFromItemID(u16 item_id) {
+const char* getNameFromItemID(u16 item_id) {
     auto itemType = gContext.itemTypeData.get_resource(item_id).item_type;
     auto relativeID = gContext.itemTypeData.get_resource(item_id).type_relative_id;
     return getNameFromRelativeID(relativeID, itemType);
 }
 
-char* getDescriptionFromID(u16 item_id) {
+const char* getDescriptionFromID(u16 item_id) {
     auto itemType = gContext.itemTypeData.get_resource(item_id).item_type;
     auto relativeID = gContext.itemTypeData.get_resource(item_id).type_relative_id;
     return getDescriptionFromRelativeID(relativeID, itemType);

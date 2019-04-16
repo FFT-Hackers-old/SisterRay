@@ -9,7 +9,7 @@ void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
     auto typedPtr = (CursorGridWidget*)self;
     auto gearType = gContext.gearViewData.getItemType();
     auto relativeItemID = gContext.gearViewData.get_resource(flatIndex).relative_item_id;
-    char* name = getNameFromRelativeID(relativeItemID, gearType);
+    const char* name = getNameFromRelativeID(relativeItemID, gearType);
     updateText(widget, name);
 
 }

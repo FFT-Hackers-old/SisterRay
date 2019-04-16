@@ -7,7 +7,7 @@ using namespace EquipWidgetNames;
 void handleChangeCharacter(const EquipDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u16 kernelObjectID;
-    char* fetchedName;
+    const char* fetchedName;
 
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
 
@@ -27,7 +27,7 @@ void handleUpdateDescription(const EquipDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u16 kernelObjectID;
-    char * fetchedDescription;
+    const char * fetchedDescription;
 
     auto gearDescWidget = getChild(menuWidget, GEAR_DESC_WIDGET_NAME);
     auto descrptionWidget = getChild(gearDescWidget, GEAR_DESCRIPTION);
@@ -89,7 +89,7 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* event) {
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
         materiaGrowth = 4;
 
-    char * menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);
+    const char * menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);
     i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
     i32 growthTypeX = sub_6F54A2((u8*)menuText);
     moveWidget(growthWidget, 243 - growthTypeX / 2, growthTypeY);

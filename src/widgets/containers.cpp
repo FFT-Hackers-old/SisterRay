@@ -1,6 +1,29 @@
 #include "containers.h"
 #include <string>
 #include "../impl.h"
+#include "../api.h"
+
+SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, char* name, u16 srWidgetTypeID) {
+    const WidgetClass* childType = getChildTypeFromID(srWidgetTypeID);
+    auto widget = createGridWidget(params, std::string(name), childType);
+    addChildWidget(parent, (Widget*)widget, std::string(name));
+}
+
+const WidgetClass* getChildTypeFromID(u16 widgetTypeID) {
+    switch (widgetTypeID) {
+        case 0:
+            return TextWidgetKlass();
+        case 1:
+            return NumberWidgetKlass();
+        case 2:
+            return BoxWidgetKlass();
+        case 3:
+            return ArrowWidgetKlass();
+        default: {
+            throw std::invalid_argument("provided invalid widget type argument to createNewGridWidget");
+        }
+    }
+}
 
 /*Grid widgets positions are automatically updated*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
@@ -23,7 +46,7 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
 
 /*Use this method to create self-managing grid widgets from a cursor context object, with a parametrized type
   Do not use your own childTypes here, use the pre-defined widget types in sister ray*/
-CursorGridWidget* createGridWidget(GridWidgetParams params, std::string name, const WidgetClass* childType) {
+CursorGridWidget* createGridWidget(drawGridParams params, std::string name, const WidgetClass* childType) {
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType);
     widget->widget.widget.xCoordinate = params.xCoordinate;
     widget->widget.widget.yCoordinate = params.yCoordinate;

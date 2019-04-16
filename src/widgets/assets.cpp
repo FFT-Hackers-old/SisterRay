@@ -34,6 +34,20 @@ const WidgetClass* ScrollerWidgetKlass() {
     return &kScrollerWidgetClass;
 }
 
+
+SISTERRAY_API void srNewPortraitWidget(Widget* parent, drawPortraitParams params, char* name) {
+    auto strName = std::string(name);
+    auto portraitWidget = createPortraitWidget(params, strName);
+    addChildWidget(parent, (Widget*)portraitWidget, strName);
+}
+
+SISTERRAY_API void setPortraitParams(drawPortraitParams* params, i32 xCoordinate, i32 yCoordinate, u8 partyIndex, float priority) {
+    params->xCoordinate = xCoordinate;
+    params->yCoordinate = yCoordinate;
+    params->partyIndex = partyIndex;
+    params->priority = priority;
+}
+
 void drawPortraitWidget(PortraitWidget* portraitWidget) {
     displayPortrait(
         portraitWidget->widget.xCoordinate,
@@ -60,7 +74,7 @@ const WidgetClass* PortraitWidgetKlass() {
     return &kPortraitWidgetClass;
 }
 
-void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
+SISTERRAY_API void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
     if (isPortraitWidget(widget)) {
         auto typedPtr = (PortraitWidget*)widget;
         typedPtr->partyIndex = portraitIndex;
@@ -70,6 +84,17 @@ void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
     }
 }
 
+SISTERRAY_API void srNewHPBarWidget(Widget* parent, drawHPBarParams params, char* name) {
+    auto strName = std::string(name);
+    auto HPBarWidget = createHPBarWidget(params, strName);
+    addChildWidget(parent, (Widget*)HPBarWidget, strName);
+}
+SISTERRAY_API void setHPBarParams(drawHPBarParams* params, i32 xCoordinate, i32 yCoordinate, u8 partyIndex, float priority) {
+    params->xCoordinate = xCoordinate;
+    params->yCoordinate = yCoordinate;
+    params->partyIndex = partyIndex;
+    params->priority = priority;
+}
 
 void drawHPBarWidget(HPBarWidget* hpBarWidget) {
     renderHPAndStatus(
@@ -97,7 +122,7 @@ bool isHPBarWidget(Widget* widget) {
     return ((widget->klass == &kHPBarWidgetClass));
 }
 
-void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
+SISTERRAY_API void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
     if (isHPBarWidget(widget)) {
         auto typedPtr = (HPBarWidget*)widget;
         typedPtr->partyIndex = partyIndex;
@@ -105,6 +130,20 @@ void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
     else {
         //YA DONE MESSED UP
     }
+}
+
+SISTERRAY_API void srNewArrowWidget(Widget* parent, drawArrowParams params, char* name) {
+    auto strName = std::string(name);
+    auto arrowWidget = createArrowWidget(params, strName);
+    addChildWidget(parent, (Widget*)arrowWidget, strName);
+}
+
+SISTERRAY_API void setArrowParams(drawArrowParams* params, i32 xCoordinate, i32 yCoordinate, u8 arrowCode, color arrowColor, float priority) {
+    params->xCoordinate = xCoordinate;
+    params->yCoordinate = yCoordinate;
+    params->arrowCode = arrowCode;
+    params->arrowCode = arrowCode;
+    params->arrowPriority = priority;
 }
 
 void drawArrowWidget(ArrowWidget* arrowWidget) {
@@ -134,6 +173,18 @@ const WidgetClass* ArrowWidgetKlass() {
     return &kArrowWidgetClass;
 }
 
+SISTERRAY_API void srNewSlotsWidget(Widget* parent, drawSlotsParams params, char* name) {
+    auto strName = std::string(name);
+    auto slotsWidget = createSlotsWidget(params, strName);
+    addChildWidget(parent, (Widget*)slotsWidget, strName);
+}
+
+SISTERRAY_API void setSlotsParams(drawSlotsParams* params, i32 xCoordinate, i32 yCoordinate, u8* materiaSlotData) {
+    params->xCoordinate = xCoordinate;
+    params->yCoordinate = yCoordinate;
+    params->materiaSlotData = materiaSlotData;
+}
+
 void drawSlotsWidget(SlotsWidget* slotsWidget) {
     if (slotsWidget->materiaSlotsData) {
         renderMateriaSlots(
@@ -160,7 +211,7 @@ const WidgetClass* SlotsWidgetKlass() {
     return &kSlotsWidgetClass;
 }
 
-void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
+SISTERRAY_API void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
     if (isSlotsWidget(widget)) {
         auto typedPtr = (SlotsWidget*)widget;
         typedPtr->materiaSlotsData = materiaSlotsData;

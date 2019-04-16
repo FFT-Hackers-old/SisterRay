@@ -1,6 +1,5 @@
 #include "primitives.h"
 #include "../impl.h"
-#include <exception>
 
 void drawTextWidget(TextWidget* textWidget){
     gameDrawString(
@@ -45,7 +44,7 @@ SISTERRAY_API void updateText(Widget* widgetToUpdate, const char* text) {
         typedPtr->text = text;
     }
     else {
-        throw std::invalid_argument("attempting to update TextWidget text property of an invalid Widget type");
+        srLogWrite("attempting to update TextWidget text property of an invalid Widget type");
     }
 }
 
@@ -55,7 +54,7 @@ SISTERRAY_API void updateTextColor(Widget* widgetToUpdate, color textColor) {
         typedPtr->textColor = textColor;
     }
     else {
-        throw std::invalid_argument("attempting to update TextWidget color property of an invalid Widget type");
+        srLogWrite("attempting to update TextWidget color property of an invalid Widget type");
     }
 }
 
@@ -65,7 +64,7 @@ SISTERRAY_API void updateTextPriority(Widget* widgetToUpdate, float priority) {
         typedPtr->priority = priority;
     }
     else {
-        throw std::invalid_argument("attempting to update TextWidget priority property of an invalid Widget type");
+        srLogWrite("attempting to update TextWidget priority property of an invalid Widget type");
     }
 }
 
@@ -74,10 +73,11 @@ SISTERRAY_API const char* getText(Widget* widgetToUpdate) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
         if(typedPtr->text)
             return typedPtr->text;
-        return NULL;
+        return nullptr;
     }
     else {
-        throw std::invalid_argument("attempting to fetch TextWidget text property of an invalid Widget type");
+        srLogWrite("attempting to fetch TextWidget text property of an invalid Widget type");
+        return nullptr;
     }
 }
 
@@ -87,7 +87,8 @@ SISTERRAY_API color getTextColor(Widget* widgetToUpdate) {
         return typedPtr->textColor;
     }
     else {
-        throw std::invalid_argument("attempting to fetch TextWidget color property of an invalid Widget type");
+        srLogWrite("attempting to fetch TextWidget color property of an invalid Widget type");
+        return COLOR_WHITE
     }
 }
 
@@ -97,7 +98,8 @@ SISTERRAY_API float getTextPriority(Widget* widgetToUpdate) {
         return typedPtr->priority;
     }
     else {
-        throw std::invalid_argument("attempting to fetch TextWidget priority property of an invalid Widget type");
+        srLogWrite("attempting to fetch TextWidget priority property of an invalid Widget type");
+        return 0.0f;
     }
 }
 
@@ -147,7 +149,7 @@ SISTERRAY_API void updateNumber(Widget* widgetToUpdate, u32 number) {
         typedPtr->number = number;
     }
     else {
-        throw std::invalid_argument("attempting to update NumberWidget number property of an invalid Widget type");
+        srLogWrite("attempting to update NumberWidget number property of an invalid Widget type");
     }
 }
 
@@ -157,7 +159,7 @@ SISTERRAY_API void updateNumberColor(Widget* widgetToUpdate, color numberColor) 
         typedPtr->numberColor = numberColor;
     }
     else {
-        throw std::invalid_argument("attempting to update NumberWidget color property of an invalid Widget type");
+        srLogWrite("attempting to update NumberWidget color property of an invalid Widget type");
     }
 }
 
@@ -168,7 +170,7 @@ SISTERRAY_API void updateNumberPriority(Widget* widgetToUpdate, float priority) 
         typedPtr->priority = priority;
     }
     else {
-        throw std::invalid_argument("attempting to update NumberWidget priority property of an invalid Widget type");
+        srLogWrite("attempting to update NumberWidget priority property of an invalid Widget type");
     }
 }
 
@@ -178,7 +180,8 @@ SISTERRAY_API u32 getNumber(Widget* widgetToUpdate) {
         return typedPtr->number;
     }
     else {
-        throw std::invalid_argument("attempting to fetch NumberWidget number property from an invalid Widget type");
+        srLogWrite("attempting to fetch NumberWidget number property from an invalid Widget type");
+        return 0;
     }
 }
 
@@ -189,7 +192,8 @@ SISTERRAY_API color getNumberColor(Widget* widgetToUpdate) {
     }
     else {
 
-        throw std::invalid_argument("attempting to fetch NumberWidget color property from an invalid Widget type");
+        srLogWrite("attempting to fetch NumberWidget color property from an invalid Widget type");
+        return COLOR_WHITE;
     }
 }
 
@@ -199,7 +203,8 @@ SISTERRAY_API float getNumberPriority(Widget* widgetToUpdate) {
         return typedPtr->priority;
     }
     else {
-        throw std::invalid_argument("attempting to fetch NumberWidget priority property from an invalid Widget type");
+        srLogWrite("attempting to fetch NumberWidget priority property from an invalid Widget type");
+        return 0.0f
     }
 }
 
@@ -249,7 +254,7 @@ SISTERRAY_API void resizeBox(Widget* widgetToUpdate, i16 drawDistance1, i16 draw
         typedPtr->drawDistanceYb = drawdistance4;
     }
     else {
-        throw std::invalid_argument("attempting to resize a box widget which is not a Box Widget");
+        srLogWrite("attempting to resize a box widget which is not a Box Widget");
     }
 }
 
@@ -259,7 +264,7 @@ SISTERRAY_API void updateBoxPriority(Widget* widgetToUpdate, float priority) {
         typedPtr->priority = priority;
     }
     else {
-        throw std::invalid_argument("attempting update the Box priority property of not a Box Widget");
+        srLogWrite("attempting update the Box priority property of not a Box Widget");
     }
 }
 
@@ -277,22 +282,24 @@ SISTERRAY_API i16 getBoxDrawDistance(Widget* widgetToUpdate, i32 dimension) {
                 return typedPtr->drawDistanceYb;
             default:{
 
-                throw std::invalid_argument("attempting to fetch an invalid box dimension");
+                srLogWrite("attempting to fetch an invalid box dimension");
             }
         }
     }
     else {
-        throw std::invalid_argument("attempting to fetch a Box widget draw distance property of not a Box Widget");
+        srLogWrite("attempting to fetch a Box widget draw distance property of not a Box Widget");
+        return 0;
     }
 }
 
-SISTERRAY_API i16 getBoxPriority(Widget* widgetToUpdate) {
+SISTERRAY_API float getBoxPriority(Widget* widgetToUpdate) {
     if (isBoxWidget(widgetToUpdate)) {
         auto typedPtr = (BoxWidget*)widgetToUpdate;
         return typedPtr->priority;
     }
     else {
-        throw std::invalid_argument("attempting to fetch the Box priority property of not a Box Widget");
+        srLogWrite("attempting to fetch the Box priority property of not a Box Widget");
+        return 0.0f
     }
 }
 

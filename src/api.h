@@ -43,7 +43,7 @@ SISTERRAY_API void setBoxParams(drawBoxParams* params, i16 drawDistance1, i16 dr
 SISTERRAY_API void resizeBox(Widget* widget, i16 drawDistance1, i16 drawDistance2, i16 drawDistance3, i16 drawdistance4);
 SISTERRAY_API void updateBoxPriority(Widget* widget, float priority);
 SISTERRAY_API i16 getBoxDrawDistance(Widget* widget, i32 dimension);
-SISTERRAY_API i16 getBoxPriority(Widget* widget);
+SISTERRAY_API float getBoxPriority(Widget* widget);
 
 SISTERRAY_API void srNewPortraitWidget(Widget* parent, drawPortraitParams params, char* name);
 SISTERRAY_API void setPortraitParams(drawPortraitParams* params, i32 xCoordinate, i32 yCoordinate, u8 partyIndex, float priority);

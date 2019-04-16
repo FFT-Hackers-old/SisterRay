@@ -1,5 +1,6 @@
 #include "primitives.h"
 #include "../impl.h"
+#include <exception>
 
 void drawTextWidget(TextWidget* textWidget){
     gameDrawString(
@@ -38,26 +39,69 @@ const WidgetClass* TextWidgetKlass() {
     return &kTextWidgetClass;
 }
 
-void updateText(Widget* widgetToUpdate, char* text) {
+SISTERRAY_API void updateText(Widget* widgetToUpdate, char* text) {
     if (isTextWidget(widgetToUpdate)) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
         typedPtr->text = text;
     }
     else {
-        ///YA DONE MESSED UP
+        throw std::invalid_argument("attempting to update TextWidget text property of an invalid Widget type");
     }
 }
 
-void updateTextColor(Widget* widgetToUpdate, color textColor) {
+SISTERRAY_API void updateTextColor(Widget* widgetToUpdate, color textColor) {
     if (isTextWidget(widgetToUpdate)) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
         typedPtr->textColor = textColor;
     }
     else {
-        //YA DONE MESSED UP
+        throw std::invalid_argument("attempting to update TextWidget color property of an invalid Widget type");
     }
 }
 
+SISTERRAY_API void updateTextPriority(Widget* widgetToUpdate, float priority) {
+    if (isTextWidget(widgetToUpdate)) {
+        auto typedPtr = (TextWidget*)widgetToUpdate;
+        typedPtr->priority = priority;
+    }
+    else {
+        throw std::invalid_argument("attempting to update TextWidget priority property of an invalid Widget type");
+    }
+}
+
+SISTERRAY_API char* getText(Widget* widgetToUpdate) {
+    if (isTextWidget(widgetToUpdate)) {
+        auto typedPtr = (TextWidget*)widgetToUpdate;
+        if(typedPtr->text)
+            return typedPtr->text;
+        return NULL
+    }
+    else {
+        throw std::invalid_argument("attempting to fetch TextWidget text property of an invalid Widget type");
+    }
+}
+
+SISTERRAY_API color getTextColor(Widget* widgetToUpdate) {
+    if (isTextWidget(widgetToUpdate)) {
+        auto typedPtr = (TextWidget*)widgetToUpdate;
+        return typedPtr->textColor;
+    }
+    else {
+        throw std::invalid_argument("attempting to fetch TextWidget color property of an invalid Widget type");
+    }
+}
+
+SISTERRAY_API float getTextPriority(Widget* widgetToUpdate) {
+    if (isTextWidget(widgetToUpdate)) {
+        auto typedPtr = (TextWidget*)widgetToUpdate;
+        return typedPtr->priority;
+    }
+    else {
+        throw std::invalid_argument("attempting to fetch TextWidget priority property of an invalid Widget type");
+    }
+}
+
+//Begin Number Widget API Implementations
 void drawNumberWidget(NumberWidget* numberWidget) {
     gameDrawNumbers(
         numberWidget->widget.xCoordinate,
@@ -97,23 +141,65 @@ const WidgetClass* NumberWidgetKlass() {
     return &kNumberWidgetClass;
 }
 
-void updateNumber(Widget* widgetToUpdate, u32 number) {
+SISTERRAY_API void updateNumber(Widget* widgetToUpdate, u32 number) {
     if (isNumberWidget(widgetToUpdate)) {
         auto typedPtr = (NumberWidget*)widgetToUpdate;
         typedPtr->number = number;
     }
     else {
-        ///YA DONE MESSED UP
+        throw std::invalid_argument("attempting to update NumberWidget number property of an invalid Widget type");
     }
 }
 
-void updateNumberColor(Widget* widgetToUpdate, color numberColor) {
+SISTERRAY_API void updateNumberColor(Widget* widgetToUpdate, color numberColor) {
     if (isNumberWidget(widgetToUpdate)) {
         auto typedPtr = (NumberWidget*)widgetToUpdate;
         typedPtr->numberColor = numberColor;
     }
     else {
-        //YA DONE MESSED UP
+        throw std::invalid_argument("attempting to update NumberWidget color property of an invalid Widget type");
+    }
+}
+
+
+SISTERRAY_API void updateNumberPriority(Widget* widgetToUpdate, float priority) {
+    if (isNumberWidget(widgetToUpdate)) {
+        auto typedPtr = (NumberWidget*)widgetToUpdate;
+        typedPtr->priority = priority;
+    }
+    else {
+        throw std::invalid_argument("attempting to update NumberWidget priority property of an invalid Widget type");
+    }
+}
+
+SISTERRAY_API u32 getNumber(Widget* widgetToUpdate) {
+    if (isNumberWidget(widgetToUpdate)) {
+        auto typedPtr = (NumberWidget*)widgetToUpdate;
+        return typedPtr->number
+    }
+    else {
+        throw std::invalid_argument("attempting to fetch NumberWidget number property from an invalid Widget type");
+    }
+}
+
+SISTERRAY_API color getNumberColor(Widget* widgetToUpdate) {
+    if (isNumberWidget(widgetToUpdate)) {
+        auto typedPtr = (NumberWidget*)widgetToUpdate;
+        return typedPtr->numberColor;
+    }
+    else {
+
+        throw std::invalid_argument("attempting to fetch NumberWidget color property from an invalid Widget type");
+    }
+}
+
+SISTERRAY_API float getNumberPriority(Widget* widgetToUpdate) {
+    if (isNumberWidget(widgetToUpdate)) {
+        auto typedPtr = (NumberWidget*)widgetToUpdate;
+        return typedPtr->priority;
+    }
+    else {
+        throw std::invalid_argument("attempting to fetch NumberWidget priority property from an invalid Widget type");
     }
 }
 
@@ -152,6 +238,19 @@ bool isBoxWidget(Widget* widget) {
 
 const WidgetClass* BoxWidgetKlass() {
     return &kBoxWidgetClass;
+}
+
+SISTERRAY_API void resizeBox(Widget* widgetToUpdate, i16 drawDistance1, i16 drawDistance2, i16 drawDistance3, i16 drawdistance4) {
+    if (isBoxWidget(widgetToUpdate)) {
+        auto typedPtr = (BoxWidget*)widgetToUpdate;
+        typedPtr->drawDistanceXa = drawDistance1;
+        typedPtr->drawDistanceXb = drawDistance2;
+        typedPtr->drawDistanceYa = drawDistance3;
+        typedPtr->drawDistanceYb = drawdistance4;
+    }
+    else {
+        throw std::invalid_argument("attempting to resize a widget which is not a Box Widget");
+    }
 }
 
 

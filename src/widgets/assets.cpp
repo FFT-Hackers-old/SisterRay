@@ -74,7 +74,7 @@ const WidgetClass* PortraitWidgetKlass() {
     return &kPortraitWidgetClass;
 }
 
-void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
+SISTERRAY_API void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
     if (isPortraitWidget(widget)) {
         auto typedPtr = (PortraitWidget*)widget;
         typedPtr->partyIndex = portraitIndex;
@@ -122,7 +122,7 @@ bool isHPBarWidget(Widget* widget) {
     return ((widget->klass == &kHPBarWidgetClass));
 }
 
-void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
+SISTERRAY_API void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
     if (isHPBarWidget(widget)) {
         auto typedPtr = (HPBarWidget*)widget;
         typedPtr->partyIndex = partyIndex;
@@ -211,7 +211,7 @@ const WidgetClass* SlotsWidgetKlass() {
     return &kSlotsWidgetClass;
 }
 
-void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
+SISTERRAY_API void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
     if (isSlotsWidget(widget)) {
         auto typedPtr = (SlotsWidget*)widget;
         typedPtr->materiaSlotsData = materiaSlotsData;

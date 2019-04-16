@@ -56,7 +56,6 @@ const WidgetClass kPortraitWidgetClass = { (SRWIDGETDRAWPROC)drawPortraitWidget 
 const WidgetClass* PortraitWidgetKlass();
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name);
 bool isPortraitWidget(Widget* widget);
-void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex);
 
 struct HPBarWidget_ {
     Widget widget;
@@ -69,7 +68,6 @@ const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
 const WidgetClass* HPBarWidgetKlass();
 HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name);
 bool isHPBarWidget(Widget* widget);
-void updateHPBarPartyIndex(Widget* widget, u8 portraitIndex);
 
 struct ArrowWidget_ {
     Widget widget;
@@ -94,6 +92,5 @@ const WidgetClass kSlotsWidgetClass = { (SRWIDGETDRAWPROC)drawSlotsWidget };
 const WidgetClass* SlotsWidgetKlass();
 SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name);
 bool isSlotsWidget(Widget* widget);
-void updateMateriaSlots(Widget* widget, u8* materiaSlotsData);
 
 #endif

@@ -45,19 +45,11 @@ const WidgetClass* ScrollerWidgetKlass();
 ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name);
 bool isScrollerWidget(Widget* widget);
 
-
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8 partyIndex;
-    float priority;
-} drawPortraitParams;
-
-typedef struct {
+struct PortraitWidget_ {
     Widget widget;
     u8 partyIndex;
     float priority;
-} PortraitWidget;
+};
 
 void drawPortraitWidget(PortraitWidget* portraitWidget);
 const WidgetClass kPortraitWidgetClass = { (SRWIDGETDRAWPROC)drawPortraitWidget };
@@ -66,19 +58,11 @@ PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name
 bool isPortraitWidget(Widget* widget);
 void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex);
 
-
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8 partyIndex;
-    float priority;
-} drawHPBarParams;
-
-typedef struct {
+struct HPBarWidget_ {
     Widget widget;
     u8 partyIndex;
     float priority;
-} HPBarWidget;
+};
 
 void drawHPBarWidget(HPBarWidget* hpBarWidget);
 const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
@@ -87,21 +71,12 @@ HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name);
 bool isHPBarWidget(Widget* widget);
 void updateHPBarPartyIndex(Widget* widget, u8 portraitIndex);
 
-
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8 arrowCode;
-    color arrowColor;
-    float arrowPriority;
-} drawArrowParams;
-
-typedef struct {
+struct ArrowWidget_ {
     Widget widget;
     u8 code;
     color arrowColor;
     float priority;
-} ArrowWidget;
+};
 
 void drawArrowWidget(ArrowWidget* arrowWidget);
 const WidgetClass kArrowWidgetClass = { (SRWIDGETDRAWPROC)drawArrowWidget };
@@ -109,17 +84,10 @@ const WidgetClass* ArrowWidgetKlass();
 ArrowWidget* createArrowWidget(drawArrowParams params, std::string name);
 bool isArrowWidget(Widget* widget);
 
-
-typedef struct {
-    i32 xCoordinate;
-    i32 yCoordinate;
-    u8* materiaSlotData;
-} drawSlotsParams;
-
-typedef struct {
+struct SlotsWidget_ {
     Widget widget;
     u8* materiaSlotsData;
-} SlotsWidget;
+};
 
 void drawSlotsWidget(SlotsWidget* slotsWidget);
 const WidgetClass kSlotsWidgetClass = { (SRWIDGETDRAWPROC)drawSlotsWidget };

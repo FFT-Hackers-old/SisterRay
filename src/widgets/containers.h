@@ -2,7 +2,7 @@
 #define CONTAINERS_H
 
 #include "base_widget.h"
-#include "container_table.h"
+#include "allocator.h"
 
 typedef struct {
     CollectionWidget widget;

@@ -18,8 +18,16 @@ TextWidget* createTextWidget(drawTextParams params, std::string name) {
     widget->widget.yCoordinate = params.yCoordinate;
     widget->text = params.stringToDraw;
     widget->textColor = params.textColor;
-    widget->priority = params.textThickness;
+    widget->priority = params.priority;
     return widget;
+}
+
+SISTERRAY_API void setTextParams(drawTextParams* params, i32 xCoordinate, i32 yCoordinate, char* stringToDraw, color textColor, float priority) {
+    params->xCoordinate = xCoordinate;
+    params->yCoordinate = yCoordinate;
+    params->stringToDraw = stringToDraw;
+    params->textColor = textColor;
+    params->priority = priority;
 }
 
 bool isTextWidget(Widget* widget) {
@@ -72,6 +80,15 @@ NumberWidget* createNumberWidget(drawNumberParams params, std::string name) {
     return widget;
 }
 
+SISTERRAY_API void setNumberParams(drawNumberParams* params, i32 xCoord, i32 yCoord, u32 number, u8 numChars, color numColor, float priority) {
+    params->xCoordinate = xCoord;
+    params->yCoordinate = yCoord;
+    params->numberToDraw = number;
+    params->charCount = numChars;
+    params->numberColor = numColor;
+    params->numberThickness = priority;
+}
+
 bool isNumberWidget(Widget* widget) {
     return (widget->klass == &kNumberWidgetClass);
 }
@@ -118,6 +135,15 @@ BoxWidget* createBoxWidget(drawBoxParams params, std::string name) {
     widget->drawDistanceYb = params.drawDistance4;
     widget->priority = params.boxFloat;
     return widget;
+}
+
+
+SISTERRAY_API void setBoxParams(drawBoxParams* params, i16 drawDistance1, i16 drawDistance2, u16 drawDistance3, u16 drawDistance4, float priority) {
+    params->drawDistance1 = drawDistance1;
+    params->drawDistance2 = drawDistance2;
+    params->drawDistance3 = drawDistance3;
+    params->drawDistance4 = drawDistance4;
+    params->boxFloat = priority;
 }
 
 bool isBoxWidget(Widget* widget) {

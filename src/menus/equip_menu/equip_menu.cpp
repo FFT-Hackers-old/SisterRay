@@ -24,7 +24,7 @@ SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
     }
 }
 
-//This function can be registered to a particular menu state to modularize modding the menus
+/*Need a self-updating bar*/
 void displayMenuObjects(CursorContext* cursorContextArray, u32 menuState, i32 stateControlMask) {
     u16 equippableGearCount;
 
@@ -39,10 +39,6 @@ void displayMenuObjects(CursorContext* cursorContextArray, u32 menuState, i32 st
             break;
         }
     }
-
-    //HP bars and the like
-    renderHPAndStatus(110, 17, *EQUIP_MENU_PARTY_INDEX, 1045220557); //HP bar
-    displayPortrait(17, 9, *EQUIP_MENU_PARTY_INDEX, 1045220557); //Character Portrait
 }
 
 /*Create a Focus object making this configurable*/

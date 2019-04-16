@@ -46,11 +46,11 @@ void initCharDataWidget(const EquipInitEvent* event) {
     std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
     for (int row = 0; row < gearNames.size(); row++) {
         menuText = gContext.game_strings.equipMenuTexts.get_string(row);
-        textParams.set(250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f);
+        setTextParams(&textParams, 250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f);
         textWidget = createTextWidget(textParams, gearNames[row]);
         addChildWidget(currentEquipWidget, (Widget*)textWidget, gearNames[row]);
 
-        textParams.set(303, 13 + (34 * row), menuText, COLOR_WHITE, 0.2f);
+        setTextParams(&textParams, 303, 13 + (34 * row), menuText, COLOR_WHITE, 0.2f);
         textWidget = createTextWidget(textParams, equippedGearNames[row]);
         addChildWidget(currentEquipWidget, (Widget*)textWidget, equippedGearNames[row]);
     }
@@ -84,7 +84,7 @@ void initGearDescWidget(const EquipInitEvent* event) {
 
     kernelObjectID = getEquippedGear(characterID, 1);
     fetchedName = getNameFromRelativeID(kernelObjectID, 1);
-    textParams.set(4, equipMenuWindowConfig[1].drawDistance2 + 13, fetchedName, COLOR_WHITE, 0.2f);
+    setTextParams(&textParams, 4, equipMenuWindowConfig[1].drawDistance2 + 13, fetchedName, COLOR_WHITE, 0.2f);
     textWidget = createTextWidget(textParams, GEAR_DESCRIPTION);
     addChildWidget(GearDescWidget, (Widget*)textWidget, GEAR_DESCRIPTION);
 
@@ -121,7 +121,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     std::vector<std::string> equipSlotDataNames = { SLOTS_NAME, GROWTH_NAME };
     for (int i = 0; i < 2; i++) {
         menuText = gContext.game_strings.equipMenuTexts.get_string(4 + i);
-        textParams.set(27, 42 * i + equipMenuWindowConfig[2].drawDistance2 + 21, menuText, COLOR_TEAL, 0.1f);
+        setTextParams(&textParams, 27, 42 * i + equipMenuWindowConfig[2].drawDistance2 + 21, menuText, COLOR_TEAL, 0.1f);
         textWidget = createTextWidget(textParams, equipSlotDataNames[i]);
         addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, equipSlotDataNames[i]);
     }
@@ -138,7 +138,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);
     i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
     i32 growthTypeX = 35;
-    textParams.set(243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 0.2f);
+    setTextParams(&textParams, 243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 0.2f);
     textWidget = createTextWidget(textParams, GEAR_GROWTH);
     addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, GEAR_GROWTH);
 
@@ -163,13 +163,13 @@ void initStatDiffWidget(const EquipInitEvent* event) {
 
     auto statDiffWidget = createWidget(STAT_DIFF_WIDGET_NAME);
 
-    boxParams.set(
+    boxParams = {
         equipMenuWindowConfig[3].drawDistance1,
         equipMenuWindowConfig[3].drawDistance2,
         equipMenuWindowConfig[3].drawDistance3,
         equipMenuWindowConfig[3].drawDistance4,
         0.5f
-    );
+    };
     boxWidget = createBoxWidget(boxParams, STAT_DIFF_BOX);
     addChildWidget(statDiffWidget, (Widget*)boxWidget, STAT_DIFF_BOX);
 
@@ -179,7 +179,7 @@ void initStatDiffWidget(const EquipInitEvent* event) {
     std::vector<std::string> arrowNames = { ARROW_1, ARROW_2, ARROW_3, ARROW_4, ARROW_5, ARROW_6, ARROW_7 };
     for (i32 i = 0; i < 7; ++i) {
         menuText = gContext.game_strings.equipMenuTexts.get_string(2);
-        textParams.set(53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
+        setTextParams(&textParams, 53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
         textWidget = createTextWidget(textParams, statNames[i]);
         addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[i]);
 
@@ -187,11 +187,11 @@ void initStatDiffWidget(const EquipInitEvent* event) {
         arrowWidget = createArrowWidget(arrowParams, arrowNames[i]);
         addChildWidget(statDiffWidget, (Widget*)arrowWidget, arrowNames[i]);
 
-        numberParams.set(200, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);
+        setNumberParams(&numberParams, 200, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);
         numberWidget = createNumberWidget(numberParams, numberNames[i]);
         addChildWidget(statDiffWidget, (Widget*)numberWidget, numberNames[i]);
 
-        numberParams.set(270, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);
+        setNumberParams(&numberParams, 270, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);
         numberWidget = createNumberWidget(numberParams, candidateNumberNames[i]);
         addChildWidget(statDiffWidget, (Widget*)numberWidget, candidateNumberNames[i]);
     }
@@ -212,13 +212,13 @@ void initGearListWidget(const EquipInitEvent* event) {
 
     auto gearListWidget = createWidget(GEAR_LIST_WIDGET_NAME);
 
-    boxParams.set(
+    boxParams = {
         equipMenuWindowConfig[4].drawDistance1,
         equipMenuWindowConfig[4].drawDistance2,
         equipMenuWindowConfig[4].drawDistance3,
         equipMenuWindowConfig[4].drawDistance4,
         0.5f
-    );
+    };
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 

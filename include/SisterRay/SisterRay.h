@@ -43,7 +43,87 @@ typedef SrEventListener (PFNSRADDLISTENERPROC)(SrEventType eventType, SrEventCal
 
 typedef const void* (*PFNSRLOADFUNCTIONPROC)(const char*);
 typedef const void* (*PFNSRREGISTERFUNCTIONPROC)(const char*, const void*);
+
+/*SisterRay Menu/Widget API*/
 typedef struct _Menu Menu;
+typedef struct Widget_ Widget;
+enum color { COLOR_GRAY, COLOR_UNKNOWN_1, COLOR_RED, COLOR_UNKNOWN_2, COLOR_UNKNOWN_3, COLOR_TEAL, COLOR_GREEN, COLOR_WHITE };
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    char* stringToDraw;
+    color textColor;
+    float priority;
+} drawTextParams;
+typedef void(*PFNSETTEXTPARAMSPROC)(drawTextParams*, i32, i32, char*, color, float);
+
+typedef struct TextWidget_ TextWidget;
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u32 numberToDraw;
+    u8 charCount;
+    color numberColor;
+    float numberThickness;
+} drawNumberParams;
+typedef void(*PFNSETNUMBERPARAMSPROC)(drawNumberParams*, i32, i32, u32, u8, color, float);
+
+typedef struct NumberWidget_ NumberWidget;
+
+#pragma pack(push, 1)
+typedef struct {
+    i16 drawDistance1;
+    i16 drawDistance2;
+    i16 drawDistance3;
+    i16 drawDistance4;
+    float boxFloat;
+} drawBoxParams;
+#pragma pack(pop)
+typedef void(*PFNSETBOXPARAMSPROC)(drawBoxParams*, i16, i16, u16, u16, float);
+
+typedef struct BoxWidget_ BoxWidget;
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 partyIndex;
+    float priority;
+} drawPortraitParams;
+typedef void(*PFNPORTRAITPARAMSPROC)(drawPortraitParams*, i32, i32, u8, float);
+
+typedef struct PortraitWidget_ PortraitWidget;
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 partyIndex;
+    float priority;
+} drawHPBarParams;
+typedef void(*PFNHPBARPARAMSPROC)(drawHPBarParams*, i32, i32, u8, float);
+
+typedef struct HPBarWidget_ HPBarWidget;
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8 arrowCode;
+    color arrowColor;
+    float arrowPriority;
+} drawArrowParams;
+typedef void(*PFNARROWPARAMSPROC)(drawArrowParams*, i32, i32, u8, color, float);
+
+typedef struct ArrowWidget_ ArrowWidget;
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u8* materiaSlotData;
+} drawSlotsParams;
+typedef void(*PFNSLOTSPARAMSPROC)(drawSlotsParams*, i32, i32, u8*);
+
+typedef struct SlotsWidget_ SlotsWidget;
 
 /* Mog re-exports */
 typedef void  (*PFNSRREPLACEFUNCTIONPROC)(void* dst, void* newAddr);

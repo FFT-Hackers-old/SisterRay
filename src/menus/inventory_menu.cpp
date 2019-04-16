@@ -49,7 +49,7 @@ void displayActiveCursorStates(i32 updateStateMask) {
     u32 baseSortRow;
     u32 relativeSortRow;
     i32 flatKeyItemInventoryIndex;
-    char* fetchedDescription;
+    const char* fetchedDescription;
 
     u16 item_ID;
 
@@ -189,7 +189,7 @@ void displayInventoryViews(i32 updateStateMask) {
 void renderMainInventoryView(i32 mainViewContextIndex) {
     CursorContext* cursorContextArray = (CursorContext*)(INVENTORY_MENU_CURSOR_CONTEXTS);
     u32 relativeRowIndex = cursorContextArray[1].relativeRowIndex;
-    char* kernelObjectName;
+    const char* kernelObjectName;
     u16 itemID;
     u8 itemQuantity;
     i32 visibleItemInventoryIndex;

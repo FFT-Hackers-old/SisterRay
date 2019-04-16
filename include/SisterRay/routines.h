@@ -134,8 +134,8 @@ typedef i32(*pfnsub6C6AEE)(i32);
 typedef i32(*pfnsub6CA32D)(void);
 #define save_crystal_handler            ((pfnsub6CA32D)0x6CA32D)
 
-typedef i32(*pfnsub717923)(char*);
-#define display_menu_string             ((pfnsub717923)0x717923)
+typedef i32(*pfnsub717923)(const char*);
+#define displayNewBoxString             ((pfnsub717923)0x717923)
 
 typedef i32(*pfnsub6FA347)(void);
 #define sub_6FA347                      ((pfnsub6FA347)0x6FA347)

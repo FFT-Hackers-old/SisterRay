@@ -5,7 +5,7 @@
 
 struct TextWidget_ {
     Widget widget;
-    char* text;
+    const char* text;
     color textColor;
     float priority;
 };

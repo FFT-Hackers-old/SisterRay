@@ -20,12 +20,12 @@ SISTERRAY_API void disableWidget(Widget* widget);
 SISTERRAY_API i32 getWidgetX(Widget* widget);
 SISTERRAY_API i32 getWidgetY(Widget* widget);
 
-SISTERRAY_API void setTextParams(drawTextParams* params, i32 xCoord, i32 yCoord, char* text, color textColor, float priority);
+SISTERRAY_API void setTextParams(drawTextParams* params, i32 xCoord, i32 yCoord, const char* text, color textColor, float priority);
 SISTERRAY_API void srNewTextWidget(Widget* parent, drawTextParams params, char* name);
-SISTERRAY_API void updateText(Widget* widget, char* text);
+SISTERRAY_API void updateText(Widget* widget, const char* text);
 SISTERRAY_API void updateTextColor(Widget* widget, color textColor);
 SISTERRAY_API void updateTextPriority(Widget* widget, float priority);
-SISTERRAY_API char* getText(Widget* widget);
+SISTERRAY_API const char* getText(Widget* widget);
 SISTERRAY_API color getTextColor(Widget* widget);
 SISTERRAY_API float getTextPriority(Widget* widget);
 

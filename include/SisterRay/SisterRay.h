@@ -52,7 +52,7 @@ enum color { COLOR_GRAY, COLOR_UNKNOWN_1, COLOR_RED, COLOR_UNKNOWN_2, COLOR_UNKN
 typedef struct {
     i32 xCoordinate;
     i32 yCoordinate;
-    char* stringToDraw;
+    const char* stringToDraw;
     color textColor;
     float priority;
 } drawTextParams;

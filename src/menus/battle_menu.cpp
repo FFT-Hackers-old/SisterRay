@@ -30,7 +30,7 @@ SISTERRAY_API u32* initializeBattleItemMenuCursor() {
 }
 
 SISTERRAY_API i32 renderBattleItemView() {
-    char *fetchedName;
+    const char *fetchedName;
     CursorContext* cursorContextArray;
     u16 numberOfVisibleItems;
     u16 baseCursorPosition;

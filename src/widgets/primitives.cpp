@@ -23,7 +23,7 @@ TextWidget* createTextWidget(drawTextParams params, std::string name) {
     return widget;
 }
 
-SISTERRAY_API void setTextParams(drawTextParams* params, i32 xCoordinate, i32 yCoordinate, char* stringToDraw, color textColor, float priority) {
+SISTERRAY_API void setTextParams(drawTextParams* params, i32 xCoordinate, i32 yCoordinate, const char* stringToDraw, color textColor, float priority) {
     params->xCoordinate = xCoordinate;
     params->yCoordinate = yCoordinate;
     params->stringToDraw = stringToDraw;
@@ -39,7 +39,7 @@ const WidgetClass* TextWidgetKlass() {
     return &kTextWidgetClass;
 }
 
-SISTERRAY_API void updateText(Widget* widgetToUpdate, char* text) {
+SISTERRAY_API void updateText(Widget* widgetToUpdate, const char* text) {
     if (isTextWidget(widgetToUpdate)) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
         typedPtr->text = text;
@@ -69,7 +69,7 @@ SISTERRAY_API void updateTextPriority(Widget* widgetToUpdate, float priority) {
     }
 }
 
-SISTERRAY_API char* getText(Widget* widgetToUpdate) {
+SISTERRAY_API const char* getText(Widget* widgetToUpdate) {
     if (isTextWidget(widgetToUpdate)) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
         if(typedPtr->text)

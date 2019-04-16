@@ -11,7 +11,7 @@
 using namespace EquipWidgetNames;
 
 void initCharDataWidget(const EquipInitEvent* event) {
-    char * menuText;
+    const char * menuText;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
@@ -59,7 +59,7 @@ void initCharDataWidget(const EquipInitEvent* event) {
 }
 
 void initGearDescWidget(const EquipInitEvent* event) {
-    char* fetchedName;
+    const char* fetchedName;
     u16 kernelObjectID;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
 
@@ -93,7 +93,7 @@ void initGearDescWidget(const EquipInitEvent* event) {
 
 /* Initialize the Widget for the characters Materia Slots. This will be updated when Handling in Handlers*/
 void initGearMateriaSlotWidget(const EquipInitEvent* event) {
-    char * menuText;
+    const char * menuText;
     u8 materiaGrowth;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
 
@@ -148,7 +148,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
 /*Initialize the Widget That displays stats*/
 void initStatDiffWidget(const EquipInitEvent* event) {
     u16 windowTop = equipMenuWindowConfig[3].drawDistance2 + 26;
-    char* menuText;
+    const char* menuText;
 
     TextWidget* textWidget;
     drawTextParams textParams;

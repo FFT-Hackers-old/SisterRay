@@ -24,6 +24,66 @@ static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     init_materia,
 };
 
+struct Kernel2Entry {
+    StringRegistry* regitry;
+    int             count;
+};
+
+static void srLoadKernel2Bin(void)
+{
+    static const Kernel2Entry kKernel2Entries[] = {
+        { &gContext.game_strings.command_descriptions,   0x20  },
+        { &gContext.game_strings.magic_descriptions,     0x100 },
+        { &gContext.game_strings.item_descriptions,      0x80  },
+        { &gContext.game_strings.weapon_descriptions,    0x80  },
+        { &gContext.game_strings.armor_descriptions,     0x20  },
+        { &gContext.game_strings.accessory_descriptions, 0x20  },
+        { &gContext.game_strings.materia_descriptions,   0x60  },
+        { &gContext.game_strings.key_item_descriptions,  0x40  },
+        { &gContext.game_strings.command_names,          0x20  },
+        { &gContext.game_strings.magic_names,            0x100 },
+        { &gContext.game_strings.item_names,             0x80  },
+        { &gContext.game_strings.weapon_names,           0x80  },
+        { &gContext.game_strings.armor_names,            0x20  },
+        { &gContext.game_strings.accessory_names,        0x20  },
+        { &gContext.game_strings.materia_names,          0x60  },
+        { &gContext.game_strings.key_item_names,         0x40  },
+        { &gContext.game_strings.battle_texts,           0x80  },
+        { &gContext.game_strings.summon_attack_names,    0x10  },
+    };
+
+    u16 offsetTable[0x100];
+
+    FILE*   kernel2;
+    char*   buffer;
+
+    u32     segBase;
+    u32     segLen;
+    u32     segStart;
+
+    buffer = new char[0x10000];
+
+    kernel2 = fopen(srGetGamePath("data/kernel/kernel2.bin"), "rb");
+    lzssDecompress(buffer, 0x10000, kernel2);
+    fclose(kernel2);
+
+    segBase = 0;
+
+    for (const auto& entry : kKernel2Entries)
+    {
+        memcpy((char*)&segLen, buffer + segBase, 4);
+        segStart = segBase + 4;
+        memcpy((char*)&offsetTable, buffer + segStart, 2 * entry.count);
+        for (int i = 0; i < entry.count; ++i)
+        {
+            entry.regitry->add_resource(EncodedString(buffer + segStart + offsetTable[i]));
+        }
+        segBase = segStart + segLen;
+    }
+
+    delete[] buffer;
+}
+
 static void srLoadKernelBin(void)
 {
     FILE* kernel;
@@ -57,6 +117,7 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     initGameStrings();
     enableNoCD();
     srLoadKernelBin();
+    srLoadKernel2Bin();
     initOnUseDataRegistry();
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();

@@ -1,6 +1,8 @@
 #ifndef IMPL_H
 #define IMPL_H
 
+#include <windows.h>
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -36,6 +38,7 @@ extern "C" {
   Resources, in the form of either data or registered callback*/
 typedef struct {
     lua_State*                          L;
+    HWND                                console;
     FILE*                               logFile;
     SrItemRegistry                      items;
     SrWeaponRegistry                    weapons;
@@ -60,6 +63,7 @@ SISTERRAY_GLOBAL SrContext gContext;
 SISTERRAY_API void lzssDecompress(char* dst, size_t dstLen, FILE* src);
 
 SISTERRAY_API void srInitLua(void);
+SISTERRAY_API void srInitLuaConsole(void);
 
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
 SISTERRAY_API void init_materia(SrKernelStream* stream);

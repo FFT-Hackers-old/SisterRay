@@ -249,7 +249,50 @@ SISTERRAY_API void resizeBox(Widget* widgetToUpdate, i16 drawDistance1, i16 draw
         typedPtr->drawDistanceYb = drawdistance4;
     }
     else {
-        throw std::invalid_argument("attempting to resize a widget which is not a Box Widget");
+        throw std::invalid_argument("attempting to resize a box widget which is not a Box Widget");
+    }
+}
+
+SISTERRAY_API void updateBoxPriority(Widget* widgetToUpdate, float priority) {
+    if (isBoxWidget(widgetToUpdate)) {
+        auto typedPtr = (BoxWidget*)widgetToUpdate;
+        typedPtr->priority = priority;
+    }
+    else {
+        throw std::invalid_argument("attempting update the Box priority property of not a Box Widget");
+    }
+}
+
+SISTERRAY_API i16 getBoxDrawDistance(Widget* widgetToUpdate, i32 dimension) {
+    if (isBoxWidget(widgetToUpdate)) {
+        auto typedPtr = (BoxWidget*)widgetToUpdate;
+        switch (dimension) {
+            case 0:
+                return typedPtr->drawDistanceXa;
+            case 1:
+                return typedPtr->drawDistanceXb;
+            case 2:
+                return typedPtr->drawDistanceYa;
+            case 3:
+                return typedPtr->drawDistanceYb;
+            default:{
+
+                throw std::invalid_argument("attempting to fetch an invalid box dimension");
+            }
+        }
+    }
+    else {
+        throw std::invalid_argument("attempting to fetch a Box widget draw distance property of not a Box Widget");
+    }
+}
+
+SISTERRAY_API i16 getBoxPriority(Widget* widgetToUpdate) {
+    if (isBoxWidget(widgetToUpdate)) {
+        auto typedPtr = (BoxWidget*)widgetToUpdate;
+        return typedPtr->priority;
+    }
+    else {
+        throw std::invalid_argument("attempting to fetch the Box priority property of not a Box Widget");
     }
 }
 

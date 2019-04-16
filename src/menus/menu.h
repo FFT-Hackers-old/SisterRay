@@ -6,6 +6,7 @@
 #include "../named_resource_registry.h"
 #include "../widgets/widget.h"
 #include "../events/event.h"
+#include "../api.h"
 
 /*The Menu type is exposed via the public API, and therefore is defined only in terms of C types
   It is in encapsulated via opaque pointer, and should be interacted with the provided functions*/
@@ -21,11 +22,6 @@ struct _Menu {
 
 Menu* createMenu(SrEventType initEvent, i32 stateCount, CursorContext* contexts);
 void destroyMenu(Menu* menu);
-void addState(Menu* menu, CursorContext* context);
-CursorContext* getStateCursor(Menu* menu, i32 menuState);
-void setStateCursor(Menu* menu, i32 menuState, CursorContext* context);
-i32 getMenuState(Menu* menu);
-void setMenuState(Menu* menu, i32 value);
 
 class MenuRegistry : public SrNamedResourceRegistry<Menu*> {
 public:

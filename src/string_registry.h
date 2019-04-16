@@ -4,6 +4,7 @@
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "sr_registry_template.h"
+#include "EncodedString.h"
 #include <vector>
 
 class FF7EncodedString {
@@ -33,10 +34,10 @@ private:
 
 /*std::vector based string registry, single buffer will make it to hard
   to change a string, which sucks for a modding framework*/
-class StringRegistry : SrResourceRegistry<FF7EncodedString> {
+class StringRegistry : public SrResourceRegistry<EncodedString> {
 public:
     /*Default empty constructor, add support to kernel2 stream*/
-    StringRegistry(): SrResourceRegistry<FF7EncodedString>::SrResourceRegistry() {};
+    StringRegistry() {};
     char* get_string(int index);
 };
 
@@ -45,14 +46,26 @@ typedef struct {
     StringRegistry  character_specific_strings[9];
     StringRegistry  inventory_menu_texts; //Stores texts displayed by the inventory menu handler
     StringRegistry  equipMenuTexts;
+
+    /* Kernel2 stuff */
+    StringRegistry  command_descriptions;
+    StringRegistry  magic_descriptions;
     StringRegistry  item_descriptions;
-    StringRegistry  item_names;
-    StringRegistry  armor_descriptions;
-    StringRegistry  armor_names;
-    StringRegistry  accessory_descriptions;
-    StringRegistry  accessory_names;
     StringRegistry  weapon_descriptions;
+    StringRegistry  armor_descriptions;
+    StringRegistry  accessory_descriptions;
+    StringRegistry  materia_descriptions;
+    StringRegistry  key_item_descriptions;
+    StringRegistry  command_names;
+    StringRegistry  magic_names;
+    StringRegistry  item_names;
     StringRegistry  weapon_names;
+    StringRegistry  armor_names;
+    StringRegistry  accessory_names;
+    StringRegistry  materia_names;
+    StringRegistry  key_item_names;
+    StringRegistry  battle_texts;
+    StringRegistry  summon_attack_names;
 } SrGameStrings;
 
 char* getNameFromRelativeID(u16 relativeID, u8 itemType);

@@ -25,9 +25,16 @@ char* FF7EncodedString::get_encoded_string() {
     return encoded_string;
 }
 
-char* StringRegistry::get_string(int index) {
-    FF7EncodedString string = StringRegistry::get_resource(index);
-    return string.get_encoded_string();
+/*
+ * KLUDGE: This violates the standard in at least a thousand different ways.
+ * Please fix string consumption upstream so we don't have to force
+ * un-const like we do here.
+ * This WILL break and will either leak memory or segfault on exit,
+ * and may probably do both.
+ */
+char* StringRegistry::get_string(int index)
+{
+    return (char*)get_resource(index).str();
 }
 
 /*Initialize all string registries for various string resources

@@ -14,6 +14,9 @@ public:
     /*Default empty constructor, add support to kernel2 stream*/
     StringRegistry() {};
     const char* get_string(int index);
+    const char* get_unicode_string(int index);
+    void set_string(int index, const char* str);
+    void set_unicode_string(int index, const char* str);
 };
 
 /*Holds the games strings, via ptrs to buffers and index maps*/

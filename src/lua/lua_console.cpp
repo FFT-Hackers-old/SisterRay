@@ -3,7 +3,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <windows.h>
-#include "impl.h"
+#include "lua_api.h"
 
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
@@ -19,15 +19,25 @@ static std::string composeBuffer;
 
 static std::string execLua(const std::string input)
 {
+    int ret;
     std::string str;
-    std::string ret;
+    std::string out;
 
     str = "return (" + input + ")";
-    luaL_dostring(gContext.L, str.c_str());
-    ret = luaL_tolstring(gContext.L, -1, NULL);
+    ret = luaL_loadstring(gContext.L, str.c_str());
+    if (ret != LUA_OK)
+    {
+        lua_pop(gContext.L, 1);
+        ret = luaL_loadstring(gContext.L, input.c_str());
+    }
+    if (ret == LUA_OK)
+    {
+        lua_pcall(gContext.L, 0, 1, 0);
+    }
+    out = luaL_tolstring(gContext.L, -1, NULL);
     lua_pop(gContext.L, 2);
 
-    return ret;
+    return out;
 }
 
 static LRESULT CALLBACK luaConsoleWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

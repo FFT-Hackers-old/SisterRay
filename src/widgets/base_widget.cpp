@@ -20,6 +20,11 @@ CollectionWidget* createCollectionWidget(std::string name, const WidgetClass* co
     return widget;
 }
 
+
+const WidgetClass* CollectionWidgetClass() {
+    return &kCollectionWidgetClass;
+}
+
 //Recursively draw a widget and all of its sub-widgets
 void drawWidget(Widget* widget) {
     if (!widget->enabled)

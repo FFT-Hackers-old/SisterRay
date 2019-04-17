@@ -4,6 +4,11 @@
 #include "../impl.h"
 #include "../api.h"
 
+
+const WidgetClass* GridWidgetClass() {
+    return &kGridWidgetClass;
+}
+
 SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, char* name, u16 srWidgetTypeID) {
     const WidgetClass* childType = getChildTypeFromID(srWidgetTypeID);
     auto widget = createGridWidget(params, std::string(name), childType);
@@ -36,8 +41,11 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
                 auto elementX = cursorGrid->columnSpacing * columnIndex + cursorGrid->widget.widget.xCoordinate;
                 auto elementY = cursorGrid->rowSpacing * rowIndex + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
+                srLogWrite("address of function updater: %p ", cursorGrid->updater);
+                u16 startIndex = ((cursorGrid->cursor->maxColumnBound) * (cursorGrid->cursor->baseRowIndex)) + (cursorGrid->cursor->baseColumnIndex);
                 if (cursorGrid->updater) {
-                    cursorGrid->updater((CollectionWidget*)cursorGrid, child, flatIndex);
+                    srLogWrite("running update");
+                    cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex+flatIndex);
                 }
                 drawWidget(getChild((Widget*)cursorGrid, flatIndex));
             }

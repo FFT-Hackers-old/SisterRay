@@ -14,6 +14,7 @@ typedef struct {
 
 static const WidgetClass kBaseWidgetClass = { nullptr };
 static const WidgetClass kCollectionWidgetClass = { nullptr };
+const WidgetClass* CollectionWidgetClass();
 
 //Private Widget structure
 struct Widget_ {

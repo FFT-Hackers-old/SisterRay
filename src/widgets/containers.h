@@ -13,7 +13,8 @@ struct CursorGridWidget_ {
 };
 
 void drawGridWidget(CursorGridWidget* gridWidget); //draw visibleRow # of child widgets
-const WidgetClass kGridWidgetClass = { (SRWIDGETDRAWPROC)drawGridWidget };
+static const WidgetClass kGridWidgetClass = { (SRWIDGETDRAWPROC)drawGridWidget };
+const WidgetClass* GridWidgetClass();
 CursorGridWidget* createGridWidget(drawGridParams params, std::string name, const WidgetClass* childType);
 bool isGridWidget(Widget* widget);
 

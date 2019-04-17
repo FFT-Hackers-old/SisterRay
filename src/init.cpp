@@ -77,8 +77,8 @@ static void srLoadKernel2Bin(void)
         memcpy((char*)&offsetTable, buffer + segStart, 2 * entry.count);
         for (int i = 0; i < entry.count; ++i)
         {
+            srLogWrite("loading kernel2 string: %s", EncodedString(buffer + segStart + offsetTable[i]).str());
             entry.registry->add_resource(EncodedString(buffer + segStart + offsetTable[i]));
-            srLogWrite("loading kernel2 string: %s", (buffer + segStart + offsetTable[i]));
         }
         segBase = segStart + segLen;
     }

@@ -27,6 +27,7 @@ void equipGearHandler(const EquipInputEvent* event) {
             break;
         }
         case 2: { //equip Accessory
+            srLogWrite("trying to equip an accessory");
             equippedGearItemType = 3;
             handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
             break;
@@ -149,6 +150,7 @@ void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordA
             equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
             characterRecordArray[characterRecordArrayIndex].equipped_weapon = equippedGearRelativeIndex;
             handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
+            break;
         }
         case 2: {
             removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_armor;
@@ -156,12 +158,17 @@ void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordA
             equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
             characterRecordArray[characterRecordArrayIndex].equipped_armor = equippedGearRelativeIndex;
             handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
+            break;
         }
         case 3: {
+            srLogWrite("Accessory equip triggered");
             removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
             removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
             equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
             characterRecordArray[characterRecordArrayIndex].equipped_accessory = equippedGearRelativeIndex;
+            break;
+        }
+        default: {
         }
     }
 

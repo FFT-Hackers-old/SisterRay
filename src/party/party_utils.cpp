@@ -15,7 +15,7 @@ u16 getEquippedGear(u8 characterID, u8 gearType) {
         break;
     }
     case 3: {
-        kernelObjectID = characterRecordArray[characterID].equipped_weapon;
+        kernelObjectID = characterRecordArray[characterID].equipped_accessory;
         break;
     }
     default: {

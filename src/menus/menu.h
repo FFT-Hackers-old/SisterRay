@@ -3,7 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "../named_resource_registry.h"
+#include "../sr_named_registry.h"
 #include "../widgets/widget.h"
 #include "../events/event.h"
 #include "../api.h"
@@ -23,7 +23,7 @@ struct _Menu {
 Menu* createMenu(SrEventType initEvent, i32 stateCount, CursorContext* contexts);
 void destroyMenu(Menu* menu);
 
-class MenuRegistry : public SrNamedResourceRegistry<Menu*> {
+class MenuRegistry : public SrNamedResourceRegistry<Menu*, std::string> {
 public:
     ~MenuRegistry();
     void initializeMenu(std::string menuName, const std::string widgetName);

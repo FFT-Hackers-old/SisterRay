@@ -12,7 +12,80 @@ SISTERRAY_API void initFunctionRegistry(void)
     REGISTER(srLoadFunction);
     REGISTER(srRegisterFunction);
 
+    /*Register functions for accessing with game data*/
+    REGISTER(getWeapon);
+    REGISTER(setWeaponData);
+    REGISTER(addWeapon);
+    REGISTER(getArmor);
+    REGISTER(setArmorData);
+    REGISTER(addArmor);
+    REGISTER(getAccessory);
+    REGISTER(setAccessoryData);
+    REGISTER(addAccessory);
+    REGISTER(getItem);
+    REGISTER(setItemData);
+    REGISTER(addItem);
+    REGISTER(getMateria);
+    REGISTER(setMateriaData);
+    REGISTER(addMateria);
+
+    REGISTER(getMenu);
+    REGISTER(addState);
+    REGISTER(getStateCursor);
+    REGISTER(setStateCursor);
+    REGISTER(getMenuState);
+    REGISTER(setMenuState);
+    REGISTER(getWidget);
+
     REGISTER(srAddListener);
+    REGISTER(srGetChild);
+    REGISTER(moveWidget);
+    REGISTER(enableWidget);
+    REGISTER(disableWidget);
+    REGISTER(getWidgetX);
+    REGISTER(getWidgetY);
+
+    REGISTER(setTextParams);
+    REGISTER(srNewTextWidget);
+    REGISTER(updateText);
+    REGISTER(updateTextColor);
+    REGISTER(updateTextPriority);
+    REGISTER(getText);
+    REGISTER(getTextColor);
+    REGISTER(getTextPriority);
+
+    REGISTER(setNumberParams);
+    REGISTER(srNewNumberWidget);
+    REGISTER(updateNumber);
+    REGISTER(updateNumberColor);
+    REGISTER(updateNumberPriority);
+    REGISTER(getNumber);
+    REGISTER(getNumberColor);
+    REGISTER(getNumberPriority);
+
+    REGISTER(srNewBoxWidget);
+    REGISTER(setBoxParams);
+    REGISTER(resizeBox);
+    REGISTER(updateBoxPriority);
+    REGISTER(getBoxDrawDistance);
+    REGISTER(getBoxPriority);
+
+    REGISTER(srNewPortraitWidget);
+    REGISTER(setPortraitParams);
+    REGISTER(updatePortraitPartyIndex);
+
+    REGISTER(srNewHPBarWidget);
+    REGISTER(setHPBarParams);
+    REGISTER(updateHPBarPartyIndex);
+
+    REGISTER(srNewSlotsWidget);
+    REGISTER(setSlotsParams);
+    REGISTER(updateMateriaSlots);
+
+    REGISTER(srNewArrowWidget);
+    REGISTER(setArrowParams);
+
+    REGISTER(srNewGridWidget);
 
     /* Mog */
     srRegisterFunction("srRedirectFunction", &mogRedirectFunction);

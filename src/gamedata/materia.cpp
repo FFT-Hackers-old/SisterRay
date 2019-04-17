@@ -1,8 +1,20 @@
 #include <stdlib.h>
 #include <string.h>
-#include "impl.h"
+#include "../impl.h"
 
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*x))
+
+SISTERRAY_API MateriaData getMateria(u16 itemID) {
+    return gContext.materias.get_resource(itemID);
+}
+
+SISTERRAY_API void setMateriaData(MateriaData data, u16 itemID) {
+    gContext.materias.update_resource(itemID, data);
+}
+
+SISTERRAY_API void addMateria(MateriaData data, char* name) {
+    gContext.materias.add_element(std::string(name), data);
+}
 
 static const u32 kPatchApLevel[] = {
     0x005ce2fb, 0x005ce31d, 0x005ce36c, 0x005dfce4,

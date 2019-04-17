@@ -1,7 +1,20 @@
 #include <stdlib.h>
 #include <string.h>
-#include "impl.h"
+#include "../impl.h"
 #include "armor.h"
+
+
+SISTERRAY_API ArmorData getArmor(u16 itemID) {
+    return gContext.armors.get_resource(itemID);
+}
+
+SISTERRAY_API void setArmorData(ArmorData data, u16 itemID) {
+    gContext.armors.update_resource(itemID, data);
+}
+
+SISTERRAY_API void addArmor(ArmorData data, char* name) {
+    gContext.armors.add_element(std::string(name), data);
+}
 
 static const u32 kPatchStructBase[] = {
     0x005cf92b, 0x006cb977, 0x007ba088

@@ -19,11 +19,11 @@ extern "C" {
 #include <SisterRay/SisterRay.h>
 
 #include "kernel.h"
-#include "items.h"
-#include "materia.h"
-#include "weapons.h"
-#include "armor.h"
-#include "accessory.h"
+#include "gamedata/items.h"
+#include "gamedata/materia.h"
+#include "gamedata/weapons.h"
+#include "gamedata/armor.h"
+#include "gamedata/accessory.h"
 #include "inventories/inventory.h"
 #include "inventories/battle_inventory.h"
 #include "inventories/materia_inventory.h"

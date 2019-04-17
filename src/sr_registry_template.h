@@ -37,7 +37,7 @@ public:
     }
 
     T get_resource(i32 index) {
-        if ((resource_count() == 0)||(index >= (resource_count() - 1))) {
+        if ((resource_count() == 0)||(index > (resource_count() - 1))) {
             return T();
         }
         return resource_registry[index];

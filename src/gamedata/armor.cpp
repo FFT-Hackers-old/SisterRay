@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "impl.h"
+#include "../impl.h"
 #include "armor.h"
 
 static const u32 kPatchStructBase[] = {

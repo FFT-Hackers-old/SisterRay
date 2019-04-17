@@ -14,13 +14,13 @@ void initOnUseCallbackRegistry();
 void initNoTargetCallbackRegistry();
 
 /*Should refactor this into a template subclass function registry pattern*/
-class srOnUseCallbackRegistry : public SrNamedResourceRegistry<onUseCallback> {
+class srOnUseCallbackRegistry : public SrNamedResourceRegistry<onUseCallback, u16> {
 public:
     srOnUseCallbackRegistry();
 };
 
 /*Holds functions to modularize items used that are not "targeted"*/
-class srNoTargetCallbackRegistry : public SrNamedResourceRegistry<noTargetCallback> {
+class srNoTargetCallbackRegistry : public SrNamedResourceRegistry<noTargetCallback, u16> {
 public:
     srNoTargetCallbackRegistry();
 };

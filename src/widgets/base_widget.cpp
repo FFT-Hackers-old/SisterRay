@@ -109,6 +109,14 @@ SISTERRAY_API void moveWidget(Widget * widget, u32 x, u32 y) {
     widget->yCoordinate = y;
 }
 
+SISTERRAY_API i32 getWidgetX(Widget* widget) {
+    return widget->xCoordinate;
+}
+
+SISTERRAY_API i32 getWidgetY(Widget* widget) {
+    return widget->yCoordinate;
+}
+
 SISTERRAY_API void enableWidget(Widget* widget) {
     widget->enabled = true;
 }

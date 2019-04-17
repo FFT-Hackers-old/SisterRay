@@ -1,5 +1,5 @@
 #include "weapons.h"
-#include "impl.h"
+#include "../impl.h"
 
 /*Patch references to items to reference to reference the new gContext objects*/
 static void patch_weapons() {

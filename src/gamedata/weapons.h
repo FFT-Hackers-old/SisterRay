@@ -3,7 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "sr_registry_template.h"
+#include "../named_resource_registry.h"
 
 #pragma pack(push, 1)
 typedef struct {
@@ -35,10 +35,10 @@ typedef struct {
 } WeaponData;
 #pragma pack(pop)
 
-class SrWeaponRegistry : public SrResourceRegistry<WeaponData> {
+class SrWeaponRegistry : public SrNamedResourceRegistry<WeaponData, std::string> {
 public:
-    SrWeaponRegistry(SrKernelStream* stream) : SrResourceRegistry<WeaponData>(stream) {}
-    SrWeaponRegistry() : SrResourceRegistry<WeaponData>() {}
+    SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<WeaponData>(stream) {}
+    SrWeaponRegistry() : SrNamedResourceRegistry<WeaponData>() {}
 };
 
 #endif

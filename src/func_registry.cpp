@@ -12,7 +12,63 @@ SISTERRAY_API void initFunctionRegistry(void)
     REGISTER(srLoadFunction);
     REGISTER(srRegisterFunction);
 
+    REGISTER(getMenu);
+    REGISTER(addState);
+    REGISTER(getStateCursor);
+    REGISTER(setStateCursor);
+    REGISTER(getMenuState);
+    REGISTER(setMenuState);
+    REGISTER(getWidget);
+
     REGISTER(srAddListener);
+    REGISTER(srGetChild);
+    REGISTER(moveWidget);
+    REGISTER(enableWidget);
+    REGISTER(disableWidget);
+    REGISTER(getWidgetX);
+    REGISTER(getWidgetY);
+
+    REGISTER(setTextParams);
+    REGISTER(srNewTextWidget);
+    REGISTER(updateText);
+    REGISTER(updateTextColor);
+    REGISTER(updateTextPriority);
+    REGISTER(getText);
+    REGISTER(getTextColor);
+    REGISTER(getTextPriority);
+
+    REGISTER(setNumberParams);
+    REGISTER(srNewNumberWidget);
+    REGISTER(updateNumber);
+    REGISTER(updateNumberColor);
+    REGISTER(updateNumberPriority);
+    REGISTER(getNumber);
+    REGISTER(getNumberColor);
+    REGISTER(getNumberPriority);
+
+    REGISTER(srNewBoxWidget);
+    REGISTER(setBoxParams);
+    REGISTER(resizeBox);
+    REGISTER(updateBoxPriority);
+    REGISTER(getBoxDrawDistance);
+    REGISTER(getBoxPriority);
+
+    REGISTER(srNewPortraitWidget);
+    REGISTER(setPortraitParams);
+    REGISTER(updatePortraitPartyIndex);
+
+    REGISTER(srNewHPBarWidget);
+    REGISTER(setHPBarParams);
+    REGISTER(updateHPBarPartyIndex);
+
+    REGISTER(srNewSlotsWidget);
+    REGISTER(setSlotsParams);
+    REGISTER(updateMateriaSlots);
+
+    REGISTER(srNewArrowWidget);
+    REGISTER(setArrowParams);
+
+    REGISTER(srNewGridWidget);
 
     /* Mog */
     srRegisterFunction("srRedirectFunction", &mogRedirectFunction);

@@ -1,5 +1,5 @@
 #include "usable_item_handlers.h"
-#include "items.h"
+#include "gamedata/items.h"
 #include "impl.h"
 
 srOnUseCallbackRegistry::srOnUseCallbackRegistry(): SrNamedResourceRegistry<onUseCallback>() {

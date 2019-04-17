@@ -1,5 +1,5 @@
 #include "items.h"
-#include "impl.h"
+#include "../impl.h"
 
 static const u32 kPatchStructBase[] = {
     0x005c9b7b, 0x007ba080

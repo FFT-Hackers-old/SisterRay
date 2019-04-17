@@ -11,6 +11,12 @@ void drawTextWidget(TextWidget* textWidget){
     );
 }
 
+SISTERRAY_API void srNewTextWidget(Widget* parent, drawTextParams params, char* name) {
+    auto strName = std::string(name);
+    auto TextWidget = createTextWidget(params, strName);
+    addChildWidget(parent, (Widget*)TextWidget, strName);
+}
+
 TextWidget* createTextWidget(drawTextParams params, std::string name) {
     TextWidget* widget = (TextWidget*)createWidget(name, sizeof(TextWidget), &kTextWidgetClass);
     srLogWrite("text widget class: %p", &kTextWidgetClass);
@@ -115,6 +121,12 @@ void drawNumberWidget(NumberWidget* numberWidget) {
     );
 }
 
+SISTERRAY_API void srNewNumberWidget(Widget* parent, drawNumberParams params, char* name) {
+    auto strName = std::string(name);
+    auto NumberWidget = createNumberWidget(params, strName);
+    addChildWidget(parent, (Widget*)NumberWidget, strName);
+}
+
 NumberWidget* createNumberWidget(drawNumberParams params, std::string name) {
     NumberWidget* widget = (NumberWidget*)createWidget(name, sizeof(NumberWidget), &kNumberWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
@@ -216,6 +228,12 @@ void drawBoxWidget(BoxWidget* boxWidget) {
         boxWidget->drawDistanceYb
     };
     gameDrawBox((i16*)&params, boxWidget->priority);
+}
+
+SISTERRAY_API void srNewBoxWidget(Widget* parent, drawBoxParams params, char* name) {
+    auto strName = std::string(name);
+    auto boxWidget = createBoxWidget(params, strName);
+    addChildWidget(parent, (Widget*)boxWidget, strName);
 }
 
 BoxWidget* createBoxWidget(drawBoxParams params, std::string name) {

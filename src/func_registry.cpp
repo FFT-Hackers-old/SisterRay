@@ -12,6 +12,23 @@ SISTERRAY_API void initFunctionRegistry(void)
     REGISTER(srLoadFunction);
     REGISTER(srRegisterFunction);
 
+    /*Register functions for accessing with game data*/
+    REGISTER(getWeapon);
+    REGISTER(setWeaponData);
+    REGISTER(addWeapon);
+    REGISTER(getArmor);
+    REGISTER(setArmorData);
+    REGISTER(addArmor);
+    REGISTER(getAccessory);
+    REGISTER(setAccessoryData);
+    REGISTER(addAccessory);
+    REGISTER(getItem);
+    REGISTER(setItemData);
+    REGISTER(addItem);
+    REGISTER(getMateria);
+    REGISTER(setMateriaData);
+    REGISTER(addMateria);
+
     REGISTER(getMenu);
     REGISTER(addState);
     REGISTER(getStateCursor);

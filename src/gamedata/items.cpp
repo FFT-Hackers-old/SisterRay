@@ -1,6 +1,18 @@
 #include "items.h"
 #include "../impl.h"
 
+SISTERRAY_API ItemData getItem(u16 itemID) {
+    return gContext.items.get_resource(itemID);
+}
+
+SISTERRAY_API void setItemData(ItemData data, u16 itemID) {
+    gContext.items.update_resource(itemID, data);
+}
+
+SISTERRAY_API void addItem(ItemData data, char* name) {
+    gContext.items.add_element(std::string(name), data);
+}
+
 static const u32 kPatchStructBase[] = {
     0x005c9b7b, 0x007ba080
 };
@@ -13,8 +25,7 @@ static const u32 kPatchTargetFlags[] = {
     0x004332c8, 0x005d15cb
 };
 
-static void patchItems(void)
-{
+static void patchItems(void) {
     srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ITEM_DATA_PTR, gContext.items.get_data(), offsetof(ItemData, unknown));;
     srPatchAddresses((void**)kPatchRestrictMask, ARRAY_SIZE(kPatchRestrictMask), ITEM_DATA_PTR, gContext.items.get_data(), offsetof(ItemData, restriction_mask));
     srPatchAddresses((void**)kPatchTargetFlags, ARRAY_SIZE(kPatchTargetFlags), ITEM_DATA_PTR, gContext.items.get_data(), offsetof(ItemData, target_flags));

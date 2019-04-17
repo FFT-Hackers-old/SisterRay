@@ -2,6 +2,7 @@
 #define SISTERRAY_API_H
 
 #include <SisterRay/SisterRay.h>
+#include "gamedata/game_data_interface.h"
 
 /*
  * This header contains the internal signatures of every
@@ -10,7 +11,10 @@
  * for mod consumption.
  */
 
+//Callback/Event API
 SISTERRAY_API SrEventListener srAddListener(SrEventType eventType, SrEventCallback callback);
+
+//API for accessing registries
 
 //Menu manipulation API
 SISTERRAY_API Menu* getMenu(char* menuName);

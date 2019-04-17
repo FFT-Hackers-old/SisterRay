@@ -3,6 +3,17 @@
 #include "../impl.h"
 #include "accessory.h"
 
+SISTERRAY_API AccessoryData getAccessory(u16 itemID) {
+    return gContext.accessories.get_resource(itemID);
+}
+
+SISTERRAY_API void setAccessoryData(AccessoryData data, u16 itemID) {
+    gContext.accessories.update_resource(itemID, data);
+}
+
+SISTERRAY_API void addAccessory(AccessoryData data, char* name) {
+    gContext.accessories.add_element(std::string(name), data);
+}
 
 static const u32 kPatchStructBase[] = {
     0x005d0317, 0x006cb987, 0x007ba08c

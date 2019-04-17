@@ -3,7 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "../named_resource_registry.h"
+#include "../sr_named_registry.h"
 
 #pragma pack(push, 1)
 typedef struct {
@@ -26,8 +26,8 @@ typedef struct {
 
 class SrItemRegistry : public SrNamedResourceRegistry<ItemData, std::string> {
 public:
- SrItemRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<ItemData>(stream) {};
- SrItemRegistry(): SrNamedResourceRegistry<ItemData>() {}
+ SrItemRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<ItemData, std::string>(stream) {};
+ SrItemRegistry(): SrNamedResourceRegistry<ItemData, std::string>() {}
 };
 
 /*new structure holding additional item_id indexed data*/

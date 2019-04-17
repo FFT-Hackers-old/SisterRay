@@ -3,7 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "../named_resource_registry.h"
+#include "../sr_named_registry.h"
 #include "../widgets/widget.h"
 #include "../events/event.h"
 #include "../api.h"

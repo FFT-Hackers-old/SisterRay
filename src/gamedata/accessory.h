@@ -3,7 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "../named_resource_registry.h"
+#include "../sr_named_registry.h"
 
 #pragma pack(push, 1)
 typedef struct {
@@ -20,8 +20,8 @@ typedef struct {
 
 class SrAccessoryRegistry : public SrNamedResourceRegistry<AccessoryData, std::string> {
 public:
-    SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<AccessoryData>(stream) {};
-    SrAccessoryRegistry() : SrNamedResourceRegistry<AccessoryData>() {}
+    SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<AccessoryData, std::string>(stream) {};
+    SrAccessoryRegistry() : SrNamedResourceRegistry<AccessoryData, std::string>() {}
 };
 
 #endif

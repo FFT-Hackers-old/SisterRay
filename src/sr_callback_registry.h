@@ -1,0 +1,26 @@
+#ifndef SR_CALLBACK_REGISTRY_TEMPLATE_H
+#define SR_CALLBACK_REGISTRY_TEMPLATE_H
+
+#include <SisterRay/types.h>
+#include <SisterRay/SisterRay.h>
+#include "kernel.h"
+#include <unordered_map>
+#include "sr_registry_template.h"
+
+
+/*Maps item/resource indexes to callbacks defining their special effects*/
+template<class T> class SrIndexedCallbackRegistry : public SrResourceRegistry<std::string> {
+public:
+    std::unordered_map<std::string, T> handler_names;
+    SrIndexedCallbackRegistry() : SrResourceRegistry() {};
+
+    void add_function(std::string name, T callback) {
+        handler_names[name] = callback;
+    }
+
+    T get_handler(u16 item_id) {
+        auto& name = get_resource(item_id);
+        return handler_names[name];
+    }
+};
+#endif

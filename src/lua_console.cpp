@@ -73,33 +73,6 @@ static LRESULT CALLBACK luaConsoleWndProc(HWND hwnd, UINT message, WPARAM wParam
 
 SISTERRAY_API void srInitLuaConsole(void)
 {
-    WNDCLASSA luaConsoleClass;
-
-    luaConsoleClass.style = 0;
-    luaConsoleClass.lpfnWndProc = luaConsoleWndProc;
-    luaConsoleClass.cbClsExtra = 0;
-    luaConsoleClass.cbWndExtra = 0;
-    luaConsoleClass.hInstance = (HINSTANCE)&__ImageBase;
-    luaConsoleClass.hIcon = NULL;
-    luaConsoleClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-    luaConsoleClass.hbrBackground = NULL;
-    luaConsoleClass.lpszMenuName = NULL;
-    luaConsoleClass.lpszClassName = "LuaConsole";
-
-    RegisterClassA(&luaConsoleClass);
-    /*gContext.console = CreateWindowA(
-        "LuaConsole",
-        "Lua Console",
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        NULL,
-        NULL,
-        (HINSTANCE)&__ImageBase,
-        NULL
-    );*/
     gContext.console = CreateWindowA(
         "EDIT",
         "Lua Console",

@@ -3,10 +3,11 @@
 #include "../impl.h"
 
 void drawTextWidget(TextWidget* textWidget){
+    const char* text = textWidget->text.c_str();
     gameDrawString(
         textWidget->widget.xCoordinate,
         textWidget->widget.yCoordinate,
-        textWidget->text,
+        text,
         textWidget->textColor,
         textWidget->priority
     );
@@ -23,9 +24,11 @@ TextWidget* createTextWidget(drawTextParams params, std::string name) {
     srLogWrite("text widget class: %p", &kTextWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
-    widget->text = params.stringToDraw;
+    widget->text = std::string(params.stringToDraw);
+    srLogWrite("created a string from the argument with value: %s", widget->text.c_str());
     widget->textColor = params.textColor;
     widget->priority = params.priority;
+    srLogWrite("returning created text widget");
     return widget;
 }
 
@@ -48,7 +51,9 @@ const WidgetClass* TextWidgetKlass() {
 SISTERRAY_API void updateText(Widget* widgetToUpdate, const char* text) {
     if (isTextWidget(widgetToUpdate)) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
-        typedPtr->text = text;
+        srLogWrite("String updated from: %s", typedPtr->text.c_str());
+        typedPtr->text = std::string(text);
+        srLogWrite("String updated to: %s", typedPtr->text.c_str());
     }
     else {
         srLogWrite("attempting to update TextWidget text property of an invalid Widget type");
@@ -78,9 +83,7 @@ SISTERRAY_API void updateTextPriority(Widget* widgetToUpdate, float priority) {
 SISTERRAY_API const char* getText(Widget* widgetToUpdate) {
     if (isTextWidget(widgetToUpdate)) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
-        if(typedPtr->text)
-            return typedPtr->text;
-        return nullptr;
+        return typedPtr->text.c_str();
     }
     else {
         srLogWrite("attempting to fetch TextWidget text property of an invalid Widget type");

@@ -26,7 +26,7 @@ static const SrKernelStreamHandler kKernelBinHandlers[9] = {
 };
 
 struct Kernel2Entry {
-    StringRegistry* regitry;
+    StringRegistry* registry;
     int             count;
 };
 
@@ -77,7 +77,8 @@ static void srLoadKernel2Bin(void)
         memcpy((char*)&offsetTable, buffer + segStart, 2 * entry.count);
         for (int i = 0; i < entry.count; ++i)
         {
-            entry.regitry->add_resource(EncodedString(buffer + segStart + offsetTable[i]));
+            entry.registry->add_resource(EncodedString(buffer + segStart + offsetTable[i]));
+            srLogWrite("loading kernel2 string: %s", (buffer + segStart + offsetTable[i]));
         }
         segBase = segStart + segLen;
     }

@@ -2,15 +2,12 @@
 #include <cstdint>
 #include "EncodedString.h"
 
-EncodedString::EncodedString()
-: _size(0)
-{
+EncodedString::EncodedString(): _size(0) {
     _str = new char[1];
     _str[0] = (char)0xff;
 }
 
-EncodedString::EncodedString(const char* str)
-{
+EncodedString::EncodedString(const char* str) {
     size_t i;
 
     i = 0;
@@ -21,20 +18,16 @@ EncodedString::EncodedString(const char* str)
     memcpy(_str, str, i + 1);
 }
 
-EncodedString::EncodedString(const EncodedString& other)
-: _size(other._size)
-{
+EncodedString::EncodedString(const EncodedString& other): _size(other._size) {
     _str = new char[_size + 1];
     memcpy(_str, other._str, _size + 1);
 }
 
-EncodedString::~EncodedString()
-{
+EncodedString::~EncodedString() {
     delete[] _str;
 }
 
-EncodedString& EncodedString::operator=(const EncodedString& other)
-{
+EncodedString& EncodedString::operator=(const EncodedString& other) {
     delete[] _str;
     _size = other._size;
     _str = new char[_size + 1];
@@ -43,13 +36,11 @@ EncodedString& EncodedString::operator=(const EncodedString& other)
     return *this;
 }
 
-const char* EncodedString::str() const
-{
+const char* EncodedString::str() const {
     return _str;
 }
 
-const char* EncodedString::unicode() const
-{
+const char* EncodedString::unicode() const {
     static const char* kCharset =
         " !\"#$%&'()*+,-./"
         "0123456789:;<=>?"
@@ -76,13 +67,11 @@ const char* EncodedString::unicode() const
     return buffer;
 }
 
-size_t EncodedString::size() const
-{
+size_t EncodedString::size() const {
     return _size;
 }
 
-EncodedString EncodedString::from_unicode(const char* str)
-{
+EncodedString EncodedString::from_unicode(const char* str) {
     static char buffer[16384];
     static const uint8_t kReverseCharset[256] = {
         0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

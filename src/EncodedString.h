@@ -3,8 +3,7 @@
 
 #include <cstddef>
 
-class EncodedString
-{
+class EncodedString {
 public:
     EncodedString();
     EncodedString(const char* str);

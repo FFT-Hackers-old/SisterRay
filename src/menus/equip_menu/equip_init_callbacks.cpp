@@ -46,8 +46,12 @@ void initCharDataWidget(const EquipInitEvent* event) {
     std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
     for (int row = 0; row < gearNames.size(); row++) {
         menuText = gContext.game_strings.equipMenuTexts.get_string(row);
+        srLogWrite("initializing equip menu text: %s", menuText);
         setTextParams(&textParams, 250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f);
+        srLogWrite("text in params object: %s", textParams.stringToDraw);
         textWidget = createTextWidget(textParams, gearNames[row]);
+        srLogWrite("text in Widget object: %s", textWidget->text.c_str());
+        srLogWrite("text widget point to text at location %p", textWidget->text.c_str());
         addChildWidget(currentEquipWidget, (Widget*)textWidget, gearNames[row]);
 
         setTextParams(&textParams, 303, 13 + (34 * row), menuText, COLOR_WHITE, 0.2f);
@@ -120,7 +124,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
 
     std::vector<std::string> equipSlotDataNames = { SLOTS_NAME, GROWTH_NAME };
     for (int i = 0; i < 2; i++) {
-        menuText = gContext.game_strings.equipMenuTexts.get_string(4 + i);
+        menuText = gContext.game_strings.equipMenuTexts.get_string(14 + i);
         setTextParams(&textParams, 27, 42 * i + equipMenuWindowConfig[2].drawDistance2 + 21, menuText, COLOR_TEAL, 0.1f);
         textWidget = createTextWidget(textParams, equipSlotDataNames[i]);
         addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, equipSlotDataNames[i]);
@@ -178,7 +182,8 @@ void initStatDiffWidget(const EquipInitEvent* event) {
     std::vector<std::string> candidateNumberNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
     std::vector<std::string> arrowNames = { ARROW_1, ARROW_2, ARROW_3, ARROW_4, ARROW_5, ARROW_6, ARROW_7 };
     for (i32 i = 0; i < 7; ++i) {
-        menuText = gContext.game_strings.equipMenuTexts.get_string(2);
+        menuText = gContext.game_strings.equipMenuTexts.get_string(3 + i);
+        srLogWrite("initializing equip menu text: %s", menuText);
         setTextParams(&textParams, 53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
         textWidget = createTextWidget(textParams, statNames[i]);
         addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[i]);

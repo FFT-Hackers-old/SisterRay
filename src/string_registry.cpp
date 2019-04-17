@@ -42,6 +42,25 @@ void initGameStrings() {
     for (int i = 0; i <= 9; i++) {
         gContext.game_strings.character_specific_strings[i] = StringRegistry();
     }
+
+    for (int i = 0; i <= 11; i++) {
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Wpn"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Arm"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Acc"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Attack"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Hit"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Defense"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Evade"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("M.Atk"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("M.Defense"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("M.Evade"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("None"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Normal"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Double"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Triple"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Slots"));
+        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Growth"));
+    }
 }
 
 const char* getNameFromRelativeID(u16 relativeID, u8 itemType) {

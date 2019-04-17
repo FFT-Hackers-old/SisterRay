@@ -5,8 +5,6 @@
 
 void MenuRegistry::initializeMenu(std::string menuName, const std::string widgetName) {
     auto menu = get_element(menuName);
-    auto index = get_resource_index(menuName);
-    auto menuptr = get_resource(index);
     auto menuWidget = createWidget(widgetName);
     menu->menuWidget = menuWidget;
     EquipInitEvent event = { menu };

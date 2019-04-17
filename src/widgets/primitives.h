@@ -5,7 +5,7 @@
 
 struct TextWidget_ {
     Widget widget;
-    const char* text;
+    std::string text;
     color textColor;
     float priority;
 };

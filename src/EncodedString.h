@@ -14,7 +14,10 @@ public:
     EncodedString& operator=(const EncodedString& other);
 
     const char* str() const;
+    const char* unicode() const;
     size_t      size() const;
+
+    static EncodedString from_unicode(const char* str);
 
 private:
     size_t      _size;

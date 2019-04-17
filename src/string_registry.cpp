@@ -7,6 +7,21 @@ const char* StringRegistry::get_string(int index)
     return get_resource(index).str();
 }
 
+const char* StringRegistry::get_unicode_string(int index)
+{
+    return get_resource(index).unicode();
+}
+
+void StringRegistry::set_string(int index, const char* str)
+{
+    update_resource(index, EncodedString(str));
+}
+
+void StringRegistry::set_unicode_string(int index, const char* str)
+{
+    update_resource(index, EncodedString::from_unicode(str));
+}
+
 /*Initialize all string registries for various string resources
   This change this to take a kernel2 stream and create a constructor
   overload for String Registry which inits it with the right strings*/

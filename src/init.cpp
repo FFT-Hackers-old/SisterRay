@@ -1,3 +1,4 @@
+#include <ctime>
 #include <stdio.h>
 #include <mog/mog.h>
 #include <windows.h>
@@ -105,6 +106,12 @@ static void srLoadKernelBin(void)
     fclose(kernel);
 }
 
+static void hookWinMain(void)
+{
+    srand((unsigned int)time(nullptr));
+    srInitLuaConsole();
+}
+
 SISTERRAY_API __declspec(dllexport) void rayInit()
 {
 	MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
@@ -134,4 +141,8 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     LoadMods();
+
+    /* Hook into WinMain (required for Win32 stuff) */
+    mogReplaceNop((void*)0x67dbbb, 0x3e);
+    mogInsertCall((void*)0x67dbbb, &hookWinMain);
 }

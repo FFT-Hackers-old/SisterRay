@@ -5,16 +5,19 @@
 Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass) {
     Widget* widget = (Widget*)malloc(size);
     memset(widget, 0, size);
+    new (&widget->name) std::string;
+    new (&widget->children) std::vector<Widget*>;
+    new (&widget->childrenNames) std::unordered_map<std::string, u32>;
     widget->name = name;
     widget->klass = wclass;
     widget->enabled = true;
-    new (&widget->childrenNames) std::unordered_map<std::string, u32>;
-    new (&widget->children) std::vector<Widget*>;
     return widget;
 }
 
-CollectionWidget* createCollectionWidget(std::string name, const WidgetClass* collectionType, const WidgetClass* containedType) {
-    CollectionWidget* widget = (CollectionWidget*)createWidget(name, sizeof(CollectionWidget), &kCollectionWidgetClass);
+CollectionWidget* createCollectionWidget(std::string name, const WidgetClass* collectionType, const WidgetClass* containedType, size_t allocSize) {
+    if (allocSize == 0)
+        allocSize = sizeof(CollectionWidget);
+    CollectionWidget* widget = (CollectionWidget*)createWidget(name, allocSize, &kCollectionWidgetClass);
     widget->collectionType = collectionType;
     widget->containedKlass = containedType;
     return widget;

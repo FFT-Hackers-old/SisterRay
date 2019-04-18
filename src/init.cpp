@@ -107,15 +107,9 @@ static void srLoadKernelBin(void)
     fclose(kernel);
 }
 
-static void hookWinMain(void)
+static void Init(void)
 {
-    srand((unsigned int)time(nullptr));
-    srInitLuaConsole();
-}
-
-SISTERRAY_API __declspec(dllexport) void rayInit()
-{
-	MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
+    MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
     initLog();
     srInitLua();
     initFunctionRegistry();
@@ -143,7 +137,16 @@ SISTERRAY_API __declspec(dllexport) void rayInit()
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     LoadMods();
 
+    /* Init RNG */
+    srand((unsigned int)time(nullptr));
+
+    /* Launch the lua console */
+    srInitLuaConsole();
+}
+
+SISTERRAY_API __declspec(dllexport) void rayInit()
+{
     /* Hook into WinMain (required for Win32 stuff) */
     mogReplaceNop((void*)0x67dbbb, 0x3e);
-    mogInsertCall((void*)0x67dbbb, &hookWinMain);
+    mogInsertCall((void*)0x67dbbb, &Init);
 }

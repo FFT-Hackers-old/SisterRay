@@ -390,8 +390,8 @@ void handleInventoryInput(i32 a1) {
                     playMenuSound(1);
                     /*This code swaps two items in the inventory*/
                     InventoryEntry temp_entry = gContext.inventory->get_resource(*TEMP_ABSOLUTE_CURSOR_INDEX); //copy cursor start
-                    gContext.inventory->get_resource(*TEMP_ABSOLUTE_CURSOR_INDEX) = gContext.inventory->get_resource(baseSortRow + relativeSortRow); 
-                    gContext.inventory->get_resource(baseSortRow + relativeSortRow) = temp_entry;
+                    gContext.inventory->update_resource(*TEMP_ABSOLUTE_CURSOR_INDEX, gContext.inventory->get_resource(baseSortRow + relativeSortRow));
+                    gContext.inventory->update_resource(baseSortRow + relativeSortRow, temp_entry);
                     *ITEM_TO_SWAP_SELECTED = 0;
                 }
             }

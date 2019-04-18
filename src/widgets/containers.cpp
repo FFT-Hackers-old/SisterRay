@@ -56,7 +56,7 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
 /*Use this method to create self-managing grid widgets from a cursor context object, with a parametrized type
   Do not use your own childTypes here, use the pre-defined widget types in sister ray*/
 CursorGridWidget* createGridWidget(drawGridParams params, std::string name, const WidgetClass* childType) {
-    CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType);
+    CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType, sizeof(CursorGridWidget));
     widget->widget.widget.xCoordinate = params.xCoordinate;
     widget->widget.widget.yCoordinate = params.yCoordinate;
     widget->cursor = params.cursor;

@@ -25,24 +25,8 @@ void StringRegistry::set_unicode_string(int index, const char* str)
 /*Initialize all string registries for various string resources
   This change this to take a kernel2 stream and create a constructor
   overload for String Registry which inits it with the right strings*/
-void initGameStrings() {
-
-    /*Allocate registries for the kernel2.bin stuff*/
-    gContext.game_strings.item_descriptions = StringRegistry();
-    gContext.game_strings.item_names = StringRegistry();
-    gContext.game_strings.weapon_descriptions = StringRegistry();
-    gContext.game_strings.weapon_names = StringRegistry();
-    gContext.game_strings.armor_descriptions = StringRegistry();
-    gContext.game_strings.armor_names = StringRegistry();
-    gContext.game_strings.accessory_descriptions = StringRegistry();
-    gContext.game_strings.accessory_names = StringRegistry();
-    gContext.game_strings.equipMenuTexts = StringRegistry();
-
-    /*Initialize the string registries for character specific strings*/
-    for (int i = 0; i <= 9; i++) {
-        gContext.game_strings.character_specific_strings[i] = StringRegistry();
-    }
-
+void initGameStrings()
+{
     for (int i = 0; i <= 11; i++) {
         gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Wpn"));
         gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Arm"));
@@ -101,7 +85,8 @@ const char* getDescriptionFromRelativeID(u16 relativeID, u8 itemType) {
     }
 }
 
-const char* getNameFromItemID(u16 item_id) {
+const char* getNameFromItemID(u16 item_id)
+{
     auto itemType = gContext.itemTypeData.get_resource(item_id).item_type;
     auto relativeID = gContext.itemTypeData.get_resource(item_id).type_relative_id;
     return getNameFromRelativeID(relativeID, itemType);

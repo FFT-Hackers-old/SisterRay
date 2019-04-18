@@ -69,12 +69,12 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* event) {
 
     switch (slotChoice->relativeRowIndex) {
         case 0: {
-            materiaSlots = &(gContext.weapons.get_resource_ref(kernelObjectID).materia_slots[0]);
+            materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
             materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
             break;
         }
         case 1: {
-            materiaSlots = &(gContext.armors.get_resource_ref(kernelObjectID).materia_slots[0]);
+            materiaSlots = &(gContext.armors.get_resource(kernelObjectID).materia_slots[0]);
             materiaGrowth = gContext.armors.get_resource(kernelObjectID).materia_growth;
             break;
         }

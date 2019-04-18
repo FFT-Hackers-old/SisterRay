@@ -15,9 +15,9 @@ SrMateriaInventory::SrMateriaInventory(i16 allocation_size) : SrResourceRegistry
 /*there's some other things that normally happen when this is called*/
 void SrMateriaInventory::insertIntoMateriaInventory(MateriaInventoryEntry* entry) {
     u16 inventoryIndex;
-    for (auto it = begin(resource_registry); it != end(resource_registry); ++it) {
+    for (auto it = begin(_resource_registry); it != end(_resource_registry); ++it) {
         if ((*it).item_id == 0xFFFF) {
-            inventoryIndex = distance(resource_registry.begin(), it);
+            inventoryIndex = distance(_resource_registry.begin(), it);
             update_resource(inventoryIndex, *entry);
 
             if (returnMateriaType(entry->item_id) == 10) // if Summon Materia

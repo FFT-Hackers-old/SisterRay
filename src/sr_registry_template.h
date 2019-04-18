@@ -26,8 +26,9 @@ public:
     }
 
     /*Constructor used for fixed size arrays, like the inventory*/
-    SrResourceRegistry(u32 reserve_size) {
-        resource_registry.reserve(reserve_size);
+    SrResourceRegistry(u32 reserve_size)
+    {
+        _resource_registry.reserve(reserve_size);
     }
 
     /*Default constructor*/
@@ -36,41 +37,57 @@ public:
     ~SrResourceRegistry() {
     }
 
-    T get_resource(i32 index) {
-        if ((resource_count() == 0)||(index > (resource_count() - 1))) {
-            return T();
+    const T& get_resource(u32 index) const
+    {
+        if (index >= resource_count())
+        {
+            return _null;
         }
-        return resource_registry[index];
+        return _resource_registry[index];
     }
 
-    T& get_resource_ref(i32 index) {
-        return resource_registry.at(index);
+    T& get_resource(u32 index)
+    {
+        if (index >= resource_count())
+        {
+            return _null;
+        }
+        return _resource_registry[index];
     }
 
-    void add_resource(T resource) {
-        resource_registry.push_back(resource);
+    void add_resource(const T& resource)
+    {
+        _resource_registry.push_back(resource);
     }
 
-    void update_resource(u32 index, T resource) {
-        if (index < (resource_count())){
-            resource_registry[index] = resource;
+    void update_resource(u32 index, const T& resource)
+    {
+        if (index < resource_count())
+        {
+            _resource_registry[index] = resource;
         }
     }
 
-    int resource_count() {
-        return resource_registry.size();
+    size_t resource_count()
+    {
+        return _resource_registry.size();
     }
 
-    int current_capacity() {
-        return resource_registry.capacity();
+    size_t current_capacity()
+    {
+        return _resource_registry.capacity();
     }
 
-
-    T* get_data() {
-        return resource_registry.data();
+    T* get_data()
+    {
+        return _resource_registry.data();
     }
 
-    std::vector<T> resource_registry;
+protected:
+    std::vector<T>  _resource_registry;
+
+private:
+    T               _null;
 };
 
 #endif

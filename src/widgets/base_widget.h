@@ -30,11 +30,11 @@ struct Widget_ {
 struct CollectionWidget_ {
     Widget widget;
     const WidgetClass* collectionType;
-    const WidgetClass * containedKlass;
+    const WidgetClass* containedKlass;
 };
 
 Widget* createWidget(std::string name, size_t size = sizeof(Widget), const WidgetClass* klass = &kBaseWidgetClass);
-CollectionWidget* createCollectionWidget(std::string name, const WidgetClass* collectionType, const WidgetClass* containedType);
+CollectionWidget* createCollectionWidget(std::string name, const WidgetClass* collectionType, const WidgetClass* containedType, size_t allocSize);
 void destroyWidget(Widget* widget);
 
 void drawWidget(Widget* widget);

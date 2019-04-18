@@ -13,7 +13,7 @@ void MenuRegistry::initializeMenu(std::string menuName, const std::string widget
 }
 
 MenuRegistry::~MenuRegistry() {
-    for (auto element : resource_registry) {
+    for (auto element : _resource_registry) {
         destroyMenu(element);
     }
 }

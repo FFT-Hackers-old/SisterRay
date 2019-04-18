@@ -1,13 +1,14 @@
 #ifndef PRIMITIVES_H
 #define PRIMITIVES_H
 
+#include "../EncodedString.h"
 #include "base_widget.h"
 
 struct TextWidget_ {
-    Widget widget;
-    std::string text;
-    color textColor;
-    float priority;
+    Widget          widget;
+    EncodedString   text;
+    color           textColor;
+    float           priority;
 };
 
 struct NumberWidget_ {
@@ -18,7 +19,7 @@ struct NumberWidget_ {
     float priority;
 };
 
-typedef struct BoxWidget_ {
+struct BoxWidget_ {
     Widget widget;
     u16 drawDistanceXa;
     u16 drawDistanceXb;

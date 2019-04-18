@@ -15,28 +15,28 @@ public:
     SrInventory(): SrResourceRegistry() {};
 
     void decrementInventoryEntry(u16 inventory_index, u8 stepSize) {
-        if (resource_registry[inventory_index].quantity + stepSize > 1) {
-            resource_registry[inventory_index].quantity = resource_registry[inventory_index].quantity - stepSize;
+        if (_resource_registry[inventory_index].quantity + stepSize > 1) {
+            _resource_registry[inventory_index].quantity = _resource_registry[inventory_index].quantity - stepSize;
         }
         else {
-            resource_registry[inventory_index].item_id = 0xFFFF;
-            resource_registry[inventory_index].quantity = 0;
+            _resource_registry[inventory_index].item_id = 0xFFFF;
+            _resource_registry[inventory_index].quantity = 0;
         }
     }
 
     void incrementInventoryEntry(u16 inventory_index, u8 stepSize) {
-        if (resource_registry[inventory_index].quantity + stepSize < 99) {
-            resource_registry[inventory_index].quantity = resource_registry[inventory_index].quantity + stepSize;
+        if (_resource_registry[inventory_index].quantity + stepSize < 99) {
+            _resource_registry[inventory_index].quantity = _resource_registry[inventory_index].quantity + stepSize;
         }
         else {
-            resource_registry[inventory_index].quantity = 99;
+            _resource_registry[inventory_index].quantity = 99;
         }
     }
 
     u16 findItemInventoryIndex(u16 itemID) {
-        for (auto it = begin(resource_registry); it != end(resource_registry); ++it) {
+        for (auto it = begin(_resource_registry); it != end(_resource_registry); ++it) {
             if ((*it).item_id == itemID) {
-                return distance(resource_registry.begin(), it);
+                return distance(_resource_registry.begin(), it);
             }
         }
         return 0xFFFF;

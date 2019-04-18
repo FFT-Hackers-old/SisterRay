@@ -50,8 +50,6 @@ void initCharDataWidget(const EquipInitEvent* event) {
         setTextParams(&textParams, 250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f);
         srLogWrite("text in params object: %s", textParams.stringToDraw);
         textWidget = createTextWidget(textParams, gearNames[row]);
-        srLogWrite("text in Widget object: %s", textWidget->text.c_str());
-        srLogWrite("text widget point to text at location %p", textWidget->text.c_str());
         addChildWidget(currentEquipWidget, (Widget*)textWidget, gearNames[row]);
 
         setTextParams(&textParams, 303, 13 + (34 * row), menuText, COLOR_WHITE, 0.2f);

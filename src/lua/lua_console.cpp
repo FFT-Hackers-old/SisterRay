@@ -7,6 +7,7 @@
 
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 
+static HWND         editHwnd;
 static WNDPROC      editProc;
 static std::string  consoleLine;
 static std::string  consoleBuffer =
@@ -40,8 +41,9 @@ static std::string execLua(const std::string input)
     return out;
 }
 
-static LRESULT CALLBACK luaConsoleWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK consoleEditProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    RECT rect;
 
     switch (message)
     {
@@ -81,23 +83,75 @@ static LRESULT CALLBACK luaConsoleWndProc(HWND hwnd, UINT message, WPARAM wParam
     return CallWindowProc(editProc, hwnd, message, wParam, lParam);
 }
 
+static LRESULT CALLBACK consoleWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    RECT rect;
+
+    switch (message)
+    {
+    case WM_CREATE:
+        GetClientRect(hwnd, &rect);
+        editHwnd = CreateWindowA(
+            "EDIT",
+            "",
+            WS_CHILD | WS_VSCROLL | WS_VISIBLE |
+            ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+            0,
+            0,
+            rect.right,
+            rect.bottom,
+            hwnd,
+            NULL,
+            NULL,
+            NULL
+        );
+        editProc = (WNDPROC)SetWindowLongPtr(editHwnd, GWLP_WNDPROC, (LONG_PTR)consoleEditProc);
+        SendMessageA(editHwnd, WM_SETTEXT, 0, (LPARAM)consoleBuffer.c_str());
+        SendMessageA(editHwnd, EM_SETREADONLY, 1, 0);
+        return 0;
+
+    case WM_SIZE:
+        GetClientRect(hwnd, &rect);
+        SetWindowPos(editHwnd, NULL, 0, 0, rect.right, rect.bottom, SWP_NOZORDER);
+        return 0;
+
+    case WM_SETFOCUS:
+        SetFocus(editHwnd);
+        return 0;
+    }
+    return DefWindowProcA(hwnd, message, wParam, lParam);
+}
+
 SISTERRAY_API void srInitLuaConsole(void)
 {
+    ATOM consoleAtom;
+    WNDCLASSA consoleClass;
+
+    consoleClass.style = 0;
+    consoleClass.cbClsExtra = 0;
+    consoleClass.cbWndExtra = 0;
+    consoleClass.hbrBackground = NULL;
+    consoleClass.hIcon = NULL;
+    consoleClass.hCursor = LoadCursorA(NULL, IDC_ARROW);
+    consoleClass.hInstance = (HINSTANCE)&__ImageBase;
+    consoleClass.lpfnWndProc = consoleWndProc;
+    consoleClass.lpszMenuName = NULL;
+    consoleClass.lpszClassName = "LuaConsole";
+
+    consoleAtom = RegisterClassA(&consoleClass);
+
     gContext.console = CreateWindowA(
-        "EDIT",
+        (LPCSTR)consoleAtom,
         "Lua Console",
-        WS_OVERLAPPEDWINDOW | WS_VSCROLL |
-        ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+        WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
         NULL,
         NULL,
-        NULL,
-        NULL);
-    editProc = (WNDPROC)SetWindowLongPtr(gContext.console, GWLP_WNDPROC, (LONG_PTR)luaConsoleWndProc);
-    SendMessageA(gContext.console, WM_SETTEXT, 0, (LPARAM)consoleBuffer.c_str());
-    SendMessageA(gContext.console, EM_SETREADONLY, 1, 0);
+        (HINSTANCE)&__ImageBase,
+        NULL
+    );
     ShowWindow(gContext.console, SW_SHOW);
 }

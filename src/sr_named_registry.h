@@ -15,22 +15,22 @@ public:
     SrNamedResourceRegistry(): SrResourceRegistry() {};
     SrNamedResourceRegistry(SrKernelStream* stream) : SrResourceRegistry(stream) {};
 
-    void add_element(std::string name, T element) {
+    void add_element(const std::string& name, const T& element) {
         add_resource(element);
         u32 index = resource_count() - 1;
         named_registry[name] = index;
     }
 
-    T get_element(std::string name) {
+    const T& get_element(const std::string& name) const {
         return get_resource(named_registry[name]);
     }
 
-    u32 get_resource_index(std::string name) {
-        return named_registry[name];
+    T& get_element(const std::string& name) {
+        return get_resource(named_registry[name]);
     }
 
-    T& get_element_ref(std::string name) {
-        return get_resource_ref(named_registry[name]);
+    u32 get_resource_index(const std::string& name) {
+        return named_registry[name];
     }
 };
 

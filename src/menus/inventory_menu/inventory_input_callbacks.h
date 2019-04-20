@@ -9,7 +9,7 @@
 #include "inventory_widget_names.h"
 
 void chooseViewHandler(const InventoryInputEvent* event);
-void selectItemhandler(const InventoryInputEvent* event);
+void selectItemHandler(const InventoryInputEvent* event);
 void executeSwapHandler(const InventoryInputEvent* event);
 void useTargetedItemHandler(const InventoryInputEvent* event);
 void arrangeItemsHandler(const InventoryInputEvent* event);

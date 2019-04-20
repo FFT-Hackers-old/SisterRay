@@ -38,7 +38,7 @@ void initViewChoiceWidget(const InventoryInitEvent* event) {
     for (int column = 0; column < 3; ++column) {
         setTextParams(&textParams, 98 * column + 57, 17, gContext.game_strings.inventory_menu_texts.get_string(column), COLOR_WHITE, 0.1f);
         auto textChild = createTextWidget(textParams, listNames[column]);
-        addChildWidget(viewChoiceWidget, (Widget*)textChild);
+        addChildWidget(viewChoiceWidget, (Widget*)textChild, listNames[column]);
     }
     // sub_6FA12F(0, 102, 640, 372);
 
@@ -76,11 +76,11 @@ void initCharViewWidget(const InventoryInitEvent* event) {
         if ((CURRENT_PARTY_MEMBER_ARRAY)[currentPartyMember] != 0xFF) {  
             drawPortraitParams portraitParams = { 37, 120*currentPartyMember + 116, currentPartyMember, 0.2f };
             portraitWidget = createPortraitWidget(portraitParams, portraitNames[currentPartyMember]);
-            addChildWidget(currentEquipWidget, (Widget*)portraitWidget, portraitNames[currentPartyMember]);
+            addChildWidget(partyViewWidget, (Widget*)portraitWidget, portraitNames[currentPartyMember]);
 
             drawHPBarParams hpBarParams = { 133, 120*currentPartyMember +126, currentPartyMember, 0.2f };
             auto HPBarWidget = createHPBarWidget(hpBarParams, HPBarNames[currentPartyMember]);
-            addChildWidget(currentEquipWidget, (Widget*)HPBarWidget, HPBarNames[currentPartyMember]);
+            addChildWidget(partyViewWidget, (Widget*)HPBarWidget, HPBarNames[currentPartyMember]);
         }
     }
 
@@ -92,6 +92,7 @@ void initItemViewWidget(const InventoryInitEvent* event) {
     auto itemChoice = getStateCursor(event->menuObject, 1);
 
     drawGridParams gridParams;
+    CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     drawBoxParams boxParams;
     auto menuObject = event->menuObject;
@@ -114,12 +115,12 @@ void initItemViewWidget(const InventoryInitEvent* event) {
 
     auto normalItemViewWidget = createWidget(NORMAL_ITEM_VIEW_NAME);
     gridParams = { itemChoice, &inventoryViewNameUpdater, 373, 109, 37, 9 };
-    auto cursorListWidget = createGridWidget(gridParams, ITEM_VIEW_NAMES, TextWidgetKlass());
-    addChildWidget(normalItemViewWidget, (Widget*)cursorListWidget, ITEM_VIEW_NAMES);
+    gridWidget = createGridWidget(gridParams, ITEM_VIEW_NAMES, TextWidgetKlass());
+    addChildWidget(normalItemViewWidget, (Widget*)gridWidget, ITEM_VIEW_NAMES);
 
     gridParams = { itemChoice, &inventoryViewQuantityUpdater, 550, 112, 37, 9 };
-    auto cursorListWidget = createGridWidget(gridParams, ITEM_VIEW_QUANTITIES, NumberWidgetKlass());
-    addChildWidget(normalItemViewWidget, (Widget*)cursorListWidget, ITEM_VIEW_QUANTITIES);
+    gridWidget = createGridWidget(gridParams, ITEM_VIEW_QUANTITIES, NumberWidgetKlass());
+    addChildWidget(normalItemViewWidget, (Widget*)gridWidget, ITEM_VIEW_QUANTITIES);
 
     addChildWidget(itemViewWidget, normalItemViewWidget, NORMAL_ITEM_VIEW_NAME);
 
@@ -127,12 +128,12 @@ void initItemViewWidget(const InventoryInitEvent* event) {
     auto customItemViewWidget = createWidget(CUSTOM_ITEM_VIEW_NAME);
     auto customSortChoice = getStateCursor(event->menuObject, 5);
     gridParams = { customSortChoice, &inventoryViewNameUpdater, 373, 109, 37, 9 };
-    auto cursorListWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_NAMES, TextWidgetKlass());
-    addChildWidget(customItemViewWidget, (Widget*)cursorListWidget, CUSTOM_SORT_VIEW_NAMES);
+    gridWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_NAMES, TextWidgetKlass());
+    addChildWidget(customItemViewWidget, (Widget*)gridWidget, CUSTOM_SORT_VIEW_NAMES);
 
     gridParams = { customSortChoice, &inventoryViewQuantityUpdater, 550, 112, 37, 9 };
-    auto cursorListWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_QUANTITIES, NumberWidgetKlass());
-    addChildWidget(customItemViewWidget, (Widget*)cursorListWidget, CUSTOM_SORT_VIEW_QUANTITIES);
+    gridWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_QUANTITIES, NumberWidgetKlass());
+    addChildWidget(customItemViewWidget, (Widget*)gridWidget, CUSTOM_SORT_VIEW_QUANTITIES);
 
     addChildWidget(itemViewWidget, customItemViewWidget, CUSTOM_ITEM_VIEW_NAME);
 
@@ -192,6 +193,40 @@ void itemDescriptionWidget(const InventoryInitEvent* event) {
     textParams = { 27, 64, "", COLOR_WHITE, 0.1f };
     textWidget = createTextWidget(textParams, ITEM_DESCRIPTION);
 
-    addChildWidget(mainWidget, itemDescWidget, ITEM_DESC_WIDGET_NAME) 
+    addChildWidget(mainWidget, itemDescWidget, ITEM_DESC_WIDGET_NAME);
+}
+
+void arrangeTypeWidget(const InventoryInitEvent* event) {
+    auto menuObject = event->menuObject;
+    auto mainWidget = menuObject->menuWidget;
+
+    TextWidget* textWidget;
+    drawTextParams textParams;
+    BoxWidget* boxWidget;
+    drawBoxParams boxParams;
+
+    auto arrangeTypeWidget = createWidget(ARRANGE_TYPE_WIDGET_NAME);
+
+    boxParams = {
+       menuWindowConfig[3].drawDistance1,
+       menuWindowConfig[3].drawDistance2,
+       menuWindowConfig[3].drawDistance3,
+       menuWindowConfig[3].drawDistance4,
+       0.4f
+    };
+    boxWidget = createBoxWidget(boxParams, ARRANGE_TYPE_BOX);
+    addChildWidget(arrangeTypeWidget, (Widget*)boxWidget, ARRANGE_TYPE_BOX);
+
+    //Probably a good case to be made here for a new static Grid with no updater here
+    std::vector<std::string> listNames = { SORT_TYPE_1, SORT_TYPE_2, SORT_TYPE_3, SORT_TYPE_4, SORT_TYPE_5, SORT_TYPE_6, SORT_TYPE_7, SORT_TYPE_8 };
+    for (int sortType = 0; sortType < listNames.size(); ++sortType) {
+        const char* fetchedDescription = gContext.game_strings.inventory_menu_texts.get_string(sortType + 3);
+        setTextParams(&textParams, *(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * sortType + 13, fetchedDescription, COLOR_WHITE, 0.1f);
+        auto textChild = createTextWidget(textParams, listNames[sortType]);
+        addChildWidget(arrangeTypeWidget, (Widget*)textChild, listNames[sortType]);
+    }
+
+
+    addChildWidget(mainWidget, arrangeTypeWidget, ARRANGE_TYPE_WIDGET_NAME);
 }
 

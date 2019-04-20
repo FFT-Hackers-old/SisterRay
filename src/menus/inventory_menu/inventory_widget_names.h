@@ -10,6 +10,7 @@ namespace InventoryWidgetNames {
     const std::string KEY_ITEM_WIDGET_NAME = "KEY_ITEM_WIDGET";
     const std::string ITEM_DESC_WIDGET_NAME = "ITEM_DESC_WIDGET";
     const std::string KEY_ITEMS_VIEW_NAME = "KEY_ITEMS_VIEW";
+    const std::string ARRANGE_TYPE_WIDGET_NAME = "ARRANGE_TYPE_WIDGET";
     //VIEW CHOICE WIDGETS//
     const std::string INV_VIEW_1 = "INV_VIEW_1";
     const std::string INV_VIEW_2 = "INV_VIEW_2";
@@ -37,5 +38,15 @@ namespace InventoryWidgetNames {
     //KEY ITEMS WIDGET//
     const std::string KEY_ITEMS_BOX = "KEY_ITEMS_BOX";
     const std::string KEY_ITEMS_GRID = "KEY_ITEMS_GRID";
+    //ARRANGE TYPE WIDGET
+    const std::string ARRANGE_TYPE_BOX = "ARRANGE_TYPE_BOX";
+    const std::string SORT_TYPE_1 = "SORT_TYPE_1";
+    const std::string SORT_TYPE_2 = "SORT_TYPE_2";
+    const std::string SORT_TYPE_3 = "SORT_TYPE_3";
+    const std::string SORT_TYPE_4 = "SORT_TYPE_4";
+    const std::string SORT_TYPE_5 = "SORT_TYPE_5";
+    const std::string SORT_TYPE_6 = "SORT_TYPE_6";
+    const std::string SORT_TYPE_7 = "SORT_TYPE_7";
+    const std::string SORT_TYPE_8 = "SORT_TYPE_8";
 }
 #endif

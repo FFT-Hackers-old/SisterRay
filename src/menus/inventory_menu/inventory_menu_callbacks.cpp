@@ -20,15 +20,30 @@ void initializeInventoryMenu() {
 }
 
 void registerInventoryMenuListeners() {
-    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&initCharDataWidget);
-    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&initGearMateriaSlotWidget);
-    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&initGearDescWidget);
-    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&initStatDiffWidget);
-    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&initGearListWidget);
+    const auto& modName = std::string("srFF7Base");
+    const auto& contextKeys = std::unordered_set<SrEventContext>({ INVENTORY_MENU_CONTEXT });
 
-    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleChangeCharacter); 
-    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleUpdateDescription);
-    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleUpdateGearSlotsWidget);
-    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleUpdateStatMenuWidget);
-    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&enableListWidget);
+    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&initViewChoiceWidget, modName);
+    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&initCharViewWidget, modName);
+    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&initItemViewWidget, modName);
+    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&keyItemsViewWidget, modName);
+    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&itemDescriptionWidget, modName);
+    gContext.eventBus.addListener(INIT_INVENTORY_MENU, (SrEventCallback)&arrangeTypeWidget, modName);
+
+    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleCustomSortActive, modName); 
+    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleKeyItemsViewActive, modName);
+    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handlePartyViewActive, modName);
+    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleUpdateDescription, modName);
+    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleArrangeActive, modName);
+
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&chooseViewHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&selectItemHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&executeSwapHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&useTargetedItemHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&arrangeItemsHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitInventoryHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitItemView, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitSwapHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitTargetingHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitArrangeHandler, modName, contextKeys);
 }

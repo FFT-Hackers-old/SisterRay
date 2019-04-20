@@ -1,6 +1,8 @@
 #include "inventory_input_callbacks.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
+#include "../menu_utils.h"
+#include "../../inventories/inventory_utils.h"
 
 //INVENTORY_OK_HANDLERS
 void chooseViewHandler(const InventoryInputEvent* event) {
@@ -30,7 +32,7 @@ void chooseViewHandler(const InventoryInputEvent* event) {
     }
 }
 
-void selectItemhandler(const InventoryInputEvent* event) {
+void selectItemHandler(const InventoryInputEvent* event) {
     if (event->menuState != 1)
         return;
 
@@ -67,15 +69,15 @@ void executeSwapHandler(const InventoryInputEvent* event) {
             playMenuSound(1);
             /*This code swaps two items in the inventory*/
             auto temp_entry = gContext.inventory->get_resource(*TEMP_ABSOLUTE_CURSOR_INDEX);
-            gContext.inventory->update_resource(*TEMP_ABSOLUTE_CURSOR_INDEX, gContext.inventory->get_resource(itemChoice->baseSortRow + itemChoice->relativeSortRow));
-            gContext.inventory->update_resource(baseSortRow + relativeSortRow, temp_entry);
+            gContext.inventory->update_resource(*TEMP_ABSOLUTE_CURSOR_INDEX, gContext.inventory->get_resource(itemChoice->baseRowIndex + itemChoice->relativeRowIndex));
+            gContext.inventory->update_resource(itemChoice->baseRowIndex + itemChoice->relativeRowIndex, temp_entry);
             *ITEM_TO_SWAP_SELECTED = 0;
         }
     }
     else {
         playMenuSound(1);
         *TEMP_COLUMN_INDEX = itemChoice.relativeColumnIndex; //copy first dword of struct set in previous state here, seems to always be 0
-        *TEMP_ABSOLUTE_CURSOR_INDEX = itemChoice->baseSortRow + itemChoice->relativeSortRow; //custom sort base row and relative offsets copied when you select an item to swap
+        *TEMP_ABSOLUTE_CURSOR_INDEX = itemChoice->baseRowIndex + itemChoice->relativeRowIndex; //custom sort base row and relative offsets copied when you select an item to swap
         *ITEM_TO_SWAP_SELECTED = 1;
     }
 }
@@ -130,7 +132,7 @@ void exitItemView(const InventoryInputEvent* event) {
     if (event->menuState != 1)
         return;
     playMenuSound(4);
-    setStateCursor(event->menu, 0);
+    setMenuState(event->menu, 0);
 }
 
 void exitSwapHandler(const InventoryInputEvent* event) {
@@ -138,7 +140,7 @@ void exitSwapHandler(const InventoryInputEvent* event) {
         return;
 
     playMenuSound(4);
-    setStateCursor(event->menu, 0);
+    setMenuState(event->menu, 0);
 
 }
 
@@ -147,7 +149,7 @@ void exitTargetingHandler(const InventoryInputEvent* event) {
         return;
 
     playMenuSound(4);
-    setStateCursor(event->menu, 1);
+    setMenuState(event->menu, 1);
 }
 
 void exitArrangeHandler(const InventoryInputEvent* event) {
@@ -155,7 +157,7 @@ void exitArrangeHandler(const InventoryInputEvent* event) {
         return;
 
     playMenuSound(4);
-    setStateCursor(event->menu, 0);
+    setMenuState(event->menu, 0);
 }
 
 

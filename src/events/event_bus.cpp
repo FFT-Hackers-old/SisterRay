@@ -35,8 +35,10 @@ void EventBus::dispatch(SrEventType eventType, void* event, const std::vector<Sr
 SrEventListener EventBus::addListener(SrEventType eventType, SrEventCallback callback, const std::string& modName, const std::unordered_set<SrEventContext>& keys) {
     size_t listenerID;
 
-    if (!eventType)
-        return 0;
+    if (!eventType) {
+        SrEventListener listener = { 0 };
+        return listener;
+    }
 
     if (_listenerRegistry.size() <= eventType)
         _listenerRegistry.resize((size_t)eventType + 1);
@@ -51,10 +53,10 @@ SrEventListener EventBus::addListener(SrEventType eventType, SrEventCallback cal
         listenerID = _listenerCapacity++;
         _listenerCallbacks.resize(listenerID + 1);
         _listenerTypes.resize(listenerID + 1);
-        _listenerContext.resize(listenerID + 1);
+        _listenerContexts.resize(listenerID + 1);
     }
 
-    SrEventListener listener = { listenerID, keys };
+    SrEventListener listener = { listenerID };
     _modListeners[modName].push_back(listenerID);
     _listenerModNames[listenerID] = modName;
     _listenerCallbacks[listenerID] = callback;
@@ -66,7 +68,8 @@ SrEventListener EventBus::addListener(SrEventType eventType, SrEventCallback cal
     return listener;
 }
 
-void EventBus::addKey(SrEventListener listener, u32 key) {
+void EventBus::addKey(SrEventListener listener, SrEventContext key) {
+    auto listenerID = listener.listenerID;
     if (!listenerID)
         return;
 
@@ -76,7 +79,8 @@ void EventBus::addKey(SrEventListener listener, u32 key) {
     _listenerContexts[listenerID].insert(key);
 }
 
-void EventBus::removeKey(SrEventListener listener, u32 key) {
+void EventBus::removeKey(SrEventListener listener, SrEventContext key) {
+    auto listenerID = listener.listenerID;
     if (!listenerID)
         return;
 

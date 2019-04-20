@@ -6,7 +6,7 @@
 #include <zlib.h>
 #include "inventories/inventory_functions.h"
 #include "inventories/inventory_utils.h"
-#include "menus/inventory_menu.h"
+#include "menus/inventory_menu/inventory_menu.h"
 #include "menus/battle_menu.h"
 #include "menus/equip_menu/equip_menu.h"
 #include "menus/equip_menu//equip_menu_callbacks.h"
@@ -129,7 +129,6 @@ static void Init(void)
     initializeEquipMenu();
     //End Register base callbacks
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
-    mogReplaceFunction(INIT_INVENTORY_CURSOR_STATE, &onEnterInventory);
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
     mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
     mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);

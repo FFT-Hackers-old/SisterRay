@@ -16,7 +16,7 @@ public:
     void dispatch(
         SrEventType eventType,
         void* event,
-        const std::vector<SrEventContext>& contexts = std::unordered_set<SrEventContext>()
+        const std::vector<SrEventContext>& contexts = std::vector<SrEventContext>()
     );
     SrEventListener addListener(
         SrEventType eventType,
@@ -26,8 +26,8 @@ public:
     );
 
     void removeListener(SrEventListener listener);
-    void addKey(SrEventListener listener, u32 key);
-    void removeKey(SrEventListener listener, u32 key);
+    void addKey(SrEventListener listener, SrEventContext key);
+    void removeKey(SrEventListener listener, SrEventContext key);
 
     //typesafe public helpers to make our type erasure safe
 

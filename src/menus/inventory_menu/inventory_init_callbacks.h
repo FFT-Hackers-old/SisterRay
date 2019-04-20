@@ -13,5 +13,8 @@
 void initViewChoiceWidget(const InventoryInitEvent* event);
 void initCharViewWidget(const InventoryInitEvent* event);
 void initItemViewWidget(const InventoryInitEvent* event);
+void keyItemsViewWidget(const InventoryInitEvent* event);
+void itemDescriptionWidget(const InventoryInitEvent* event);
+void arrangeTypeWidget(const InventoryInitEvent* event);
 
 #endif

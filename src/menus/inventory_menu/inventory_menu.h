@@ -3,6 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
+#include "../../events/menu_events.h"
 
 SISTERRAY_API i32 onEnterInventory();
 SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask);

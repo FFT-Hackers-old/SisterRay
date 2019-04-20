@@ -10,7 +10,6 @@ typedef struct {
     u32 menuState;
 } EquipDrawEvent;
 
-
 typedef struct {
     Menu* menu;
     u32 menuState;
@@ -19,5 +18,19 @@ typedef struct {
 typedef struct {
     Menu* menuObject;
 } EquipInitEvent;
+
+typedef struct {
+    Menu* menu;
+    u32 menuState;
+} InventoryDrawEvent;
+
+typedef struct {
+    Menu* menu;
+    u32 menuState;
+} InventoryInputEvent;
+
+typedef struct {
+    Menu* menuObject;
+} InventoryInitEvent;
 
 #endif

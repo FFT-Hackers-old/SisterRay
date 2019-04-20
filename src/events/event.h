@@ -7,5 +7,10 @@
  */
 
 #include <SisterRay/SisterRay.h>
+#include <unordered_set>
+
+struct SrEventListener_ {
+    u32 listenerID;
+};
 
 #endif

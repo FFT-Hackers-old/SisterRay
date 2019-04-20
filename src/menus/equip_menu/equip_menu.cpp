@@ -68,22 +68,23 @@ void handleEquipMenuInput(i32 updateStateMask, Menu* menuObject) {
 
     EquipInputEvent event = { menuObject, equipMenuState };
     handleCursorPositionUpdate((u32*)cursorArray);
+    auto dispatchContext = std::vector<SrEventContext>({ EQUIP_MENU_CONTEXT });
     if (checkInputReceived(32)) {
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_OK, &event);
+        gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);
     }
     else if (checkInputReceived(64)) {
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_CANCEL, &event);
+        gContext.eventBus.dispatch(MENU_INPUT_CANCEL, &event, dispatchContext);
     }
     else if (checkInputReceived(4)) {
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_L1, &event);
+        gContext.eventBus.dispatch(MENU_INPUT_L1, &event, dispatchContext);
     }
     else if (checkInputReceived(8)) {
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_R1, &event);
+        gContext.eventBus.dispatch(MENU_INPUT_R1, &event, dispatchContext);
     }
     else if (checkInputReceived(128)) { //When switching to the materia view, square
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_SQUARE, &event);
+        gContext.eventBus.dispatch(MENU_INPUT_SQUARE, &event, dispatchContext);
     }
     else if (checkInputReceived(16)) { //unequip accessory
-        gContext.eventBus.dispatch(EQUIP_MENU_INPUT_TRIANGLE, &event);
+        gContext.eventBus.dispatch(MENU_INPUT_TRIANGLE, &event, dispatchContext);
     }
 }

@@ -14,7 +14,7 @@ public:
     std::unordered_map<std::string, T> handler_names;
     SrIndexedCallbackRegistry() : SrResourceRegistry() {};
 
-    void add_function(const std::string& name, T callback) {
+    void add_function(const std::string& name, const T& callback) {
         handler_names[name] = callback;
     }
 

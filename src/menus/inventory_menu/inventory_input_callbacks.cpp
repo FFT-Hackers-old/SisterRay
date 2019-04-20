@@ -76,7 +76,7 @@ void executeSwapHandler(const InventoryInputEvent* event) {
     }
     else {
         playMenuSound(1);
-        *TEMP_COLUMN_INDEX = itemChoice.relativeColumnIndex; //copy first dword of struct set in previous state here, seems to always be 0
+        *TEMP_COLUMN_INDEX = itemChoice->relativeColumnIndex; //copy first dword of struct set in previous state here, seems to always be 0
         *TEMP_ABSOLUTE_CURSOR_INDEX = itemChoice->baseRowIndex + itemChoice->relativeRowIndex; //custom sort base row and relative offsets copied when you select an item to swap
         *ITEM_TO_SWAP_SELECTED = 1;
     }

@@ -1,5 +1,6 @@
 #include "updaters.h"
 #include "../impl.h"
+#include "../inventories/inventory_utils.h"
 
 void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
     if (self->collectionType != GridWidgetClass()) {
@@ -24,7 +25,7 @@ void inventoryViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIn
     auto itemID = gContext.inventory->get_resource(flatIndex).item_id;
     if (itemID != 0xFFFF) {
         enableWidget(widget);
-        auto textColor = usableInInventoryMenu(itemID) ? 0 : 7;
+        auto textColor = usableInInventoryMenu(itemID) ? COLOR_GRAY: COLOR_WHITE;
         const char* name = gContext.game_strings.key_item_names.get_string(flatIndex);
         updateText(widget, name);
         updateTextColor(widget, textColor);
@@ -40,13 +41,14 @@ void inventoryViewQuantityUpdater(CollectionWidget* self, Widget* widget, u16 fl
     }
 
     auto typedPtr = (CursorGridWidget*)self;
+    auto itemID = gContext.inventory->get_resource(flatIndex).item_id;
     if (gContext.inventory->get_resource(flatIndex).item_id != 0xFFFF) {
         enableWidget(widget);
 
-        auto textColor = usableInInventoryMenu(itemID) ? 0 : 7;
+        auto numberColor = usableInInventoryMenu(itemID) ? COLOR_GRAY : COLOR_WHITE;
         auto itemQuantity = gContext.inventory->get_resource(flatIndex).quantity;
         updateNumber(widget, itemQuantity);
-        updateNumberColor(widget, textColor);
+        updateNumberColor(widget, numberColor);
     }
     else {
         disableWidget(widget);

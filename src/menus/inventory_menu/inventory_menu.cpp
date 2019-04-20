@@ -26,7 +26,7 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
     displayActiveCursorStates(updateStateMask, menuObject);
     if (!is_input_handling_enabled())
     {
-        handleInventoryInput(updateStateMask);
+        handleInventoryMenuInput(updateStateMask, menuObject);
     }
 }
 
@@ -37,8 +37,8 @@ void displayActiveCursorStates(i32 updateStateMask, Menu* menu) {
     u16 item_ID;
 
     sub_6C98A6();
+    auto viewChoice = getStateCursor(menu, 0);
     switch (menu->currentState) {
-        auto viewChoice = getStateCursor(menu, 0);
         case 0: {
             displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.1f); //display cursor at the selected view
             break;
@@ -72,7 +72,7 @@ void displayActiveCursorStates(i32 updateStateMask, Menu* menu) {
             if (updateStateMask & 2)
                 displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.001f);
             auto keyItemChoice = getStateCursor(menu, 3);
-            displayCursor(293 * keyItemChoice->relativeKeyItemColumn + 5, 36 * keyItemChoice->relativeKeyItemRow + 129, 0.001f);
+            displayCursor(293 * keyItemChoice->relativeColumnIndex + 5, 36 * keyItemChoice->relativeRowIndex + 129, 0.001f);
             break;
         }
         case 4: {
@@ -89,7 +89,7 @@ void displayActiveCursorStates(i32 updateStateMask, Menu* menu) {
             if (ITEM_TO_SWAP_SELECTED) {
                 if (updateStateMask & 2) {
                     i32 pixelOffsetToSelectedItem = 37 * (*TEMP_ABSOLUTE_CURSOR_INDEX) - 37 * customSortChoice->baseRowIndex + 9 * (*dword_DD1B54) - 9;
-                    if (pixelOffsetToSelectedItem > -37 && pixelOffsetToSelectedItem < 1369
+                    if (pixelOffsetToSelectedItem > -37 && pixelOffsetToSelectedItem < 1369)
                         displayCursor(291, pixelOffsetToSelectedItem + 113, 0.0);
                 }
             }

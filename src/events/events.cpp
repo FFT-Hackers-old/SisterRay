@@ -3,7 +3,8 @@
 #include "../impl.h"
 #include <stdarg.h>
 
-SISTERRAY_API SrEventListener srAddListener(SrEventType eventType, SrEventCallback callback, const char* modName, SrEventContext context) {
+SISTERRAY_API u32 srAddListener(SrEventType eventType, SrEventCallback callback, const char* modName, SrEventContext context) {
     const std::unordered_set<SrEventContext>& keys({ context });
-    return gContext.eventBus.addListener(eventType, callback, std::string(modName), keys);
+    SrEventListener listener = gContext.eventBus.addListener(eventType, callback, std::string(modName), keys);
+    return listener.listenerID;
 }

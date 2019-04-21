@@ -41,10 +41,8 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
                 auto elementX = cursorGrid->columnSpacing * columnIndex + cursorGrid->widget.widget.xCoordinate;
                 auto elementY = cursorGrid->rowSpacing * rowIndex + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
-                srLogWrite("address of function updater: %p ", cursorGrid->updater);
                 u16 startIndex = ((cursorGrid->cursor->maxColumnBound) * (cursorGrid->cursor->baseRowIndex)) + (cursorGrid->cursor->baseColumnIndex);
                 if (cursorGrid->updater) {
-                    srLogWrite("running update");
                     cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex+flatIndex);
                 }
                 drawWidget(getChild((Widget*)cursorGrid, flatIndex));

@@ -45,6 +45,20 @@ void initGameStrings()
         gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Slots"));
         gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Growth"));
     }
+
+    for (int i = 0; i <= 11; i++) {
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Use"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Arrange"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Key Items"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Customize"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Field"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Battle"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Throw"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Type"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Name"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Most"));
+        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Least"));
+    }
 }
 
 const char* getNameFromRelativeID(u16 relativeID, u8 itemType) {

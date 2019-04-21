@@ -1,6 +1,7 @@
 
 #include "equip_menu_callbacks.h"
 #include "../menu.h"
+#include <unordered_set>
 #include "../../impl.h"
 
 using namespace EquipWidgetNames;
@@ -16,24 +17,27 @@ void initializeEquipMenu() {
 }
 
 void registerEquipMenuListeners() {
-    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initCharDataWidget);
-    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initGearMateriaSlotWidget);
-    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initGearDescWidget);
-    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initStatDiffWidget);
-    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initGearListWidget);
+    const auto& modName = std::string("srFF7Base");
+    const auto& contextKeys = std::unordered_set<SrEventContext>({ EQUIP_MENU_CONTEXT });
 
-    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleChangeCharacter); 
-    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateDescription);
-    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateGearSlotsWidget);
-    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateStatMenuWidget);
-    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&enableListWidget);
+    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initCharDataWidget, modName);
+    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initGearMateriaSlotWidget, modName);
+    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initGearDescWidget, modName);
+    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initStatDiffWidget, modName);
+    gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initGearListWidget, modName);
 
-    gContext.eventBus.addListener(EQUIP_MENU_INPUT_OK, (SrEventCallback)&equipGearHandler);
-    gContext.eventBus.addListener(EQUIP_MENU_INPUT_OK, (SrEventCallback)&selectGearHandler);
-    gContext.eventBus.addListener(EQUIP_MENU_INPUT_CANCEL, (SrEventCallback)&exitMenuListener);
-    gContext.eventBus.addListener(EQUIP_MENU_INPUT_CANCEL, (SrEventCallback)&exitEquipViewListener);
-    gContext.eventBus.addListener(EQUIP_MENU_INPUT_SQUARE, (SrEventCallback)&changeToMateriaMenu);
-    gContext.eventBus.addListener(EQUIP_MENU_INPUT_TRIANGLE, (SrEventCallback)&handleUnequipAcc);
-    gContext.eventBus.addListener(EQUIP_MENU_INPUT_L1, (SrEventCallback)&changeCharLeft);
-    gContext.eventBus.addListener(EQUIP_MENU_INPUT_R1, (SrEventCallback)&changeCharRight);
+    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
+    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateDescription, modName);
+    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateGearSlotsWidget, modName);
+    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateStatMenuWidget, modName);
+    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&enableListWidget, modName);
+
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&equipGearHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&selectGearHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitMenuListener, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitEquipViewListener, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_SQUARE, (SrEventCallback)&changeToMateriaMenu, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_TRIANGLE, (SrEventCallback)&handleUnequipAcc, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_L1, (SrEventCallback)&changeCharLeft, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_R1, (SrEventCallback)&changeCharRight, modName, contextKeys);
 }

@@ -12,7 +12,7 @@
  */
 
 //Callback/Event API
-SISTERRAY_API SrEventListener srAddListener(SrEventType eventType, SrEventCallback callback);
+SISTERRAY_API u32 srAddListener(SrEventType eventType, SrEventCallback callback, const char* modName, SrEventContext defaultContext);
 
 //API for accessing registries
 

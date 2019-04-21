@@ -204,7 +204,6 @@ void initStatDiffWidget(const EquipInitEvent* event) {
 
 //Initialize the gear list with just a box and a series of disabled widgets.
 void initGearListWidget(const EquipInitEvent* event) {
-    CursorContext* cursorContextArray = (CursorContext*)EQUIP_MENU_CURSOR_CONTEXTS;
     auto gearChoice = getStateCursor(event->menuObject, 1);
 
     drawGridParams gridParams;

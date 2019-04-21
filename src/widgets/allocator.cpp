@@ -10,7 +10,7 @@ Widget* typeAllocate(const WidgetClass* type, std::string name) {
         return (Widget*)createTextWidget(params, name);
     }
     else if (type == NumberWidgetKlass()) {
-        drawNumberParams params = {};
+        drawNumberParams params = {0, 0, 0, 3, COLOR_WHITE, 0.2f};
         return (Widget*)createNumberWidget(params, name);
     }
     else if (type == BoxWidgetKlass()) {

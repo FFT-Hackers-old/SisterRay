@@ -96,7 +96,7 @@ void useTargetedItemHandler(const InventoryInputEvent* event) {
         playMenuSound(3);
         return;
     }
-    handleUsableItemEffects(itemID, inventory_index);
+    handleUsableItemEffects(itemID, inventory_index, partyMemberIndex, event->menu);
 }
 
 void arrangeItemsHandler(const InventoryInputEvent* event) {
@@ -169,8 +169,7 @@ void exitArrangeHandler(const InventoryInputEvent* event) {
 
 
 
-void handleUsableItemEffects(u16 item_ID, u16 inventory_index) {
-    u32 partyMemberIndex = *(INVENTORY_CURRENT_PARTY_INDEX);
+void handleUsableItemEffects(u16 item_ID, u16 inventory_index, u32 partyMemberIndex, Menu* menu) {
     auto itemWasUsed = false;
 
     /*Call the appropriate function handler for using items on a character/the party*/
@@ -178,6 +177,6 @@ void handleUsableItemEffects(u16 item_ID, u16 inventory_index) {
     if (itemWasUsed) {
         gContext.inventory->decrementInventoryEntry(inventory_index, 1);
         if (gContext.inventory->get_resource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
-            *INVENTORY_MENU_STATE = 1;
+            setMenuState(menu, 1);
     }
 }

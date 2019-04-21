@@ -66,6 +66,7 @@ void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
         enableWidget(widget);
         const char* name = gContext.game_strings.key_item_names.get_string(flatIndex);
         updateText(widget, name);
+        updateTextColor(widget, COLOR_WHITE);
     }
     else {
         disableWidget(widget);

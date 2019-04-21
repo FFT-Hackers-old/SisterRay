@@ -30,6 +30,7 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
     }
 }
 
+//Need to come up with a better abstract for cursors
 void displayActiveCursorStates(i32 updateStateMask, Menu* menu) {
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
 
@@ -87,7 +88,7 @@ void displayActiveCursorStates(i32 updateStateMask, Menu* menu) {
             if (updateStateMask & 2)
                 displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.1f);
 
-            if (ITEM_TO_SWAP_SELECTED) {
+            if (*ITEM_TO_SWAP_SELECTED) {
                 if (updateStateMask & 2) {
                     i32 pixelOffsetToSelectedItem = 37 * (*TEMP_ABSOLUTE_CURSOR_INDEX) - 37 * customSortChoice->baseRowIndex + 9 * (*dword_DD1B54) - 9;
                     if (pixelOffsetToSelectedItem > -37 && pixelOffsetToSelectedItem < 1369)
@@ -112,12 +113,9 @@ void handleInventoryMenuInput(i32 updateStateMask, Menu* menuObject) {
     handleCursorPositionUpdate((u32*)cursorArray);
     auto dispatchContext = std::vector<SrEventContext>({ INVENTORY_MENU_CONTEXT });
     if (checkInputReceived(32)) {
-
-        srLogWrite("DISPATCHING INVENTORY MENU OK");
         gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);
     }
     else if (checkInputReceived(64)) {
-        srLogWrite("DISPATCHING INVENTORY MENU CANCEL");
         gContext.eventBus.dispatch(MENU_INPUT_CANCEL, &event, dispatchContext);
     }
     else if (checkInputReceived(4)) {

@@ -19,6 +19,6 @@ void exitSwapHandler(const InventoryInputEvent* event);
 void exitTargetingHandler(const InventoryInputEvent* event);
 void exitArrangeHandler(const InventoryInputEvent* event);
 void exitKeyItemsHandler(const InventoryInputEvent* event);
-void handleUsableItemEffects(u16 item_ID, u16 inventory_index);
+void handleUsableItemEffects(u16 item_ID, u16 inventory_index, u32 partyMemberIndex, Menu* menu);
 
 #endif

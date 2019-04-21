@@ -18,6 +18,7 @@ void exitItemView(const InventoryInputEvent* event);
 void exitSwapHandler(const InventoryInputEvent* event);
 void exitTargetingHandler(const InventoryInputEvent* event);
 void exitArrangeHandler(const InventoryInputEvent* event);
+void exitKeyItemsHandler(const InventoryInputEvent* event);
 void handleUsableItemEffects(u16 item_ID, u16 inventory_index);
 
 #endif

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include "event_bus.h"
 #include <unordered_set>
+#include "../impl.h"
 
 EventBus::EventBus(): _listenerCount(0), _listenerCapacity(1) {
     _listenerTypes.push_back(NO_TYPE);
@@ -18,13 +19,19 @@ void EventBus::dispatch(SrEventType eventType, void* event, const std::vector<Sr
         return;
 
     const std::vector<size_t>& eventListeners = _listenerRegistry[eventType];
+    bool filtered = false;
 
     for (size_t listenerID : eventListeners) {
         const auto& keys = _listenerContexts[listenerID];
         if ((!keys.empty()) && (!contexts.empty())) {
+            filtered = false;
             for (auto context : contexts) {
-                if (keys.find(context) == keys.end())
-                    return;
+                if (keys.find(context) == keys.end()) {
+                    filtered = true;
+                }
+            }
+            if (filtered) {
+                continue;
             }
         }
         SrEventCallback callback = _listenerCallbacks[listenerID];
@@ -54,7 +61,11 @@ SrEventListener EventBus::addListener(SrEventType eventType, SrEventCallback cal
         _listenerCallbacks.resize(listenerID + 1);
         _listenerTypes.resize(listenerID + 1);
         _listenerContexts.resize(listenerID + 1);
+        _listenerModNames.resize(listenerID + 1);
     }
+
+    srLogWrite("Registering new callback with listner ID %i", listenerID);
+    srLogWrite("New callback registered to event %i", eventType);
 
     SrEventListener listener = { listenerID };
     _modListeners[modName].push_back(listenerID);

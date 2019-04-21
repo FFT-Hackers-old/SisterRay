@@ -31,7 +31,6 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
 }
 
 void displayActiveCursorStates(i32 updateStateMask, Menu* menu) {
-    u32 partyMemberIndex = *(INVENTORY_CURRENT_PARTY_INDEX);
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
 
     u16 item_ID;
@@ -56,9 +55,10 @@ void displayActiveCursorStates(i32 updateStateMask, Menu* menu) {
                 displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.0f);
 
             if (!(*use_on_characters_enabled)) {
+                auto characterChoice = getStateCursor(menu, 2);
                 item_ID = gContext.inventory->get_resource(itemChoice->baseRowIndex + itemChoice->relativeRowIndex).item_id;;
                 if (!(gContext.item_on_use_data.get_resource(item_ID).target_all))
-                    displayCursor(0, 120 * partyMemberIndex + 161, 0.0f);
+                    displayCursor(0, 120 * characterChoice->relativeRowIndex + 161, 0.0f);
                 else
                     displayCursor(0, 120 * (updateStateMask % 3) + 161, 0.0);
             }
@@ -78,8 +78,9 @@ void displayActiveCursorStates(i32 updateStateMask, Menu* menu) {
         case 4: {
             auto arrangeTypeChoice = getStateCursor(menu, 4);
             if (updateStateMask & 2)
-                displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.001f);
-            displayCursor(*(dword_DD18C0 + 24) - 30, *(dword_DD18C0 + 26) + 26 * arrangeTypeChoice->relativeRowIndex + 17, 0.001f);
+                displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.201f);
+            displayCursor( 0xDC - 30, 0x1A + 26 * arrangeTypeChoice->relativeRowIndex + 17, 0.001f);
+            break;
         }
         case 5: {
             auto customSortChoice = getStateCursor(menu, 5);
@@ -111,9 +112,12 @@ void handleInventoryMenuInput(i32 updateStateMask, Menu* menuObject) {
     handleCursorPositionUpdate((u32*)cursorArray);
     auto dispatchContext = std::vector<SrEventContext>({ INVENTORY_MENU_CONTEXT });
     if (checkInputReceived(32)) {
+
+        srLogWrite("DISPATCHING INVENTORY MENU OK");
         gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);
     }
     else if (checkInputReceived(64)) {
+        srLogWrite("DISPATCHING INVENTORY MENU CANCEL");
         gContext.eventBus.dispatch(MENU_INPUT_CANCEL, &event, dispatchContext);
     }
     else if (checkInputReceived(4)) {

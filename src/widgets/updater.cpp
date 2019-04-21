@@ -26,7 +26,7 @@ void inventoryViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIn
     if (itemID != 0xFFFF) {
         enableWidget(widget);
         auto textColor = usableInInventoryMenu(itemID) ? COLOR_GRAY: COLOR_WHITE;
-        const char* name = gContext.game_strings.key_item_names.get_string(flatIndex);
+        const char* name = getNameFromItemID(itemID);
         updateText(widget, name);
         updateTextColor(widget, textColor);
     }

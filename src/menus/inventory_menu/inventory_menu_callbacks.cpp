@@ -14,7 +14,7 @@ void initializeInventoryMenu() {
     CursorContext arrangeViewCursor = { 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0 };
     CursorContext customSortCursor = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
     CursorContext cursorContextArray[6] = { topBarCursor, itemViewCursor, charViewCursor, keyItemsViewCursor, arrangeViewCursor, customSortCursor };
-    auto inventoryMenu = createMenu(INIT_INVENTORY_MENU, 2, &cursorContextArray[0]);
+    auto inventoryMenu = createMenu(INIT_INVENTORY_MENU, 6, &cursorContextArray[0]);
     gContext.menuWidgets.add_element("INVENTORY_MENU", inventoryMenu);
     gContext.menuWidgets.initializeMenu("INVENTORY_MENU", INVENTORY_MENU_NAME);
 }
@@ -35,6 +35,7 @@ void registerInventoryMenuListeners() {
     gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handlePartyViewActive, modName);
     gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleUpdateDescription, modName);
     gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleArrangeActive, modName);
+    gContext.eventBus.addListener(DRAW_INVENTORY_MENU, (SrEventCallback)&handleMenuViewActive, modName);
 
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&chooseViewHandler, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&selectItemHandler, modName, contextKeys);
@@ -46,4 +47,5 @@ void registerInventoryMenuListeners() {
     gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitSwapHandler, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitTargetingHandler, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitArrangeHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitKeyItemsHandler, modName, contextKeys);
 }

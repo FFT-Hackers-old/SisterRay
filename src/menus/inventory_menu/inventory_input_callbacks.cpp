@@ -89,7 +89,7 @@ void useTargetedItemHandler(const InventoryInputEvent* event) {
     auto itemChoice = getStateCursor(event->menu, 1);
     u16 inventory_index = itemChoice->baseRowIndex + itemChoice->relativeRowIndex;
     auto itemID = gContext.inventory->get_resource(inventory_index).item_id;
-    u32 partyMemberIndex = *(INVENTORY_CURRENT_PARTY_INDEX);
+    u32 partyMemberIndex = getStateCursor(event->menu, 2)->relativeRowIndex;
 
     u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[partyMemberIndex];
     if (character_ID == 0xFF && !(gContext.item_on_use_data.get_resource(itemID).target_all)) {
@@ -118,7 +118,6 @@ void arrangeItemsHandler(const InventoryInputEvent* event) {
 }
 
 //INVENTORY CANCEL HANDLERS
-
 void exitInventoryHandler(const InventoryInputEvent* event) {
     if (event->menuState != 0)
         return;
@@ -150,6 +149,14 @@ void exitTargetingHandler(const InventoryInputEvent* event) {
 
     playMenuSound(4);
     setMenuState(event->menu, 1);
+}
+
+void exitKeyItemsHandler(const InventoryInputEvent* event) {
+    if (event->menuState != 3)
+        return;
+
+    playMenuSound(4);
+    setMenuState(event->menu, 0);
 }
 
 void exitArrangeHandler(const InventoryInputEvent* event) {

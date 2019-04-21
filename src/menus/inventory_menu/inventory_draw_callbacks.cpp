@@ -23,6 +23,16 @@ void handleCustomSortActive(const InventoryDrawEvent* event) {
     }
 }
 
+void handleMenuViewActive(const InventoryDrawEvent* event) {
+    auto viewChoice = getStateCursor(event->menu, 0);
+    auto itemViewWidget = getChild(event->menu->menuWidget, ITEM_VIEW_WIDGET_NAME);
+    if (viewChoice->relativeColumnIndex != 2) {
+        enableWidget(itemViewWidget);
+        return;
+    }
+    disableWidget(itemViewWidget);
+}
+
 void handleUpdateDescription(const InventoryDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     auto itemDescWidget = getChild(menuWidget, ITEM_DESC_WIDGET_NAME);
@@ -36,12 +46,18 @@ void handleUpdateDescription(const InventoryDrawEvent* event) {
                 fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(flatInventoryIndex).item_id);
                 updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), fetchedDescription);
             }
+            else {
+                updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), "\xFF");
+            }
             break;
         }
         case 2: {
             if (gContext.inventory->get_resource(flatInventoryIndex).item_id != 0xFFFF) {
                 fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(flatInventoryIndex).item_id);
                 updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), fetchedDescription);
+            }
+            else {
+                updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), "\xFF");
             }
             break;
         }
@@ -53,6 +69,9 @@ void handleUpdateDescription(const InventoryDrawEvent* event) {
                 fetchedDescription = gContext.game_strings.key_item_descriptions.get_string(keyItemID);
                 updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), fetchedDescription);
             }
+            else {
+                updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), "\xFF");
+            }
             break;
         }
         case 5: {
@@ -62,9 +81,13 @@ void handleUpdateDescription(const InventoryDrawEvent* event) {
                 fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(flatInventoryIndex).item_id);
                 updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), fetchedDescription);
             }
+            else {
+                updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), "\xFF");
+            }
             break;
         }
         default:
+            updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), "\xFF");
             break;
     }
 }

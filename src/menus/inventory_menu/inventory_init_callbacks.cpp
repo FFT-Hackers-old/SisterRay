@@ -74,11 +74,11 @@ void initCharViewWidget(const InventoryInitEvent* event) {
     std::vector<std::string> HPBarNames = { HPBAR_1_NAME, HPBAR_2_NAME, HPBAR_3_NAME };
     for (int currentPartyMember = 0; currentPartyMember < 3; ++currentPartyMember) {
         if ((CURRENT_PARTY_MEMBER_ARRAY)[currentPartyMember] != 0xFF) {  
-            drawPortraitParams portraitParams = { 37, 120*currentPartyMember + 116, currentPartyMember, 0.2f };
+            drawPortraitParams portraitParams = { 37, 120*currentPartyMember + 116, currentPartyMember, 0.1f };
             portraitWidget = createPortraitWidget(portraitParams, portraitNames[currentPartyMember]);
             addChildWidget(partyViewWidget, (Widget*)portraitWidget, portraitNames[currentPartyMember]);
 
-            drawHPBarParams hpBarParams = { 133, 120*currentPartyMember +126, currentPartyMember, 0.2f };
+            drawHPBarParams hpBarParams = { 133, 120*currentPartyMember +126, currentPartyMember, 0.1f };
             auto HPBarWidget = createHPBarWidget(hpBarParams, HPBarNames[currentPartyMember]);
             addChildWidget(partyViewWidget, (Widget*)HPBarWidget, HPBarNames[currentPartyMember]);
         }
@@ -190,8 +190,9 @@ void itemDescriptionWidget(const InventoryInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, ITEM_DESC_BOX);
     addChildWidget(itemDescWidget, (Widget*)boxWidget, ITEM_DESC_BOX);
 
-    textParams = { 27, 64, "", COLOR_WHITE, 0.1f };
+    textParams = { 27, 64, "\xFF", COLOR_WHITE, 0.1f };
     textWidget = createTextWidget(textParams, ITEM_DESCRIPTION);
+    addChildWidget(itemDescWidget, (Widget*)textWidget, ITEM_DESCRIPTION);
 
     addChildWidget(mainWidget, itemDescWidget, ITEM_DESC_WIDGET_NAME);
 }
@@ -208,11 +209,11 @@ void arrangeTypeWidget(const InventoryInitEvent* event) {
     auto arrangeTypeWidget = createWidget(ARRANGE_TYPE_WIDGET_NAME);
 
     boxParams = {
-       menuWindowConfig[3].drawDistance1,
-       menuWindowConfig[3].drawDistance2,
-       menuWindowConfig[3].drawDistance3,
-       menuWindowConfig[3].drawDistance4,
-       0.4f
+       (i16)0xDC,
+       (i16)0x1A,
+       (i16)0x91,
+       (i16)0xE3,
+       0.001f
     };
     boxWidget = createBoxWidget(boxParams, ARRANGE_TYPE_BOX);
     addChildWidget(arrangeTypeWidget, (Widget*)boxWidget, ARRANGE_TYPE_BOX);
@@ -221,7 +222,7 @@ void arrangeTypeWidget(const InventoryInitEvent* event) {
     std::vector<std::string> listNames = { SORT_TYPE_1, SORT_TYPE_2, SORT_TYPE_3, SORT_TYPE_4, SORT_TYPE_5, SORT_TYPE_6, SORT_TYPE_7, SORT_TYPE_8 };
     for (int sortType = 0; sortType < listNames.size(); ++sortType) {
         const char* fetchedDescription = gContext.game_strings.inventory_menu_texts.get_string(sortType + 3);
-        setTextParams(&textParams, *(dword_DD18C0 + 24) + 13, *(dword_DD18C0 + 26) + 26 * sortType + 13, fetchedDescription, COLOR_WHITE, 0.1f);
+        setTextParams(&textParams, boxParams.drawDistance1 + 13, boxParams.drawDistance2 + 26 * sortType + 13, fetchedDescription, COLOR_WHITE, 0.001f);
         auto textChild = createTextWidget(textParams, listNames[sortType]);
         addChildWidget(arrangeTypeWidget, (Widget*)textChild, listNames[sortType]);
     }

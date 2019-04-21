@@ -13,4 +13,5 @@ void handleKeyItemsViewActive(const InventoryDrawEvent* event);
 void handlePartyViewActive(const InventoryDrawEvent* event);
 void handleUpdateDescription(const InventoryDrawEvent* event);
 void handleArrangeActive(const InventoryDrawEvent* event);
+void handleMenuViewActive(const InventoryDrawEvent* event);
 #endif

@@ -57,8 +57,6 @@ SISTERRAY_API void addState(Menu* menu, Cursor* context) {
 
 SISTERRAY_API Cursor* getStateCursor(Menu* menu, i32 menuState) {
     if (menuState < menu->stateCount) {
-        srLogWrite("returning addr of cursor for state %i", menuState);
-        srLogWrite("addr of cursor %p:", &(menu->contexts[menuState]));
         return &(menu->contexts[menuState]);
     }
     return nullptr;

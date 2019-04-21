@@ -24,9 +24,9 @@ void handleCustomSortActive(const InventoryDrawEvent* event) {
 }
 
 void handleMenuViewActive(const InventoryDrawEvent* event) {
-    auto viewChoice = getStateCursor(event->menu, 0);
+    auto viewChoice = getStateCursor(event->menu, 0)->context;
     auto itemViewWidget = getChild(event->menu->menuWidget, ITEM_VIEW_WIDGET_NAME);
-    if (viewChoice->relativeColumnIndex != 2) {
+    if (viewChoice.relativeColumnIndex != 2) {
         enableWidget(itemViewWidget);
         return;
     }
@@ -38,8 +38,8 @@ void handleUpdateDescription(const InventoryDrawEvent* event) {
     auto itemDescWidget = getChild(menuWidget, ITEM_DESC_WIDGET_NAME);
     const char* fetchedDescription;
 
-    auto itemChoice = getStateCursor(event->menu, 1);
-    auto flatInventoryIndex = itemChoice->baseRowIndex + itemChoice->relativeRowIndex;
+    auto itemChoice = getStateCursor(event->menu, 1)->context;
+    auto flatInventoryIndex = itemChoice.baseRowIndex + itemChoice.relativeRowIndex;
     switch (event->menuState) {
         case 1: {
             if (gContext.inventory->get_resource(flatInventoryIndex).item_id != 0xFFFF) {
@@ -62,8 +62,8 @@ void handleUpdateDescription(const InventoryDrawEvent* event) {
             break;
         }
         case 3: {
-            auto keyItemChoice = getStateCursor(event->menu, 3);
-            flatInventoryIndex = (keyItemChoice->maxColumnBound * (keyItemChoice->baseRowIndex + keyItemChoice->relativeRowIndex)) + keyItemChoice->relativeColumnIndex;
+            auto keyItemChoice = getStateCursor(event->menu, 3)->context;
+            flatInventoryIndex = (keyItemChoice.maxColumnBound * (keyItemChoice.baseRowIndex + keyItemChoice.relativeRowIndex)) + keyItemChoice.relativeColumnIndex;
             if ((KEY_ITEMS_INVENTORY_PTR)[flatInventoryIndex] != 0xFFFF) {
                 auto keyItemID = (KEY_ITEMS_INVENTORY_PTR)[flatInventoryIndex];
                 fetchedDescription = gContext.game_strings.key_item_descriptions.get_string(keyItemID);
@@ -75,8 +75,8 @@ void handleUpdateDescription(const InventoryDrawEvent* event) {
             break;
         }
         case 5: {
-            auto customSortChoice = getStateCursor(event->menu, 5);
-            flatInventoryIndex = customSortChoice->baseRowIndex + customSortChoice->relativeRowIndex;
+            auto customSortChoice = getStateCursor(event->menu, 5)->context;
+            flatInventoryIndex = customSortChoice.baseRowIndex + customSortChoice.relativeRowIndex;
             if (gContext.inventory->get_resource(flatInventoryIndex).item_id != 0xFFFF) {
                 fetchedDescription = getDescriptionFromID(gContext.inventory->get_resource(flatInventoryIndex).item_id);
                 updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), fetchedDescription);
@@ -93,9 +93,9 @@ void handleUpdateDescription(const InventoryDrawEvent* event) {
 }
 
 void handleKeyItemsViewActive(const InventoryDrawEvent* event){
-    auto viewChoice = getStateCursor(event->menu, 0);
+    auto viewChoice = getStateCursor(event->menu, 0)->context;
     auto keyItemsWidget = getChild(event->menu->menuWidget, KEY_ITEMS_VIEW_NAME);
-    if (viewChoice->relativeColumnIndex == 2) {
+    if (viewChoice.relativeColumnIndex == 2) {
         enableWidget(keyItemsWidget);
         return;
     }
@@ -103,9 +103,9 @@ void handleKeyItemsViewActive(const InventoryDrawEvent* event){
 }
 
 void handlePartyViewActive(const InventoryDrawEvent* event) {
-    auto viewChoice = getStateCursor(event->menu, 0);
+    auto viewChoice = getStateCursor(event->menu, 0)->context;
     auto portraitsWidget = getChild(event->menu->menuWidget, PARTY_VIEW_WIDGET_NAME);
-    if (viewChoice->relativeColumnIndex != 2) {
+    if (viewChoice.relativeColumnIndex != 2) {
         enableWidget(portraitsWidget);
         return;
     }

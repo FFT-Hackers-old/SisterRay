@@ -6,10 +6,8 @@
 
 struct CursorGridWidget_ {
     CollectionWidget widget;
-    CursorContext* cursor;
+    Cursor* cursor;
     SRLISTUPDATERPROC updater;
-    u16 rowSpacing;
-    u16 columnSpacing;
 };
 
 void drawGridWidget(CursorGridWidget* gridWidget); //draw visibleRow # of child widgets

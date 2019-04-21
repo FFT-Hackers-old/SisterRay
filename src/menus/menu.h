@@ -6,7 +6,8 @@
 #include "../sr_named_registry.h"
 #include "../widgets/widget.h"
 #include "../events/event.h"
-#include "../api.h"
+#include "cursor.h"
+#include "menu_interface.h"
 
 /*The Menu type is exposed via the public API, and therefore is defined only in terms of C types
   It is in encapsulated via opaque pointer, and should be interacted with the provided functions*/
@@ -15,12 +16,12 @@ struct _Menu {
     i32 stateCount;
     Widget* menuWidget;
     SrEventType initEvent;
-    CursorContext* contexts;
+    Cursor* contexts;
     i32 contextCapacity;
     i32 contextSize;
 };
 
-Menu* createMenu(SrEventType initEvent, i32 stateCount, CursorContext* contexts);
+Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* contexts);
 void destroyMenu(Menu* menu);
 
 class MenuRegistry : public SrNamedResourceRegistry<Menu*, std::string> {
@@ -30,6 +31,7 @@ public:
 };
 
 
+//This will be deprecated soon
 typedef struct {
     i16 drawDistance1;
     i16 drawDistance2;

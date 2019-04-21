@@ -179,14 +179,14 @@ typedef void(*PFNSRUPDATEMATERIASLOTSPROC)(Widget*, u8*);
 
 typedef struct CollectionWidget_ CollectionWidget;
 
+typedef struct _Cursor Cursor;
+
 typedef void(*SRLISTUPDATERPROC)(CollectionWidget*, Widget*, u16);
 typedef struct {
-    CursorContext* cursor;
+    Cursor* cursor;
     SRLISTUPDATERPROC updater;
-    u32 xCoordinate;
-    u32 yCoordinate;
-    u16 rowSpacing;
-    u16 columnSpacing;
+    i32 xCoordinate;
+    i32 yCoordinate;
 } drawGridParams;
 
 typedef struct CursorGridWidget_ CursorGridWidget;

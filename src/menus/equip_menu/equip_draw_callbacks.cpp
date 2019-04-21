@@ -33,16 +33,16 @@ void handleUpdateDescription(const EquipDrawEvent* event) {
     auto descrptionWidget = getChild(gearDescWidget, GEAR_DESCRIPTION);
 
 
-    auto slotChoice = getStateCursor(event->menu, 0);
-    if (event->menuState == 1) { // display the descritpion of the current item based on menu state
-        auto gearChoice = getStateCursor(event->menu, 1);
-        kernelObjectID = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
+    auto slotChoice = getStateCursor(event->menu, 0)->context;
+    if (event->menuState == 1) {
+        auto gearChoice = getStateCursor(event->menu, 1)->context;
+        kernelObjectID = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
     }
     else {
-        kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice->relativeRowIndex + 1);
+        kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice.relativeRowIndex + 1);
     }
 
-    fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, slotChoice->relativeRowIndex + 1); //relative row here is offset by 1 from item_type
+    fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, slotChoice.relativeRowIndex + 1); 
     updateText(descrptionWidget, fetchedDescription);
 }
 
@@ -58,16 +58,16 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* event) {
     auto growthWidget = getChild(gearSlotsWidget, GEAR_GROWTH);
 
 
-    auto slotChoice = getStateCursor(event->menu, 0);
+    auto slotChoice = getStateCursor(event->menu, 0)->context;
     if (event->menuState == 1) {
-        auto gearChoice = getStateCursor(event->menu, 1);
-        kernelObjectID = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
+        auto gearChoice = getStateCursor(event->menu, 1)->context;
+        kernelObjectID = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
     }
     else {
-        kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice->relativeRowIndex + 1);
+        kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice.relativeRowIndex + 1);
     }
 
-    switch (slotChoice->relativeRowIndex) {
+    switch (slotChoice.relativeRowIndex) {
         case 0: {
             materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
             materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
@@ -103,11 +103,11 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* event) {
     auto statDiffWidget = getChild(menuWidget, STAT_DIFF_WIDGET_NAME);
 
     if (event->menuState == 1) {
-        auto slotChoice = getStateCursor(event->menu, 0);
-        auto gearChoice = getStateCursor(event->menu, 1);
-        switch (slotChoice->relativeRowIndex) {
+        auto slotChoice = getStateCursor(event->menu, 0)->context;
+        auto gearChoice = getStateCursor(event->menu, 1)->context;
+        switch (slotChoice.relativeRowIndex) {
             case 0: {
-                auto toEquipWeaponID = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
+                auto toEquipWeaponID = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
                 statsToDisplay[0] = gContext.weapons.get_resource(toEquipWeaponID).weapon_strength;
                 statsToDisplay[1] = gContext.weapons.get_resource(toEquipWeaponID).weapon_hit_rate;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
@@ -120,7 +120,7 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* event) {
                 break;
             }
             case 1: {
-                auto toEquipArmorID = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
+                auto toEquipArmorID = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
                 statsToDisplay[2] = gContext.armors.get_resource(toEquipArmorID).defense;
                 statsToDisplay[3] = gContext.armors.get_resource(toEquipArmorID).evade;
                 statsToDisplay[4] = 0;

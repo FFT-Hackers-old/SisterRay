@@ -8,10 +8,13 @@ using namespace EquipWidgetNames;
 
 
 void initializeEquipMenu() {
-    CursorContext gearTypeSelection = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0};
+    CursorContext gearTypeSelection = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0 };
+    Cursor gearTypeCursor = { gearTypeSelection, 207, 17, 36, 0 };
     CursorContext gearSelection = { 0, 0, 1, 8, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };
-    CursorContext cursorContextArray[2] = {gearTypeSelection, gearSelection};
-    auto equipMenu = createMenu(INIT_EQUIP_MENU, 2, &cursorContextArray[0]);
+    Cursor gearChoiceCursor = { gearSelection, 385, 197, 36, 0 };
+
+    Cursor cursorArray[2] = { gearTypeCursor, gearChoiceCursor };
+    auto equipMenu = createMenu(INIT_EQUIP_MENU, 2, &cursorArray[0]);
     gContext.menuWidgets.add_element("EQUIP_MENU", equipMenu);
     gContext.menuWidgets.initializeMenu("EQUIP_MENU", EQUIP_MENU_NAME);
 }

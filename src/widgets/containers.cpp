@@ -31,17 +31,19 @@ const WidgetClass* getChildTypeFromID(u16 widgetTypeID) {
     }
 }
 
-/*Grid widgets positions are automatically updated*/
+/*Grid widgets positions are automatically updated and track the position of the cursor they are initialized with,
+  For this reason, this collection Widget is not moved by moving the Widget directly, but by moving the underlying Cursor*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
-    for (auto rowIndex = 0; rowIndex < cursorGrid->cursor->viewRowBound; ++rowIndex) {
-        for (auto columnIndex = 0; columnIndex < cursorGrid->cursor->viewColumnBound; ++columnIndex) {
-            u16 flatIndex = (cursorGrid->cursor->maxColumnBound) * (rowIndex) + (columnIndex); //Fix this math
+    auto context = cursorGrid->cursor->context;
+    for (auto rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
+        for (auto columnIndex = 0; columnIndex <  context.viewColumnBound; ++columnIndex) {
+            u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex); //Fix this math
             auto child = getChild((Widget*)cursorGrid, flatIndex);
             if (child) {
-                auto elementX = cursorGrid->columnSpacing * columnIndex + cursorGrid->widget.widget.xCoordinate;
-                auto elementY = cursorGrid->rowSpacing * rowIndex + cursorGrid->widget.widget.yCoordinate;
+                auto elementX = (cursorGrid->cursor->columnSpacing * columnIndex) + cursorGrid->widget.widget.xCoordinate;
+                auto elementY = (cursorGrid->cursor->rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
-                u16 startIndex = ((cursorGrid->cursor->maxColumnBound) * (cursorGrid->cursor->baseRowIndex)) + (cursorGrid->cursor->baseColumnIndex);
+                u16 startIndex = ((context.maxColumnBound) * (context.baseRowIndex)) + (context.baseColumnIndex);
                 if (cursorGrid->updater) {
                     cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex+flatIndex);
                 }
@@ -55,14 +57,12 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
   Do not use your own childTypes here, use the pre-defined widget types in sister ray*/
 CursorGridWidget* createGridWidget(drawGridParams params, std::string name, const WidgetClass* childType) {
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType, sizeof(CursorGridWidget));
+    widget->cursor = params.cursor;
+    widget->updater = params.updater;
     widget->widget.widget.xCoordinate = params.xCoordinate;
     widget->widget.widget.yCoordinate = params.yCoordinate;
-    widget->cursor = params.cursor;
-    widget->rowSpacing = params.rowSpacing;
-    widget->columnSpacing = params.columnSpacing;
-    widget->updater = params.updater;
 
-    auto slotCount = (widget->cursor->viewRowBound) * (widget->cursor->viewColumnBound);
+    auto slotCount = (widget->cursor->context.viewRowBound) * (widget->cursor->context.viewColumnBound);
     for (u32 slot = 0; slot < slotCount; slot++) {
         auto name = std::to_string(slot);
         auto child = typeAllocate(childType, name);

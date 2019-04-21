@@ -89,7 +89,7 @@ void initCharViewWidget(const InventoryInitEvent* event) {
 
 //Handles the base display
 void initItemViewWidget(const InventoryInitEvent* event) {
-    auto itemChoice = getStateCursor(event->menuObject, 1);
+    auto itemChoiceCursor = getStateCursor(event->menuObject, 1);
 
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
@@ -114,11 +114,11 @@ void initItemViewWidget(const InventoryInitEvent* event) {
     // gameDrawAsset(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, .1f);
 
     auto normalItemViewWidget = createWidget(NORMAL_ITEM_VIEW_NAME);
-    gridParams = { itemChoice, &inventoryViewNameUpdater, 373, 109, 37, 9 };
+    gridParams = { itemChoiceCursor, &inventoryViewNameUpdater, 373, 109 };
     gridWidget = createGridWidget(gridParams, ITEM_VIEW_NAMES, TextWidgetKlass());
     addChildWidget(normalItemViewWidget, (Widget*)gridWidget, ITEM_VIEW_NAMES);
 
-    gridParams = { itemChoice, &inventoryViewQuantityUpdater, 550, 112, 37, 9 };
+    gridParams = { itemChoiceCursor, &inventoryViewQuantityUpdater, 550, 112 };
     gridWidget = createGridWidget(gridParams, ITEM_VIEW_QUANTITIES, NumberWidgetKlass());
     addChildWidget(normalItemViewWidget, (Widget*)gridWidget, ITEM_VIEW_QUANTITIES);
 
@@ -126,12 +126,12 @@ void initItemViewWidget(const InventoryInitEvent* event) {
 
     //This second cursor tracks the inventory when custom sort is activated, and is toggled in the draw menus//
     auto customItemViewWidget = createWidget(CUSTOM_ITEM_VIEW_NAME);
-    auto customSortChoice = getStateCursor(event->menuObject, 5);
-    gridParams = { customSortChoice, &inventoryViewNameUpdater, 373, 109, 37, 9 };
+    auto customSortCursor = getStateCursor(event->menuObject, 5);
+    gridParams = { customSortCursor, &inventoryViewNameUpdater, 373, 109 };
     gridWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_NAMES, TextWidgetKlass());
     addChildWidget(customItemViewWidget, (Widget*)gridWidget, CUSTOM_SORT_VIEW_NAMES);
 
-    gridParams = { customSortChoice, &inventoryViewQuantityUpdater, 550, 112, 37, 9 };
+    gridParams = { customSortCursor, &inventoryViewQuantityUpdater, 550, 112 };
     gridWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_QUANTITIES, NumberWidgetKlass());
     addChildWidget(customItemViewWidget, (Widget*)gridWidget, CUSTOM_SORT_VIEW_QUANTITIES);
 
@@ -162,7 +162,7 @@ void keyItemsViewWidget(const InventoryInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, KEY_ITEMS_BOX);
     addChildWidget(keyItemsWidget, (Widget*)boxWidget, KEY_ITEMS_BOX);
 
-    gridParams = { keyItemsChoice, &keyItemViewNameUpdater, 53, 124, 36, 293 };
+    gridParams = { keyItemsChoice, &keyItemViewNameUpdater, 53, 124};
     auto cursorListWidget = createGridWidget(gridParams, KEY_ITEMS_GRID, TextWidgetKlass());
     addChildWidget(keyItemsWidget, (Widget*)cursorListWidget, KEY_ITEMS_GRID);
 

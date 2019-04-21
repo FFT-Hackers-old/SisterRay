@@ -9,7 +9,6 @@ using namespace EquipWidgetNames;
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
     Menu* menuObject = gContext.menuWidgets.get_element("EQUIP_MENU");
     auto equipMenuState = menuObject->currentState;
-    auto cursorArray = getStateCursor(menuObject, 0);
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
 
     sub_6C98A6();
@@ -17,7 +16,7 @@ SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
     EquipDrawEvent event = { menuObject, menuObject->currentState };
     gContext.eventBus.dispatch(DRAW_EQUIP_MENU, &event);
     drawWidget(menuWidget);
-    displayMenuCursors(cursorArray, equipMenuState, updateStateMask);
+    displayMenuCursors(menuObject, equipMenuState, updateStateMask);
 
     if (!is_input_handling_enabled()) {
         handleEquipMenuInput(updateStateMask, menuObject);
@@ -42,16 +41,17 @@ void displayMenuObjects(CursorContext* cursorContextArray, u32 menuState, i32 st
 }
 
 /*Create a Focus object making this configurable*/
-void displayMenuCursors(CursorContext* cursorContextArray, u16 menuState, u32 stateControlMask) {
+void displayMenuCursors(Menu* menu, u16 menuState, u32 stateControlMask) {
+    auto gearTypeChoiceCursor = getStateCursor(menu, 0);
     switch (menuState) {
         case 0: {
-            displayCursor(207, 36 * cursorContextArray[0].relativeRowIndex + 17, 0.1f);
+            drawCursor(gearTypeChoiceCursor, 0.1f);
             break;
         }
         case 1: {
-            if (stateControlMask & 2) //animate flashing cursor
-                displayCursor(207, 36 * cursorContextArray[0].relativeRowIndex + 17, 0.1f);
-            displayCursor(385, 36 * cursorContextArray[1].relativeRowIndex + 197, 0.1f);
+            auto gearChoiceCursor = getStateCursor(menu, 1);
+            drawFlashingCursor(gearTypeChoiceCursor, stateControlMask, 0.1f);
+            drawCursor(gearChoiceCursor, 0.1f);
             break;
         }
         default: {
@@ -67,7 +67,7 @@ void handleEquipMenuInput(i32 updateStateMask, Menu* menuObject) {
     auto menuWidget = menuObject->menuWidget;
 
     EquipInputEvent event = { menuObject, equipMenuState };
-    handleCursorPositionUpdate((u32*)cursorArray);
+    handleCursorPositionUpdate((u32*)(&(cursorArray->context)));
     auto dispatchContext = std::vector<SrEventContext>({ EQUIP_MENU_CONTEXT });
     if (checkInputReceived(32)) {
         gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);

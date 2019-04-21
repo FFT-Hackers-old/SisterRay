@@ -22,14 +22,14 @@ SISTERRAY_API Menu* getMenu(char* menuName) {
     return gContext.menuWidgets.get_element(std::string(menuName));
 }
 
-Menu* createMenu(SrEventType initEvent, i32 stateCount, CursorContext* contexts) {
+Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* contexts) {
     Menu* menu = (Menu*)malloc(sizeof(Menu));
     menu->stateCount = stateCount;
     menu->initEvent = initEvent;
     menu->contextCapacity = stateCount;
     menu->currentState = 0;
-    menu->contexts = (CursorContext*)malloc(sizeof(CursorContext)*stateCount);
-    memcpy(menu->contexts, contexts, sizeof(CursorContext)*stateCount);
+    menu->contexts = (Cursor*)malloc(sizeof(Cursor)*stateCount);
+    memcpy(menu->contexts, contexts, sizeof(Cursor)*stateCount);
     menu->contextSize = stateCount;
     menu->menuWidget = nullptr;
     return menu;
@@ -41,21 +41,21 @@ void destroyMenu(Menu* menu) {
     free(menu);
 }
 
-SISTERRAY_API void addState(Menu* menu, CursorContext* context) {
+SISTERRAY_API void addState(Menu* menu, Cursor* context) {
     if (menu->contextSize < menu->contextCapacity) {
-        memcpy(&(menu->contexts[menu->contextSize]), context, sizeof(CursorContext));
+        memcpy(&(menu->contexts[menu->contextSize]), context, sizeof(Cursor));
         menu->contextSize++;
         menu->stateCount++;
         return;
     }
-    menu->contexts = (CursorContext*)realloc(menu->contexts, sizeof(CursorContext) * menu->contextCapacity * 2);
+    menu->contexts = (Cursor*)realloc(menu->contexts, sizeof(Cursor) * menu->contextCapacity * 2);
     menu->contextCapacity = 2 * menu->contextCapacity;
-    memcpy(&(menu->contexts[menu->contextSize]), context, sizeof(CursorContext));
+    memcpy(&(menu->contexts[menu->contextSize]), context, sizeof(Cursor));
     menu->contextSize++;
     menu->stateCount++;
 }
 
-SISTERRAY_API CursorContext* getStateCursor(Menu* menu, i32 menuState) {
+SISTERRAY_API Cursor* getStateCursor(Menu* menu, i32 menuState) {
     if (menuState < menu->stateCount) {
         srLogWrite("returning addr of cursor for state %i", menuState);
         srLogWrite("addr of cursor %p:", &(menu->contexts[menuState]));
@@ -64,9 +64,9 @@ SISTERRAY_API CursorContext* getStateCursor(Menu* menu, i32 menuState) {
     return nullptr;
 }
 
-SISTERRAY_API void setStateCursor(Menu* menu, i32 menuState, CursorContext* context) {
+SISTERRAY_API void setStateCursor(Menu* menu, i32 menuState, Cursor* cursor) {
     if (menuState < menu->stateCount) {
-        memcpy(&(menu->contexts[menuState]), context, sizeof(CursorContext));
+        memcpy(&(menu->contexts[menuState]), cursor, sizeof(Cursor));
     }
 }
 

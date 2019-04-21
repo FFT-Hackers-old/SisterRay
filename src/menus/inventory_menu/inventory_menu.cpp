@@ -23,7 +23,7 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
     gContext.eventBus.dispatch(DRAW_INVENTORY_MENU, &event);
     drawWidget(menuWidget);
 
-    displayActiveCursorStates(updateStateMask, menuObject);
+    displayActiveCursorStates(menuObject, menuObject->currentState, updateStateMask);
     if (!is_input_handling_enabled())
     {
         handleInventoryMenuInput(updateStateMask, menuObject);
@@ -31,71 +31,65 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
 }
 
 //Need to come up with a better abstract for cursors
-void displayActiveCursorStates(i32 updateStateMask, Menu* menu) {
+void displayActiveCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
 
     u16 item_ID;
 
     sub_6C98A6();
-    auto viewChoice = getStateCursor(menu, 0);
+    auto viewChoiceCursor = getStateCursor(menu, 0);
     switch (menu->currentState) {
         case 0: {
-            displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.1f); //display cursor at the selected view
+            drawCursor(viewChoiceCursor, 0.1f);
             break;
         }
         case 1: {
-            auto itemChoice = getStateCursor(menu, 1);
-            if (updateStateMask & 2)
-                displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.1f);
-            displayCursor(298, 37 * itemChoice->relativeRowIndex + 109, 0.1f);
+            auto itemChoiceCursor = getStateCursor(menu, 1);
+            drawFlashingCursor(viewChoiceCursor, updateStateMask, 0.1f);
+            drawCursor(itemChoiceCursor, 0.1f);
             break;
         }
         case 2: {
-            auto itemChoice = getStateCursor(menu, 1);
-            if (updateStateMask & 2)
-                displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.0f);
+            auto itemChoiceCursor = getStateCursor(menu, 1);
+            drawFlashingCursor(viewChoiceCursor, updateStateMask, 0.1f);
+            drawFlashingCursor(itemChoiceCursor, updateStateMask, 0.1f);
 
             if (!(*use_on_characters_enabled)) {
-                auto characterChoice = getStateCursor(menu, 2);
-                item_ID = gContext.inventory->get_resource(itemChoice->baseRowIndex + itemChoice->relativeRowIndex).item_id;;
+                auto characterChoiceCursor = getStateCursor(menu, 2);
+                item_ID = gContext.inventory->get_resource(itemChoiceCursor->context.baseRowIndex + itemChoiceCursor->context.relativeRowIndex).item_id;;
                 if (!(gContext.item_on_use_data.get_resource(item_ID).target_all))
-                    displayCursor(0, 120 * characterChoice->relativeRowIndex + 161, 0.0f);
+                    drawCursor(characterChoiceCursor, 0.0f);
                 else
                     displayCursor(0, 120 * (updateStateMask % 3) + 161, 0.0);
             }
-            if (updateStateMask & 2)
-                displayCursor(298, 37 * itemChoice->relativeRowIndex + 109, 0.1f);
             if (*use_on_characters_enabled)
                 --(*use_on_characters_enabled);
             break;
         }
         case 3: {
-            if (updateStateMask & 2)
-                displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.001f);
-            auto keyItemChoice = getStateCursor(menu, 3);
-            displayCursor(293 * keyItemChoice->relativeColumnIndex + 5, 36 * keyItemChoice->relativeRowIndex + 129, 0.001f);
+            drawFlashingCursor(viewChoiceCursor, updateStateMask, 0.1f);
+            auto keyItemChoiceCursor = getStateCursor(menu, 3);
+            drawCursor(keyItemChoiceCursor, 0.001f);
             break;
         }
         case 4: {
             auto arrangeTypeChoice = getStateCursor(menu, 4);
-            if (updateStateMask & 2)
-                displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.201f);
-            displayCursor( 0xDC - 30, 0x1A + 26 * arrangeTypeChoice->relativeRowIndex + 17, 0.001f);
+            drawFlashingCursor(viewChoiceCursor, updateStateMask, 0.1f);
+            drawCursor(arrangeTypeChoice, 0.001f);
             break;
         }
         case 5: {
             auto customSortChoice = getStateCursor(menu, 5);
-            if (updateStateMask & 2)
-                displayCursor(93 * viewChoice->relativeColumnIndex + 13, 26, 0.1f);
+            drawFlashingCursor(viewChoiceCursor, updateStateMask, 0.1f);
 
             if (*ITEM_TO_SWAP_SELECTED) {
                 if (updateStateMask & 2) {
-                    i32 pixelOffsetToSelectedItem = 37 * (*TEMP_ABSOLUTE_CURSOR_INDEX) - 37 * customSortChoice->baseRowIndex + 9 * (*dword_DD1B54) - 9;
+                    i32 pixelOffsetToSelectedItem = 37 * (*TEMP_ABSOLUTE_CURSOR_INDEX) - 37 * customSortChoice->context.baseRowIndex + 9 * (*dword_DD1B54) - 9;
                     if (pixelOffsetToSelectedItem > -37 && pixelOffsetToSelectedItem < 1369)
                         displayCursor(291, pixelOffsetToSelectedItem + 113, 0.0);
                 }
             }
-            displayCursor(298, 37 * customSortChoice->relativeRowIndex + 113, 0.001f);
+            drawCursor(customSortChoice, 0.001f);
             break;
 
         }
@@ -110,7 +104,7 @@ void handleInventoryMenuInput(i32 updateStateMask, Menu* menuObject) {
     auto menuWidget = menuObject->menuWidget;
 
     InventoryInputEvent event = { menuObject, inventoryMenuState };
-    handleCursorPositionUpdate((u32*)cursorArray);
+    handleCursorPositionUpdate((u32*)(&(cursorArray->context)));
     auto dispatchContext = std::vector<SrEventContext>({ INVENTORY_MENU_CONTEXT });
     if (checkInputReceived(32)) {
         gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);

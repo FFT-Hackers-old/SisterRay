@@ -46,9 +46,7 @@ void initCharDataWidget(const EquipInitEvent* event) {
     std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
     for (int row = 0; row < gearNames.size(); row++) {
         menuText = gContext.game_strings.equipMenuTexts.get_string(row);
-        srLogWrite("initializing equip menu text: %s", menuText);
         setTextParams(&textParams, 250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f);
-        srLogWrite("text in params object: %s", textParams.stringToDraw);
         textWidget = createTextWidget(textParams, gearNames[row]);
         addChildWidget(currentEquipWidget, (Widget*)textWidget, gearNames[row]);
 
@@ -181,7 +179,6 @@ void initStatDiffWidget(const EquipInitEvent* event) {
     std::vector<std::string> arrowNames = { ARROW_1, ARROW_2, ARROW_3, ARROW_4, ARROW_5, ARROW_6, ARROW_7 };
     for (i32 i = 0; i < 7; ++i) {
         menuText = gContext.game_strings.equipMenuTexts.get_string(3 + i);
-        srLogWrite("initializing equip menu text: %s", menuText);
         setTextParams(&textParams, 53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
         textWidget = createTextWidget(textParams, statNames[i]);
         addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[i]);
@@ -204,7 +201,7 @@ void initStatDiffWidget(const EquipInitEvent* event) {
 
 //Initialize the gear list with just a box and a series of disabled widgets.
 void initGearListWidget(const EquipInitEvent* event) {
-    auto gearChoice = getStateCursor(event->menuObject, 1);
+    auto gearChoiceCursor = getStateCursor(event->menuObject, 1);
 
     drawGridParams gridParams;
     BoxWidget* boxWidget;
@@ -224,7 +221,7 @@ void initGearListWidget(const EquipInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
-    gridParams = { gearChoice, &gearViewNameUpdater, 427, 193, 36, 0 };
+    gridParams = { gearChoiceCursor, &gearViewNameUpdater, 427, 193 };
     auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextWidgetKlass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 

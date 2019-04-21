@@ -7,14 +7,21 @@ using namespace InventoryWidgetNames;
 
 
 void initializeInventoryMenu() {
-    CursorContext topBarCursor = { 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0, 0 };
-    CursorContext itemViewCursor = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
-    CursorContext charViewCursor = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0 };
-    CursorContext keyItemsViewCursor = { 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1 };
-    CursorContext arrangeViewCursor = { 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0 };
-    CursorContext customSortCursor = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
-    CursorContext cursorContextArray[6] = { topBarCursor, itemViewCursor, charViewCursor, keyItemsViewCursor, arrangeViewCursor, customSortCursor };
-    auto inventoryMenu = createMenu(INIT_INVENTORY_MENU, 6, &cursorContextArray[0]);
+    CursorContext topBarContext = { 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0, 0 };
+    Cursor topBarCursor = { topBarContext, 13, 26, 0, 93 };
+    CursorContext itemViewContext = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
+    Cursor itemViewCursor = { itemViewContext, 298, 109, 37, 0 };
+    CursorContext charViewContext = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0 };
+    Cursor charViewCursor = { charViewContext, 298, 109, 37, 0 };
+    CursorContext keyItemsViewContext = { 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1 };
+    Cursor keyItemsViewCursor = { keyItemsViewContext, 5, 129, 36, 293 };
+    CursorContext arrangeViewContext = { 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0 };
+    Cursor arrangeViewCursor = { arrangeViewContext, 0xBE, 0x2B, 26, 0 };
+    CursorContext customSortContext = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
+    Cursor customSortViewCursor = { customSortContext, 298, 109, 37, 0 };
+
+    Cursor cursorArray[6] = { topBarCursor, itemViewCursor, charViewCursor, keyItemsViewCursor, arrangeViewCursor, customSortViewCursor };
+    auto inventoryMenu = createMenu(INIT_INVENTORY_MENU, 6, &(cursorArray[0]));
     gContext.menuWidgets.add_element("INVENTORY_MENU", inventoryMenu);
     gContext.menuWidgets.initializeMenu("INVENTORY_MENU", INVENTORY_MENU_NAME);
 }

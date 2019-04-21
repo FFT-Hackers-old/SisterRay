@@ -9,10 +9,10 @@ void chooseViewHandler(const InventoryInputEvent* event) {
     if (event->menuState != 0)
         return;
 
-    auto viewChoice = getStateCursor(event->menu, 0);
+    auto viewChoice = getStateCursor(event->menu, 0)->context;
 
     playMenuSound(1);
-    switch (viewChoice->relativeColumnIndex) {
+    switch (viewChoice.relativeColumnIndex) {
         case 0: {
             setMenuState(event->menu, 1);
             break;
@@ -36,13 +36,13 @@ void selectItemHandler(const InventoryInputEvent* event) {
     if (event->menuState != 1)
         return;
 
-    auto itemChoice = getStateCursor(event->menu, 1);
+    auto itemChoice = getStateCursor(event->menu, 1)->context;
 
-    if (gContext.inventory->get_resource(itemChoice->baseRowIndex + itemChoice->relativeRowIndex).item_id == 0xFFFF) {
+    if (gContext.inventory->get_resource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).item_id == 0xFFFF) {
         playMenuSound(3);
     }
     else {
-        auto itemID = gContext.inventory->get_resource(itemChoice->baseRowIndex + itemChoice->relativeRowIndex).item_id;
+        auto itemID = gContext.inventory->get_resource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).item_id;
         if (usableInInventoryMenu(itemID)) {
             playMenuSound(3);
         }
@@ -62,22 +62,21 @@ void executeSwapHandler(const InventoryInputEvent* event) {
     if (event->menuState != 5)
         return;
 
-    auto itemChoice = getStateCursor(event->menu, 5);
+    auto itemChoice = getStateCursor(event->menu, 5)->context;
     if (*ITEM_TO_SWAP_SELECTED) {
         if (*ITEM_TO_SWAP_SELECTED == 1)
         {
             playMenuSound(1);
-            /*This code swaps two items in the inventory*/
             auto temp_entry = gContext.inventory->get_resource(*TEMP_ABSOLUTE_CURSOR_INDEX);
-            gContext.inventory->update_resource(*TEMP_ABSOLUTE_CURSOR_INDEX, gContext.inventory->get_resource(itemChoice->baseRowIndex + itemChoice->relativeRowIndex));
-            gContext.inventory->update_resource(itemChoice->baseRowIndex + itemChoice->relativeRowIndex, temp_entry);
+            gContext.inventory->update_resource(*TEMP_ABSOLUTE_CURSOR_INDEX, gContext.inventory->get_resource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex));
+            gContext.inventory->update_resource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex, temp_entry);
             *ITEM_TO_SWAP_SELECTED = 0;
         }
     }
     else {
         playMenuSound(1);
-        *TEMP_COLUMN_INDEX = itemChoice->relativeColumnIndex; //copy first dword of struct set in previous state here, seems to always be 0
-        *TEMP_ABSOLUTE_CURSOR_INDEX = itemChoice->baseRowIndex + itemChoice->relativeRowIndex; //custom sort base row and relative offsets copied when you select an item to swap
+        *TEMP_COLUMN_INDEX = itemChoice.relativeColumnIndex; 
+        *TEMP_ABSOLUTE_CURSOR_INDEX = itemChoice.baseRowIndex + itemChoice.relativeRowIndex;
         *ITEM_TO_SWAP_SELECTED = 1;
     }
 }
@@ -86,10 +85,10 @@ void useTargetedItemHandler(const InventoryInputEvent* event) {
     if (event->menuState != 2)
         return;
 
-    auto itemChoice = getStateCursor(event->menu, 1);
-    u16 inventory_index = itemChoice->baseRowIndex + itemChoice->relativeRowIndex;
+    auto itemChoice = getStateCursor(event->menu, 1)->context;
+    u16 inventory_index = itemChoice.baseRowIndex + itemChoice.relativeRowIndex;
     auto itemID = gContext.inventory->get_resource(inventory_index).item_id;
-    u32 partyMemberIndex = getStateCursor(event->menu, 2)->relativeRowIndex;
+    u32 partyMemberIndex = getStateCursor(event->menu, 2)->context.relativeRowIndex;
 
     u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[partyMemberIndex];
     if (character_ID == 0xFF && !(gContext.item_on_use_data.get_resource(itemID).target_all)) {
@@ -104,9 +103,9 @@ void arrangeItemsHandler(const InventoryInputEvent* event) {
         return;
 
     playMenuSound(1);
-    auto arrangeChoice = getStateCursor(event->menu, 4);
-    if (arrangeChoice->relativeRowIndex) {
-        sort_inventory(arrangeChoice->relativeRowIndex); //Arranging the inventory, this method will have to be rewritten
+    auto arrangeChoice = getStateCursor(event->menu, 4)->context;
+    if (arrangeChoice.relativeRowIndex) {
+        sort_inventory(arrangeChoice.relativeRowIndex); //Arranging the inventory, this method will have to be rewritten
         setMenuState(event->menu, 0);
     }
     else {

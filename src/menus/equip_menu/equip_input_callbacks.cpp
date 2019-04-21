@@ -3,8 +3,8 @@
 #include "../../party/party_utils.h"
 
 void equipGearHandler(const EquipInputEvent* event) {
-    auto slotChoice = getStateCursor(event->menu, 0);
-    auto gearChoice = getStateCursor(event->menu, 1);
+    auto slotChoice = getStateCursor(event->menu, 0)->context;
+    auto gearChoice = getStateCursor(event->menu, 1)->context;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     auto characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     u8 equippedGearItemType;
@@ -14,8 +14,8 @@ void equipGearHandler(const EquipInputEvent* event) {
 
     playMenuSound(447);
     setMenuState(event->menu, 0);
-    u16 equippedGearRelativeIndex = gContext.gearViewData.get_resource(gearChoice->baseRowIndex + gearChoice->relativeRowIndex).relative_item_id;
-    switch (slotChoice->relativeRowIndex) { //
+    u16 equippedGearRelativeIndex = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
+    switch (slotChoice.relativeRowIndex) { //
         case 0: { //equip WEAPON
             equippedGearItemType = 1;
             handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
@@ -27,7 +27,6 @@ void equipGearHandler(const EquipInputEvent* event) {
             break;
         }
         case 2: { //equip Accessory
-            srLogWrite("trying to equip an accessory");
             equippedGearItemType = 3;
             handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
             break;
@@ -42,14 +41,14 @@ void equipGearHandler(const EquipInputEvent* event) {
 }
 
 void selectGearHandler(const EquipInputEvent* event) {
-    auto slotChoice = getStateCursor(event->menu, 0);
+    auto slotChoice = getStateCursor(event->menu, 0)->context;
     i32 cursorViewBound = 0;
     u16 equippableGearCount = 0;
 
     if (event->menuState != 0)
         return;
 
-    equippableGearCount = setupGearMenu(slotChoice->relativeRowIndex + 1);
+    equippableGearCount = setupGearMenu(slotChoice.relativeRowIndex + 1);
     if (equippableGearCount && !(*byte_DC0B4B & 1)) {
         playMenuSound(1);
         setMenuState(event->menu, 1);
@@ -58,7 +57,7 @@ void selectGearHandler(const EquipInputEvent* event) {
         else
             cursorViewBound = 8;
 
-        setContextCursorData(getStateCursor(event->menu, 1), 0, 0, 1, cursorViewBound, 0, 0, 1, equippableGearCount, 0, 0, 0, 0, 0, 1);
+        setContextCursorData(&(getStateCursor(event->menu, 1)->context), 0, 0, 1, cursorViewBound, 0, 0, 1, equippableGearCount, 0, 0, 0, 0, 0, 1);
     }
     else {
         playMenuSound(3);

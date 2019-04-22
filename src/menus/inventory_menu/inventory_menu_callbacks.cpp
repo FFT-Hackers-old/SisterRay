@@ -12,7 +12,7 @@ void initializeInventoryMenu() {
     CursorContext itemViewContext = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
     Cursor itemViewCursor = { itemViewContext, 298, 109, 37, 0 };
     CursorContext charViewContext = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0 };
-    Cursor charViewCursor = { charViewContext, 298, 109, 37, 0 };
+    Cursor charViewCursor = { charViewContext, 0, 161, 120, 0 };
     CursorContext keyItemsViewContext = { 0, 0, 2, 10, 0, 0, 2, 32, 0, 0, 2, 0, 0, 1 };
     Cursor keyItemsViewCursor = { keyItemsViewContext, 5, 129, 36, 293 };
     CursorContext arrangeViewContext = { 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0 };

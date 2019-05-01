@@ -193,4 +193,14 @@ typedef i32(*pfnsub70760F)(i32, i32, i32);
 
 typedef i32(*pfnsub6F54A2)(u8*);
 #define sub_6F54A2                      ((pfnsub6F54A2)0x6F54A2) //Does returns x position from a text ptr, probably a centering util
+
+//The following functions are used by the battle module
+typedef void(*pfnsub5CA722)(i32, i32);
+#define copyAdditionalEffects           ((pfnsub5CA722)0x5CA722)
+
+typedef void(*pfnsub435139)(i32, u8, u8, i16);
+#define srCreateEvent                   ((pfnsub435139)0x435139)
+
+typedef i32(*pfnsub5C8684)(u32, u32);
+#define getLimitRelativeIndex           ((pfnsub5C8684)0x5C8684)
 #endif

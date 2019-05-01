@@ -16,8 +16,7 @@ public:
         size_t read_size;
         T object;
 
-        for (;;)
-        {
+        for (;;) {
             read_size = srKernelStreamRead(stream, &object, sizeof(object));
             if (read_size != sizeof(object))
                 break;
@@ -26,37 +25,29 @@ public:
     }
 
     /*Constructor used for fixed size arrays, like the inventory*/
-    SrResourceRegistry(u32 reserve_size)
-    {
+    SrResourceRegistry(u32 reserve_size) {
         _resource_registry.reserve(reserve_size);
     }
 
     /*Default constructor*/
-    SrResourceRegistry() {
-    }
-    ~SrResourceRegistry() {
-    }
+    SrResourceRegistry() {}
+    ~SrResourceRegistry() {}
 
-    const T& get_resource(u32 index) const
-    {
-        if (index >= resource_count())
-        {
+    const T& get_resource(u32 index) const {
+        if (index >= resource_count()) {
             return _null;
         }
         return _resource_registry[index];
     }
 
-    T& get_resource(u32 index)
-    {
-        if (index >= resource_count())
-        {
+    T& get_resource(u32 index) {
+        if (index >= resource_count()) {
             return _null;
         }
         return _resource_registry[index];
     }
 
-    void add_resource(const T& resource)
-    {
+    void add_resource(const T& resource) {
         _resource_registry.push_back(resource);
     }
 

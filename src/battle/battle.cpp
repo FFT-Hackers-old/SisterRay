@@ -34,20 +34,24 @@ void initFormationsRegistries() {
     u16 sceneBlockIndex = 0;
     u16 formationIndex = 0;
     const char* filename = "data/battle/scene.bin";
+    FILE* scenePtr = fopen(filename, "rb");
     u32 sceneSize = getFileSize(filename);
     u32 sceneBlockIdx = 0;
     while (sceneSize >= BLOCK_SIZE) {
-        readBlock(filename, BLOCK_SIZE, sceneBlock); //We read a scene block into memory, need to determine when last block is reached
+        readBlock(scenePtr, BLOCK_SIZE, sceneBlock); //We read a scene block into memory, need to determine when last block is reached
         u16 byteSizes[16];
         auto sceneCount = getCompressedFileSizes(sceneBlock, byteSizes); //get the number of scenes in the block and their sizes
         srLogWrite("Loading %i total scenes from block %i", sceneCount, sceneBlockIdx);
         for (auto sceneIndex = 0; sceneIndex < sceneCount; sceneIndex++) {
+            auto dwordSceneOffset = (*((u32*)(sceneBlock + 4 * sceneIndex)));
+            if (dwordSceneOffset == 0xFFFFFFFF) {
+                srLogWrite("end of block reached");
+                break;
+            }
             srLogWrite("loading scene %i from block %i", sceneIndex, sceneBlockIdx);
             u32 compressedSize = byteSizes[sceneIndex]; //We need to seek the actual end of the last scene
-            srLogWrite("compressed size is: %i", byteSizes[sceneIndex]);
-            const u8* compressedScenePtr = sceneBlock + 4 * (*(sceneBlock + 4 * sceneIndex)); //points to the start of the gzipped scene file inside the buffer
+            const u8* compressedScenePtr = sceneBlock + (4 * dwordSceneOffset);
             auto readSize = srGzipInflateCpy(compressedScenePtr, compressedSize, (u8*)&currentScene, sizeof(SceneLayout));
-            srLogWrite("scene has been decompressed");
             if (readSize != SCENE_SIZE)
                 srLogWrite("ERROR: decompressed scene file is not the right size. Expected size: 7802, actual size %i", readSize);
             populateRegistries(currentScene, &formationIndex); //this mutates formation index and populates formation, enemy data, and enemy ability registries. 
@@ -103,14 +107,12 @@ u32 getFileSize(const char* filename) {
 }
 
 /*Read a scene block into a given buffer*/
-void readBlock(const char* filename, u32 blockSize, u8* dst) {
-    FILE* scenePtr = fopen(filename, "rb");
-    fread(dst, blockSize, 1, scenePtr);
+void readBlock(FILE* filehandle, u32 blockSize, u8* dst) {
+    fread(dst, blockSize, 1, filehandle);
 }
 
 /*Populate Enemy, Formation, and Enemy Attack Registries*/
 void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
-    srLogWrite("unpacking scene into internal SR registries");
     auto sceneIndex = (*formationIndex) / 4;
     std::string sceneName = std::to_string(sceneIndex);
     FormationEnemyIDs srEnemyIDs = FormationEnemyIDs();
@@ -131,7 +133,6 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
         gContext.enemies.add_element(uniqueID, srEnemyData);
         srLogWrite("Enemy:%s added to registry", uniqueID.c_str());
     }
-    srLogWrite("scene enemies registerd");
 
     /*Create a formation referencing the unique enemy IDs*/
     for (auto sceneFormationIndex = 0; sceneFormationIndex < 4; sceneFormationIndex++) {
@@ -153,12 +154,10 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
             formation.FormationEnemyIDs.uniqueIDs[2].c_str()
         );
     }
-    srLogWrite("scene formations registered");
 
     /*Duduplicate enemy abilities and put them into a registry by attack ID. They can be fetched via the string form of their attack ID*/
     auto& enemyAttacks = sceneData.enemyAttacksArray;
     auto& enemyAttackNames = sceneData.enemyAttackNames;
-    srLogWrite("enemyAttackNames located at %p", &sceneData.enemyAttackNames);
     auto& enemyAttackIDs = sceneData.enemyAttackIDS;
     for (auto attackIndex = 0; attackIndex < 32; attackIndex++) {
         auto attackID = enemyAttackIDs[attackIndex];
@@ -167,7 +166,6 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
             continue;
 
         if (!(gContext.enemyAttacks.contains(stringID))) { //must implement a method to check if the dictionary contains a key
-            srLogWrite("loading enemy ability name from %p", &(enemyAttackNames[attackIndex].name));
             auto attackName = EncodedString((const char *)enemyAttackNames[attackIndex].name);
             auto attackData = enemyAttacks[attackIndex];
             EnemyAttack enemyAttack = { attackData, attackID, attackName };
@@ -179,7 +177,6 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
             );
         }
     }
-    srLogWrite("scene enemy abilities registered");
     srLogWrite("scene fully registered!");
 }
 

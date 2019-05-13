@@ -4,15 +4,28 @@
 #include "../sr_named_registry.h"
 #include "ai_scripts.h"
 
+typedef struct {
+    EnemyData enemyData;
+    u16 modelID;
+    BattleAIData enemyAI;
+} SrEnemyData;
+
+typedef struct {
+    AttackData attackData;
+    u16 attackID;
+    std::string attackName;
+} EnemyAttack;
+
 /*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/
-class SrEnemyRegistry : public SrNamedResourceRegistry<EnemyData, std::string> {
+class SrEnemyRegistry : public SrNamedResourceRegistry<SrEnemyData, std::string> {
 public:
-    SrEnemyRegistry() : SrNamedResourceRegistry<EnemyData, std::string>() {}
+    SrEnemyRegistry() : SrNamedResourceRegistry<SrEnemyData, std::string>() {}
 };
 
-class SrEnemyAIRegistry: public SrNamedResourceRegistry<BattleAIData, std::string> {
+class SrEnemyAttackRegistry : public SrNamedResourceRegistry<EnemyAttack, std::string> {
 public:
-    SrEnemyAIRegistry() : SrNamedResourceRegistry<BattleAIData, std::string>() {}
+    SrEnemyAttackRegistry() : SrNamedResourceRegistry<EnemyAttack, std::string>() {}
 };
+
 
 #endif

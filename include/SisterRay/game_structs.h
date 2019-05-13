@@ -48,8 +48,8 @@ typedef struct {
     u32 unkTHATCRASHEDTHEGAME; // 0x7C
     u32 addStatusMask; //0x80
     u32 rmStatusMask; //0x84
-    u32 changeStatusMask; //0x88
-    u32 inflictStatusChange; //0x8C
+    u32 toggleStatusMask; //0x88
+    u32 inflictStatusChance; //0x8C
     u32 miscActionflags; //0x90
     u32 targetMaskCopy; //0x94
     u32 sceneAbilityIndex; //0x98
@@ -166,11 +166,10 @@ typedef struct {
     u8      unused13;
     u8      unused14;
     u8      unused15;
-
 } ActorBattleVars;
 #pragma pack(pop)
 
-#define gAiActorVariables   ((ActorBattleVars*)0x009AB0DC)
+#define gAiActorVariables   ((ActorBattleVars*)0x9AB0DC)
 
 /*Should  have size 0x1AEC*/
 #pragma pack(push, 1)
@@ -193,8 +192,8 @@ typedef struct {
 } ActorTimerBlock;
 #pragma pack(pop)
 
-#define gBigAnimBlock       ((BigAnimBlock*)0x00BE1170)
-#define gActorTimerBlock    ((ActorTimerBlock*)0x009A8B26)
+#define gBigAnimBlock       ((BigAnimBlock*)0xBE1170)
+#define gActorTimerBlock    ((ActorTimerBlock*)0x9A8B26)
 
 #pragma pack(push, 1)
 typedef struct {
@@ -226,38 +225,6 @@ typedef struct {
     u16 elementMask;              //0x18
     u16 specialAttackFlags;       //0x1A
 } AttackData;
-
-typedef struct {
-    char enemyName[32];       //0x00
-    u8 enemyLevel;            //0x20
-    u8 enemySpeed;            //0x21
-    u8 enemyLuck;             //0x22
-    u8 enemyEvade;            //0x23
-    u8 enemyStrength;         //0x24
-    u8 enemyDefense;          //0x25
-    u8 enemyMagic;            //0x26
-    u8 enemyMDefense;         //0x27
-    u8 elementTypes[8];       //0x28
-    u8 elementModifiers[8];   //0x30
-    u8 attackAnimScripts[16]; //0x38
-    u16 attackSceneIDs[16];   //0x48
-    u16 attackCameraIDs[16];  //0x68
-    u8 itemStealDropRates[4]; //0x88
-    u16 itemsToStealDrop[4];  //0x8C
-    u16 manipAttackIDs[3];    //0x94
-    u8 unknownBytes[2];       //0x9A
-    u16 enemyMP;              //0x9C
-    u16 apAward;              //0x9E
-    u16 morphItemID;          //0xA0
-    u8 backDamageMultipler;   //0xA2
-    u8 align;                 //0xA3
-    u32 enemyHP;              //0xA4
-    u32 expAward;             //0xA8
-    u32 gilAward;             //0xAC
-    u32 statusImmunityMask;   //0xB0
-    u8 unknown2[4];           //0xB4
-} EnemyData;
-
 
 /*This contains a bit vector of flags for spells*/
 #pragma pack(push, 1)
@@ -330,10 +297,26 @@ typedef struct {
     u8 encounterRate;
     u8 chocoboChance;
     u8 preEmptiveChance;
-} activePartyMemberStruct;
+} ActivePartyMemberStruct;
 #pragma pack(pop)
 
-#define activePartyStructArray   ((activePartyMemberStruct*)0xDBA498)
+#define activePartyStructArray ((ActivePartyMemberStruct*)0xDBA498)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 characterID; //0x00
+    u8 unkByte1;    //0x01
+    u8 unkByte2;    //0x02
+    u8 unkByte3;    //0x03
+    u8 unkByte4;    //0x04
+    u8 align;       //0x05
+    u16 unkWrd1;    //0x06
+    u32 unkDWrd1;   //0x08
+    u32 unkDwrd2;   //0x0C
+} UnkPartyStruct;
+#pragma pack(pop)
+
+#define gUnkPartyDataArray ((UnkPartyStruct*)0x9A87F4)
 
 #pragma pack(push, 1)
 typedef struct {

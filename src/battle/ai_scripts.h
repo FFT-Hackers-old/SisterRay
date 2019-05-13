@@ -4,7 +4,19 @@
 #include <SisterRay/SisterRay.h>
 #include <vector>
 
-typedef const std::vector<u8> AIScript;
+typedef std::vector<u8> AIScript;
+
+typedef struct {
+    u16 initScript;
+    u16 mainScript;
+    u16 genCounter;
+    u16 deathCounter;
+    u16 physCounter;
+    u16 magCounter;
+    u16 endBattle;
+    u16 preActionScript;
+    u16 customEventScripts[8];
+} SceneAIOffsets;
 
 /*Struct which contains u8 ptrs to indexes in the underlying buffer*/
 typedef struct {
@@ -16,11 +28,14 @@ typedef struct {
     AIScript magCounter;
     AIScript endBattle;
     AIScript preActionScript;
-    AIScript customEvent[8];
+    AIScript customEventScripts[8];
 } BattleAIData;
 
-u8* getScriptPtr(const BattleAIData& AIData, u16 scriptType);
-void updateScript(AIScript script, AIScript newData, u32 insertIndex);
+const u8* getScriptPtr(const BattleAIData& AIData, u16 scriptType);
+void initializeBattleAIData(const u8* const scriptBlock, u32 sceneEnemyIndex, BattleAIData& srAIData);
+void initializeFormationAIScript(const u8* const scriptBlock, u32 formationIndex, BattleAIData& srAIData);
+void copyAIScript(AIScript& aiScript, const u8* const scriptStart);
+void initAIScriptStruct(BattleAIData& srAIData, const u8* const scriptBlockStart);
 
 
 #endif

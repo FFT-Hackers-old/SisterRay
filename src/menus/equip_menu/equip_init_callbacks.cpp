@@ -45,7 +45,7 @@ void initCharDataWidget(const EquipInitEvent* event) {
     std::vector<std::string> gearNames = { GEAR_SLOT_1_NAME, GEAR_SLOT_2_NAME, GEAR_SLOT_3_NAME };
     std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
     for (int row = 0; row < gearNames.size(); row++) {
-        menuText = gContext.game_strings.equipMenuTexts.get_string(row);
+        menuText = gContext.gameStrings.equipMenuTexts.get_string(row);
         setTextParams(&textParams, 250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f);
         textWidget = createTextWidget(textParams, gearNames[row]);
         addChildWidget(currentEquipWidget, (Widget*)textWidget, gearNames[row]);
@@ -120,7 +120,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
 
     std::vector<std::string> equipSlotDataNames = { SLOTS_NAME, GROWTH_NAME };
     for (int i = 0; i < 2; i++) {
-        menuText = gContext.game_strings.equipMenuTexts.get_string(14 + i);
+        menuText = gContext.gameStrings.equipMenuTexts.get_string(14 + i);
         setTextParams(&textParams, 27, 42 * i + equipMenuWindowConfig[2].drawDistance2 + 21, menuText, COLOR_TEAL, 0.1f);
         textWidget = createTextWidget(textParams, equipSlotDataNames[i]);
         addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, equipSlotDataNames[i]);
@@ -135,7 +135,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
         materiaGrowth = 4;
 
-    menuText = gContext.game_strings.equipMenuTexts.get_string(materiaGrowth + 4);
+    menuText = gContext.gameStrings.equipMenuTexts.get_string(materiaGrowth + 4);
     i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
     i32 growthTypeX = 35;
     setTextParams(&textParams, 243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 0.2f);
@@ -178,7 +178,7 @@ void initStatDiffWidget(const EquipInitEvent* event) {
     std::vector<std::string> candidateNumberNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
     std::vector<std::string> arrowNames = { ARROW_1, ARROW_2, ARROW_3, ARROW_4, ARROW_5, ARROW_6, ARROW_7 };
     for (i32 i = 0; i < 7; ++i) {
-        menuText = gContext.game_strings.equipMenuTexts.get_string(3 + i);
+        menuText = gContext.gameStrings.equipMenuTexts.get_string(3 + i);
         setTextParams(&textParams, 53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
         textWidget = createTextWidget(textParams, statNames[i]);
         addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[i]);

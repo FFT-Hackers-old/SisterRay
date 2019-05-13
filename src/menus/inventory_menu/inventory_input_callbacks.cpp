@@ -46,7 +46,7 @@ void selectItemHandler(const InventoryInputEvent* event) {
         if (usableInInventoryMenu(itemID)) {
             playMenuSound(3);
         }
-        else if (!(gContext.item_on_use_data.get_resource(itemID).requires_target)) {
+        else if (!(gContext.itemOnUseData.get_resource(itemID).requires_target)) {
             gContext.untargeted_handlers.get_handler(itemID)();
             
         }
@@ -91,7 +91,7 @@ void useTargetedItemHandler(const InventoryInputEvent* event) {
     u32 partyMemberIndex = getStateCursor(event->menu, 2)->context.relativeRowIndex;
 
     u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[partyMemberIndex];
-    if (character_ID == 0xFF && !(gContext.item_on_use_data.get_resource(itemID).target_all)) {
+    if (character_ID == 0xFF && !(gContext.itemOnUseData.get_resource(itemID).target_all)) {
         playMenuSound(3);
         return;
     }
@@ -172,7 +172,7 @@ void handleUsableItemEffects(u16 item_ID, u16 inventory_index, u32 partyMemberIn
     auto itemWasUsed = false;
 
     /*Call the appropriate function handler for using items on a character/the party*/
-    itemWasUsed = gContext.on_use_handlers.get_handler(item_ID)((u16)partyMemberIndex, item_ID, inventory_index);
+    itemWasUsed = gContext.onUseHandlers.get_handler(item_ID)((u16)partyMemberIndex, item_ID, inventory_index);
     if (itemWasUsed) {
         gContext.inventory->decrementInventoryEntry(inventory_index, 1);
         if (gContext.inventory->get_resource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up

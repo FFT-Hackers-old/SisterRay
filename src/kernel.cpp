@@ -40,7 +40,7 @@ SISTERRAY_API void srKernelStreamSkip(SrKernelStream* stream)
     fseek(stream->file, stream->deflatedSize - stream->cursor, SEEK_CUR);
 }
 
-SISTERRAY_API size_t srKernelStreamRead(SrKernelStream* stream, void* dst, size_t size)
+SISTERRAY_API size_t srKernelStreamRead(SrKernelStream* stream, void* dst, size_t readSize)
 {
     char* buf;
     size_t readLength;
@@ -49,9 +49,9 @@ SISTERRAY_API size_t srKernelStreamRead(SrKernelStream* stream, void* dst, size_
 
     buf = (char*)dst;
     readLength = 0;
-    remain = size;
+    remain = readSize;
 
-    if (size == 0)
+    if (readSize == 0)
         return 0;
 
     for (;;)

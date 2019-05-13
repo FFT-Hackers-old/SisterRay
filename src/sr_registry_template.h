@@ -16,6 +16,7 @@ public:
         size_t read_size;
         T object;
 
+        /*Here we read from the KernelStream */
         for (;;) {
             read_size = srKernelStreamRead(stream, &object, sizeof(object));
             if (read_size != sizeof(object))
@@ -51,26 +52,21 @@ public:
         _resource_registry.push_back(resource);
     }
 
-    void update_resource(u32 index, const T& resource)
-    {
-        if (index < resource_count())
-        {
+    void update_resource(u32 index, const T& resource) {
+        if (index < resource_count()) {
             _resource_registry[index] = resource;
         }
     }
 
-    size_t resource_count()
-    {
+    size_t resource_count() {
         return _resource_registry.size();
     }
 
-    size_t current_capacity()
-    {
+    size_t current_capacity() {
         return _resource_registry.capacity();
     }
 
-    T* get_data()
-    {
+    T* get_data() {
         return _resource_registry.data();
     }
 

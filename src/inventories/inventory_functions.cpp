@@ -24,10 +24,10 @@ SISTERRAY_API u8 setupBattleInventory() {
                 (u8)restrictionMask,
                 0
             };
-            gContext.battle_inventory->update_resource(inventory_index, entry);
+            gContext.battleInventory->update_resource(inventory_index, entry);
             totalItemsCount++;
         }
     }
-    gContext.battle_inventory->setSlotsInUse(totalItemsCount);
+    gContext.battleInventory->setSlotsInUse(totalItemsCount);
     return (u8)totalItemsCount; //The code expects this to return the "current item count" as a byte, we are making sure this isn't actually read in the code
 }

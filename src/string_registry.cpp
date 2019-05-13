@@ -28,74 +28,74 @@ void StringRegistry::set_unicode_string(int index, const char* str)
 void initGameStrings()
 {
     for (int i = 0; i <= 11; i++) {
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Wpn"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Arm"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Acc"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Attack"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Hit"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Defense"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Evade"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("M.Atk"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("M.Defense"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("M.Evade"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("None"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Normal"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Double"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Triple"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Slots"));
-        gContext.game_strings.equipMenuTexts.add_resource(EncodedString::from_unicode("Growth"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Wpn"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Arm"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Acc"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Attack"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Hit"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Defense"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Evade"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("M.Atk"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("M.Defense"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("M.Evade"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("None"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Normal"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Double"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Triple"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Slots"));
+        gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Growth"));
     }
 
     for (int i = 0; i <= 11; i++) {
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Use"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Arrange"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Key Items"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Customize"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Field"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Battle"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Throw"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Type"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Name"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Most"));
-        gContext.game_strings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Least"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Use"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Arrange"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Key Items"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Customize"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Field"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Battle"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Throw"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Type"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Name"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Most"));
+        gContext.gameStrings.inventory_menu_texts.add_resource(EncodedString::from_unicode("Least"));
     }
 }
 
 const char* getNameFromRelativeID(u16 relativeID, u8 itemType) {
     switch (itemType) {
     case 0:
-        return gContext.game_strings.item_names.get_string(relativeID);
+        return gContext.gameStrings.item_names.get_string(relativeID);
         break;
     case 1:
-        return gContext.game_strings.weapon_names.get_string(relativeID);
+        return gContext.gameStrings.weapon_names.get_string(relativeID);
         break;
     case 2:
-        return gContext.game_strings.armor_names.get_string(relativeID);
+        return gContext.gameStrings.armor_names.get_string(relativeID);
         break;
     case 3:
-        return gContext.game_strings.accessory_names.get_string(relativeID);
+        return gContext.gameStrings.accessory_names.get_string(relativeID);
         break;
     default:
-        return gContext.game_strings.item_names.get_string(relativeID);
+        return gContext.gameStrings.item_names.get_string(relativeID);
     }
 }
 
 const char* getDescriptionFromRelativeID(u16 relativeID, u8 itemType) {
     switch (itemType) {
     case 0:
-        return gContext.game_strings.item_descriptions.get_string(relativeID);
+        return gContext.gameStrings.item_descriptions.get_string(relativeID);
         break;
     case 1:
-        return gContext.game_strings.weapon_descriptions.get_string(relativeID);
+        return gContext.gameStrings.weapon_descriptions.get_string(relativeID);
         break;
     case 2:
-        return gContext.game_strings.armor_descriptions.get_string(relativeID);
+        return gContext.gameStrings.armor_descriptions.get_string(relativeID);
         break;
     case 3:
-        return gContext.game_strings.accessory_descriptions.get_string(relativeID);
+        return gContext.gameStrings.accessory_descriptions.get_string(relativeID);
         break;
     default:
-        return gContext.game_strings.item_descriptions.get_string(relativeID);
+        return gContext.gameStrings.item_descriptions.get_string(relativeID);
     }
 }
 

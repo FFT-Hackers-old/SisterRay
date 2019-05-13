@@ -66,7 +66,7 @@ void handleUpdateDescription(const InventoryDrawEvent* event) {
             flatInventoryIndex = (keyItemChoice.maxColumnBound * (keyItemChoice.baseRowIndex + keyItemChoice.relativeRowIndex)) + keyItemChoice.relativeColumnIndex;
             if ((KEY_ITEMS_INVENTORY_PTR)[flatInventoryIndex] != 0xFFFF) {
                 auto keyItemID = (KEY_ITEMS_INVENTORY_PTR)[flatInventoryIndex];
-                fetchedDescription = gContext.game_strings.key_item_descriptions.get_string(keyItemID);
+                fetchedDescription = gContext.gameStrings.key_item_descriptions.get_string(keyItemID);
                 updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), fetchedDescription);
             }
             else {

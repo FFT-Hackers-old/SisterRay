@@ -1,7 +1,7 @@
 #include "battle_context.h"
 #include "../impl.h"
 
-void setCurrentActionAbilityData() {
+void setContextFromAbility() {
         i32 sceneAbilityIndex; 
         i32 enemyActionIndex;
         u16 elementMask;
@@ -17,6 +17,8 @@ void setCurrentActionAbilityData() {
         AttackData* abilityDataPtr;
         BattleQueueEntry executingAction = (*(BattleQueueEntry*)0x9A9884);
         AttackData* currentSceneAbilities = (AttackData*)(0x9A90C4);
+        char* currentSceneAbilityNames = (char*)(0x9A9484);
+        u16* currentSceneAbilityIDs = (u16*)(0x9A9444);
         AttackData* kernelAbilities = (AttackData*)(0xDB9690);
         EnemyData* enemyData = (EnemyData*)(0x9A8E9C);
         u8* kernelLimitScriptIndexes = (u8*)(0x7B76A0);
@@ -27,9 +29,13 @@ void setCurrentActionAbilityData() {
         gDamageContextPtr->MPCost = -1;
 
         if (gDamageContextPtr->commandIndexCopy == CMD_ENEMY_ACTION) {
-            sceneAbilityIndex = getSceneIndexFromActionID(gDamageContextPtr->attackIndexCopy);
-            abilityDataPtr = &(currentSceneAbilities[sceneAbilityIndex]); //This is where the scene ability data is stored
-            gDamageContextPtr->sceneAbilityIndex = sceneAbilityIndex;
+            auto attackID = std::string(std::to_string(gDamageContextPtr->attackIndexCopy));
+            auto enemyAttack = gContext.enemyAttacks.get_element(attackID);
+            abilityDataPtr = &(gContext.enemyAttacks.get_element(attackID).attackData);
+            currentSceneAbilities[0] = enemyAttack.attackData;
+            strcpy(currentSceneAbilityNames, enemyAttack.attackName.c_str());
+            *currentSceneAbilityIDs = enemyAttack.attackID;
+            gDamageContextPtr->sceneAbilityIndex = 0;
         }
         else if (gDamageContextPtr->attackIndexCopy >= 128) { //The ability data here is not contained in the kernel
             if (gDamageContextPtr->attackerID < 3) {
@@ -150,8 +156,42 @@ void setCurrentActionAbilityData() {
         gDamageContextPtr->missAtkSound = abilityDataPtr->impactSoundID;
         if (!((gDamageContextPtr->specialAbilityFlags) & 4) && gAiActorVariables[gDamageContextPtr->attackerID].statusMask & 0x4000000)
             gDamageContextPtr->abilityHitRate >>= 1; //(half hit chance)
-        statusMasksFromAbility(abilityDataPtr->statusInfictType, abilityDataPtr->statusMask);
+        setStatusInflictionData(abilityDataPtr->statusInfictType, abilityDataPtr->statusMask);
         if (deathSentenceFlag)
             gAiActorVariables[gDamageContextPtr->attackerID].statusMask &= 0xFFDFFFFF;
         return copyAdditionalEffects(abilityDataPtr->additionalEffect, abilityDataPtr->additionalEffectModifier);
+}
+
+void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask) {
+    u16* word_9AAD1E = (u16*)(0x9AAD1E);
+    gDamageContextPtr->addStatusMask = 0;     
+    gDamageContextPtr->rmStatusMask = 0;      
+    gDamageContextPtr->toggleStatusMask = 0;
+    auto statusType = statusInflictionByte >> 6;
+    if (statusType < 3)
+    {
+        if (inflictedStatusMask >= 0)
+        {
+            gDamageContextPtr->inflictStatusChance = 4 * (statusInflictionByte & 0x3F);// statusInflictionChance
+            switch (statusType) {
+                case 0:
+                    gDamageContextPtr->addStatusMask  = inflictedStatusMask;
+                    break;
+                case 1:
+                    gDamageContextPtr->rmStatusMask = inflictedStatusMask;
+                    break;
+                case 2:
+                    gDamageContextPtr->toggleStatusMask = inflictedStatusMask;
+                    break;
+                default: {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            gDamageContextPtr->addStatusMask = 2147483648; //Figure out why this gets set
+            *word_9AAD1E = (i8)inflictedStatusMask & 3;
+        }
+    }
 }

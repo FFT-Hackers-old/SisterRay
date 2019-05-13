@@ -6,7 +6,7 @@ static int itemName(lua_State* L)
     u16 itemID;
 
     itemID = *((u16*)lua_touserdata(L, 1));
-    lua_pushstring(L, gContext.game_strings.item_names.get_unicode_string(itemID));
+    lua_pushstring(L, gContext.gameStrings.item_names.get_unicode_string(itemID));
     return 1;
 }
 
@@ -15,7 +15,7 @@ static int itemSetName(lua_State* L)
     u16 itemID;
 
     itemID = *((u16*)lua_touserdata(L, 1));
-    gContext.game_strings.item_names.set_unicode_string(itemID, luaL_checkstring(L, 3));
+    gContext.gameStrings.item_names.set_unicode_string(itemID, luaL_checkstring(L, 3));
     return 0;
 }
 

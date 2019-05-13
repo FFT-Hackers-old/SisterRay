@@ -8,6 +8,7 @@
 #include <SisterRay/routines.h>
 #include <SisterRay/data_addresses.h>
 #include <SisterRay/game_data_types.h>
+#include <SisterRay/scene_data.h>
 
 /*Macro for handling compilation in both C and C++*/
 #if defined(__cplusplus)

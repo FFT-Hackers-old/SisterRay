@@ -113,7 +113,6 @@ static void srLoadKernelBin(void)
 
 static void Init(void)
 {
-    MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
     initLog();
     srInitLua();
     initFunctionRegistry();
@@ -145,6 +144,7 @@ static void Init(void)
     mogReplaceFunction(LOAD_FORMATION_HANDLER, &loadBattleFormation);
     mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);
     LoadMods();
+    MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 
     /* Init RNG */
     srand((unsigned int)time(nullptr));

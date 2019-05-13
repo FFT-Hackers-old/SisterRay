@@ -3,6 +3,7 @@
 
 #include "../sr_named_registry.h"
 #include "ai_scripts.h"
+#include "../EncodedString.h"
 
 typedef struct {
     EnemyData enemyData;
@@ -13,7 +14,7 @@ typedef struct {
 typedef struct {
     AttackData attackData;
     u16 attackID;
-    std::string attackName;
+    EncodedString attackName;
 } EnemyAttack;
 
 /*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/

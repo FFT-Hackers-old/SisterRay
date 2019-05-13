@@ -33,7 +33,7 @@ void setContextFromAbility() {
             auto enemyAttack = gContext.enemyAttacks.get_element(attackID);
             abilityDataPtr = &(gContext.enemyAttacks.get_element(attackID).attackData);
             currentSceneAbilities[0] = enemyAttack.attackData;
-            strcpy(currentSceneAbilityNames, enemyAttack.attackName.c_str());
+            strcpy(currentSceneAbilityNames, enemyAttack.attackName.str()); //We will need to verify that this actually works, strcpy might expect null termination and buffer overrun here
             *currentSceneAbilityIDs = enemyAttack.attackID;
             gDamageContextPtr->sceneAbilityIndex = 0;
         }

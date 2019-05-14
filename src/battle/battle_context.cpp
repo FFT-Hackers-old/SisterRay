@@ -14,10 +14,10 @@ void srLoadAbilityData() {
         i32 charLimitArrayIndex; 
         i32 deathSentenceFlag; 
         u16 cameraOverrideData;
-        AttackData* abilityDataPtr;
+        AttackData abilityData;
         BattleQueueEntry executingAction = (*(BattleQueueEntry*)0x9A9884);
         AttackData* currentSceneAbilities = (AttackData*)(0x9A90C4);
-        char* currentSceneAbilityNames = (char*)(0x9A9484);
+        char* sceneAbilitiesPtr = (char*)(0x9A9484);
         u16* currentSceneAbilityIDs = (u16*)(0x9A9444);
         AttackData* kernelAbilities = (AttackData*)(0xDB9690);
         EnemyData* enemyData = (EnemyData*)(0x9A8E9C);
@@ -27,14 +27,22 @@ void srLoadAbilityData() {
         cameraOverrideData = 0xFFFF;
         deathSentenceFlag = 0;
         gDamageContextPtr->MPCost = -1;
-
+        srLogWrite("attempting to load ability data");
+        srLogWrite("command index being exeucted: %i", gDamageContextPtr->commandIndexCopy);
+        srLogWrite("enemy action command index %i", CMD_ENEMY_ACTION);
+        srLogWrite("action index being executed: %i", gDamageContextPtr->attackIndexCopy);
+        srLogWrite("actor ID: %i", gDamageContextPtr->attackerID);
         if (gDamageContextPtr->commandIndexCopy == CMD_ENEMY_ACTION) {
+            srLogWrite("Attempting to load enemy action");
             auto attackID = std::string(std::to_string(gDamageContextPtr->attackIndexCopy));
+            srLogWrite("Loaded attack Index: %s", attackID.c_str());
             auto enemyAttack = gContext.enemyAttacks.get_element(attackID);
-            abilityDataPtr = &(gContext.enemyAttacks.get_element(attackID).attackData);
+            abilityData = gContext.enemyAttacks.get_element(attackID).attackData;
             currentSceneAbilities[0] = enemyAttack.attackData;
-            memcpy((void*)currentSceneAbilityNames, (void*)enemyAttack.attackName.str(), enemyAttack.attackName.size()); //We will need to verify that this actually works, strcpy might expect null termination and buffer overrun here
+            memcpy((void*)sceneAbilitiesPtr, (void*)enemyAttack.attackName.str(), enemyAttack.attackName.size()); //We will need to verify that this actually works, strcpy might expect null termination and buffer overrun here
+            srLogWrite("attack name in registry: %s, copied attack name in unicode: %s", attackID.c_str(), EncodedString(((char*)sceneAbilitiesPtr)).unicode());
             *currentSceneAbilityIDs = enemyAttack.attackID;
+            srLogWrite("attack id at index 0: %i", *currentSceneAbilityIDs);
             gDamageContextPtr->sceneAbilityIndex = 0;
         }
         else if (gDamageContextPtr->attackIndexCopy >= 128) { //The ability data here is not contained in the kernel
@@ -54,14 +62,15 @@ void srLoadAbilityData() {
                             }
                         }
                         gDamageContextPtr->animationScriptID = limitAnimationScriptIndex + 60;
-                        abilityDataPtr = &(activePartyStructArray[gDamageContextPtr->attackerID].enabledLimitData[limitIndex]);
+                        abilityData = (activePartyStructArray[gDamageContextPtr->attackerID].enabledLimitData[limitIndex]);
                         break;
                     }
                 }
             }
         }
         else { //load abilities which have been loaded from the kernel -- this code can be relocated to load from gContext
-            abilityDataPtr = &(kernelAbilities[gDamageContextPtr->attackIndexCopy]);
+            srLogWrite("attempting to execute loaded kernel action");
+            abilityData = kernelAbilities[gDamageContextPtr->attackIndexCopy];
             if (gDamageContextPtr->attackIndexCopy >= 96) {
                 relativeIndex = gDamageContextPtr->attackIndexCopy - 96;
                 if (kernelLimitScriptIndexes[relativeIndex] != 255)
@@ -69,6 +78,7 @@ void srLoadAbilityData() {
                 gDamageContextPtr->animationBaseOffset = -1;
             }
         }
+        srLogWrite("ability data loaded, now setting up damage context ptr for action");
         if (gDamageContextPtr->commandIndex == CMD_MAGIC && gDamageContextPtr->attackIndexCopy == 54) //death sentence case hardcoded
             deathSentenceFlag = 1;
         if ((gDamageContextPtr->animationBaseOffset != -1) && !((gDamageContextPtr->miscActionflags) & 0x400000)) {
@@ -101,7 +111,7 @@ void srLoadAbilityData() {
                         srCreateEvent(2, gDamageContextPtr->attackerID, 21, 2);
                     }
                 }
-                else if (abilityDataPtr->targetingFlags & 8) {
+                else if (abilityData.targetingFlags & 8) {
                     gDamageContextPtr->miscActionflags |= 0x100000u;
                 }
             }
@@ -123,43 +133,43 @@ void srLoadAbilityData() {
             }
         }
         if (gDamageContextPtr->MPCost < 0)
-            gDamageContextPtr->MPCost = abilityDataPtr->MPCost;
+            gDamageContextPtr->MPCost = abilityData.MPCost;
         if (executingAction.entryPriority == 3 || gDamageContextPtr->miscActionflags & 0x400000) //This is triggered by mime
             gDamageContextPtr->MPCost = 0;
-        gDamageContextPtr->abilityHitRate = abilityDataPtr->abilityHitRate;
-        gDamageContextPtr->damageFormulaID = abilityDataPtr->damageFormula;
-        if (abilityDataPtr->elementMask == 0xFFFF) 
+        gDamageContextPtr->abilityHitRate = abilityData.abilityHitRate;
+        gDamageContextPtr->damageFormulaID = abilityData.damageFormula;
+        if (abilityData.elementMask == 0xFFFF) 
             elementMask = 0;
         else
-            elementMask = abilityDataPtr->elementMask;
+            elementMask = abilityData.elementMask;
         gDamageContextPtr->attackElementsMask = elementMask;
-        gDamageContextPtr->abilityPower = abilityDataPtr->attackPower;
-        gDamageContextPtr->targetReactionAnimation = abilityDataPtr->targetReactionID;
+        gDamageContextPtr->abilityPower = abilityData.attackPower;
+        gDamageContextPtr->targetReactionAnimation = abilityData.targetReactionID;
         if (gDamageContextPtr->abilityTargetingFlags == 255)
-            gDamageContextPtr->abilityTargetingFlags = abilityDataPtr->targetingFlags;
+            gDamageContextPtr->abilityTargetingFlags = abilityData.targetingFlags;
         if (gDamageContextPtr->commandIndexCopy == CMD_LIMIT)
-            cameraOverrideData = (((*(u16*)0x9AB0CC) & 8) != 0) ? abilityDataPtr->cameraMovementMultiple : abilityDataPtr->cameraMovementSingle;
+            cameraOverrideData = (((*(u16*)0x9AB0CC) & 8) != 0) ? abilityData.cameraMovementMultiple : abilityData.cameraMovementSingle;
         if (cameraOverrideData == 0xFFFF) {
-            gDamageContextPtr->cameraDataSingle = abilityDataPtr->cameraMovementSingle;
-            gDamageContextPtr->cameraDataMultiple = abilityDataPtr->cameraMovementMultiple;
+            gDamageContextPtr->cameraDataSingle = abilityData.cameraMovementSingle;
+            gDamageContextPtr->cameraDataMultiple = abilityData.cameraMovementMultiple;
         }
         else {
             gDamageContextPtr->cameraDataSingle = cameraOverrideData;
             gDamageContextPtr->cameraDataMultiple = cameraOverrideData;
         }
-        if (abilityDataPtr->impactEffectID!= 255)
-            gDamageContextPtr->impactEffectID = abilityDataPtr->impactEffectID;
-        gDamageContextPtr->animationEffectID = abilityDataPtr->animationEffectID;
-        gDamageContextPtr->specialAbilityFlags = abilityDataPtr->specialAttackFlags;
-        gDamageContextPtr->impactSound = abilityDataPtr->impactSoundID;
-        gDamageContextPtr->critAtkSound = abilityDataPtr->impactSoundID;
-        gDamageContextPtr->missAtkSound = abilityDataPtr->impactSoundID;
+        if (abilityData.impactEffectID!= 255)
+            gDamageContextPtr->impactEffectID = abilityData.impactEffectID;
+        gDamageContextPtr->animationEffectID = abilityData.animationEffectID;
+        gDamageContextPtr->specialAbilityFlags = abilityData.specialAttackFlags;
+        gDamageContextPtr->impactSound = abilityData.impactSoundID;
+        gDamageContextPtr->critAtkSound = abilityData.impactSoundID;
+        gDamageContextPtr->missAtkSound = abilityData.impactSoundID;
         if (!((gDamageContextPtr->specialAbilityFlags) & 4) && gAiActorVariables[gDamageContextPtr->attackerID].statusMask & 0x4000000)
             gDamageContextPtr->abilityHitRate >>= 1; //(half hit chance)
-        setStatusInflictionData(abilityDataPtr->statusInfictType, abilityDataPtr->statusMask);
+        setStatusInflictionData(abilityData.statusInfictType, abilityData.statusMask);
         if (deathSentenceFlag)
             gAiActorVariables[gDamageContextPtr->attackerID].statusMask &= 0xFFDFFFFF;
-        return copyAdditionalEffects(abilityDataPtr->additionalEffect, abilityDataPtr->additionalEffectModifier);
+        return copyAdditionalEffects(abilityData.additionalEffect, abilityData.additionalEffectModifier);
 }
 
 void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask) {

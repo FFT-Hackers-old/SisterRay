@@ -277,6 +277,7 @@ i16 srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
         dword_9ACB68 = 0;
         *dword_C069BC = 2;
     }
+    srLogWrite("Scene successfully loaded");
     return ret;
 }
 
@@ -293,6 +294,8 @@ i32 srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
     u16* unknownPtr = (u16*)(0x9AAD14);
     *unknownPtr |= 1 << scriptType;
 
+    srLogWrite("running AI script for actor %i of type %i", actorIndex, scriptType);
+
     switch (actorIndex) {
         case 0:
         case 1:
@@ -300,7 +303,6 @@ i32 srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
             characterScriptIndex = gUnkPartyDataArray[actorIndex].characterID;
             if (characterScriptIndex != -0xFF && linkedScriptArray[characterScriptIndex] != 0xFF) //this handles script links
                 characterScriptIndex = linkedScriptArray[characterScriptIndex];
-            // scriptPtr = getAIScriptPtr((i32)&formationAI, characterScriptIndex, scriptType);// characterAI //probably best if we run these AI scripts from an internal registry too
             auto& charAIData = gContext.characters.get_element(getCharacterName(characterScriptIndex)).characterAI;
             scriptPtr = getScriptPtr(charAIData, scriptType);
             break;
@@ -316,8 +318,13 @@ i32 srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
         case 9: {
             auto formationEnemyID = formationActorDataPtr->formationDatas[actorIndex - 4].enemyID; //fetch the formation relative ID, it's modified from the absolute ID
             auto uniqueID = sceneAIDataPtr->uniqueIDs[formationEnemyID];
+            srLogWrite("fetching script information for the following enemy: %s", uniqueID.c_str());
             auto& enemyAIData = gContext.enemies.get_element(uniqueID).enemyAI;
             scriptPtr = getScriptPtr(enemyAIData, scriptType);
+            if (scriptPtr) {
+                srLogWrite("executing enemy AI script with chars:%x %x %x %x %x %x %x %x %x %x %x %x",
+                    scriptPtr[0], scriptPtr[1], scriptPtr[2], scriptPtr[3], scriptPtr[4], scriptPtr[5], scriptPtr[6], scriptPtr[7], scriptPtr[8], scriptPtr[9], scriptPtr[10], scriptPtr[11]);
+            }
             break;
         }
         default: {

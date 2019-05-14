@@ -140,9 +140,10 @@ static void Init(void)
     mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);
     mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
-    mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &setContextFromAbility);
-    mogReplaceFunction(LOAD_FORMATION_HANDLER, &loadBattleFormation);
+    mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
+    mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);
     mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);
+    mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

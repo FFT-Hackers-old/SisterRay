@@ -150,4 +150,5 @@ void copyAIScript(AIScript& aiScript, const u8* const scriptStart) {
         aiScript.push_back(*scriptPosition);
         scriptPosition++;
     }
+    aiScript.push_back(0x73);
 }

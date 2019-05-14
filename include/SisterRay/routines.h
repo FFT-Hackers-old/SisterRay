@@ -33,6 +33,7 @@
 #define LOAD_ABILITY_DATA_HANDLER       ((void*)0x5C94D3)
 #define LOAD_FORMATION_HANDLER          ((void*)0x5D1050)
 #define EXECUTE_AI_SCRIPT_HANDLER       ((void*)0x5C86E0)
+#define EXECUTE_FORMATION_SCRIPT_HANDLER ((void*)0x5C8931)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);

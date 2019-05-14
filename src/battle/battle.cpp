@@ -180,7 +180,7 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
     srLogWrite("scene fully registered!");
 }
 
-i16 loadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
+i16 srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
     i16 ret; 
     char v4; 
     int enemyIndex;
@@ -193,6 +193,7 @@ i16 loadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
     FormationActorDataArray* formationActorDataPtr = (FormationActorDataArray*)(0x9A8794);
     EnemyData* enemyDataPtr = (EnemyData*)(0x9A8E9C);
     FormationEnemyIDs* sceneAIDataPtr = (FormationEnemyIDs*)(0x9A9CFC);
+    u32* formationAIDataPtr = (u32*)(0x9A9AFC);
     u32* dword_C069BC = (u32*)(0xC069BC);
     u32* dword_9A89D0 = (u32*)(0x9A89D0);
     u16* battleFlags = (u16*)(0x9A88A6);
@@ -234,6 +235,7 @@ i16 loadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
             /*While the original game copies AI data here, we parse AI scripts and store them with our registries
               Ergo, we elect to store a battle accessible SR struct which contains unique enemy IDs here*/
             *sceneAIDataPtr = formation.FormationEnemyIDs;
+            *formationAIDataPtr = formationIndex;
         }
 
         //Set pre-emptive in some circumstances
@@ -341,6 +343,29 @@ i32 srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
             if (modelDataCpys[actorID].damagedAnim != gAiActorVariables[actorID].damageAnimID)
                 sub_437185(actorID, modelDataCpys[actorID].damagedAnim, gAiActorVariables[actorID].damageAnimID, 0);
         }
+    }
+    return result;
+}
+
+i32 srExecuteFormationScripts() {
+    int result; 
+    const u8* scriptPtr;
+    u16 scriptType; 
+    u32* formationAIDataPtr = (u32*)(0x9A9AFC);
+    u16* word_9AAD14 = (u16*)(0x9AAD14);
+
+    sub_5D9550(-1, 0, 0);
+    auto formationIndex = *formationAIDataPtr;
+    for (scriptType = 0; scriptType < 8; ++scriptType) {
+        if ((1 << scriptType) & (i16)(*word_9AAD14)) {
+            *word_9AAD14 &= ~(i16)(1 << scriptType);
+            std::string formationID = std::string(std::to_string(formationIndex));
+            auto& formationAI = gContext.formations.get_element(formationID).formationAI;
+            scriptPtr = getScriptPtr(formationAI, scriptType);
+            if (scriptPtr)
+                result = runAIScript(3, (i32)scriptPtr, -1);
+        }
+        result = scriptType + 1;
     }
     return result;
 }

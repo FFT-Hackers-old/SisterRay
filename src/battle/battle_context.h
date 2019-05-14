@@ -3,7 +3,7 @@
 
 #include <SisterRay/SisterRay.h>
 
-void setContextFromAbility();
+void srLoadAbilityData();
 void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask);
 
 #endif

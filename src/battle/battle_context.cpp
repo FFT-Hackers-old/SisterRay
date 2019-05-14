@@ -1,7 +1,7 @@
 #include "battle_context.h"
 #include "../impl.h"
 
-void setContextFromAbility() {
+void srLoadAbilityData() {
         i32 sceneAbilityIndex; 
         i32 enemyActionIndex;
         u16 elementMask;
@@ -33,7 +33,7 @@ void setContextFromAbility() {
             auto enemyAttack = gContext.enemyAttacks.get_element(attackID);
             abilityDataPtr = &(gContext.enemyAttacks.get_element(attackID).attackData);
             currentSceneAbilities[0] = enemyAttack.attackData;
-            strcpy(currentSceneAbilityNames, enemyAttack.attackName.str()); //We will need to verify that this actually works, strcpy might expect null termination and buffer overrun here
+            memcpy((void*)currentSceneAbilityNames, (void*)enemyAttack.attackName.str(), enemyAttack.attackName.size()); //We will need to verify that this actually works, strcpy might expect null termination and buffer overrun here
             *currentSceneAbilityIDs = enemyAttack.attackID;
             gDamageContextPtr->sceneAbilityIndex = 0;
         }

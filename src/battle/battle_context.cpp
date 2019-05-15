@@ -17,7 +17,7 @@ void srLoadAbilityData() {
         AttackData abilityData;
         BattleQueueEntry executingAction = (*(BattleQueueEntry*)0x9A9884);
         AttackData* currentSceneAbilities = (AttackData*)(0x9A90C4);
-        char* sceneAbilitiesPtr = (char*)(0x9A9484);
+        char* attackNamesPtr = (char*)(0x9A9484);
         u16* currentSceneAbilityIDs = (u16*)(0x9A9444);
         AttackData* kernelAbilities = (AttackData*)(0xDB9690);
         EnemyData* enemyData = (EnemyData*)(0x9A8E9C);
@@ -27,13 +27,6 @@ void srLoadAbilityData() {
         cameraOverrideData = 0xFFFF;
         deathSentenceFlag = 0;
         gDamageContextPtr->MPCost = -1;
-        srLogWrite("attempting to load ability data");
-        srLogWrite("command index being executed: %i", gDamageContextPtr->commandIndex);
-        srLogWrite("attack index being executed: %i", gDamageContextPtr->attackIndex);
-        srLogWrite("command index being executed: %i", gDamageContextPtr->commandIndexCopy);
-        srLogWrite("enemy action command index %i", CMD_ENEMY_ACTION);
-        srLogWrite("action index being executed: %i", gDamageContextPtr->attackIndexCopy);
-        srLogWrite("actor ID: %i", gDamageContextPtr->attackerID);
         if (gDamageContextPtr->commandIndexCopy == CMD_ENEMY_ACTION) {
             srLogWrite("Attempting to load enemy action");
             auto attackID = std::string(std::to_string(gDamageContextPtr->attackIndexCopy));
@@ -41,8 +34,10 @@ void srLoadAbilityData() {
             auto enemyAttack = gContext.enemyAttacks.get_element(attackID);
             abilityData = gContext.enemyAttacks.get_element(attackID).attackData;
             currentSceneAbilities[0] = enemyAttack.attackData;
-            memcpy((void*)sceneAbilitiesPtr, (void*)enemyAttack.attackName.str(), enemyAttack.attackName.size()); //We will need to verify that this actually works, strcpy might expect null termination and buffer overrun here
-            srLogWrite("attack name in registry: %s, copied attack name in unicode: %s", attackID.c_str(), EncodedString(((char*)sceneAbilitiesPtr)).unicode());
+            srLogWrite("size of attack name: %i", enemyAttack.attackName.size());
+            memcpy((void*)attackNamesPtr, (void*)(enemyAttack.attackName.str()), enemyAttack.attackName.size());
+            *(attackNamesPtr + enemyAttack.attackName.size()) = char(255);
+            srLogWrite("attack name in registry: %s, copied attack name in unicode: %s", attackID.c_str(), EncodedString(((char*)attackNamesPtr)).unicode());
             *currentSceneAbilityIDs = enemyAttack.attackID;
             srLogWrite("attack id at index 0: %i", *currentSceneAbilityIDs);
             gDamageContextPtr->sceneAbilityIndex = 0;

@@ -14,6 +14,8 @@ void initFormationsRegistries();
 i16 srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void));
 i32 srExecuteAIScript(i32 actorIndex, i32 scriptID, i32 unkInt);
 i32 srExecuteFormationScripts();
+i32  enqueueScriptAction(i16 actorID, i16 commandIndex, i16 attackIndex);
+void* transformEnemyCommand();
 
 u32 getCompressedFileSizes(const u8* sceneBlock, u16 byteSizes[16]);
 void readBlock(FILE* filehandle, u32 blockSize, u8* dst);

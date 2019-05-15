@@ -144,6 +144,8 @@ static void Init(void)
     mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);
     mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);
     mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
+    mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
+    mogReplaceFunction(TRANSFORM_ENEMY_COMMAND, &transformEnemyCommand);
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

@@ -26,6 +26,9 @@ typedef u8(*pfnsub5C8BA1)(void);
 typedef i32(*pfnsub5D9550)(i32, i32, i32);
 #define sub_5D9550               ((pfnsub5D9550)0x5D9550)
 
+typedef i32(*pfnsub43258A)(u8*);
+#define enqueueBattleAction      ((pfnsub43258A)0x43258A)
+
 /*Initialize SR registries for enemy/formation data from scene.bin*/
 void initFormationsRegistries() {
     srLogWrite("Initializing registries from scene.bin");
@@ -375,4 +378,47 @@ i32 srExecuteFormationScripts() {
         result = scriptType + 1;
     }
     return result;
+}
+
+/*Rewrite this function to expect an ABSOLUTE instead of relative id when executing enemy attacks*/
+i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 attackIndex) {
+    u32* dword_C3F338 = (u32*)(0xC3F338);
+    u16* word_9AB0AE = (u16*)(0x9AB0AE);
+
+    /*Temporarily make the index type relative*/
+    switch (commandIndex) { //convert to a relative/absolute ID offset in the player spells table
+        case 3: {
+            attackIndex -= 56;
+            break;
+        }
+        case 13: {
+            attackIndex -= 72;
+            break;
+        }
+        default:{
+        }
+    }
+
+    srLogWrite("enqueueing entry with for actor %i, command_id %i, attack_id %i from AI script", actorID, commandIndex, attackIndex);
+    gAiActorVariables[actorID].lastTargets = *word_9AB0AE;
+    BattleQueueEntry queueEntry = { *(u8*)dword_C3F338, 0, actorID, commandIndex, attackIndex, *word_9AB0AE };
+    
+    auto var = enqueueBattleAction((u8 *)&queueEntry);
+    return var;
+}
+
+void* transformEnemyCommand() {
+    gDamageContextPtr->attackIndexCopy = gDamageContextPtr->attackIndex;
+    /*The following is temporary code until the kernel abilities are properly loaded and expandable*/
+    if (gDamageContextPtr->commandIndex == CMD_ENEMY_ACTION) {
+        u16 baseOffsets[5] = { 0, 56, 72, 96, 256 };
+        u16 commandIndexes[4] = { 2, 3, 13, 20 };
+        for (auto baseIndexOffset = 0; baseIndexOffset < 4; ++baseIndexOffset) {
+            if (gDamageContextPtr->attackIndexCopy < baseOffsets[1 + baseIndexOffset]) {
+                gDamageContextPtr->commandIndexCopy = commandIndexes[baseIndexOffset];
+                gDamageContextPtr->sceneAbilityIndex = gDamageContextPtr->attackIndexCopy - baseOffsets[baseIndexOffset];
+            }
+        }
+    }
+    return (void*)gDamageContextPtr;
 }

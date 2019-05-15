@@ -28,7 +28,9 @@ void srLoadAbilityData() {
         deathSentenceFlag = 0;
         gDamageContextPtr->MPCost = -1;
         srLogWrite("attempting to load ability data");
-        srLogWrite("command index being exeucted: %i", gDamageContextPtr->commandIndexCopy);
+        srLogWrite("command index being executed: %i", gDamageContextPtr->commandIndex);
+        srLogWrite("attack index being executed: %i", gDamageContextPtr->attackIndex);
+        srLogWrite("command index being executed: %i", gDamageContextPtr->commandIndexCopy);
         srLogWrite("enemy action command index %i", CMD_ENEMY_ACTION);
         srLogWrite("action index being executed: %i", gDamageContextPtr->attackIndexCopy);
         srLogWrite("actor ID: %i", gDamageContextPtr->attackerID);

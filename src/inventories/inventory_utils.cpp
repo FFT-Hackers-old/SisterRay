@@ -32,7 +32,7 @@ u16 getCharacterRestrictionMask(u16 item_id) {
     u16 restriction_mask;
     switch (item_type) {
     case 0: {
-        restriction_mask = gContext.item_on_use_data.get_resource(relative_id).characterRestrictionMask;
+        restriction_mask = gContext.itemOnUseData.get_resource(relative_id).characterRestrictionMask;
         break;
     }
     case 1: {

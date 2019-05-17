@@ -64,7 +64,7 @@ void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
     auto keyItemIndex = (KEY_ITEMS_INVENTORY_PTR)[(u8)(flatIndex)];
     if (keyItemIndex != 0xFFFF) {
         enableWidget(widget);
-        const char* name = gContext.game_strings.key_item_names.get_string(flatIndex);
+        const char* name = gContext.gameStrings.key_item_names.get_string(flatIndex);
         updateText(widget, name);
         updateTextColor(widget, COLOR_WHITE);
     }

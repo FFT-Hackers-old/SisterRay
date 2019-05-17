@@ -1,6 +1,36 @@
 #include "party_utils.h"
 #include "../inventories/inventory_utils.h"
 
+std::string getCharacterName (u8 characterID) {
+    switch (characterID) {
+        case 0:
+            return std::string("CLOUD");
+        case 1:
+            return std::string("BARRET");
+        case 2:
+            return std::string("TIFA");
+        case 3:
+            return std::string("AERIS");
+        case 4:
+            return std::string("REDXIII");
+        case 5:
+            return std::string("YUFFIE");
+        case 6:
+            return std::string("CAITSITH");
+        case 7:
+            return std::string("VINCENT");
+        case 8:
+            return std::string("CID");
+        case 9:
+            return std::string("YCLOUD");
+        case 10:
+            return std::string("SEPHIROTH");
+        default: {
+            return std::string("NULL");
+        }
+    }
+}
+
 u16 getEquippedGear(u8 characterID, u8 gearType) {
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u16 kernelObjectID;

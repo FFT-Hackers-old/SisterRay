@@ -3,32 +3,41 @@
 
 #include <SisterRay/types.h>
 
+typedef struct {
+    u8 entryPriority;
+    u8 entryOffset;
+    u8 attackerActorID;
+    u8 actionCommandIndex;
+    u16 actionAttackIndex;
+    u16 actionTargetmask;
+} BattleQueueEntry;
+
 //This struct has size 260h and is referenced by the main context ptr
 #pragma pack(push, 1)
 typedef struct {
     u32 attackerID; //0x00
     u32 attackerLevel; //0x04
-    u32 attackerEnemyIndex; //0x08
+    u32 enemySceneIndex; //0x08 This is the relative index in the scene, i.e 0 1 or 2 of a given actor
     u32 commandIndex; //0x0C
     u32 attackIndex; //0x10
     u32 animationBaseOffset; //0x14
     u32 targetMask; //0x18
     u32 activeAllies; //0x1C
     u32 animationScriptID; //0x20
-    u32 AttackEffectID; //0x24
-    u32 actionIDCopy; //0x28
-    u32 attackIDCopy; //0x2C
+    u32 animationEffectID; //0x24
+    u32 commandIndexCopy; //0x28
+    u32 attackIndexCopy; //0x2C
     u32 attackerMask; //0x30
     u32 partofAttackerMask; //034
     u32 MPCost; //0x38
-    u32 hitChance; //0x3C
+    u32 abilityHitRate; //0x3C
     u32 damageFormulaID; //0x40
     u32 attackElementsMask; //0x44
     u32 abilityPower; //0x48
     i32 attackerAtk; //0x4C
-    u32 targetStateMask; //0x50
+    u32 abilityTargetingFlags; //0x50
     u32 impactSound; //0x54
-    u32 critkSound; //0x58
+    u32 critAtkSound; //0x58
     u32 missAtkSound; //0x5C
     u32 cameraDataSingle; //0x60
     u32 cameraDataMultiple; //0x64
@@ -39,11 +48,11 @@ typedef struct {
     u32 unkTHATCRASHEDTHEGAME; // 0x7C
     u32 addStatusMask; //0x80
     u32 rmStatusMask; //0x84
-    u32 changeStatusMask; //0x88
-    u32 inflictStatusChange; //0x8C
+    u32 toggleStatusMask; //0x88
+    u32 inflictStatusChance; //0x8C
     u32 miscActionflags; //0x90
     u32 targetMaskCopy; //0x94
-    u32 attackIndexCopy; //0x98
+    u32 sceneAbilityIndex; //0x98
     u8 padding2[4];
     u32 formulaType; //0xA0
     u32 formulaID; //0xA4
@@ -56,7 +65,7 @@ typedef struct {
     u32 additionalEffectsModifer; //0xC0
     u32 abilityPowerCopy; //0xC4
     u32 attackerStatusMask; //0xC8
-    u32 miscAttackData; //0xCC
+    u32 targetReactionAnimation; //0xCC
     u32 unkDWord2; //0xD0
     u32 unkDWord3; //0xD4
     u32 throwFormulaPower; //0xD8
@@ -95,7 +104,7 @@ typedef struct {
     u32 targetLevel; //0x254
     u32 targetCurrentHP; //0x258
     u32 targeCurrentMP; //0x25C
-    u32 hitChanceCopy; //0x260
+    u32 finalHitRate; //0x260
 } DamageCalcStruct;
 #pragma pack(pop)
 
@@ -104,21 +113,21 @@ typedef struct {
 //An array of size ACTOR_ARRAY_SIZE w/ elements of size 0x68 exists at ARRAY_ACTOR_START
 #pragma pack(push, 1)
 typedef struct {
-    u32     statusMasks;
-    u32     stateFlags;
-    u8      index;
-    u8      level;
-    u8      unknown0;
-    u8      elementDamageMask;
-    u8      characterID;
-    u8      physAtk;
-    u8      magAtk;
-    u8      pEvade;
-    u8      idleAnimID;
-    u8      damageAnimID;
-    u8      backDamageMult;
-    u8      sizeScale;
-    u8      dexterity;
+    u32     statusMask;        //0x00
+    u32     stateFlags;        //0x04
+    u8      index;             //0x08
+    u8      level;             //0x09
+    u8      unknown0;          //0x0A
+    u8      elementDamageMask; //0x0B
+    u8      characterID;       //0x0C
+    u8      physAtk;           //0x0D
+    u8      magAtk;            //0x0E
+    u8      pEvade;            //0x0F
+    u8      idleAnimID;        //0x10
+    u8      damageAnimID;      //0x11
+    u8      backDamageMult;    //0x12
+    u8      sizeScale;         //0x13
+    u8      dexterity;         //0x14
     u8      luck;
     u8      idleAnimHolder;
     u8      lastCovered;
@@ -157,11 +166,10 @@ typedef struct {
     u8      unused13;
     u8      unused14;
     u8      unused15;
-
 } ActorBattleVars;
 #pragma pack(pop)
 
-#define gAiActorVariables   ((ActorBattleVars*)0x009AB0DC)
+#define gAiActorVariables   ((ActorBattleVars*)0x9AB0DC)
 
 /*Should  have size 0x1AEC*/
 #pragma pack(push, 1)
@@ -184,8 +192,8 @@ typedef struct {
 } ActorTimerBlock;
 #pragma pack(pop)
 
-#define gBigAnimBlock       ((BigAnimBlock*)0x00BE1170)
-#define gActorTimerBlock    ((ActorTimerBlock*)0x009A8B26)
+#define gBigAnimBlock       ((BigAnimBlock*)0xBE1170)
+#define gActorTimerBlock    ((ActorTimerBlock*)0x9A8B26)
 
 #pragma pack(push, 1)
 typedef struct {
@@ -197,19 +205,38 @@ typedef struct {
 
 /*This is the structure of attack data*/
 typedef struct {
-    u8 padding[0x1C];
-} attackData;
+    u8 abilityHitRate; //0x00
+    u8 impactEffectID; //0x01
+    u8 targetReactionID; //0x02
+    u8 unkbyte;          //0x03
+    u16 MPCost;          //0x04
+    u16 impactSoundID;   //0x06
+    u16 cameraMovementSingle;   //0x08
+    u16 cameraMovementMultiple;  //0x0A
+    u8 targetingFlags;           //0x0C
+    u8 animationEffectID;        //0x0D
+    u8 damageFormula;            //0x0E
+    u8 attackPower;              //0x0F
+    u8 restoreTypes;             //0x10
+    u8 statusInfictType;         //0x11
+    u8 additionalEffect;         //0x12
+    u8 additionalEffectModifier;  //0x13
+    u32 statusMask;               //0x14
+    u16 elementMask;              //0x18
+    u16 specialAttackFlags;       //0x1A
+} AttackData;
 
 /*This contains a bit vector of flags for spells*/
 #pragma pack(push, 1)
 typedef struct {
     u8 magicIndex;
     u8 mpCost;
-    u8 allCount;
+    u8 allCount; //used as summon count for summons
     u8 quadEnabled;
     u8 quadCount;
     u8 targetData;
-    u16 propertiesMask;
+    u8 propertiesMask;
+    u8 actorPropertiesMask; //HP Absorb, etc
 } spellFlags;
 #pragma pack(pop)
 
@@ -253,8 +280,8 @@ typedef struct {
     u32 attackStatusesMask; //0x44
     u32 immuneStatusesMask; //0x48
     enabledCommandStruct enabledCommandArray[0x10]; //0x4C
-    u8 unknownbytes[8]; //0xAC
-    attackData enabledLimitData[3]; //0xB4
+    u8 enabledLimitBytes[8]; //0xAC
+    AttackData enabledLimitData[3]; //0xB4
     spellFlags enabledMagicsData[54]; //0x108
     spellFlags unusedMagics[2]; //0x2B8
     spellFlags enabledSummons[16]; //0x2C8
@@ -270,10 +297,26 @@ typedef struct {
     u8 encounterRate;
     u8 chocoboChance;
     u8 preEmptiveChance;
-} activePartyMemberStruct;
+} ActivePartyMemberStruct;
 #pragma pack(pop)
 
-#define activePartyStructArray   ((activePartyMemberStruct*)0xDBA498)
+#define activePartyStructArray ((ActivePartyMemberStruct*)0xDBA498)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 characterID; //0x00
+    u8 unkByte1;    //0x01
+    u8 unkByte2;    //0x02
+    u8 unkByte3;    //0x03
+    u8 unkByte4;    //0x04
+    u8 align;       //0x05
+    u16 unkWrd1;    //0x06
+    u32 unkDWrd1;   //0x08
+    u32 unkDwrd2;   //0x0C
+} UnkPartyStruct;
+#pragma pack(pop)
+
+#define gUnkPartyDataArray ((UnkPartyStruct*)0x9A87F4)
 
 #pragma pack(push, 1)
 typedef struct {

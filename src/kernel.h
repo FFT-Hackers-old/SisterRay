@@ -5,9 +5,11 @@
 #include <zlib.h>
 #include <SisterRay/SisterRay.h>
 
+/*TODO refactor this stuff to use the new gzip.h api*/
+
 typedef struct {
-    u16         deflatedSize;
-    u16         inflatedSize;
+    u16         deflatedSize; // compressed size
+    u16         inflatedSize; // uncompressed size
     u16         type;
     FILE*       file;
     z_stream    zstream;

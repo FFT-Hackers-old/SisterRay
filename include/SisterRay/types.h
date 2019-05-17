@@ -13,7 +13,7 @@ typedef uint32_t    u32;
 
 #pragma pack(push, 1)
 struct i24 {
-    unsigned int data : 24;
+    unsigned int attackData : 24;
 };
 #pragma pack(pop)
 

@@ -11,6 +11,8 @@
 #include "menus/battle_menu.h"
 #include "menus/equip_menu/equip_menu.h"
 #include "menus/equip_menu//equip_menu_callbacks.h"
+#include "battle/battle.h"
+#include "battle/battle_context.h"
 
 
 SrContext gContext;
@@ -18,7 +20,7 @@ SrContext gContext;
 static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     NULL,
     NULL,
-    NULL,
+    initCharacterData,
     NULL,
     initItems,
     init_weapon,
@@ -35,24 +37,24 @@ struct Kernel2Entry {
 static void srLoadKernel2Bin(void)
 {
     static const Kernel2Entry kKernel2Entries[] = {
-        { &gContext.game_strings.command_descriptions,   0x20  },
-        { &gContext.game_strings.magic_descriptions,     0x100 },
-        { &gContext.game_strings.item_descriptions,      0x80  },
-        { &gContext.game_strings.weapon_descriptions,    0x80  },
-        { &gContext.game_strings.armor_descriptions,     0x20  },
-        { &gContext.game_strings.accessory_descriptions, 0x20  },
-        { &gContext.game_strings.materia_descriptions,   0x60  },
-        { &gContext.game_strings.key_item_descriptions,  0x40  },
-        { &gContext.game_strings.command_names,          0x20  },
-        { &gContext.game_strings.magic_names,            0x100 },
-        { &gContext.game_strings.item_names,             0x80  },
-        { &gContext.game_strings.weapon_names,           0x80  },
-        { &gContext.game_strings.armor_names,            0x20  },
-        { &gContext.game_strings.accessory_names,        0x20  },
-        { &gContext.game_strings.materia_names,          0x60  },
-        { &gContext.game_strings.key_item_names,         0x40  },
-        { &gContext.game_strings.battle_texts,           0x80  },
-        { &gContext.game_strings.summon_attack_names,    0x10  },
+        { &gContext.gameStrings.command_descriptions,   0x20  },
+        { &gContext.gameStrings.magic_descriptions,     0x100 },
+        { &gContext.gameStrings.item_descriptions,      0x80  },
+        { &gContext.gameStrings.weapon_descriptions,    0x80  },
+        { &gContext.gameStrings.armor_descriptions,     0x20  },
+        { &gContext.gameStrings.accessory_descriptions, 0x20  },
+        { &gContext.gameStrings.materia_descriptions,   0x60  },
+        { &gContext.gameStrings.key_item_descriptions,  0x40  },
+        { &gContext.gameStrings.command_names,          0x20  },
+        { &gContext.gameStrings.magic_names,            0x100 },
+        { &gContext.gameStrings.item_names,             0x80  },
+        { &gContext.gameStrings.weapon_names,           0x80  },
+        { &gContext.gameStrings.armor_names,            0x20  },
+        { &gContext.gameStrings.accessory_names,        0x20  },
+        { &gContext.gameStrings.materia_names,          0x60  },
+        { &gContext.gameStrings.key_item_names,         0x40  },
+        { &gContext.gameStrings.battle_texts,           0x80  },
+        { &gContext.gameStrings.summon_attack_names,    0x10  },
     };
 
     u16 offsetTable[0x100];
@@ -111,7 +113,6 @@ static void srLoadKernelBin(void)
 
 static void Init(void)
 {
-    MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
     initLog();
     srInitLua();
     initFunctionRegistry();
@@ -126,19 +127,27 @@ static void Init(void)
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();
     testFillInventory();
+    initFormationsRegistries();; //initialize all data from the scene.bin
     //Register base callbacks
     registerEquipMenuListeners();
     initializeEquipMenu();
     registerInventoryMenuListeners();
     initializeInventoryMenu();
-    //End Register base callbacks
+    //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
     mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
     mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);
     mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
+    mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
+    mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);
+    mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);
+    mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
+    mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
+    mogReplaceFunction(TRANSFORM_ENEMY_COMMAND, &transformEnemyCommand);
     LoadMods();
+    MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 
     /* Init RNG */
     srand((unsigned int)time(nullptr));

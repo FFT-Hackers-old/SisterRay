@@ -36,7 +36,7 @@ void initViewChoiceWidget(const InventoryInitEvent* event) {
 
     std::vector<std::string> listNames = { INV_VIEW_1, INV_VIEW_2, INV_VIEW_3 };
     for (int column = 0; column < 3; ++column) {
-        setTextParams(&textParams, 98 * column + 57, 17, gContext.game_strings.inventory_menu_texts.get_string(column), COLOR_WHITE, 0.1f);
+        setTextParams(&textParams, 98 * column + 57, 17, gContext.gameStrings.inventory_menu_texts.get_string(column), COLOR_WHITE, 0.1f);
         auto textChild = createTextWidget(textParams, listNames[column]);
         addChildWidget(viewChoiceWidget, (Widget*)textChild, listNames[column]);
     }
@@ -221,7 +221,7 @@ void arrangeTypeWidget(const InventoryInitEvent* event) {
     //Probably a good case to be made here for a new static Grid with no updater here
     std::vector<std::string> listNames = { SORT_TYPE_1, SORT_TYPE_2, SORT_TYPE_3, SORT_TYPE_4, SORT_TYPE_5, SORT_TYPE_6, SORT_TYPE_7, SORT_TYPE_8 };
     for (int sortType = 0; sortType < listNames.size(); ++sortType) {
-        const char* fetchedDescription = gContext.game_strings.inventory_menu_texts.get_string(sortType + 3);
+        const char* fetchedDescription = gContext.gameStrings.inventory_menu_texts.get_string(sortType + 3);
         setTextParams(&textParams, boxParams.drawDistance1 + 13, boxParams.drawDistance2 + 26 * sortType + 13, fetchedDescription, COLOR_WHITE, 0.001f);
         auto textChild = createTextWidget(textParams, listNames[sortType]);
         addChildWidget(arrangeTypeWidget, (Widget*)textChild, listNames[sortType]);

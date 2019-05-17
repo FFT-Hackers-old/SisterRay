@@ -24,12 +24,15 @@ extern "C" {
 #include "gamedata/weapons.h"
 #include "gamedata/armor.h"
 #include "gamedata/accessory.h"
+#include "battle/formations.h"
+#include "battle/enemies.h"
 #include "inventories/inventory.h"
 #include "inventories/battle_inventory.h"
 #include "inventories/materia_inventory.h"
 #include "usable_item_handlers.h"
 #include "events/event_bus.h"
 #include "string_registry.h"
+#include "party/characters.h"
 #include "menus/menu.h"
 #include <map>
 #include <memory>
@@ -46,14 +49,18 @@ typedef struct {
     SrAccessoryRegistry                 accessories;
     SrMateriaRegistry                   materias;
     std::unique_ptr<SrItemInventory>    inventory;
-    std::unique_ptr<SrBattleInventory>  battle_inventory;
-    std::unique_ptr<SrMateriaInventory> materia_inventory;
+    std::unique_ptr<SrBattleInventory>  battleInventory;
+    std::unique_ptr<SrMateriaInventory> materiaInventory;
     SrGearViewData                      gearViewData;
     SrItemTypeRegistry                  itemTypeData;
-    srOnUseCallbackRegistry             on_use_handlers; /*Registry of function pointers for using items*/
+    srOnUseCallbackRegistry             onUseHandlers; /*Registry of function pointers for using items*/
     srNoTargetCallbackRegistry          untargeted_handlers;
-    SrOnUseItemDataRegistry             item_on_use_data;
-    SrGameStrings                       game_strings;
+    SrOnUseItemDataRegistry             itemOnUseData;
+    SrCharacterRegistry                 characters;
+    SrFormationRegistry                 formations;
+    SrEnemyRegistry                     enemies;
+    SrEnemyAttackRegistry               enemyAttacks;
+    SrGameStrings                       gameStrings;
     MenuRegistry                        menuWidgets;
     EventBus                            eventBus;
 } SrContext;

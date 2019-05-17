@@ -18,7 +18,7 @@ SISTERRAY_API u32* initializeBattleItemMenuCursor() {
     cursorContextPtr->viewColumnBound = 1;
     cursorContextPtr->viewRowBound = 3;
     cursorContextPtr->maxColumnBound = 1;
-    cursorContextPtr->maxRowBound = gContext.battle_inventory->slots_in_use; //max number of cursor updates "down"
+    cursorContextPtr->maxRowBound = gContext.battleInventory->slots_in_use; //max number of cursor updates "down"
     cursorContextPtr->ninth_dword = 0;
     cursorContextPtr->tenth_dword = 0;
     cursorContextPtr->eleventh_dword = 2;
@@ -41,10 +41,10 @@ SISTERRAY_API i32 renderBattleItemView() {
     u16 renderContextStruct[7];
 
     cursorContextArray = (CursorContext*)(dword_DC20D8 + 448 * (*ACTIVE_MENU_OWNER_PARTY_INDEX)); //In battle each actor has their own array of menu context structures
-    if (gContext.battle_inventory->slots_in_use > 3)
+    if (gContext.battleInventory->slots_in_use > 3)
     {
         renderContextStruct[0] = (u16)3;           // items_visible
-        renderContextStruct[1] = (u16)gContext.battle_inventory->slots_in_use;;// set the current items visible
+        renderContextStruct[1] = (u16)gContext.battleInventory->slots_in_use;;// set the current items visible
         renderContextStruct[2] = (u16)(cursorContextArray[0].baseRowIndex); // base row byte
         renderContextStruct[3] = (u16)614;
         renderContextStruct[4] = (u16)354;
@@ -63,10 +63,10 @@ SISTERRAY_API i32 renderBattleItemView() {
     for (int visibleRow = 0; visibleRow < numberOfVisibleItems; ++visibleRow)// relative_index
     {
         flatInventoryIndex = visibleRow + baseCursorPosition;
-        if (gContext.battle_inventory->get_resource(flatInventoryIndex).item_id != 0xFFFF)// if there is no item in the inventory at this index
+        if (gContext.battleInventory->get_resource(flatInventoryIndex).item_id != 0xFFFF)// if there is no item in the inventory at this index
         {
-            itemID = gContext.battle_inventory->get_resource(flatInventoryIndex).item_id;
-            itemQuantity = gContext.battle_inventory->get_resource(flatInventoryIndex).quantity;
+            itemID = gContext.battleInventory->get_resource(flatInventoryIndex).item_id;
+            itemQuantity = gContext.battleInventory->get_resource(flatInventoryIndex).quantity;
 
             if ((*COMMAND_TRIGGER_INDEX) != 3 && (*COMMAND_TRIGGER_INDEX) != 10)
                 textColor = (isThrowable(itemID)) ? COLOR_WHITE : COLOR_GRAY;
@@ -88,7 +88,7 @@ SISTERRAY_API i32 renderBattleItemView() {
 /*Return True if the character is usable by the character attempting to use it*/
 bool isUsableInBattle(u16 itemID) {
     auto restrictionMask = get_restriction_mask(itemID);
-    auto characterMask = gContext.item_on_use_data.get_resource(itemID).characterRestrictionMask;
+    auto characterMask = gContext.itemOnUseData.get_resource(itemID).characterRestrictionMask;
     bool itemIsUsuable = (bool)(!(restrictionMask & 2));
 
     auto party_member_index = (*ACTIVE_MENU_OWNER_PARTY_INDEX);
@@ -100,7 +100,7 @@ bool isUsableInBattle(u16 itemID) {
 
 bool isThrowable(u16 itemID) {
     auto restrictionMask = get_restriction_mask(itemID);
-    auto characterMask = gContext.item_on_use_data.get_resource(itemID).characterRestrictionMask;
+    auto characterMask = gContext.itemOnUseData.get_resource(itemID).characterRestrictionMask;
     bool itemIsThrowable = (bool)(!(restrictionMask & 8)); // Use new throwable variable
 
     auto party_member_index = (*ACTIVE_MENU_OWNER_PARTY_INDEX);
@@ -131,12 +131,12 @@ SISTERRAY_API void battleItemMenuInputHandler() {
                 if (checkInputReceived(32)) {
                     *ACCEPTING_BATTLE_INPUT = 1;
                     flatInventoryIndex = *((u16*)viewContextPtr + 10) + *((u16*)viewContextPtr + 2) + *((u16 *)viewContextPtr);
-                    itemID = gContext.battle_inventory->get_resource(flatInventoryIndex).item_id;
+                    itemID = gContext.battleInventory->get_resource(flatInventoryIndex).item_id;
                     actionSucceeded = didItemUseSucceed(itemID);
 
                     if (actionSucceeded) {
                         playMenuSound(1);
-                        targetData = gContext.battle_inventory->get_resource(flatInventoryIndex).targetFlags;
+                        targetData = gContext.battleInventory->get_resource(flatInventoryIndex).targetFlags;
 
                         *GLOBAL_ACTION_USED = itemID;
                         *GLOBAL_USED_ACTION_TARGET_DATA = targetData;

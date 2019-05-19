@@ -13,13 +13,13 @@ void drawTextWidget(TextWidget* textWidget){
     );
 }
 
-SISTERRAY_API void srNewTextWidget(Widget* parent, drawTextParams params, char* name) {
+SISTERRAY_API void srNewTextWidget(Widget* parent, DrawTextParams params, char* name) {
     auto strName = std::string(name);
     auto TextWidget = createTextWidget(params, strName);
     addChildWidget(parent, (Widget*)TextWidget, strName);
 }
 
-TextWidget* createTextWidget(drawTextParams params, std::string name) {
+TextWidget* createTextWidget(DrawTextParams params, std::string name) {
     TextWidget* widget = (TextWidget*)createWidget(name, sizeof(TextWidget), &kTextWidgetClass);
     new (&widget->text) EncodedString(params.stringToDraw);
     srLogWrite("text widget class: %p", &kTextWidgetClass);
@@ -31,7 +31,7 @@ TextWidget* createTextWidget(drawTextParams params, std::string name) {
     return widget;
 }
 
-SISTERRAY_API void setTextParams(drawTextParams* params, i32 xCoordinate, i32 yCoordinate, const char* stringToDraw, color textColor, float priority) {
+SISTERRAY_API void setTextParams(DrawTextParams* params, i32 xCoordinate, i32 yCoordinate, const char* stringToDraw, color textColor, float priority) {
     params->xCoordinate = xCoordinate;
     params->yCoordinate = yCoordinate;
     params->stringToDraw = stringToDraw;
@@ -122,13 +122,13 @@ void drawNumberWidget(NumberWidget* numberWidget) {
     );
 }
 
-SISTERRAY_API void srNewNumberWidget(Widget* parent, drawNumberParams params, char* name) {
+SISTERRAY_API void srNewNumberWidget(Widget* parent, DrawNumberParams params, char* name) {
     auto strName = std::string(name);
     auto NumberWidget = createNumberWidget(params, strName);
     addChildWidget(parent, (Widget*)NumberWidget, strName);
 }
 
-NumberWidget* createNumberWidget(drawNumberParams params, std::string name) {
+NumberWidget* createNumberWidget(DrawNumberParams params, std::string name) {
     NumberWidget* widget = (NumberWidget*)createWidget(name, sizeof(NumberWidget), &kNumberWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
@@ -139,7 +139,7 @@ NumberWidget* createNumberWidget(drawNumberParams params, std::string name) {
     return widget;
 }
 
-SISTERRAY_API void setNumberParams(drawNumberParams* params, i32 xCoord, i32 yCoord, u32 number, u8 numChars, color numColor, float priority) {
+SISTERRAY_API void setNumberParams(DrawNumberParams* params, i32 xCoord, i32 yCoord, u32 number, u8 numChars, color numColor, float priority) {
     params->xCoordinate = xCoord;
     params->yCoordinate = yCoord;
     params->numberToDraw = number;
@@ -222,7 +222,7 @@ SISTERRAY_API float getNumberPriority(Widget* widgetToUpdate) {
 }
 
 void drawBoxWidget(BoxWidget* boxWidget) {
-    drawBoxParams params = {
+    DrawBoxParams params = {
         boxWidget->drawDistanceXa,
         boxWidget->drawDistanceXb,
         boxWidget->drawDistanceYa,
@@ -231,13 +231,13 @@ void drawBoxWidget(BoxWidget* boxWidget) {
     gameDrawBox((i16*)&params, boxWidget->priority);
 }
 
-SISTERRAY_API void srNewBoxWidget(Widget* parent, drawBoxParams params, char* name) {
+SISTERRAY_API void srNewBoxWidget(Widget* parent, DrawBoxParams params, char* name) {
     auto strName = std::string(name);
     auto boxWidget = createBoxWidget(params, strName);
     addChildWidget(parent, (Widget*)boxWidget, strName);
 }
 
-BoxWidget* createBoxWidget(drawBoxParams params, std::string name) {
+BoxWidget* createBoxWidget(DrawBoxParams params, std::string name) {
     BoxWidget* widget = (BoxWidget*)createWidget(name, sizeof(BoxWidget), &kBoxWidgetClass);
     widget->drawDistanceXa = params.drawDistance1;
     widget->drawDistanceXb = params.drawDistance2;
@@ -248,7 +248,7 @@ BoxWidget* createBoxWidget(drawBoxParams params, std::string name) {
 }
 
 
-SISTERRAY_API void setBoxParams(drawBoxParams* params, i16 drawDistance1, i16 drawDistance2, u16 drawDistance3, u16 drawDistance4, float priority) {
+SISTERRAY_API void setBoxParams(DrawBoxParams* params, i16 drawDistance1, i16 drawDistance2, u16 drawDistance3, u16 drawDistance4, float priority) {
     params->drawDistance1 = drawDistance1;
     params->drawDistance2 = drawDistance2;
     params->drawDistance3 = drawDistance3;

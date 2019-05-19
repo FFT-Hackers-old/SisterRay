@@ -7,7 +7,7 @@
 typedef struct {
     char enemyName[32];       //0x00
     u8 enemyLevel;            //0x20
-    u8 enemySpeed;            //0x21
+    u8 enemyDex;              //0x21
     u8 enemyLuck;             //0x22
     u8 enemyEvade;            //0x23
     u8 enemyStrength;         //0x24

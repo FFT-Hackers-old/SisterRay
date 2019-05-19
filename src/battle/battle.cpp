@@ -162,15 +162,15 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
     auto& enemyAttacks = sceneData.enemyAttacksArray;
     auto& enemyAttackNames = sceneData.enemyAttackNames;
     auto& enemyAttackIDs = sceneData.enemyAttackIDS;
-    for (auto attackIndex = 0; attackIndex < 32; attackIndex++) {
-        auto attackID = enemyAttackIDs[attackIndex];
+    for (auto relAttackIndex = 0; relAttackIndex < 32; relAttackIndex++) {
+        auto attackID = enemyAttackIDs[relAttackIndex];
         auto stringID = std::to_string(attackID);
         if (attackID == 0xFFFF)
             continue;
 
         if (!(gContext.enemyAttacks.contains(stringID))) { //must implement a method to check if the dictionary contains a key
-            auto attackName = EncodedString((const char *)enemyAttackNames[attackIndex].name);
-            auto attackData = enemyAttacks[attackIndex];
+            auto attackName = EncodedString((const char *)enemyAttackNames[relAttackIndex].name);
+            auto attackData = enemyAttacks[relAttackIndex];
             EnemyAttack enemyAttack = { attackData, attackID, attackName };
             gContext.enemyAttacks.add_element(stringID, enemyAttack);
             srLogWrite("Enemy Attack:%s added to registry with name:%s, and ID:%i",
@@ -381,42 +381,42 @@ i32 srExecuteFormationScripts() {
 }
 
 /*Rewrite this function to expect an ABSOLUTE instead of relative id when executing enemy attacks*/
-i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 attackIndex) {
+i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex) {
     u32* dword_C3F338 = (u32*)(0xC3F338);
     u16* word_9AB0AE = (u16*)(0x9AB0AE);
 
     /*Temporarily make the index type relative*/
     switch (commandIndex) { //convert to a relative/absolute ID offset in the player spells table
         case 3: {
-            attackIndex -= 56;
+            relAttackIndex -= 56;
             break;
         }
         case 13: {
-            attackIndex -= 72;
+            relAttackIndex -= 72;
             break;
         }
         default:{
         }
     }
 
-    srLogWrite("enqueueing entry with for actor %i, command_id %i, attack_id %i from AI script", actorID, commandIndex, attackIndex);
+    srLogWrite("enqueueing entry with for actor %i, command_id %i, attack_id %i from AI script", actorID, commandIndex, relAttackIndex);
     gAiActorVariables[actorID].lastTargets = *word_9AB0AE;
-    BattleQueueEntry queueEntry = { *(u8*)dword_C3F338, 0, actorID, commandIndex, attackIndex, *word_9AB0AE };
+    BattleQueueEntry queueEntry = { *(u8*)dword_C3F338, 0, actorID, commandIndex, relAttackIndex, *word_9AB0AE };
     
     auto var = enqueueBattleAction((u8 *)&queueEntry);
     return var;
 }
 
 void* transformEnemyCommand() {
-    gDamageContextPtr->attackIndexCopy = gDamageContextPtr->attackIndex;
+    gDamageContextPtr->absAttackIndex = gDamageContextPtr->relAttackIndex;
     /*The following is temporary code until the kernel abilities are properly loaded and expandable*/
     if (gDamageContextPtr->commandIndex == CMD_ENEMY_ACTION) {
         u16 baseOffsets[5] = { 0, 56, 72, 96, 256 };
         u16 commandIndexes[4] = { 2, 3, 13, 20 };
         for (auto baseIndexOffset = 0; baseIndexOffset < 4; ++baseIndexOffset) {
-            if (gDamageContextPtr->attackIndexCopy < baseOffsets[1 + baseIndexOffset]) {
+            if (gDamageContextPtr->absAttackIndex < baseOffsets[1 + baseIndexOffset]) {
                 gDamageContextPtr->commandIndexCopy = commandIndexes[baseIndexOffset];
-                gDamageContextPtr->sceneAbilityIndex = gDamageContextPtr->attackIndexCopy - baseOffsets[baseIndexOffset];
+                gDamageContextPtr->sceneAbilityIndex = gDamageContextPtr->absAttackIndex - baseOffsets[baseIndexOffset];
             }
         }
     }

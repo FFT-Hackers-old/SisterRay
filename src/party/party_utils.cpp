@@ -62,5 +62,19 @@ bool characterCanEquipItem(u8 characterID, u16 item_id){
     return characterCanUse;
 }
 
+u8 getCharacterRecordIndex(u8 partyIndex) {
+    return (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[partyIndex])];
+}
+
+u16 getMateriaID(u8 characterID, u8 slot, u8 gearType) {
+    u16 materiaID;
+    switch (gearType) {
+        case 0:
+            materiaID = CHARACTER_RECORD_ARRAY[characterID].equippedWeaponMateria[slot] & 0xFF;
+        case 1:
+            materiaID = CHARACTER_RECORD_ARRAY[characterID].equippedArmorMateria[slot] & 0xFF;
+    }
+    return materiaID
+}
 
 

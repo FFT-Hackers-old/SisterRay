@@ -72,3 +72,38 @@ void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
         disableWidget(widget);
     }
 }
+
+void materiaNameViewUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+
+    auto typedPtr = (CursorGridWidget*)self;
+    auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
+    if (materiaID != 0xFFFF) {
+        enableWidget(widget);
+        const char* name = gContext.gameStrings.materia_names.get_string(flatIndex);
+        updateText(widget, name);
+    }
+    else {
+        disableWidget(widget);
+    }
+}
+
+/*This will update a "Sphere Widget once I figure out how to make one*/
+void materiaSphereViewUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+
+    auto typedPtr = (CursorGridWidget*)self;
+    auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
+    if (materiaID != 0xFFFF) {
+        enableWidget(widget);
+        auto materiaAssetType = getMateriaType(materiaID);
+        updateAssetType(widget, materiaAssetType);
+    }
+    else {
+        disableWidget(widget);
+    }
+}

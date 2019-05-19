@@ -19,14 +19,14 @@ typedef struct {
     u32 attackerLevel; //0x04
     u32 enemySceneIndex; //0x08 This is the relative index in the scene, i.e 0 1 or 2 of a given actor
     u32 commandIndex; //0x0C
-    u32 attackIndex; //0x10
+    u32 relAttackIndex; //0x10
     u32 animationBaseOffset; //0x14
     u32 targetMask; //0x18
     u32 activeAllies; //0x1C
     u32 animationScriptID; //0x20
     u32 animationEffectID; //0x24
     u32 commandIndexCopy; //0x28
-    u32 attackIndexCopy; //0x2C
+    u32 absAttackIndex; //0x2C
     u32 attackerMask; //0x30
     u32 partofAttackerMask; //034
     u32 MPCost; //0x38
@@ -51,7 +51,7 @@ typedef struct {
     u32 toggleStatusMask; //0x88
     u32 inflictStatusChance; //0x8C
     u32 miscActionflags; //0x90
-    u32 targetMaskCopy; //0x94
+    u32 finalTargetMask; //0x94
     u32 sceneAbilityIndex; //0x98
     u8 padding2[4];
     u32 formulaType; //0xA0
@@ -73,7 +73,7 @@ typedef struct {
     u32 incOnDamageDealt; //0xE0
     u32 unkDWord4; //0xE4
     u32 MPTurboBoost; //0xE8
-    u32 targetMaskCopy2; //0xEC
+    u32 usedTargetMask; //0xEC
     u32 addedCutMPHPAbsorbByte; //0xF0
     u32 currentUnitIDTempt; //0xF4
     u32 unkDWord5; //0xF8
@@ -128,14 +128,14 @@ typedef struct {
     u8      backDamageMult;    //0x12
     u8      sizeScale;         //0x13
     u8      dexterity;         //0x14
-    u8      luck;
-    u8      idleAnimHolder;
-    u8      lastCovered;
-    u16     lastTargets;
-    u16     prevAttackerMask;
-    u16     prevPhysAttackerMask;
-    u16     prevMagAttackerMask;
-    u16     Defense;
+    u8      luck;              //0x15
+    u8      idleAnimHolder;    //0x16
+    u8      lastCovered;       //0x17
+    u16     lastTargets;       //0x18
+    u16     prevAttackerMask;  //0x1A
+    u16     prevPhysAttackerMask; //0x1C
+    u16     prevMagAttackerMask;  //0x1E
+    u16     Defense;           //0x20
     u16     MDefense;
     u16     formationID;
     u16     absorbedElementsMask;
@@ -197,7 +197,8 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u16 something;
+    u8 commandID;
+    u8 cursorCommandType;
     u16 something2;
     u16 something3;
 } enabledCommandStruct;
@@ -218,7 +219,7 @@ typedef struct {
     u8 damageFormula;            //0x0E
     u8 attackPower;              //0x0F
     u8 restoreTypes;             //0x10
-    u8 statusInfictType;         //0x11
+    u8 statusInflictType;         //0x11
     u8 additionalEffect;         //0x12
     u8 additionalEffectModifier;  //0x13
     u32 statusMask;               //0x14
@@ -237,7 +238,7 @@ typedef struct {
     u8 targetData;
     u8 propertiesMask;
     u8 actorPropertiesMask; //HP Absorb, etc
-} spellFlags;
+} EnabledSpell;
 #pragma pack(pop)
 
 #pragma pack(push,1)
@@ -269,9 +270,9 @@ typedef struct {
     u32 timer; //0x18
     u16 counterActionIndex; //0x1C
     u16 counterChance; //0x1E
-    u8 padding; //0x20
-    u16 unknownDiviosr; //0x21
-    u8 characterFlags; //0x23
+    u16 unkword; //0x20
+    u8 unknownDiviosr; //0x22
+    u8 commandRows; //0x23
     u8 unknown24bitInts[24]; //0x24
     u16 attackElementsMask; //0x3C
     u16 halvedElementsMask; //003E
@@ -282,10 +283,10 @@ typedef struct {
     enabledCommandStruct enabledCommandArray[0x10]; //0x4C
     u8 enabledLimitBytes[8]; //0xAC
     AttackData enabledLimitData[3]; //0xB4
-    spellFlags enabledMagicsData[54]; //0x108
-    spellFlags unusedMagics[2]; //0x2B8
-    spellFlags enabledSummons[16]; //0x2C8
-    spellFlags enabledEnemySkills[24]; //0x348
+    EnabledSpell enabledMagicsData[54]; //0x108
+    EnabledSpell unusedMagics[2]; //0x2B8
+    EnabledSpell enabledSummons[16]; //0x2C8
+    EnabledSpell enabledEnemySkills[24]; //0x348
     u8 weaponData[5]; //0x408
     u16 weaponStatus; //0x40D
     u8 lepad;
@@ -356,8 +357,8 @@ typedef struct {
     u16 max_HP;
     u16 max_MP;
     u32 current_EXP;
-    u32 weapon_materia_slots[8];
-    u32 armor_materia_slots[8];
+    u32 equippedWeaponMateria[8]; //This is primarily written to/from here, so this should be relocated if we are to expand 
+    u32 equippedArmorMateria[8];
     u32 exp_to_next_level;
 } characterRecord;
 #pragma pack(pop)

@@ -20,6 +20,8 @@ public:
     SrMateriaInventory() : SrResourceRegistry<MateriaInventoryEntry>() {}
     void insertIntoMateriaInventory(MateriaInventoryEntry*);
     void removeFromMateriaInventory(u8* inventory_index);
+    bool isFull();
+    void sortInventory();
 };
 
 SISTERRAY_API void initMateriaInventory();

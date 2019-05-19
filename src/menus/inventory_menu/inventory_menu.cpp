@@ -26,7 +26,7 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
     displayActiveCursorStates(menuObject, menuObject->currentState, updateStateMask);
     if (!is_input_handling_enabled())
     {
-        handleInventoryMenuInput(updateStateMask, menuObject);
+        handleMateriaMenuInput(updateStateMask, menuObject);
     }
 }
 
@@ -98,7 +98,7 @@ void displayActiveCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
     }
 }
 
-void handleInventoryMenuInput(i32 updateStateMask, Menu* menuObject) {
+void handleMateriaMenuInput(i32 updateStateMask, Menu* menuObject) {
     auto inventoryMenuState = menuObject->currentState;
     auto cursorArray = getStateCursor(menuObject, inventoryMenuState);
     auto menuWidget = menuObject->menuWidget;

@@ -1,5 +1,5 @@
-#ifndef EQUIP_DRAW_CALLBACKS
-#define EQUIP_DRAW_CALLBACKS
+#ifndef INVENTORY_DRAW_CALLBACKS
+#define INVENTORY_DRAW_CALLBACKS
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>

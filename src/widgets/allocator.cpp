@@ -4,22 +4,27 @@
 static char* defaultString = "\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x00\x01\xFF";
 
 // create default objects from a type -- used to pre-allocate CursorContext objects
-Widget* typeAllocate(const WidgetClass* type, std::string name) {
+// passing initial params is NOT type safe, make sure you know what you are doing!
+Widget* typeAllocate(const WidgetClass* type, std::string name, void* initParams = nullptr) {
     if (type == TextWidgetKlass()) {
-        drawTextParams params = {0, 0, defaultString, COLOR_RED, 0.2f};
+        DrawTextParams params = { 0, 0, defaultString, COLOR_RED, 0.2f };
+        if (initParams) {
+            auto typedInit = (DrawTextParams*)initParams;
+            setTextParams(&params, typedInit->xCoordinate, typedInit->yCoordinate, typedInit->stringToDraw, typedInit->textColor, typedInit->priority);
+        }
         return (Widget*)createTextWidget(params, name);
     }
     else if (type == NumberWidgetKlass()) {
-        drawNumberParams params = {0, 0, 0, 3, COLOR_WHITE, 0.2f};
+        DrawNumberParams params = {0, 0, 0, 3, COLOR_WHITE, 0.2f};
         return (Widget*)createNumberWidget(params, name);
     }
     else if (type == BoxWidgetKlass()) {
-        drawBoxParams params = {};
+        DrawBoxParams params = {};
         return (Widget*)createBoxWidget(params, name);
     }
-    else if (type == ArrowWidgetKlass()) {
-        drawArrowParams params = {};
-        return (Widget*)createArrowWidget(params, name);
+    else if (type == SimpleAssetWidgetKlass()) {
+        DrawSimpleAssetParams params = {};
+        return (Widget*)createSimpleGameAssetWidget(params, name);
     }
     else if (type == PortraitWidgetKlass()) {
         drawPortraitParams params = {};
@@ -36,6 +41,18 @@ Widget* typeAllocate(const WidgetClass* type, std::string name) {
     else if (type == SlotsWidgetKlass()) { //This one has a pointer, needs defaults to avoid seg-fault
         drawSlotsParams params = {};
         return (Widget*)createSlotsWidget(params, name);
+    }
+    else if (type == GameAssetWidgetKlass()) { //We want a grid here, this function has a lot of args, might make wrappers around multiple values. Need some way to initialize
+        DrawGameAssetParams params = {};
+        if (initParams) {
+            auto typedInit = (DrawGameAssetParams*)initParams;
+            setGameAssetParams(&params, typedInit->xCoordinate, typedInit->yCoordinate,
+                typedInit->unk1, typedInit->unk2, typedInit->unk3,
+                typedInit->unk4, typedInit->unk5, typedInit->unk6,
+                typedInit->unk7, typedInit->priority
+            );
+        }
+        return (Widget*)createGameAssetWidget(params, name);
     }
     return nullptr;
 }

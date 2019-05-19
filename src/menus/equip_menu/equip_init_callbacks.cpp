@@ -184,7 +184,7 @@ void initStatDiffWidget(const EquipInitEvent* event) {
         addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[i]);
 
         arrowParams = { 244, 26 * i + windowTop, 0xDAu, COLOR_TEAL, 0.2f };
-        arrowWidget = createArrowWidget(arrowParams, arrowNames[i]);
+        arrowWidget = createSimpleGameAssetWidget(arrowParams, arrowNames[i]);
         addChildWidget(statDiffWidget, (Widget*)arrowWidget, arrowNames[i]);
 
         setNumberParams(&numberParams, 200, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);

@@ -31,6 +31,8 @@ typedef enum {
     DRAW_EQUIP_MENU,
     INIT_INVENTORY_MENU,
     DRAW_INVENTORY_MENU,
+    INIT_MATERIA_MENU,
+    DRAW_MATERIA_MENU,
     MENU_INPUT_OK,
     MENU_INPUT_CANCEL,
     MENU_INPUT_SQUARE,
@@ -44,8 +46,8 @@ typedef enum {
     INVALID_CONTEXT,
     EQUIP_MENU_CONTEXT,
     INVENTORY_MENU_CONTEXT,
-    MATERIA_MENU,
-    BATTLE_MENU
+    MATERIA_MENU_CONTEXT,
+    BATTLE_MENU,
 } SrEventContext;
 
 typedef struct SrEventListener_ SrEventListener;
@@ -75,12 +77,12 @@ typedef struct {
     const char* stringToDraw;
     color textColor;
     float priority;
-} drawTextParams;
-typedef void(*PFNSETTEXTPARAMSPROC)(drawTextParams*, i32, i32, char*, color, float);
+} DrawTextParams;
+typedef void(*PFNSETTEXTPARAMSPROC)(DrawTextParams*, i32, i32, char*, color, float);
 
 typedef struct TextWidget_ TextWidget;
-typedef void (*PFNSRSETTEXTPARAMSPROC)(drawTextParams*, i32, i32, const char*, color, float);
-typedef void (*PFNSRNEWTEXTWIDGETPROC)(Widget*, drawTextParams, char*);
+typedef void (*PFNSRSETTEXTPARAMSPROC)(DrawTextParams*, i32, i32, const char*, color, float);
+typedef void (*PFNSRNEWTEXTWIDGETPROC)(Widget*, DrawTextParams, char*);
 typedef void (*PFNSRUPDATETEXTPROC)(Widget*, const char*);
 typedef void (*PFNSRUPDATETEXTCOLORPROC)(Widget*, color);
 typedef void (*PFNSRUPDATETEXTPRIORITYPROC)(Widget*, float);
@@ -95,12 +97,12 @@ typedef struct {
     u8 charCount;
     color numberColor;
     float numberThickness;
-} drawNumberParams;
-typedef void(*PFNSETNUMBERPARAMSPROC)(drawNumberParams*, i32, i32, u32, u8, color, float);
+} DrawNumberParams;
+typedef void(*PFNSETNUMBERPARAMSPROC)(DrawNumberParams*, i32, i32, u32, u8, color, float);
 
 typedef struct NumberWidget_ NumberWidget;
-typedef void(*PFNSRSETNUMBERPARAMSPROC)(drawTextParams*, i32, i32, u32, u8, color, float);
-typedef void(*PFNSRNEWNUMBERWIDGETPROC)(Widget*, drawNumberParams, char*);
+typedef void(*PFNSRSETNUMBERPARAMSPROC)(DrawTextParams*, i32, i32, u32, u8, color, float);
+typedef void(*PFNSRNEWNUMBERWIDGETPROC)(Widget*, DrawNumberParams, char*);
 typedef void(*PFNSRUPDATENUMBERPROC)(Widget*, u32);
 typedef void(*PFNSRUPDATENUMBERCOLORPROC)(Widget*, color);
 typedef void(*PFNSRUPDATENUMBERPRIORITYPROC)(Widget*, float);
@@ -115,13 +117,13 @@ typedef struct {
     i16 drawDistance3;
     i16 drawDistance4;
     float boxFloat;
-} drawBoxParams;
+} DrawBoxParams;
 #pragma pack(pop)
-typedef void(*PFNSETBOXPARAMSPROC)(drawBoxParams*, i16, i16, u16, u16, float);
+typedef void(*PFNSETBOXPARAMSPROC)(DrawBoxParams*, i16, i16, u16, u16, float);
 
 typedef struct BoxWidget_ BoxWidget;
-typedef void (*PFNSRNEWBOXWIDGETPROC)(Widget*, drawBoxParams, char*);
-typedef void (*PFNSRSETBOXPARAMSPROC)(drawBoxParams*, i16, i16, u16, u16, float);
+typedef void (*PFNSRNEWBOXWIDGETPROC)(Widget*, DrawBoxParams, char*);
+typedef void (*PFNSRSETBOXPARAMSPROC)(DrawBoxParams*, i16, i16, u16, u16, float);
 typedef void (*PFNSRRESIZEBOXPROC)(Widget*, i16, i16,i16, i16);
 typedef void (*PFNSRUPDATEBOXPRIORITYPROC)(Widget*, float);
 typedef i16  (*PFNSRGETBOXDRAWDISTANCEPROC)(Widget*, i32);
@@ -159,24 +161,40 @@ typedef struct {
     u8 arrowCode;
     color arrowColor;
     float arrowPriority;
-} drawArrowParams;
-typedef void(*PFNARROWPARAMSPROC)(drawArrowParams*, i32, i32, u8, color, float);
+} DrawSimpleAssetParams;
 
-typedef struct ArrowWidget_ ArrowWidget;
-typedef void(*PFNSRNEWARROWWIDGETPROC)(Widget*, drawArrowParams, char*);
-typedef void(*PFNSRSETARROWPARAMSPROC)(drawArrowParams*, i32, i32, u8, color, float);
+typedef struct SimpleAssetWidget_ SimpleAssetWidget;
+typedef void(*PFNSRNEWARROWWIDGETPROC)(Widget*, DrawSimpleAssetParams, char*);
+typedef void(*PFNSRSETARROWPARAMSPROC)(DrawSimpleAssetParams*, i32, i32, u8, color, float);
 
 typedef struct {
     i32 xCoordinate;
     i32 yCoordinate;
     u8* materiaSlotData;
+    u32* materiaData;
 } drawSlotsParams;
-typedef void(*PFNSLOTSPARAMSPROC)(drawSlotsParams*, i32, i32, u8*);
 
 typedef struct SlotsWidget_ SlotsWidget;
 typedef void(*PFNSRNEWSLOTSWIDGETPROC)(Widget*, drawSlotsParams, char*);
 typedef void(*PFNSRSETSLOTSPARAMSPROC)(drawSlotsParams*, i32, i32, u8*);
 typedef void(*PFNSRUPDATEMATERIASLOTSPROC)(Widget*, u8*);
+
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    i32 unk1;
+    i32 unk2;
+    i32 unk3;
+    i32 unk4;
+    i32 unk5; //not sure, best guess
+    i32 unk6;
+    i32 unk7;
+    float priority;
+} DrawGameAssetParams;
+
+typedef struct GameAssetWidget_ GameAssetWidget;
+typedef void(*PFNSRNEWGASSETWIDGETPROC)(Widget*, DrawGameAssetParams, char*);
+typedef void(*PFNSRSETGASSETPARAMSPROC)(DrawGameAssetParams*, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32);
 
 typedef struct CollectionWidget_ CollectionWidget;
 
@@ -192,6 +210,19 @@ typedef struct {
 
 typedef struct CursorGridWidget_ CursorGridWidget;
 typedef void (*PFNSRNEWGRIDWIDGETPROC)(Widget*, drawGridParams, char*, u16);
+
+typedef struct {
+    SRLISTUPDATERPROC updater;
+    i32 xCoordinate;
+    i32 yCoordinate;
+    u16 columnCount;
+    u16 rowCount;
+    u16 columnSpacing;
+    u16 rowSpacing;
+} DrawStaticGridParams;
+
+typedef struct StaticGridWidget_ StaticGridWidget;
+typedef void (*PFNSNEWSGRIDWIDGETPROC)(Widget*, DrawStaticGridParams, char*, u16)
 
 typedef struct _Menu Menu;
 typedef Menu* (*PFNSRGETMENUPROC)(char*);

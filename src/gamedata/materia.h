@@ -12,4 +12,6 @@ public:
     SrMateriaRegistry() : SrNamedResourceRegistry<MateriaData, std::string>() {}
 };
 
+u32 getMateriaType(u8 materiaID);
+
 #endif

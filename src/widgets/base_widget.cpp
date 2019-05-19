@@ -112,7 +112,35 @@ bool checkWidgetTypes(Widget* a, Widget* b) {
     return ((a->klass) == (b->klass));
 }
 
+/*Translate all child widgets relative to widgets own position
+  It's a good idea to give the widget the coordinate of a box corner*/
 SISTERRAY_API void moveWidget(Widget * widget, u32 x, u32 y) {
+    i32 relativeMoveX;
+    i32 relativeMoveY;
+    i32 moveX;
+    i32 moveY;
+    for (auto it = begin(widget->children); it != end(widget->children); ++it) {
+        auto child = *it;
+        moveX = child->xCoordinate -= relativeMoveX;
+        moveY = child->yCoordinate -= relativeMoveY;
+        if (x > widget->xCoordinate) {
+            relativeMoveX = x - widget->xCoordinate;
+            moveX = child->xCoordinate += relativeMoveX;
+        }
+        else {
+            relativeMoveX = widget->xCoordinate - x;
+            moveX = child->xCoordinate -= relativeMoveX
+        }
+        if (y > widget->yCoordinate) {
+            relativeMoveY = y - widget->yCoordinate;
+            moveX = child->yCoordinate += relativeMoveY;
+        }
+        else {
+            relativeMoveY = widget->yCoordinate - y;
+            moveX = child->yCoordinate -= relativeMoveY;
+        }
+        moveWidget(child, moveX, moveY);
+    }
     widget->xCoordinate = x;
     widget->yCoordinate = y;
 }

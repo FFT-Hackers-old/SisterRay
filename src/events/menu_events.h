@@ -33,4 +33,19 @@ typedef struct {
     Menu* menuObject;
 } InventoryInitEvent;
 
+
+typedef struct {
+    Menu* menu;
+    u32 menuState;
+} MateriaDrawEvent;
+
+typedef struct {
+    Menu* menu;
+    u32 menuState;
+} MateriaInputEvent;
+
+typedef struct {
+    Menu* menuObject;
+} MateriaInitEvent;
+
 #endif

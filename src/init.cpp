@@ -11,6 +11,7 @@
 #include "menus/battle_menu.h"
 #include "menus/equip_menu/equip_menu.h"
 #include "menus/equip_menu//equip_menu_callbacks.h"
+#include "battle/ai_script_engine.h"
 #include "battle/battle.h"
 #include "battle/battle_context.h"
 
@@ -146,6 +147,7 @@ static void Init(void)
     mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
     mogReplaceFunction(TRANSFORM_ENEMY_COMMAND, &transformEnemyCommand);
+    mogReplaceFunction(GET_MP_COST, &getMPCost);
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

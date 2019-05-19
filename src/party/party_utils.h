@@ -8,5 +8,7 @@
 u16 getEquippedGear(u8 characterID, u8 gearType);
 bool characterCanEquipItem(u8 characterID, u16 item_id);
 std::string getCharacterName(u8 characterID);
+u16 getMateriaID(u8 characterID, u8 slot, u8 gearType);
+u8 getCharacterRecordIndex(u8 partyIndex);
 
 #endif

@@ -94,3 +94,11 @@ SISTERRAY_API void init_materia(SrKernelStream* stream) {
     srLogWrite("kernel.bin: Loaded %lu Materias", (unsigned long)gContext.materias.resource_count());
     patch_materia();
 }
+
+
+u32 getMateriaType(u8 materiaID) {
+    u8* greaterTypeArray = (u8*)(0x91ABF8);
+    u8* materiaAssetType = (u8*)(0x91ABF0);
+    auto materiaType = materiaAssetType[greaterTypeArray[gContext.materias.get_resource(materiaID).type & 0xF]];
+    return materiaType;
+}

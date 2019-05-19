@@ -132,47 +132,6 @@ SISTERRAY_API void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
     }
 }
 
-SISTERRAY_API void srNewArrowWidget(Widget* parent, drawArrowParams params, char* name) {
-    auto strName = std::string(name);
-    auto arrowWidget = createArrowWidget(params, strName);
-    addChildWidget(parent, (Widget*)arrowWidget, strName);
-}
-
-SISTERRAY_API void setArrowParams(drawArrowParams* params, i32 xCoordinate, i32 yCoordinate, u8 arrowCode, color arrowColor, float priority) {
-    params->xCoordinate = xCoordinate;
-    params->yCoordinate = yCoordinate;
-    params->arrowCode = arrowCode;
-    params->arrowCode = arrowCode;
-    params->arrowPriority = priority;
-}
-
-void drawArrowWidget(ArrowWidget* arrowWidget) {
-    gameDrawAsset(
-        arrowWidget->widget.xCoordinate,
-        arrowWidget->widget.yCoordinate,
-        arrowWidget->code,
-        arrowWidget->arrowColor,
-        arrowWidget->priority
-    );
-}
-
-ArrowWidget* createArrowWidget(drawArrowParams params, std::string name) {
-    ArrowWidget* widget = (ArrowWidget*)createWidget(name, sizeof(ArrowWidget), &kArrowWidgetClass);
-    widget->widget.xCoordinate = params.xCoordinate;
-    widget->widget.yCoordinate = params.yCoordinate;
-    widget->code = params.arrowCode;
-    widget->priority = params.arrowPriority;
-    return widget;
-}
-
-bool isArrowWidget(Widget* widget) {
-    return ((widget->klass == &kArrowWidgetClass));
-}
-
-const WidgetClass* ArrowWidgetKlass() {
-    return &kArrowWidgetClass;
-}
-
 SISTERRAY_API void srNewSlotsWidget(Widget* parent, drawSlotsParams params, char* name) {
     auto strName = std::string(name);
     auto slotsWidget = createSlotsWidget(params, strName);
@@ -186,7 +145,15 @@ SISTERRAY_API void setSlotsParams(drawSlotsParams* params, i32 xCoordinate, i32 
 }
 
 void drawSlotsWidget(SlotsWidget* slotsWidget) {
-    if (slotsWidget->materiaSlotsData) {
+    if (slotsWidget->materiaData) {
+        renderOccupiedSlots(
+            slotsWidget->widget.xCoordinate,
+            slotsWidget->widget.yCoordinate,
+            (i32)(slotsWidget->materiaSlotsData),
+            (i32)(slotsWidget->materiaDate)
+        )
+    }
+    else if (slotsWidget->materiaSlotsData) {
         renderMateriaSlots(
             slotsWidget->widget.xCoordinate,
             slotsWidget->widget.yCoordinate,
@@ -200,6 +167,7 @@ SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->materiaSlotsData = params.materiaSlotData;
+    widget->materiaData = params.materiaData;
     return widget;
 }
 
@@ -211,7 +179,7 @@ const WidgetClass* SlotsWidgetKlass() {
     return &kSlotsWidgetClass;
 }
 
-SISTERRAY_API void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
+SISTERRAY_API updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
     if (isSlotsWidget(widget)) {
         auto typedPtr = (SlotsWidget*)widget;
         typedPtr->materiaSlotsData = materiaSlotsData;
@@ -219,6 +187,136 @@ SISTERRAY_API void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
     else {
         //YA DONE MESSED UP
     }
+}
+
+SISTERRAY_API void updateMateriaData(Widget* widget, u8* materiaData) {
+    if (isSlotsWidget(widget)) {
+        auto typedPtr = (SlotsWidget*)widget;
+        typedPtr->materiaData= materiaData;
+    }
+    else {
+        //YA DONE MESSED UP
+    }
+}
+
+SISTERRAY_API void srNewSimpleAssetWidget(Widget* parent, DrawSimpleAssetParams params, char* name) {
+    auto strName = std::string(name);
+    auto simpleAssetWidget = createSimpleGameAssetWidget(params, strName);
+    addChildWidget(parent, (Widget*)simpleAssetWidget, strName);
+}
+
+SISTERRAY_API void setSimpleAssetParams(DrawSimpleAssetParams* params, i32 xCoordinate, i32 yCoordinate, u8 arrowCode, color assetColor, float priority) {
+    params->xCoordinate = xCoordinate;
+    params->yCoordinate = yCoordinate;
+    params->arrowCode = arrowCode;
+    params->color = assetColor;
+    params->arrowPriority = priority;
+}
+
+void drawSimpleAssetWidget(SimpleAssetWidget* arrowWidget) {
+    gameDrawAsset(
+        arrowWidget->widget.xCoordinate,
+        arrowWidget->widget.yCoordinate,
+        arrowWidget->code,
+        arrowWidget->arrowColor,
+        arrowWidget->priority
+    );
+}
+
+SimpleAssetWidget* createSimpleGameAssetWidget(DrawSimpleAssetParams params, std::string name) {
+    SimpleAssetWidget* widget = (SimpleAssetWidget*)createWidget(name, sizeof(SimpleAssetWidget), &kSimpleAssetWidgetClass);
+    widget->widget.xCoordinate = params.xCoordinate;
+    widget->widget.yCoordinate = params.yCoordinate;
+    widget->code = params.arrowCode;
+    widget->priority = params.arrowPriority;
+    return widget;
+}
+
+bool isSimpleAssetWidget(Widget* widget) {
+    return ((widget->klass == &kSimpleAssetWidgetClass));
+}
+
+const WidgetClass* SimpleAssetWidgetKlass() {
+    return &kSimpleAssetWidgetClass;
+}
+
+DrawSimpleAssetParams Plus(i32 xCoordinate, i32 yCoordinate, color color, float priority) {
+    DrawSimpleAssetParams plus = { xCoordinate, yCoordinate, 0xE1, color, priority };
+    return plus;
+}
+DrawSimpleAssetParams Minus(i32 xCoordinate, i32 yCoordinate, color color, float priority) {
+    DrawSimpleAssetParams minus = { xCoordinate, yCoordinate, 0xB3, color, priority };
+    return minus;
+}
+DrawSimpleAssetParams Percent(i32 xCoordinate, i32 yCoordinate, color color, float priority) {
+    DrawSimpleAssetParams percent = { xCoordinate, yCoordinate, 0xD3, color, priority };
+    return percent;
+}
+DrawSimpleAssetParams Arrow(i32 xCoordinate, i32 yCoordinate, color color, float priority) {
+    DrawSimpleAssetParams arrow = { xCoordinate, yCoordinate, 0xDA, color, priority };
+    return arrow;
+}
+
+
+SISTERRAY_API void srNewGameAssetWidget(Widget* parent, DrawGameAssetParams params, char* name) {
+    auto strName = std::string(name);
+    auto gameAssetWidget = createGameAssetWidget(params, strName);
+    addChildWidget(parent, (Widget*)gameAssetWidget, strName);
+}
+
+void drawGameAssetWidget(GameAssetWidget* gameAssetWidget) {
+}
+
+GameAssetWidget* createGameAssetWidget(DrawGameAssetParams params, std::string name) {
+    GameAssetWidget* widget = (GameAssetWidget*)createWidget(name, sizeof(GameAssetWidget), &kSimpleAssetWidgetClass);
+    widget->widget.xCoordinate = params.xCoordinate;
+    widget->widget.yCoordinate = params.yCoordinate;
+    return widget;
+}
+
+bool isGameAssetWidget(Widget* widget) {
+    return ((widget->klass == &kGameAssetWidgetClass));
+}
+
+const WidgetClass* GameAssetWidgetKlass() {
+    return &kGameAssetWidgetClass;
+}
+
+SISTERRAY_API void setGameAssetParams(DrawGameAssetParams* params, i32 xCoordinate, i32 yCoordinate, i32 arg3, i32 arg4, i32 arg5, i32 arg6, i32 arg7, i32 arg8, i32 arg9, float priority) {
+    params->xCoordinate = xCoordinate;
+    params->yCoordinate = yCoordinate;
+    params->unk1 = arg3;
+    params->unk2 = arg4;
+    params->unk3 = arg5;
+    params->unk4 = arg6;
+    params->unk5 = arg7;
+    params->unk6 = arg8;
+    params->unk7 = arg9;
+    params->priority = priority;
+}
+
+
+SISTERRAY_API void updateAssetType(Widget* widgetToUpdate, i32 type) {
+    if (isGameAssetWidget(widgetToUpdate)) {
+        auto typedPtr = (GameAssetWidget*)widgetToUpdate;
+        typedPtr->unk5 = type;
+    }
+    else {
+        srLogWrite("attempting to update assetType field of an invalid Widget type");
+    }
+}
+
+DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority) {
+    DrawGameAssetParams sphere = { xCoordinate, yCoordinate, 128, 32, 16, 16, sphereColor, 0, 0, priority};
+    return sphere;
+}
+DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor, float priority, bool shaded) {
+    if (shaded) {
+        DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 48, 16, 16, starColor, 0, 0, priority };
+        return star
+    }
+    DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 32, 16, 16, starColor, 0, 0, priority }
+    return star;
 }
 
 

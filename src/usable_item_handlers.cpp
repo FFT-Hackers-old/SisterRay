@@ -118,7 +118,7 @@ u16 calculate_hp_heal_amount(u16 party_member_index, u16 item_id) {
     }
     else if (gContext.itemOnUseData.get_resource(item_id).hp_heal_percent){
         u8 heal_divisor = gContext.itemOnUseData.get_resource(item_id).hp_heal_percent;
-        return (((activePartyStructArray)[party_member_index].maxHP / heal_divisor) * 100);
+        return (((PARTY_STRUCT_ARRAY)[party_member_index].maxHP / heal_divisor) * 100);
     }
     return 0;
 }
@@ -129,7 +129,7 @@ u16 calculate_mp_heal_amount(u16 party_member_index, u16 item_id) {
     }
     else if (gContext.itemOnUseData.get_resource(item_id).mp_heal_percent) {
         u8 heal_divisor = gContext.itemOnUseData.get_resource(item_id).mp_heal_percent;
-        return (((activePartyStructArray)[party_member_index].maxMP / heal_divisor) * 100);
+        return (((PARTY_STRUCT_ARRAY)[party_member_index].maxMP / heal_divisor) * 100);
     }
     return 0;
 }
@@ -141,7 +141,7 @@ bool check_target_hp_healable(u16 target, u16 item_id) {
         return is_healable;
     }
 
-    bool is_alive = ((bool)((activePartyStructArray)[target].currentHP));
+    bool is_alive = ((bool)((PARTY_STRUCT_ARRAY)[target].currentHP));
     return (is_healable && is_alive);
 }
 
@@ -152,7 +152,7 @@ bool check_target_mp_healable(u16 target, u16 item_id) {
         return is_healable;
     }
 
-    bool is_alive = ((bool)((activePartyStructArray)[target].currentHP));
+    bool is_alive = ((bool)((PARTY_STRUCT_ARRAY)[target].currentHP));
     return (is_healable && is_alive);
 }
 
@@ -165,7 +165,7 @@ bool check_character_mp_full(u16 party_member_index) {
 }
 
 bool check_character_dead(u16 party_member_index) {
-    return (bool)activePartyStructArray[party_member_index].currentHP;
+    return (bool)PARTY_STRUCT_ARRAY[party_member_index].currentHP;
 }
 
 void play_success_or_failure_sound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id) {

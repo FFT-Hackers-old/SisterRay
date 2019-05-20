@@ -52,7 +52,7 @@ void initMateraCharDataWidget(const MateriaInitEvent* event) {
 
         /*There is a good chance the slot widget will have to be rewritten, since we want to expand the number of materia*/
         auto slotsParams = { 357, 59 + 50 * row, nullptr, nullptr };
-        slotsWidget = createSlotsWidget(slotsParams, slotNames[row]);
+        auto slotsWidget = createSlotsWidget(slotsParams, slotNames[row]);
         addChildWidget(currentMateriaWidget, (Widget*)slotsWidget, slotNames[row]);
 
         setTextParams(&textParams, 320, 32 + (54 * row), menuText, COLOR_WHITE, 0.2f);
@@ -66,7 +66,7 @@ void initMateraCharDataWidget(const MateriaInitEvent* event) {
 void initMateriaDescWidget(const MateriaInitEvent* event) {
     const char* materiaDescription;
     u16 materiaID;
-    auto characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX];
+    auto characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
 
     TextWidget* textWidget;
     DrawTextParams textParams;
@@ -128,10 +128,10 @@ void initMateriaViewWidget(const MateriaInitEvent* event) {
     addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_NAMES);
 
     gridParams = { itemChoiceCursor, &materiaSphereViewUpdater, 403, 210 };
-    gridWidget = createGridWidget(gridParams, MATERIA_GRID_SPHERES, GameAssetWidgetKlass());
+    DrawGameAssetParams assetInitParams = { 0, 0, 128, 32, 16, 16, 1, 0, 0, 2 };
+    gridWidget = createGridWidget(gridParams, MATERIA_GRID_SPHERES, GameAssetWidgetKlass(), assetInitParams);
     /*This configuration causes spheres to display, we need to map these*/
-    DrawGameAssetParams assetInitParams = {0, 0, 128, 32, 16, 16, 1, 0, 0, 2};
-    addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_SPHERES, assetInitParams);
+    addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_SPHERES);
     addChildWidget(materiaViewWidget, normalMateriaViewWidget, MATERIA_GRID);
 
     addChildWidget(mainWidget, materiaViewWidget, MATERIA_GRID_WIDGET_NAME);
@@ -153,12 +153,12 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 
     //Stuff that can change
     setTextParams(&textParams, 280, 60, nullptr, COLOR_WHITE, 0.2f);
-    addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, MATERIA_NAME); , MATERIA_NAME);
+    addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, MATERIA_NAME), MATERIA_NAME);
     setTextParams(&textParams, 280, 60, nullptr, COLOR_GREEN, 0.2f);
-    addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, MATERIA_NAME, MATERIA_ELEMENT);
+    addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, MATERIA_ELEMENT), MATERIA_ELEMENT);
     gameAssetParams = MateriaSphere(13, 212, 2, 0.1);
     addChildWidget(standardDisplayWidget, (Widget*)createGameAssetWidget(gameAssetParams, MATERIA_SPHERE), MATERIA_SPHERE);
-    setNumberParams(&numberParams, 280, 60, 0, 4 COLOR_WHITE, 0.2f);
+    setNumberParams(&numberParams, 280, 60, 0, 4, COLOR_WHITE, 0.2f);
     addChildWidget(standardDisplayWidget, (Widget*)createNumberWidget(numberParams, CURRENT_AP), CURRENT_AP);
     setNumberParams(&numberParams, 280, 60, 0, 4, COLOR_WHITE, 0.2f);
     addChildWidget(standardDisplayWidget, (Widget*)createNumberWidget(numberParams, TO_LEVEL_AP), TO_LEVEL_AP);
@@ -175,47 +175,48 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
     addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, MASTERED), MASTERED);
     menuText = gContext.gameStrings.materiaMenuTexts.get_string(6);
     setTextParams(&textParams, 187, 300, menuText, COLOR_TEAL, 0.1f);
-    addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, ABILITIES_LIST_TXT, ABILITIES_LIST_TXT);
+    addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, ABILITIES_LIST_TXT), ABILITIES_LIST_TXT);
     menuText = gContext.gameStrings.materiaMenuTexts.get_string(7);
     setTextParams(&textParams, 8, 300, menuText, COLOR_TEAL, 0.1f);
-    addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, NEXT_LVL_TEXT, EQUIP_EFFECT_TXT);
+    addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, EQUIP_EFFECT_TXT), EQUIP_EFFECT_TXT);
 
     /*Static Array Widgets*/
     auto rowCount = 5;
     DrawStaticGridParams staticGridParams = { nullptr, 40, 326, 1, rowCount, 0, 26 }; //consider whether to use an updater here or not for updating the texts being displayed
     StaticGridWidget* abilityListWidget = createStaticGridWidget(staticGridParams, ABILITIES_LIST, TextWidgetKlass());
-    addChildWidget(standardDisplayWidget, equipEffectWidget, ABILITIES_LIST);
-    DrawStaticGridParams staticGridParams = { nullptr, 200, 326, 1, rowCount, 0, 26 };
+    addChildWidget(standardDisplayWidget, (Widget*)abilityListWidget, ABILITIES_LIST);
+    staticGridParams = { nullptr, 200, 326, 1, rowCount, 0, 26 };
     StaticGridWidget* equipEffectWidget = createStaticGridWidget(staticGridParams, EQUIP_EFFECTS); // no class here as we want to seed with custom widgets
-    moveWidget(equipEffectWidget, 200, 326);
-    for (auto row = 0; row < rowCount ++row) {
+    moveWidget((Widget*)equipEffectWidget, 200, 326);
+    for (auto row = 0; row < rowCount; ++row) {
         auto name = std::to_string(row);
         auto statEffectRow = createWidget(name); //contains a percent sign, a plus sign, a colored number, and a stat name
         setTextParams(&textParams, 200, 326, menuText, COLOR_WHITE, 0.1f); 
-        addChildWidget(statEffectRow, (Widget*)createTextWidget(textParams, std::string("STAT")), std::string("STAT"););
+        addChildWidget(statEffectRow, (Widget*)createTextWidget(textParams, std::string("STAT")), std::string("STAT"));
         setNumberParams(&numberParams, 313, 326, 0, 2, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createNumberWidget(numberParams, std::string("AMT")), std::string("AMT"));
         auto simpleAssetParams = Sign(300, 326, COLOR_WHITE, 0.1f);
-        addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("SIGN"); std::string("SIGN"));
+        addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("SIGN")), std::string("SIGN"));
         simpleAssetParams = Percent(337, 326, COLOR_WHITE, 0.1f);
-        addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("PCNT"); std::string("PCNT"));
-        addChildWidget(equipEffectWidget, statEffectRow, name);
+        addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("PCNT")), std::string("PCNT"));
+        addChildWidget((Widget*)equipEffectWidget, (Widget*)statEffectRow, name);
     }
-    addChildWidget(standardDisplayWidget, equipEffectWidget, EQUIP_EFFECTS);
+    addChildWidget(standardDisplayWidget, (Widget*)equipEffectWidget, EQUIP_EFFECTS);
+
     StaticGridWidget* independentBoosts = createStaticGridWidget(staticGridParams, INDEPENDENT_BOOSTS); // no class here as we want to seed with custom widgets
-    moveWidget(independentBoosts, 200, 326);
-    for (auto row = 0; row < rowCount ++row) {
+    moveWidget((Widget*)independentBoosts, 200, 326);
+    for (auto row = 0; row < rowCount; ++row) {
         auto name = std::to_string(row);
         auto statEffectRow = createWidget(name); //contains a percent sign, a plus sign, a colored number, and a stat name
         setNumberParams(&numberParams, 140, 330, 0, 2, COLOR_WHITE, 2, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createNumberWidget(numberParams, std::string("AMT")), std::string("AMT"));
         auto simpleAssetParams = Sign(127, 326, COLOR_WHITE, 0.1f);
-        addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("SIGN"); std::string("SIGN"));
+        addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("SIGN")), std::string("SIGN"));
         simpleAssetParams = Percent(163, 330, COLOR_WHITE, 0.1f);
-        addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("PCNT"); std::string("PCNT"));
-        addChildWidget(equipEffectWidget, statEffectRow, name);
+        addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("PCNT")), std::string("PCNT"));
+        addChildWidget((Widget*)independentBoosts, (Widget*)statEffectRow, name);
     }
-    addChildWidget(standardDisplayWidget, independentBoosts, INDEPENDENT_BOOSTS);
+    addChildWidget(standardDisplayWidget, (Widget*)independentBoosts, INDEPENDENT_BOOSTS);
 
     addChildWidget(mainWidget, standardDisplayWidget, STANDARD_DISPLAY);
     addChildWidget(mainWidget, materiaDataWidget, MATERIA_DATA_WIDGET_NAME);
@@ -258,7 +259,7 @@ void initSpellViewWidget(const MateriaInitEvent* event) {
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto mainWidget = menuObject->menuWidget;
+    auto mainWidget = event->menuObject->menuWidget;
 
     auto spellGridWidget = createWidget(SPELL_VIEW_WIDGET_NAME);
 

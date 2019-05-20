@@ -3,6 +3,6 @@
 
 #include "widget.h"
 
-Widget* typeAllocate(const WidgetClass* type, std::string name);
+Widget* typeAllocate(const WidgetClass* type, std::string name, void* initParams=nullptr);
 
 #endif

@@ -48,7 +48,7 @@ void handleUpdateDescription(const EquipDrawEvent* event) {
 
 void handleUpdateGearSlotsWidget(const EquipDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX];
+    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
     u16 kernelObjectID;
     u8* materiaSlots;
     u8 materiaGrowth;

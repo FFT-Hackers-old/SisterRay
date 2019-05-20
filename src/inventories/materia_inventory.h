@@ -12,7 +12,7 @@ class SrMateriaInventory : public SrResourceRegistry<MateriaInventoryEntry> {
 public:
     SrMateriaInventory(i16 allocation_size);
     SrMateriaInventory() : SrResourceRegistry<MateriaInventoryEntry>() {}
-    void insertIntoMateriaInventory(MateriaInventoryEntry*);
+    void insertIntoMateriaInventory(const MateriaInventoryEntry& materia);
     void removeFromMateriaInventory(u8* inventory_index);
     bool isFull();
     void sortInventory();

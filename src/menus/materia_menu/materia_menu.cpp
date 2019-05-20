@@ -6,7 +6,7 @@
 SISTERRAY_API void materiaMenuUpdateHandler(i32 updateStateMask) {
     Menu* menuObject = gContext.menuWidgets.get_element("MATERIA_MENU");
     auto menuWidget = menuObject->menuWidget;
-    MatMenuDrawEvent event = { menuObject, menuObject->currentState };
+    MateriaDrawEvent event = { menuObject, menuObject->currentState };
 
     gContext.eventBus.dispatch(DRAW_MATERIA_MENU, &event);
     drawWidget(menuWidget);
@@ -37,25 +37,25 @@ void displayActiveCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
         case 2: {
             auto materiahoiceCursor = getStateCursor(menu, 1);
             drawFlashingCursor(slotChoiceCursor, updateStateMask, 0.1f);
-            drawCursor(materiahoiceCursor);
+            drawCursor(materiahoiceCursor, 0.2f);
         }
         case 3: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
-            drawCursor(getStateCursor(menu, 3));
+            drawCursor(getStateCursor(menu, 3), 0.2f);
             break;
         }
         case 4: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
-            drawCursor(getStateCursor(menu, 4));
+            drawCursor(getStateCursor(menu, 4), 0.2f);
             break;
         }
         case 5: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
-            drawCursor(getStateCursor(menu, 5));
+            drawCursor(getStateCursor(menu, 5), 0.2f);
         }
         case 6: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
-            drawCursor(getStateCursor(menu, 5));
+            drawCursor(getStateCursor(menu, 5), 0.2f);
         }
         default:
             break;

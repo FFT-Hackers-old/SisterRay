@@ -151,7 +151,7 @@ void drawSlotsWidget(SlotsWidget* slotsWidget) {
             slotsWidget->widget.yCoordinate,
             (i32)(slotsWidget->materiaSlotsData),
             (i32)(slotsWidget->materiaDate)
-        )
+        );
     }
     else if (slotsWidget->materiaSlotsData) {
         renderMateriaSlots(
@@ -209,7 +209,7 @@ SISTERRAY_API void setSimpleAssetParams(DrawSimpleAssetParams* params, i32 xCoor
     params->xCoordinate = xCoordinate;
     params->yCoordinate = yCoordinate;
     params->arrowCode = arrowCode;
-    params->color = assetColor;
+    params->arrowColor = assetColor;
     params->arrowPriority = priority;
 }
 
@@ -315,7 +315,7 @@ DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereCo
 DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor, float priority, bool shaded) {
     if (shaded) {
         DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 48, 16, 16, starColor, 0, 0, priority };
-        return star
+        return star;
     }
     DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 32, 16, 16, starColor, 0, 0, priority }
     return star;

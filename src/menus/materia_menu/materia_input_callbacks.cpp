@@ -83,13 +83,13 @@ void equipMateriaHandler(const MateriaInputEvent* event) {
             equippedMateria = gContext.characters.get_element(charName).wpnMaterias;
             toEquipMateria = gContext.materiaInventory->get_resource(materiaChoice.relativeRowIndex);
             gContext.materiaInventory->update_resource(materiaChoice.relativeRowIndex, equippedMateria);
-            gContext.characters.get_element(charName).wpnMaterias[slotChoice] = toEquipMateria;
+            gContext.characters.get_element(charName).wpnMaterias[activeSlot] = toEquipMateria;
         }
         case 1: {
             equippedMateria = gContext.characters.get_element(charName).armMaterias;
             toEquipMateria = gContext.materiaInventory->get_resource(materiaChoice.relativeRowIndex);
             gContext.materiaInventory->update_resource(materiaChoice.relativeRowIndex, equippedMateria);
-            gContext.characters.get_element(charName).armMaterias[slotChoice] = toEquipMateria;
+            gContext.characters.get_element(charName).armMaterias[activeSlot] = toEquipMateria;
         }
         default: {
         }
@@ -181,7 +181,7 @@ void trashMateriaHandler(const MateriaInputEvent* event) {
     }
     else {
         playMenuSound(1);
-        SetMenuState(event->menu, 9);
+        setMenuState(event->menu, 9);
     }
 }
 
@@ -270,30 +270,30 @@ void removeMateriaHandler(const MateriaInputEvent* event) {
     u8* slotsPtr = nullptr;
     MateriaInventoryEntry equippedMateria;
 
-    if (gcontext.materiaInventory->isFull()) {
+    if (gContext.materiaInventory->isFull()) {
         playMenuSound(3);
         return;
     }
 
     switch (gearType) {
         case 0: {
-            equippedMateria = gContext.characters.get_element(charName).wpnMaterias[slotChoice];
+            equippedMateria = gContext.characters.get_element(charName).wpnMaterias[activeSlot];
             if (equippedMateria.item_id = 0xFFFF) {
                 playMenuSound(3);
                 return;
             }
-            gContext.characters.get_element(charName).wpnMaterias[slotChoice].item_id = -1;
-            gContext.characters.get_element(charName).wpnMaterias[slotChoice].materia_ap = 0;
+            gContext.characters.get_element(charName).wpnMaterias[activeSlot].item_id = -1;
+            gContext.characters.get_element(charName).wpnMaterias[activeSlot].materia_ap = 0;
             break;
         }
         case 1: {
-            equippedMateria = gContext.characters.get_element(charName).armMaterias[slotChoice];
+            equippedMateria = gContext.characters.get_element(charName).armMaterias[activeSlot];
             if (equippedMateria.item_id = 0xFFFF) {
                 playMenuSound(3);
                 return;
             }
-            gContext.characters.get_element(charName).armMaterias[slotChoice].item_id = -1;
-            gContext.characters.get_element(charName).armMaterias[slotChoice].materia_ap = 0;
+            gContext.characters.get_element(charName).armMaterias[activeSlot].item_id = -1;
+            gContext.characters.get_element(charName).armMaterias[activeSlot].materia_ap = 0;
             break;
         }
         default: {

@@ -16,9 +16,9 @@ void initViewChoiceWidget(const InventoryInitEvent* event) {
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
-    drawTextParams textParams;
+    DrawTextParams textParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
     PortraitWidget* portraitWidget;
 
     auto viewChoiceWidget = createWidget(VIEW_CHOICE_WIDGET_NAME);
@@ -51,9 +51,9 @@ void initCharViewWidget(const InventoryInitEvent* event) {
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
-    drawTextParams textParams;
+    DrawTextParams textParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
     PortraitWidget* portraitWidget;
 
     auto partyViewWidget = createWidget(PARTY_VIEW_WIDGET_NAME);
@@ -94,7 +94,7 @@ void initItemViewWidget(const InventoryInitEvent* event) {
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 
@@ -146,7 +146,7 @@ void keyItemsViewWidget(const InventoryInitEvent* event) {
 
     drawGridParams gridParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 
@@ -174,9 +174,9 @@ void itemDescriptionWidget(const InventoryInitEvent* event) {
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
-    drawTextParams textParams;
+    DrawTextParams textParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
 
     auto itemDescWidget = createWidget(ITEM_DESC_WIDGET_NAME);
 
@@ -202,9 +202,9 @@ void arrangeTypeWidget(const InventoryInitEvent* event) {
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
-    drawTextParams textParams;
+    DrawTextParams textParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
 
     auto arrangeTypeWidget = createWidget(ARRANGE_TYPE_WIDGET_NAME);
 

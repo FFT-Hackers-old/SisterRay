@@ -74,7 +74,7 @@ u16 getMateriaID(u8 characterID, u8 slot, u8 gearType) {
         case 1:
             materiaID = CHARACTER_RECORD_ARRAY[characterID].equippedArmorMateria[slot] & 0xFF;
     }
-    return materiaID
+    return materiaID;
 }
 
 

@@ -108,11 +108,11 @@ u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr) {
 
     u8 level = 1;
     u8 maxLevel = 1;
-    for (auto apLevelIndex; levels[apLevelIndex] != 0xFFFF; ++apLevelIndex) {
-        if (materia.materia_ap > level[apLevelIndex]])
+    for (auto apLevelIndex = 0; levels[apLevelIndex] != 0xFFFF; ++apLevelIndex) {
+        if (materia.materia_ap > levels[apLevelIndex])
             ++level;
         maxLevel++;
     }
     *maxLevelPtr = maxLevel;
-    return level
+    return level;
 }

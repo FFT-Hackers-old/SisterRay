@@ -7,6 +7,7 @@
 #include "../../widgets/widget.h"
 #include "../../events/menu_events.h"
 #include "materia_widget_names.h"
+#include "../../gamedata/materia.h"
 
 void handleChangeCharacter(const MateriaDrawEvent* event);
 void handleUpdateMateriaDescription(const MateriaDrawEvent* event);

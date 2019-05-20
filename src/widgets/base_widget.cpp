@@ -129,7 +129,7 @@ SISTERRAY_API void moveWidget(Widget * widget, u32 x, u32 y) {
         }
         else {
             relativeMoveX = widget->xCoordinate - x;
-            moveX = child->xCoordinate -= relativeMoveX
+            moveX = child->xCoordinate -= relativeMoveX;
         }
         if (y > widget->yCoordinate) {
             relativeMoveY = y - widget->yCoordinate;

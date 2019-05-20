@@ -5,8 +5,8 @@
 using namespace MateriaWidgetNames;
 
 void handleChangeCharacter(const MateriaDrawEvent* event) {
-    const char * menuText;
-    auto menuObject = event->menuObject;
+    const char * fetchedName;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
@@ -17,13 +17,13 @@ void handleChangeCharacter(const MateriaDrawEvent* event) {
 
     std::vector<std::string> listNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR };
     for (u32 row = 0; row < listNames.size(); row++) {
-        materia = getEquippedGear(characterRecordArrayIndex, row + 1);
-        fetchedName = getNameFromRelativeID(materia, row + 1);
+        auto gear = getEquippedGear(characterRecordArrayIndex, row + 1);
+        fetchedName = getNameFromRelativeID(gear, row + 1);
         updateText(getChild(topWidget, listNames[row]), fetchedName);
     }
 
     std::vector <std::string> slotNames = { GEAR_1_SLOTS, GEAR_2_SLOTS };
-    for (int row = 0; row < gearNames.size(); row++) {
+    for (int row = 0; row < slotNames.size(); row++) {
         auto slotsPtr = &(gContext.weapons.get_resource(getEquippedGear(characterRecordArrayIndex, 0)).materia_slots[0]);
         updateMateriaSlots(getChild(topWidget, slotNames[row]), slotsPtr);
         auto materiaPtr = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias.data();
@@ -55,11 +55,12 @@ void handleUpdateMateriaDescription(const MateriaDrawEvent* event) {
             case 1:
                 materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeRowIndex].item_id;
                 break;
-        }
-        default{
+            default: {
+                break;
+            }
         }
     }
-    fetchedDescription = gContext.gameStrings.materia_descriptions.get_string(materiaID).;
+    fetchedDescription = gContext.gameStrings.materia_descriptions.get_string(materiaID);
     updateText(descrptionWidget, fetchedDescription);
 }
 
@@ -81,13 +82,14 @@ void handleUpdateMateriaData(const MateriaDrawEvent* event) {
     else if (event->menuState == 1) {
         switch (slotChoice.relativeRowIndex) {
             case 0:
-                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeRowIndex]
+                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeRowIndex];
                 break;
             case 1:
-                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeRowIndex]
+                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeRowIndex];
                 break;
-        }
-        default{
+            default: {
+                break;
+            }
         }
     }
     updateMateriaDisplay(getChild(materiaDataWidget, STANDARD_DISPLAY), materia);

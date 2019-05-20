@@ -13,5 +13,6 @@ public:
 };
 
 u32 getMateriaType(u8 materiaID);
+u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr);
 
 #endif

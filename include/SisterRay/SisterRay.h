@@ -222,7 +222,7 @@ typedef struct {
 } DrawStaticGridParams;
 
 typedef struct StaticGridWidget_ StaticGridWidget;
-typedef void (*PFNSNEWSGRIDWIDGETPROC)(Widget*, DrawStaticGridParams, char*, u16)
+typedef void(*PFNSNEWSGRIDWIDGETPROC)(Widget*, DrawStaticGridParams, char*, u16);
 
 typedef struct _Menu Menu;
 typedef Menu* (*PFNSRGETMENUPROC)(char*);

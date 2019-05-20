@@ -63,7 +63,7 @@ typedef struct {
     SrPartyDataRegistry                 party;
     SrFormationRegistry                 formations;
     SrEnemyRegistry                     enemies;
-    SrEnemyAttackRegistry               enemyAttacks;
+    SrAttackRegistry                    attacks;
     SrGameStrings                       gameStrings;
     MenuRegistry                        menuWidgets;
     EventBus                            eventBus;

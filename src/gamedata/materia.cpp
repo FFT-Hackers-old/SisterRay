@@ -102,3 +102,17 @@ u32 getMateriaType(u8 materiaID) {
     auto materiaType = materiaAssetType[greaterTypeArray[gContext.materias.get_resource(materiaID).type & 0xF]];
     return materiaType;
 }
+
+{
+    auto levels = gContext.materias.get_resource(materia.item_id).apLevel;
+
+    u8 level = 1;
+    u8 maxLevel = 1;
+    for (auto apLevelIndex; levels[apLevelIndex] != 0xFFFF; ++apLevelIndex) {
+        if (materia.materia_ap > level[apLevelIndex]])
+            ++level;
+        maxLevel++;
+    }
+    *maxLevelPtr = maxLevel;
+    return level
+}

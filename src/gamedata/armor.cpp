@@ -63,8 +63,7 @@ static void patch_armor(void)
     srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, equip_mask));
 }
 
-SISTERRAY_API void init_armor(SrKernelStream* stream)
-{
+SISTERRAY_API void init_armor(SrKernelStream* stream) {
     gContext.armors = SrArmorRegistry(stream);
     gContext.itemTypeData.initialize_augmented_data((u8)2, gContext.armors.resource_count());
     patch_armor();

@@ -25,6 +25,8 @@ typedef struct {
     StringRegistry  inventory_menu_texts; //Stores texts displayed by the inventory menu handler
     StringRegistry  equipMenuTexts;
     StringRegistry  materiaMenuTexts;
+    StringRegistry  elementNames;
+    StringRegistry  statusNames;
 
     /* Kernel2 stuff */
     StringRegistry  command_descriptions;

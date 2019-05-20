@@ -28,8 +28,8 @@ void srLoadAbilityData() {
         deathSentenceFlag = 0;
         gDamageContextPtr->MPCost = -1;
         if (gDamageContextPtr->commandIndexCopy == CMD_ENEMY_ACTION) {
-            auto attackID = std::string(std::to_string(gDamageContextPtr->absAttackIndex));
-            auto enemyAttack = gContext.enemyAttacks.get_element(attackID);
+            auto attackID = std::string(std::string("ETK-") + std::to_string(gDamageContextPtr->absAttackIndex));
+            auto enemyAttack = gContext.attacks.get_element(attackID);
             abilityData = gContext.enemyAttacks.get_element(attackID).attackData;
             currentSceneAbilities[0] = enemyAttack.attackData;
             memcpy((void*)attackNamesPtr, (void*)(enemyAttack.attackName.str()), enemyAttack.attackName.size());

@@ -9,7 +9,7 @@ void handleChangeCharacter(const EquipDrawEvent* event) {
     u16 kernelObjectID;
     const char* fetchedName;
 
-    u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
 
     auto topWidget = getChild(menuWidget, CHAR_DATA_WIDGET_NAME);
     updatePortraitPartyIndex(getChild(topWidget, PORTRAIT_WIDGET_NAME), *EQUIP_MENU_PARTY_INDEX);
@@ -25,7 +25,7 @@ void handleChangeCharacter(const EquipDrawEvent* event) {
 
 void handleUpdateDescription(const EquipDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
     u16 kernelObjectID;
     const char * fetchedDescription;
 
@@ -48,7 +48,7 @@ void handleUpdateDescription(const EquipDrawEvent* event) {
 
 void handleUpdateGearSlotsWidget(const EquipDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX];
     u16 kernelObjectID;
     u8* materiaSlots;
     u8 materiaGrowth;
@@ -98,7 +98,7 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* event) {
 
 void handleUpdateStatMenuWidget(const EquipDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
     u8 statsToDisplay[7];
     auto statDiffWidget = getChild(menuWidget, STAT_DIFF_WIDGET_NAME);
 

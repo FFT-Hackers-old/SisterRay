@@ -8,4 +8,6 @@
 #include "../../events/menu_events.h"
 #include "materia_widget_names.h"
 
+void handleChangeCharcter(const MateriaDrawEvent* event);
+
 #endif

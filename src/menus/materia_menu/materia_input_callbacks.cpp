@@ -42,7 +42,7 @@ void enterMateriaViewHandler(const MateriaInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 1)->context;
     auto activeSlot = slotChoice.relativeColumnIndex;
     auto gearType = slotChoice.relativeRowIndex;
-    u8 characterID = getCharacterRecordIndex(*MAT_MATERIA_ACTIVE_ACTOR);
+    u8 characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
     u8* slotsPtr = nullptr;
 
     switch (gearType) {
@@ -72,7 +72,7 @@ void equipMateriaHandler(const MateriaInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 0)->context;
     auto activeSlot = slotChoice.relativeColumnIndex;
     auto materiaChoice = getStateCursor(event->menu, 2)->context;
-    u8 characterID = getCharacterRecordIndex(*MAT_MATERIA_ACTIVE_ACTOR);
+    u8 characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
     auto charName = getCharacterName(characterID);
     MateriaInventoryEntry equippedMateria;
     MateriaInventoryEntry toEquipMateria;
@@ -94,7 +94,7 @@ void equipMateriaHandler(const MateriaInputEvent* event) {
         default: {
         }
     }
-    srUpdatePartyMember(*MAT_MATERIA_ACTIVE_ACTOR);
+    srUpdatePartyMember(*MAT_MENU_PARTY_INDEX);
 
 }
 
@@ -104,7 +104,7 @@ void selectCheckViewHandler(const MateriaInputEvent* event) {
 
     auto commandChoice = getStateCursor(event->menu, 3)->context;
     auto flatCommandIndex = (commandChoice.baseColumnIndex * COMMAND_ROW_COUNT) + commandChoice.relativeRowIndex;
-    auto commandID = activePartyStructArray[*MAT_MATERIA_ACTIVE_ACTOR].enabledCommandArray[flatCommandIndex].cursorCommandType;
+    auto commandID = activePartyStructArray[*MAT_MENU_PARTY_INDEX].enabledCommandArray[flatCommandIndex].cursorCommandType;
     switch (commandID) {
         case 1:
         case 8: {
@@ -128,7 +128,7 @@ void arrangeChoiceHandler(const MateriaInputEvent* event) {
         return;
 
     auto arrangeChoice = getStateCursor(event->menu, 7)->context;
-    u8 characterID = getCharacterRecordIndex(*MAT_MATERIA_ACTIVE_ACTOR);
+    u8 characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
     auto charName = getCharacterName(characterID);
     switch (arrangeChoice.relativeRowIndex) {
         case 0:                             // transition to arrange
@@ -157,7 +157,7 @@ void arrangeChoiceHandler(const MateriaInputEvent* event) {
                 }
             }
             playMenuSound(447);
-            srUpdatePartyMember(*MAT_MATERIA_ACTIVE_ACTOR);
+            srUpdatePartyMember(*MAT_MENU_PARTY_INDEX);
             break;
         }
         case 3:                             // transition to trash
@@ -265,7 +265,7 @@ void removeMateriaHandler(const MateriaInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 1)->context;
     auto activeSlot = slotChoice.relativeColumnIndex;
     auto gearType = slotChoice.relativeRowIndex;
-    u8 characterID = getCharacterRecordIndex(*MAT_MATERIA_ACTIVE_ACTOR);
+    u8 characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
     auto charName = getCharacterName(characterID);
     u8* slotsPtr = nullptr;
     MateriaInventoryEntry equippedMateria;
@@ -301,6 +301,6 @@ void removeMateriaHandler(const MateriaInputEvent* event) {
     }
     playMenuSound(447);
     gContext.materiaInventory->insertIntoMateriaInventory(equippedMateria);
-    srUpdatePartyMember(*MAT_MATERIA_ACTIVE_ACTOR);
+    srUpdatePartyMember(*MAT_MENU_PARTY_INDEX);
 
 }

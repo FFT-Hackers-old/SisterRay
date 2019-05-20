@@ -240,13 +240,14 @@ const WidgetClass* SimpleAssetWidgetKlass() {
     return &kSimpleAssetWidgetClass;
 }
 
-DrawSimpleAssetParams Plus(i32 xCoordinate, i32 yCoordinate, color color, float priority) {
-    DrawSimpleAssetParams plus = { xCoordinate, yCoordinate, 0xE1, color, priority };
-    return plus;
-}
-DrawSimpleAssetParams Minus(i32 xCoordinate, i32 yCoordinate, color color, float priority) {
-    DrawSimpleAssetParams minus = { xCoordinate, yCoordinate, 0xB3, color, priority };
-    return minus;
+DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isNegative) {
+    DrawSimpleAssetParams sign;
+    if (isNegative) {
+        sign = { xCoordinate, yCoordinate, 0xB3, color, priority };
+        return sign;
+    }
+    sign = { xCoordinate, yCoordinate, 0xE1, color, priority };
+    return sign;
 }
 DrawSimpleAssetParams Percent(i32 xCoordinate, i32 yCoordinate, color color, float priority) {
     DrawSimpleAssetParams percent = { xCoordinate, yCoordinate, 0xD3, color, priority };
@@ -299,7 +300,7 @@ SISTERRAY_API void setGameAssetParams(DrawGameAssetParams* params, i32 xCoordina
 SISTERRAY_API void updateAssetType(Widget* widgetToUpdate, i32 type) {
     if (isGameAssetWidget(widgetToUpdate)) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;
-        typedPtr->unk5 = type;
+        typedPtr->unk5= type;
     }
     else {
         srLogWrite("attempting to update assetType field of an invalid Widget type");
@@ -310,6 +311,7 @@ DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereCo
     DrawGameAssetParams sphere = { xCoordinate, yCoordinate, 128, 32, 16, 16, sphereColor, 0, 0, priority};
     return sphere;
 }
+
 DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor, float priority, bool shaded) {
     if (shaded) {
         DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 48, 16, 16, starColor, 0, 0, priority };

@@ -17,20 +17,20 @@ typedef enum {
 } srAttackType;
 
 typedef struct {
+    AttackData attackData;
     u16 attackID;
+    EncodedString attackName;
     srAttackType attackType; //Either Magic, Summon, Enemy Skill, Limit, Enemy Attack
-    u8 animationType;
-} SrExtendedAttackData;
+    srAttackType animationType;
+} SrAttackData;
 
 /*Due to the structure/access patterns for player spells, they need to be contiguous
   Ergo, unlike enemy attacks, we employee a separate registry for additional data, and
   maintain attack typed lookups*/
-class SrPlayerAttackRegistry : public SrNamedResourceRegistry<AttackData, std::string> {
+class SrAttackRegistry : public SrNamedResourceRegistry<SrAttackData, std::string> {
 public:
-    SrPlayerAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<AttackData, std::string>(stream) {}
-    SrPlayerAttackRegistry() : SrNamedResourceRegistry<AttackData, std::string>() {}
-protected:
-    std::vector<u16> magicIndexLookup;
+    SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAttackData, std::string>();
+    SrAttackRegistry() : SrNamedResourceRegistry<AttackData, std::string>() {}
 };
 
 #endif

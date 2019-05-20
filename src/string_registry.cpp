@@ -64,6 +64,24 @@ void initGameStrings(){
     gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("AP:"));
     gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Ability List"));
     gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Equip Effects"));
+    gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("MASTER"));
+
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Fire"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Ice"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Thunder"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Earth"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Poison"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Gravity"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Water"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Wind"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Holy"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Life"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Slash"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Blunt"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Pierce"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Shoot"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Blast"));
+    gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Shadow"));
     
 }
 

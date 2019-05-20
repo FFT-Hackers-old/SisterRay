@@ -41,10 +41,12 @@ namespace MateriaWidgetNames {
     const std::string AP_TEXT = "AP_TEXT";
     const std::string NEXT_LVL_TEXT = "LVL_TEXT";
     const std::string CURRENT_AP = "CURR_AP";
+    const std::string MASTERED = "MASTERED";
     const std::string TO_LEVEL_AP = "LVL_AP";
     const std::string ABILITIES_LIST_TXT = "ABL_TEXT";
     const std::string EQUIP_EFFECT_TXT = "EQUIP_TEXT";
     const std::string ABILITIES_LIST = "ABILITIES_LIST"; //static text array, limit 5
+    const std::string INDEPENDENT_BOOSTS = "IND_BOOSTS";
     const std::string EQUIP_EFFECTS = "EQUIP_EFFECTS"; //Static numbers arrray, limt 6, contains 6 sub widgets each with 4 widgets, 1_name, 1_number, 1_percent, 1_sign
     const std::string STAT_BOOSTS = "STAT_BOOSTS"; //Static numbers array, limit 5, contains 5 sub_widgets each with 4 widgets, 1_stat, 1_number, 1_percent, 1_sign
     const std::string ESKILL_WIDGET = "ESKILL";

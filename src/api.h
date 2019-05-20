@@ -61,6 +61,7 @@ SISTERRAY_API void updateHPBarPartyIndex(Widget* widget, u8 portraitIndex);
 SISTERRAY_API void srNewSlotsWidget(Widget* parent, drawSlotsParams params, char* name);
 SISTERRAY_API void setSlotsParams(drawSlotsParams* params, i32 xCoordinate, i32 yCoordinate, u8* materiaSlotData);
 SISTERRAY_API void updateMateriaSlots(Widget* widget, u8* materiaSlotsData);
+SISTERRAY_API void updateMateriaData(Widget* widget, u8* materiaData);
 
 SISTERRAY_API void srNewArrowWidget(Widget* parent, drawArrowParams params, char* name);
 SISTERRAY_API void setArrowParams(drawArrowParams* params, i32 xCoordinate, i32 yCoordinate, u8 arrowCode, color arrowColor, float priority);

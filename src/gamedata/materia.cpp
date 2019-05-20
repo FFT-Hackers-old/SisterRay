@@ -80,10 +80,10 @@ static void patch_materia(void)
 {
     srPatchAddresses((void**)kPatchApLevel, ARRAY_SIZE(kPatchApLevel), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, apLevel));
     srPatchAddresses((void**)kPatchEquipEffect, ARRAY_SIZE(kPatchEquipEffect), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, equipEffect));
-    srPatchAddresses((void**)kPatchStatusEffect, ARRAY_SIZE(kPatchStatusEffect), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffect));
-    srPatchAddresses((void**)kPatchStatusEffect1, ARRAY_SIZE(kPatchStatusEffect1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffect) + 1);
-    srPatchAddresses((void**)kPatchStatusEffect2, ARRAY_SIZE(kPatchStatusEffect2), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffect) + 2);
-    srPatchAddresses((void**)kPatchStatusEffect3, ARRAY_SIZE(kPatchStatusEffect3), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffect) + 3);
+    srPatchAddresses((void**)kPatchStatusEffect, ARRAY_SIZE(kPatchStatusEffect), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffects));
+    srPatchAddresses((void**)kPatchStatusEffect1, ARRAY_SIZE(kPatchStatusEffect1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffects) + 1);
+    srPatchAddresses((void**)kPatchStatusEffect2, ARRAY_SIZE(kPatchStatusEffect2), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffects) + 2);
+    srPatchAddresses((void**)kPatchStatusEffect3, ARRAY_SIZE(kPatchStatusEffect3), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, elementType));
     srPatchAddresses((void**)kPatchType, ARRAY_SIZE(kPatchType), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, type));
     srPatchAddresses((void**)kPatchData, ARRAY_SIZE(kPatchData), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, data));
     srPatchAddresses((void**)kPatchData1, ARRAY_SIZE(kPatchData1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, data) + 1);
@@ -96,7 +96,7 @@ SISTERRAY_API void init_materia(SrKernelStream* stream) {
 }
 
 
-u32 getMateriaType(u8 materiaID) {
+u32 getMateriaType(u16 materiaID) {
     u8* greaterTypeArray = (u8*)(0x91ABF8);
     u8* materiaAssetType = (u8*)(0x91ABF0);
     auto materiaType = materiaAssetType[greaterTypeArray[gContext.materias.get_resource(materiaID).type & 0xF]];

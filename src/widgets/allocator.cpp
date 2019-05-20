@@ -5,13 +5,12 @@ static char* defaultString = "\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x
 
 // create default objects from a type -- used to pre-allocate CursorContext objects
 // passing initial params is NOT type safe, make sure you know what you are doing!
-Widget* typeAllocate(const WidgetClass* type, std::string name, void* initParams) {
+Widget* typeAllocate(const WidgetClass* type, std::string name, SRLISTALLOCPROC allocator) {
+    if (allocator) {
+        return allocator(name.c_str());
+    }
     if (type == TextWidgetKlass()) {
         DrawTextParams params = { 0, 0, defaultString, COLOR_RED, 0.2f };
-        if (initParams) {
-            auto typedInit = (DrawTextParams*)initParams;
-            setTextParams(&params, typedInit->xCoordinate, typedInit->yCoordinate, typedInit->stringToDraw, typedInit->textColor, typedInit->priority);
-        }
         return (Widget*)createTextWidget(params, name);
     }
     else if (type == NumberWidgetKlass()) {
@@ -44,15 +43,8 @@ Widget* typeAllocate(const WidgetClass* type, std::string name, void* initParams
     }
     else if (type == GameAssetWidgetKlass()) { //We want a grid here, this function has a lot of args, might make wrappers around multiple values. Need some way to initialize
         DrawGameAssetParams params = {};
-        if (initParams) {
-            auto typedInit = (DrawGameAssetParams*)initParams;
-            setGameAssetParams(&params, typedInit->xCoordinate, typedInit->yCoordinate,
-                typedInit->unk1, typedInit->unk2, typedInit->unk3,
-                typedInit->unk4, typedInit->unk5, typedInit->unk6,
-                typedInit->unk7, typedInit->priority
-            );
-        }
         return (Widget*)createGameAssetWidget(params, name);
     }
+    srLogWrite("attempted to allocated an unsupported widget without a provided allocator, FIX THIS");
     return nullptr;
 }

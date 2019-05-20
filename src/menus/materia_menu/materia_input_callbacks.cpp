@@ -80,13 +80,13 @@ void equipMateriaHandler(const MateriaInputEvent* event) {
     auto gearType = slotChoice.relativeRowIndex;
     switch (gearType) {
         case 0: {
-            equippedMateria = gContext.characters.get_element(charName).wpnMaterias;
+            equippedMateria = gContext.characters.get_element(charName).wpnMaterias[activeSlot];
             toEquipMateria = gContext.materiaInventory->get_resource(materiaChoice.relativeRowIndex);
             gContext.materiaInventory->update_resource(materiaChoice.relativeRowIndex, equippedMateria);
             gContext.characters.get_element(charName).wpnMaterias[activeSlot] = toEquipMateria;
         }
         case 1: {
-            equippedMateria = gContext.characters.get_element(charName).armMaterias;
+            equippedMateria = gContext.characters.get_element(charName).armMaterias[activeSlot];
             toEquipMateria = gContext.materiaInventory->get_resource(materiaChoice.relativeRowIndex);
             gContext.materiaInventory->update_resource(materiaChoice.relativeRowIndex, equippedMateria);
             gContext.characters.get_element(charName).armMaterias[activeSlot] = toEquipMateria;
@@ -145,12 +145,12 @@ void arrangeChoiceHandler(const MateriaInputEvent* event) {
             for (auto slotIdx = 0; slotIdx < 8; ++slotIdx) { //probably factor out into a "remove all materia" method
                 auto equippedWpnMateria = gContext.characters.get_element(charName).wpnMaterias[slotIdx];
                 auto equippedArmMateria = gContext.characters.get_element(charName).armMaterias[slotIdx];
-                if (equippedWpnMateria != 0xFF && !(gContext.materiaInventory->isFull())) {
+                if (equippedWpnMateria.item_id != 0xFFFF && !(gContext.materiaInventory->isFull())) {
                     gContext.characters.get_element(charName).wpnMaterias[slotIdx].item_id = -1;
                     gContext.characters.get_element(charName).wpnMaterias[slotIdx].materia_ap = 0;
                     gContext.materiaInventory->insertIntoMateriaInventory(equippedWpnMateria);
                 }
-                if (equippedArmMateria != 0xFF && !(gContext.materiaInventory->isFull())) {
+                if (equippedArmMateria.item_id != 0xFF && !(gContext.materiaInventory->isFull())) {
                     gContext.characters.get_element(charName).armMaterias[slotIdx].item_id = -1;
                     gContext.characters.get_element(charName).armMaterias[slotIdx].materia_ap = 0;
                     gContext.materiaInventory->insertIntoMateriaInventory(equippedArmMateria);

@@ -19,7 +19,7 @@ void initializeMateriaMenu() {
     Cursor checkCommandCursor = { checkCommandContext, 0xE, 0xE7, 26, 13 };
     /*The following cursors are for views of available magics, summons and enemy skills*/
     CursorContext magicViewContext = { 0, 0, 3, 3, 0, 0, 3, 18, 0, 0, 2, 0, 0, 1 };
-    Cursor magicViewContext = { magicViewContext, 0x2A, 0x167, 34, 130 };
+    Cursor magicViewCursor = { magicViewContext, 0x2A, 0x167, 34, 130 };
     CursorContext summonViewContext = { 0, 0, 1, 3, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };
     Cursor summonViewCursor = { summonViewContext, 0x2F + 50, 0x167, 34, 0 };
     CursorContext eSkillViewContext = { 0, 0, 1, 3, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };
@@ -28,18 +28,18 @@ void initializeMateriaMenu() {
     CursorContext arrangeViewContext = { 0, 0, 1, 4, 0, 0, 1, 4, 0, 0, 0, 0, 0, 1 };
     Cursor arrangeViewCursor = { arrangeViewContext, 0x2F, 0xD9, 26, 0 };
     CursorContext trashViewContext = { 0, 0, 1, 10, 0, 0, 1, gContext.materiaInventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
-    Cursor arrangeViewCursor = { arrangeViewContext, 362, 214, 26, 0 };
+    Cursor trashViewCursor = { trashViewContext, 362, 214, 26, 0 };
     CursorContext destroyMateriaContext = { 0, 1, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0 };
     Cursor destroyMateriaCursor = { destroyMateriaContext, 0x92 ,0x67, 26, 0 };
 
     Cursor cursorArray[11] = { checkArrangeCursor, slotSelectCursor, materiaInventoryCursor,
-        checkCommandCursor, magicViewContext, summonViewCursor,
-        eSkillViewCursor, arrangeViewCursor, arrangeViewCursor,
-        destroyMateriaContext
+        checkCommandCursor, magicViewCursor, summonViewCursor,
+        eSkillViewCursor, arrangeViewCursor, destroyMateriaCursor,
+        arrangeViewCursor, arrangeViewCursor
     };
     auto materiaMenu = createMenu(INIT_MATERIA_MENU, 12, &(cursorArray[0]));
     gContext.menuWidgets.add_element("MATERIA_MENU", materiaMenu);
-    gContext.menuWidgets.initializeMenu("MATERIA_MENU", INVENTORY_MENU_NAME);
+    gContext.menuWidgets.initializeMenu("MATERIA_MENU", MATERIA_MENU_NAME);
 }
 
 void registerMateriaMenuListeners() {

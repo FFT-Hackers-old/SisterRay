@@ -99,6 +99,7 @@ void materiaSphereViewUpdater(CollectionWidget* self, Widget*widget, u16 flatInd
     auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
     if (materiaID != 0xFFFF) {
         enableWidget(widget);
+        transformAsset(widget, 128, 32, 16, 16);
         auto materiaAssetType = getMateriaType(materiaID);
         updateAssetType(widget, materiaAssetType);
     }
@@ -136,7 +137,7 @@ void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex)
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(std::string("MAG") + std::to_string(flatIndex)).attackName);
+    updateText(widget, gContext.attacks.get_element(std::string("MAG") + std::to_string(flatIndex)).attackName.str());
 }
 
 void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -150,7 +151,7 @@ void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(std::string("SUM") + std::to_string(flatIndex)).attackName);
+    updateText(widget, gContext.attacks.get_element(std::string("SUM") + std::to_string(flatIndex)).attackName.str());
 }
 
 void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -164,5 +165,5 @@ void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(std::string("ESK") + std::to_string(flatIndex)).attackName);
+    updateText(widget, gContext.attacks.get_element(std::string("ESK") + std::to_string(flatIndex)).attackName.str());
 }

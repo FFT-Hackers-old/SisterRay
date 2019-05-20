@@ -12,12 +12,7 @@ public:
     SrMateriaRegistry() : SrNamedResourceRegistry<MateriaData, std::string>() {}
 };
 
-typedef struct {
-    u8 item_id;
-    i24 materia_ap; //u24 originally 
-} MateriaInventoryEntry;
-
-u32 getMateriaType(u8 materiaID);
+u32 getMateriaType(u16 materiaID);
 u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr);
 
 #endif

@@ -1,5 +1,6 @@
 #include "party_utils.h"
 #include "../inventories/inventory_utils.h"
+#include "../impl.h"
 
 std::string getCharacterName (u8 characterID) {
     switch (characterID) {
@@ -68,11 +69,17 @@ u8 getCharacterRecordIndex(u8 partyIndex) {
 
 u16 getMateriaID(u8 characterID, u8 slot, u8 gearType) {
     u16 materiaID;
+    auto name = getCharacterName(characterID);
     switch (gearType) {
         case 0:
-            materiaID = CHARACTER_RECORD_ARRAY[characterID].equippedWeaponMateria[slot] & 0xFF;
+            materiaID = gContext.characters.get_element(name).wpnMaterias[slot].item_id;
+            break;
         case 1:
-            materiaID = CHARACTER_RECORD_ARRAY[characterID].equippedArmorMateria[slot] & 0xFF;
+            materiaID = gContext.characters.get_element(name).wpnMaterias[slot].item_id;
+            break;
+        default: {
+            break;
+        }
     }
     return materiaID;
 }

@@ -29,7 +29,7 @@ void SrMateriaInventory::insertIntoMateriaInventory(const MateriaInventoryEntry&
     }
 }
 
-void SrMateriaInventory::removeFromMateriaInventory(u8* inventory_index) {
+void SrMateriaInventory::removeFromMateriaInventory(u16 inventory_index) {
 }
 
 /*TODO: implement these two methods*/

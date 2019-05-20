@@ -9,5 +9,5 @@ SrPartyDataRegistry::SrPartyDataRegistry() {
 void srUpdatePartyMember(u32 partyIndex) {
     recalculateBaseStats(partyIndex);
     recalculateDerivedStats(partyIndex); //This function will be replaced with an sr version to correctly init the new command fields
-    updateMiscPartyStats(partyIndex);
+    updateMiscPartyStats();
 }

@@ -61,12 +61,16 @@ SISTERRAY_API void updateHPBarPartyIndex(Widget* widget, u8 portraitIndex);
 SISTERRAY_API void srNewSlotsWidget(Widget* parent, drawSlotsParams params, char* name);
 SISTERRAY_API void setSlotsParams(drawSlotsParams* params, i32 xCoordinate, i32 yCoordinate, u8* materiaSlotData);
 SISTERRAY_API void updateMateriaSlots(Widget* widget, u8* materiaSlotsData);
-SISTERRAY_API void updateMateriaData(Widget* widget, u8* materiaData);
+SISTERRAY_API void updateMateriaData(Widget* widget, MateriaInventoryEntry* materiaData);
 
 SISTERRAY_API void srNewSimpleAssetWidget(Widget* parent, DrawSimpleAssetParams params, char* name);
 SISTERRAY_API void setSimpleAssetParams(DrawSimpleAssetParams* params, i32 xCoordinate, i32 yCoordinate, u8 arrowCode, color arrowColor, float priority);
 
 SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, char* name, u16 srWidgetTypeID);
+
+SISTERRAY_API void setStaticGridParams(DrawStaticGridParams* params, i32 xCoordinate, i32 yCoordinate,
+    u16 columnCount, u16 rowCount, u16 columnSpacing, u16 rowSpacing,
+    SRLISTUPDATERPROC updater, SRLISTALLOCPROC allocator);
 
 //Menu Manipulation API
 

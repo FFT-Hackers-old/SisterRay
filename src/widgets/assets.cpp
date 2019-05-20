@@ -150,7 +150,7 @@ void drawSlotsWidget(SlotsWidget* slotsWidget) {
             slotsWidget->widget.xCoordinate,
             slotsWidget->widget.yCoordinate,
             (i32)(slotsWidget->materiaSlotsData),
-            (i32)(slotsWidget->materiaDate)
+            (i32)(slotsWidget->materiaData)
         );
     }
     else if (slotsWidget->materiaSlotsData) {
@@ -179,7 +179,7 @@ const WidgetClass* SlotsWidgetKlass() {
     return &kSlotsWidgetClass;
 }
 
-SISTERRAY_API updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
+SISTERRAY_API void updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
     if (isSlotsWidget(widget)) {
         auto typedPtr = (SlotsWidget*)widget;
         typedPtr->materiaSlotsData = materiaSlotsData;
@@ -189,7 +189,7 @@ SISTERRAY_API updateMateriaSlots(Widget* widget, u8* materiaSlotsData) {
     }
 }
 
-SISTERRAY_API void updateMateriaData(Widget* widget, u8* materiaData) {
+SISTERRAY_API void updateMateriaData(Widget* widget, MateriaInventoryEntry* materiaData) {
     if (isSlotsWidget(widget)) {
         auto typedPtr = (SlotsWidget*)widget;
         typedPtr->materiaData= materiaData;
@@ -307,6 +307,19 @@ SISTERRAY_API void updateAssetType(Widget* widgetToUpdate, i32 type) {
     }
 }
 
+SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1, i32 type2, i32 type3, i32 type4) {
+    if (isGameAssetWidget(widgetToUpdate)) {
+        auto typedPtr = (GameAssetWidget*)widgetToUpdate;
+        typedPtr->unk1 = type1;
+        typedPtr->unk2 = type2;
+        typedPtr->unk3 = type3;
+        typedPtr->unk4 = type4;
+    }
+    else {
+        srLogWrite("attempting to update assetType field of an invalid Widget type");
+    }
+}
+
 DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority) {
     DrawGameAssetParams sphere = { xCoordinate, yCoordinate, 128, 32, 16, 16, sphereColor, 0, 0, priority};
     return sphere;
@@ -317,7 +330,7 @@ DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor,
         DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 48, 16, 16, starColor, 0, 0, priority };
         return star;
     }
-    DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 32, 16, 16, starColor, 0, 0, priority }
+    DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 32, 16, 16, starColor, 0, 0, priority };
     return star;
 }
 

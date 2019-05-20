@@ -51,7 +51,7 @@ void initMateraCharDataWidget(const MateriaInitEvent* event) {
         addChildWidget(currentMateriaWidget, (Widget*)textWidget, viewNames[row]);
 
         /*There is a good chance the slot widget will have to be rewritten, since we want to expand the number of materia*/
-        auto slotsParams = { 357, 59 + 50 * row, nullptr, nullptr };
+        drawSlotsParams slotsParams = { 357, 59 + 50 * row, nullptr, nullptr };
         auto slotsWidget = createSlotsWidget(slotsParams, slotNames[row]);
         addChildWidget(currentMateriaWidget, (Widget*)slotsWidget, slotNames[row]);
 
@@ -87,8 +87,8 @@ void initMateriaDescWidget(const MateriaInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, MATERIA_DESC_BOX);
     addChildWidget(mainWidget, (Widget*)boxWidget, MATERIA_DESC_BOX);
 
-    materiaID = getMateriaID(characterID, slot, 0);
-    materiaDescription = gContext.gameStrings.materia_descriptions.get_resource(materiaID);
+    materiaID = getMateriaID(characterID, 0, 0);
+    materiaDescription = gContext.gameStrings.materia_descriptions.get_string(materiaID);
     setTextParams(&textParams, 16, 105, materiaDescription, COLOR_WHITE, 0.2f);
     textWidget = createTextWidget(textParams, MATERIA_DESC);
     addChildWidget(MatDescWidget, (Widget*)textWidget, MATERIA_DESC);
@@ -128,8 +128,8 @@ void initMateriaViewWidget(const MateriaInitEvent* event) {
     addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_NAMES);
 
     gridParams = { itemChoiceCursor, &materiaSphereViewUpdater, 403, 210 };
-    DrawGameAssetParams assetInitParams = { 0, 0, 128, 32, 16, 16, 1, 0, 0, 2 };
-    gridWidget = createGridWidget(gridParams, MATERIA_GRID_SPHERES, GameAssetWidgetKlass(), assetInitParams);
+    DrawGameAssetParams assetInitParams = MateriaSphere(0, 0, 0, 0.1f);
+    gridWidget = createGridWidget(gridParams, MATERIA_GRID_SPHERES, GameAssetWidgetKlass());
     /*This configuration causes spheres to display, we need to map these*/
     addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_SPHERES);
     addChildWidget(materiaViewWidget, normalMateriaViewWidget, MATERIA_GRID);
@@ -142,6 +142,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
     DrawBoxParams boxParams;
     DrawGameAssetParams gameAssetParams;
     DrawNumberParams numberParams;
+    DrawStaticGridParams staticGridParams;
 
     const char* menuText;
 
@@ -182,10 +183,10 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 
     /*Static Array Widgets*/
     auto rowCount = 5;
-    DrawStaticGridParams staticGridParams = { nullptr, 40, 326, 1, rowCount, 0, 26 }; //consider whether to use an updater here or not for updating the texts being displayed
+    setStaticGridParams(&staticGridParams, 40, 326, 1, rowCount, 0, 26, nullptr, nullptr); //consider whether to use an updater here or not for updating the texts being displayed
     StaticGridWidget* abilityListWidget = createStaticGridWidget(staticGridParams, ABILITIES_LIST, TextWidgetKlass());
     addChildWidget(standardDisplayWidget, (Widget*)abilityListWidget, ABILITIES_LIST);
-    staticGridParams = { nullptr, 200, 326, 1, rowCount, 0, 26 };
+    setStaticGridParams(&staticGridParams, 200, 326, 1, rowCount, 0, 26, nullptr, nullptr);
     StaticGridWidget* equipEffectWidget = createStaticGridWidget(staticGridParams, EQUIP_EFFECTS); // no class here as we want to seed with custom widgets
     moveWidget((Widget*)equipEffectWidget, 200, 326);
     for (auto row = 0; row < rowCount; ++row) {
@@ -208,7 +209,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
     for (auto row = 0; row < rowCount; ++row) {
         auto name = std::to_string(row);
         auto statEffectRow = createWidget(name); //contains a percent sign, a plus sign, a colored number, and a stat name
-        setNumberParams(&numberParams, 140, 330, 0, 2, COLOR_WHITE, 2, 0.1f);
+        setNumberParams(&numberParams, 140, 330, 0, 2, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createNumberWidget(numberParams, std::string("AMT")), std::string("AMT"));
         auto simpleAssetParams = Sign(127, 326, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("SIGN")), std::string("SIGN"));

@@ -77,7 +77,7 @@ void handleUpdateMateriaData(const MateriaDrawEvent* event) {
 
     if (event->menuState == 2) {
         auto materiaChoice = getStateCursor(event->menu, 2)->context;
-        materia = gContext.materiaInventory->get_resource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex).item_id;
+        materia = gContext.materiaInventory->get_resource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
     }
     else if (event->menuState == 1) {
         switch (slotChoice.relativeRowIndex) {
@@ -99,7 +99,7 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
     auto materiaName = gContext.gameStrings.materia_names.get_string(materia.item_id);
     updateText(getChild(displayWidget, MATERIA_NAME), materiaName);
     /*last byte of status effect is element index; this is temporary until we have fully moved materia into sister ray*/
-    auto elementIndex = gContext.materias.get_resource(materia.item_id).statusEffect[4];
+    auto elementIndex = gContext.materias.get_resource(materia.item_id).elementType;
     auto elementName = gContext.gameStrings.elementNames.get_string(elementIndex);
     updateText(getChild(displayWidget, MATERIA_NAME), elementName);
 
@@ -123,7 +123,7 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
     //update the equip effect widget
     updateEquipEffect(getChild(displayWidget, EQUIP_EFFECTS), materia);
     //update the ability list widget
-    updateAbilitylistWidget(getChild(displayWidget, ABILITIES_LIST), materia, materiaLevel);
+    updateAbilityListWidget(getChild(displayWidget, ABILITIES_LIST), materia, materiaLevel);
 }
 
 void updateEquipEffect(Widget* equipEffectWidget, MateriaInventoryEntry materia) {

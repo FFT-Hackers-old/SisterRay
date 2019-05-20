@@ -102,10 +102,17 @@ typedef struct {
 typedef struct {
     u16     apLevel[4];
     u8      equipEffect;
-    u32     statusEffect;
+    u8      statusEffects[3];
+    u8      elementType;
     u8      type;
     u8      data[6];
 } MateriaData;
 #pragma pack(pop)
+
+typedef struct {
+    u16 item_id;
+    u32 materia_ap; //u24 originally 
+} MateriaInventoryEntry;
+
 
 #endif // !GAME_DATA_TYPES_H

@@ -6,6 +6,7 @@
 #include "../sr_named_registry.h"
 #include "../battle/ai_scripts.h"
 #include "party_utils.h"
+#include "../gamedata/materia.h"
 #include <array>
 
 /*Holds character AI, as well as currently equipped materias*/

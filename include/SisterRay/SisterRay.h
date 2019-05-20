@@ -171,12 +171,12 @@ typedef struct {
     i32 xCoordinate;
     i32 yCoordinate;
     u8* materiaSlotData;
-    u32* materiaData;
+    MateriaInventoryEntry* materiaData;
 } drawSlotsParams;
 
 typedef struct SlotsWidget_ SlotsWidget;
 typedef void(*PFNSRNEWSLOTSWIDGETPROC)(Widget*, drawSlotsParams, char*);
-typedef void(*PFNSRSETSLOTSPARAMSPROC)(drawSlotsParams*, i32, i32, u8*);
+typedef void(*PFNSRSETSLOTSPARAMSPROC)(drawSlotsParams*, i32, i32, u8*, MateriaInventoryEntry*);
 typedef void(*PFNSRUPDATEMATERIASLOTSPROC)(Widget*, u8*);
 
 typedef struct {
@@ -201,11 +201,13 @@ typedef struct CollectionWidget_ CollectionWidget;
 typedef struct _Cursor Cursor;
 
 typedef void(*SRLISTUPDATERPROC)(CollectionWidget*, Widget*, u16);
+typedef Widget*(*SRLISTALLOCPROC)(const char*);
 typedef struct {
     Cursor* cursor;
     SRLISTUPDATERPROC updater;
     i32 xCoordinate;
     i32 yCoordinate;
+    SRLISTALLOCPROC allocator;
 } drawGridParams;
 
 typedef struct CursorGridWidget_ CursorGridWidget;
@@ -219,6 +221,7 @@ typedef struct {
     u16 rowCount;
     u16 columnSpacing;
     u16 rowSpacing;
+    SRLISTALLOCPROC allocator;
 } DrawStaticGridParams;
 
 typedef struct StaticGridWidget_ StaticGridWidget;

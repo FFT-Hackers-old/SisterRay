@@ -6,13 +6,7 @@
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "../sr_registry_template.h"
-
-/*This is the new Materia Inventory data structure,
-  It cannot inherit from the base as it has per unique materia data*/
-typedef struct {
-    u8 item_id;
-    i24 materia_ap; //u24 originally 
-} MateriaInventoryEntry;
+#include "../gamedata/materia.h"
 
 class SrMateriaInventory : public SrResourceRegistry<MateriaInventoryEntry> {
 public:
@@ -25,5 +19,6 @@ public:
 };
 
 SISTERRAY_API void initMateriaInventory();
+
 
 #endif

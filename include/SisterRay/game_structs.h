@@ -301,7 +301,7 @@ typedef struct {
 } ActivePartyMemberStruct;
 #pragma pack(pop)
 
-#define activePartyStructArray ((ActivePartyMemberStruct*)0xDBA498)
+#define PARTY_STRUCT_ARRAY ((ActivePartyMemberStruct*)0xDBA498)
 
 #pragma pack(push, 1)
 typedef struct {

@@ -122,8 +122,8 @@ static void Init(void)
     initMateriaInventory();
     initGameStrings();
     enableNoCD();
-    srLoadKernelBin();
     srLoadKernel2Bin();
+    srLoadKernelBin();
     initOnUseDataRegistry();
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();

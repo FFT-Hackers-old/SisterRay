@@ -81,7 +81,7 @@ const WidgetClass kSimpleAssetWidgetClass = { (SRWIDGETDRAWPROC)drawSimpleAssetW
 const WidgetClass* SimpleAssetWidgetKlass();
 SimpleAssetWidget* createSimpleGameAssetWidget(DrawSimpleAssetParams params, std::string name);
 bool isSimpleAssetWidget(Widget* widget);
-DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isNegative = false;);
+DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isNegative = false);
 DrawSimpleAssetParams Percent(i32 xCoordinate, i32 yCoordinate, color color, float priority);
 DrawSimpleAssetParams Arrow(i32 xCoordinate, i32 yCoordinate, color color, float priority);
 

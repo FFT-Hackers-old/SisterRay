@@ -9,5 +9,9 @@ void inventoryViewQuantityUpdater(CollectionWidget* self, Widget* widget, u16 fl
 void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 void materiaNameViewUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex);
 void materiaSphereViewUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex);
+void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 
 #endif

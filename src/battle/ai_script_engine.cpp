@@ -19,8 +19,8 @@ const AttackData& getAttackDataPtr(i32 attackID) {
     AttackData* playerAbilityData = (AttackData*)(0xDB9690);
 
     if (attackID < 256)
-        const auto& attackData = playerAbilityData[attackID];
-    const auto& attackData = gContext.enemyAttacks.get_element(std::string(std::to_string(attackID))).attackData;
+        const auto& attack = playerAbilityData[attackID];
+    const auto& attack = gContext.attacks.get_element(std::string("ETK") +std::to_string(attackID)).attackData;
 
-    return attackData;
+    return attack;
 }

@@ -8,6 +8,10 @@
 #include "../../events/menu_events.h"
 #include "materia_widget_names.h"
 
-void handleChangeCharcter(const MateriaDrawEvent* event);
-
+void handleChangeCharacter(const MateriaDrawEvent* event);
+void handleUpdateMateriaDescription(const MateriaDrawEvent* event);
+void handleUpdateMateriaData(const MateriaDrawEvent* event);
+void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia);
+void updateEquipEffect(Widget* equipEffectWidget, MateriaInventoryEntry materia);
+void updateAbilityListWidget(Widget* abilityListWidget, MateriaInventoryEntry materia, u8 level);
 #endif

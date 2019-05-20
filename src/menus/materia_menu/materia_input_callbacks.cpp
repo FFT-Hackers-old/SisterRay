@@ -104,7 +104,7 @@ void selectCheckViewHandler(const MateriaInputEvent* event) {
 
     auto commandChoice = getStateCursor(event->menu, 3)->context;
     auto flatCommandIndex = (commandChoice.baseColumnIndex * COMMAND_ROW_COUNT) + commandChoice.relativeRowIndex;
-    auto commandID = activePartyStructArray[*MAT_MENU_PARTY_INDEX].enabledCommandArray[flatCommandIndex].cursorCommandType;
+    auto commandID = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].enabledCommandArray[flatCommandIndex].cursorCommandType;
     switch (commandID) {
         case 1:
         case 8: {

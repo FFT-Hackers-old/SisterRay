@@ -82,8 +82,8 @@ SISTERRAY_API void initFunctionRegistry(void)
     REGISTER(setSlotsParams);
     REGISTER(updateMateriaSlots);
 
-    REGISTER(srNewArrowWidget);
-    REGISTER(setArrowParams);
+    REGISTER(srNewSimpleAssetWidget);
+    REGISTER(setSimpleAssetParams);
 
     REGISTER(srNewGridWidget);
 

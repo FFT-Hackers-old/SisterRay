@@ -30,7 +30,7 @@ void srLoadAbilityData() {
         if (gDamageContextPtr->commandIndexCopy == CMD_ENEMY_ACTION) {
             auto attackID = std::string(std::string("ETK-") + std::to_string(gDamageContextPtr->absAttackIndex));
             auto enemyAttack = gContext.attacks.get_element(attackID);
-            abilityData = gContext.enemyAttacks.get_element(attackID).attackData;
+            abilityData = gContext.attacks.get_element(attackID).attackData;
             currentSceneAbilities[0] = enemyAttack.attackData;
             memcpy((void*)attackNamesPtr, (void*)(enemyAttack.attackName.str()), enemyAttack.attackName.size());
             *(attackNamesPtr + enemyAttack.attackName.size()) = char(255);
@@ -40,7 +40,7 @@ void srLoadAbilityData() {
         else if (gDamageContextPtr->absAttackIndex >= 128) { //The ability data here is not contained in the kernel
             if (gDamageContextPtr->attackerID < 3) {
                 characterID = unkPartyStructPtr[16 * gDamageContextPtr->attackerID]; //array access, should figure out these structs
-                activeLimitIDs = (u8*)activePartyStructArray[gDamageContextPtr->attackerID].enabledLimitBytes;
+                activeLimitIDs = (u8*)PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledLimitBytes;
                 for (i32 limitIndex = 0; limitIndex < 3; ++limitIndex) {
                     relativeLimitIndex = (i8)activeLimitIDs[limitIndex];
                     if (relativeLimitIndex + 128 == gDamageContextPtr->absAttackIndex) { //If this is the limit being used
@@ -54,7 +54,7 @@ void srLoadAbilityData() {
                             }
                         }
                         gDamageContextPtr->animationScriptID = limitAnimationScriptIndex + 60;
-                        abilityData = (activePartyStructArray[gDamageContextPtr->attackerID].enabledLimitData[limitIndex]);
+                        abilityData = (PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledLimitData[limitIndex]);
                         break;
                     }
                 }
@@ -72,7 +72,7 @@ void srLoadAbilityData() {
         if (gDamageContextPtr->commandIndex == CMD_MAGIC && gDamageContextPtr->absAttackIndex == 54) //death sentence case hardcoded
             deathSentenceFlag = 1;
         if ((gDamageContextPtr->animationBaseOffset != -1) && !((gDamageContextPtr->miscActionflags) & 0x400000)) {
-            EnabledSpell* spellData = &(activePartyStructArray[gDamageContextPtr->attackerID].enabledMagicsData[gDamageContextPtr->animationBaseOffset]);
+            EnabledSpell* spellData = &(PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledMagicsData[gDamageContextPtr->animationBaseOffset]);
             gDamageContextPtr->MPCost = spellData->mpCost;
             if (spellData->quadCount && spellData->quadEnabled) {
                 spellData->quadCount = spellData->quadCount - 1;

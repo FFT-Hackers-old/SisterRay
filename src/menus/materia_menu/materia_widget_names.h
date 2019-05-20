@@ -56,6 +56,7 @@ namespace MateriaWidgetNames {
     const std::string CMD_GRID = "CMD_GRID";
     const std::string CMD_GRID_BOX = "CMD_GRID_BOX";
     //SPELL_VIEW_WIDGET//
+    const std::string SPELL_VIEW_BOX = "SPELL_BOX";
     const std::string SPELL_GRID = "SPELL_GRID";
     const std::string SUMMON_GRID = "SUMMON_GRID";
     const std::string ESKILL_GRID = "ESKILL_GRID";

@@ -15,7 +15,7 @@ void initializeMateriaMenu() {
     CursorContext materiaInventoryContext = { 0, 0, 1, 10, 0, 0, 1, gContext.materiaInventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
     Cursor materiaInventoryCursor = { materiaInventoryContext, 362, 214, 26, 0 };
     /*This is a view of the players command data. It must be set based on the active actor in an updater*/
-    CursorContext checkCommandContext = { 0, 0, activePartyStructArray[0].commandRows, 0, 0,activePartyStructArray[0].commandRows, 4, 0, 0, 1, 1, 0, 0 };
+    CursorContext checkCommandContext = { 0, 0, PARTY_STRUCT_ARRAY[0].commandRows, 0, 0,PARTY_STRUCT_ARRAY[0].commandRows, 4, 0, 0, 1, 1, 0, 0 };
     Cursor checkCommandCursor = { checkCommandContext, 0xE, 0xE7, 26, 13 };
     /*The following cursors are for views of available magics, summons and enemy skills*/
     CursorContext magicViewContext = { 0, 0, 3, 3, 0, 0, 3, 18, 0, 0, 2, 0, 0, 1 };
@@ -46,29 +46,28 @@ void registerMateriaMenuListeners() {
     const auto& modName = std::string("srFF7Base");
     const auto& contextKeys = std::unordered_set<SrEventContext>({ MATERIA_MENU_CONTEXT });
 
-    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initViewChoiceWidget, modName);
-    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initCharViewWidget, modName);
-    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initItemViewWidget, modName);
-    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&keyItemsViewWidget, modName);
-    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&itemDescriptionWidget, modName);
-    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&arrangeTypeWidget, modName);
+    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initMateraCharDataWidget, modName);
+    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initMateriaDescWidget, modName);
+    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initMateriaViewWidget, modName);
+    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initMateriaDataWidget, modName);
 
-    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleCustomSortActive, modName); 
-    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleKeyItemsViewActive, modName);
-    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handlePartyViewActive, modName);
-    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateDescription, modName);
-    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleArrangeActive, modName);
-    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleMenuViewActive, modName);
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaDescription, modName);
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaData, modName);
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&updateMateriaDisplay, modName);
 
-    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&chooseViewHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&selectItemHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&executeSwapHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&useTargetedItemHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&arrangeItemsHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitInventoryHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitItemView, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitSwapHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitTargetingHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitArrangeHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitKeyItemsHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&checkArrangeChoiceHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&enterMateriaViewHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&equipMateriaHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&selectCheckViewHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&arrangeChoiceHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&trashMateriaHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&confirmTrashHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitMenuHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitMateriaView, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitCheckArrangeView, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitSpellCheckView, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitTrashMateriaView, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitTrashConfirmView, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_TRIANGLE, (SrEventCallback)&removeMateriaHandler, modName, contextKeys);
 }

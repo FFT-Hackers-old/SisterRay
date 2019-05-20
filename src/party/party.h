@@ -20,7 +20,7 @@ typedef struct {
   Will extend to hold data for all party members later to facilitate character swapping*/
 class SrPartyDataRegistry : public SrNamedResourceRegistry<SrPartyData, std::string> {
 public:
-    SrPartyDataRegistry() : SrNamedResourceRegistry<SrPartyData, std::string>();
+    SrPartyDataRegistry();
 };
 
 

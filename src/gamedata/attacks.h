@@ -22,6 +22,7 @@ typedef struct {
     EncodedString attackName;
     srAttackType attackType; //Either Magic, Summon, Enemy Skill, Limit, Enemy Attack
     srAttackType animationType;
+    EncodedString attackDescription;
 } SrAttackData;
 
 /*Due to the structure/access patterns for player spells, they need to be contiguous
@@ -29,8 +30,8 @@ typedef struct {
   maintain attack typed lookups*/
 class SrAttackRegistry : public SrNamedResourceRegistry<SrAttackData, std::string> {
 public:
-    SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAttackData, std::string>();
-    SrAttackRegistry() : SrNamedResourceRegistry<AttackData, std::string>() {}
+    SrAttackRegistry(SrKernelStream* stream);
+    SrAttackRegistry() : SrNamedResourceRegistry<SrAttackData, std::string>() {}
 };
 
 #endif

@@ -36,6 +36,13 @@ const WidgetClass* getChildTypeFromID(u16 widgetTypeID) {
   For this reason, this collection Widget is not moved by moving the Widget directly, but by moving the underlying Cursor*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
     auto context = cursorGrid->cursor->context;
+    auto size = cursorGrid->widget.widget.children.size();
+    if (size < (context.viewRowBound * context.viewColumnBound)) {
+        auto idx = size - 1;
+        while (size < context.viewRowBound * context.viewColumnBound) {
+            addChildWidget((Widget*)cursorGrid, std::to_string(idx));
+        }
+    }
     for (auto rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
         for (auto columnIndex = 0; columnIndex <  context.viewColumnBound; ++columnIndex) {
             u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex);
@@ -85,19 +92,26 @@ const WidgetClass* StaticGridWidgetClass() {
     return &kStaticGridWidgetClass;
 }
 
-void drawStaticGridWidget(StaticGridWidget* cursorGrid) {
-    for (auto rowIndex = 0; rowIndex < cursorGrid->rowCount; ++rowIndex) {
-        for (auto columnIndex = 0; columnIndex < cursorGrid->columnCount; ++columnIndex) {
-            u16 flatIndex = (cursorGrid->columnCount) * (rowIndex)+(columnIndex); 
-            auto child = getChild((Widget*)cursorGrid, flatIndex);
+void drawStaticGridWidget(StaticGridWidget* staticGrid) {
+    auto size = staticGrid->widget.widget.children.size();
+    if (size < (staticGrid->rowCount* staticGrid->columnCount)) {
+        auto idx = size - 1;
+        while (size < (staticGrid->rowCount * staticGrid->columnCount)) {
+            addChildWidget((Widget*)staticGrid, std::to_string(idx));
+        }
+    }
+    for (auto rowIndex = 0; rowIndex < staticGrid->rowCount; ++rowIndex) {
+        for (auto columnIndex = 0; columnIndex < staticGrid->columnCount; ++columnIndex) {
+            u16 flatIndex = (staticGrid->columnCount) * (rowIndex)+(columnIndex); 
+            auto child = getChild((Widget*)staticGrid, flatIndex);
             if (child) {
-                auto elementX = (cursorGrid->columnSpacing * columnIndex) + cursorGrid->widget.widget.xCoordinate;
-                auto elementY = (cursorGrid->rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
+                auto elementX = (staticGrid->columnSpacing * columnIndex) + staticGrid->widget.widget.xCoordinate;
+                auto elementY = (staticGrid->rowSpacing * rowIndex) + staticGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
-                if (cursorGrid->updater) {
-                    cursorGrid->updater((CollectionWidget*)cursorGrid, child, flatIndex);
+                if (staticGrid->updater) {
+                    staticGrid->updater((CollectionWidget*)staticGrid, child, flatIndex);
                 }
-                drawWidget(getChild((Widget*)cursorGrid, flatIndex));
+                drawWidget(getChild((Widget*)staticGrid, flatIndex));
             }
         }
     }

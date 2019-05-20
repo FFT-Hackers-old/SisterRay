@@ -95,7 +95,6 @@ void materiaSphereViewUpdater(CollectionWidget* self, Widget*widget, u16 flatInd
     if (self->collectionType != GridWidgetClass()) {
         return;
     }
-
     auto typedPtr = (CursorGridWidget*)self;
     auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
     if (materiaID != 0xFFFF) {
@@ -106,4 +105,64 @@ void materiaSphereViewUpdater(CollectionWidget* self, Widget*widget, u16 flatInd
     else {
         disableWidget(widget);
     }
+}
+
+/*Temporary function until we also provide infrastructure for extending the number of commands*/
+void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto partyIndex = *MAT_MENU_PARTY_INDEX;
+    auto commands = (PARTY_STRUCT_ARRAY)[partyIndex].enabledCommandArray;
+    auto commandID = commands[flatIndex].commandID;
+    if (commandID = 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.gameStrings.command_names.get_string(commandID));
+}
+
+void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+
+    auto typedPtr = (CursorGridWidget*)self;
+    auto magics = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorMagics;
+    if (magics[flatIndex].magicIndex = 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(std::string("MAG") + std::to_string(flatIndex)).attackName);
+}
+
+void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto summons = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorSummons;
+    if (summons[flatIndex].magicIndex = 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(std::string("SUM") + std::to_string(flatIndex)).attackName);
+}
+
+void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto eSkills = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorEnemySkills;
+    if (eSkills[flatIndex].magicIndex = 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(std::string("ESK") + std::to_string(flatIndex)).attackName);
 }

@@ -103,7 +103,7 @@ u32 getMateriaType(u8 materiaID) {
     return materiaType;
 }
 
-{
+u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr) {
     auto levels = gContext.materias.get_resource(materia.item_id).apLevel;
 
     u8 level = 1;

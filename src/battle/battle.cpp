@@ -164,14 +164,14 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
     auto& enemyAttackIDs = sceneData.enemyAttackIDS;
     for (auto relAttackIndex = 0; relAttackIndex < 32; relAttackIndex++) {
         auto attackID = enemyAttackIDs[relAttackIndex];
-        auto stringID = std::string("ETK-") + std::to_string(attackID);
+        auto stringID = std::string("ETK") + std::to_string(attackID);
         if (attackID == 0xFFFF)
             continue;
 
-        if (!(gContext.enemyAttacks.contains(stringID))) { //must implement a method to check if the dictionary contains a key
+        if (!(gContext.attacks.contains(stringID))) { //must implement a method to check if the dictionary contains a key
             auto attackName = EncodedString((const char *)enemyAttackNames[relAttackIndex].name);
             auto attackData = enemyAttacks[relAttackIndex];
-            SrAttackData enemyAttack = { attackData, attackID, attackName, ENEMY_ATTACK, ENEMY_ATTACK };
+            SrAttackData enemyAttack = { attackData, attackID, attackName, ENEMY_ATTACK, ENEMY_ATTACK, EncodedString::from_unicode("") };
             gContext.attacks.add_element(stringID, enemyAttack);
             srLogWrite("Enemy Attack:%s added to registry with name:%s, and ID:%i",
                 stringID.c_str(),

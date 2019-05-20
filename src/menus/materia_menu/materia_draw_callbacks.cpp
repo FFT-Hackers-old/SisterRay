@@ -4,7 +4,7 @@
 
 using namespace MateriaWidgetNames;
 
-void handleChangeCharcter(const MateriaDrawEvent* event) {
+void handleChangeCharacter(const MateriaDrawEvent* event) {
     const char * menuText;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
@@ -133,13 +133,27 @@ void updateEquipEffect(Widget* equipEffectWidget, MateriaInventoryEntry materia)
 void updateAbilityListWidget(Widget* abilityListWidget, MateriaInventoryEntry materia, u8 level) {
     auto materiaType = getMateriaType(materia.item_id);
     switch (materiaType) {
-        case 9: {
-            auto data = gContext.materias.get_resource(materia.item_id).data; //These are bytes, they will need to be words instead
-            for (auto idx = 0; data[idx] != 0xFF; ++idx) {
+        case 9: { //Display for basic master materia
+            auto data = gContext.materias.get_resource(materia.item_id).data; //These are bytes, they will need to be words instead after all materia facing logic is relocated
+            for (auto idx = 0; idx < 5; ++idx) {
+                auto widget = getChild(abilityListWidget, idx);
+                if (data[idx] = 0xFF) {
+                    disableWidget(widget);
+                    continue;
+                }
+                enableWidget(widget);
                 auto magicIndex = data[idx];
                 auto abilityName = gContext.gameStrings.magic_names.get_string(magicIndex);
-                updateText(getChild(abilityListWidget, idx), abilityName);
+                updateText(widget, abilityName);
+                if (idx <= level - 1) {
+                    updateTextColor(widget, COLOR_WHITE);
+                    return;
+                }
+                updateTextColor(widget, COLOR_GRAY);
             }
+        }
+        default: {
+
         }
     }
 }

@@ -36,7 +36,7 @@ extern "C" {
 #include "party/characters.h"
 #include "menus/menu.h"
 #include "party/party.h"
-#include "party/character.h"
+#include "party/characters.h"
 #include <map>
 #include <memory>
 

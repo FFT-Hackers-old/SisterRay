@@ -69,10 +69,13 @@ void handleUpdateMateriaData(const MateriaDrawEvent* event) {
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
     MateriaInventoryEntry materia;
     const char * fetchedText;
-    if (event->menuState != 1 || event->menuState != 2)
+    auto standardViewWidget = getChild(getChild(menuWidget, MATERIA_DATA_WIDGET_NAME), STANDARD_DISPLAY);
+    if (event->menuState != 1 || event->menuState != 2) {
+        disableWidget(standardViewWidget);
         return;
+    }
 
-    auto materiaDataWidget = getChild(menuWidget, MATERIA_DATA_WIDGET_NAME);
+    enableWidget(standardViewWidget);
     auto slotChoice = getStateCursor(event->menu, 1)->context;
 
     if (event->menuState == 2) {
@@ -92,7 +95,7 @@ void handleUpdateMateriaData(const MateriaDrawEvent* event) {
             }
         }
     }
-    updateMateriaDisplay(getChild(materiaDataWidget, STANDARD_DISPLAY), materia);
+    updateMateriaDisplay(standardViewWidget, materia);
 }
 
 void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) {

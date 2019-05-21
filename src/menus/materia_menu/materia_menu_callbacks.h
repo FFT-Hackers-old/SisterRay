@@ -1,5 +1,5 @@
-#ifndef INVENTORY_MENU_CALLBACKS_H
-#define INVENTORY_MENU_CALLBACKS_H
+#ifndef MATERIA_MENU_CALLBACKS_H
+#define MATERIA_MENU_CALLBACKS_H
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>

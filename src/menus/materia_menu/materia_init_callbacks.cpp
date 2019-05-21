@@ -20,14 +20,14 @@ void initMateraCharDataWidget(const MateriaInitEvent* event) {
     boxParams = {
        0,
        0,
-       280,
-       92,
+       640,
+       148,
        0.3f
     };
     boxWidget = createBoxWidget(boxParams, CHAR_DATA_BOX_NAME);
     addChildWidget(currentMateriaWidget, (Widget*)boxWidget, CHAR_DATA_BOX_NAME);
 
-    drawPortraitParams portraitParams = { 17, 99, 0, 0.2f };
+    drawPortraitParams portraitParams = { 17, 19, 0, 0.2f };
     portraitWidget = createPortraitWidget(portraitParams, PORTRAIT_WIDGET_NAME);
     addChildWidget(currentMateriaWidget, (Widget*)portraitWidget, PORTRAIT_WIDGET_NAME);
 
@@ -41,23 +41,24 @@ void initMateraCharDataWidget(const MateriaInitEvent* event) {
     std::vector <std::string> slotNames = { GEAR_1_SLOTS, GEAR_2_SLOTS };
     for (int row = 0; row < gearNames.size(); row++) {
         menuText = gContext.gameStrings.materiaMenuTexts.get_string(row);
-        setTextParams(&textParams, 267, 32 + (52 * row), menuText, COLOR_TEAL, 0.2f);
-        textWidget = createTextWidget(textParams, gearNames[row]);
-        addChildWidget(currentMateriaWidget, (Widget*)textWidget, gearNames[row]);
-
-        menuText = gContext.gameStrings.materiaMenuTexts.get_string(row + 2);
-        setTextParams(&textParams, 280, 60 + (51 * row), menuText, COLOR_TEAL, 0.2f);
+        setTextParams(&textParams, 280, 59 + (50 * row), menuText, COLOR_WHITE, 0.1f);
         textWidget = createTextWidget(textParams, viewNames[row]);
         addChildWidget(currentMateriaWidget, (Widget*)textWidget, viewNames[row]);
 
+        setTextParams(&textParams, 320, 32 + (52 * row), menuText, COLOR_TEAL, 0.1f);
+        textWidget = createTextWidget(textParams, equippedGearNames[row]);
+        addChildWidget(currentMateriaWidget, (Widget*)textWidget, equippedGearNames[row]);
+
+        menuText = gContext.gameStrings.materiaMenuTexts.get_string(row + 2);
+        setTextParams(&textParams, 267, 32 + (52 * row), menuText, COLOR_WHITE, 0.1f);
+        textWidget = createTextWidget(textParams, gearNames[row]);
+        addChildWidget(currentMateriaWidget, (Widget*)textWidget, gearNames[row]);
+
         /*There is a good chance the slot widget will have to be rewritten, since we want to expand the number of materia*/
-        drawSlotsParams slotsParams = { 357, 59 + 50 * row, nullptr, nullptr };
+        drawSlotsParams slotsParams = { 357, 59 + (50 * row), nullptr, nullptr };
         auto slotsWidget = createSlotsWidget(slotsParams, slotNames[row]);
         addChildWidget(currentMateriaWidget, (Widget*)slotsWidget, slotNames[row]);
 
-        setTextParams(&textParams, 320, 32 + (54 * row), menuText, COLOR_WHITE, 0.2f);
-        textWidget = createTextWidget(textParams, equippedGearNames[row]);
-        addChildWidget(currentMateriaWidget, (Widget*)textWidget, equippedGearNames[row]);
     }
 
     addChildWidget(mainWidget, currentMateriaWidget, CHAR_DATA_WIDGET_NAME);
@@ -79,17 +80,17 @@ void initMateriaDescWidget(const MateriaInitEvent* event) {
 
     boxParams = {
         0,
-        92,
-        280,
-        33,
-        0.f
+        148,
+        640,
+        50,
+        0.3f
     };
     boxWidget = createBoxWidget(boxParams, MATERIA_DESC_BOX);
     addChildWidget(mainWidget, (Widget*)boxWidget, MATERIA_DESC_BOX);
 
     materiaID = getMateriaID(characterID, 0, 0);
     materiaDescription = gContext.gameStrings.materia_descriptions.get_string(materiaID);
-    setTextParams(&textParams, 16, 105, materiaDescription, COLOR_WHITE, 0.2f);
+    setTextParams(&textParams, 16, 160, materiaDescription, COLOR_WHITE, 0.1f);
     textWidget = createTextWidget(textParams, MATERIA_DESC);
     addChildWidget(MatDescWidget, (Widget*)textWidget, MATERIA_DESC);
 
@@ -110,10 +111,10 @@ void initMateriaViewWidget(const MateriaInitEvent* event) {
     auto materiaViewWidget = createWidget(MATERIA_GRID_WIDGET_NAME);
 
     boxParams = {
-        menuWindowConfig[2].drawDistance1,
-        menuWindowConfig[2].drawDistance2,
-        menuWindowConfig[2].drawDistance3,
-        menuWindowConfig[2].drawDistance4,
+        380,
+        180,
+        260,
+        300,
         0.3f
     };
     boxWidget = createBoxWidget(boxParams, MATERIA_GRID_BOX);
@@ -152,9 +153,19 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
     auto materiaDataWidget = createWidget(MATERIA_DATA_WIDGET_NAME);
     auto standardDisplayWidget = createWidget(STANDARD_DISPLAY);
 
+    boxParams = {
+      0,
+      180,
+      680,
+      300,
+      0.4f
+    };
+    addChildWidget(materiaDataWidget, (Widget*)createBoxWidget(boxParams, MATERIA_DATA_BOX), MATERIA_DATA_BOX);
+
     //Stuff that can change
     setTextParams(&textParams, 280, 60, nullptr, COLOR_WHITE, 0.2f);
     addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, MATERIA_NAME), MATERIA_NAME);
+    srLogWrite("Addings text to standard display widget with address: %p", standardDisplayWidget);
     setTextParams(&textParams, 280, 60, nullptr, COLOR_GREEN, 0.2f);
     addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, MATERIA_ELEMENT), MATERIA_ELEMENT);
     gameAssetParams = MateriaSphere(13, 212, 2, 0.1);
@@ -186,8 +197,11 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
     setStaticGridParams(&staticGridParams, 40, 326, 1, rowCount, 0, 26, nullptr, nullptr); //consider whether to use an updater here or not for updating the texts being displayed
     StaticGridWidget* abilityListWidget = createStaticGridWidget(staticGridParams, ABILITIES_LIST, TextWidgetKlass());
     addChildWidget(standardDisplayWidget, (Widget*)abilityListWidget, ABILITIES_LIST);
+
     setStaticGridParams(&staticGridParams, 200, 326, 1, rowCount, 0, 26, nullptr, nullptr);
+    srLogWrite("CREATING WIDGET THAT SHOULD NOT DEFAULT ALLOCATE");
     StaticGridWidget* equipEffectWidget = createStaticGridWidget(staticGridParams, EQUIP_EFFECTS); // no class here as we want to seed with custom widgets
+    srLogWrite("CREATION OF NON_ALLOCATING WIDGET COMPLETE");
     moveWidget((Widget*)equipEffectWidget, 200, 326);
     for (auto row = 0; row < rowCount; ++row) {
         auto name = std::to_string(row);
@@ -219,7 +233,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
     }
     addChildWidget(standardDisplayWidget, (Widget*)independentBoosts, INDEPENDENT_BOOSTS);
 
-    addChildWidget(mainWidget, standardDisplayWidget, STANDARD_DISPLAY);
+    addChildWidget(materiaDataWidget, standardDisplayWidget, STANDARD_DISPLAY);
     addChildWidget(mainWidget, materiaDataWidget, MATERIA_DATA_WIDGET_NAME);
 }
 

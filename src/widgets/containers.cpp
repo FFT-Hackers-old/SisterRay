@@ -98,7 +98,12 @@ void drawStaticGridWidget(StaticGridWidget* staticGrid) {
         auto idx = size - 1;
         while (size < (staticGrid->rowCount * staticGrid->columnCount)) {
             auto newWidget = typeAllocate(staticGrid->widget.containedKlass, std::to_string(idx), staticGrid->allocator);
-            addChildWidget((Widget*)staticGrid, newWidget, std::to_string(idx));
+            if (newWidget) {
+                addChildWidget((Widget*)staticGrid, newWidget, std::to_string(idx));
+                continue;
+            }
+            srLogWrite("WARNING: insufficient space in grid widget for display and no automatic allocation possible!");
+            break;
         }
     }
     for (auto rowIndex = 0; rowIndex < staticGrid->rowCount; ++rowIndex) {
@@ -121,14 +126,22 @@ void drawStaticGridWidget(StaticGridWidget* staticGrid) {
 
 StaticGridWidget* createStaticGridWidget(DrawStaticGridParams params, std::string name, const WidgetClass* childType) {
     StaticGridWidget* widget = (StaticGridWidget*)createCollectionWidget(name, &kStaticGridWidgetClass, childType, sizeof(StaticGridWidget));
+    srLogWrite("CREATING STATIC GRID WIDGET");
+    srLogWrite("childType:%p", childType);
+    widget->widget.widget.xCoordinate = params.xCoordinate;
+    widget->widget.widget.yCoordinate = params.yCoordinate;
     widget->columnCount= params.columnCount;
     widget->rowCount= params.rowCount;
     widget->updater = params.updater;
-    widget->widget.widget.xCoordinate = params.xCoordinate;
-    widget->widget.widget.yCoordinate = params.yCoordinate;
     widget->rowSpacing = params.rowSpacing;
     widget->columnSpacing = params.columnSpacing;
-
+    srLogWrite("STATIC GRID WIDGET INITIALIZED");
+    srLogWrite("xCoordinatea:%i", widget->widget.widget.xCoordinate);
+    srLogWrite("yCoordinate:%i", widget->widget.widget.yCoordinate);
+    srLogWrite("colCount:%i", widget->columnCount);
+    srLogWrite("rowCount:%i:", widget->rowCount);
+    srLogWrite("collectionType:%p", widget->widget.collectionType);
+    srLogWrite("widgeKlassTYpe:%p", widget->widget.widget.klass);
     /*If a primitive childtype is specified, type allocate the results, otherwise add them to the collection manually*/
     if (childType || params.allocator) {
         auto slotCount = widget->columnCount * widget->rowCount;
@@ -137,8 +150,8 @@ StaticGridWidget* createStaticGridWidget(DrawStaticGridParams params, std::strin
             auto child = typeAllocate(childType, name, widget->allocator);
             addChildWidget((Widget*)widget, child, name);
         }
-        return widget;
     }
+    return widget;
 }
 
 

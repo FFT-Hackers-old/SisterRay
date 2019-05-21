@@ -37,6 +37,7 @@
 #define ENQUEUE_SCRIPT_ACTION           ((void*)0x5D969C)
 #define TRANSFORM_ENEMY_COMMAND         ((void*)0x5C93A1)
 #define GET_MP_COST                     ((void*)0x5D975B)
+#define MAT_MATERIA_HANDLER             ((void*)0x70CF0B)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);

@@ -7,18 +7,18 @@ SISTERRAY_API void materiaMenuUpdateHandler(i32 updateStateMask) {
     Menu* menuObject = gContext.menuWidgets.get_element("MATERIA_MENU");
     auto menuWidget = menuObject->menuWidget;
     MateriaDrawEvent event = { menuObject, menuObject->currentState };
-
+    srLogWrite("current materia menu state:%i", menuObject->currentState);
     gContext.eventBus.dispatch(DRAW_MATERIA_MENU, &event);
     drawWidget(menuWidget);
 
-    displayActiveCursorStates(menuObject, menuObject->currentState, updateStateMask);
+    displayMateriaCursorStates(menuObject, menuObject->currentState, updateStateMask);
     if (!is_input_handling_enabled()) {
         handleMateriaMenuInput(updateStateMask, menuObject);
     }
 }
 
 //Cursors will also need to be done by callback registered to a particular menu state
-void displayActiveCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
+void displayMateriaCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
     u16 item_ID;
 
     sub_6C98A6();
@@ -37,25 +37,29 @@ void displayActiveCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
         case 2: {
             auto materiahoiceCursor = getStateCursor(menu, 1);
             drawFlashingCursor(slotChoiceCursor, updateStateMask, 0.1f);
-            drawCursor(materiahoiceCursor, 0.2f);
+            drawCursor(materiahoiceCursor, 0.1f);
         }
         case 3: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
-            drawCursor(getStateCursor(menu, 3), 0.2f);
+            drawCursor(getStateCursor(menu, 3), 0.1f);
             break;
         }
         case 4: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
-            drawCursor(getStateCursor(menu, 4), 0.2f);
+            drawCursor(getStateCursor(menu, 4), 0.1f);
             break;
         }
         case 5: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
-            drawCursor(getStateCursor(menu, 5), 0.2f);
+            drawCursor(getStateCursor(menu, 5), 0.1f);
         }
         case 6: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
-            drawCursor(getStateCursor(menu, 5), 0.2f);
+            drawCursor(getStateCursor(menu, 6), 0.1f);
+        }
+        case 7: {
+            drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
+            drawCursor(getStateCursor(menu, 7), 0.1f);
         }
         default:
             break;

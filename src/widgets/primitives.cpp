@@ -21,7 +21,8 @@ SISTERRAY_API void srNewTextWidget(Widget* parent, DrawTextParams params, char* 
 
 TextWidget* createTextWidget(DrawTextParams params, std::string name) {
     TextWidget* widget = (TextWidget*)createWidget(name, sizeof(TextWidget), &kTextWidgetClass);
-    new (&widget->text) EncodedString(params.stringToDraw);
+    if(params.stringToDraw)
+        new (&widget->text) EncodedString(params.stringToDraw);
     srLogWrite("text widget class: %p", &kTextWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
@@ -50,7 +51,7 @@ const WidgetClass* TextWidgetKlass() {
 SISTERRAY_API void updateText(Widget* widgetToUpdate, const char* text) {
     if (isTextWidget(widgetToUpdate)) {
         auto typedPtr = (TextWidget*)widgetToUpdate;
-        typedPtr->text = text;
+        typedPtr->text = EncodedString(text);
     }
     else {
         srLogWrite("attempting to update TextWidget text property of an invalid Widget type");

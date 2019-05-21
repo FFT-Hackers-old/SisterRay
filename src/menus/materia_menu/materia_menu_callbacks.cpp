@@ -54,7 +54,6 @@ void registerMateriaMenuListeners() {
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaDescription, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaData, modName);
-    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&updateMateriaDisplay, modName);
 
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&checkArrangeChoiceHandler, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&enterMateriaViewHandler, modName, contextKeys);

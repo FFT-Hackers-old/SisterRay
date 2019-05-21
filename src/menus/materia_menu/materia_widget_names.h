@@ -33,6 +33,7 @@ namespace MateriaWidgetNames {
     const std::string MATERIA_DESC = "MATERIA_DESC";
     const std::string MATERIA_DESC_BOX = "MATERIA_DESC_BOX";
     //MATERIA_DATA_WIDGET//
+    const std::string MATERIA_DATA_BOX = "MAT_DATA_BOX";
     const std::string STANDARD_DISPLAY = "NAME_MAT";
     const std::string MATERIA_NAME = "NAME_MAT";
     const std::string MATERIA_ELEMENT = "ELMT_MAT";

@@ -207,9 +207,12 @@ void confirmTrashHandler(const MateriaInputEvent* event) {
 
 //Materia Menu Cancel Handlers
 void exitMenuHandler(const MateriaInputEvent* event) {
-    if ((event->menuState != 0) || (event->menuState != 1))
+    srLogWrite("Running exit menu handler");
+    if ((event->menuState != 0) && (event->menuState != 1))
         return;
 
+
+    srLogWrite("attempting to exit menu");
     u32* dword_DC0E74 = (u32*)(0xDC0E74);
 
     playMenuSound(4);
@@ -219,6 +222,7 @@ void exitMenuHandler(const MateriaInputEvent* event) {
 }
 
 void exitMateriaView(const MateriaInputEvent* event) {
+    srLogWrite("Running exit materia handler");
     if ((event->menuState != 2))
         return;
 
@@ -227,21 +231,25 @@ void exitMateriaView(const MateriaInputEvent* event) {
 }
 
 void exitCheckArrangeView(const MateriaInputEvent* event) {
-    if (event->menuState != 3 || event->menuState != 7)
+    srLogWrite("Running exit arrange handler");
+    if ((event->menuState != 3) && (event->menuState != 7))
         return;
 
+    srLogWrite("Exiting check or arrange menu State");
     playMenuSound(4);
     setMenuState(event->menu, 0);
 }
 
 void exitSpellCheckView(const MateriaInputEvent* event) {
-    if (event->menuState != 4 || event->menuState != 5 || event->menuState != 6)
+    srLogWrite("Running exit spell handler");
+    if (event->menuState != 4 && event->menuState != 5 && event->menuState != 6)
         return;
     playMenuSound(4);
     setMenuState(event->menu, 3);
 }
 
 void exitTrashMateriaView(const MateriaInputEvent* event) {
+    srLogWrite("Running exit trash andler");
     if (event->menuState != 8)
         return;
 

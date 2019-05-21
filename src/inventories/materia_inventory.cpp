@@ -4,11 +4,20 @@
 
 SrMateriaInventory::SrMateriaInventory(i16 allocation_size) : SrResourceRegistry<MateriaInventoryEntry>(allocation_size) {
     for (i32 i = 0; i < MATERIA_INVENTORY_SIZE; i++) {
-        MateriaInventoryEntry entry = {
-            0xFFFF,
-            0
-        };
-        add_resource(entry);
+        if (i < 100) {
+            MateriaInventoryEntry entry = {
+                i,
+                17350
+            };
+            add_resource(entry);
+        }
+        else {
+            MateriaInventoryEntry entry = {
+                0xFFFF,
+                0
+            };
+            add_resource(entry);
+        }
     }
 }
 

@@ -120,5 +120,6 @@ SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1, i32 type2, 
 //The following are a set of helper methods for fetching parameters that trigger load a specific game asset
 DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority);
 DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority, bool shaded);
+void setStarShaded(Widget* widgetToUpdate, bool shaded);
 
 #endif

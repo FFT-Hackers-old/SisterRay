@@ -94,12 +94,10 @@ void handleUpdateMateriaData(const MateriaDrawEvent* event) {
     MateriaInventoryEntry materia;
     const char * fetchedText;
     auto standardViewWidget = getChild(getChild(menuWidget, MATERIA_DATA_WIDGET_NAME), STANDARD_DISPLAY);
-    if (event->menuState != 1 || event->menuState != 2) {
+    if (event->menuState != 1 && event->menuState != 2) {
         disableWidget(standardViewWidget);
         return;
     }
-
-    enableWidget(standardViewWidget);
     auto slotChoice = getStateCursor(event->menu, 1)->context;
 
     if (event->menuState == 2) {
@@ -119,7 +117,13 @@ void handleUpdateMateriaData(const MateriaDrawEvent* event) {
             }
         }
     }
-    updateMateriaDisplay(standardViewWidget, materia);
+
+    if (materia.item_id != 0xFFFF) {
+        enableWidget(standardViewWidget);
+        updateMateriaDisplay(standardViewWidget, materia);
+        return;
+    }
+    disableWidget(standardViewWidget);
 }
 
 void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) {
@@ -128,7 +132,9 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
     /*last byte of status effect is element index; this is temporary until we have fully moved materia into sister ray*/
     auto elementIndex = gContext.materias.get_resource(materia.item_id).elementType;
     auto elementName = gContext.gameStrings.elementNames.get_string(elementIndex);
-    updateText(getChild(displayWidget, MATERIA_NAME), elementName);
+    updateText(getChild(displayWidget, MATERIA_ELEMENT), elementName);
+
+    updateAssetType(getChild(displayWidget, MATERIA_SPHERE), getMateriaType(materia.item_id));
 
     auto materiaType = getMateriaType(materia.item_id);
     updateAssetType(getChild(displayWidget, MATERIA_SPHERE), materiaType);
@@ -139,7 +145,7 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
         enableWidget(getChild(displayWidget, CURRENT_AP));
         disableWidget(getChild(displayWidget, MASTERED));
         updateNumber(getChild(displayWidget, CURRENT_AP), materia.materia_ap);
-        updateNumber(getChild(displayWidget, TO_LEVEL_AP), gContext.materias.get_resource(materia.item_id).apLevel[materiaLevel - 1] - materia.materia_ap);
+        updateNumber(getChild(displayWidget, TO_LEVEL_AP), gContext.materias.get_resource(materia.item_id).apLevel[materiaLevel - 1] * 100 - materia.materia_ap);
     }
     else {
         disableWidget(getChild(displayWidget, CURRENT_AP));
@@ -147,6 +153,24 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
         updateNumber(getChild(displayWidget, TO_LEVEL_AP), 0);
     }
     //Update the STAR widget
+    srLogWrite("current materia level:%i", materiaLevel);
+    srLogWrite("current materia max level:%i", maxLevel);
+    auto starsWidget = getChild(displayWidget, MATERIA_STARS);
+    for (auto row = 0; row < 5; ++row) {
+        auto widget = getChild(starsWidget, row);
+        if (row + 1 > maxLevel) {
+            disableWidget(widget);
+            continue;
+        }
+        enableWidget(widget);
+        updateAssetType(widget, materiaType);
+        if (row + 1 > materiaLevel) {
+            setStarShaded(widget, false);
+            continue;
+        }
+        setStarShaded(widget, true);
+        
+    }
     //update the equip effect widget
     updateEquipEffect(getChild(displayWidget, EQUIP_EFFECTS), materia);
     //update the ability list widget

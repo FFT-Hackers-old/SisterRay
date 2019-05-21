@@ -94,7 +94,7 @@ const WidgetClass* StaticGridWidgetClass() {
 
 void drawStaticGridWidget(StaticGridWidget* staticGrid) {
     auto size = staticGrid->widget.widget.children.size();
-    if (size < (staticGrid->rowCount* staticGrid->columnCount)) { //Try to expand the size using an allocator or the type information
+    if (size < (staticGrid->rowCount * staticGrid->columnCount)) { //Try to expand the size using an allocator or the type information
         auto idx = size - 1;
         while (size < (staticGrid->rowCount * staticGrid->columnCount)) {
             auto newWidget = typeAllocate(staticGrid->widget.containedKlass, std::to_string(idx), staticGrid->allocator);
@@ -106,10 +106,12 @@ void drawStaticGridWidget(StaticGridWidget* staticGrid) {
             break;
         }
     }
+    srLogWrite("Attempting to draw static Grid Widget with name %s", staticGrid->widget.widget.name.c_str());
     for (auto rowIndex = 0; rowIndex < staticGrid->rowCount; ++rowIndex) {
         for (auto columnIndex = 0; columnIndex < staticGrid->columnCount; ++columnIndex) {
-            u16 flatIndex = (staticGrid->columnCount) * (rowIndex)+(columnIndex); 
+            u16 flatIndex = ((staticGrid->columnCount) * (rowIndex)) + (columnIndex);
             auto child = getChild((Widget*)staticGrid, flatIndex);
+            srLogWrite("Fetched child at %p from children at index %i", child, flatIndex);
             if (child) {
                 auto elementX = (staticGrid->columnSpacing * columnIndex) + staticGrid->widget.widget.xCoordinate;
                 auto elementY = (staticGrid->rowSpacing * rowIndex) + staticGrid->widget.widget.yCoordinate;
@@ -117,7 +119,8 @@ void drawStaticGridWidget(StaticGridWidget* staticGrid) {
                 if (staticGrid->updater) {
                     staticGrid->updater((CollectionWidget*)staticGrid, child, flatIndex);
                 }
-                drawWidget(getChild((Widget*)staticGrid, flatIndex));
+                drawWidget(child);
+                srLogWrite("Drew child:%s", child->name.c_str());
             }
         }
     }

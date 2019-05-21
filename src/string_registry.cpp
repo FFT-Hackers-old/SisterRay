@@ -58,13 +58,13 @@ void initGameStrings(){
     
     gContext.gameStrings.materiaMenuTexts.add_resource(EncodedString::from_unicode("Check"));
     gContext.gameStrings.materiaMenuTexts.add_resource(EncodedString::from_unicode("Arrange"));
-    gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Wpn:"));
-    gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Arm:"));
-    gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Next Level:"));
-    gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("AP:"));
-    gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Ability List"));
-    gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("Equip Effects"));
-    gContext.gameStrings.equipMenuTexts.add_resource(EncodedString::from_unicode("MASTER"));
+    gContext.gameStrings.materiaMenuTexts.add_resource(EncodedString::from_unicode("Wpn:"));
+    gContext.gameStrings.materiaMenuTexts.add_resource(EncodedString::from_unicode("Arm:"));
+    gContext.gameStrings.materiaMenuTexts.add_resource(EncodedString::from_unicode("Next Level:"));
+    gContext.gameStrings.materiaMenuTexts.add_resource(EncodedString::from_unicode("AP:"));
+    gContext.gameStrings.materiaMenuTexts.add_resource(EncodedString::from_unicode("Ability List"));
+    gContext.gameStrings.materiaMenuTexts.add_resource(EncodedString::from_unicode("Equip Effects"));
+    gContext.gameStrings.materiaMenuTexts.add_resource(EncodedString::from_unicode("MASTER"));
 
     gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Fire"));
     gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Ice"));

@@ -112,7 +112,7 @@ void initMateriaViewWidget(const MateriaInitEvent* event) {
 
     boxParams = {
         380,
-        180,
+        190,
         260,
         300,
         0.3f
@@ -152,7 +152,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 
     boxParams = {
       0,
-      180,
+      190,
       680,
       300,
       0.4f
@@ -160,17 +160,26 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
     addChildWidget(materiaDataWidget, (Widget*)createBoxWidget(boxParams, MATERIA_DATA_BOX), MATERIA_DATA_BOX);
 
     //Stuff that can change
-    setTextParams(&textParams, 280, 60, nullptr, COLOR_WHITE, 0.2f);
+    setTextParams(&textParams, 40, 214, nullptr, COLOR_WHITE, 0.1f);
     addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, MATERIA_NAME), MATERIA_NAME);
-    srLogWrite("Addings text to standard display widget with address: %p", standardDisplayWidget);
-    setTextParams(&textParams, 280, 60, nullptr, COLOR_GREEN, 0.2f);
+    setTextParams(&textParams, 40, 244, nullptr, COLOR_GREEN, 0.1f);
     addChildWidget(standardDisplayWidget, (Widget*)createTextWidget(textParams, MATERIA_ELEMENT), MATERIA_ELEMENT);
-    gameAssetParams = MateriaSphere(13, 212, 2, 0.1);
+    gameAssetParams = MateriaSphere(13, 212, 0xA, 0.01f);
     addChildWidget(standardDisplayWidget, (Widget*)createGameAssetWidget(gameAssetParams, MATERIA_SPHERE), MATERIA_SPHERE);
-    setNumberParams(&numberParams, 280, 60, 0, 4, COLOR_WHITE, 0.2f);
+    setNumberParams(&numberParams, 238, 244, 0, 7, COLOR_WHITE, 0.1f);
     addChildWidget(standardDisplayWidget, (Widget*)createNumberWidget(numberParams, CURRENT_AP), CURRENT_AP);
-    setNumberParams(&numberParams, 280, 60, 0, 4, COLOR_WHITE, 0.2f);
+    setNumberParams(&numberParams, 250, 270, 0, 7, COLOR_WHITE, 0.1f);
     addChildWidget(standardDisplayWidget, (Widget*)createNumberWidget(numberParams, TO_LEVEL_AP), TO_LEVEL_AP);
+
+    setStaticGridParams(&staticGridParams, 207, 212, 5, 1, 25, 0, nullptr, nullptr);
+    StaticGridWidget* starWidget = createStaticGridWidget(staticGridParams, MATERIA_STARS);
+    moveWidget((Widget*)starWidget, 207, 212);
+    for (auto row = 0; row < 5; ++row) {
+        auto name = std::to_string(row);
+        gameAssetParams = MateriaStar(207, 212, 0xA, 0.1f, false);
+        addChildWidget((Widget*)starWidget, (Widget*)createGameAssetWidget(gameAssetParams, name), name);
+    }
+    addChildWidget(standardDisplayWidget, (Widget*)starWidget, MATERIA_STARS);
 
     /*Static Texts*/
     menuText = gContext.gameStrings.materiaMenuTexts.get_string(4);

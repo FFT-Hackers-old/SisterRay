@@ -146,14 +146,27 @@ SISTERRAY_API void setSlotsParams(drawSlotsParams* params, i32 xCoordinate, i32 
 
 void drawSlotsWidget(SlotsWidget* slotsWidget) {
     if (slotsWidget->materiaData) {
-        renderOccupiedSlots(
-            slotsWidget->widget.xCoordinate,
-            slotsWidget->widget.yCoordinate,
-            (i32)(slotsWidget->materiaSlotsData),
-            (i32)(slotsWidget->materiaData)
-        );
+        for (auto slotIdx = 0; slotIdx < 8; slotIdx++) {
+            if (slotsWidget->materiaData[slotIdx].item_id == 0xFFFF)
+                continue;
+            if (!slotsWidget->materiaSlotsData[slotIdx])
+                continue;
+            auto materiaType = getMateriaType(slotsWidget->materiaData[slotIdx].item_id);
+            drawComplexGameAsset(
+                slotsWidget->widget.xCoordinate + 28 * slotIdx,
+                slotsWidget->widget.yCoordinate,
+                128,
+                32,
+                16,
+                16,
+                materiaType,
+                1,
+                0,
+                .2f
+            );
+        }
     }
-    else if (slotsWidget->materiaSlotsData) {
+    if (slotsWidget->materiaSlotsData) {
         renderMateriaSlots(
             slotsWidget->widget.xCoordinate,
             slotsWidget->widget.yCoordinate,
@@ -276,6 +289,14 @@ GameAssetWidget* createGameAssetWidget(DrawGameAssetParams params, std::string n
     GameAssetWidget* widget = (GameAssetWidget*)createWidget(name, sizeof(GameAssetWidget), &kGameAssetWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
+    widget->unk1 = params.unk1;
+    widget->unk2 = params.unk2;
+    widget->unk3 = params.unk3;
+    widget->unk4 = params.unk4;
+    widget->unk5 = params.unk5;
+    widget->unk6 = params.unk6;
+    widget->unk7 = params.unk7;
+    widget->priority = params.priority;
     return widget;
 }
 
@@ -331,11 +352,27 @@ DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereCo
 
 DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor, float priority, bool shaded) {
     if (shaded) {
-        DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 48, 16, 16, starColor, 0, 0, priority };
+        DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 32, 16, 16, starColor, 0, 0, priority };
         return star;
     }
-    DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 32, 16, 16, starColor, 0, 0, priority };
+    DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 48, 16, 16, starColor, 0, 0, priority };
     return star;
+}
+
+void setStarShaded(Widget* widgetToUpdate, bool shaded) {
+    if (isGameAssetWidget(widgetToUpdate)) {
+        auto typedPtr = (GameAssetWidget*)widgetToUpdate;
+        if (typedPtr->unk1 == 144) {
+            if (shaded) {
+                typedPtr->unk2 = 32;
+                return;
+            }
+            typedPtr->unk2 = 48;
+        }
+    }
+    else {
+        srLogWrite("attempting to update assetType field of an invalid Widget type");
+    }
 }
 
 

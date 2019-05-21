@@ -99,7 +99,7 @@ void initMateriaDescWidget(const MateriaInitEvent* event) {
 
 //Handles the base display
 void initMateriaViewWidget(const MateriaInitEvent* event) {
-    auto itemChoiceCursor = getStateCursor(event->menuObject, 1);
+    auto materiaChoiceCursor = getStateCursor(event->menuObject, 2);
 
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
@@ -120,15 +120,12 @@ void initMateriaViewWidget(const MateriaInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, MATERIA_GRID_BOX);
     addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);
 
-    // displayVisibleItemIcon(343, 37 * visibleItem + 9 * baseColumnIndex + 105, itemID, 0, .1f); //Function needs to be overwritten to display correct thing
-    // gameDrawAsset(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, .1f);
-
     auto normalMateriaViewWidget = createWidget(MATERIA_GRID);
-    gridParams = { itemChoiceCursor, &materiaNameViewUpdater, 427, 210 };
+    gridParams = { materiaChoiceCursor, &materiaNameViewUpdater, 427, 210 };
     gridWidget = createGridWidget(gridParams, MATERIA_GRID_NAMES, TextWidgetKlass());
     addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_NAMES);
 
-    gridParams = { itemChoiceCursor, &materiaSphereViewUpdater, 403, 210 };
+    gridParams = { materiaChoiceCursor, &materiaSphereViewUpdater, 403, 210 };
     DrawGameAssetParams assetInitParams = MateriaSphere(0, 0, 0, 0.1f);
     gridWidget = createGridWidget(gridParams, MATERIA_GRID_SPHERES, GameAssetWidgetKlass());
     /*This configuration causes spheres to display, we need to map these*/

@@ -12,7 +12,7 @@ void initializeMateriaMenu() {
     Cursor checkArrangeCursor = { checkArrangeContext, 240, 62, 51, 0 };
     CursorContext slotSelectContext = { 0, 0, 8, 2, 0, 0, 8, 2, 0, 0, 0, 0, 0, 0 };
     Cursor slotSelectCursor = { slotSelectContext, 317, 62, 51, 28 };
-    CursorContext materiaInventoryContext = { 0, 0, 1, 10, 0, 0, 1, gContext.materiaInventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
+    CursorContext materiaInventoryContext = { 0, 0, 1, 10, 0, 0, 1, 512, 0, 0, 0, 0, 0, 1 };
     Cursor materiaInventoryCursor = { materiaInventoryContext, 362, 214, 26, 0 };
     /*This is a view of the players command data. It must be set based on the active actor in an updater*/
     CursorContext checkCommandContext = { 0, 0, PARTY_STRUCT_ARRAY[0].commandRows, 0, 0,PARTY_STRUCT_ARRAY[0].commandRows, 4, 0, 0, 1, 1, 0, 0 };
@@ -54,6 +54,7 @@ void registerMateriaMenuListeners() {
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaDescription, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaData, modName);
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaView, modName);
 
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&checkArrangeChoiceHandler, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&enterMateriaViewHandler, modName, contextKeys);
@@ -69,4 +70,6 @@ void registerMateriaMenuListeners() {
     gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitTrashMateriaView, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitTrashConfirmView, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_TRIANGLE, (SrEventCallback)&removeMateriaHandler, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_RIGHT, (SrEventCallback)&enterSlotView, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_LEFT, (SrEventCallback)&enterOptionView, modName, contextKeys);
 }

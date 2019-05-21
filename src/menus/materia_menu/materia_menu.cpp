@@ -35,9 +35,9 @@ void displayMateriaCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) 
             break;
         }
         case 2: {
-            auto materiahoiceCursor = getStateCursor(menu, 1);
             drawFlashingCursor(slotChoiceCursor, updateStateMask, 0.1f);
-            drawCursor(materiahoiceCursor, 0.1f);
+            drawCursor(getStateCursor(menu, 2), 0.1f);
+            break;
         }
         case 3: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
@@ -52,14 +52,17 @@ void displayMateriaCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) 
         case 5: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
             drawCursor(getStateCursor(menu, 5), 0.1f);
+            break;
         }
         case 6: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
             drawCursor(getStateCursor(menu, 6), 0.1f);
+            break;
         }
         case 7: {
             drawFlashingCursor(checkArrangeCursor, updateStateMask, 0.1f);
             drawCursor(getStateCursor(menu, 7), 0.1f);
+            break;
         }
         default:
             break;
@@ -134,7 +137,6 @@ void handleMateriaMenuInput(i32 updateStateMask, Menu* menuObject) {
     auto menuWidget = menuObject->menuWidget;
 
     MateriaInputEvent event = { menuObject, materiaInventoryState };
-    handleCursorPositionUpdate((u32*)(&(cursorArray->context)));
     auto dispatchContext = std::vector<SrEventContext>({ MATERIA_MENU_CONTEXT });
     if (checkInputReceived(32)) {
         gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);
@@ -154,4 +156,11 @@ void handleMateriaMenuInput(i32 updateStateMask, Menu* menuObject) {
     else if (checkInputReceived(16)) { //unequip accessory
         gContext.eventBus.dispatch(MENU_INPUT_TRIANGLE, &event, dispatchContext);
     }
+    else if (captureDirectionInput(0x2000, 4)) {
+        gContext.eventBus.dispatch(MENU_INPUT_RIGHT, &event, dispatchContext);
+    }
+    else if (captureDirectionInput(0x8000, 8)) {
+        gContext.eventBus.dispatch(MENU_INPUT_LEFT, &event, dispatchContext);
+    }
+    handleCursorPositionUpdate((u32*)(&(cursorArray->context)));
 }

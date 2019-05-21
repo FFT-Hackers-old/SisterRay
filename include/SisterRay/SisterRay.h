@@ -39,6 +39,8 @@ typedef enum {
     MENU_INPUT_TRIANGLE,
     MENU_INPUT_R1,
     MENU_INPUT_L1,
+    MENU_INPUT_RIGHT,
+    MENU_INPUT_LEFT
 } SrEventType;
 
 

@@ -5,7 +5,7 @@
 SrMateriaInventory::SrMateriaInventory(i16 allocation_size) : SrResourceRegistry<MateriaInventoryEntry>(allocation_size) {
     for (i32 i = 0; i < MATERIA_INVENTORY_SIZE; i++) {
         MateriaInventoryEntry entry = {
-            0xFF,
+            0xFFFF,
             0
         };
         add_resource(entry);
@@ -20,11 +20,12 @@ void SrMateriaInventory::insertIntoMateriaInventory(const MateriaInventoryEntry&
             inventoryIndex = distance(_resource_registry.begin(), it);
             update_resource(inventoryIndex, entry);
 
-            if (returnMateriaType(entry.item_id) == 10) // if Summon Materia
+            if (getMateriaType(entry.item_id) == 0xA) // if Summon Materia
                 *enabledSpellTypeMask = *enabledSpellTypeMask | 1u; //enable summons on magic menu
             if (entry.item_id == 44)   // Enemy Skill Case
                 *enabledSpellTypeMask = *enabledSpellTypeMask | 2u; //enable eskill on magic menu
-            sub_6CC2C9(entry.item_id);
+            //sub_6CC2C9(entry.item_id);
+            return;
         }
     }
 }

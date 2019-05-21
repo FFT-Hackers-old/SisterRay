@@ -12,6 +12,7 @@
 void handleChangeCharacter(const MateriaDrawEvent* event);
 void handleUpdateMateriaDescription(const MateriaDrawEvent* event);
 void handleUpdateMateriaData(const MateriaDrawEvent* event);
+void handleUpdateMateriaView(const MateriaDrawEvent* event);
 void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia);
 void updateEquipEffect(Widget* equipEffectWidget, MateriaInventoryEntry materia);
 void updateAbilityListWidget(Widget* abilityListWidget, MateriaInventoryEntry materia, u8 level);

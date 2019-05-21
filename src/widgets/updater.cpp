@@ -74,16 +74,19 @@ void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
 }
 
 void materiaNameViewUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
+    srLogWrite("calling materia widget");
     if (self->collectionType != GridWidgetClass()) {
         return;
     }
-
+    srLogWrite("updating materia widget");
     auto typedPtr = (CursorGridWidget*)self;
     auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
     if (materiaID != 0xFFFF) {
         enableWidget(widget);
-        const char* name = gContext.gameStrings.materia_names.get_string(flatIndex);
+        const char* name = gContext.gameStrings.materia_names.get_string(materiaID);
+        srLogWrite("displaying materia name %s", name);
         updateText(widget, name);
+        updateTextColor(widget, COLOR_WHITE);
     }
     else {
         disableWidget(widget);
@@ -97,6 +100,7 @@ void materiaSphereViewUpdater(CollectionWidget* self, Widget*widget, u16 flatInd
     }
     auto typedPtr = (CursorGridWidget*)self;
     auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
+    srLogWrite("Displaying sphere for materia with ID %i", materiaID);
     if (materiaID != 0xFFFF) {
         enableWidget(widget);
         transformAsset(widget, 128, 32, 16, 16);

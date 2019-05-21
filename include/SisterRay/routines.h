@@ -59,6 +59,11 @@ typedef void(*pfnloadabilitydata)();
 #define poisonSetUp                     ((pfnpoisonsetup)0x5C9FC0)
 #define loadAbilityData                 ((pfnloadabilitydata)0x5C94D3)
 
+typedef i32(*pfnsub6F535C)(i32, i32);
+#define captureDirectionInput           ((pfnsub6F535C)0x6F535C)
+
+typedef i32(*pfnsub6F7BFB)(i32, i32, i32, i32, i32, i32, i32, i32, i32, float);
+#define drawComplexGameAsset          ((pfnsub6F7BFB)0x6F7BFB)
 
 /*These are routines used in the inventory menu handler*/
 typedef i32(*pfnsub6F0D7D)(i32, i32, float);

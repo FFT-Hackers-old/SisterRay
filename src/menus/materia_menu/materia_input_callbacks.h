@@ -25,5 +25,8 @@ void exitTrashConfirmView(const MateriaInputEvent* event);
 
 void removeMateriaHandler(const MateriaInputEvent* event);
 
+void enterSlotView(const MateriaInputEvent* event);
+void enterOptionView(const MateriaInputEvent* event);
+
 
 #endif

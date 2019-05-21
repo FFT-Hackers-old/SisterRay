@@ -22,13 +22,15 @@ void handleChangeCharacter(const MateriaDrawEvent* event) {
         updateText(getChild(topWidget, listNames[row]), fetchedName);
     }
 
-    std::vector <std::string> slotNames = { GEAR_1_SLOTS, GEAR_2_SLOTS };
-    for (int row = 0; row < slotNames.size(); row++) {
-        auto slotsPtr = &(gContext.weapons.get_resource(getEquippedGear(characterRecordArrayIndex, 0)).materia_slots[0]);
-        updateMateriaSlots(getChild(topWidget, slotNames[row]), slotsPtr);
-        auto materiaPtr = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias.data();
-        updateMateriaData(getChild(topWidget, slotNames[row]), materiaPtr);
-    }
+    auto slotsPtr = &(gContext.weapons.get_resource(getEquippedGear(characterRecordArrayIndex, 1)).materia_slots[0]);
+    updateMateriaSlots(getChild(topWidget, GEAR_1_SLOTS), slotsPtr);
+    auto materiaPtr = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias.data();
+    updateMateriaData(getChild(topWidget, GEAR_1_SLOTS), materiaPtr);
+
+    slotsPtr = &(gContext.armors.get_resource(getEquippedGear(characterRecordArrayIndex, 2)).materia_slots[0]);
+    updateMateriaSlots(getChild(topWidget, GEAR_2_SLOTS), slotsPtr);
+    materiaPtr = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias.data();
+    updateMateriaData(getChild(topWidget, GEAR_2_SLOTS), materiaPtr);
 }
 
 void handleUpdateMateriaDescription(const MateriaDrawEvent* event) {
@@ -36,11 +38,14 @@ void handleUpdateMateriaDescription(const MateriaDrawEvent* event) {
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
     u16 materiaID;
     const char * fetchedDescription;
-    if (event->menuState != 1 || event->menuState != 2)
-        return;
-
     auto materiaDescription = getChild(menuWidget, MATERIA_DESC_WIDGET_NAME);
-    auto descrptionWidget = getChild(materiaDescription, MATERIA_DESC);
+    auto descriptionWidget = getChild(materiaDescription, MATERIA_DESC);
+
+    if (event->menuState != 1 && event->menuState != 2) {
+        disableWidget(descriptionWidget);
+        return;
+    }
+
     auto slotChoice = getStateCursor(event->menu, 1)->context;
 
     if (event->menuState == 2) {
@@ -60,8 +65,27 @@ void handleUpdateMateriaDescription(const MateriaDrawEvent* event) {
             }
         }
     }
+    enableWidget(descriptionWidget);
     fetchedDescription = gContext.gameStrings.materia_descriptions.get_string(materiaID);
-    updateText(descrptionWidget, fetchedDescription);
+    updateText(descriptionWidget, fetchedDescription);
+}
+
+void handleUpdateMateriaView(const MateriaDrawEvent* event) {
+    auto menuWidget = event->menu->menuWidget;
+    u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
+    MateriaInventoryEntry materia;
+    auto gridWidget = getChild(menuWidget, MATERIA_GRID_WIDGET_NAME);
+    auto slotChoice = getStateCursor(event->menu, 0)->context;
+    if ((event->menuState == 0 || (event->menuState < 7 && event->menuState > 2)) && slotChoice.relativeRowIndex == 0) {
+        disableWidget(gridWidget);
+        return;
+    }
+    enableWidget(gridWidget);
+    if (event->menuState == 1 || event->menuState == 2 || event->menuState == 8) {
+        enableWidget(getChild(gridWidget, MATERIA_GRID));
+        return;
+    }
+    disableWidget(getChild(gridWidget, MATERIA_GRID));
 }
 
 void handleUpdateMateriaData(const MateriaDrawEvent* event) {

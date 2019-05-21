@@ -266,10 +266,14 @@ SISTERRAY_API void srNewGameAssetWidget(Widget* parent, DrawGameAssetParams para
 }
 
 void drawGameAssetWidget(GameAssetWidget* gameAssetWidget) {
+    drawComplexGameAsset(gameAssetWidget->widget.xCoordinate, gameAssetWidget->widget.yCoordinate,
+        gameAssetWidget->unk1, gameAssetWidget->unk2, gameAssetWidget->unk3,
+        gameAssetWidget->unk4, gameAssetWidget->unk5, gameAssetWidget->unk6,
+        gameAssetWidget->unk7, gameAssetWidget->priority);
 }
 
 GameAssetWidget* createGameAssetWidget(DrawGameAssetParams params, std::string name) {
-    GameAssetWidget* widget = (GameAssetWidget*)createWidget(name, sizeof(GameAssetWidget), &kSimpleAssetWidgetClass);
+    GameAssetWidget* widget = (GameAssetWidget*)createWidget(name, sizeof(GameAssetWidget), &kGameAssetWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     return widget;

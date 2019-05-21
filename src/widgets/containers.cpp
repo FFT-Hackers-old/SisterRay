@@ -55,7 +55,7 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
                 if (cursorGrid->updater) {
                     cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex+flatIndex);
                 }
-                drawWidget(getChild((Widget*)cursorGrid, flatIndex));
+                drawWidget(child);
             }
         }
     }

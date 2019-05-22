@@ -152,9 +152,6 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
         enableWidget(getChild(displayWidget, MASTERED));
         updateNumber(getChild(displayWidget, TO_LEVEL_AP), 0);
     }
-    //Update the STAR widget
-    srLogWrite("current materia level:%i", materiaLevel);
-    srLogWrite("current materia max level:%i", maxLevel);
     auto starsWidget = getChild(displayWidget, MATERIA_STARS);
     for (auto row = 0; row < 5; ++row) {
         auto widget = getChild(starsWidget, row);
@@ -172,115 +169,19 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
         
     }
     //update the equip effect widget
-    updateEquipEffect(getChild(displayWidget, EQUIP_EFFECTS), materia);
-    //update the ability list widget
-    updateAbilityListWidget(getChild(displayWidget, ABILITIES_LIST), materia, materiaLevel);
+    disableWidget(getChild(displayWidget, ABILITIES_LIST));
+    disableWidget(getChild(displayWidget, EQUIP_EFFECTS));
+    dispatchMateriaTypeHandlers(displayWidget, materia, materiaLevel);
 }
 
-void updateEquipEffect(Widget* equipEffectWidget, MateriaInventoryEntry materia) {
-    auto equipEffect = gContext.materias.get_resource(materia.item_id).equipEffect;
-    return;
-}
-
-//REFACTOR WHEN WE WANT THE ABILITY TO ADD NEW MATERIA TYPES: Create a callback table for each type of materia out of these case statements
-void updateAbilityListWidget(Widget* abilityListWidget, MateriaInventoryEntry materia, u8 level) {
+void dispatchMateriaTypeHandlers(Widget* displayWidget, const MateriaInventoryEntry& materia, u8 materiaLevel) {
+    DrawMateriaDataEvent event = { displayWidget, materia, materiaLevel };
     auto materiaType = getMateriaTopType(materia.item_id);
     auto subtype = getMateriaSubType(materia.item_id);
-    enableWidget(abilityListWidget);
 
-    auto data = gContext.materias.get_resource(materia.item_id).data;
-    /*The following switch is going to be big fuckin mess and hard to extend. Let's use a display callback table instead*/
-    switch (materiaType) {
-        case 0: {
-            switch (subtype) {
-                case 2: {
-                    EncodedString statName;
-                    if (data[0] <= 10)
-                        statName = gContext.gameStrings.statNames.get_resource(data[0]);
-                    else {
-                        statName = gContext.gameStrings.materiaTexts.get_resource(data[0]);
-                    }
-                    for (auto idx = 0; idx < 5; ++idx) {
-                        auto widget = getChild(abilityListWidget, idx);
-                        flagPercent(widget, true);
-                        if (data[idx + 1] == 0xFF) {
-                            disableWidget(widget);
-                            continue;
-                        }
-                        enableWidget(widget);
-                        updateText(getChild(widget, std::string("TXT")), statName.str());
-                        updateNumber(getChild(widget, std::string("AMT")), data[idx + 1]);
-                        if (idx <= level - 1) {
-                            updateTextColor(getChild(widget, std::string("TXT")), COLOR_WHITE);
-                            continue;
-                        }
-                        updateTextColor(getChild(widget, std::string("TXT")), COLOR_GRAY);
-                    }
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-            break;
-        }
-        case 9: { //Display for basic master materia
-            for (auto idx = 0; idx < 5; ++idx) {
-                auto widget = getChild(abilityListWidget, idx);
-                flagPercent(widget, false);
-                if (data[idx] == 0xFF) {
-                    disableWidget(widget);
-                    continue;
-                }
-                enableWidget(widget);
-                auto magicIndex = data[idx];
-                auto& abilityName = gContext.attacks.get_element(std::string("MAG") + std::to_string(magicIndex)).attackName;
-                updateText(getChild(widget, std::string("TXT")), abilityName.str());
-                if (idx <= level - 1) {
-                    updateTextColor(getChild(widget, std::string("TXT")), COLOR_WHITE);
-                    continue;
-                }
-                updateTextColor(getChild(widget, std::string("TXT")), COLOR_GRAY);
-            }
-            break;
-        }
-        case 11: {
-            for (auto idx = 0; idx < 5; ++idx) {
-                auto widget = getChild(abilityListWidget, idx);
-                flagPercent(widget, false);
-                if (idx == 0) {
-                    if (data[0] == 0xFF) {
-                        disableWidget(widget);
-                        break;
-                    }
-                    enableWidget(widget);
-                    auto summonIndex = data[0];
-                    auto& abilityName = gContext.attacks.get_element(std::string("SUM") + std::to_string(summonIndex)).attackName;
-                    updateText(getChild(widget, std::string("TXT")), abilityName.str());
-                    updateTextColor(widget, COLOR_WHITE);
-                    continue;
-                }
-                disableWidget(widget);
+    auto topkey = getTopKey(materiaType);
+    auto subkey = getSubKey(subtype);
 
-            }
-            break;
-        }
-        default: {
-            disableWidget(abilityListWidget);
-            break;
-        }
-    }
-}
-
-/*Must be called on the widget format defined for equip list/ability list*/
-void flagPercent(Widget* widget, bool isEnabled) {
-    if (isEnabled) {
-        enableWidget(getChild(widget, "AMT"));
-        enableWidget(getChild(widget, "SIGN"));
-        enableWidget(getChild(widget, "PCNT"));
-        return;
-    }
-    disableWidget(getChild(widget, "AMT"));
-    disableWidget(getChild(widget, "SIGN"));
-    disableWidget(getChild(widget, "PCNT"));
+    auto dispatchContext = std::vector<SrEventContext>({ topkey, subkey });
+    gContext.eventBus.dispatch(DRAW_MATERIA_DATA, &event, dispatchContext);
 }

@@ -148,3 +148,81 @@ u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr) {
     *maxLevelPtr = maxLevel;
     return level;
 }
+
+SrEventContext getTopKey(u8 materiaType) {
+    switch (materiaType) {
+        case 0:
+            return MAT_HIGH_TYPE_0;
+        case 1:
+            return MAT_HIGH_TYPE_1;
+        case 2:
+            return MAT_HIGH_TYPE_2;
+        case 3:
+            return MAT_HIGH_TYPE_3;
+        case 4:
+            return MAT_HIGH_TYPE_4;
+        case 5:
+            return MAT_HIGH_TYPE_5;
+        case 6:
+            return MAT_HIGH_TYPE_6;
+        case 7:
+            return MAT_HIGH_TYPE_7;
+        case 8:
+            return MAT_HIGH_TYPE_8;
+        case 9:
+            return MAT_HIGH_TYPE_9;
+        case 10:
+            return MAT_HIGH_TYPE_10;
+        case 11:
+            return MAT_HIGH_TYPE_11;
+        case 12:
+            return MAT_HIGH_TYPE_12;
+        case 13:
+            return MAT_HIGH_TYPE_13;
+        case 14:
+            return MAT_HIGH_TYPE_14;
+        case 15:
+            return MAT_HIGH_TYPE_15;
+        default:
+            return MAT_HIGH_TYPE_0;
+    }
+}
+
+SrEventContext getSubKey(u8 materiaType) {
+    switch (materiaType) {
+        case 0:
+            return MAT_SUB_TYPE_0;
+        case 1:
+            return MAT_SUB_TYPE_1;
+        case 2:
+            return MAT_SUB_TYPE_2;
+        case 3:
+            return MAT_SUB_TYPE_3;
+        case 4:
+            return MAT_SUB_TYPE_4;
+        case 5:
+            return MAT_SUB_TYPE_5;
+        case 6:
+            return MAT_SUB_TYPE_6;
+        case 7:
+            return MAT_SUB_TYPE_7;
+        case 8:
+            return MAT_SUB_TYPE_8;
+        case 9:
+            return MAT_SUB_TYPE_9;
+        case 10:
+            return MAT_SUB_TYPE_10;
+        case 11:
+            return MAT_SUB_TYPE_11;
+        case 12:
+            return MAT_SUB_TYPE_12;
+        case 13:
+            return MAT_SUB_TYPE_13;
+        case 14:
+            return MAT_SUB_TYPE_14;
+        case 15:
+            return MAT_SUB_TYPE_15;
+        default:
+            return MAT_SUB_TYPE_0;
+    }
+}

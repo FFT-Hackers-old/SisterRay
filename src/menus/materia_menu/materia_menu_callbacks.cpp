@@ -72,4 +72,9 @@ void registerMateriaMenuListeners() {
     gContext.eventBus.addListener(MENU_INPUT_TRIANGLE, (SrEventCallback)&removeMateriaHandler, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_RIGHT, (SrEventCallback)&enterSlotView, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_LEFT, (SrEventCallback)&enterOptionView, modName, contextKeys);
+
+    /*Register the materia view callbacks*/
+    gContext.eventBus.addListener(DRAW_MATERIA_DATA, (SrEventCallback)&ablListH9S1, modName, std::unordered_set<SrEventContext>({ MAT_HIGH_TYPE_9, MAT_SUB_TYPE_1 }));
+    gContext.eventBus.addListener(DRAW_MATERIA_DATA, (SrEventCallback)&ablListH11S3, modName, std::unordered_set<SrEventContext>({ MAT_HIGH_TYPE_11, MAT_SUB_TYPE_3 }));
+    gContext.eventBus.addListener(DRAW_MATERIA_DATA, (SrEventCallback)&ablListH0S2, modName, std::unordered_set<SrEventContext>({ MAT_HIGH_TYPE_0, MAT_SUB_TYPE_2 }));
 }

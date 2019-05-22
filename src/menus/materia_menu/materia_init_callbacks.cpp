@@ -209,7 +209,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 
         setTextParams(&textParams, 40, 326, menuText, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
-        setNumberParams(&numberParams, 140, 330, 0, 2, COLOR_WHITE, 0.1f);
+        setNumberParams(&numberParams, 140, 330, 0, 3, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createNumberWidget(numberParams, std::string("AMT")), std::string("AMT"));
         auto simpleAssetParams = Sign(127, 326, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("SIGN")), std::string("SIGN"));
@@ -227,7 +227,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
         auto statEffectRow = createWidget(name);
         setTextParams(&textParams, 200, 326, menuText, COLOR_WHITE, 0.1f); 
         addChildWidget(statEffectRow, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
-        setNumberParams(&numberParams, 313, 326, 0, 2, COLOR_WHITE, 0.1f);
+        setNumberParams(&numberParams, 313, 326, 0, 3, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createNumberWidget(numberParams, std::string("AMT")), std::string("AMT"));
         auto simpleAssetParams = Sign(300, 326, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("SIGN")), std::string("SIGN"));

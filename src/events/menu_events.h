@@ -48,4 +48,11 @@ typedef struct {
     Menu* menuObject;
 } MateriaInitEvent;
 
+/*Event on which we dispatch handlers for displaying the various types of materia*/
+typedef struct {
+    Widget* displayWidget;
+    MateriaInventoryEntry materia;
+    u8 materiaLevel;
+} DrawMateriaDataEvent;
+
 #endif

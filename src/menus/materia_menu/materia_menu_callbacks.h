@@ -6,6 +6,7 @@
 #include "materia_init_callbacks.h"
 #include "materia_input_callbacks.h"
 #include "materia_draw_callbacks.h"
+#include "mat_type_display_callbacks.h"
 
 
 void initializeMateriaMenu();

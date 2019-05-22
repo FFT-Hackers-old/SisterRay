@@ -104,7 +104,7 @@ void materiaSphereViewUpdater(CollectionWidget* self, Widget*widget, u16 flatInd
     if (materiaID != 0xFFFF) {
         enableWidget(widget);
         transformAsset(widget, 128, 32, 16, 16);
-        auto materiaAssetType = getMateriaType(materiaID);
+        auto materiaAssetType = getMateriaColorType(materiaID);
         updateAssetType(widget, materiaAssetType);
     }
     else {

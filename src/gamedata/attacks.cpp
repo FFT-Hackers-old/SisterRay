@@ -3,7 +3,7 @@
 
 #define KERNEL_MAGIC_CUTOFF 56
 #define KERNEL_SUMMON_CUTOFF 72
-#define KERNEL_ESKILL_CUTOFF 95
+#define KERNEL_ESKILL_CUTOFF 96
 
 SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAttackData, std::string>() {
     size_t read_size;

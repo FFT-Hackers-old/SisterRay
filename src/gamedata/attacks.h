@@ -34,4 +34,7 @@ public:
     SrAttackRegistry() : SrNamedResourceRegistry<SrAttackData, std::string>() {}
 };
 
+
+SISTERRAY_API void initAttacks(SrKernelStream* stream);
+
 #endif

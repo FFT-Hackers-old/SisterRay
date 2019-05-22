@@ -3,6 +3,23 @@
 #include "../impl.h"
 
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*x))
+#define LEVEL_INDEX_LIMIT  3
+
+SrMateriaRegistry::SrMateriaRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<MateriaData, std::string>(stream) {
+    /*Adjust the indexes referenced in kernel.bin to be relative to the action type*/
+    for (auto it = begin(_resource_registry); it != end(_resource_registry); ++it) {
+        auto materiaidx = distance(_resource_registry.begin(), it);
+        auto& materia = *it;
+        auto materiaType = materia.type & 0x0F;
+        /*Update the references based on materia type to the proper index in the new type specific registries used within sister ray*/
+        switch (materiaType) {
+            case 11: {
+                materia.data[0] -= 56;
+                break;
+            }
+        }
+    }
+}
 
 SISTERRAY_API MateriaData getMateria(u16 itemID) {
     return gContext.materias.get_resource(itemID);
@@ -96,7 +113,15 @@ SISTERRAY_API void init_materia(SrKernelStream* stream) {
 }
 
 
-u32 getMateriaType(u16 materiaID) {
+u8 getMateriaTopType(u16 materiaID) {
+    return gContext.materias.get_resource(materiaID).type & 0x0F;
+}
+
+u8 getMateriaSubType(u16 materiaID) {
+    return (gContext.materias.get_resource(materiaID).type & 0xF0) >> 4;
+}
+
+u32 getMateriaColorType(u16 materiaID) {
     u8* greaterTypeArray = (u8*)(0x91ABF8);
     u8* materiaAssetType = (u8*)(0x91ABF0);
     auto materiaType = materiaAssetType[greaterTypeArray[gContext.materias.get_resource(materiaID).type & 0xF]];
@@ -117,7 +142,7 @@ u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr) {
             ++level;
         maxLevel++;
 
-        if (apLevelIndex == 3)
+        if (apLevelIndex == LEVEL_INDEX_LIMIT)
             break;
     }
     *maxLevelPtr = maxLevel;

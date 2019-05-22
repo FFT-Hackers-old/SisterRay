@@ -16,4 +16,5 @@ void handleUpdateMateriaView(const MateriaDrawEvent* event);
 void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia);
 void updateEquipEffect(Widget* equipEffectWidget, MateriaInventoryEntry materia);
 void updateAbilityListWidget(Widget* abilityListWidget, MateriaInventoryEntry materia, u8 level);
+void flagPercent(Widget* widget, bool isEnabled);
 #endif

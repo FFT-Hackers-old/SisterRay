@@ -82,6 +82,21 @@ void initGameStrings(){
     gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Shoot"));
     gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Blast"));
     gContext.gameStrings.elementNames.add_resource(EncodedString::from_unicode("Shadow"));
+
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Strength"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Vitality"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Magic"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Spirit"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Dexterity"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Luck"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Attack"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Defense"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Max HP"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("Max MP"));
+    gContext.gameStrings.statNames.add_resource(EncodedString::from_unicode("EXP"));
+
+    gContext.gameStrings.materiaTexts.set_resource(11, EncodedString::from_unicode("Cover"));
+    gContext.gameStrings.materiaTexts.set_resource(83, EncodedString::from_unicode("C.Atk"));
     
 }
 

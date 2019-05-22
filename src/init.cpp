@@ -22,7 +22,7 @@ SrContext gContext;
 
 static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     NULL,
-    NULL,
+    initAttacks,
     initCharacterData,
     NULL,
     initItems,

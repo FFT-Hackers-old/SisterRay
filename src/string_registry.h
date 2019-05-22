@@ -27,6 +27,8 @@ typedef struct {
     StringRegistry  materiaMenuTexts;
     StringRegistry  elementNames;
     StringRegistry  statusNames;
+    StringRegistry  statNames;
+    StringRegistry  materiaTexts; //Non stat texts used/displayed by materia
 
     /* Kernel2 stuff */
     StringRegistry  command_descriptions;

@@ -115,7 +115,22 @@ void drawStaticGridWidget(StaticGridWidget* staticGrid) {
             if (child) {
                 auto elementX = (staticGrid->columnSpacing * columnIndex) + staticGrid->widget.widget.xCoordinate;
                 auto elementY = (staticGrid->rowSpacing * rowIndex) + staticGrid->widget.widget.yCoordinate;
+
+                srLogWrite("should draw child at: %i, %i", elementX, elementY);
                 moveWidget(child, elementX, elementY);
+                if (staticGrid->widget.widget.name == std::string("ABILITIES_LIST")) {
+                    srLogWrite("children positions: %i,%i, %i,%i, %i,%i %i,%i",
+                        getChild(child, std::string("TXT"))->xCoordinate,
+                        getChild(child, std::string("TXT"))->yCoordinate,
+                        getChild(child, std::string("AMT"))->xCoordinate,
+                        getChild(child, std::string("AMT"))->yCoordinate,
+                        getChild(child, std::string("SIGN"))->xCoordinate,
+                        getChild(child, std::string("SIGN"))->yCoordinate,
+                        getChild(child, std::string("PCNT"))->xCoordinate,
+                        getChild(child, std::string("PCNT"))->yCoordinate
+                    );
+                }
+                srLogWrite("Fetched child at %p from children at index %i", child, flatIndex);
                 if (staticGrid->updater) {
                     staticGrid->updater((CollectionWidget*)staticGrid, child, flatIndex);
                 }

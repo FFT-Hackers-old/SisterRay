@@ -151,7 +151,7 @@ void drawSlotsWidget(SlotsWidget* slotsWidget) {
                 continue;
             if (!slotsWidget->materiaSlotsData[slotIdx])
                 continue;
-            auto materiaType = getMateriaType(slotsWidget->materiaData[slotIdx].item_id);
+            auto materiaType = getMateriaColorType(slotsWidget->materiaData[slotIdx].item_id);
             drawComplexGameAsset(
                 slotsWidget->widget.xCoordinate + 28 * slotIdx,
                 slotsWidget->widget.yCoordinate,

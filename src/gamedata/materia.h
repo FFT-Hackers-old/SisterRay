@@ -8,11 +8,13 @@
 
 class SrMateriaRegistry : public SrNamedResourceRegistry<MateriaData, std::string> {
 public:
-    SrMateriaRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<MateriaData, std::string>(stream) {}
+    SrMateriaRegistry(SrKernelStream* stream);
     SrMateriaRegistry() : SrNamedResourceRegistry<MateriaData, std::string>() {}
 };
 
-u32 getMateriaType(u16 materiaID);
+u8 getMateriaTopType(u16 materiaID);
+u8 getMateriaSubType(u16 materiaID);
+u32 getMateriaColorType(u16 materiaID);
 u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr);
 
 #endif

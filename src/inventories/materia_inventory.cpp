@@ -29,7 +29,7 @@ void SrMateriaInventory::insertIntoMateriaInventory(const MateriaInventoryEntry&
             inventoryIndex = distance(_resource_registry.begin(), it);
             update_resource(inventoryIndex, entry);
 
-            if (getMateriaType(entry.item_id) == 0xA) // if Summon Materia
+            if (getMateriaColorType(entry.item_id) == 0xA) // if Summon Materia
                 *enabledSpellTypeMask = *enabledSpellTypeMask | 1u; //enable summons on magic menu
             if (entry.item_id == 44)   // Enemy Skill Case
                 *enabledSpellTypeMask = *enabledSpellTypeMask | 2u; //enable eskill on magic menu

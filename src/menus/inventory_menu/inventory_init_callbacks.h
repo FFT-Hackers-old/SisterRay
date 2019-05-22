@@ -1,5 +1,5 @@
-#ifndef EQUIP_INIT_CALLBACKS_H
-#define EQUIP_INIT_CALLBACKS_H
+#ifndef INVENTORY_INIT_CALLBACKS_H
+#define INVENTORY_INIT_CALLBACKS_H
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>

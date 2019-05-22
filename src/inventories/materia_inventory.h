@@ -6,22 +6,19 @@
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "../sr_registry_template.h"
-
-/*This is the new Materia Inventory data structure,
-  It cannot inherit from the base as it has per unique materia data*/
-typedef struct {
-    u8 item_id;
-    i24 materia_ap; //u24 originally 
-} MateriaInventoryEntry;
+#include "../gamedata/materia.h"
 
 class SrMateriaInventory : public SrResourceRegistry<MateriaInventoryEntry> {
 public:
     SrMateriaInventory(i16 allocation_size);
     SrMateriaInventory() : SrResourceRegistry<MateriaInventoryEntry>() {}
-    void insertIntoMateriaInventory(MateriaInventoryEntry*);
-    void removeFromMateriaInventory(u8* inventory_index);
+    void insertIntoMateriaInventory(const MateriaInventoryEntry& materia);
+    void removeFromMateriaInventory(u16 inventory_index);
+    bool isFull();
+    void sortInventory();
 };
 
 SISTERRAY_API void initMateriaInventory();
+
 
 #endif

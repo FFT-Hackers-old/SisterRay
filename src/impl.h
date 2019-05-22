@@ -24,6 +24,7 @@ extern "C" {
 #include "gamedata/weapons.h"
 #include "gamedata/armor.h"
 #include "gamedata/accessory.h"
+#include "gamedata/attacks.h"
 #include "battle/formations.h"
 #include "battle/enemies.h"
 #include "inventories/inventory.h"
@@ -34,6 +35,8 @@ extern "C" {
 #include "string_registry.h"
 #include "party/characters.h"
 #include "menus/menu.h"
+#include "party/party.h"
+#include "party/characters.h"
 #include <map>
 #include <memory>
 
@@ -57,9 +60,10 @@ typedef struct {
     srNoTargetCallbackRegistry          untargeted_handlers;
     SrOnUseItemDataRegistry             itemOnUseData;
     SrCharacterRegistry                 characters;
+    SrPartyDataRegistry                 party;
     SrFormationRegistry                 formations;
     SrEnemyRegistry                     enemies;
-    SrEnemyAttackRegistry               enemyAttacks;
+    SrAttackRegistry                    attacks;
     SrGameStrings                       gameStrings;
     MenuRegistry                        menuWidgets;
     EventBus                            eventBus;

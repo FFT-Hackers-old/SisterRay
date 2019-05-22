@@ -58,6 +58,13 @@ public:
         }
     }
 
+    void set_resource(u32 index, const T& resource) {
+        if (index > _resource_registry.capacity()) {
+            _resource_registry.resize(index + 1);
+        }
+        _resource_registry[index] = resource;
+    }
+
     size_t resource_count() {
         return _resource_registry.size();
     }

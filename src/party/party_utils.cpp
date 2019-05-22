@@ -1,5 +1,6 @@
 #include "party_utils.h"
 #include "../inventories/inventory_utils.h"
+#include "../impl.h"
 
 std::string getCharacterName (u8 characterID) {
     switch (characterID) {
@@ -62,5 +63,25 @@ bool characterCanEquipItem(u8 characterID, u16 item_id){
     return characterCanUse;
 }
 
+u8 getCharacterRecordIndex(u8 partyIndex) {
+    return (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[partyIndex])];
+}
+
+u16 getMateriaID(u8 characterID, u8 slot, u8 gearType) {
+    u16 materiaID;
+    auto name = getCharacterName(characterID);
+    switch (gearType) {
+        case 0:
+            materiaID = gContext.characters.get_element(name).wpnMaterias[slot].item_id;
+            break;
+        case 1:
+            materiaID = gContext.characters.get_element(name).wpnMaterias[slot].item_id;
+            break;
+        default: {
+            break;
+        }
+    }
+    return materiaID;
+}
 
 

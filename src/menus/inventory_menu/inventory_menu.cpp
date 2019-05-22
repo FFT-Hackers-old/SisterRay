@@ -23,7 +23,7 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
     gContext.eventBus.dispatch(DRAW_INVENTORY_MENU, &event);
     drawWidget(menuWidget);
 
-    displayActiveCursorStates(menuObject, menuObject->currentState, updateStateMask);
+    displayInventoryCursorStates(menuObject, menuObject->currentState, updateStateMask);
     if (!is_input_handling_enabled())
     {
         handleInventoryMenuInput(updateStateMask, menuObject);
@@ -31,7 +31,7 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
 }
 
 //Need to come up with a better abstract for cursors
-void displayActiveCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
+void displayInventoryCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
 
     u16 item_ID;

@@ -11,6 +11,9 @@
 #include "menus/battle_menu.h"
 #include "menus/equip_menu/equip_menu.h"
 #include "menus/equip_menu//equip_menu_callbacks.h"
+#include "menus/materia_menu/materia_menu.h"
+#include "menus/materia_menu/materia_menu_callbacks.h"
+#include "battle/ai_script_engine.h"
 #include "battle/battle.h"
 #include "battle/battle_context.h"
 
@@ -19,7 +22,7 @@ SrContext gContext;
 
 static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     NULL,
-    NULL,
+    initAttacks,
     initCharacterData,
     NULL,
     initItems,
@@ -121,8 +124,8 @@ static void Init(void)
     initMateriaInventory();
     initGameStrings();
     enableNoCD();
-    srLoadKernelBin();
     srLoadKernel2Bin();
+    srLoadKernelBin();
     initOnUseDataRegistry();
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();
@@ -133,6 +136,8 @@ static void Init(void)
     initializeEquipMenu();
     registerInventoryMenuListeners();
     initializeInventoryMenu();
+    registerMateriaMenuListeners();
+    initializeMateriaMenu();
     //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
@@ -146,6 +151,8 @@ static void Init(void)
     mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
     mogReplaceFunction(TRANSFORM_ENEMY_COMMAND, &transformEnemyCommand);
+    mogReplaceFunction(GET_MP_COST, &getMPCost);
+    mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

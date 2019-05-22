@@ -160,7 +160,6 @@ void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordA
             break;
         }
         case 3: {
-            srLogWrite("Accessory equip triggered");
             removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
             removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
             equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
@@ -180,34 +179,36 @@ void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordA
 void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
     WeaponData newWeaponData;
     ArmorData newArmorData;
-    u32* equippedMateriaData;
+    MateriaInventoryEntry& equippedMateriaData = MateriaInventoryEntry();
     u8* materiaSlots;
     bool shouldRemove = false;
+    auto characterID = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
 
     for (i32 materiaSlotIndex = 0; materiaSlotIndex < 8; ++materiaSlotIndex) {
         switch (gearType) {
-            case 0: {
+            case 1: {
                 newWeaponData = gContext.weapons.get_resource(gearRelativeIndex);
                 materiaSlots = &(newWeaponData.materia_slots[0]);
-                equippedMateriaData = (u32*)&(activeCharacterRecord.weapon_materia_slots);
-                shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.weapon_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
+                equippedMateriaData = gContext.characters.get_element(getCharacterName(characterID)).wpnMaterias[materiaSlotIndex];
                 break;
             }
-            case 1: {
+            case 2: {
                 newArmorData = gContext.armors.get_resource(gearRelativeIndex);
                 materiaSlots = &(newArmorData.materia_slots[0]);
-                equippedMateriaData = (u32*)&(activeCharacterRecord.armor_materia_slots);
-                shouldRemove = (!(materiaSlots[materiaSlotIndex] && (activeCharacterRecord.armor_materia_slots[materiaSlotIndex] != 0xFFFFFFFF)));
+                equippedMateriaData = gContext.characters.get_element(getCharacterName(characterID)).armMaterias[materiaSlotIndex];
                 break;
             }
-            default: {}
+            default: {
+                break;
+            }
         }
 
+        shouldRemove = (!(materiaSlots[materiaSlotIndex] && (equippedMateriaData.item_id != 0xFFFF)));
         if (shouldRemove) {
             *byte_DC1148 = 0;
-            gContext.materiaInventory->insertIntoMateriaInventory((MateriaInventoryEntry*)equippedMateriaData[materiaSlotIndex]); //put any materia removed back on, needs to work with the SR materia
+            gContext.materiaInventory->insertIntoMateriaInventory(equippedMateriaData); //put any materia removed back on, needs to work with the SR materia
             *byte_DC1148 = 0;
-            equippedMateriaData[materiaSlotIndex] = 0xFFFFFFFF;
+            equippedMateriaData.item_id = 0xFFFF;
         }
     }
 }

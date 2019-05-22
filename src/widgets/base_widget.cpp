@@ -62,14 +62,13 @@ void destroyWidget(Widget* widget) {
 
 //Utility to add a child widget to a parent;
 void addChildWidget(Widget* parent, Widget* child, std::string name) {
-    if (parent->klass == &kCollectionWidgetClass) {
+    /*if (parent->klass == &kCollectionWidgetClass) {
         auto typedPtr = (CollectionWidget*)parent;
-        if (child->klass != typedPtr->containedKlass) {
+        if ((child->klass != typedPtr->containedKlass)) {
             //Cannot add different types to a collection Widget
             return;
         }
-    }
-
+    }*/
     parent->children.push_back(child);
     parent->childrenNames[name] = parent->children.size() - 1;
 }
@@ -112,7 +111,41 @@ bool checkWidgetTypes(Widget* a, Widget* b) {
     return ((a->klass) == (b->klass));
 }
 
+/*Translate all child widgets relative to widgets own position
+  It's a good idea to give the widget the coordinate of a box corner*/
 SISTERRAY_API void moveWidget(Widget * widget, u32 x, u32 y) {
+    srLogWrite("Move Goal, %i, %i", x, y);
+    i32 relativeMoveX;
+    i32 relativeMoveY;
+    i32 moveX;
+    i32 moveY;
+    if (!(widget->children.empty())) {
+        for (auto it = begin(widget->children); it != end(widget->children); ++it) {
+            auto child = *it;
+            srLogWrite("child postion: %i, %i", child->xCoordinate, child->yCoordinate);
+            if (x > widget->xCoordinate) {
+                relativeMoveX = x - widget->xCoordinate;
+                moveX = child->xCoordinate += relativeMoveX;
+                srLogWrite("MoveX/RelativeMoveX, %i, %i", moveX, relativeMoveX);
+            }
+            else {
+                relativeMoveX = widget->xCoordinate - x;
+                moveX = child->xCoordinate -= relativeMoveX;
+                srLogWrite("MoveX/RelativeMoveX, %i, %i", moveX, relativeMoveX);
+            }
+            if (y > widget->yCoordinate) {
+                relativeMoveY = y - widget->yCoordinate;
+                moveY = child->yCoordinate += relativeMoveY;
+                srLogWrite("MoveY/RelativeMoveY, %i, %i", moveY, relativeMoveY);
+            }
+            else {
+                relativeMoveY = widget->yCoordinate - y;
+                moveY= child->yCoordinate -= relativeMoveY;
+                srLogWrite("MoveX/RelativeMoveX, %i, %i", moveY, relativeMoveY);
+            }
+            moveWidget(child, moveX, moveY);
+        }
+    }
     widget->xCoordinate = x;
     widget->yCoordinate = y;
 }

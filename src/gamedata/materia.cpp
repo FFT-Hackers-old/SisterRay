@@ -3,6 +3,23 @@
 #include "../impl.h"
 
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*x))
+#define LEVEL_INDEX_LIMIT  3
+
+SrMateriaRegistry::SrMateriaRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<MateriaData, std::string>(stream) {
+    /*Adjust the indexes referenced in kernel.bin to be relative to the action type*/
+    for (auto it = begin(_resource_registry); it != end(_resource_registry); ++it) {
+        auto materiaidx = distance(_resource_registry.begin(), it);
+        auto& materia = *it;
+        auto materiaType = materia.type & 0x0F;
+        /*Update the references based on materia type to the proper index in the new type specific registries used within sister ray*/
+        switch (materiaType) {
+            case 11: {
+                materia.data[0] -= 56;
+                break;
+            }
+        }
+    }
+}
 
 SISTERRAY_API MateriaData getMateria(u16 itemID) {
     return gContext.materias.get_resource(itemID);
@@ -80,10 +97,10 @@ static void patch_materia(void)
 {
     srPatchAddresses((void**)kPatchApLevel, ARRAY_SIZE(kPatchApLevel), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, apLevel));
     srPatchAddresses((void**)kPatchEquipEffect, ARRAY_SIZE(kPatchEquipEffect), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, equipEffect));
-    srPatchAddresses((void**)kPatchStatusEffect, ARRAY_SIZE(kPatchStatusEffect), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffect));
-    srPatchAddresses((void**)kPatchStatusEffect1, ARRAY_SIZE(kPatchStatusEffect1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffect) + 1);
-    srPatchAddresses((void**)kPatchStatusEffect2, ARRAY_SIZE(kPatchStatusEffect2), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffect) + 2);
-    srPatchAddresses((void**)kPatchStatusEffect3, ARRAY_SIZE(kPatchStatusEffect3), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffect) + 3);
+    srPatchAddresses((void**)kPatchStatusEffect, ARRAY_SIZE(kPatchStatusEffect), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffects));
+    srPatchAddresses((void**)kPatchStatusEffect1, ARRAY_SIZE(kPatchStatusEffect1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffects) + 1);
+    srPatchAddresses((void**)kPatchStatusEffect2, ARRAY_SIZE(kPatchStatusEffect2), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffects) + 2);
+    srPatchAddresses((void**)kPatchStatusEffect3, ARRAY_SIZE(kPatchStatusEffect3), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, elementType));
     srPatchAddresses((void**)kPatchType, ARRAY_SIZE(kPatchType), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, type));
     srPatchAddresses((void**)kPatchData, ARRAY_SIZE(kPatchData), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, data));
     srPatchAddresses((void**)kPatchData1, ARRAY_SIZE(kPatchData1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, data) + 1);
@@ -93,4 +110,119 @@ SISTERRAY_API void init_materia(SrKernelStream* stream) {
     gContext.materias = SrMateriaRegistry(stream);
     srLogWrite("kernel.bin: Loaded %lu Materias", (unsigned long)gContext.materias.resource_count());
     patch_materia();
+}
+
+
+u8 getMateriaTopType(u16 materiaID) {
+    return gContext.materias.get_resource(materiaID).type & 0x0F;
+}
+
+u8 getMateriaSubType(u16 materiaID) {
+    return (gContext.materias.get_resource(materiaID).type & 0xF0) >> 4;
+}
+
+u32 getMateriaColorType(u16 materiaID) {
+    u8* greaterTypeArray = (u8*)(0x91ABF8);
+    u8* materiaAssetType = (u8*)(0x91ABF0);
+    auto materiaType = materiaAssetType[greaterTypeArray[gContext.materias.get_resource(materiaID).type & 0xF]];
+    return materiaType;
+}
+
+u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr) {
+    if (materia.item_id == 0xFFFF) {
+        *maxLevelPtr = 0;
+        return 0;
+    }
+    auto levels = gContext.materias.get_resource(materia.item_id).apLevel;
+
+    u8 level = 1;
+    u8 maxLevel = 1;
+    for (u16 apLevelIndex = 0; levels[apLevelIndex] != 0xFFFF; ++apLevelIndex) {
+        if (materia.materia_ap > (levels[apLevelIndex] * 100))
+            ++level;
+        maxLevel++;
+
+        if (apLevelIndex == LEVEL_INDEX_LIMIT)
+            break;
+    }
+    *maxLevelPtr = maxLevel;
+    return level;
+}
+
+SrEventContext getTopKey(u8 materiaType) {
+    switch (materiaType) {
+        case 0:
+            return MAT_HIGH_TYPE_0;
+        case 1:
+            return MAT_HIGH_TYPE_1;
+        case 2:
+            return MAT_HIGH_TYPE_2;
+        case 3:
+            return MAT_HIGH_TYPE_3;
+        case 4:
+            return MAT_HIGH_TYPE_4;
+        case 5:
+            return MAT_HIGH_TYPE_5;
+        case 6:
+            return MAT_HIGH_TYPE_6;
+        case 7:
+            return MAT_HIGH_TYPE_7;
+        case 8:
+            return MAT_HIGH_TYPE_8;
+        case 9:
+            return MAT_HIGH_TYPE_9;
+        case 10:
+            return MAT_HIGH_TYPE_10;
+        case 11:
+            return MAT_HIGH_TYPE_11;
+        case 12:
+            return MAT_HIGH_TYPE_12;
+        case 13:
+            return MAT_HIGH_TYPE_13;
+        case 14:
+            return MAT_HIGH_TYPE_14;
+        case 15:
+            return MAT_HIGH_TYPE_15;
+        default:
+            return MAT_HIGH_TYPE_0;
+    }
+}
+
+SrEventContext getSubKey(u8 materiaType) {
+    switch (materiaType) {
+        case 0:
+            return MAT_SUB_TYPE_0;
+        case 1:
+            return MAT_SUB_TYPE_1;
+        case 2:
+            return MAT_SUB_TYPE_2;
+        case 3:
+            return MAT_SUB_TYPE_3;
+        case 4:
+            return MAT_SUB_TYPE_4;
+        case 5:
+            return MAT_SUB_TYPE_5;
+        case 6:
+            return MAT_SUB_TYPE_6;
+        case 7:
+            return MAT_SUB_TYPE_7;
+        case 8:
+            return MAT_SUB_TYPE_8;
+        case 9:
+            return MAT_SUB_TYPE_9;
+        case 10:
+            return MAT_SUB_TYPE_10;
+        case 11:
+            return MAT_SUB_TYPE_11;
+        case 12:
+            return MAT_SUB_TYPE_12;
+        case 13:
+            return MAT_SUB_TYPE_13;
+        case 14:
+            return MAT_SUB_TYPE_14;
+        case 15:
+            return MAT_SUB_TYPE_15;
+        default:
+            return MAT_SUB_TYPE_0;
+    }
 }

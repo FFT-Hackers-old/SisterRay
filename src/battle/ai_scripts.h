@@ -37,5 +37,4 @@ void initializeFormationAIScript(const u8* const scriptBlock, u32 formationIndex
 void copyAIScript(AIScript& aiScript, const u8* const scriptStart);
 void initAIScriptStruct(BattleAIData& srAIData, const u8* const scriptBlockStart);
 
-
 #endif

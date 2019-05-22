@@ -17,9 +17,9 @@ void initCharDataWidget(const EquipInitEvent* event) {
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
-    drawTextParams textParams;
+    DrawTextParams textParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
     PortraitWidget* portraitWidget;
 
     auto currentEquipWidget = createWidget(CHAR_DATA_WIDGET_NAME);
@@ -64,9 +64,9 @@ void initGearDescWidget(const EquipInitEvent* event) {
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
 
     TextWidget* textWidget;
-    drawTextParams textParams;
+    DrawTextParams textParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 
@@ -98,11 +98,11 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
 
     TextWidget* textWidget;
-    drawTextParams textParams;
+    DrawTextParams textParams;
     SlotsWidget* slotsWidget;
     drawSlotsParams slotsParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 
@@ -151,13 +151,13 @@ void initStatDiffWidget(const EquipInitEvent* event) {
     const char* menuText;
 
     TextWidget* textWidget;
-    drawTextParams textParams;
+    DrawTextParams textParams;
     NumberWidget* numberWidget;
-    drawNumberParams numberParams;
-    ArrowWidget* arrowWidget;
-    drawArrowParams arrowParams;
+    DrawNumberParams numberParams;
+    SimpleAssetWidget* simpleAssetWidget;
+    DrawSimpleAssetParams simpleAssetParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 
@@ -183,9 +183,9 @@ void initStatDiffWidget(const EquipInitEvent* event) {
         textWidget = createTextWidget(textParams, statNames[i]);
         addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[i]);
 
-        arrowParams = { 244, 26 * i + windowTop, 0xDAu, COLOR_TEAL, 0.2f };
-        arrowWidget = createArrowWidget(arrowParams, arrowNames[i]);
-        addChildWidget(statDiffWidget, (Widget*)arrowWidget, arrowNames[i]);
+        simpleAssetParams = { 244, 26 * i + windowTop, 0xDAu, COLOR_TEAL, 0.2f };
+        simpleAssetWidget = createSimpleGameAssetWidget(simpleAssetParams, arrowNames[i]);
+        addChildWidget(statDiffWidget, (Widget*)simpleAssetWidget, arrowNames[i]);
 
         setNumberParams(&numberParams, 200, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);
         numberWidget = createNumberWidget(numberParams, numberNames[i]);
@@ -205,7 +205,7 @@ void initGearListWidget(const EquipInitEvent* event) {
 
     drawGridParams gridParams;
     BoxWidget* boxWidget;
-    drawBoxParams boxParams;
+    DrawBoxParams boxParams;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 

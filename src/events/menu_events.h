@@ -33,4 +33,26 @@ typedef struct {
     Menu* menuObject;
 } InventoryInitEvent;
 
+
+typedef struct {
+    Menu* menu;
+    u32 menuState;
+} MateriaDrawEvent;
+
+typedef struct {
+    Menu* menu;
+    u32 menuState;
+} MateriaInputEvent;
+
+typedef struct {
+    Menu* menuObject;
+} MateriaInitEvent;
+
+/*Event on which we dispatch handlers for displaying the various types of materia*/
+typedef struct {
+    Widget* displayWidget;
+    MateriaInventoryEntry materia;
+    u8 materiaLevel;
+} DrawMateriaDataEvent;
+
 #endif

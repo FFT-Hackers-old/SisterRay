@@ -28,27 +28,22 @@ void srLoadAbilityData() {
         deathSentenceFlag = 0;
         gDamageContextPtr->MPCost = -1;
         if (gDamageContextPtr->commandIndexCopy == CMD_ENEMY_ACTION) {
-            srLogWrite("Attempting to load enemy action");
-            auto attackID = std::string(std::to_string(gDamageContextPtr->attackIndexCopy));
-            srLogWrite("Loaded attack Index: %s", attackID.c_str());
-            auto enemyAttack = gContext.enemyAttacks.get_element(attackID);
-            abilityData = gContext.enemyAttacks.get_element(attackID).attackData;
+            auto attackID = std::string(std::string("ETK-") + std::to_string(gDamageContextPtr->absAttackIndex));
+            auto enemyAttack = gContext.attacks.get_element(attackID);
+            abilityData = gContext.attacks.get_element(attackID).attackData;
             currentSceneAbilities[0] = enemyAttack.attackData;
-            srLogWrite("size of attack name: %i", enemyAttack.attackName.size());
             memcpy((void*)attackNamesPtr, (void*)(enemyAttack.attackName.str()), enemyAttack.attackName.size());
             *(attackNamesPtr + enemyAttack.attackName.size()) = char(255);
-            srLogWrite("attack name in registry: %s, copied attack name in unicode: %s", attackID.c_str(), EncodedString(((char*)attackNamesPtr)).unicode());
             *currentSceneAbilityIDs = enemyAttack.attackID;
-            srLogWrite("attack id at index 0: %i", *currentSceneAbilityIDs);
             gDamageContextPtr->sceneAbilityIndex = 0;
         }
-        else if (gDamageContextPtr->attackIndexCopy >= 128) { //The ability data here is not contained in the kernel
+        else if (gDamageContextPtr->absAttackIndex >= 128) { //The ability data here is not contained in the kernel
             if (gDamageContextPtr->attackerID < 3) {
                 characterID = unkPartyStructPtr[16 * gDamageContextPtr->attackerID]; //array access, should figure out these structs
-                activeLimitIDs = (u8*)activePartyStructArray[gDamageContextPtr->attackerID].enabledLimitBytes;
+                activeLimitIDs = (u8*)PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledLimitBytes;
                 for (i32 limitIndex = 0; limitIndex < 3; ++limitIndex) {
                     relativeLimitIndex = (i8)activeLimitIDs[limitIndex];
-                    if (relativeLimitIndex + 128 == gDamageContextPtr->attackIndexCopy) { //If this is the limit being used
+                    if (relativeLimitIndex + 128 == gDamageContextPtr->absAttackIndex) { //If this is the limit being used
                         limitAnimationScriptIndex = 0;
                         for (charLimitArrayIndex = 0; charLimitArrayIndex < 12; ++charLimitArrayIndex) {
                             fetchedRelativeIndex = getLimitRelativeIndex(characterID, charLimitArrayIndex);
@@ -59,27 +54,25 @@ void srLoadAbilityData() {
                             }
                         }
                         gDamageContextPtr->animationScriptID = limitAnimationScriptIndex + 60;
-                        abilityData = (activePartyStructArray[gDamageContextPtr->attackerID].enabledLimitData[limitIndex]);
+                        abilityData = (PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledLimitData[limitIndex]);
                         break;
                     }
                 }
             }
         }
         else { //load abilities which have been loaded from the kernel -- this code can be relocated to load from gContext
-            srLogWrite("attempting to execute loaded kernel action");
-            abilityData = kernelAbilities[gDamageContextPtr->attackIndexCopy];
-            if (gDamageContextPtr->attackIndexCopy >= 96) {
-                relativeIndex = gDamageContextPtr->attackIndexCopy - 96;
+            abilityData = kernelAbilities[gDamageContextPtr->absAttackIndex];
+            if (gDamageContextPtr->absAttackIndex >= 96) {
+                relativeIndex = gDamageContextPtr->absAttackIndex - 96;
                 if (kernelLimitScriptIndexes[relativeIndex] != 255)
                     gDamageContextPtr->animationScriptID = kernelLimitScriptIndexes[relativeIndex];
                 gDamageContextPtr->animationBaseOffset = -1;
             }
         }
-        srLogWrite("ability data loaded, now setting up damage context ptr for action");
-        if (gDamageContextPtr->commandIndex == CMD_MAGIC && gDamageContextPtr->attackIndexCopy == 54) //death sentence case hardcoded
+        if (gDamageContextPtr->commandIndex == CMD_MAGIC && gDamageContextPtr->absAttackIndex == 54) //death sentence case hardcoded
             deathSentenceFlag = 1;
         if ((gDamageContextPtr->animationBaseOffset != -1) && !((gDamageContextPtr->miscActionflags) & 0x400000)) {
-            spellFlags* spellData = &(activePartyStructArray[gDamageContextPtr->attackerID].enabledMagicsData[gDamageContextPtr->animationBaseOffset]);
+            EnabledSpell* spellData = &(PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledMagicsData[gDamageContextPtr->animationBaseOffset]);
             gDamageContextPtr->MPCost = spellData->mpCost;
             if (spellData->quadCount && spellData->quadEnabled) {
                 spellData->quadCount = spellData->quadCount - 1;
@@ -122,7 +115,7 @@ void srLoadAbilityData() {
         else if (gDamageContextPtr->attackerID >= 4) {
             auto actingEnemyRecord =  enemyData[gDamageContextPtr->enemySceneIndex]; //Finds the "formation data" for the current actor
             for (enemyActionIndex = 0; enemyActionIndex < 16; ++enemyActionIndex) {
-                if (gDamageContextPtr->attackIndexCopy == actingEnemyRecord.attackSceneIDs[enemyActionIndex]) { //offset into the actual actor IDs
+                if (gDamageContextPtr->absAttackIndex == actingEnemyRecord.attackSceneIDs[enemyActionIndex]) { //offset into the actual actor IDs
                     gDamageContextPtr->animationScriptID = actingEnemyRecord.attackAnimScripts[enemyActionIndex]; //offset into the animation script indexes for this model
                     cameraOverrideData = actingEnemyRecord.attackCameraIDs[enemyActionIndex];
                     break;
@@ -163,7 +156,7 @@ void srLoadAbilityData() {
         gDamageContextPtr->missAtkSound = abilityData.impactSoundID;
         if (!((gDamageContextPtr->specialAbilityFlags) & 4) && gAiActorVariables[gDamageContextPtr->attackerID].statusMask & 0x4000000)
             gDamageContextPtr->abilityHitRate >>= 1; //(half hit chance)
-        setStatusInflictionData(abilityData.statusInfictType, abilityData.statusMask);
+        setStatusInflictionData(abilityData.statusInflictType, abilityData.statusMask);
         if (deathSentenceFlag)
             gAiActorVariables[gDamageContextPtr->attackerID].statusMask &= 0xFFDFFFFF;
         return copyAdditionalEffects(abilityData.additionalEffect, abilityData.additionalEffectModifier);

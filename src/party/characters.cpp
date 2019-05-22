@@ -17,7 +17,16 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
         initializeBattleAIData(characterAIPtr, characterIndex, characterAIData);
         characterData.characterAI = characterAIData;
         auto charName = getCharacterName(characterIndex);
+
+        MateriaInventoryEntry defaultMat = MateriaInventoryEntry();
+        defaultMat.item_id = 0xFFFF;
+        defaultMat.materia_ap = 0;
+        characterData.wpnMaterias.fill(defaultMat);
+        characterData.armMaterias.fill(defaultMat);
+
         gContext.characters.add_element(charName, characterData);
     }
+
+    free(sectionBuffer);
     srLogWrite("kernel.bin: Loaded %lu character AI scripts", (unsigned long)gContext.characters.resource_count());
 }

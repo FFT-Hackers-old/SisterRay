@@ -36,6 +36,8 @@
 #define EXECUTE_FORMATION_SCRIPT_HANDLER ((void*)0x5C8931)
 #define ENQUEUE_SCRIPT_ACTION           ((void*)0x5D969C)
 #define TRANSFORM_ENEMY_COMMAND         ((void*)0x5C93A1)
+#define GET_MP_COST                     ((void*)0x5D975B)
+#define MAT_MATERIA_HANDLER             ((void*)0x70CF0B)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);
@@ -57,6 +59,11 @@ typedef void(*pfnloadabilitydata)();
 #define poisonSetUp                     ((pfnpoisonsetup)0x5C9FC0)
 #define loadAbilityData                 ((pfnloadabilitydata)0x5C94D3)
 
+typedef i32(*pfnsub6F535C)(i32, i32);
+#define captureDirectionInput           ((pfnsub6F535C)0x6F535C)
+
+typedef i32(*pfnsub6F7BFB)(i32, i32, i32, i32, i32, i32, i32, i32, i32, float);
+#define drawComplexGameAsset          ((pfnsub6F7BFB)0x6F7BFB)
 
 /*These are routines used in the inventory menu handler*/
 typedef i32(*pfnsub6F0D7D)(i32, i32, float);
@@ -196,6 +203,9 @@ typedef i32(*pfnsub707891)(i32, i32);
 
 typedef i32(*pfnsub70760F)(i32, i32, i32);
 #define renderMateriaSlots              ((pfnsub70760F)0x70760F)
+
+typedef i32(*pfnsub70E831)(i32, i32, i32, i32);
+#define renderOccupiedSlots             ((pfnsub70E831)0x70E831)
 
 typedef i32(*pfnsub6F54A2)(u8*);
 #define sub_6F54A2                      ((pfnsub6F54A2)0x6F54A2) //Does returns x position from a text ptr, probably a centering util

@@ -24,6 +24,11 @@ typedef struct {
     StringRegistry  character_specific_strings[9];
     StringRegistry  inventory_menu_texts; //Stores texts displayed by the inventory menu handler
     StringRegistry  equipMenuTexts;
+    StringRegistry  materiaMenuTexts;
+    StringRegistry  elementNames;
+    StringRegistry  statusNames;
+    StringRegistry  statNames;
+    StringRegistry  materiaTexts; //Non stat texts used/displayed by materia
 
     /* Kernel2 stuff */
     StringRegistry  command_descriptions;

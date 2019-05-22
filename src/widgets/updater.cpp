@@ -72,3 +72,102 @@ void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
         disableWidget(widget);
     }
 }
+
+void materiaNameViewUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
+    srLogWrite("calling materia widget");
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    srLogWrite("updating materia widget");
+    auto typedPtr = (CursorGridWidget*)self;
+    auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
+    if (materiaID != 0xFFFF) {
+        enableWidget(widget);
+        const char* name = gContext.gameStrings.materia_names.get_string(materiaID);
+        srLogWrite("displaying materia name %s", name);
+        updateText(widget, name);
+        updateTextColor(widget, COLOR_WHITE);
+    }
+    else {
+        disableWidget(widget);
+    }
+}
+
+/*This will update a "Sphere Widget once I figure out how to make one*/
+void materiaSphereViewUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
+    srLogWrite("Displaying sphere for materia with ID %i", materiaID);
+    if (materiaID != 0xFFFF) {
+        enableWidget(widget);
+        transformAsset(widget, 128, 32, 16, 16);
+        auto materiaAssetType = getMateriaColorType(materiaID);
+        updateAssetType(widget, materiaAssetType);
+    }
+    else {
+        disableWidget(widget);
+    }
+}
+
+/*Temporary function until we also provide infrastructure for extending the number of commands*/
+void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto partyIndex = *MAT_MENU_PARTY_INDEX;
+    auto commands = (PARTY_STRUCT_ARRAY)[partyIndex].enabledCommandArray;
+    auto commandID = commands[flatIndex].commandID;
+    if (commandID = 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.gameStrings.command_names.get_string(commandID));
+}
+
+void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+
+    auto typedPtr = (CursorGridWidget*)self;
+    auto magics = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorMagics;
+    if (magics[flatIndex].magicIndex = 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(std::string("MAG") + std::to_string(flatIndex)).attackName.str());
+}
+
+void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto summons = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorSummons;
+    if (summons[flatIndex].magicIndex = 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(std::string("SUM") + std::to_string(flatIndex)).attackName.str());
+}
+
+void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto eSkills = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorEnemySkills;
+    if (eSkills[flatIndex].magicIndex = 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(std::string("ESK") + std::to_string(flatIndex)).attackName.str());
+}

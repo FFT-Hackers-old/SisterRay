@@ -92,7 +92,7 @@ bool isUsableInBattle(u16 itemID) {
     bool itemIsUsuable = (bool)(!(restrictionMask & 2));
 
     auto party_member_index = (*ACTIVE_MENU_OWNER_PARTY_INDEX);
-    auto characterID = (activePartyStructArray)[party_member_index].characterID;
+    auto characterID = (PARTY_STRUCT_ARRAY)[party_member_index].characterID;
     bool characterCanUse = (bool)!(characterMask & (1 << characterID));
 
     return (itemIsUsuable && characterCanUse);
@@ -104,7 +104,7 @@ bool isThrowable(u16 itemID) {
     bool itemIsThrowable = (bool)(!(restrictionMask & 8)); // Use new throwable variable
 
     auto party_member_index = (*ACTIVE_MENU_OWNER_PARTY_INDEX);
-    auto characterID = (activePartyStructArray)[party_member_index].characterID;
+    auto characterID = (PARTY_STRUCT_ARRAY)[party_member_index].characterID;
     bool characterCanUse = bool(characterMask & (1 << characterID));
 
     return (itemIsThrowable && characterCanUse);

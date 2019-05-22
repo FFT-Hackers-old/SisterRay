@@ -62,6 +62,7 @@
 #define dword_DCA628                         (u32*)0xDCA628
 // End
 
+#define MAT_MENU_PARTY_INDEX             (u32*)0xDD1638
 //These Globals are used to communicate between update loops by the magic menu
 #define enabledSpellTypeMask                 (u8*)0xDC0927
 //

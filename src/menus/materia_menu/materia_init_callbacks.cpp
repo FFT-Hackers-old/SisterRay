@@ -200,20 +200,20 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 
     /*Static Array Widgets*/
     auto rowCount = 5;
-    setStaticGridParams(&staticGridParams, 40, 326, 1, rowCount, 0, 26, nullptr, nullptr); //consider whether to use an updater here or not for updating the texts being displayed
+    setStaticGridParams(&staticGridParams, 25, 326, 1, rowCount, 0, 26, nullptr, nullptr); //consider whether to use an updater here or not for updating the texts being displayed
     StaticGridWidget* abilityListWidget = createStaticGridWidget(staticGridParams, ABILITIES_LIST);
     for (auto row = 0; row < rowCount; ++row) {
         auto name = std::to_string(row);
         auto statEffectRow = createWidget(name); //contains a percent sign, a plus sign, a colored number, and a stat name
-        moveWidget(statEffectRow, 40, 326);
+        moveWidget(statEffectRow, 25, 326);
 
-        setTextParams(&textParams, 40, 326, menuText, COLOR_WHITE, 0.1f);
+        setTextParams(&textParams, 25, 326, menuText, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
-        setNumberParams(&numberParams, 140, 330, 0, 3, COLOR_WHITE, 0.1f);
+        setNumberParams(&numberParams, 110, 330, 0, 3, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createNumberWidget(numberParams, std::string("AMT")), std::string("AMT"));
-        auto simpleAssetParams = Sign(127, 326, COLOR_WHITE, 0.1f);
+        auto simpleAssetParams = Sign(98, 330, COLOR_WHITE, 0.1f, true);
         addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("SIGN")), std::string("SIGN"));
-        simpleAssetParams = Percent(163, 330, COLOR_WHITE, 0.1f);
+        simpleAssetParams = Percent(145, 330, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("PCNT")), std::string("PCNT"));
         addChildWidget((Widget*)abilityListWidget, (Widget*)statEffectRow, name);
     }

@@ -44,7 +44,7 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.attackType = ENEMY_SKILL;
         }
         else {
-            attack.attackID - idx - 98;
+            attack.attackID  = idx; //Limit indexes are always absolute, and the index is used to dispatch the animation script, so it will not change
             srAttackID = std::string("LIM") + std::to_string(attack.attackID);
             attack.animationType = LIMIT;
             attack.attackType = LIMIT;
@@ -54,7 +54,39 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
     }
 }
 
+std::string assemblekey(u8 commandIndex, u16 relativeAttackIndex) {
+    std::string prefix;
+    switch (commandIndex) {
+        case 2:
+        case 21: {
+            prefix = std::string("MAG");
+            break;
+        }
+        case 20: {
+            prefix = std::string("LIM");
+        }
+        case 13: {
+            prefix = std::string("ESK");
+            break;
+        }
+        case 3:
+        case 22: {
+            prefix = std::string("SUM");
+            break;
+        }
+        case 32:
+            prefix = std::string("ETK");
+            break;
+        default: {
+        }
+    }
+    auto abilityKey = prefix + std::to_string(relativeAttackIndex);
+    return abilityKey;
+}
+
 SISTERRAY_API void initAttacks(SrKernelStream* stream) {
     gContext.attacks = SrAttackRegistry(stream);
     srLogWrite("kernel.bin: Loaded %lu attacks", (unsigned long)gContext.attacks.resource_count());
 }
+
+

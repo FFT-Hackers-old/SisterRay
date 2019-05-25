@@ -20,7 +20,7 @@ typedef struct {
     u32 enemySceneIndex; //0x08 This is the relative index in the scene, i.e 0 1 or 2 of a given actor
     u32 commandIndex; //0x0C
     u32 relAttackIndex; //0x10
-    u32 animationBaseOffset; //0x14
+    u32 enabledMagicsIndex; //0x14
     u32 targetMask; //0x18
     u32 activeAllies; //0x1C
     u32 animationScriptID; //0x20
@@ -199,9 +199,11 @@ typedef struct {
 typedef struct {
     u8 commandID;
     u8 cursorCommandType;
-    u16 something2;
-    u16 something3;
-} enabledCommandStruct;
+    u8 targetingData;
+    u8 commandFlags;
+    u8 allCount;
+    u8 HPMPAbsorbFags;
+} EnabledCommandStruct;
 #pragma pack(pop)
 
 /*This is the structure of attack data*/
@@ -237,9 +239,25 @@ typedef struct {
     u8 quadCount;
     u8 targetData;
     u8 propertiesMask;
-    u8 actorPropertiesMask; //HP Absorb, etc
+    u8 supportEffectsMask; //HP Absorb, etc
 } EnabledSpell;
 #pragma pack(pop)
+
+
+typedef enum {
+    AUTOACT_NO_ACTION,
+    SNEAK_ATTACK,
+    COUNTER_ACTION,
+    FINAL_ATTACK,
+} AutoActionType;
+
+typedef struct {
+    AutoActionType dispatchType;
+    u8 commandIndex;
+    u16 actionIndex;
+    u8 activationChance; //as a %
+    u8 counterCount; //based on the level of the linked counter, 0xFF for unlimited counters
+} SrAutoAction;
 
 #pragma pack(push,1)
 typedef struct {
@@ -270,7 +288,8 @@ typedef struct {
     u32 timer; //0x18
     u16 counterActionIndex; //0x1C
     u16 counterChance; //0x1E
-    u16 unkword; //0x20
+    u8 unkbyte; //0x20
+    u8 commandColumns; //0x21
     u8 unknownDiviosr; //0x22
     u8 commandRows; //0x23
     u8 unknown24bitInts[24]; //0x24
@@ -280,7 +299,7 @@ typedef struct {
     u16 absorbeElementsMask; //0x42
     u32 attackStatusesMask; //0x44
     u32 immuneStatusesMask; //0x48
-    enabledCommandStruct enabledCommandArray[0x10]; //0x4C
+    EnabledCommandStruct enabledCommandArray[0x10]; //0x4C
     u8 enabledLimitBytes[8]; //0xAC
     AttackData enabledLimitData[3]; //0xB4
     EnabledSpell enabledMagicsData[54]; //0x108

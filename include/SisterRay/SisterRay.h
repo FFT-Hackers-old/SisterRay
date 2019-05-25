@@ -41,7 +41,9 @@ typedef enum {
     MENU_INPUT_R1,
     MENU_INPUT_L1,
     MENU_INPUT_RIGHT,
-    MENU_INPUT_LEFT
+    MENU_INPUT_LEFT,
+    ENABLE_ACTIONS,
+    APPLY_SUPPORT
 } SrEventType;
 
 

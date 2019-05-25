@@ -20,20 +20,21 @@ void ablListH0S2(const DrawMateriaDataEvent* event) {
         statName = gContext.gameStrings.materiaTexts.get_resource(data[0]);
     }
     for (auto idx = 0; idx < 5; ++idx) {
-        auto widget = getChild(abilityListWidget, idx);
-        flagPercent(widget, true);
+        auto rowWidget = getChild(abilityListWidget, idx);
+        flagPercent(rowWidget, true);
         if (data[idx + 1] == 0xFF) {
-            disableWidget(widget);
+            disableWidget(rowWidget);
             continue;
         }
-        enableWidget(widget);
-        updateText(getChild(widget, std::string("TXT")), statName.str());
-        updateNumber(getChild(widget, std::string("AMT")), data[idx + 1]);
+        enableWidget(rowWidget);
+        updateText(getChild(rowWidget, std::string("TXT")), statName.str());
+        updateNumber(getChild(rowWidget, std::string("AMT")), data[idx + 1]);
         if (idx <= event->materiaLevel - 1) {
-            updateTextColor(getChild(widget, std::string("TXT")), COLOR_WHITE);
+            updateTextColor(getChild(rowWidget, std::string("TXT")), COLOR_WHITE);
+            updateNumberColor(getChild(rowWidget, std::string("AMT")), COLOR_WHITE);
             continue;
         }
-        updateTextColor(getChild(widget, std::string("TXT")), COLOR_GRAY);
+        updateTextColor(getChild(rowWidget, std::string("TXT")), COLOR_GRAY);
     }
 }
 

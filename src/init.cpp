@@ -21,7 +21,7 @@
 SrContext gContext;
 
 static const SrKernelStreamHandler kKernelBinHandlers[9] = {
-    NULL,
+    initCommands,
     initAttacks,
     initCharacterData,
     NULL,
@@ -153,6 +153,8 @@ static void Init(void)
     mogReplaceFunction(TRANSFORM_ENEMY_COMMAND, &transformEnemyCommand);
     mogReplaceFunction(GET_MP_COST, &getMPCost);
     mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
+    mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
+    mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

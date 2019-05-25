@@ -17,6 +17,10 @@ i32 srExecuteFormationScripts();
 i32  enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex);
 void* transformEnemyCommand();
 
+void dispatchAutoActions(i32 partyIndex, i32 actionType);
+u16 getActionToDispatch(const SrAutoAction& action);
+u16 setTargetMask(u8 partyIndex, const SrAutoAction& action);
+
 u32 getCompressedFileSizes(const u8* sceneBlock, u16 byteSizes[16]);
 void readBlock(FILE* filehandle, u32 blockSize, u8* dst);
 void populateRegistries(const SceneLayout& sceneData, u16* formationIndex);

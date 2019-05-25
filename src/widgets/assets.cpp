@@ -218,21 +218,21 @@ SISTERRAY_API void srNewSimpleAssetWidget(Widget* parent, DrawSimpleAssetParams 
     addChildWidget(parent, (Widget*)simpleAssetWidget, strName);
 }
 
-SISTERRAY_API void setSimpleAssetParams(DrawSimpleAssetParams* params, i32 xCoordinate, i32 yCoordinate, u8 arrowCode, color assetColor, float priority) {
+SISTERRAY_API void setSimpleAssetParams(DrawSimpleAssetParams* params, i32 xCoordinate, i32 yCoordinate, u8 assetType, color assetColor, float priority) {
     params->xCoordinate = xCoordinate;
     params->yCoordinate = yCoordinate;
-    params->arrowCode = arrowCode;
+    params->arrowCode = assetType;
     params->arrowColor = assetColor;
     params->arrowPriority = priority;
 }
 
-void drawSimpleAssetWidget(SimpleAssetWidget* arrowWidget) {
+void drawSimpleAssetWidget(SimpleAssetWidget* simpleAssetWidget) {
     gameDrawAsset(
-        arrowWidget->widget.xCoordinate,
-        arrowWidget->widget.yCoordinate,
-        arrowWidget->code,
-        arrowWidget->arrowColor,
-        arrowWidget->priority
+        simpleAssetWidget->widget.xCoordinate,
+        simpleAssetWidget->widget.yCoordinate,
+        simpleAssetWidget->code,
+        simpleAssetWidget->arrowColor,
+        simpleAssetWidget->priority
     );
 }
 
@@ -253,9 +253,9 @@ const WidgetClass* SimpleAssetWidgetKlass() {
     return &kSimpleAssetWidgetClass;
 }
 
-DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isNegative) {
+DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isPositive) {
     DrawSimpleAssetParams sign;
-    if (isNegative) {
+    if (isPositive) {
         sign = { xCoordinate, yCoordinate, 0xB3, color, priority };
         return sign;
     }

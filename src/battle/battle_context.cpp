@@ -5,13 +5,7 @@ void srLoadAbilityData() {
         i32 sceneAbilityIndex; 
         i32 enemyActionIndex;
         u16 elementMask;
-        i32 fetchedRelativeIndex;
-        i32 limitAnimationScriptIndex; 
-        i32 relativeLimitIndex; 
         u8 characterID; 
-        u8* activeLimitIDs; 
-        i32 relativeIndex; 
-        i32 charLimitArrayIndex; 
         i32 deathSentenceFlag; 
         u16 cameraOverrideData;
         AttackData abilityData;
@@ -21,95 +15,41 @@ void srLoadAbilityData() {
         u16* currentSceneAbilityIDs = (u16*)(0x9A9444);
         AttackData* kernelAbilities = (AttackData*)(0xDB9690);
         EnemyData* enemyData = (EnemyData*)(0x9A8E9C);
-        u8* kernelLimitScriptIndexes = (u8*)(0x7B76A0);
-        u8* unkPartyStructPtr = (u8*)(0x9A87F4);
 
         cameraOverrideData = 0xFFFF;
         deathSentenceFlag = 0;
         gDamageContextPtr->MPCost = -1;
-        if (gDamageContextPtr->commandIndexCopy == CMD_ENEMY_ACTION) {
-            auto attackID = std::string(std::string("ETK-") + std::to_string(gDamageContextPtr->absAttackIndex));
-            auto enemyAttack = gContext.attacks.get_element(attackID);
-            abilityData = gContext.attacks.get_element(attackID).attackData;
-            currentSceneAbilities[0] = enemyAttack.attackData;
-            memcpy((void*)attackNamesPtr, (void*)(enemyAttack.attackName.str()), enemyAttack.attackName.size());
-            *(attackNamesPtr + enemyAttack.attackName.size()) = char(255);
-            *currentSceneAbilityIDs = enemyAttack.attackID;
-            gDamageContextPtr->sceneAbilityIndex = 0;
-        }
-        else if (gDamageContextPtr->absAttackIndex >= 128) { //The ability data here is not contained in the kernel
-            if (gDamageContextPtr->attackerID < 3) {
-                characterID = unkPartyStructPtr[16 * gDamageContextPtr->attackerID]; //array access, should figure out these structs
-                activeLimitIDs = (u8*)PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledLimitBytes;
-                for (i32 limitIndex = 0; limitIndex < 3; ++limitIndex) {
-                    relativeLimitIndex = (i8)activeLimitIDs[limitIndex];
-                    if (relativeLimitIndex + 128 == gDamageContextPtr->absAttackIndex) { //If this is the limit being used
-                        limitAnimationScriptIndex = 0;
-                        for (charLimitArrayIndex = 0; charLimitArrayIndex < 12; ++charLimitArrayIndex) {
-                            fetchedRelativeIndex = getLimitRelativeIndex(characterID, charLimitArrayIndex);
-                            if (fetchedRelativeIndex != 127) {
-                                if (fetchedRelativeIndex == relativeLimitIndex)
-                                    break;
-                                ++limitAnimationScriptIndex;
-                            }
-                        }
-                        gDamageContextPtr->animationScriptID = limitAnimationScriptIndex + 60;
-                        abilityData = (PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledLimitData[limitIndex]);
-                        break;
-                    }
-                }
+        auto abilityKey = assemblekey(gDamageContextPtr->commandIndexCopy, gDamageContextPtr->relAttackIndex);
+        switch (gDamageContextPtr->commandIndexCopy) {
+            case 20: {
+                if (gDamageContextPtr->attackerID < 3)
+                    abilityData = initializeLimitContext(abilityKey);
+                break;
             }
-        }
-        else { //load abilities which have been loaded from the kernel -- this code can be relocated to load from gContext
-            abilityData = kernelAbilities[gDamageContextPtr->absAttackIndex];
-            if (gDamageContextPtr->absAttackIndex >= 96) {
-                relativeIndex = gDamageContextPtr->absAttackIndex - 96;
-                if (kernelLimitScriptIndexes[relativeIndex] != 255)
-                    gDamageContextPtr->animationScriptID = kernelLimitScriptIndexes[relativeIndex];
-                gDamageContextPtr->animationBaseOffset = -1;
+            case 32: {
+                auto enemyAttack = gContext.attacks.get_element(abilityKey);
+                abilityData = enemyAttack.attackData;
+                currentSceneAbilities[0] = enemyAttack.attackData;
+                memcpy((void*)attackNamesPtr, (void*)(enemyAttack.attackName.str()), enemyAttack.attackName.size());
+                *(attackNamesPtr + enemyAttack.attackName.size()) = char(255);
+                *currentSceneAbilityIDs = enemyAttack.attackID;
+                gDamageContextPtr->sceneAbilityIndex = 0;
+                break;
+            }
+            default: {
+                abilityData = gContext.attacks.get_element(abilityKey).attackData;
+                break;
             }
         }
         if (gDamageContextPtr->commandIndex == CMD_MAGIC && gDamageContextPtr->absAttackIndex == 54) //death sentence case hardcoded
             deathSentenceFlag = 1;
-        if ((gDamageContextPtr->animationBaseOffset != -1) && !((gDamageContextPtr->miscActionflags) & 0x400000)) {
-            EnabledSpell* spellData = &(PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledMagicsData[gDamageContextPtr->animationBaseOffset]);
-            gDamageContextPtr->MPCost = spellData->mpCost;
-            if (spellData->quadCount && spellData->quadEnabled) {
-                spellData->quadCount = spellData->quadCount - 1;
-                gDamageContextPtr->unkDWord5 = spellData->quadEnabled;// quadEnabled?
-                gDamageContextPtr->unkDWord1 = gDamageContextPtr->unkDWord5 + 3;  // numberOfCasts?
-                if (gDamageContextPtr->unkDWord1 > 8) {
-                    gDamageContextPtr->unkDWord1 = 8;
-                }
-                srCreateEvent(2, gDamageContextPtr->attackerID, 21, 6);
-            }
-            else if (gDamageContextPtr->commandIndexCopy == CMD_SUMMON) {
-                if (spellData->allCount) { //if yo ucan still use the summon
-                    if (spellData->allCount != 255) {
-                        spellData->allCount = spellData->allCount - 1;
-                        srCreateEvent(2, gDamageContextPtr->attackerID, 21, 4);
-                    }
-                }
-                else {
-                    gDamageContextPtr->displayString = 121; //Probably displays "Summon Power is all used up"
-                }
-            }
-            else if (gDamageContextPtr->miscActionflags & 0x200) { //Handle the all case
-                if (spellData->allCount) {
-                    if (spellData->allCount != 255) {
-                        spellData->allCount = spellData->allCount - 1;
-                        srCreateEvent(2, gDamageContextPtr->attackerID, 21, 2);
-                    }
-                }
-                else if (abilityData.targetingFlags & 8) {
-                    gDamageContextPtr->miscActionflags |= 0x100000u;
-                }
-            }
-            if ((executingAction.entryPriority >= 5) && !(gDamageContextPtr->miscActionflags & 0x400000)) //priority 5 and 6 actions? what are those
-                gDamageContextPtr->addedCutMPHPAbsorbByte = spellData->actorPropertiesMask;
+        if ((gDamageContextPtr->enabledMagicsIndex != -1) && !((gDamageContextPtr->miscActionflags) & 0x400000)) {
+            EnabledSpell* spellData = getSpellSlot(gDamageContextPtr->attackerID, gDamageContextPtr->commandIndexCopy, gDamageContextPtr->relAttackIndex);
+            if (spellData)
+                updatePlayerSpellData(spellData, abilityData);
         }
-        if (deathSentenceFlag)
-        {
+
+        if (deathSentenceFlag) {
             gDamageContextPtr->animationScriptID = 52;
         }
         else if (gDamageContextPtr->attackerID >= 4) {
@@ -159,7 +99,84 @@ void srLoadAbilityData() {
         setStatusInflictionData(abilityData.statusInflictType, abilityData.statusMask);
         if (deathSentenceFlag)
             gAiActorVariables[gDamageContextPtr->attackerID].statusMask &= 0xFFDFFFFF;
-        return copyAdditionalEffects(abilityData.additionalEffect, abilityData.additionalEffectModifier);
+        copyAdditionalEffects(abilityData.additionalEffect, abilityData.additionalEffectModifier);
+}
+
+AttackData initializeLimitContext(const std::string& abilityKey) {
+    u8 characterID;
+    u8* activeLimitIDs;
+    u8* kernelLimitScriptIndexes = (u8*)(0x7B76A0);
+    u8* unkPartyStructPtr = (u8*)(0x9A87F4);
+    AttackData abilityData;
+
+    characterID = unkPartyStructPtr[16 * gDamageContextPtr->attackerID];
+    activeLimitIDs = (u8*)PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledLimitBytes;
+    if (gDamageContextPtr->absAttackIndex >= 96 && gDamageContextPtr->absAttackIndex <= 128) {
+        abilityData = gContext.attacks.get_element(abilityKey).attackData;
+        auto scriptIndex = gDamageContextPtr->absAttackIndex - 96;
+        if (kernelLimitScriptIndexes[scriptIndex] != 255)
+            gDamageContextPtr->animationScriptID = kernelLimitScriptIndexes[scriptIndex];
+        gDamageContextPtr->enabledMagicsIndex = -1;
+    }
+    else {
+        for (i32 limitIndex = 0; limitIndex < 3; ++limitIndex) {
+            auto relativeLimitIndex = (i8)activeLimitIDs[limitIndex];
+            if (relativeLimitIndex + 128 == gDamageContextPtr->absAttackIndex) {
+                auto limitAnimationScriptIndex = 0;
+                for (auto charLimitArrayIndex = 0; charLimitArrayIndex < 12; ++charLimitArrayIndex) {
+                    auto fetchedRelativeIndex = getLimitRelativeIndex(characterID, charLimitArrayIndex);
+                    if (fetchedRelativeIndex != 127) {
+                        if (fetchedRelativeIndex == relativeLimitIndex)
+                            break;
+                        ++limitAnimationScriptIndex;
+                    }
+                }
+                gDamageContextPtr->animationScriptID = limitAnimationScriptIndex + 60;
+                abilityData = (PARTY_STRUCT_ARRAY[gDamageContextPtr->attackerID].enabledLimitData[limitIndex]);
+                break;
+            }
+        }
+    }
+    return abilityData;
+}
+
+void updatePlayerSpellData(EnabledSpell* spellData, const AttackData& abilityData) {
+    BattleQueueEntry executingAction = (*(BattleQueueEntry*)0x9A9884);
+
+    gDamageContextPtr->MPCost = spellData->mpCost;
+    if (spellData->quadCount && spellData->quadEnabled) {
+        spellData->quadCount = spellData->quadCount - 1;
+        gDamageContextPtr->unkDWord5 = spellData->quadEnabled;// quadEnabled?
+        gDamageContextPtr->unkDWord1 = gDamageContextPtr->unkDWord5 + 3;  // numberOfCasts?
+        if (gDamageContextPtr->unkDWord1 > 8) {
+            gDamageContextPtr->unkDWord1 = 8;
+        }
+        srCreateEvent(2, gDamageContextPtr->attackerID, 21, 6);
+    }
+    else if (gDamageContextPtr->commandIndexCopy == CMD_SUMMON) {
+        if (spellData->allCount) { //if yo ucan still use the summon
+            if (spellData->allCount != 255) {
+                spellData->allCount = spellData->allCount - 1;
+                srCreateEvent(2, gDamageContextPtr->attackerID, 21, 4);
+            }
+        }
+        else {
+            gDamageContextPtr->displayString = 121; //Probably displays "Summon Power is all used up"
+        }
+    }
+    else if (gDamageContextPtr->miscActionflags & 0x200) { //Handle the all case
+        if (spellData->allCount) {
+            if (spellData->allCount != 255) {
+                spellData->allCount = spellData->allCount - 1;
+                srCreateEvent(2, gDamageContextPtr->attackerID, 21, 2);
+            }
+        }
+        else if (abilityData.targetingFlags & 8) {
+            gDamageContextPtr->miscActionflags |= 0x100000u;
+        }
+    }
+    if ((executingAction.entryPriority >= 5) && !(gDamageContextPtr->miscActionflags & 0x400000)) //priority 5 and 6 actions? what are those
+        gDamageContextPtr->addedCutMPHPAbsorbByte = spellData->supportEffectsMask;
 }
 
 void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask) {

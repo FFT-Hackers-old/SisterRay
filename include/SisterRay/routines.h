@@ -38,6 +38,8 @@
 #define TRANSFORM_ENEMY_COMMAND         ((void*)0x5C93A1)
 #define GET_MP_COST                     ((void*)0x5D975B)
 #define MAT_MATERIA_HANDLER             ((void*)0x70CF0B)
+#define DISPATCH_AUTO_ACTIONS           ((void*)0x5C8CFA)
+#define RECALCULATE_DERIVED_STATS       ((void*)0x5CB2CC)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);

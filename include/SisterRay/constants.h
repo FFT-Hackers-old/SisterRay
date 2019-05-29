@@ -28,6 +28,16 @@
 #define ACT_VINCENT         ((u8)0x17)
 #define ACT_CID             ((u8)0x18)
 
+#define ACT_IDX_CLOUD           ((u8)0x0)
+#define ACT_IDX_BARRET          ((u8)0x1)
+#define ACT_IDX_TIFA            ((u8)0x2)
+#define ACT_IDX_AERITH          ((u8)0x3)
+#define ACT_IDX_RED_XIII        ((u8)0x4)
+#define ACT_IDX_YUFFIE          ((u8)0x5)
+#define ACT_IDX_CAIT_SITH       ((u8)0x6)
+#define ACT_IDX_VINCENT         ((u8)0x7)
+#define ACT_IDX_CID             ((u8)0x8)
+
 #define CMD_ATTACK          ((u8)0x01)
 #define CMD_MAGIC           ((u8)0x02)
 #define CMD_SUMMON          ((u8)0x03)

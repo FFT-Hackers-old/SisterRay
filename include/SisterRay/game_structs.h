@@ -171,6 +171,40 @@ typedef struct {
 
 #define gAiActorVariables   ((ActorBattleVars*)0x9AB0DC)
 
+#pragma pack(push, 1)
+typedef struct {
+    u16 vTimerIncrement; //0x00
+    u16 yurnTimerIncrement; //0x02
+    u16 charATBValue; //0x04
+    u16 unk[2];       //0x06
+    u16 CTimerIncrement; //0xA
+    u8 unk1;             //0x0B
+    u8 unk2;             //0x0C
+    u8 activeCommandsMask; //0x0D
+    u8 unk3;               //0x0F
+    u8 unk4;               //0x10
+    u8 align[3];           //0x11
+    u8 unk5;               //0x15
+    u8 unk6;               //0x16
+    u8 PoisonTick;         //0x17
+    u8 align2[9];           //0x20
+    u8 unk7;               //0x21
+    u8 align3[7];           //0x28
+    u8 unk8;               //0x29
+    u8 unk9;               //0x2A
+    u8 unk10;              //0x2B
+    u32 unkdword1;         //0x2C
+    u32 unkdword2;         //0x30
+    u32 unkdowrd3;         //0x34
+    u32 unkdword4;         //0x38
+    u16 currentHP;          //0x3C
+    u16 currentMP;          //0x3E
+    u8 padding[4];         //0x40
+} ActorTimerData;
+#pragma pack(pop)
+
+#define gActorTimerBlock ((ActorTimerData*)(0x9A8B10))
+
 /*Should  have size 0x1AEC*/
 #pragma pack(push, 1)
 typedef struct {
@@ -185,15 +219,7 @@ typedef struct {
 } BigAnimBlock;
 #pragma pack(pop)
 
-#pragma pack(push, 1)
-typedef struct {
-	i8 PoisonTimer;
-	u8 padding[43];
-} ActorTimerBlock;
-#pragma pack(pop)
-
 #define gBigAnimBlock       ((BigAnimBlock*)0xBE1170)
-#define gActorTimerBlock    ((ActorTimerBlock*)0x9A8B26)
 
 #pragma pack(push, 1)
 typedef struct {

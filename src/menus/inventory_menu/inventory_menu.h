@@ -7,6 +7,5 @@
 
 SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask);
 void displayInventoryCursorStates(Menu* menu, u16 menuState, u32 stateControlMask);
-void handleInventoryMenuInput(i32 updateStateMask, Menu* menuObject);
 
 #endif

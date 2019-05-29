@@ -242,7 +242,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 }
 
 /*Initializes the command view widget used */
-void initCommandViewWidget(const MateriaInitEvent* event){
+void initCommandViewWidget(const MateriaInitEvent* event) {
     auto commandChoiceCursor = getStateCursor(event->menuObject, 3);
 
     drawGridParams gridParams;
@@ -257,15 +257,16 @@ void initCommandViewWidget(const MateriaInitEvent* event){
     boxParams = {
         0x2F,
         0xD6,
-        0,
+        98,
         0x78,
-        0.3f
+        0.1f
     };
     boxWidget = createBoxWidget(boxParams, CMD_GRID_BOX);
     addChildWidget(cmdGridWidget, (Widget*)boxWidget, CMD_GRID_BOX);
 
     gridParams = { commandChoiceCursor, &commandNameViewUpdater, 0x2F + 10, 0xD6 + 11 };
     gridWidget = createGridWidget(gridParams, CMD_GRID, TextWidgetKlass());
+    addChildWidget(cmdGridWidget, (Widget*)gridWidget, CMD_GRID);
 
     addChildWidget(mainWidget, cmdGridWidget, COMMAND_VIEW_WIDGET_NAME);
 }

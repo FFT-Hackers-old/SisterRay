@@ -185,3 +185,21 @@ void dispatchMateriaTypeHandlers(Widget* displayWidget, const MateriaInventoryEn
     auto dispatchContext = std::vector<SrEventContext>({ topkey, subkey });
     gContext.eventBus.dispatch(DRAW_MATERIA_DATA, &event, dispatchContext);
 }
+
+/*Initializes the command view widget used */
+void drawCommandViewWidget(const MateriaDrawEvent* event) {
+    auto viewChoiceCursor = getStateCursor(event->menu, 0);
+    auto commandChoiceCursor = getStateCursor(event->menu, 3);
+    auto commandViewWidget = getChild(event->menu->menuWidget, COMMAND_VIEW_WIDGET_NAME);
+    if (event->menuState != 3 && !(event->menuState == 0 && viewChoiceCursor->context.relativeRowIndex != 0)) {
+        disableWidget(commandViewWidget);
+        return;
+    }
+
+    viewChoiceCursor->context.maxColumnBound = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].commandColumns;
+    viewChoiceCursor->context.viewColumnBound = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].commandColumns;
+    auto cmdBoxWidget = getChild(commandViewWidget, CMD_GRID_BOX);
+    resizeBox(cmdBoxWidget, 0x2F, 0xD6, 36 * viewChoiceCursor->context.maxColumnBound, 0x78);
+    enableWidget(commandViewWidget);
+}
+

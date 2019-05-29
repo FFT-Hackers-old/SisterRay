@@ -7,7 +7,7 @@
 #include "stat_boosts.h"
 #include <array>
 
-#define MAGIC_COUNT 64
+#define MAGIC_COUNT 66
 #define SUMMON_COUNT 16
 #define ESKILL_COUNT 24
 #define AUTO_ACTION_COUNT 10
@@ -70,6 +70,13 @@ SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u32 partyIndex, u32 enabledSlot
 SISTERRAY_API void enableSummon(u32 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
 SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u32 partyIndex, u32 enabledSlotIndex);
 SISTERRAY_API void enableESkill(u32 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
+
+void updateCommandsActive(i32 partyIndex, i32 commandType);
+bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask);
+bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask);
+bool updateESkillCommand(u8 partyIndex, u32 actorStatusMask);
+void updateCommands(i32 partyIndex, i16 statusMask);
+
 
 
 #endif

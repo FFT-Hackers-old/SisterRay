@@ -271,6 +271,11 @@ DrawSimpleAssetParams Arrow(i32 xCoordinate, i32 yCoordinate, color color, float
     return arrow;
 }
 
+DrawSimpleAssetParams Cross(i32 xCoordinate, i32 yCoordinate, color color, float priority) {
+    DrawSimpleAssetParams arrow = { xCoordinate, yCoordinate, 0xD5, color, priority };
+    return arrow;
+}
+
 
 SISTERRAY_API void srNewGameAssetWidget(Widget* parent, DrawGameAssetParams params, char* name) {
     auto strName = std::string(name);
@@ -359,6 +364,16 @@ DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor,
     return star;
 }
 
+DrawGameAssetParams ItemIcon(i32 xCoordinate, i32 yCoordinate, i32 iconType, float priority) {
+    DrawGameAssetParams icon = { xCoordinate, yCoordinate, 16 * (iconType & 1) + 96, 16 * (iconType / 2) + 112, 16, 16, 1, 0, 0, priority };
+    return icon;
+}
+
+DrawGameAssetParams AllArrow(i32 xCoordinate, i32 yCoordinate, float priority) {
+    DrawGameAssetParams allArw = { xCoordinate, yCoordinate, 128, 8, 8, 8, 2, 0, 0, priority };
+    return allArw;
+}
+
 void setStarShaded(Widget* widgetToUpdate, bool shaded) {
     if (isGameAssetWidget(widgetToUpdate)) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;
@@ -369,6 +384,17 @@ void setStarShaded(Widget* widgetToUpdate, bool shaded) {
             }
             typedPtr->unk2 = 48;
         }
+    }
+    else {
+        srLogWrite("attempting to update assetType field of an invalid Widget type");
+    }
+}
+
+void updateItemIcon(Widget* widgetToUpdate, i32 iconType) {
+    if (isGameAssetWidget(widgetToUpdate)) {
+        auto typedPtr = (GameAssetWidget*)widgetToUpdate;
+        typedPtr->unk1 = 16 * (iconType & 1) + 96;
+        typedPtr->unk2 = 16 * (iconType / 2) + 112;
     }
     else {
         srLogWrite("attempting to update assetType field of an invalid Widget type");

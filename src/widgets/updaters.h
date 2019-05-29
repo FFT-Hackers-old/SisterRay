@@ -14,4 +14,9 @@ void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex)
 void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 
+void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void battleInventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+
 #endif

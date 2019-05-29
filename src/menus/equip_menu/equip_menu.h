@@ -12,10 +12,5 @@
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask);
 color getStatDisplayColor(u8 equippedStat, u8 toEquipStat);
 void displayMenuCursors(Menu* menuObject, u16 menuState, u32 stateControlMask);
-void displayEquipMenuViews(i32 updateStateMask, Widget* equipWidget);
-void handleEquipMenuInput(i32 updateStateMask, Menu* menuObject);
-void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex);
-void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex);
-u16 setupGearMenu(u8 itemType);
 
 #endif

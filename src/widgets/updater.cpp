@@ -1,6 +1,7 @@
 #include "updaters.h"
 #include "../impl.h"
 #include "../inventories/inventory_utils.h"
+#include "../menus/battle_menu/battle_menu_utils.h"
 
 void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
     if (self->collectionType != GridWidgetClass()) {
@@ -117,16 +118,20 @@ void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
     if (self->collectionType != GridWidgetClass()) {
         return;
     }
+    srLogWrite("ATTEMPTING TO DISPLAY COMMAND NAME at index %i", flatIndex);
     auto typedPtr = (CursorGridWidget*)self;
     auto partyIndex = *MAT_MENU_PARTY_INDEX;
     auto commands = (PARTY_STRUCT_ARRAY)[partyIndex].enabledCommandArray;
     auto commandID = commands[flatIndex].commandID;
-    if (commandID = 0xFF) {
+    if (commandID == 0xFF) {
+        srLogWrite("DISABLING TEXT WIDGET FOR COMMAND NAME at index %i", flatIndex);
         disableWidget(widget);
         return;
     }
     enableWidget(widget);
     updateText(widget, gContext.gameStrings.command_names.get_string(commandID));
+    updateTextColor(widget, COLOR_WHITE);
+    srLogWrite("ENABLED TEXT WIDGET FOR COMMAND NAME at index %i", flatIndex);
 }
 
 void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -136,7 +141,7 @@ void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex)
 
     auto typedPtr = (CursorGridWidget*)self;
     auto magics = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorMagics;
-    if (magics[flatIndex].magicIndex = 0xFF) {
+    if (magics[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
     }
@@ -150,7 +155,7 @@ void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
     }
     auto typedPtr = (CursorGridWidget*)self;
     auto summons = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorSummons;
-    if (summons[flatIndex].magicIndex = 0xFF) {
+    if (summons[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
     }
@@ -164,10 +169,72 @@ void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
     }
     auto typedPtr = (CursorGridWidget*)self;
     auto eSkills = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorEnemySkills;
-    if (eSkills[flatIndex].magicIndex = 0xFF) {
+    if (eSkills[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
     }
     enableWidget(widget);
     updateText(widget, gContext.attacks.get_element(std::string("ESK") + std::to_string(flatIndex)).attackName.str());
+}
+
+void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+
+    auto typedPtr = (CursorGridWidget*)self;
+    auto magics = gContext.party.get_resource(*BATTLE_ACTIVE_ACTOR_ID).actorMagics;
+    if (magics[flatIndex].magicIndex == 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(std::string("MAG") + std::to_string(flatIndex)).attackName.str());
+}
+
+void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto summons = gContext.party.get_resource(*BATTLE_ACTIVE_ACTOR_ID).actorSummons;
+    if (summons[flatIndex].magicIndex == 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(std::string("SUM") + std::to_string(flatIndex)).attackName.str());
+}
+
+void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto eSkills = gContext.party.get_resource(*BATTLE_ACTIVE_ACTOR_ID).actorEnemySkills;
+    if (eSkills[flatIndex].magicIndex == 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(std::string("ESK") + std::to_string(flatIndex)).attackName.str());
+}
+
+void battleInventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto itemID = gContext.battleInventory->get_resource(flatIndex).item_id;
+    if (itemID == 0xFFFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    auto textColor = (isUsableInBattle(itemID)) ? COLOR_WHITE : COLOR_GRAY;
+    updateText(getChild(widget, std::string("TXT")), getNameFromItemID(itemID));
+    updateTextColor(getChild(widget, std::string("TXT")), textColor);
+    updateNumber(getChild(widget, std::string("AMT")), gContext.battleInventory->get_resource(itemID).quantity);
+    updateNumberColor(getChild(widget, std::string("AMT")), textColor);
+    updateItemIcon(getChild(widget, std::string("ICN")), gContext.itemTypeData.get_resource(itemID).itemIconType);
 }

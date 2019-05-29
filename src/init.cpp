@@ -8,11 +8,11 @@
 #include "inventories/inventory_utils.h"
 #include "menus/inventory_menu/inventory_menu.h"
 #include "menus/inventory_menu/inventory_menu_callbacks.h"
-#include "menus/battle_menu.h"
 #include "menus/equip_menu/equip_menu.h"
 #include "menus/equip_menu//equip_menu_callbacks.h"
 #include "menus/materia_menu/materia_menu.h"
 #include "menus/materia_menu/materia_menu_callbacks.h"
+#include "party/party_callbacks.h"
 #include "battle/ai_script_engine.h"
 #include "battle/battle.h"
 #include "battle/battle_context.h"
@@ -126,7 +126,7 @@ static void Init(void)
     enableNoCD();
     srLoadKernel2Bin();
     srLoadKernelBin();
-    initOnUseDataRegistry();
+    initOnUseItemDataRegistry();
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();
     testFillInventory();
@@ -138,12 +138,13 @@ static void Init(void)
     initializeInventoryMenu();
     registerMateriaMenuListeners();
     initializeMateriaMenu();
+    registerPartyCallbacks();
     //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
-    mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
+    /*mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
     mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);
-    mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);
+    mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);*/
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
     mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);

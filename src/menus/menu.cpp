@@ -41,6 +41,40 @@ void destroyMenu(Menu* menu) {
     free(menu);
 }
 
+void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext menuContext) {
+    auto menuState = menuObject->currentState;
+    auto cursorArray = getStateCursor(menuObject, menuState);
+    auto menuWidget = menuObject->menuWidget;
+
+    MateriaInputEvent event = { menuObject, menuState };
+    auto dispatchContext = std::vector<SrEventContext>({ menuContext });
+    if (checkInputReceived(32)) {
+        gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);
+    }
+    else if (checkInputReceived(64)) {
+        gContext.eventBus.dispatch(MENU_INPUT_CANCEL, &event, dispatchContext);
+    }
+    else if (checkInputReceived(4)) {
+        gContext.eventBus.dispatch(MENU_INPUT_L1, &event, dispatchContext);
+    }
+    else if (checkInputReceived(8)) {
+        gContext.eventBus.dispatch(MENU_INPUT_R1, &event, dispatchContext);
+    }
+    else if (checkInputReceived(128)) { //When switching to the materia view, square
+        gContext.eventBus.dispatch(MENU_INPUT_SQUARE, &event, dispatchContext);
+    }
+    else if (checkInputReceived(16)) { //unequip accessory
+        gContext.eventBus.dispatch(MENU_INPUT_TRIANGLE, &event, dispatchContext);
+    }
+    else if (captureDirectionInput(0x2000, 4)) {
+        gContext.eventBus.dispatch(MENU_INPUT_RIGHT, &event, dispatchContext);
+    }
+    else if (captureDirectionInput(0x8000, 8)) {
+        gContext.eventBus.dispatch(MENU_INPUT_LEFT, &event, dispatchContext);
+    }
+    handleCursorPositionUpdate((u32*)(&(cursorArray->context)));
+}
+
 SISTERRAY_API void addState(Menu* menu, Cursor* context) {
     if (menu->contextSize < menu->contextCapacity) {
         memcpy(&(menu->contexts[menu->contextSize]), context, sizeof(Cursor));

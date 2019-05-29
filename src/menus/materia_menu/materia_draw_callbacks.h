@@ -15,4 +15,5 @@ void handleUpdateMateriaData(const MateriaDrawEvent* event);
 void handleUpdateMateriaView(const MateriaDrawEvent* event);
 void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia);
 void dispatchMateriaTypeHandlers(Widget* displayWidget, const MateriaInventoryEntry& materia, u8 materiaLevel);
+void drawCommandViewWidget(const MateriaDrawEvent* event);
 #endif

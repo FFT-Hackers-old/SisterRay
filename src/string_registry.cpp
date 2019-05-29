@@ -150,3 +150,8 @@ const char* getDescriptionFromID(u16 item_id) {
     auto relativeID = gContext.itemTypeData.get_resource(item_id).type_relative_id;
     return getDescriptionFromRelativeID(relativeID, itemType);
 }
+
+
+const char* getDefaultString() {
+    return defaultString;
+}

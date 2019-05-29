@@ -12,12 +12,14 @@ void enableAblT0S2(const EnableAbilitiesEvent* const event) {
 
 /*This enables all materia on the command Materia, instead of just the "highest level" command*/
 void enableAblT6S1(const EnableAbilitiesEvent* const event) {
+    srLogWrite("ENABLING COMMAND CALLBACK CALLED");
     for (auto dataIdx = 0; dataIdx < 5; dataIdx++) {
         auto commandID = event->materiaData.data[dataIdx];
         if (commandID == 0xFF) {
             return;
         }
         if (dataIdx < event->materiaLevel) //Insert a command as long as there is enough space and it is not already enabled
+            srLogWrite("enabling command with index %i", commandID);
             insertEnabledCommand(event->partyIndex, commandID);
     }
 }

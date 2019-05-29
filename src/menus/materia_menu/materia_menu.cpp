@@ -13,7 +13,7 @@ SISTERRAY_API void materiaMenuUpdateHandler(i32 updateStateMask) {
 
     displayMateriaCursorStates(menuObject, menuObject->currentState, updateStateMask);
     if (!is_input_handling_enabled()) {
-        handleMateriaMenuInput(updateStateMask, menuObject);
+        dispatchMenuInput(updateStateMask, menuObject, MATERIA_MENU_CONTEXT);
     }
 }
 
@@ -129,38 +129,4 @@ void displayMateriaCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) 
         default:
             return v1;
             */
-}
-
-void handleMateriaMenuInput(i32 updateStateMask, Menu* menuObject) {
-    auto materiaInventoryState = menuObject->currentState;
-    auto cursorArray = getStateCursor(menuObject, materiaInventoryState);
-    auto menuWidget = menuObject->menuWidget;
-
-    MateriaInputEvent event = { menuObject, materiaInventoryState };
-    auto dispatchContext = std::vector<SrEventContext>({ MATERIA_MENU_CONTEXT });
-    if (checkInputReceived(32)) {
-        gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);
-    }
-    else if (checkInputReceived(64)) {
-        gContext.eventBus.dispatch(MENU_INPUT_CANCEL, &event, dispatchContext);
-    }
-    else if (checkInputReceived(4)) {
-        gContext.eventBus.dispatch(MENU_INPUT_L1, &event, dispatchContext);
-    }
-    else if (checkInputReceived(8)) {
-        gContext.eventBus.dispatch(MENU_INPUT_R1, &event, dispatchContext);
-    }
-    else if (checkInputReceived(128)) { //When switching to the materia view, square
-        gContext.eventBus.dispatch(MENU_INPUT_SQUARE, &event, dispatchContext);
-    }
-    else if (checkInputReceived(16)) { //unequip accessory
-        gContext.eventBus.dispatch(MENU_INPUT_TRIANGLE, &event, dispatchContext);
-    }
-    else if (captureDirectionInput(0x2000, 4)) {
-        gContext.eventBus.dispatch(MENU_INPUT_RIGHT, &event, dispatchContext);
-    }
-    else if (captureDirectionInput(0x8000, 8)) {
-        gContext.eventBus.dispatch(MENU_INPUT_LEFT, &event, dispatchContext);
-    }
-    handleCursorPositionUpdate((u32*)(&(cursorArray->context)));
 }

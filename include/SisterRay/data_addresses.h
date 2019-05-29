@@ -21,7 +21,7 @@
 #define dword_DD1A80                         (u32*)0xDD1A80 //If 0, can't use items... maybe inventory empty?
 #define MENU_TEXTS                           (u8*)0x921168
 
-#define dword_DD17F0                (u16*)0xDD17F0
+#define dword_DD17F0                         (u16*)0xDD17F0
 #define GLOBAL_MENU_ROW_COUNT                (u16*)0xDD17F2
 #define GLOBAL_MENU_ROW_BASE                 (u16*)0xDD17F4
 #define word_DD17F6                          (u16*)0xDD17F6
@@ -34,15 +34,16 @@
 // These Globals are use to communicate between update loops by the battle module
 #define BATTLE_MENU_STATE                    (u32*)0x91EF9C
 #define PREVIOUS_BATTLE_MENU_STATE           (u32*)0x91EF98
-#define ACTIVE_MENU_OWNER_PARTY_INDEX        (u8*)0xDC3C7C
+#define BATTLE_ACTIVE_ACTOR_ID               (u8*)0xDC3C7C
 #define COMMAND_TRIGGER_INDEX                (u8*)0xDC3C74
-#define GLOBAL_ACTION_USED                   (u16*)0xDC3C78
+#define ISSUED_ACTION_ID                     (u16*)0xDC3C78
 #define GLOBAL_USED_ACTION_TARGET_DATA       (u16*)0xDC3C84
 #define GLOBAL_USED_MENU_INDEX               (u16*)0xDC3C54
 #define GLOBAL_USED_ITEM_RESTORE             (u16*)0xDC2088
 #define ACCEPTING_BATTLE_INPUT               (u32*)0xDC35AC //checked in menu handlers to determine if input can be accepted. Maybe pause?
 #define HANDLER_STATE_ARRAY                  (u8*)0xDC2068
 #define byte_9AC111                          (u8*)0x9AC111
+#define BATTLE_PAUSED                        (u8*)0xDC7E70
 // End
 
 //These Globals are used to communicate between update loops by the Equip Menu

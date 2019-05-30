@@ -24,8 +24,9 @@ void battleESkillUpdateHandler(i32 updateStateMask) {
     drawWidget(menuWidget);
 
     drawCursor(getStateCursor(menuObject, event.menuState), 0.1f); /*Here we just draw the cursor for each state, as they are independent party states*/
+}
 
-    if (!is_input_handling_enabled() && !(*BATTLE_PAUSED)) {
-        dispatchMenuInput(updateStateMask, menuObject, BATTLE_ESKILL_VIEW);
-    }
+void battleESkillInputHandler() {
+    Menu* menuObject = gContext.menuWidgets.get_element("BATTLE_ESKILL");
+    dispatchMenuInput(0, menuObject, BATTLE_ESKILL_VIEW);
 }

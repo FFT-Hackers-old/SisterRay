@@ -7,7 +7,7 @@
 #include "battle_eskill_input_callbacks.h"
 
 
-void initializeBattleEskillMenu();
+void initializeBattleESkillMenu();
 void registerESkillMenuListeners();
 
 #endif

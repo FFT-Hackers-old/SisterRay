@@ -15,6 +15,9 @@ void handleSelectItem(const BattleSpellInputEvent* event) {
     if (*ACCEPTING_BATTLE_INPUT)
         return;
 
+    if (*BATTLE_MENU_STATE != 5)
+        return;
+
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (itemCursorChoice.maxColumnBound * (itemCursorChoice.relativeRowIndex + itemCursorChoice.baseRowIndex)) + itemCursorChoice.relativeColumnIndex;
     auto itemID = gContext.battleInventory->get_resource(flatIndex).item_id;
@@ -35,6 +38,8 @@ void handleSelectItem(const BattleSpellInputEvent* event) {
 
 
 void handleExitItem(const BattleSpellInputEvent* event) {
+    if (*BATTLE_MENU_STATE != 5)
+        return;
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
     *BATTLE_MENU_STATE = 1;

@@ -15,7 +15,7 @@ void initializeMateriaMenu() {
     CursorContext materiaInventoryContext = { 0, 0, 1, 10, 0, 0, 1, 512, 0, 0, 0, 0, 0, 1 };
     Cursor materiaInventoryCursor = { materiaInventoryContext, 362, 214, 26, 0 };
     /*This is a view of the players command data. It must be set based on the active actor in an updater*/
-    CursorContext checkCommandContext = { 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 1, 1, 0 };
+    CursorContext checkCommandContext = { 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 1, 1, 0, 0 };
     Cursor checkCommandCursor = { checkCommandContext, 0xE, 0xE7, 26, 86 };
     /*The following cursors are for views of available magics, summons and enemy skills*/
     CursorContext magicViewContext = { 0, 0, 3, 3, 0, 0, 3, 18, 0, 0, 2, 0, 0, 1 };
@@ -51,12 +51,14 @@ void registerMateriaMenuListeners() {
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initMateriaViewWidget, modName);
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initMateriaDataWidget, modName);
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initCommandViewWidget, modName);
+    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initSpellViewWidget, modName);
 
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaDescription, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaData, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaView, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&drawCommandViewWidget, modName);
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&drawSpellsWidget, modName);
 
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&checkArrangeChoiceHandler, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&enterMateriaViewHandler, modName, contextKeys);

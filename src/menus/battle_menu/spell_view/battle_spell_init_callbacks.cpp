@@ -12,6 +12,7 @@ void initBattleMagicViewWidget(const BattleSpellDrawEvent* event) {
     auto mainWidget = menuObject->menuWidget;
 
     auto battleSpellView = createWidget(BATTLE_SPELL_MENU_NAME);
+    srLogWrite("CALLING BATTLE SPELL INIT HANDLER");
 
     /*boxParams = {
         380,
@@ -29,6 +30,7 @@ void initBattleMagicViewWidget(const BattleSpellDrawEvent* event) {
         gridParams = { magicItemChoice, &battleSpellNameViewUpdater, 42, 360, allocateSpellRow };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleSpellView, (Widget*)gridWidget, names[idx]);
+        srLogWrite("ADDES CHILD %S to WIDGET %S", battleSpellView->name.c_str(), gridWidget->widget.widget.name.c_str());
     }
 
     addChildWidget(mainWidget, battleSpellView, BATTLE_SPELL_MENU_NAME);

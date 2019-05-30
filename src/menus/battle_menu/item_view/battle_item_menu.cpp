@@ -24,11 +24,13 @@ void battleItemUpdateHandler(i32 updateStateMask) {
     drawWidget(menuWidget);
 
     drawCursor(getStateCursor(menuObject, event.menuState), 0.1f); /*Here we just draw the cursor for each state, as they are independent party states*/
-
-    if (!is_input_handling_enabled()) {
-        dispatchMenuInput(updateStateMask, menuObject, BATTLE_ITEM_VIEW);
-    }
 }
+
+void battleItemInputHandler() {
+    Menu* menuObject = gContext.menuWidgets.get_element("BATTLE_ITEM");
+    dispatchMenuInput(0, menuObject, BATTLE_ITEM_VIEW);
+}
+
 
 /*SISTERRAY_API u32* initializeBattleItemMenuCursor() {
     CursorContext* cursorContextPtr = (CursorContext*)(dword_DC20D8 + (448 * (*BATTLE_ACTIVE_ACTOR_ID)));

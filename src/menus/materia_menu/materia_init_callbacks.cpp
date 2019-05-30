@@ -252,23 +252,23 @@ void initCommandViewWidget(const MateriaInitEvent* event) {
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 
-    auto cmdGridWidget = createWidget(COMMAND_VIEW_WIDGET_NAME);
+    auto commandViewWidget = createWidget(COMMAND_VIEW_WIDGET_NAME);
 
     boxParams = {
         0x2F,
         0xD6,
         98,
         0x78,
-        0.1f
+        0.3f
     };
     boxWidget = createBoxWidget(boxParams, CMD_GRID_BOX);
-    addChildWidget(cmdGridWidget, (Widget*)boxWidget, CMD_GRID_BOX);
+    addChildWidget(commandViewWidget, (Widget*)boxWidget, CMD_GRID_BOX);
 
     gridParams = { commandChoiceCursor, &commandNameViewUpdater, 0x2F + 10, 0xD6 + 11 };
     gridWidget = createGridWidget(gridParams, CMD_GRID, TextWidgetKlass());
-    addChildWidget(cmdGridWidget, (Widget*)gridWidget, CMD_GRID);
+    addChildWidget(commandViewWidget, (Widget*)gridWidget, CMD_GRID);
 
-    addChildWidget(mainWidget, cmdGridWidget, COMMAND_VIEW_WIDGET_NAME);
+    addChildWidget(mainWidget, commandViewWidget, COMMAND_VIEW_WIDGET_NAME);
 }
 
 /*Initializes the spell view Widget used*/
@@ -281,7 +281,7 @@ void initSpellViewWidget(const MateriaInitEvent* event) {
     DrawBoxParams boxParams;
     auto mainWidget = event->menuObject->menuWidget;
 
-    auto spellGridWidget = createWidget(SPELL_VIEW_WIDGET_NAME);
+    auto spellViewWidget = createWidget(SPELL_VIEW_WIDGET_NAME);
 
     boxParams = {
          0x2F,
@@ -291,20 +291,19 @@ void initSpellViewWidget(const MateriaInitEvent* event) {
          0.203f
     };
     boxWidget = createBoxWidget(boxParams, SPELL_VIEW_BOX);
-    addChildWidget(spellGridWidget, (Widget*)boxWidget, SPELL_VIEW_BOX);
+    addChildWidget(spellViewWidget, (Widget*)boxWidget, SPELL_VIEW_BOX);
 
     spellViewCursor = getStateCursor(event->menuObject, 4);
     gridParams = { spellViewCursor, &spellNameViewUpdater, 0x2F + 35, 0x157 + 13 };
-    addChildWidget(spellGridWidget, (Widget*)createGridWidget(gridParams, SPELL_GRID, TextWidgetKlass()), SPELL_GRID);
+    addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, SPELL_GRID, TextWidgetKlass()), SPELL_GRID);
 
     spellViewCursor = getStateCursor(event->menuObject, 5);
     gridParams = { spellViewCursor, &summonNameViewUpdater, 0x2F + 93, 0x157 + 13 };
-    addChildWidget(spellGridWidget, (Widget*)createGridWidget(gridParams, SUMMON_GRID, TextWidgetKlass()) , SUMMON_GRID);
-
+    addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, SUMMON_GRID, TextWidgetKlass()) , SUMMON_GRID);
 
     spellViewCursor = getStateCursor(event->menuObject, 6);
     gridParams = { spellViewCursor, &eskillNameViewUpdater, 0x2F + 40 , 0x157 + 13 };
-    addChildWidget(spellGridWidget, (Widget*)createGridWidget(gridParams, ESKILL_GRID, TextWidgetKlass()), ESKILL_GRID);
+    addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, ESKILL_GRID, TextWidgetKlass()), ESKILL_GRID);
 
-    addChildWidget(mainWidget, spellGridWidget, SPELL_VIEW_WIDGET_NAME);
+    addChildWidget(mainWidget, spellViewWidget, SPELL_VIEW_WIDGET_NAME);
 }

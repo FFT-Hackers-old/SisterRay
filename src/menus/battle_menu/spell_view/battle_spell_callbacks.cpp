@@ -11,7 +11,7 @@ void initializeBattleSpellMenu() {
     Cursor spellChoiceCursor = { spellSelection, 36, 364, 32, 156 };
 
     Cursor cursorArray[3] = { spellChoiceCursor, spellChoiceCursor, spellChoiceCursor }; /*One cursor per party member*/
-    auto battleSpellMenu = createMenu(INIT_BATTLE_MENU, 3, &cursorArray[0]);
+    auto battleSpellMenu = createMenu(INIT_BATTLE_SPELL, 3, &cursorArray[0]);
     gContext.menuWidgets.add_element("BATTLE_SPELL", battleSpellMenu);
     gContext.menuWidgets.initializeMenu("BATTLE_SPELL", BATTLE_SPELL_MENU_NAME);
 }
@@ -19,6 +19,6 @@ void initializeBattleSpellMenu() {
 void registerSpellMenuListeners() {
     const auto& modName = std::string("srFF7Base");
     const auto& contextKeys = std::unordered_set<SrEventContext>({BATTLE_SPELL_VIEW});
-    gContext.eventBus.addListener(INIT_BATTLE_MENU, (SrEventCallback)&initBattleMagicViewWidget, modName);
+    gContext.eventBus.addListener(INIT_BATTLE_SPELL, (SrEventCallback)&initBattleMagicViewWidget, modName);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&initBattleMagicViewWidget, modName, contextKeys);
 }

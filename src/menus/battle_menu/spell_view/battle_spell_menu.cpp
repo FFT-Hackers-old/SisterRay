@@ -22,10 +22,10 @@ void battleSpellUpdateHandler(i32 updateStateMask) {
     BattleSpellInputEvent event = { menuObject, menuObject->currentState };
     gContext.eventBus.dispatch(DRAW_BATTLE_SPELL, &event);
     drawWidget(menuWidget);
-
     drawCursor(getStateCursor(menuObject, event.menuState), 0.1f); /*Here we just draw the cursor for each state, as they are independent party states*/
+}
 
-    if (!is_input_handling_enabled()) {
-        dispatchMenuInput(updateStateMask, menuObject, BATTLE_SPELL_VIEW);
-    }
+void battleSpellInputHandler() {
+    Menu* menuObject = gContext.menuWidgets.get_element("BATTLE_SPELL");
+    dispatchMenuInput(0, menuObject, BATTLE_SPELL_VIEW);
 }

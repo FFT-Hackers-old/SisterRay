@@ -10,5 +10,6 @@
 #include "../../../events/menu_events.h"
 
 void battleSummonUpdateHandler(i32 updateStateMask);
+void battleSummonInputHandler();
 
 #endif

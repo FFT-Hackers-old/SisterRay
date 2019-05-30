@@ -120,8 +120,7 @@ void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
     }
     srLogWrite("ATTEMPTING TO DISPLAY COMMAND NAME at index %i", flatIndex);
     auto typedPtr = (CursorGridWidget*)self;
-    auto partyIndex = *MAT_MENU_PARTY_INDEX;
-    auto commands = (PARTY_STRUCT_ARRAY)[partyIndex].enabledCommandArray;
+    auto commands = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].enabledCommandArray;
     auto commandID = commands[flatIndex].commandID;
     if (commandID == 0xFF) {
         srLogWrite("DISABLING TEXT WIDGET FOR COMMAND NAME at index %i", flatIndex);
@@ -185,11 +184,17 @@ void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
     auto typedPtr = (CursorGridWidget*)self;
     auto magics = gContext.party.get_resource(*BATTLE_ACTIVE_ACTOR_ID).actorMagics;
     if (magics[flatIndex].magicIndex == 0xFF) {
-        disableWidget(widget);
+        disableWidget(getChild(widget, std::string("ARW")));
+        disableWidget(getChild(widget, std::string("TXT")));
         return;
     }
-    enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(std::string("MAG") + std::to_string(flatIndex)).attackName.str());
+    enableWidget(getChild(widget, std::string("TXT")));
+    updateText(getChild(widget, std::string("TXT")), gContext.attacks.get_element(std::string("MAG") + std::to_string(flatIndex)).attackName.str());
+    if (magics[flatIndex].allCount) {
+        enableWidget(getChild(widget, std::string("ARW")));
+        return;
+    }
+    disableWidget(getChild(widget, std::string("ARW")));
 }
 
 void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {

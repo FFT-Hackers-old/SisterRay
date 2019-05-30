@@ -4,8 +4,8 @@
 typedef i32(*pfnsub6DD041)();
 #define displayBaseMenu ((pfnsub6DD041)(0x6DD041))
 
-typedef i32(*pfnsub6DE3D8)();
-#define displayCommands ((pfnsub6DE3D8)(0x6DE3D8))
+typedef i32(*pfnsub6DE3DB)();
+#define displayCommands ((pfnsub6DE3DB)(0x6DE3DB))
 
 typedef i32(*pfnsub6E4B3C)();
 #define sub_6E4B3C      ((pfnsub6E4B3C)(0x6E4B3C))
@@ -29,7 +29,8 @@ typedef i32(*pfnsub6E384F)();
 /*this function will replace the games version, handling drawing for battle menu view based on the menu state passed in as an argument
   It also handles input, so we will NOP the input functions the game relied on up to this point, which are separate, for these views
   We will also have to kill the games cursor/box drawing stuff eventually*/
-void drawBattleHandlers(i32 updateStateMask, u16 battleMenuState) {
+u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState) {
+    u8* byte_DC3654 = (u8*)(0xDC3654);
     switch (battleMenuState) {
         case 0:
             displayBaseMenu();
@@ -82,6 +83,30 @@ void drawBattleHandlers(i32 updateStateMask, u16 battleMenuState) {
             //sub_6DC1EB();
             break;
     }
+    return ((*byte_DC3654) = (*byte_DC3654 + 1)) + 1;
+}
+
+
+#define DRAW_BATTLE_VIEWS                  ((void*)0x6D82EA)
+#define BATTLE_SPELL_INPUT_HANDLER         ((void*)0x6D9B98)
+#define BATTLE_SUMMON_INPUT_HANDLER        ((void*)0x6DA072)
+#define BATTLE_ESKILL_INPUT_HANDLER        ((void*)0x6DA3A8)
+#define BATTLE_ITEM_INPUT_HANDLER          ((void*)0x6D98E3)
+
+void initializeBattleMenu() {
+    registerSpellMenuListeners();
+    initializeBattleSpellMenu();
+    registerSummonMenuListeners();
+    initializeBattleSummonMenu();
+    registerItemMenuListeners();
+    initializeBattleItemMenu();
+    registerESkillMenuListeners();
+    initializeBattleESkillMenu();
+    mogReplaceFunction(DRAW_BATTLE_VIEWS, &drawBattleHandlers);
+    mogReplaceFunction(BATTLE_SPELL_INPUT_HANDLER, &battleSpellInputHandler);
+    mogReplaceFunction(BATTLE_SUMMON_INPUT_HANDLER, &battleSummonInputHandler);
+    mogReplaceFunction(BATTLE_ESKILL_INPUT_HANDLER, &battleESkillInputHandler);
+    mogReplaceFunction(BATTLE_ITEM_INPUT_HANDLER, &battleItemInputHandler);
 }
 
 /*Change this code so we can add more choices*/

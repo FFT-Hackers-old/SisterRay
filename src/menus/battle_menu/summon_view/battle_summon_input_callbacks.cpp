@@ -9,6 +9,8 @@ using namespace BattleSummonWidgetNames;
 void handleSelectSummon(const BattleSpellInputEvent* event) {
     auto summonChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
     auto& enabledSummons = gContext.party.get_element(getPartyKey(event->menuState)).actorSummons;
+    if (*BATTLE_MENU_STATE != 7)
+        return;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (summonChoiceCursor.maxColumnBound * (summonChoiceCursor.relativeRowIndex + summonChoiceCursor.baseRowIndex)) + summonChoiceCursor.relativeColumnIndex;
@@ -28,6 +30,8 @@ void handleSelectSummon(const BattleSpellInputEvent* event) {
 
 
 void handleExitSummon(const BattleSpellInputEvent* event) {
+    if (*BATTLE_MENU_STATE != 7)
+        return;
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
     *BATTLE_MENU_STATE = 1;

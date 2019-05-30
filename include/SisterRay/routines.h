@@ -40,6 +40,8 @@
 #define MAT_MATERIA_HANDLER             ((void*)0x70CF0B)
 #define DISPATCH_AUTO_ACTIONS           ((void*)0x5C8CFA)
 #define RECALCULATE_DERIVED_STATS       ((void*)0x5CB2CC)
+#define UPDATE_COMMANDS_ACTIVE          ((void*)0x437679)
+#define DISPATCH_AUTO_ACTIONS           ((void*)0x5C8CFA)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);

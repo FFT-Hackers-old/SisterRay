@@ -36,13 +36,16 @@ const std::string getPartyKey(u8 partyIndex) {
 }
 
 /*This method enables actions*/
-void SrPartyDataRegistry::handleMateriaActorUpdates(u32 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, ActorStatBoosts& boosts) {
+void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, ActorStatBoosts& boosts) {
+    if (partyIndex > 3)
+        return;
+
     bool magicEnabled = false;
     bool summonEnabled = false;
     for (auto materia : equippedMaterias) {
-        if (getMateriaTopType(materia.item_id) == 0x9 || getMateriaTopType(materia.item_id) == 0xA)
+        if ((getMateriaTopType(materia.item_id) == 0x9) || (getMateriaTopType(materia.item_id) == 0xA))
             magicEnabled = true;
-        if (getMateriaTopType(materia.item_id) == 0xB || getMateriaTopType(materia.item_id) == 0xC)
+        if ((getMateriaTopType(materia.item_id) == 0xB) || (getMateriaTopType(materia.item_id) == 0xC))
             summonEnabled = true;
     }
     enableDefaultCommands(partyIndex, magicEnabled, summonEnabled);
@@ -57,10 +60,22 @@ void SrPartyDataRegistry::handleMateriaActorUpdates(u32 partyIndex, const std::v
         auto topkey = getTopKey(getMateriaTopType(materia.item_id));
         auto subkey = getSubKey(getMateriaSubType(materia.item_id));
         std::vector<SrEventContext> dispatchContexts = { topkey, subkey };
-        srLogWrite("dispatching enable events with keys %i, %i", topkey, subkey);
         gContext.eventBus.dispatch(ENABLE_ACTIONS, &enableActionEvent, dispatchContexts);
-        srLogWrite("dispatched enable events with keys %i, %i", topkey, subkey);
     }
+    PARTY_STRUCT_ARRAY[partyIndex].commandColumns = getCommandRows(partyIndex);
+}
+
+u8 getCommandRows(u8 partyIndex) {
+    auto commands = PARTY_STRUCT_ARRAY[partyIndex].enabledCommandArray;
+    u8 count = 0;
+    for (auto idx = 0; idx < 16; idx++) {
+        if (commands[idx].commandID != 0xFF) {
+            count++;
+        }
+    }
+    if (count <= 4)
+        return 1;
+    return (count / 4) + 1;
 }
 
 /*Applys modifiers when support materia are paired with others*/
@@ -190,7 +205,7 @@ SISTERRAY_API EnabledSpell* getSpellSlot(u8 partyIndex, u8 commandIndex, u16 act
 SISTERRAY_API void  insertEnabledCommand(u8 partyIndex, u8 commandIndex) {
     auto& commandArray = PARTY_STRUCT_ARRAY[partyIndex].enabledCommandArray;
     u8 freeIndex = 0xFF;
-    for (auto slotIndex = 4; slotIndex < 16; slotIndex++) {
+    for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         if (commandArray[slotIndex].commandID == 0xFF) {
             freeIndex = slotIndex;
             break;

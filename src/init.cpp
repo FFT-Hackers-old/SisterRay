@@ -12,6 +12,7 @@
 #include "menus/equip_menu//equip_menu_callbacks.h"
 #include "menus/materia_menu/materia_menu.h"
 #include "menus/materia_menu/materia_menu_callbacks.h"
+#include "menus/battle_menu//battle_menu.h"
 #include "party/party_callbacks.h"
 #include "battle/ai_script_engine.h"
 #include "battle/battle.h"
@@ -156,6 +157,9 @@ static void Init(void)
     mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
+    mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
+    mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
+    initializeBattleMenu();
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

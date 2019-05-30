@@ -11,6 +11,8 @@ void handleSelectESkill(const BattleSpellInputEvent* event) {
     auto& enabledESkills = gContext.party.get_element(getPartyKey(event->menuState)).actorEnemySkills;
     if (*ACCEPTING_BATTLE_INPUT)
         return;
+    if (*BATTLE_MENU_STATE != 4)
+        return;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (eSkillChoiceCursor.maxColumnBound * (eSkillChoiceCursor.relativeRowIndex + eSkillChoiceCursor.baseRowIndex)) + eSkillChoiceCursor.relativeColumnIndex;
@@ -30,6 +32,8 @@ void handleSelectESkill(const BattleSpellInputEvent* event) {
 
 
 void handleExitESkill(const BattleSpellInputEvent* event) {
+    if (*BATTLE_MENU_STATE != 4)
+        return;
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
     *BATTLE_MENU_STATE = 1;

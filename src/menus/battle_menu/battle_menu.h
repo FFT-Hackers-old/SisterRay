@@ -11,6 +11,7 @@
 #include "eskill_view/battle_eskill_menu.h"
 #include "item_view/battle_item_menu.h"
 
-void drawBattleHandlers(i32 updateStateMask, u16 battleMenuState);
+u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState);
+void initializeBattleMenu();
 
 #endif

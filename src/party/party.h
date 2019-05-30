@@ -26,7 +26,7 @@ class SrPartyDataRegistry : public SrNamedResourceRegistry<SrPartyData, std::str
 public:
     SrPartyDataRegistry();
     void addAutoAction(u32 partyIndex, const SrAutoAction& action);
-    void handleMateriaActorUpdates(u32 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, ActorStatBoosts& boosts);
+    void handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, ActorStatBoosts& boosts);
     void clearActions(u32 partyIndex);
 };
 
@@ -76,6 +76,7 @@ bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask);
 bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask);
 bool updateESkillCommand(u8 partyIndex, u32 actorStatusMask);
 void updateCommands(i32 partyIndex, i16 statusMask);
+u8 getCommandRows(u8 partyIndex);
 
 
 

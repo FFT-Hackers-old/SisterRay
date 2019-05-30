@@ -10,5 +10,6 @@
 #include "../../../events/menu_events.h"
 
 void battleESkillUpdateHandler(i32 updateStateMask);
+void battleESkillInputHandler();
 
 #endif

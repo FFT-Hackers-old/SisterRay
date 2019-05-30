@@ -46,14 +46,16 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
     }
     if (size > (context.viewRowBound * context.viewColumnBound)) {
         auto idx = size - 1;
-        while (idx > context.viewRowBound * context.viewColumnBound) {
+        while (idx > (context.viewRowBound * context.viewColumnBound)) {
             auto excessWidget = getChild((Widget*)cursorGrid, idx);
             disableWidget(excessWidget);
             idx--;
         }
     }
+    srLogWrite("drawing grid widget with name: %s", cursorGrid->widget.widget.name.c_str());
+    srLogWrite("TRYING TO DRAW GRID with bounds: %i, %i at %p", context.viewColumnBound, context.viewRowBound, &(cursorGrid->cursor->context));
     for (auto rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
-        for (auto columnIndex = 0; columnIndex <  context.viewColumnBound; ++columnIndex) {
+        for (auto columnIndex = 0; columnIndex < context.viewColumnBound; ++columnIndex) {
             u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex);
             auto child = getChild((Widget*)cursorGrid, flatIndex);
             if (child) {
@@ -61,6 +63,7 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
                 auto elementY = (cursorGrid->cursor->rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
                 u16 startIndex = ((context.maxColumnBound) * (context.baseRowIndex)) + (context.baseColumnIndex);
+                srLogWrite("Preparing to call updater");
                 if (cursorGrid->updater) {
                     cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex+flatIndex);
                 }

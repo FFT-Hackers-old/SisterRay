@@ -10,6 +10,8 @@ void handleSelectSpell(const BattleSpellInputEvent* event) {
     auto magicChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
     auto& enabledSpells = gContext.party.get_element(getPartyKey(event->menuState)).actorMagics;
     u16* restoreTypeGlobal = (u16*)(0xDC2088);
+    if (*BATTLE_MENU_STATE != 6)
+        return;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (magicChoiceCursor.maxColumnBound * (magicChoiceCursor.relativeRowIndex + magicChoiceCursor.baseRowIndex)) + magicChoiceCursor.relativeColumnIndex;
@@ -33,6 +35,8 @@ void handleSelectSpell(const BattleSpellInputEvent* event) {
 
 
 void handleExitSpell(const BattleSpellInputEvent* event) {
+    if (*BATTLE_MENU_STATE != 6)
+        return;
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
     *BATTLE_MENU_STATE = 1;

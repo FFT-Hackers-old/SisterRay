@@ -9,6 +9,8 @@ using namespace BattleSummonWidgetNames;
 void handleSelectSummon(const BattleSpellInputEvent* event) {
     auto summonChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
     auto& enabledSummons = gContext.party.get_element(getPartyKey(event->menuState)).actorSummons;
+    if (*ACCEPTING_BATTLE_INPUT)
+        return;
     if (*BATTLE_MENU_STATE != 7)
         return;
 

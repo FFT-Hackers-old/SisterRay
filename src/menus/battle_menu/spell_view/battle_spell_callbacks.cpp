@@ -20,5 +20,6 @@ void registerSpellMenuListeners() {
     const auto& modName = std::string("srFF7Base");
     const auto& contextKeys = std::unordered_set<SrEventContext>({BATTLE_SPELL_VIEW});
     gContext.eventBus.addListener(INIT_BATTLE_SPELL, (SrEventCallback)&initBattleMagicViewWidget, modName);
-    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&initBattleMagicViewWidget, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&handleSelectSpell, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&handleExitSpell, modName, contextKeys);
 }

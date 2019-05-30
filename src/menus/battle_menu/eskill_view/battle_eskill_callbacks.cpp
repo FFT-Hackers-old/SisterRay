@@ -20,5 +20,6 @@ void registerESkillMenuListeners() {
     const auto& modName = std::string("srFF7Base");
     const auto& contextKeys = std::unordered_set<SrEventContext>({BATTLE_ESKILL_VIEW});
     gContext.eventBus.addListener(INIT_BATTLE_ESKILL, (SrEventCallback)&initBattleESkillViewWidget, modName);
-    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&initBattleESkillViewWidget, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&handleSelectESkill, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&handleExitESkill, modName, contextKeys);
 }

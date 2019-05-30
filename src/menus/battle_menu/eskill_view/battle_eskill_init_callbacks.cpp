@@ -26,7 +26,7 @@ void initBattleESkillViewWidget(const BattleSpellDrawEvent* event) {
     std::vector<std::string> names = { PARTY_1_SPELL_GRID, PARTY_2_SPELL_GRID, PARTY_3_SPELL_GRID };
     for (auto idx = 0; idx < names.size(); idx++) {
         auto eskillChoice = getStateCursor(event->menu, idx);
-        gridParams = { eskillChoice, &battleSpellNameViewUpdater, 68, 360, allocateEskillRow };
+        gridParams = { eskillChoice, &battleEskillNameViewUpdater, 68, 360, allocateEskillRow };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleESkillView, (Widget*)gridWidget, names[idx]);
     }

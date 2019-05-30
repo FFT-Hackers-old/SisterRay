@@ -55,10 +55,10 @@ void handleUpdateMateriaDescription(const MateriaDrawEvent* event) {
     else if (event->menuState == 1) {
         switch (slotChoice.relativeRowIndex) {
             case 0:
-                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeRowIndex].item_id;
+                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeColumnIndex].item_id;
                 break;
             case 1:
-                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeRowIndex].item_id;
+                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeColumnIndex].item_id;
                 break;
             default: {
                 break;

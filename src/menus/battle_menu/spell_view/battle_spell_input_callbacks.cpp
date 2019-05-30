@@ -10,6 +10,9 @@ void handleSelectSpell(const BattleSpellInputEvent* event) {
     auto magicChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
     auto& enabledSpells = gContext.party.get_element(getPartyKey(event->menuState)).actorMagics;
     u16* restoreTypeGlobal = (u16*)(0xDC2088);
+    if (*ACCEPTING_BATTLE_INPUT)
+        return;
+
     if (*BATTLE_MENU_STATE != 6)
         return;
 

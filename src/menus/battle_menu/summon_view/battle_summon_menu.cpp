@@ -29,6 +29,11 @@ void battleSummonUpdateHandler(i32 updateStateMask) {
 }
 
 void battleSummonInputHandler() {
+    if (*ACCEPTING_BATTLE_INPUT)
+        return;
+
+    if (*BATTLE_MENU_STATE != 7)
+        return;
     Menu* menuObject = gContext.menuWidgets.get_element("BATTLE_SUMMON");
     dispatchMenuInput(0, menuObject, BATTLE_SUMMON_VIEW);
 }

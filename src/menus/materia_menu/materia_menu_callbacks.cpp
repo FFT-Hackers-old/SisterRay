@@ -18,11 +18,11 @@ void initializeMateriaMenu() {
     CursorContext checkCommandContext = { 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 1, 1, 0, 0 };
     Cursor checkCommandCursor = { checkCommandContext, 0xE, 0xE7, 26, 86 };
     /*The following cursors are for views of available magics, summons and enemy skills*/
-    CursorContext magicViewContext = { 0, 0, 3, 3, 0, 0, 3, 18, 0, 0, 2, 0, 0, 1 };
+    CursorContext magicViewContext = { 0, 0, 3, 3, 0, 0, 3, MAGIC_COUNT / 3, 0, 0, 2, 0, 0, 1 };
     Cursor magicViewCursor = { magicViewContext, 0x2A, 0x167, 34, 130 };
-    CursorContext summonViewContext = { 0, 0, 1, 3, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };
+    CursorContext summonViewContext = { 0, 0, 1, 3, 0, 0, 1, SUMMON_COUNT, 0, 0, 0, 0, 0, 1 };
     Cursor summonViewCursor = { summonViewContext, 0x2F + 50, 0x167, 34, 0 };
-    CursorContext eSkillViewContext = { 0, 0, 1, 3, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };
+    CursorContext eSkillViewContext = { 0, 0, 1, 3, 0, 0, 1, ESKILL_COUNT / 2, 0, 0, 0, 0, 0, 1 };
     Cursor eSkillViewCursor = { eSkillViewContext, 0x2F, 0x167, 34, 200 };
     /*Arrange cursor*/
     CursorContext arrangeViewContext = { 0, 0, 1, 4, 0, 0, 1, 4, 0, 0, 0, 0, 0, 1 };

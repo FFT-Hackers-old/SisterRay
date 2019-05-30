@@ -14,7 +14,7 @@ void battleSpellUpdateHandler(i32 updateStateMask) {
     for (i32 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
         if (partyIdx == *BATTLE_ACTIVE_ACTOR_ID) {
             enableWidget(getChild(getChild(menuWidget, BATTLE_SPELL_MENU_NAME), names[partyIdx]));
-            break;
+            continue;
         }
         disableWidget(getChild(getChild(menuWidget, BATTLE_SPELL_MENU_NAME), names[partyIdx]));
     }
@@ -26,6 +26,11 @@ void battleSpellUpdateHandler(i32 updateStateMask) {
 }
 
 void battleSpellInputHandler() {
+    if (*ACCEPTING_BATTLE_INPUT)
+        return;
+
+    if (*BATTLE_MENU_STATE != 6)
+        return;
     Menu* menuObject = gContext.menuWidgets.get_element("BATTLE_SPELL");
     dispatchMenuInput(0, menuObject, BATTLE_SPELL_VIEW);
 }

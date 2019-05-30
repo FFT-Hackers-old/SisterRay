@@ -8,6 +8,7 @@ using namespace BattleItemWidgetNames;
 /*Spell selection handler*/
 void handleSelectItem(const BattleSpellInputEvent* event) {
     auto itemCursorChoice = getStateCursor(event->menu, event->menuState)->context;
+    u16* restoreTypeGlobal = (u16*)(0xDC2088);
     if (*byte_9AC111) {
         *byte_9AC111 = 0;
         *ACCEPTING_BATTLE_INPUT = 1;
@@ -30,6 +31,10 @@ void handleSelectItem(const BattleSpellInputEvent* event) {
         setCursorTargetingData();
         *BATTLE_MENU_STATE = 0;
         *PREVIOUS_BATTLE_MENU_STATE = 5;
+        auto restoreType = gContext.items.get_resource(itemID).resource_conditions;
+        *restoreTypeGlobal = restoreType;
+        if (*restoreTypeGlobal != 0xFFFF)
+            initHandlerCursorState(-1, -1, 21);
     }
     else {
         playMenuSound(3);

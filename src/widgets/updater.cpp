@@ -180,9 +180,8 @@ void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
     if (self->collectionType != GridWidgetClass()) {
         return;
     }
-
     auto typedPtr = (CursorGridWidget*)self;
-    auto magics = gContext.party.get_resource(*BATTLE_ACTIVE_ACTOR_ID).actorMagics;
+    auto magics = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorMagics;
     if (magics[flatIndex].magicIndex == 0xFF) {
         disableWidget(getChild(widget, std::string("ARW")));
         disableWidget(getChild(widget, std::string("TXT")));
@@ -202,7 +201,7 @@ void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto summons = gContext.party.get_resource(*BATTLE_ACTIVE_ACTOR_ID).actorSummons;
+    auto summons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
     if (summons[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
@@ -216,7 +215,7 @@ void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto eSkills = gContext.party.get_resource(*BATTLE_ACTIVE_ACTOR_ID).actorEnemySkills;
+    auto eSkills = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorEnemySkills;
     if (eSkills[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;

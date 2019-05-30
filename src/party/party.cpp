@@ -244,6 +244,8 @@ SISTERRAY_API void enableMagic(u32 partyIndex, u32 enabledIndex, u32 commandlRel
     if (enabledIndex < enabledMagics.max_size()) {
         auto& enabledSlot = enabledMagics[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
+        enabledSlot.targetData = gContext.attacks.get_element(assemblekey(CMD_MAGIC, commandlRelativeIndex)).attackData.targetingFlags;
+        enabledSlot.mpCost = gContext.attacks.get_element(assemblekey(CMD_MAGIC, commandlRelativeIndex)).attackData.MPCost;
         return;
     }
     srLogWrite("attempted to enable magic spell at an invalid index");
@@ -265,6 +267,8 @@ SISTERRAY_API void enableSummon(u32 partyIndex, u32 enabledIndex, u32 commandlRe
     if (enabledIndex < enabledSummons.max_size()) {
         auto& enabledSlot = enabledSummons[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
+        enabledSlot.targetData = gContext.attacks.get_element(assemblekey(CMD_SUMMON, commandlRelativeIndex)).attackData.targetingFlags;
+        enabledSlot.mpCost = gContext.attacks.get_element(assemblekey(CMD_SUMMON, commandlRelativeIndex)).attackData.MPCost;
         return;
     }
     srLogWrite("attempted to enable magic spell at an invalid index");
@@ -287,6 +291,8 @@ SISTERRAY_API void enableESkill(u32 partyIndex, u32 enabledIndex, u32 commandlRe
     if (enabledIndex < enabledESkills.max_size()) {
         auto& enabledSlot = enabledESkills[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
+        enabledSlot.targetData = gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, commandlRelativeIndex)).attackData.targetingFlags;
+        enabledSlot.mpCost = gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, commandlRelativeIndex)).attackData.MPCost;
         return;
     }
     srLogWrite("attempted to enable magic spell at an invalid index");
@@ -333,24 +339,29 @@ void updateCommandsActive(i32 partyIndex, i32 commandType) {
         i32 statusMask = gAiActorVariables[partyIndex].statusMask;
         gActorTimerBlock[partyIndex].activeCommandsMask &= ~(u8)(1 << commandType);
         switch (commandType) {
-            case 0:
+            case 0: {
                 updateCommands(partyIndex, statusMask);
                 break;
-            case 1:                                   // magicCase
+            }
+            case 1: {
                 gActorTimerBlock[partyIndex].activeCommandsMask &= 0xDFu;// Unset Bit 0x20
-                if (updateMagicCommand(partyIndex, statusMask))
+                if (!updateMagicCommand(partyIndex, statusMask)) {
                     gActorTimerBlock[partyIndex].activeCommandsMask |= 0x20;
+                }
                 break;
-            case 2:                                   // summonCase
+            }
+            case 2: {
                 gActorTimerBlock[partyIndex].activeCommandsMask &= 0xBFu;// Unset bit 0x40
-                if (updateSummonCommand(partyIndex, statusMask))
+                if (!updateSummonCommand(partyIndex, statusMask))
                     gActorTimerBlock[partyIndex].activeCommandsMask |= 0x40;
                 break;
-            case 3:                                   // enemySkillCase
+            }
+            case 3: {
                 gActorTimerBlock[partyIndex].activeCommandsMask &= 0x7Fu;// unset bit 0x80
-                if (updateESkillCommand(partyIndex, statusMask))
+                if (!updateESkillCommand(partyIndex, statusMask))
                     gActorTimerBlock[partyIndex].activeCommandsMask |= 0x80;
                 break;
+            }
             default:
                 return;
         }
@@ -392,32 +403,42 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
             u8 commandFlags = enabledCommands[enabledSlotIdx].commandFlags & 0xED;
             switch (commandID) {
                 case 2:
-                case 21:
+                case 21: {
                     updateCommandsActive(partyIndex, 1);
-                    if (gActorTimerBlock[partyIndex].activeCommandsMask & 0x20)
+                    if (gActorTimerBlock[partyIndex].activeCommandsMask & 0x20) {
+                        srLogWrite("A:Flagging command %i inactive", commandID);
                         commandFlags |= 2u;
+                    }
                     break;
+                }
                 case 3:
-                case 22:
+                case 22: {
                     updateCommandsActive(partyIndex, 2);
-                    if (gActorTimerBlock[partyIndex].activeCommandsMask & 0x40)
+                    if (gActorTimerBlock[partyIndex].activeCommandsMask & 0x40) {
                         commandFlags |= 2u;
+                    }
                     break;
+                }
                 case 4:
-                case 23:
-                    if (*byte_DC3BA0 & 0x20)
+                case 23: {
+                    if (*byte_DC3BA0 & 0x20) {
                         commandFlags |= 2u;
+                    }
                     break;
+                }
                 case 5:
-                case 17:
+                case 17: {
                     if (!enabledCommands[enabledSlotIdx].allCount)
                         enabledCommands[enabledSlotIdx].cursorCommandType = 7;
                     break;
-                case 13:
+                }
+                case 13: {
                     updateCommandsActive(partyIndex, 3);
-                    if (gActorTimerBlock[partyIndex].activeCommandsMask & 0x80)
+                    if (gActorTimerBlock[partyIndex].activeCommandsMask & 0x80) {
                         commandFlags |= 2u;
+                    }
                     break;
+                }
                 default:
                     break;
             }
@@ -428,9 +449,10 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
                     case 21:
                     case 23:
                         break;
-                    default:
+                    default: {
                         commandFlags |= 2u;
                         break;
+                    }
                 }
             }
             if ((enabledCommands[enabledSlotIdx].targetingData & 8) && !enabledCommands[enabledSlotIdx].allCount) {
@@ -438,6 +460,7 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
             }
             if ((enabledCommands[enabledSlotIdx].targetingData & 0xC) == 12)
                 commandFlags |= 0x10u;
+
             enabledCommands[enabledSlotIdx].commandFlags = commandFlags;
         }
         result = enabledSlotIdx + 1;
@@ -463,6 +486,7 @@ bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
                 spellFlags |= 0x10u;
                 targetData = (targetData & 0xF7) | 4;
             }
+
             it->targetData = targetData;// update target data
             if ((actorMP >= it->mpCost) && !(actorStatusMask & 0x80) && ((actorStatusMask & 0x800) == 0 || spellID == 10)) {
                 spellFlags &= 0xFDu; //enable the spell
@@ -471,6 +495,7 @@ bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
         }
         it->propertiesMask = spellFlags;
     }
+    srLogWrite("enable magic command bool: %s", (commandEnabled == true) ? "true" : "false");
     return commandEnabled;
 }
 

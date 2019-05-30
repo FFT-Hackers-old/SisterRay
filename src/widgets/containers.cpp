@@ -79,16 +79,19 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType, sizeof(CursorGridWidget));
     widget->cursor = params.cursor;
     widget->updater = params.updater;
+    widget->allocator = params.allocator;
     widget->widget.widget.xCoordinate = params.xCoordinate;
     widget->widget.widget.yCoordinate = params.yCoordinate;
 
     /*If a primitive childtype or allocator is specified, type allocate the results*/
     if (childType || params.allocator) {
+        srLogWrite("allocating widgets for cursor gird: %s with allocator : %p", widget->widget.widget.name.c_str(), params.allocator);
         auto slotCount = (widget->cursor->context.viewRowBound) * (widget->cursor->context.viewColumnBound);
         for (u32 slot = 0; slot < slotCount; slot++) {
             auto name = std::to_string(slot);
             auto child = typeAllocate(childType, name, widget->allocator);
             addChildWidget((Widget*)widget, child, name);
+            srLogWrite("created slot: %i", slot);
         }
     }
     return widget;

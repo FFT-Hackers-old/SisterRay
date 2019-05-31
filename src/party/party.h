@@ -64,12 +64,12 @@ SISTERRAY_API void  insertEnabledCommand(u8 partyIndex, u8 commandIndex);
 SISTERRAY_API EnabledCommandStruct* getCommandSlot(u8 partyIndex, u8 commandIndex);
 
 SISTERRAY_API EnabledSpell* getSpellSlot(u8 partyIndex, u8 commandIndex, u16 actionIndex);
-SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u32 partyIndex, u32 enabledSlotIndex);
-SISTERRAY_API void enableMagic(u32 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
-SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u32 partyIndex, u32 enabledSlotIndex);
-SISTERRAY_API void enableSummon(u32 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
-SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u32 partyIndex, u32 enabledSlotIndex);
-SISTERRAY_API void enableESkill(u32 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
+SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 partyIndex, u32 enabledSlotIndex);
+SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
+SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u8 partyIndex, u32 enabledSlotIndex);
+SISTERRAY_API void enableSummon(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
+SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u8 partyIndex, u32 enabledSlotIndex);
+SISTERRAY_API void enableESkill(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
 
 void updateCommandsActive(i32 partyIndex, i32 commandType);
 bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask);

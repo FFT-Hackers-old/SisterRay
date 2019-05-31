@@ -137,8 +137,8 @@ void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex)
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto magics = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorMagics;
-    srLogWrite("drawing text for spell %i at index %i for actor %i", magics[flatIndex].magicIndex, flatIndex, *MAT_MENU_PARTY_INDEX);
+    auto& magics = gContext.party.get_element(getPartyKey(*MAT_MENU_PARTY_INDEX)).actorMagics;
+    srLogWrite("drawing text for spell %i at index %i for actor %i from struct at %p, key:%s", magics[flatIndex].magicIndex, flatIndex, *MAT_MENU_PARTY_INDEX, &magics, getPartyKey(*BATTLE_ACTIVE_ACTOR_ID).c_str());
     if (magics[flatIndex].magicIndex == 0xFF) {
         srLogWrite("Disableing widget");
         disableWidget(widget);

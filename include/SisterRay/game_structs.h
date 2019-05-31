@@ -325,7 +325,7 @@ typedef struct {
     u16 absorbeElementsMask; //0x42
     u32 attackStatusesMask; //0x44
     u32 immuneStatusesMask; //0x48
-    EnabledCommandStruct enabledCommandArray[0x10]; //0x4C
+    EnabledCommandStruct enabledCommandArray[16]; //0x4C
     u8 enabledLimitBytes[8]; //0xAC
     AttackData enabledLimitData[3]; //0xB4
     EnabledSpell enabledMagicsData[54]; //0x108

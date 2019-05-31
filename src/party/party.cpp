@@ -3,9 +3,9 @@
 #include "../impl.h"
 
 SrPartyDataRegistry::SrPartyDataRegistry() {
+    add_element(getPartyKey(0), SrPartyData());
     add_element(getPartyKey(1), SrPartyData());
     add_element(getPartyKey(2), SrPartyData());
-    add_element(getPartyKey(3), SrPartyData());
 }
 
 void SrPartyDataRegistry::addAutoAction(u32 partyIndex, const SrAutoAction& action) {
@@ -59,7 +59,7 @@ void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::ve
         EnableAbilitiesEvent enableActionEvent = { partyIndex, materia, gContext.materias.get_resource(materia.item_id), materiaLevel, &boosts };
         auto topkey = getTopKey(getMateriaTopType(materia.item_id));
         auto subkey = getSubKey(getMateriaSubType(materia.item_id));
-        srLogWrite("Dispatchign enable action event with party index: %i", partyIndex);
+        srLogWrite("Dispatching enable action event with party index: %i", partyIndex);
         std::vector<SrEventContext> dispatchContexts = { topkey, subkey };
         gContext.eventBus.dispatch(ENABLE_ACTIONS, &enableActionEvent, dispatchContexts);
     }
@@ -229,7 +229,7 @@ SISTERRAY_API EnabledCommandStruct* getCommandSlot(u8 partyIndex, u8 commandInde
 }
 
 /*These functions will be acessible through the C API, and so return raw pointers*/
-SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u32 partyIndex, u32 enabledSlotIndex) {
+SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 partyIndex, u32 enabledSlotIndex) {
     auto& magicArray = gContext.party.get_element(getPartyKey(partyIndex)).actorMagics;
     if (enabledSlotIndex < magicArray.max_size()) {
         auto partyPtr = magicArray.data();
@@ -240,8 +240,9 @@ SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u32 partyIndex, u32 enabledSlotI
 }
 
 /*Public API methods for enabling an action at a specific command index*/
-SISTERRAY_API void enableMagic(u32 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
+SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
     auto& enabledMagics = gContext.party.get_element(getPartyKey(partyIndex)).actorMagics;
+    srLogWrite("enabling spell: %i at index: %i for actor: %i for struct located at %p, retrieved with key %s", commandlRelativeIndex, enabledIndex, partyIndex, &enabledMagics, getPartyKey(partyIndex).c_str());
     if (enabledIndex < enabledMagics.max_size()) {
         auto& enabledSlot = enabledMagics[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
@@ -252,7 +253,7 @@ SISTERRAY_API void enableMagic(u32 partyIndex, u32 enabledIndex, u32 commandlRel
     srLogWrite("attempted to enable magic spell at an invalid index");
 }
 
-SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u32 partyIndex, u32 enabledSlotIndex) {
+SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u8 partyIndex, u32 enabledSlotIndex) {
     auto& summonArray = gContext.party.get_element(getPartyKey(partyIndex)).actorSummons;
     if (enabledSlotIndex < summonArray.max_size()) {
         auto partyPtr = summonArray.data();
@@ -263,7 +264,7 @@ SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u32 partyIndex, u32 enabledSlot
 }
 
 
-SISTERRAY_API void enableSummon(u32 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
+SISTERRAY_API void enableSummon(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
     auto& enabledSummons = gContext.party.get_element(getPartyKey(partyIndex)).actorSummons;
     if (enabledIndex < enabledSummons.max_size()) {
         auto& enabledSlot = enabledSummons[enabledIndex];
@@ -276,7 +277,7 @@ SISTERRAY_API void enableSummon(u32 partyIndex, u32 enabledIndex, u32 commandlRe
 }
 
 
-SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u32 partyIndex, u32 enabledSlotIndex) {
+SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u8 partyIndex, u32 enabledSlotIndex) {
     auto& ESkillArray = gContext.party.get_element(getPartyKey(partyIndex)).actorEnemySkills;
     if (enabledSlotIndex < ESkillArray.max_size()) {
         auto partyPtr = ESkillArray.data();
@@ -287,7 +288,7 @@ SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u32 partyIndex, u32 enabledSlot
 }
 
 
-SISTERRAY_API void enableESkill(u32 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
+SISTERRAY_API void enableESkill(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
     auto& enabledESkills = gContext.party.get_element(getPartyKey(partyIndex)).actorEnemySkills;
     if (enabledIndex < enabledESkills.max_size()) {
         auto& enabledSlot = enabledESkills[enabledIndex];

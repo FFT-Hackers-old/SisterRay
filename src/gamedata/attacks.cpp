@@ -20,36 +20,37 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         attack.attackName = gContext.gameStrings.magic_names.get_resource(idx);
         attack.attackDescription = gContext.gameStrings.magic_descriptions.get_resource(idx);
         if (idx == 96 || idx == 97) {
-            srAttackID = std::string("SPC") + std::to_string(attack.attackID);
+            attack.attackID = idx - 80;
+            srAttackID = assemblekey(CMD_SUMMON, attack.attackID);
             attack.attackID = 0xFFFF;
             attack.animationType = SUMMON;
             attack.attackType = SUMMON;
         }
         else if (idx < KERNEL_MAGIC_CUTOFF) {
             attack.attackID = idx;
-            srAttackID = std::string("MAG") + std::to_string(attack.attackID);
+            srAttackID = assemblekey(CMD_MAGIC, attack.attackID);;
             attack.animationType = MAGIC;
             attack.attackType = MAGIC;
         }
         else if (idx < KERNEL_SUMMON_CUTOFF) {
             attack.attackID = idx - 56;
-            srAttackID = std::string("SUM") + std::to_string(attack.attackID);
+            srAttackID = assemblekey(CMD_SUMMON, attack.attackID);
             attack.animationType = SUMMON;
             attack.attackType = SUMMON;
         }
         else if (idx < KERNEL_ESKILL_CUTOFF) {
             attack.attackID = idx - 72;
-            srAttackID = std::string("ESK") + std::to_string(attack.attackID);
+            srAttackID = assemblekey(CMD_ENEMY_SKILL, attack.attackID);;
             attack.animationType = ENEMY_SKILL;
             attack.attackType = ENEMY_SKILL;
         }
         else {
             attack.attackID  = idx; //Limit indexes are always absolute, and the index is used to dispatch the animation script, so it will not change
-            srAttackID = std::string("LIM") + std::to_string(attack.attackID);
+            srAttackID = assemblekey(CMD_LIMIT, attack.attackID);;
             attack.animationType = LIMIT;
             attack.attackType = LIMIT;
         }
-        add_element(std::string(srAttackID), attack);
+        add_element(srAttackID, attack);
         ++idx;
     }
 }

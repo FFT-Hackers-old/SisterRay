@@ -6,7 +6,7 @@
 
 /*For the public API events should be C-Standard compliant*/
 typedef struct {
-    const u32 partyIndex;
+    const u8 partyIndex;
     const MateriaInventoryEntry materia;
     const MateriaData materiaData;
     const u8 materiaLevel;
@@ -14,7 +14,7 @@ typedef struct {
 } EnableAbilitiesEvent;
 
 typedef struct {
-    const u32 partyIndex;
+    const u8 partyIndex;
     const MateriaInventoryEntry supportMateria;
     const u8 supportMateriaLevel;
     const MateriaData SupportMateriaData;

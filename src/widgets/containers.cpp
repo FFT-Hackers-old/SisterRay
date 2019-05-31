@@ -52,8 +52,6 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
             idx--;
         }
     }
-    srLogWrite("drawing grid widget with name: %s", cursorGrid->widget.widget.name.c_str());
-    srLogWrite("TRYING TO DRAW GRID with bounds: %i, %i at %p", context.viewColumnBound, context.viewRowBound, &(cursorGrid->cursor->context));
     for (auto rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
         for (auto columnIndex = 0; columnIndex < context.viewColumnBound; ++columnIndex) {
             u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex);
@@ -63,7 +61,6 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
                 auto elementY = (cursorGrid->cursor->rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
                 u16 startIndex = ((context.maxColumnBound) * (context.baseRowIndex)) + (context.baseColumnIndex);
-                srLogWrite("Preparing to call updater");
                 if (cursorGrid->updater) {
                     cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex+flatIndex);
                 }
@@ -85,13 +82,11 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
 
     /*If a primitive childtype or allocator is specified, type allocate the results*/
     if (childType || params.allocator) {
-        srLogWrite("allocating widgets for cursor gird: %s with allocator : %p", widget->widget.widget.name.c_str(), params.allocator);
         auto slotCount = (widget->cursor->context.viewRowBound) * (widget->cursor->context.viewColumnBound);
         for (u32 slot = 0; slot < slotCount; slot++) {
             auto name = std::to_string(slot);
             auto child = typeAllocate(childType, name, widget->allocator);
             addChildWidget((Widget*)widget, child, name);
-            srLogWrite("created slot: %i", slot);
         }
     }
     return widget;

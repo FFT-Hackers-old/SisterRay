@@ -101,7 +101,6 @@ void materiaSphereViewUpdater(CollectionWidget* self, Widget*widget, u16 flatInd
     }
     auto typedPtr = (CursorGridWidget*)self;
     auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
-    srLogWrite("Displaying sphere for materia with ID %i", materiaID);
     if (materiaID != 0xFFFF) {
         enableWidget(widget);
         transformAsset(widget, 128, 32, 16, 16);
@@ -137,15 +136,16 @@ void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex)
     if (self->collectionType != GridWidgetClass()) {
         return;
     }
-
     auto typedPtr = (CursorGridWidget*)self;
-    auto magics = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorMagics;
+    auto magics = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorMagics;
+    srLogWrite("drawing text for spell %i at index %i for actor %i", magics[flatIndex].magicIndex, flatIndex, *MAT_MENU_PARTY_INDEX);
     if (magics[flatIndex].magicIndex == 0xFF) {
+        srLogWrite("Disableing widget");
         disableWidget(widget);
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(std::string("MAG") + std::to_string(flatIndex)).attackName.str());
+    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_MAGIC, magics[flatIndex].magicIndex)).attackName.str());
 }
 
 void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -153,13 +153,13 @@ void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto summons = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorSummons;
+    auto summons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
     if (summons[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(std::string("SUM") + std::to_string(flatIndex)).attackName.str());
+    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_SUMMON, summons[flatIndex].magicIndex)).attackName.str());
 }
 
 void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -167,13 +167,13 @@ void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto eSkills = gContext.party.get_resource(*MAT_MENU_PARTY_INDEX).actorEnemySkills;
+    auto eSkills = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorEnemySkills;
     if (eSkills[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(std::string("ESK") + std::to_string(flatIndex)).attackName.str());
+    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex)).attackName.str());
 }
 
 void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -188,7 +188,7 @@ void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
         return;
     }
     enableWidget(getChild(widget, std::string("TXT")));
-    updateText(getChild(widget, std::string("TXT")), gContext.attacks.get_element(std::string("MAG") + std::to_string(flatIndex)).attackName.str());
+    updateText(getChild(widget, std::string("TXT")), gContext.attacks.get_element(assemblekey(CMD_MAGIC, magics[flatIndex].magicIndex)).attackName.str());
     if (magics[flatIndex].allCount) {
         enableWidget(getChild(widget, std::string("ARW")));
         return;
@@ -207,7 +207,7 @@ void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(std::string("SUM") + std::to_string(flatIndex)).attackName.str());
+    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_SUMMON, summons[flatIndex].magicIndex)).attackName.str());
 }
 
 void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -221,7 +221,7 @@ void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(std::string("ESK") + std::to_string(flatIndex)).attackName.str());
+    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex)).attackName.str());
 }
 
 void battleInventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {

@@ -214,6 +214,7 @@ void drawSpellsWidget(const MateriaDrawEvent* event) {
     else {
         enableWidget(magicGrid);
         enableWidget(spellBox);
+        return;
     }
 
     auto summonGrid = getChild(magicGrids, SUMMON_GRID);
@@ -224,6 +225,7 @@ void drawSpellsWidget(const MateriaDrawEvent* event) {
     else {
         enableWidget(summonGrid);
         enableWidget(spellBox);
+        return;
     }
 
     auto eSkillGrid = getChild(magicGrids, ESKILL_GRID);
@@ -234,6 +236,7 @@ void drawSpellsWidget(const MateriaDrawEvent* event) {
     else {
         enableWidget(eSkillGrid);
         enableWidget(spellBox);
+        return;
     }
 }
 

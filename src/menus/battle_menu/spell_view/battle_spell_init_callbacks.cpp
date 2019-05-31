@@ -25,12 +25,13 @@ void initBattleMagicViewWidget(const BattleSpellDrawEvent* event) {
     addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);*/
 
     std::vector<std::string> names = { PARTY_1_SPELL_GRID, PARTY_2_SPELL_GRID, PARTY_3_SPELL_GRID };
+    srLogWrite("Initializing battle spell grid widgets, names.size = %i", names.size());
     for (auto idx = 0; idx < names.size(); idx++) {
         auto magicItemChoice = getStateCursor(event->menu, idx);
         gridParams = { magicItemChoice, &battleSpellNameViewUpdater, 42, 360, allocateSpellRow };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleSpellView, (Widget*)gridWidget, names[idx]);
-        srLogWrite("ADDES CHILD %S to WIDGET %S", battleSpellView->name.c_str(), gridWidget->widget.widget.name.c_str());
+        srLogWrite("parent: %s child: %s bound to cursor %p", battleSpellView->name.c_str(), gridWidget->widget.widget.name.c_str(), magicItemChoice);
     }
 
     addChildWidget(mainWidget, battleSpellView, BATTLE_SPELL_MENU_NAME);

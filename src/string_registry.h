@@ -7,6 +7,8 @@
 #include "EncodedString.h"
 #include <vector>
 
+static const char* defaultString = "\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x00\x01\xFF";
+
 /*std::vector based string registry, single buffer will make it to hard
   to change a string, which sucks for a modding framework*/
 class StringRegistry : public SrResourceRegistry<EncodedString> {
@@ -56,5 +58,6 @@ const char* getNameFromItemID(u16 item_id);
 const char* getDescriptionFromRelativeID(u16 relativeId, u8 itemType);
 const char* getDescriptionFromID(u16 item_id);
 void initGameStrings();
+const char* getDefaultString();
 
 #endif

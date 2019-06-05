@@ -32,7 +32,7 @@ static void patchItems(void) {
 }
 
 /*initialize on use data to match the vanilla game*/
-void initOnUseDataRegistry() {
+void initOnUseItemDataRegistry() {
     for (u16 item_id = 0; item_id < 320; item_id++) {
         switch (item_id) {
         case 0:
@@ -94,7 +94,7 @@ SISTERRAY_API void initItems(SrKernelStream* stream)
 }
 
 /*Utility check if an item is usable globally*/
-bool character_can_use_item(u8 character_ID, u16 item_id) {
+bool canCharacterUseItem(u8 character_ID, u16 item_id) {
     u8 item_type = gContext.itemTypeData.get_resource(item_id).item_type;
     u16 relative_id = gContext.itemTypeData.get_resource(item_id).item_type;
     u16 restriction_mask;

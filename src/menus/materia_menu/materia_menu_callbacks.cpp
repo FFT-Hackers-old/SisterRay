@@ -15,14 +15,14 @@ void initializeMateriaMenu() {
     CursorContext materiaInventoryContext = { 0, 0, 1, 10, 0, 0, 1, 512, 0, 0, 0, 0, 0, 1 };
     Cursor materiaInventoryCursor = { materiaInventoryContext, 362, 214, 26, 0 };
     /*This is a view of the players command data. It must be set based on the active actor in an updater*/
-    CursorContext checkCommandContext = { 0, 0, PARTY_STRUCT_ARRAY[0].commandRows, 0, 0,PARTY_STRUCT_ARRAY[0].commandRows, 4, 0, 0, 1, 1, 0, 0 };
-    Cursor checkCommandCursor = { checkCommandContext, 0xE, 0xE7, 26, 13 };
+    CursorContext checkCommandContext = { 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 1, 1, 0, 0 };
+    Cursor checkCommandCursor = { checkCommandContext, 0xE, 0xE7, 26, 86 };
     /*The following cursors are for views of available magics, summons and enemy skills*/
-    CursorContext magicViewContext = { 0, 0, 3, 3, 0, 0, 3, 18, 0, 0, 2, 0, 0, 1 };
+    CursorContext magicViewContext = { 0, 0, 3, 3, 0, 0, 3, MAGIC_COUNT / 3, 0, 0, 2, 0, 0, 1 };
     Cursor magicViewCursor = { magicViewContext, 0x2A, 0x167, 34, 130 };
-    CursorContext summonViewContext = { 0, 0, 1, 3, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };
+    CursorContext summonViewContext = { 0, 0, 1, 3, 0, 0, 1, SUMMON_COUNT, 0, 0, 0, 0, 0, 1 };
     Cursor summonViewCursor = { summonViewContext, 0x2F + 50, 0x167, 34, 0 };
-    CursorContext eSkillViewContext = { 0, 0, 1, 3, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };
+    CursorContext eSkillViewContext = { 0, 0, 1, 3, 0, 0, 1, ESKILL_COUNT / 2, 0, 0, 0, 0, 0, 1 };
     Cursor eSkillViewCursor = { eSkillViewContext, 0x2F, 0x167, 34, 200 };
     /*Arrange cursor*/
     CursorContext arrangeViewContext = { 0, 0, 1, 4, 0, 0, 1, 4, 0, 0, 0, 0, 0, 1 };
@@ -50,11 +50,15 @@ void registerMateriaMenuListeners() {
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initMateriaDescWidget, modName);
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initMateriaViewWidget, modName);
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initMateriaDataWidget, modName);
+    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initCommandViewWidget, modName);
+    gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initSpellViewWidget, modName);
 
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaDescription, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaData, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaView, modName);
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&drawCommandViewWidget, modName);
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&drawSpellsWidget, modName);
 
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&checkArrangeChoiceHandler, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&enterMateriaViewHandler, modName, contextKeys);

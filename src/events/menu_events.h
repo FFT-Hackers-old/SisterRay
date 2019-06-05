@@ -48,6 +48,21 @@ typedef struct {
     Menu* menuObject;
 } MateriaInitEvent;
 
+
+typedef struct {
+    Menu* menu;
+    u32 menuState;
+} BattleSpellDrawEvent;
+
+typedef struct {
+    Menu* menu;
+    u32 menuState;
+} BattleSpellInputEvent;
+
+typedef struct {
+    Menu* menuObject;
+} BattleInitEvent;
+
 /*Event on which we dispatch handlers for displaying the various types of materia*/
 typedef struct {
     Widget* displayWidget;

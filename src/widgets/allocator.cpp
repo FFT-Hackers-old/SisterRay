@@ -1,16 +1,17 @@
 #include "allocator.h"
 #include "../impl.h"
 
-static char* defaultString = "\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x00\x01\xFF";
+static char* widgetDefault = "\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x00\x01\xFF";
 
 // create default objects from a type -- used to pre-allocate CursorContext objects
 // passing initial params is NOT type safe, make sure you know what you are doing!
 Widget* typeAllocate(const WidgetClass* type, std::string name, SRLISTALLOCPROC allocator) {
+    srLogWrite("Type allocating widget with allocator: %p", allocator);
     if (allocator) {
-        return allocator(name.c_str());
+        return allocator(name.c_str(), 0, 0); //Allocators need to only specify positions relative to anchor arguments, move calls can be used to position them
     }
     if (type == TextWidgetKlass()) {
-        DrawTextParams params = { 0, 0, defaultString, COLOR_RED, 0.2f };
+        DrawTextParams params = { 0, 0, widgetDefault, COLOR_RED, 0.2f };
         return (Widget*)createTextWidget(params, name);
     }
     else if (type == NumberWidgetKlass()) {

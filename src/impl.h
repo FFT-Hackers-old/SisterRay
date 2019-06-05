@@ -19,6 +19,7 @@ extern "C" {
 #include <SisterRay/SisterRay.h>
 
 #include "kernel.h"
+#include "gamedata/commands.h"
 #include "gamedata/items.h"
 #include "gamedata/materia.h"
 #include "gamedata/weapons.h"
@@ -47,6 +48,7 @@ typedef struct {
     HWND                                console;
     FILE*                               logFile;
     SrItemRegistry                      items;
+    SrCommandRegistry                   commands;
     SrWeaponRegistry                    weapons;
     SrArmorRegistry                     armors;
     SrAccessoryRegistry                 accessories;

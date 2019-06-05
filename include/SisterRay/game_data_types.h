@@ -1,6 +1,20 @@
 #ifndef GAME_DATA_TYPES_H
 #define GAME_DATA_TYPES_H
 
+typedef enum {
+    SR_GEAR_WEAPON,
+    SR_GEAR_ARMOR
+} SrGearType;
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 commandMenuID;
+    u8 targetingFlags;
+    u8 align[2];
+    u16 singleCameraID;
+    u16 multipleCameraID;
+} CommandData;
+#pragma pack(pop)
 
 #pragma pack(push, 1)
 typedef struct {

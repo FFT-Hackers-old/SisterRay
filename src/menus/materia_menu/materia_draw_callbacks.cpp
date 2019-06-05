@@ -55,10 +55,10 @@ void handleUpdateMateriaDescription(const MateriaDrawEvent* event) {
     else if (event->menuState == 1) {
         switch (slotChoice.relativeRowIndex) {
             case 0:
-                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeRowIndex].item_id;
+                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeColumnIndex].item_id;
                 break;
             case 1:
-                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeRowIndex].item_id;
+                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeColumnIndex].item_id;
                 break;
             default: {
                 break;
@@ -107,10 +107,10 @@ void handleUpdateMateriaData(const MateriaDrawEvent* event) {
     else if (event->menuState == 1) {
         switch (slotChoice.relativeRowIndex) {
             case 0:
-                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeRowIndex];
+                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeColumnIndex];
                 break;
             case 1:
-                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeRowIndex];
+                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeColumnIndex];
                 break;
             default: {
                 break;
@@ -185,3 +185,60 @@ void dispatchMateriaTypeHandlers(Widget* displayWidget, const MateriaInventoryEn
     auto dispatchContext = std::vector<SrEventContext>({ topkey, subkey });
     gContext.eventBus.dispatch(DRAW_MATERIA_DATA, &event, dispatchContext);
 }
+
+/*Initializes the command view widget used */
+void drawCommandViewWidget(const MateriaDrawEvent* event) {
+    auto viewChoiceCursor = getStateCursor(event->menu, 0);
+    auto commandChoiceCursor = getStateCursor(event->menu, 3);
+    auto commandViewWidget = getChild(event->menu->menuWidget, COMMAND_VIEW_WIDGET_NAME);
+    if (!(event->menuState >= 3 && event->menuState < 7) && !(event->menuState == 0 && viewChoiceCursor->context.relativeRowIndex == 0)) {
+        disableWidget(commandViewWidget);
+        return;
+    }
+
+    enableWidget(commandViewWidget);
+    srLogWrite("Drawing widget for actor %i", *MAT_MENU_PARTY_INDEX);
+    commandChoiceCursor->context.maxColumnBound = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].commandColumns;
+    commandChoiceCursor->context.viewColumnBound = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].commandColumns;
+    resizeBox(getChild(commandViewWidget, CMD_GRID_BOX), 0x2F, 0xD6, 65 * commandChoiceCursor->context.maxColumnBound + 0x98, 0x78);
+}
+
+void drawSpellsWidget(const MateriaDrawEvent* event) {
+    auto magicGrids = getChild(event->menu->menuWidget, SPELL_VIEW_WIDGET_NAME);
+    auto spellBox = getChild(magicGrids, SPELL_VIEW_BOX);
+    auto magicGrid = getChild(magicGrids, SPELL_GRID);
+    if (event->menuState != 4) {
+        disableWidget(magicGrid);
+        disableWidget(spellBox);
+    }
+    else {
+        enableWidget(magicGrid);
+        enableWidget(spellBox);
+        return;
+    }
+
+    auto summonGrid = getChild(magicGrids, SUMMON_GRID);
+    if (event->menuState != 5) {
+        disableWidget(summonGrid);
+        disableWidget(spellBox);
+    }
+    else {
+        enableWidget(summonGrid);
+        enableWidget(spellBox);
+        return;
+    }
+
+    auto eSkillGrid = getChild(magicGrids, ESKILL_GRID);
+    if (event->menuState != 6) {
+        disableWidget(eSkillGrid);
+        disableWidget(spellBox);
+    }
+    else {
+        enableWidget(eSkillGrid);
+        enableWidget(spellBox);
+        return;
+    }
+}
+
+
+

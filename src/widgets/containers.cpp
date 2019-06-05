@@ -41,10 +41,19 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
         while (size < context.viewRowBound * context.viewColumnBound) {
             auto newWidget = typeAllocate(cursorGrid->widget.containedKlass, std::to_string(idx), cursorGrid->allocator);
             addChildWidget((Widget*)cursorGrid, newWidget, std::to_string(idx));
+            size = cursorGrid->widget.widget.children.size();
+        }
+    }
+    if (size > (context.viewRowBound * context.viewColumnBound)) {
+        auto idx = size - 1;
+        while (idx > (context.viewRowBound * context.viewColumnBound)) {
+            auto excessWidget = getChild((Widget*)cursorGrid, idx);
+            disableWidget(excessWidget);
+            idx--;
         }
     }
     for (auto rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
-        for (auto columnIndex = 0; columnIndex <  context.viewColumnBound; ++columnIndex) {
+        for (auto columnIndex = 0; columnIndex < context.viewColumnBound; ++columnIndex) {
             u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex);
             auto child = getChild((Widget*)cursorGrid, flatIndex);
             if (child) {
@@ -67,6 +76,7 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType, sizeof(CursorGridWidget));
     widget->cursor = params.cursor;
     widget->updater = params.updater;
+    widget->allocator = params.allocator;
     widget->widget.widget.xCoordinate = params.xCoordinate;
     widget->widget.widget.yCoordinate = params.yCoordinate;
 
@@ -102,40 +112,22 @@ void drawStaticGridWidget(StaticGridWidget* staticGrid) {
                 addChildWidget((Widget*)staticGrid, newWidget, std::to_string(idx));
                 continue;
             }
-            srLogWrite("WARNING: insufficient space in grid widget for display and no automatic allocation possible!");
             break;
         }
     }
-    srLogWrite("Attempting to draw static Grid Widget with name %s", staticGrid->widget.widget.name.c_str());
     for (auto rowIndex = 0; rowIndex < staticGrid->rowCount; ++rowIndex) {
         for (auto columnIndex = 0; columnIndex < staticGrid->columnCount; ++columnIndex) {
             u16 flatIndex = ((staticGrid->columnCount) * (rowIndex)) + (columnIndex);
             auto child = getChild((Widget*)staticGrid, flatIndex);
-            srLogWrite("Fetched child at %p from children at index %i", child, flatIndex);
             if (child) {
                 auto elementX = (staticGrid->columnSpacing * columnIndex) + staticGrid->widget.widget.xCoordinate;
                 auto elementY = (staticGrid->rowSpacing * rowIndex) + staticGrid->widget.widget.yCoordinate;
 
-                srLogWrite("should draw child at: %i, %i", elementX, elementY);
                 moveWidget(child, elementX, elementY);
-                if (staticGrid->widget.widget.name == std::string("ABILITIES_LIST")) {
-                    srLogWrite("children positions: %i,%i, %i,%i, %i,%i %i,%i",
-                        getChild(child, std::string("TXT"))->xCoordinate,
-                        getChild(child, std::string("TXT"))->yCoordinate,
-                        getChild(child, std::string("AMT"))->xCoordinate,
-                        getChild(child, std::string("AMT"))->yCoordinate,
-                        getChild(child, std::string("SIGN"))->xCoordinate,
-                        getChild(child, std::string("SIGN"))->yCoordinate,
-                        getChild(child, std::string("PCNT"))->xCoordinate,
-                        getChild(child, std::string("PCNT"))->yCoordinate
-                    );
-                }
-                srLogWrite("Fetched child at %p from children at index %i", child, flatIndex);
                 if (staticGrid->updater) {
                     staticGrid->updater((CollectionWidget*)staticGrid, child, flatIndex);
                 }
                 drawWidget(child);
-                srLogWrite("Drew child:%s", child->name.c_str());
             }
         }
     }
@@ -144,8 +136,6 @@ void drawStaticGridWidget(StaticGridWidget* staticGrid) {
 
 StaticGridWidget* createStaticGridWidget(DrawStaticGridParams params, std::string name, const WidgetClass* childType) {
     StaticGridWidget* widget = (StaticGridWidget*)createCollectionWidget(name, &kStaticGridWidgetClass, childType, sizeof(StaticGridWidget));
-    srLogWrite("CREATING STATIC GRID WIDGET");
-    srLogWrite("childType:%p", childType);
     widget->widget.widget.xCoordinate = params.xCoordinate;
     widget->widget.widget.yCoordinate = params.yCoordinate;
     widget->columnCount= params.columnCount;
@@ -153,13 +143,6 @@ StaticGridWidget* createStaticGridWidget(DrawStaticGridParams params, std::strin
     widget->updater = params.updater;
     widget->rowSpacing = params.rowSpacing;
     widget->columnSpacing = params.columnSpacing;
-    srLogWrite("STATIC GRID WIDGET INITIALIZED");
-    srLogWrite("xCoordinatea:%i", widget->widget.widget.xCoordinate);
-    srLogWrite("yCoordinate:%i", widget->widget.widget.yCoordinate);
-    srLogWrite("colCount:%i", widget->columnCount);
-    srLogWrite("rowCount:%i:", widget->rowCount);
-    srLogWrite("collectionType:%p", widget->widget.collectionType);
-    srLogWrite("widgeKlassTYpe:%p", widget->widget.widget.klass);
     /*If a primitive childtype is specified, type allocate the results, otherwise add them to the collection manually*/
     if (childType || params.allocator) {
         auto slotCount = widget->columnCount * widget->rowCount;

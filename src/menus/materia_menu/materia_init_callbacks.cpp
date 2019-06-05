@@ -200,20 +200,20 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 
     /*Static Array Widgets*/
     auto rowCount = 5;
-    setStaticGridParams(&staticGridParams, 40, 326, 1, rowCount, 0, 26, nullptr, nullptr); //consider whether to use an updater here or not for updating the texts being displayed
+    setStaticGridParams(&staticGridParams, 25, 326, 1, rowCount, 0, 26, nullptr, nullptr); //consider whether to use an updater here or not for updating the texts being displayed
     StaticGridWidget* abilityListWidget = createStaticGridWidget(staticGridParams, ABILITIES_LIST);
     for (auto row = 0; row < rowCount; ++row) {
         auto name = std::to_string(row);
         auto statEffectRow = createWidget(name); //contains a percent sign, a plus sign, a colored number, and a stat name
-        moveWidget(statEffectRow, 40, 326);
+        moveWidget(statEffectRow, 25, 326);
 
-        setTextParams(&textParams, 40, 326, menuText, COLOR_WHITE, 0.1f);
+        setTextParams(&textParams, 25, 326, menuText, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
-        setNumberParams(&numberParams, 140, 330, 0, 3, COLOR_WHITE, 0.1f);
+        setNumberParams(&numberParams, 110, 330, 0, 3, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createNumberWidget(numberParams, std::string("AMT")), std::string("AMT"));
-        auto simpleAssetParams = Sign(127, 326, COLOR_WHITE, 0.1f);
+        auto simpleAssetParams = Sign(98, 330, COLOR_WHITE, 0.1f, true);
         addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("SIGN")), std::string("SIGN"));
-        simpleAssetParams = Percent(163, 330, COLOR_WHITE, 0.1f);
+        simpleAssetParams = Percent(145, 330, COLOR_WHITE, 0.1f);
         addChildWidget(statEffectRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("PCNT")), std::string("PCNT"));
         addChildWidget((Widget*)abilityListWidget, (Widget*)statEffectRow, name);
     }
@@ -242,7 +242,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 }
 
 /*Initializes the command view widget used */
-void initCommandViewWidget(const MateriaInitEvent* event){
+void initCommandViewWidget(const MateriaInitEvent* event) {
     auto commandChoiceCursor = getStateCursor(event->menuObject, 3);
 
     drawGridParams gridParams;
@@ -252,22 +252,23 @@ void initCommandViewWidget(const MateriaInitEvent* event){
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 
-    auto cmdGridWidget = createWidget(COMMAND_VIEW_WIDGET_NAME);
+    auto commandViewWidget = createWidget(COMMAND_VIEW_WIDGET_NAME);
 
     boxParams = {
         0x2F,
         0xD6,
-        0,
+        98,
         0x78,
         0.3f
     };
     boxWidget = createBoxWidget(boxParams, CMD_GRID_BOX);
-    addChildWidget(cmdGridWidget, (Widget*)boxWidget, CMD_GRID_BOX);
+    addChildWidget(commandViewWidget, (Widget*)boxWidget, CMD_GRID_BOX);
 
     gridParams = { commandChoiceCursor, &commandNameViewUpdater, 0x2F + 10, 0xD6 + 11 };
     gridWidget = createGridWidget(gridParams, CMD_GRID, TextWidgetKlass());
+    addChildWidget(commandViewWidget, (Widget*)gridWidget, CMD_GRID);
 
-    addChildWidget(mainWidget, cmdGridWidget, COMMAND_VIEW_WIDGET_NAME);
+    addChildWidget(mainWidget, commandViewWidget, COMMAND_VIEW_WIDGET_NAME);
 }
 
 /*Initializes the spell view Widget used*/
@@ -280,7 +281,7 @@ void initSpellViewWidget(const MateriaInitEvent* event) {
     DrawBoxParams boxParams;
     auto mainWidget = event->menuObject->menuWidget;
 
-    auto spellGridWidget = createWidget(SPELL_VIEW_WIDGET_NAME);
+    auto spellViewWidget = createWidget(SPELL_VIEW_WIDGET_NAME);
 
     boxParams = {
          0x2F,
@@ -290,20 +291,19 @@ void initSpellViewWidget(const MateriaInitEvent* event) {
          0.203f
     };
     boxWidget = createBoxWidget(boxParams, SPELL_VIEW_BOX);
-    addChildWidget(spellGridWidget, (Widget*)boxWidget, SPELL_VIEW_BOX);
+    addChildWidget(spellViewWidget, (Widget*)boxWidget, SPELL_VIEW_BOX);
 
     spellViewCursor = getStateCursor(event->menuObject, 4);
     gridParams = { spellViewCursor, &spellNameViewUpdater, 0x2F + 35, 0x157 + 13 };
-    addChildWidget(spellGridWidget, (Widget*)createGridWidget(gridParams, SPELL_GRID, TextWidgetKlass()), SPELL_GRID);
+    addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, SPELL_GRID, TextWidgetKlass()), SPELL_GRID);
 
     spellViewCursor = getStateCursor(event->menuObject, 5);
     gridParams = { spellViewCursor, &summonNameViewUpdater, 0x2F + 93, 0x157 + 13 };
-    addChildWidget(spellGridWidget, (Widget*)createGridWidget(gridParams, SUMMON_GRID, TextWidgetKlass()) , SUMMON_GRID);
-
+    addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, SUMMON_GRID, TextWidgetKlass()) , SUMMON_GRID);
 
     spellViewCursor = getStateCursor(event->menuObject, 6);
     gridParams = { spellViewCursor, &eskillNameViewUpdater, 0x2F + 40 , 0x157 + 13 };
-    addChildWidget(spellGridWidget, (Widget*)createGridWidget(gridParams, ESKILL_GRID, TextWidgetKlass()), ESKILL_GRID);
+    addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, ESKILL_GRID, TextWidgetKlass()), ESKILL_GRID);
 
-    addChildWidget(mainWidget, spellGridWidget, SPELL_VIEW_WIDGET_NAME);
+    addChildWidget(mainWidget, spellViewWidget, SPELL_VIEW_WIDGET_NAME);
 }

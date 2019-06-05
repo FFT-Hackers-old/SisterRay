@@ -34,6 +34,15 @@ typedef enum {
     INIT_MATERIA_MENU,
     DRAW_MATERIA_MENU,
     DRAW_MATERIA_DATA, //Dispatches on keyed subtypes
+    INIT_BATTLE_MENU,
+    DRAW_BATTLE_SPELL,
+    INIT_BATTLE_SPELL,
+    DRAW_BATTLE_SUMMON,
+    INIT_BATTLE_SUMMON,
+    DRAW_BATTLE_ESKILL,
+    INIT_BATTLE_ESKILL,
+    DRAW_BATTLE_ITEM,
+    INIT_BATTLE_ITEM,
     MENU_INPUT_OK,
     MENU_INPUT_CANCEL,
     MENU_INPUT_SQUARE,
@@ -41,7 +50,9 @@ typedef enum {
     MENU_INPUT_R1,
     MENU_INPUT_L1,
     MENU_INPUT_RIGHT,
-    MENU_INPUT_LEFT
+    MENU_INPUT_LEFT,
+    ENABLE_ACTIONS,
+    APPLY_SUPPORT
 } SrEventType;
 
 
@@ -51,6 +62,11 @@ typedef enum {
     INVENTORY_MENU_CONTEXT,
     MATERIA_MENU_CONTEXT,
     BATTLE_MENU,
+    /*Battle menu is much more modular, leading to separate contexts for each view -- at least for now*/
+    BATTLE_SPELL_VIEW,
+    BATTLE_SUMMON_VIEW,
+    BATTLE_ESKILL_VIEW,
+    BATTLE_ITEM_VIEW,
     MAT_HIGH_TYPE_0,
     MAT_HIGH_TYPE_1,
     MAT_HIGH_TYPE_2,
@@ -236,7 +252,7 @@ typedef struct CollectionWidget_ CollectionWidget;
 typedef struct _Cursor Cursor;
 
 typedef void(*SRLISTUPDATERPROC)(CollectionWidget*, Widget*, u16);
-typedef Widget*(*SRLISTALLOCPROC)(const char*);
+typedef Widget*(*SRLISTALLOCPROC)(const char*, i32, i32);
 typedef struct {
     Cursor* cursor;
     SRLISTUPDATERPROC updater;

@@ -244,7 +244,7 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
   per character restrictions*/
 bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index) {
     u8 character_ID = (u8)(CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
-    bool item_usable = character_can_use_item(character_ID, item_id); //If the character can't use the item, give the old "nothing to do with me message"
+    bool item_usable = canCharacterUseItem(character_ID, item_id); //If the character can't use the item, give the old "nothing to do with me message"
     bool limit_taught = false;
     auto registry = gContext.gameStrings.character_specific_strings[character_ID];
     if (item_usable) {

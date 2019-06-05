@@ -23,12 +23,10 @@ TextWidget* createTextWidget(DrawTextParams params, std::string name) {
     TextWidget* widget = (TextWidget*)createWidget(name, sizeof(TextWidget), &kTextWidgetClass);
     if(params.stringToDraw)
         new (&widget->text) EncodedString(params.stringToDraw);
-    srLogWrite("text widget class: %p", &kTextWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->textColor = params.textColor;
     widget->priority = params.priority;
-    srLogWrite("returning created text widget");
     return widget;
 }
 

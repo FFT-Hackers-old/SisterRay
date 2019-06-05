@@ -67,9 +67,9 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInit
     ItemTypeData item_type_data;
     u16 absoluteBase = resource_count() - 1;
     u16 absoluteIndex;
-
     for (u16 i = 0; i < numberToInitialize; i++) {
-        ItemTypeData item_type_data{ itemType, (u16)i };
+        auto iconType = getIconTypeFromItemType(itemType, i);
+        ItemTypeData item_type_data{ itemType, (u16)i, iconType };
         gContext.itemTypeData.add_resource(item_type_data);
 
         absoluteIndex = absoluteBase + i;
@@ -83,6 +83,40 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInit
         case 3:
             reverseAccessoryRegistry.push_back(absoluteIndex);
         }
+    }
+}
+
+/*Only used when loading from kernel to initialize the augmented data from kernel*/
+u8 getIconTypeFromItemType(u8 itemType, u16 typeRelativeIndex) {
+    switch (itemType) {
+        case 0:
+            return 0;
+        case 1: {
+            if (typeRelativeIndex < 16)
+                return 1;
+            if (typeRelativeIndex < 32)
+                return 3;
+            if (typeRelativeIndex < 48)
+                return 2;
+            if (typeRelativeIndex < 62)
+                return 5;
+            if (typeRelativeIndex < 73)
+                return 4;
+            if (typeRelativeIndex < 87)
+                return 9;
+            if (typeRelativeIndex < 101)
+                return 6;
+            if (typeRelativeIndex < 114)
+                return 7;
+            return 8;
+            break;
+        }
+        case 2:
+            return 10;
+        case 3:
+            return 11;
+        default:
+            return 0;
     }
 }
 

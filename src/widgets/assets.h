@@ -84,6 +84,7 @@ bool isSimpleAssetWidget(Widget* widget);
 DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isNegative = false);
 DrawSimpleAssetParams Percent(i32 xCoordinate, i32 yCoordinate, color color, float priority);
 DrawSimpleAssetParams Arrow(i32 xCoordinate, i32 yCoordinate, color color, float priority);
+DrawSimpleAssetParams Cross(i32 xCoordinate, i32 yCoordinate, color color, float priority);
 
 struct SlotsWidget_ {
     Widget widget;
@@ -120,6 +121,9 @@ SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1, i32 type2, 
 //The following are a set of helper methods for fetching parameters that trigger load a specific game asset
 DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority);
 DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority, bool shaded);
+DrawGameAssetParams ItemIcon(i32 xCoordinate, i32 yCoordinate, i32 iconType, float priority);
+DrawGameAssetParams AllArrow(i32 xCoordinate, i32 yCoordinate, float priority);
 void setStarShaded(Widget* widgetToUpdate, bool shaded);
+void updateItemIcon(Widget* widgetToUpdate, i32 iconType);
 
 #endif

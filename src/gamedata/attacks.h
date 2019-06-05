@@ -35,6 +35,7 @@ public:
 };
 
 
+std::string assemblekey(u8 commandIndex, u16 relativeAttackIndex);
 SISTERRAY_API void initAttacks(SrKernelStream* stream);
 
 #endif

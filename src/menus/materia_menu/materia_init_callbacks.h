@@ -13,5 +13,7 @@ void initMateraCharDataWidget(const MateriaInitEvent* event);
 void initMateriaDescWidget(const MateriaInitEvent* event);
 void initMateriaViewWidget(const MateriaInitEvent* event);
 void initMateriaDataWidget(const MateriaInitEvent* event);
+void initCommandViewWidget(const MateriaInitEvent* event);
+void initSpellViewWidget(const MateriaInitEvent* event);
 
 #endif

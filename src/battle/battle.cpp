@@ -422,3 +422,68 @@ void* transformEnemyCommand() {
     }
     return (void*)gDamageContextPtr;
 }
+
+void dispatchAutoActions(i32 partyIndex, i32 actionType) {
+    AutoActionType dispatchType;
+    switch (actionType) {
+        case 0: {
+            dispatchType = FINAL_ATTACK;
+            break;
+        }
+        case 1: {
+            dispatchType = SNEAK_ATTACK;
+            break;
+        }
+        case 2: {
+            dispatchType = COUNTER_ACTION;
+            break;
+        }
+        default: {
+            dispatchType = COUNTER_ACTION;
+        }
+    }
+    auto& autoActions = gContext.party.get_element(getPartyKey(partyIndex)).actorAutoActions;
+    for (auto& action : autoActions) {
+        if (action.dispatchType == AUTOACT_NO_ACTION)
+            continue;
+        if (action.counterCount == 0 || action.counterCount == 0xFF)
+            continue;
+        if (dispatchType == action.dispatchType) {
+            auto finalAction = getActionToDispatch(action);
+            auto targetMask = setTargetMask(partyIndex, action);
+            auto priority = 1;
+            if (action.dispatchType == FINAL_ATTACK)
+                priority = 0;
+            enqueueAction(partyIndex, priority, action.commandIndex, finalAction, targetMask);
+            action.counterCount--;
+        }
+    }
+
+}
+
+u16 getActionToDispatch(const SrAutoAction& action) {
+    if (action.actionIndex != 0xFFFF) //else return a random action based on the command type
+        return action.actionIndex;
+}
+
+u16 setTargetMask(u8 partyIndex, const SrAutoAction& action) {
+    u16 targetMask = 0;
+    u8 targetingData = 3; //default targeting mask
+    /*In the case of magic */
+    if (action.commandIndex == CMD_MAGIC || action.commandIndex == CMD_SUMMON) {
+        auto actionData = getSpellSlot(partyIndex, action.commandIndex, action.actionIndex);
+        targetingData = actionData->targetData;
+    }
+    else {
+        targetingData = getCommandSlot(partyIndex, action.commandIndex)->targetingData;
+    }
+    if (action.dispatchType != SNEAK_ATTACK) {
+        if (targetingData & 2) {
+            targetMask = gAiActorVariables[partyIndex].prevAttackerMask;
+        }
+        else {
+            targetMask = 1 << partyIndex;
+        }
+    }
+    return targetMask;
+}

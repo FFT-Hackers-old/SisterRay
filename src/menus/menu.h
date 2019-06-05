@@ -42,4 +42,7 @@ typedef struct {
 #define menuWindowConfig ((oldDrawBoxParams*)0x921C78)
 #define equipMenuWindowConfig ((oldDrawBoxParams*)0x920AC8)
 
+void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext menuContext);
+
+
 #endif

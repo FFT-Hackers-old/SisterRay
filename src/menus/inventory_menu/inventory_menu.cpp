@@ -26,11 +26,11 @@ SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
     displayInventoryCursorStates(menuObject, menuObject->currentState, updateStateMask);
     if (!is_input_handling_enabled())
     {
-        handleInventoryMenuInput(updateStateMask, menuObject);
+        dispatchMenuInput(updateStateMask, menuObject, INVENTORY_MENU_CONTEXT);
     }
 }
 
-//Need to come up with a better abstract for cursors
+/*Might just want to include cursors in the draw callbacks*/
 void displayInventoryCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
 
@@ -95,34 +95,6 @@ void displayInventoryCursorStates(Menu* menu, u16 menuState, u32 updateStateMask
         }
         default:
             break;
-    }
-}
-
-void handleInventoryMenuInput(i32 updateStateMask, Menu* menuObject) {
-    auto inventoryMenuState = menuObject->currentState;
-    auto cursorArray = getStateCursor(menuObject, inventoryMenuState);
-    auto menuWidget = menuObject->menuWidget;
-
-    InventoryInputEvent event = { menuObject, inventoryMenuState };
-    handleCursorPositionUpdate((u32*)(&(cursorArray->context)));
-    auto dispatchContext = std::vector<SrEventContext>({ INVENTORY_MENU_CONTEXT });
-    if (checkInputReceived(32)) {
-        gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);
-    }
-    else if (checkInputReceived(64)) {
-        gContext.eventBus.dispatch(MENU_INPUT_CANCEL, &event, dispatchContext);
-    }
-    else if (checkInputReceived(4)) {
-        gContext.eventBus.dispatch(MENU_INPUT_L1, &event, dispatchContext);
-    }
-    else if (checkInputReceived(8)) {
-        gContext.eventBus.dispatch(MENU_INPUT_R1, &event, dispatchContext);
-    }
-    else if (checkInputReceived(128)) { //When switching to the materia view, square
-        gContext.eventBus.dispatch(MENU_INPUT_SQUARE, &event, dispatchContext);
-    }
-    else if (checkInputReceived(16)) { //unequip accessory
-        gContext.eventBus.dispatch(MENU_INPUT_TRIANGLE, &event, dispatchContext);
     }
 }
 

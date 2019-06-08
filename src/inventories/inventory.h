@@ -1,10 +1,7 @@
 #ifndef INVENTORY_H
 #define INVENTORY_H
 
-#include <SisterRay/types.h>
-#include <SisterRay/SisterRay.h>
 #include "sr_inventory_template.h"
-#include <vector>
 
 #define INVENTORY_SIZE (i16)1024 //maximum allowable inventory size within the menu engine
 

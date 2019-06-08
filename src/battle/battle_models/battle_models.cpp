@@ -14,8 +14,8 @@ BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *a
 
     modelData = nullptr;
     if (aaHeader) {
-        DaFileCounts daFileModelAnimcount = { naaHeader->modelAnimCount, aaHeader->weaponAnimAcount };
-        u32 animationsCount = getSrAnimsCount(aaHeader, const char * filename); //Look up in registry of animations per model
+        DaFileCounts daFileModelAnimcount = { aaHeader->modelAnimCount, aaHeader->weaponAnimAcount };
+        u32 animationsCount = getSrAnimsCount(aaHeader, filename); //Look up in registry of animations per model
         modelData = allocateModelData(animationsCount, aaHeader->weaponCount);
         if (modelData) {
             if (aaHeader->loadBFileFlag) {

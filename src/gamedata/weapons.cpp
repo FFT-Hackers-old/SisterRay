@@ -57,7 +57,7 @@ void initializeAuxWeaponRegistry() {
         auto& amts = kernelWeapon.stat_boost_amounts;
         populatekernelStatBoosts(&(stats[0]), &(amts[0]), boosts, 4);
         AuxWeaponData auxWeapon = { boosts };
-        gContext.auxWeapons.add_element(name);
+        gContext.auxWeapons.add_element(name, auxWeapon);
     }
 }
 

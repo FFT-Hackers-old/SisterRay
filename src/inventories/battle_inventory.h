@@ -1,8 +1,7 @@
 #ifndef BATTLE_INVENTORY_H
 #define BATTLE_INVENTORY_H
 
-#include <SisterRay/types.h>
-#include <SisterRay/SisterRay.h>
+#include "sr_inventory_template.h"
 
 #define BATTLE_INVENTORY_SIZE (i16)1024 //maximum allowable inventory size within the menu engine
 
@@ -19,7 +18,7 @@ class SrBattleInventory : public SrInventory<BattleInventoryEntry> {
 public:
     u16 slots_in_use;
     SrBattleInventory(i16 allocation_size);
-    SrBattleInventory() : SrInventory<BattleInventoryEntry>() {}
+    SrBattleInventory() : SrInventory<BattleInventoryEntry>() {};
     void setSlotsInUse(u16 slotsInUse);
 };
 

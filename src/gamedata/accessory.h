@@ -10,14 +10,14 @@
 
 class SrAccessoryRegistry : public SrNamedResourceRegistry<AccessoryData, std::string> {
 public:
-    SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<AccessoryData, std::string>(stream) {};
+    SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<AccessoryData, std::string>(stream) {}
     SrAccessoryRegistry() : SrNamedResourceRegistry<AccessoryData, std::string>() {}
 };
 
 class SrAuxAccessoryRegistry : public SrNamedResourceRegistry<AuxAccessoryData, std::string> {
 public:
-    SrAuxAccessoryRegistry() : SrNamedResourceRegistry<AccessoryData, std::string>() {}
-}
+    SrAuxAccessoryRegistry() : SrNamedResourceRegistry<AuxAccessoryData, std::string>() {}
+};
 
 void initializeAuxAccessoryRegistry();
 

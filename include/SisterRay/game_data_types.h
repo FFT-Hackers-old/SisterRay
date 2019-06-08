@@ -1,6 +1,8 @@
 #ifndef GAME_DATA_TYPES_H
 #define GAME_DATA_TYPES_H
 
+#include "srparty.h"
+
 typedef enum {
     SR_GEAR_WEAPON,
     SR_GEAR_ARMOR
@@ -36,13 +38,6 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    ItemData baseData;
-    ConsumableUseData useData;
-    char* itemName;
-    char* itemDesc;
-} SrConsumableData;
-
-typedef struct {
     u16 hp_heal_amount;
     u16 mp_heal_amount;
     u16 stat_to_boost;
@@ -53,6 +48,13 @@ typedef struct {
     bool target_all;
     bool requires_target;
 } ConsumableUseData;
+
+typedef struct {
+    ItemData baseData;
+    ConsumableUseData useData;
+    char* itemName;
+    char* itemDesc;
+} SrConsumableData;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -178,6 +180,5 @@ typedef struct {
     u16 item_id;
     u32 materia_ap; //u24 originally 
 } MateriaInventoryEntry;
-
 
 #endif // !GAME_DATA_TYPES_H

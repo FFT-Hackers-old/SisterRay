@@ -18,7 +18,7 @@ SISTERRAY_API SrAccessoryData getAccessory(u16 modItemID, const char* modName) {
     srAccessory.accessoryName = gContext.gameStrings.accessory_names.get_string(relativeIndex).str();
     srAccessory.accessoryDesc = gContext.gameStrings.accessory_descriptions.get_string(relativeIndex).str();
 
-    return srAccessory
+    return srAccessory;
 }
 
 SISTERRAY_API void setAccessoryData(SrAccessoryData data, u16 modItemID, const char* modName) {
@@ -66,7 +66,7 @@ static void patch_accessories(void) {
 }
 
 void initializeAuxAccessoryRegistry() {
-    for (auto i = 0; i < KERNEL_ACCESSORY_COUNT, ++i) {
+    for (auto i = 0; i < KERNEL_ACCESSORY_COUNT; ++i) {
         auto name = std::string(BASE_PREFIX) + std::to_string(i);
         auto& kernelAccessory = gContext.accessories.get_element(name);
 
@@ -75,13 +75,13 @@ void initializeAuxAccessoryRegistry() {
         auto& amts = kernelAccessory.stat_boost_amounts;
         populatekernelStatBoosts(stats, amts, boosts, 2);
         AuxAccessoryData auxAccessory = { boosts };
-        gContext.auxAccessories.add_element(name);
+        gContext.auxAccessories.add_element(name, auxAccessory);
     }
 }
 
 SISTERRAY_API void init_accessory(SrKernelStream* stream) {
     gContext.accessories = SrAccessoryRegistry(stream);
-    gContext.auxAccessories = SrAuxAccessoryRegistry(stream);
+    gContext.auxAccessories = SrAuxAccessoryRegistry();
     initializeAuxAccessoryRegistry();
     gContext.itemTypeData.initialize_augmented_data((u8)3, gContext.accessories.resource_count());
     patch_accessories();

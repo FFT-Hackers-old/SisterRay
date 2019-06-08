@@ -94,7 +94,7 @@ void initializeAuxArmorRegistry() {
         auto& amts = kernelArmor.stat_boost_amounts;
         populatekernelStatBoosts(stats, amts, boosts, 4);
         AuxArmorData auxArmor = { boosts };
-        gContext.auxArmors.add_element(name);
+        gContext.auxArmors.add_element(name, auxArmor);
     }
 }
 

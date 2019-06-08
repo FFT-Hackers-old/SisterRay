@@ -1,23 +1,18 @@
 #include "stat_boosts.h"
 #include "../impl.h"
 
-ActorStatBoosts::ActorStatBoosts() {
-    strBoost.statIndex = 0;
-    strPenalty.statIndex = 0;
-    vitBoost.statIndex = 1;
-    vitPenalty.statIndex = 1;
-    magBoost.statIndex = 2;
-    magPenalty.statIndex = 2;
-    magDefBoost.statIndex = 3;
-    magDefPenalty.statIndex = 3;
-    dexBoost.statIndex = 4;
-    dexPenalty.statIndex = 4;
-    luckBoost.statIndex = 5;
-    luckPenalty.statIndex = 5;
-    maxHPBoost.statIndex = 8;
-    maxHPPenalty.statIndex = 8;
-    maxMPBoost.statIndex = 9;
-    maxMPPenalty.statIndex = 9;
+
+ActorStatBoosts createActorStatBoosts() {
+    auto statBoosts = ActorStatBoosts();
+    statBoosts.strBoost.statIndex = 0;
+    statBoosts.vitBoost.statIndex = 1;
+    statBoosts.magBoost.statIndex = 2;
+    statBoosts.magDefBoost.statIndex = 3;
+    statBoosts.dexBoost.statIndex = 4;
+    statBoosts.luckBoost.statIndex = 5;
+    statBoosts.maxHPBoost.statIndex = 8;
+    statBoosts.maxMPBoost.statIndex = 9;
+    return ActorStatBoosts;
 }
 
 StatBoost& getStatBoostFromID(ActorStatBoosts& boosts, u8 statID) {

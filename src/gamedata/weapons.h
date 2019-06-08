@@ -16,7 +16,7 @@ public:
 
 class SrAuxWeaponRegistry : public SrNamedResourceRegistry<AuxWeaponData, std::string> {
 public:
-    SrAuxWeaponRegistry() : SrNamedResourceRegistry<WeaponData, std::string>() {}
+    SrAuxWeaponRegistry() : SrNamedResourceRegistry<AuxWeaponData, std::string>() {}
 };
 
 void initializeAuxWeaponRegistry();

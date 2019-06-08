@@ -52,12 +52,12 @@ typedef struct {
     u32 weaponCount;
     u32 weaponAnimAcount;
     u32 field_2C;
-    AABone* boneDataPtr
+    AABone* boneDataPtr;
 } ModelAAHeader;
 
 typedef struct {
     u32 daFileModelAnimCount;
-    u32 daFileWeaponAnimCount
+    u32 daFileWeaponAnimCount;
 } DaFileCounts;
 
 typedef struct {
@@ -78,9 +78,10 @@ typedef void(*PFNSRSUB5DFE08)(char*);
 typedef void(*PFNSRSUB5DFE51)(char*);
 #define clearDirectory      ((PFNSRSUB5DFE51)0x5DFE51)
 
-typedef void(*PFNSRSUB6829FE)(LGPContext*, char*, char*);
+typedef void*(*PFNSRSUB6829FE)(LGPContext*, char*, char*);
 #define ff7LoadModelFile   ((PFNSRSUB6829FE)0x6829FE)
 
 typedef void(*PFNSRSUB5E1449)(char*, char*);
 #define getBFileName       ((PFNSRSUB5E1449)0x5E1449)
+
 #endif // !MODEL_FILE_UTILS_H

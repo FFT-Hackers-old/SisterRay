@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include "primitives.h"
 #include "../impl.h"
 

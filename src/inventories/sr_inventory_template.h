@@ -1,9 +1,7 @@
 #ifndef INVENTORY_REGISTRY_TEMPLATE_H
 #define INVENTORY_REGISTRY_TEMPLATE_H
 
-#include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "../kernel.h"
 #include <unordered_map>
 #include "../sr_registry_template.h"
 

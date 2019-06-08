@@ -10,7 +10,7 @@ void srLoadAnimations(u32 a1, u32 a2, void **animationDataTable, LGPContext *con
     char daFileNameBuffer[204]; // [esp+1Ch] [ebp-C8h]
 
     createDAFilename(a2, filename, &(daFileNameBuffer[0]));
-    daArchiveFile = ff7LoadModelFile(context, addressOfString, &(daFileNameBuffer[0]));// loads the da file
+    daArchiveFile = (u32*)ff7LoadModelFile(context, addressOfString, &(daFileNameBuffer[0]));// loads the da file
     if (daArchiveFile) {
         daFilePtr = daArchiveFile;
         u32* animDataStartPtr = &(daArchiveFile[1]);
@@ -27,7 +27,7 @@ void srReadDaFile(u32* animDataStartPtr, u32 animsToRead, void** animationDataTa
 
     if (animDataStartPtr) {
         for (auto animationIndex = 0; animationIndex < animsToRead; ++animationIndex) {
-            animHeader = animDataStartPtr;
+            animHeader = (DaAnimHeader*)animDataStartPtr;
             u32* frameDataPtr = animDataStartPtr + 3;
             animationDataTable[animationIndex] = loadAnimationFromDA(a1, animHeader->bonesCount, animHeader->framesCount, frameDataPtr);
             animDataStartPtr = &(frameDataPtr[animHeader->compressedSize]);
@@ -37,5 +37,5 @@ void srReadDaFile(u32* animDataStartPtr, u32 animsToRead, void** animationDataTa
 
 /*assign ptrs to the animations living in the SrModelAnims registry, so they may be used */
 void loadsrBattleModelAnimations(void** animatioNDataTable, u32 startingIndex, char* filename) {
-
+    return;
 }

@@ -328,7 +328,7 @@ void srRecalculateDerivedStats(u32 partyIndex) {
     std::copy(begin(armorMaterias), end(armorMaterias), begin(armVector));
 
     gContext.party.clearActions(partyIndex);
-    ActorStatBoosts statBoosts = ActorStatBoosts();
+    ActorStatBoosts statBoosts = createActorStatBoosts();
     gContext.party.handleMateriaActorUpdates(partyIndex, equippedMaterias, statBoosts); //Enable spells, counters, commands, and fill out stat boosts based on materia stuff
     applyLinkedMateriaModifiers(partyIndex, wpnVector, SR_GEAR_WEAPON, statBoosts);
     applyLinkedMateriaModifiers(partyIndex, armVector, SR_GEAR_ARMOR, statBoosts);

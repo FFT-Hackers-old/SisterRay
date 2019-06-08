@@ -13,10 +13,9 @@ public:
  SrItemRegistry(): SrNamedResourceRegistry<ItemData, std::string>() {}
 };
 
-class SrOnUseItemDataRegistry : public SrResourceRegistry<ConsumableUseData> {
+class SrOnUseItemDataRegistry : public SrNamedResourceRegistry<ConsumableUseData, std::string> {
 public:
-    SrOnUseItemDataRegistry(SrKernelStream* stream) : SrResourceRegistry<ConsumableUseData>(stream) {};
-    SrOnUseItemDataRegistry() : SrResourceRegistry<ConsumableUseData>() {}
+    SrOnUseItemDataRegistry() : SrNamedResourceRegistry<ConsumableUseData, std::string>() {}
 };
 
 bool canCharacterUseItem(u8 character_ID, u16 item_id);

@@ -1,8 +1,33 @@
 #ifndef SR_PARTY_H
 #define SR_PARTY_H
 
+#include <SisterRay/types.h>
+
+/*This is the structure of attack data*/
 typedef struct {
-    int sign;
+    u8 abilityHitRate; //0x00
+    u8 impactEffectID; //0x01
+    u8 targetReactionID; //0x02
+    u8 unkbyte;          //0x03
+    u16 MPCost;          //0x04
+    u16 impactSoundID;   //0x06
+    u16 cameraMovementSingle;   //0x08
+    u16 cameraMovementMultiple;  //0x0A
+    u8 targetingFlags;           //0x0C
+    u8 animationEffectID;        //0x0D
+    u8 damageFormula;            //0x0E
+    u8 attackPower;              //0x0F
+    u8 restoreTypes;             //0x10
+    u8 statusInflictType;         //0x11
+    u8 additionalEffect;         //0x12
+    u8 additionalEffectModifier;  //0x13
+    u32 statusMask;               //0x14
+    u16 elementMask;              //0x18
+    u16 specialAttackFlags;       //0x1A
+} AttackData;
+
+typedef struct {
+    u32 sign;
     u16 statIndex;
     u16 amount;
     u16 percentAmount;
@@ -19,5 +44,108 @@ typedef struct {
     StatBoost maxMPBoost;
     StatBoost coverChance;
 } ActorStatBoosts;
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 commandID;
+    u8 cursorCommandType;
+    u8 targetingData;
+    u8 commandFlags;
+    u8 allCount;
+    u8 HPMPAbsorbFags;
+} EnabledCommandStruct;
+#pragma pack(pop)
+
+/*This contains a bit vector of flags for spells*/
+#pragma pack(push, 1)
+typedef struct {
+    u8 magicIndex;
+    u8 mpCost;
+    u8 allCount; //used as summon count for summons
+    u8 quadEnabled;
+    u8 quadCount;
+    u8 targetData;
+    u8 propertiesMask;
+    u8 supportEffectsMask; //HP Absorb, etc
+} EnabledSpell;
+#pragma pack(pop)
+
+typedef enum {
+    AUTOACT_NO_ACTION,
+    SNEAK_ATTACK,
+    COUNTER_ACTION,
+    FINAL_ATTACK,
+} AutoActionType;
+
+typedef struct {
+    AutoActionType dispatchType;
+    u8 commandIndex;
+    u16 actionIndex;
+    u8 activationChance; //as a %
+    u8 counterCount; //based on the level of the linked counter, 0xFF for unlimited counters
+} SrAutoAction;
+
+#pragma pack(push,1)
+typedef struct {
+    u32 statToIncrease;
+    u32 increaseValue;
+} statIncrease;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+/*Three of these are maintained for each active party member, they have size 0x440*/
+typedef struct {
+    u8 characterID; //0x00
+    u8 coverChance; //0x01
+    u8 strength; //0x02
+    u8 vitality; //0x03
+    u8 magic; //0x04
+    u8 spirit; //0x05
+    u8 speed; //0x06
+    u8 luck; //0x07
+    u16 physAttack; //0x08
+    u16 physDefense; //0x0A
+    u16 magAttack; //0x0C
+    u16 magDefense; //0x0E
+    u16 currentHP; //0x10
+    u16 maxHP; //0x12
+    u16 currentMP; //0x14
+    u16 maxMP; //0x16
+    u32 timer; //0x18
+    u16 counterActionIndex; //0x1C
+    u16 counterChance; //0x1E
+    u8 unkbyte; //0x20
+    u8 commandColumns; //0x21
+    u8 unknownDiviosr; //0x22
+    u8 commandRows; //0x23
+    u8 unknown24bitInts[24]; //0x24
+    u16 attackElementsMask; //0x3C
+    u16 halvedElementsMask; //003E
+    u16 nulledElementsMask; //0x40
+    u16 absorbeElementsMask; //0x42
+    u32 attackStatusesMask; //0x44
+    u32 immuneStatusesMask; //0x48
+    EnabledCommandStruct enabledCommandArray[16]; //0x4C
+    u8 enabledLimitBytes[8]; //0xAC
+    AttackData enabledLimitData[3]; //0xB4
+    EnabledSpell enabledMagicsData[54]; //0x108
+    EnabledSpell unusedMagics[2]; //0x2B8
+    EnabledSpell enabledSummons[16]; //0x2C8
+    EnabledSpell enabledEnemySkills[24]; //0x348
+    u8 weaponData[5]; //0x408
+    u16 weaponStatus; //0x40D
+    u8 lepad;
+    u8 weaponAccuracy; //0x410
+    u8 paddin[7];
+    u32 additionalAttackElements;
+    statIncrease statsToIncrease[4];
+    u8 charGilBonus;
+    u8 encounterRate;
+    u8 chocoboChance;
+    u8 preEmptiveChance;
+} ActivePartyMemberStruct;
+#pragma pack(pop)
+
+#define PARTY_STRUCT_ARRAY ((ActivePartyMemberStruct*)0xDBA498)
 
 #endif // !SR_PARTY_H

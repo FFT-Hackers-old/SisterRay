@@ -12,10 +12,8 @@
 typedef struct InventoryEntry{
     u16 item_id;
     u8 quantity;
-    InventoryEntry(): item_id(0xFFFF), quantity(0) {
-    };
-    InventoryEntry(u16 item_id, u8 quantity): item_id(item_id), quantity(quantity) {
-    };
+    InventoryEntry(): item_id(0xFFFF), quantity(0) {};
+    InventoryEntry(u16 item_id, u8 quantity): item_id(item_id), quantity(quantity) {};
 } InventoryEntry;
 #pragma pack(pop)
 
@@ -41,6 +39,6 @@ public:
     u8 getItemType();
 };
 
-SISTERRAY_API void initInventory()
+SISTERRAY_API void initInventory();
 
 #endif

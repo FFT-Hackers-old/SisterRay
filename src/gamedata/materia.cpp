@@ -28,10 +28,10 @@ SISTERRAY_API SrMateriaData getMateria(u16 modMateriaID, const char* modName) {
     srMateria.auxData = gContext.auxMaterias.get_element(name);
 
     auto absoluteIndex = gContext.materias.get_resource_index(name);
-    srMateria.materiaName = gContext.gameStrings.materia_names.get_string(absoluteIndex).str();
-    srMateria.materiaDesc = gContext.gameStrings.materia_descriptions.get_string(absoluteIndex).str();
+    srMateria.materiaName = gContext.gameStrings.materia_names.get_string(absoluteIndex);
+    srMateria.materiaDesc = gContext.gameStrings.materia_descriptions.get_string(absoluteIndex);
 
-    return srMateria
+    return srMateria;
 }
 
 SISTERRAY_API void setMateriaData(SrMateriaData data, u16 modMateriaID, const char* modName) {
@@ -44,7 +44,7 @@ SISTERRAY_API void setMateriaData(SrMateriaData data, u16 modMateriaID, const ch
     gContext.gameStrings.materia_descriptions.update_resource(absoluteIndex, EncodedString::from_unicode(data.materiaDesc));
 }
 
-SISTERRAY_API void addMateria(SrMateriaData data, u16 modMateriaID, const char* modName, u8 characterID) {
+SISTERRAY_API void addMateria(SrMateriaData data, u16 modMateriaID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modMateriaID);
     gContext.materias.add_element(name, data.baseData);
     gContext.auxMaterias.add_element(name, data.auxData);
@@ -135,7 +135,7 @@ void initializeAuxMateriaRegistry() {
         ActorStatBoosts boosts = ActorStatBoosts();
         populateEquipEffects(kernelMateria, boosts);
         AuxMateriaData auxWeapon = { boosts };
-        gContext.auxMaterias.add_element(name);
+        gContext.auxMaterias.add_element(name, auxWeapon);
     }
 }
 

@@ -12,7 +12,7 @@ ActorStatBoosts createActorStatBoosts() {
     statBoosts.luckBoost.statIndex = 5;
     statBoosts.maxHPBoost.statIndex = 8;
     statBoosts.maxMPBoost.statIndex = 9;
-    return ActorStatBoosts;
+    return statBoosts;
 }
 
 StatBoost& getStatBoostFromID(ActorStatBoosts& boosts, u8 statID) {
@@ -34,7 +34,7 @@ StatBoost& getStatBoostFromID(ActorStatBoosts& boosts, u8 statID) {
         case 9:
             return boosts.maxMPBoost;
         default: {
-            boosts.strBoost
+            boosts.strBoost;
         }
 
     }
@@ -57,7 +57,7 @@ StatBoost addStatBoosts(StatBoost& a, StatBoost& b) {
         }
         sum.amount = false;
 
-        auto s = (a.sign == false) ? (a.percentAmount - b.percentAmount) : (b.percentAmount - a.percentAmount);
+        s = (a.sign == false) ? (a.percentAmount - b.percentAmount) : (b.percentAmount - a.percentAmount);
         if (s < 0) {
             sum.sign = true;
         }

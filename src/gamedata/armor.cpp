@@ -11,10 +11,10 @@ SISTERRAY_API SrArmorData getArmor(u16 modItemID, const char* modName) {
 
     ItemTypeData typeData = gContext.itemTypeData.get_element(name);
     auto relativeIndex = typeData.type_relative_id;
-    srArmor.armorName = gContext.gameStrings.armor_names.get_string(relativeIndex).str();
-    srArmor.armorDesc = gContext.gameStrings.armor_descriptions.get_string(relativeIndex).str();
+    srArmor.armorName = gContext.gameStrings.armor_names.get_string(relativeIndex);
+    srArmor.armorDesc = gContext.gameStrings.armor_descriptions.get_string(relativeIndex);
 
-    return srArmor
+    return srArmor;
 }
 
 SISTERRAY_API void setArmorData(SrArmorData data, u16 modItemID, const char* modName) {
@@ -85,7 +85,7 @@ static void patch_armor(void) {
 }
 
 void initializeAuxArmorRegistry() {
-    for (auto i = 0; i < KERNEL_ARMOR_COUNT, ++i) {
+    for (auto i = 0; i < KERNEL_ARMOR_COUNT; ++i) {
         auto name = std::string(BASE_PREFIX) + std::to_string(i);
         auto& kernelArmor = gContext.armors.get_element(name);
 
@@ -103,7 +103,7 @@ SISTERRAY_API void init_armor(SrKernelStream* stream) {
     gContext.armors = SrArmorRegistry(stream);
     gContext.auxArmors = SrAuxArmorRegistry();
     initializeAuxArmorRegistry();
-    gContext.itemTypeData.initialize_augmented_data((ITYPE_ARMOR, gContext.armors.resource_count());
+    gContext.itemTypeData.initialize_augmented_data(ITYPE_ARMOR, gContext.armors.resource_count());
     patch_armor();
     srLogWrite("kernel.bin: Loaded %lu Armors", (unsigned long)gContext.armors.resource_count());
 }

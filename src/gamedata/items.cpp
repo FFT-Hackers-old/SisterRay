@@ -1,20 +1,39 @@
 #include "items.h"
 #include "../impl.h"
 
-SISTERRAY_API ItemData getItem(u16 modItemID, const char* modName) {
+SISTERRAY_API SrConsumableData getItem(u16 modItemID, const char* modName) {
+    SrConsumableData srItem = SrConsumableData();
     auto name = std::string(modName) + std::to_string(modItemID);
-    return gContext.items.get_element(name);
+    srItem.baseData = gContext.items.get_element(name);
+    srItem.useData = gContext.itemOnUseData.get_element(name);
+
+    ItemTypeData typeData = gContext.itemTypeData.get_element(name);
+    auto relativeIndex = typeData.type_relative_id;
+    srItem.itemName = gContext.gameStrings.item_names.get_string(relativeIndex);
+    srItem.itemDesc = gContext.gameStrings.item_descriptions.get_string(relativeIndex);
+
+    return srItem;
 }
 
-SISTERRAY_API void setItemData(ItemData data, u16 modItemID, const char* modName) {
+SISTERRAY_API void setItemData(SrConsumableData data, u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
-    gContext.items.update_element(name, data);
+    gContext.items.update_element(name, data.baseData);
+    gContext.itemOnUseData.update_element(name, data.useData);
+
+    ItemTypeData typeData = gContext.itemTypeData.get_element(name);
+    auto relativeIndex = typeData.type_relative_id;
+    gContext.gameStrings.item_names.update_resource(relativeIndex, EncodedString::from_unicode(data.itemName));
+    gContext.gameStrings.item_descriptions.update_resource(relativeIndex, EncodedString::from_unicode(data.itemDesc));
 }
 
-SISTERRAY_API void addItem(ItemData data, u16 modItemID, const char* modName) {
+SISTERRAY_API void addItem(SrConsumableData data, u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
-    gContext.items.add_element(name, data);
+    gContext.items.add_element(name, data.baseData);
+    gContext.itemOnUseData.add_element(name, data.useData);
     gContext.itemTypeData.add_element(name, ITYPE_CONSUMABLE, ICONTYPE_CONSUMABLE);
+
+    gContext.gameStrings.item_names.add_resource(EncodedString::from_unicode(data.itemName));
+    gContext.gameStrings.item_descriptions.add_resource(EncodedString::from_unicode(data.itemDesc));
 }
 
 static const u32 kPatchStructBase[] = {

@@ -34,7 +34,7 @@ typedef struct {
     AnimationFrame* frameDataView;
 } BattleAnimation;
 
-BattleAnimation* (*PFNSRSUB691F03)(u32, u32, u32);
+typedef BattleAnimation*(*PFNSRSUB691F03)(u32, u32, u32);
 #define createBattleAnimation   ((PFNSRSUB691F03)0x691F03)
 
 #endif

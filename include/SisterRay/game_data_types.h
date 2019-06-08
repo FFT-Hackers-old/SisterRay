@@ -1,7 +1,7 @@
 #ifndef GAME_DATA_TYPES_H
 #define GAME_DATA_TYPES_H
 
-#include "srparty.h"
+#include <SisterRay/srparty.h>
 
 typedef enum {
     SR_GEAR_WEAPON,
@@ -52,8 +52,8 @@ typedef struct {
 typedef struct {
     ItemData baseData;
     ConsumableUseData useData;
-    char* itemName;
-    char* itemDesc;
+    const char* itemName;
+    const char* itemDesc;
 } SrConsumableData;
 
 #pragma pack(push, 1)
@@ -93,8 +93,8 @@ typedef struct {
 typedef struct {
     WeaponData baseData;
     AuxWeaponData auxData;
-    char* weaponName;
-    char* weaponDesc;
+    const char* weaponName;
+    const char* weaponDesc;
 } SrWeaponData;
 
 #pragma pack(push, 1)
@@ -126,8 +126,8 @@ typedef struct {
 typedef struct {
     ArmorData baseData;
     AuxArmorData auxData;
-    char* armorName;
-    char* armorDesc;
+    const char* armorName;
+    const char* armorDesc;
 } SrArmorData;
 
 #pragma pack(push, 1)
@@ -150,8 +150,8 @@ typedef struct {
 typedef struct {
     AccessoryData baseData;
     AuxAccessoryData auxData;
-    char* accessoryName;
-    char* accessoryDesc;
+    const char* accessoryName;
+    const char* accessoryDesc;
 } SrAccessoryData;
 
 #pragma pack(push, 1)
@@ -172,13 +172,13 @@ typedef struct {
 typedef struct {
     MateriaData baseData;
     AuxMateriaData auxData;
-    char* materiaName;
-    char* materiaDesc;
+    const char* materiaName;
+    const char* materiaDesc;
 } SrMateriaData;
 
 typedef struct {
     u16 item_id;
-    u32 materia_ap; //u24 originally 
+    u32 materia_ap;
 } MateriaInventoryEntry;
 
 #endif // !GAME_DATA_TYPES_H

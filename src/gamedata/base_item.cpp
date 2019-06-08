@@ -16,7 +16,7 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInit
         absoluteIndex = absoluteBase + relativeIndex;
 
         auto name = std::string(BASE_PREFIX) + std::to_string(absoluteIndex);
-        gContext.itemTypeData.add_element(name, baseItemData);
+        gContext.itemTypeData.add_element(name, itemType, iconType);
 
         switch (itemType) {
             case 0:
@@ -35,16 +35,20 @@ void SrItemTypeRegistry::add_element(const std::string& name, u8 itemType, u8 ic
     if (contains(name))
         return;
 
-    std::vector<i16> reverseRegistry;
+    std::vector<i16>& reverseRegistry = reverseItemRegistry;
     switch (itemType) {
         case 0:
-            reverseRegistry = reverseItemRegistry.at(relativeIndex);
+            reverseRegistry = reverseItemRegistry;
+            break;
         case 1:
-            reverseRegistry = reverseWeaponRegistry.at(relativeIndex);
+            reverseRegistry = reverseWeaponRegistry;
+            break;
         case 2:
-            reverseRegistry = reverseArmorRegistry.at(relativeIndex);
+            reverseRegistry = reverseArmorRegistry;
+            break;
         case 3:
-            reverseRegistry = reverseAccessoryRegistry.at(relativeIndex);
+            reverseRegistry = reverseAccessoryRegistry;
+            break;
         default: {
             return;
         }

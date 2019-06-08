@@ -15,8 +15,8 @@ SISTERRAY_API SrAccessoryData getAccessory(u16 modItemID, const char* modName) {
 
     ItemTypeData typeData = gContext.itemTypeData.get_element(name);
     auto relativeIndex = typeData.type_relative_id;
-    srAccessory.accessoryName = gContext.gameStrings.accessory_names.get_string(relativeIndex).str();
-    srAccessory.accessoryDesc = gContext.gameStrings.accessory_descriptions.get_string(relativeIndex).str();
+    srAccessory.accessoryName = gContext.gameStrings.accessory_names.get_string(relativeIndex);
+    srAccessory.accessoryDesc = gContext.gameStrings.accessory_descriptions.get_string(relativeIndex);
 
     return srAccessory;
 }

@@ -1,6 +1,26 @@
 #ifndef SR_WIDGETS_H
 #define SR_WIDGETS_H
 
+#include <SisterRay/types.h>
+
+#pragma pack(push, 1)
+typedef struct {
+    u32 relativeColumnIndex;
+    u32 relativeRowIndex;
+    u32 viewColumnBound;
+    u32 viewRowBound;
+    u32 baseColumnIndex;
+    u32 baseRowIndex;
+    u32 maxColumnBound;
+    u32 maxRowBound;
+    u32 ninth_dword;
+    u32 tenth_dword;
+    u32 eleventh_dword;
+    u32 twelth_dword;
+    u32 thirteenth_dword;
+    u32 fourteenh_dword;
+} CursorContext;
+#pragma pack(pop)
 
 typedef struct _Cursor Cursor;
 enum color { COLOR_GRAY, COLOR_UNKNOWN_1, COLOR_RED, COLOR_UNKNOWN_2, COLOR_UNKNOWN_3, COLOR_TEAL, COLOR_GREEN, COLOR_WHITE };
@@ -160,7 +180,6 @@ typedef struct {
 
 typedef struct CursorGridWidget_ CursorGridWidget;
 typedef void(*PFNSRNEWGRIDWIDGETPROC)(Widget*, drawGridParams, char*, u16);
-
 
 typedef struct {
     SRLISTUPDATERPROC updater;

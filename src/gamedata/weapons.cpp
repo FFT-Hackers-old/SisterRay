@@ -9,10 +9,10 @@ SISTERRAY_API SrWeaponData getWeapon(u16 modItemID, const char* modName) {
 
     const ItemTypeData& typeData = gContext.itemTypeData.get_element(name);
     auto relativeIndex = typeData.type_relative_id;
-    srWeapon.weaponName = gContext.gameStrings.weapon_names.get_string(relativeIndex).str();
-    srWeapon.weaponDesc = gContext.gameStrings.weapon_descriptions.get_string(relativeIndex).str();
+    srWeapon.weaponName = gContext.gameStrings.weapon_names.get_string(relativeIndex);
+    srWeapon.weaponDesc = gContext.gameStrings.weapon_descriptions.get_string(relativeIndex);
 
-    return srWeapon
+    return srWeapon;
 }
 
 SISTERRAY_API void setWeaponData(SrWeaponData data, u16 modItemID, const char* modName) {
@@ -31,7 +31,6 @@ SISTERRAY_API void addWeapon(SrWeaponData data, u16 modweaponID, const char* mod
     gContext.weapons.add_element(name, data.baseData);
     gContext.auxWeapons.add_element(name, data.auxData);
 
-    gContext.weapons.add_element(name, data);
     u8 iconType = getWeaponIcon(characterID);
     gContext.itemTypeData.add_element(name, ITYPE_WEAPON, iconType);
 
@@ -48,7 +47,7 @@ static void patch_weapons() {
 
 /*Initialize the registry with the correct stat info for kernel weapons*/
 void initializeAuxWeaponRegistry() {
-    for (auto i = 0; i < KERNEL_WEAPON_COUNT, ++i) {
+    for (auto i = 0; i < KERNEL_WEAPON_COUNT;  ++i) {
         auto name = std::string(BASE_PREFIX) + std::to_string(i);
         auto& kernelWeapon = gContext.weapons.get_element(name);
 
@@ -74,22 +73,25 @@ SISTERRAY_API void init_weapon(SrKernelStream* stream) {
 u8 getWeaponIcon(u8 characterID) {
     switch (characterID) {
         case 0:
-            return ICONTYPE_SWORD
+            return ICONTYPE_SWORD;
         case 1:
-            return ICONTYPE_GATGUN
+            return ICONTYPE_GATGUN;
         case 2:
-            return ICONTYPE_GLOVE
+            return ICONTYPE_GLOVE;
         case 3:
-            return ICONTYPE_STAFF
+            return ICONTYPE_STAFF;
         case 4:
-            return ICONTYPE_CLIP
+            return ICONTYPE_CLIP;
         case 5:
-            return ICONTYPE_PHONE
+            return ICONTYPE_PHONE;
         case 6:
-            return ICONTYPE_SHUR
+            return ICONTYPE_SHUR;
         case 7:
-            return ICONTYPE_GUN
+            return ICONTYPE_GUN;
         case 8:
-            return ICONTYPE_SPEAR
+            return ICONTYPE_SPEAR;
+        default: {
+            return ICONTYPE_SWORD;
+        }
     }
 }

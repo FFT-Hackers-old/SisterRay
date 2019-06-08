@@ -18,13 +18,11 @@ class SrBattleInventory : public SrInventory<BattleInventoryEntry> {
 public:
     u16 slots_in_use;
     SrBattleInventory(i16 allocation_size);
-    SrBattleInventory() : SrInventory<BattleInventoryEntry>() {};
+    SrBattleInventory() : SrInventory<BattleInventoryEntry>() {}
     void setSlotsInUse(u16 slotsInUse);
 };
 
 SISTERRAY_API void initBattleInventory();
-
-/*utility for decrementing the quantity of an item at a particular inventory index*/
 
 #endif
 

@@ -7,9 +7,9 @@
 
 /*This template requires that quantity/item_id are in the struct
   Could metaprogram this away but not worth the effort right now*/
-template<class EVENT_TYPE_TYPE> class SrInventory : public SrResourceRegistry<EVENT_TYPE_TYPE> {
+template<class T> class SrInventory : public SrResourceRegistry<T> {
 public:
-    SrInventory(u16 allocation_size) : SrResourceRegistry<EVENT_TYPE_TYPE>(allocation_size) {};
+    SrInventory(u16 allocation_size) : SrResourceRegistry<T>(allocation_size) {};
     SrInventory(): SrResourceRegistry() {};
 
     void decrementInventoryEntry(u16 inventory_index, u8 stepSize) {

@@ -1,7 +1,7 @@
 #include "battle_models.h"
 
 /*If an SR animation file is found, we should use the number of animations it specifies instead of what the aa file does*/
-BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *aaHeader, UnkModelLoadStruct *loadStruct, FileContext *fileContext, char * filename) {
+/*BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *aaHeader, UnkModelLoadStruct *loadStruct, FileContext *fileContext, char * filename) {
     BattleModel *modelData;
     char *addressOfString;
     char bExtensionString[204];
@@ -42,11 +42,10 @@ BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *a
 }
 
 
-/*Fetch the counts of animations which have been added to the game through SR for the model, so we allocate enough space*/
 u32 getSrAnimsCount(ModelAAHeader *aaHeader, const char * filename) {
     u32 srNewAnimsCount;
     u32 animCount = aaHeader->weaponAnimAcount + aaHeader->modelAnimCount;
     aaHeader->modelAnimCount += srNewAnimsCount;              
     aaHeader->weaponAnimAcount += srNewAnimsCount;
     return animCount;
-}
+}*/

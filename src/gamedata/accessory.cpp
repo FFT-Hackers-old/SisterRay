@@ -3,11 +3,15 @@
 #include "../impl.h"
 #include "accessory.h"
 
-/*This is how the API for adding new resources will look on the code side*/
+/*This is how the API for adding new resources will look on the code side
+  These are very similar for the different types, and probably can be refactored in the future once
+  More of the game is under our control into templates, but this is not practical atm
+  Because we need to keep data in different places to continue using the patching strategy*/
 SISTERRAY_API SrAccessoryData getAccessory(u16 modItemID, const char* modName) {
     SrAccessoryData srAccessory = SrAccessoryData();
     auto name = std::string(modName) + std::to_string(modItemID);
     srAccessory.baseData = gContext.accessories.get_element(name);
+    srAccessory.auxData = gContext.auxAccessories.get_element(name);
 
     ItemTypeData typeData = gContext.itemTypeData.get_element(name);
     auto relativeIndex = typeData.type_relative_id;
@@ -20,6 +24,7 @@ SISTERRAY_API SrAccessoryData getAccessory(u16 modItemID, const char* modName) {
 SISTERRAY_API void setAccessoryData(SrAccessoryData data, u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
     gContext.accessories.update_element(name, data.baseData);
+    gContext.auxAccessories.update_element(name, data.auxData);
 
     ItemTypeData typeData = gContext.itemTypeData.get_element(name);
     auto relativeIndex = typeData.type_relative_id;

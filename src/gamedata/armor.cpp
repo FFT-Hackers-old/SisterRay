@@ -6,7 +6,8 @@
 SISTERRAY_API SrArmorData getArmor(u16 modItemID, const char* modName) {
     SrArmorData srArmor = SrArmorData();
     auto name = std::string(modName) + std::to_string(modItemID);
-    srArmor.baseData = gContext.accessories.get_element(name);
+    srArmor.baseData = gContext.armors.get_element(name);
+    srArmor.auxData = gContext.auxArmors.get_element(name);
 
     ItemTypeData typeData = gContext.itemTypeData.get_element(name);
     auto relativeIndex = typeData.type_relative_id;
@@ -18,7 +19,8 @@ SISTERRAY_API SrArmorData getArmor(u16 modItemID, const char* modName) {
 
 SISTERRAY_API void setArmorData(SrArmorData data, u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
-    gContext.accessories.update_element(name, data.baseData);
+    gContext.armors.update_element(name, data.baseData);
+    gContext.auxArmors.update_element(name, data.auxData);
 
     ItemTypeData typeData = gContext.itemTypeData.get_element(name);
     auto relativeIndex = typeData.type_relative_id;
@@ -28,8 +30,8 @@ SISTERRAY_API void setArmorData(SrArmorData data, u16 modItemID, const char* mod
 
 SISTERRAY_API void addArmor(SrArmorData data, u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
-    gContext.accessories.add_element(name, data.baseData);
-    gContext.auxAccessories.add_element(name, data.auxData);
+    gContext.armors.add_element(name, data.baseData);
+    gContext.auxArmors.add_element(name, data.auxData);
     gContext.itemTypeData.add_element(name, ITYPE_ARMOR, ICONTYPE_ARMOR);
 
     gContext.gameStrings.armor_names.add_resource(EncodedString::from_unicode(data.armorName));

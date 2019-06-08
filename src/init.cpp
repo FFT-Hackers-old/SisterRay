@@ -115,6 +115,9 @@ static void srLoadKernelBin(void)
     fclose(kernel);
 }
 
+
+PFNRUNANIMSCRIPT* oldRunAnimationScript;
+
 static void Init(void)
 {
     initLog();
@@ -154,12 +157,13 @@ static void Init(void)
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
     mogReplaceFunction(TRANSFORM_ENEMY_COMMAND, &transformEnemyCommand);
     mogReplaceFunction(GET_MP_COST, &getMPCost);
-    mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
+    /*mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
-    initializeBattleMenu();
+    initializeBattleMenu();*/
+    oldRunAnimationScript = (PFNRUNANIMSCRIPT*)mogRedirectFunction(RUN_ANIMATION_SCRIPT, &animationScriptTrampoline);
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

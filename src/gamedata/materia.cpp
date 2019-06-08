@@ -21,17 +21,38 @@ SrMateriaRegistry::SrMateriaRegistry(SrKernelStream* stream) : SrNamedResourceRe
     }
 }
 
-SISTERRAY_API MateriaData getMateria(u16 itemID) {
-    return gContext.materias.get_resource(itemID);
+SISTERRAY_API SrMateriaData getMateria(u16 modMateriaID, const char* modName) {
+    SrMateriaData srMateria = SrMateriaData();
+    auto name = std::string(modName) + std::to_string(modMateriaID);
+    srMateria.baseData = gContext.materias.get_element(name);
+    srMateria.auxData = gContext.auxMaterias.get_element(name);
+
+    auto absoluteIndex = gContext.materias.get_resource_index(name);
+    srMateria.materiaName = gContext.gameStrings.materia_names.get_string(absoluteIndex).str();
+    srMateria.materiaDesc = gContext.gameStrings.materia_descriptions.get_string(absoluteIndex).str();
+
+    return srMateria
 }
 
-SISTERRAY_API void setMateriaData(MateriaData data, u16 itemID) {
-    gContext.materias.update_resource(itemID, data);
+SISTERRAY_API void setMateriaData(SrMateriaData data, u16 modMateriaID, const char* modName) {
+    auto name = std::string(modName) + std::to_string(modMateriaID);
+    gContext.materias.update_element(name, data.baseData);
+    gContext.auxMaterias.update_element(name, data.auxData);
+
+    auto absoluteIndex = gContext.materias.get_resource_index(name);
+    gContext.gameStrings.materia_names.update_resource(absoluteIndex, EncodedString::from_unicode(data.materiaName));
+    gContext.gameStrings.materia_descriptions.update_resource(absoluteIndex, EncodedString::from_unicode(data.materiaDesc));
 }
 
-SISTERRAY_API void addMateria(MateriaData data, char* name) {
-    gContext.materias.add_element(std::string(name), data);
+SISTERRAY_API void addMateria(SrMateriaData data, u16 modMateriaID, const char* modName, u8 characterID) {
+    auto name = std::string(modName) + std::to_string(modMateriaID);
+    gContext.materias.add_element(name, data.baseData);
+    gContext.auxMaterias.add_element(name, data.auxData);
+
+    gContext.gameStrings.materia_names.add_resource(EncodedString::from_unicode(data.materiaName));
+    gContext.gameStrings.materia_descriptions.add_resource(EncodedString::from_unicode(data.materiaDesc));
 }
+
 
 static const u32 kPatchApLevel[] = {
     0x005ce2fb, 0x005ce31d, 0x005ce36c, 0x005dfce4,
@@ -106,12 +127,74 @@ static void patch_materia(void)
     srPatchAddresses((void**)kPatchData1, ARRAY_SIZE(kPatchData1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, data) + 1);
 }
 
+void initializeAuxMateriaRegistry() {
+    for (auto materiaIdx = 0; materiaIdx < KERNEL_MATERIA_COUNT; ++materiaIdx) {
+        auto name = std::string(BASE_PREFIX) + std::to_string(materiaIdx);
+        auto& kernelMateria = gContext.materias.get_element(name);
+
+        ActorStatBoosts boosts = ActorStatBoosts();
+        populateEquipEffects(kernelMateria, boosts);
+        AuxMateriaData auxWeapon = { boosts };
+        gContext.auxMaterias.add_element(name);
+    }
+}
+
+
+void populateEquipEffects(const MateriaData& kernelMateria, ActorStatBoosts& boosts) {
+    auto equipEffect = kernelMateria.equipEffect;
+    switch (equipEffect) {
+        case 1: {
+            boosts.strBoost.amount = 2;
+            boosts.strBoost.sign = true;
+            boosts.vitBoost.amount = 2;
+            boosts.vitBoost.sign = true;
+            boosts.maxHPBoost.percentAmount = 5;
+            boosts.maxHPBoost.sign = true;
+
+            boosts.magBoost.amount = 2;
+            boosts.magDefBoost.amount = 1;
+            boosts.maxMPBoost.percentAmount = 5;
+            break;
+        }
+        case 2: {
+            boosts.strBoost.amount = 4;
+            boosts.strBoost.sign = true;
+            boosts.vitBoost.amount = 2;
+            boosts.vitBoost.sign = true;
+            boosts.maxHPBoost.percentAmount = 10;
+            boosts.maxHPBoost.sign = true;
+
+            boosts.magBoost.amount = 4;
+            boosts.magDefBoost.amount = 2;
+            boosts.maxMPBoost.percentAmount = 10;
+            break;
+        }
+        case 3: {
+            boosts.dexBoost.amount = 2;
+            boosts.luckBoost.amount = 2;
+            boosts.luckBoost.sign = true;
+            break;
+        }
+        case 4: {
+            boosts.strBoost.amount = 1;
+            boosts.strBoost.sign = true;
+            boosts.vitBoost.amount = 1;
+            boosts.vitBoost.sign = true;
+
+            boosts.magBoost.amount = 1;
+            boosts.magDefBoost.amount = 1;
+            break;
+        }
+    }
+}
+
 SISTERRAY_API void init_materia(SrKernelStream* stream) {
     gContext.materias = SrMateriaRegistry(stream);
+    gContext.auxMaterias = SrAuxMateriaRegistry();
+    void initializeAuxMateriaRegistry();
     srLogWrite("kernel.bin: Loaded %lu Materias", (unsigned long)gContext.materias.resource_count());
     patch_materia();
 }
-
 
 u8 getMateriaTopType(u16 materiaID) {
     return gContext.materias.get_resource(materiaID).type & 0x0F;

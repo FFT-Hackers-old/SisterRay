@@ -14,7 +14,7 @@ void battleItemUpdateHandler(i32 updateStateMask) {
     for (i32 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
         if (partyIdx == *BATTLE_ACTIVE_ACTOR_ID) {
             enableWidget(getChild(getChild(menuWidget, BATTLE_ITEM_MENU_NAME), names[partyIdx]));
-            break;
+            continue;
         }
         disableWidget(getChild(getChild(menuWidget, BATTLE_ITEM_MENU_NAME), names[partyIdx]));
     }

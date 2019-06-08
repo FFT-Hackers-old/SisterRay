@@ -1,16 +1,20 @@
 #include "items.h"
 #include "../impl.h"
 
-SISTERRAY_API ItemData getItem(u16 itemID) {
-    return gContext.items.get_resource(itemID);
+SISTERRAY_API ItemData getItem(u16 modItemID, const char* modName) {
+    auto name = std::string(modName) + std::to_string(modItemID);
+    return gContext.items.get_element(name);
 }
 
-SISTERRAY_API void setItemData(ItemData data, u16 itemID) {
-    gContext.items.update_resource(itemID, data);
+SISTERRAY_API void setItemData(ItemData data, u16 modItemID, const char* modName) {
+    auto name = std::string(modName) + std::to_string(modItemID);
+    gContext.items.update_element(name, data);
 }
 
-SISTERRAY_API void addItem(ItemData data, char* name) {
-    gContext.items.add_element(std::string(name), data);
+SISTERRAY_API void addItem(ItemData data, u16 modItemID, const char* modName) {
+    auto name = std::string(modName) + std::to_string(modItemID);
+    gContext.items.add_element(name, data);
+    gContext.itemTypeData.add_element(name, ITYPE_CONSUMABLE, ICONTYPE_CONSUMABLE);
 }
 
 static const u32 kPatchStructBase[] = {
@@ -69,7 +73,7 @@ void createOnUseItemData(u16 hp_heal_amount, u16 mp_heal_amount,
     u16 stat_to_boost, u16 character_restriction_mask, u8 hp_heal_percent,
     u8 mp_heal_percent, bool can_revive, bool target_all, bool requires_target) {
 
-    onUseItemData itemData = {
+    ConsumableUseData itemData = {
         hp_heal_amount,
         mp_heal_amount,
         stat_to_boost,
@@ -85,8 +89,7 @@ void createOnUseItemData(u16 hp_heal_amount, u16 mp_heal_amount,
 
 }
 
-SISTERRAY_API void initItems(SrKernelStream* stream)
-{
+SISTERRAY_API void initItems(SrKernelStream* stream) {
     gContext.items = SrItemRegistry(stream);
     gContext.itemTypeData.initialize_augmented_data((u8)0, gContext.items.resource_count());
     patchItems();

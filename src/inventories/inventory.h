@@ -28,26 +28,6 @@ public:
     SrItemInventory(): SrInventory<InventoryEntry>(){}
 };
 
-// indexed by global "item_id"
-typedef struct {
-    u8 item_type; //00 = normal item, 01 = weapon, 02=armor, 03=accessory
-    u16 type_relative_id;
-    u8 itemIconType; //00 = normal item, 01 = sword 02= glove, etc
-} ItemTypeData;
-
-class SrItemTypeRegistry : public SrResourceRegistry<ItemTypeData> {
-public:
-    std::vector<i16> reverseItemRegistry;
-    std::vector<i16> reverseArmorRegistry;
-    std::vector<i16> reverseAccessoryRegistry;
-    std::vector<i16> reverseWeaponRegistry;
-    SrItemTypeRegistry() : SrResourceRegistry<ItemTypeData>::SrResourceRegistry() {};
-    void initialize_augmented_data(u8 itemType, u16 numberToInitialize);
-    u16 get_absolute_id(u8 itemType, u8 relativeIndex);
-};
-
-u8 getIconTypeFromItemType(u8 itemType, u16 typeRelativeIndex);
-
 //The data structure stores information
 typedef struct {
     u16 relative_item_id;
@@ -64,7 +44,6 @@ public:
     u8 getItemType();
 };
 
-SISTERRAY_API void initInventory();
-SISTERRAY_API void initItemTypeData();
+SISTERRAY_API void initInventory()
 
 #endif

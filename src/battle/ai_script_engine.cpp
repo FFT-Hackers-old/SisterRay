@@ -14,13 +14,14 @@ i32 getMPCost(i32 attackID)
     return MPCost;
 }
 
+/*It would be ideal if we could find some way to get the command index here, as this raw index thing will not work with new relative system*/
 const AttackData& getAttackDataPtr(i32 attackID) {
     //TODO relocate player data and change this logic
     AttackData* playerAbilityData = (AttackData*)(0xDB9690);
 
     if (attackID < 256)
         const auto& attack = playerAbilityData[attackID];
-    const auto& attack = gContext.attacks.get_element(std::string("ETK") +std::to_string(attackID)).attackData;
+    const auto& attack = gContext.attacks.get_element(assemblekey(CMD_ENEMY_ACTION, attackID)).attackData;
 
     return attack;
 }

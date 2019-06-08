@@ -8,7 +8,7 @@ using namespace BattleESkillWidgetNames;
 
 void initializeBattleESkillMenu() {
     CursorContext eSkillContext = { 0, 0, 2, 3, 0, 0, 2, ESKILL_COUNT/2, 0, 0, 0, 0, 0, 1 };
-    Cursor eSkillCursor = { eSkillContext, 36, 364, 32, 156 };
+    Cursor eSkillCursor = { eSkillContext, 8, 364, 32, 156 };
 
     Cursor cursorArray[3] = { eSkillCursor, eSkillCursor, eSkillCursor }; /*One cursor per party member*/
     auto battleSpellMenu = createMenu(INIT_BATTLE_ESKILL, 3, &cursorArray[0]);

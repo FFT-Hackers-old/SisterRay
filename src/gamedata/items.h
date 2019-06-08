@@ -1,10 +1,10 @@
 #ifndef ITEMS_H
 #define ITEMS_H
 
-#include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "../sr_named_registry.h"
 #include "game_data_interface.h"
+#include "base_item.h"
 
 
 class SrItemRegistry : public SrNamedResourceRegistry<ItemData, std::string> {
@@ -13,10 +13,10 @@ public:
  SrItemRegistry(): SrNamedResourceRegistry<ItemData, std::string>() {}
 };
 
-class SrOnUseItemDataRegistry : public SrResourceRegistry<onUseItemData> {
+class SrOnUseItemDataRegistry : public SrResourceRegistry<ConsumableUseData> {
 public:
-    SrOnUseItemDataRegistry(SrKernelStream* stream) : SrResourceRegistry<onUseItemData>(stream) {};
-    SrOnUseItemDataRegistry() : SrResourceRegistry<onUseItemData>() {}
+    SrOnUseItemDataRegistry(SrKernelStream* stream) : SrResourceRegistry<ConsumableUseData>(stream) {};
+    SrOnUseItemDataRegistry() : SrResourceRegistry<ConsumableUseData>() {}
 };
 
 bool canCharacterUseItem(u8 character_ID, u16 item_id);

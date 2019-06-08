@@ -8,7 +8,7 @@ using namespace BattleSummonWidgetNames;
 
 void initializeBattleSummonMenu() {
     CursorContext summonSelection = { 0, 0, 1, 3, 0, 0, 1, SUMMON_COUNT, 0, 0, 0, 0, 0, 1 };
-    Cursor summonChoiceCursor = { summonSelection, 36, 364, 32, 156 };
+    Cursor summonChoiceCursor = { summonSelection, 8, 364, 32, 156 };
 
     Cursor cursorArray[3] = { summonChoiceCursor, summonChoiceCursor, summonChoiceCursor }; /*One cursor per party member*/
     auto battleSpellMenu = createMenu(INIT_BATTLE_SUMMON, 3, &cursorArray[0]);

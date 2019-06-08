@@ -36,6 +36,13 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
+    ItemData baseData;
+    ConsumableUseData useData;
+    char* itemName;
+    char* itemDesc;
+} SrConsumableData;
+
+typedef struct {
     u16 hp_heal_amount;
     u16 mp_heal_amount;
     u16 stat_to_boost;
@@ -45,7 +52,7 @@ typedef struct {
     bool can_revive;
     bool target_all;
     bool requires_target;
-} onUseItemData;
+} ConsumableUseData;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -77,6 +84,17 @@ typedef struct {
 } WeaponData;
 #pragma pack(pop)
 
+typedef struct {
+    ActorStatBoosts boosts;
+} AuxWeaponData;
+
+typedef struct {
+    WeaponData baseData;
+    AuxWeaponData auxData;
+    char* weaponName;
+    char* weaponDesc;
+} SrWeaponData;
+
 #pragma pack(push, 1)
 typedef struct {
     u8      unknown;
@@ -99,6 +117,17 @@ typedef struct {
 } ArmorData;
 #pragma pack(pop)
 
+typedef struct {
+    ActorStatBoosts boosts;
+} AuxArmorData;
+
+typedef struct {
+    ArmorData baseData;
+    AuxArmorData auxData;
+    char* armorName;
+    char* armorDesc;
+} SrArmorData;
+
 #pragma pack(push, 1)
 typedef struct {
     u8      stats_to_boost[2];
@@ -112,6 +141,17 @@ typedef struct {
 } AccessoryData;
 #pragma pack(pop)
 
+typedef struct {
+    ActorStatBoosts boosts;
+} AuxAccessoryData;
+
+typedef struct {
+    AccessoryData baseData;
+    AuxAccessoryData auxData;
+    char* accessoryName;
+    char* accessoryDesc;
+} SrAccessoryData;
+
 #pragma pack(push, 1)
 typedef struct {
     u16     apLevel[4];
@@ -122,6 +162,17 @@ typedef struct {
     u8      data[6];
 } MateriaData;
 #pragma pack(pop)
+
+typedef struct {
+    ActorStatBoosts equipEffects;
+} AuxMateriaData;
+
+typedef struct {
+    MateriaData baseData;
+    AuxMateriaData auxData;
+    char* materiaName;
+    char* materiaDesc;
+} SrMateriaData;
 
 typedef struct {
     u16 item_id;

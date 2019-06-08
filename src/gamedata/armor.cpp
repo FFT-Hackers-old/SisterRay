@@ -3,17 +3,37 @@
 #include "../impl.h"
 #include "armor.h"
 
+SISTERRAY_API SrArmorData getArmor(u16 modItemID, const char* modName) {
+    SrArmorData srArmor = SrArmorData();
+    auto name = std::string(modName) + std::to_string(modItemID);
+    srArmor.baseData = gContext.accessories.get_element(name);
 
-SISTERRAY_API ArmorData getArmor(u16 itemID) {
-    return gContext.armors.get_resource(itemID);
+    ItemTypeData typeData = gContext.itemTypeData.get_element(name);
+    auto relativeIndex = typeData.type_relative_id;
+    srArmor.armorName = gContext.gameStrings.armor_names.get_string(relativeIndex).str();
+    srArmor.armorDesc = gContext.gameStrings.armor_descriptions.get_string(relativeIndex).str();
+
+    return srArmor
 }
 
-SISTERRAY_API void setArmorData(ArmorData attackData, u16 itemID) {
-    gContext.armors.update_resource(itemID, attackData);
+SISTERRAY_API void setArmorData(SrArmorData data, u16 modItemID, const char* modName) {
+    auto name = std::string(modName) + std::to_string(modItemID);
+    gContext.accessories.update_element(name, data.baseData);
+
+    ItemTypeData typeData = gContext.itemTypeData.get_element(name);
+    auto relativeIndex = typeData.type_relative_id;
+    gContext.gameStrings.armor_names.update_resource(relativeIndex, EncodedString::from_unicode(data.armorName));
+    gContext.gameStrings.armor_descriptions.update_resource(relativeIndex, EncodedString::from_unicode(data.armorDesc));
 }
 
-SISTERRAY_API void addArmor(ArmorData attackData, char* name) {
-    gContext.armors.add_element(std::string(name), attackData);
+SISTERRAY_API void addArmor(SrArmorData data, u16 modItemID, const char* modName) {
+    auto name = std::string(modName) + std::to_string(modItemID);
+    gContext.accessories.add_element(name, data.baseData);
+    gContext.auxAccessories.add_element(name, data.auxData);
+    gContext.itemTypeData.add_element(name, ITYPE_ARMOR, ICONTYPE_ARMOR);
+
+    gContext.gameStrings.armor_names.add_resource(EncodedString::from_unicode(data.armorName));
+    gContext.gameStrings.armor_descriptions.add_resource(EncodedString::from_unicode(data.armorDesc));
 }
 
 static const u32 kPatchStructBase[] = {
@@ -51,8 +71,7 @@ static const u32 kPatchEquipMask[] = {
     0x00708548
 };
 
-static void patch_armor(void)
-{
+static void patch_armor(void) {
     srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, unknown));
     srPatchAddresses((void**)kPatchDefense, ARRAY_SIZE(kPatchDefense), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, defense));
     srPatchAddresses((void**)kPatchMagicDefense, ARRAY_SIZE(kPatchMagicDefense), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, magic_defense));
@@ -63,9 +82,26 @@ static void patch_armor(void)
     srPatchAddresses((void**)kPatchEquipMask, ARRAY_SIZE(kPatchEquipMask), ARMOR_DATA_PTR, gContext.armors.get_data(), offsetof(ArmorData, equip_mask));
 }
 
+void initializeAuxArmorRegistry() {
+    for (auto i = 0; i < KERNEL_ARMOR_COUNT, ++i) {
+        auto name = std::string(BASE_PREFIX) + std::to_string(i);
+        auto& kernelArmor = gContext.armors.get_element(name);
+
+        ActorStatBoosts boosts = ActorStatBoosts();
+        auto& stats = kernelArmor.stats_to_boost;
+        auto& amts = kernelArmor.stat_boost_amounts;
+        populatekernelStatBoosts(stats, amts, boosts, 4);
+        AuxArmorData auxArmor = { boosts };
+        gContext.auxArmors.add_element(name);
+    }
+}
+
+
 SISTERRAY_API void init_armor(SrKernelStream* stream) {
     gContext.armors = SrArmorRegistry(stream);
-    gContext.itemTypeData.initialize_augmented_data((u8)2, gContext.armors.resource_count());
+    gContext.auxArmors = SrAuxArmorRegistry();
+    initializeAuxArmorRegistry();
+    gContext.itemTypeData.initialize_augmented_data((ITYPE_ARMOR, gContext.armors.resource_count());
     patch_armor();
     srLogWrite("kernel.bin: Loaded %lu Armors", (unsigned long)gContext.armors.resource_count());
 }

@@ -78,10 +78,16 @@ typedef void(*PFNSRSUB5DFE08)(char*);
 typedef void(*PFNSRSUB5DFE51)(char*);
 #define clearDirectory      ((PFNSRSUB5DFE51)0x5DFE51)
 
-typedef void*(*PFNSRSUB6829FE)(LGPContext*, char*, char*);
+typedef void*(*PFNSRSUB6829FE)(LGPContext*, int*, char*);
 #define ff7LoadModelFile   ((PFNSRSUB6829FE)0x6829FE)
+
+void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename);
+void* srOpenDAFile(LGPContext* context, char* baseFileName);
 
 typedef void(*PFNSRSUB5E1449)(char*, char*);
 #define getBFileName       ((PFNSRSUB5E1449)0x5E1449)
+
+typedef void(*PFNSRSUB5E826A)(u32, char*, char*);
+#define createDAFilename   ((PFNSRSUB5E826A)0x5E826A)
 
 #endif // !MODEL_FILE_UTILS_H

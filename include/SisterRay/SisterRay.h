@@ -27,7 +27,7 @@
 
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*x))
 
-#define BASE_PREFIX     "srFF7Base"
+#define BASE_PREFIX     "srFF7"
 
 typedef enum {
     NO_TYPE,

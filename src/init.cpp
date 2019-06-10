@@ -136,6 +136,7 @@ static void Init(void)
     testFillInventory();
     initFormationsRegistries();; //initialize all data from the scene.bin
     //Register base callbacks
+    initAnimations();
     registerEquipMenuListeners();
     initializeEquipMenu();
     registerInventoryMenuListeners();

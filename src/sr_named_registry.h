@@ -9,7 +9,7 @@
 
 /*Simple C++ template to replace all the old school manually resized C arrays
   And unify our String Registry and all of our various item registries*/
-template<class T, class S> class SrNamedResourceRegistry: public SrResourceRegistry<T> {
+template<class T, class S> class SrNamedResourceRegistry: public SrResourceRegistry<T> { //Publicly inherited, but should be private after refactor/cleanup
 public:
     std::unordered_map<S, u32> named_registry;
     SrNamedResourceRegistry(): SrResourceRegistry() {};

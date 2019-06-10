@@ -1,9 +1,11 @@
 #include "battle_models.h"
+#include "../../impl.h"
 
 /*If an SR animation file is found, we should use the number of animations it specifies instead of what the aa file does*/
-/*BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *aaHeader, UnkModelLoadStruct *loadStruct, FileContext *fileContext, char * filename) {
+
+BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *aaHeader, UnkModelLoadStruct *loadStruct, FileContext *fileContext, char * filename) {
     BattleModel *modelData;
-    char *addressOfString;
+    i32 bytesRead;
     char bExtensionString[204];
     char FF7Directory[204];
 
@@ -20,7 +22,7 @@
         if (modelData) {
             if (aaHeader->loadBFileFlag) {
                 getBFileName(filename, &(bExtensionString[0]));
-                modelData->animScriptStruct = ff7LoadModelFile(&fileContext->lgpContext, (char *)&addressOfString, &(bExtensionString[0]));
+                modelData->animScriptStruct = srLoadLGPFile(&fileContext->lgpContext, &bytesRead, &(bExtensionString[0]));
             }
             if (aaHeader->initSkeletonFlag) {
                 modelData->skeletonData = createSkeleton(0, 0, aaHeader->modelBoneCount, aaHeader->boneDataPtr, aaHeader, loadStruct, fileContext, filename);
@@ -40,12 +42,3 @@
 
     return modelData;
 }
-
-
-u32 getSrAnimsCount(ModelAAHeader *aaHeader, const char * filename) {
-    u32 srNewAnimsCount;
-    u32 animCount = aaHeader->weaponAnimAcount + aaHeader->modelAnimCount;
-    aaHeader->modelAnimCount += srNewAnimsCount;              
-    aaHeader->weaponAnimAcount += srNewAnimsCount;
-    return animCount;
-}*/

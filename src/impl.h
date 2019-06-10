@@ -29,6 +29,7 @@ extern "C" {
 #include "gamedata/attacks.h"
 #include "battle/formations.h"
 #include "battle/enemies.h"
+#include "battle/scene_loader.h"
 #include "inventories/inventory.h"
 #include "inventories/battle_inventory.h"
 #include "inventories/materia_inventory.h"
@@ -40,6 +41,7 @@ extern "C" {
 #include "party/party.h"
 #include "party/characters.h"
 #include "battle/animation_scripts.h"
+#include "battle/battle_models/animation_registry.h"
 #include <map>
 #include <memory>
 
@@ -65,6 +67,7 @@ typedef struct {
     SrMateriaRegistry                   materias;
     SrAuxMateriaRegistry                auxMaterias;
 
+    SrBattleAnimationRegistry           battleAnimations;
     SrCommandRegistry                   commands;
     SrAttackRegistry                    attacks;
     SrCharacterRegistry                 characters;

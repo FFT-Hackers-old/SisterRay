@@ -31,7 +31,7 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInit
     }
 }
 
-void SrItemTypeRegistry::add_element(const std::string& name, u8 itemType, u8 iconType) {
+void SrItemTypeRegistry::append_item(const std::string& name, u8 itemType, u8 iconType) {
     if (contains(name))
         return;
 
@@ -55,9 +55,7 @@ void SrItemTypeRegistry::add_element(const std::string& name, u8 itemType, u8 ic
     }
     auto relative_item_id = reverseRegistry.size() - 1;
     ItemTypeData baseData = { itemType, relative_item_id, iconType };
-    add_resource(baseData);
-    u32 index = resource_count() - 1;
-    named_registry[name] = index;
+    add_element(baseData);
 }
 
 /*Only used when loading from kernel to initialize the augmented data from kernel*/

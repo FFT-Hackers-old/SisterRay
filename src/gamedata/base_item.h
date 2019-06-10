@@ -32,16 +32,18 @@ typedef struct {
 } ItemTypeData;
 
 /*Holds type information about every item in the game, used for inventory index to specific data type lookups*/
-class SrItemTypeRegistry : public SrNamedResourceRegistry<ItemTypeData, std::string> {
+class SrItemTypeRegistry : private SrNamedResourceRegistry<ItemTypeData, std::string> {
 public:
+    SrItemTypeRegistry() : SrNamedResourceRegistry<ItemTypeData, std::string>() {}
+    void initialize_augmented_data(u8 itemType, u16 numberToInitialize);
+    u16 get_absolute_id(u8 itemType, u8 relativeIndex);
+    void append_item(const std::string& name, u8 itemType, u8 iconType); //add element is not virtual
+
+protected:
     std::vector<i16> reverseItemRegistry;
     std::vector<i16> reverseArmorRegistry;
     std::vector<i16> reverseAccessoryRegistry;
     std::vector<i16> reverseWeaponRegistry;
-    SrItemTypeRegistry() : SrNamedResourceRegistry<ItemTypeData, std::string>() {}
-    void initialize_augmented_data(u8 itemType, u16 numberToInitialize);
-    u16 get_absolute_id(u8 itemType, u8 relativeIndex);
-    void add_element(const std::string& name, u8 itemType, u8 iconType);
 };
 
 u8 getKernelIconType(u8 itemType, u16 typeRelativeIndex);

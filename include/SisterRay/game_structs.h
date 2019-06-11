@@ -205,21 +205,48 @@ typedef struct {
 
 #define gActorTimerBlock ((ActorTimerData*)(0x9A8B10))
 
+typedef struct {
+    u16 xCoordinate;
+    u16 yCoorindate;
+    u16 zCoordinate;
+} ModelPosition;
+
 /*Should  have size 0x1AEC*/
 #pragma pack(push, 1)
 typedef struct {
-	u16 ActorID; //BE1170
-	u8 padding1[6]; //BE1171
-	u16 AnimationData; //BE1178
-	u16 commandAnimID; //BE117A
-	u8 padding2[30]; //BE117C
-	u8 AnimationEffect; //BE119A
-	u8 commandID; //BE119B
-	u8 padding3[0x1AC0];
-} BigAnimBlock;
+	u16 ActorID; //BE1170, 0
+    u16 animScriptIndex; //BE1172, 2
+	u8 padding1[4]; //BE1174, 4
+	u16 AnimationData; //BE1178, 8
+	u16 commandAnimID; //BE117A, 0xA
+    u8 field_C;
+    u8 field_D;
+    u16 runningAnimIdx; //0xE
+	u8 padding2[18]; //BE117C, 0x10
+	u8 AnimationEffect; //BE119A, 0x22
+	u8 commandID; //BE119B, 0x23
+    u32 field_24; 
+    u32 field_28;
+    u32 field_2C;
+    u32 field_30;
+    u32 field_34;
+    u16 field_38;
+    u8 field_3A;
+    u8 isScriptExecuting; //0x3B
+    u8 currentScriptPosition; //0x3C
+    u8 waitFrames;            //0x3D
+    u8 modelEffectFlags;      //0x3E
+    u8 padding3[0x11F];       //0x3F
+    u16 field_15E;
+    u16 field_160;
+    u16 field_162;
+    u16 field_164;
+    ModelPosition restingPosition; //0x166
+	u8 padding3[0x1980];
+} BattleModelState;
 #pragma pack(pop)
 
-#define gBigAnimBlock       ((BigAnimBlock*)0xBE1170)
+#define gBigAnimBlock       ((BattleModelState*)0xBE1170)
 
 #pragma pack(push, 1)
 typedef struct {

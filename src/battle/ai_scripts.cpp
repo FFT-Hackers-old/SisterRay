@@ -42,12 +42,10 @@ const u8* getScriptPtr(const BattleAIData& AIData, u16 scriptType) {
 
 /*These functions take a script block from scene.bin and parse it into an SR internal format*/
 void initializeBattleAIData(const u8* const scriptBlock, u32 sceneEnemyIndex, BattleAIData& srAIData) {
-    srLogWrite("parsing AI data from block at %p for actor/formation %i", scriptBlock, sceneEnemyIndex);
     u16* sceneAIEnemyOffsets = (u16*)scriptBlock;
     auto enemyScriptsOffset = sceneAIEnemyOffsets[sceneEnemyIndex];
     if (enemyScriptsOffset != 0xFFFF) {
         auto aiDataPtr = scriptBlock + enemyScriptsOffset;
-        srLogWrite("actor AI scripts starting at offset %p", aiDataPtr);
         initAIScriptStruct(srAIData, aiDataPtr);
     }
 }
@@ -61,11 +59,9 @@ void initializeFormationAIScript(const u8* const scriptBlock, u32 formationIndex
 
 void initAIScriptStruct(BattleAIData& srAIData, const u8* const scriptBlockStart) {
     const u16* const wordReader = (const u16* const)scriptBlockStart;
-    srLogWrite("AI script parsing function starting at offset %p", scriptBlockStart);
     SceneAIOffsets scriptStarts = { wordReader[0], wordReader[1], wordReader[2], wordReader[3], wordReader[4], wordReader[5], wordReader[6], wordReader[7] };
     memcpy(&(scriptStarts.customEventScripts[0]), (const void*)(scriptBlockStart + 16), 16);
 
-    srLogWrite("block starts located at: %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i",
         scriptStarts.initScript,
         scriptStarts.mainScript,
         scriptStarts.genCounter,
@@ -89,56 +85,47 @@ void initAIScriptStruct(BattleAIData& srAIData, const u8* const scriptBlockStart
     if (scriptStarts.initScript != 0xFFFF) {
         scriptStart = scriptBlockStart + scriptStarts.initScript;
         copyAIScript(srAIData.initScript, scriptStart);
-        srLogWrite("starting script at %p", scriptStart);
     }
 
     if (scriptStarts.mainScript != 0xFFFF) {
         scriptStart = scriptBlockStart + scriptStarts.mainScript;
         copyAIScript(srAIData.mainScript, scriptStart);
-        srLogWrite("starting script at %p", scriptStart);
     }
 
     if (scriptStarts.genCounter != 0xFFFF) {
         scriptStart = scriptBlockStart + scriptStarts.genCounter;
         copyAIScript(srAIData.genCounter, scriptStart);
-        srLogWrite("starting script at %p", scriptStart);
     }
 
     if (scriptStarts.physCounter != 0xFFFF) {
         scriptStart = scriptBlockStart + scriptStarts.physCounter;
         copyAIScript(srAIData.physCounter, scriptStart);
-        srLogWrite("starting script at %p", scriptStart);
     }
 
     if (scriptStarts.magCounter != 0xFFFF) {
         scriptStart = scriptBlockStart + scriptStarts.magCounter;
         copyAIScript(srAIData.magCounter, scriptStart);
-        srLogWrite("starting script at %p", scriptStart);
     }
 
     if (scriptStarts.preActionScript != 0xFFFF) {
         scriptStart = scriptBlockStart + scriptStarts.preActionScript;
         copyAIScript(srAIData.preActionScript, scriptStart);
-        srLogWrite("starting script at %p", scriptStart);
     }
 
     if (scriptStarts.deathCounter != 0xFFFF) {
         scriptStart = scriptBlockStart + scriptStarts.deathCounter;
         copyAIScript(srAIData.deathCounter, scriptStart);
-        srLogWrite("starting script at %p", scriptStart);
     }
 
     if (scriptStarts.endBattle != 0xFFFF) {
         scriptStart = scriptBlockStart + scriptStarts.endBattle;
         copyAIScript(srAIData.endBattle, scriptStart);
-        srLogWrite("starting script at %p", scriptStart);
     }
 
     for (auto customEventIndex = 0; customEventIndex < 8; customEventIndex++) {
         if (scriptStarts.customEventScripts[customEventIndex] != 0xFFFF) {
             scriptStart = scriptBlockStart + scriptStarts.customEventScripts[customEventIndex];
             copyAIScript(srAIData.customEventScripts[customEventIndex], scriptStart);
-            srLogWrite("starting script at %p", scriptStart);
         }
     }
 

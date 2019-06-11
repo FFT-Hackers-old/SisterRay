@@ -2,6 +2,38 @@
 #define ANIMATION_SCRIPTS_H
 
 #include <SisterRay/SisterRay.h>
+#include <unordered_map>
+#include <unordered_set>
+#include "battle_model_utils.h"
+#include "model_file_utils.h"
+
+#define BASE_PARTY_SCRIPT_MAX 74
+#define BASE_ENEMY_SCRIPT_MAX 32
+#define AB_PTR_TABLE_OFFSET 104
+typedef std::vector<u8> AnimationScript;
+
+/*Raw buffer size is used for memcpying the relevant information when a model attempts to seek it*/
+typedef struct {
+    u32 scriptLength;
+    AnimationScript animScript;
+} SrAnimationScript;
+
+/*This data lives in a registry, and is copied into the right place when the game is allocating models for a given battle
+  This is necessary to avoid the game attempting to */
+typedef struct {
+    ModelABHeader header;
+    u16 scriptCount;
+    std::unordered_map<std::string, SrAnimationScript> modelAnimScripts;
+} SrModelScripts;
+
+class SrBattleAnimScriptRegistry : public SrNamedResourceRegistry<SrModelScripts, std::string> {
+public:
+    SrBattleAnimScriptRegistry(std::unordered_set<u16> enemyModelIDs) : SrNamedResourceRegistry<SrModelAnimations, std::string>();
+    SrBattleAnimScriptRegistry() : SrNamedResourceRegistry<SrModelAnimations, std::string>() {}
+};
+
+
+AnimationScript animScriptFromAB(u8* animScriptStart, u16 animScriptLength);
 
 SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scripts, u32 unk1, u32 unk2);
 static unsigned char newAnimScript[] = { 0xE8, 0xFC, 0x00, 0xED, 0xE6, 0xEA, 0x00, 0x00, 0xEC, 0x00, 0x00, 0xFA, 0xE5, 0xEE };

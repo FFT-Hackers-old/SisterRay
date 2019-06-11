@@ -148,4 +148,21 @@ typedef struct {
 
 #define PARTY_STRUCT_ARRAY ((ActivePartyMemberStruct*)0xDBA498)
 
+#pragma pack(push, 1)
+typedef struct {
+    u8 characterID;
+    u8 field_1;
+    u8 field_2;
+    u8 field_3;
+    u8 field_4;
+    u8 field_5;
+    u16 field_6;
+    u32 field_8;
+    u32 field_C;
+}UnkBattleStruct;
+#pragma pack(pop)
+
+
+#define UNK_ACTOR_STRUCT_ARRAY ((UnkBattleStruct*)0x9A87F4)
+
 #endif // !SR_PARTY_H

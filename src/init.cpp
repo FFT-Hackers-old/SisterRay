@@ -136,7 +136,7 @@ static void Init(void)
     testFillInventory();
     initFormationsRegistries();; //initialize all data from the scene.bin
     //Register base callbacks
-    initAnimations();
+    initAnimations(); //Must be called after the formation registries have been initialized
     registerEquipMenuListeners();
     initializeEquipMenu();
     registerInventoryMenuListeners();

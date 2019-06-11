@@ -55,6 +55,20 @@ typedef struct {
     AABone* boneDataPtr;
 } ModelAAHeader;
 
+//This header is copied into the models, 
+typedef struct {
+    u16 characterID;
+    u8[34];
+    u32 unkFileOffsets[8]; //There are 8 pointers to a block after the animation scripts (end of file for model animations)
+    u8 unk[32];
+} ModelABHeader;
+
+typedef struct{
+    ModelABHeader header;
+    u32 offsets[74];
+    void* scriptData
+} ABFile;
+
 typedef struct {
     u32 daFileModelAnimCount;
     u32 daFileWeaponAnimCount;
@@ -85,7 +99,7 @@ void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename);
 void* srOpenDAFile(LGPContext* context, char* baseFileName);
 
 typedef void(*PFNSRSUB5E1449)(char*, char*);
-#define getBFileName       ((PFNSRSUB5E1449)0x5E1449)
+#define createABFilename       ((PFNSRSUB5E1449)0x5E1449)
 
 typedef void(*PFNSRSUB5E826A)(u32, char*, char*);
 #define createDAFilename   ((PFNSRSUB5E826A)0x5E826A)

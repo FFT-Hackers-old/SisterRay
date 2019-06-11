@@ -5,11 +5,6 @@ std::string assembleAnimKey(u16 idx) {
     return std::to_string(idx) + std::string(BASE_PREFIX);
 }
 
-/*Assemble the key used to look for animations in the game, for easy copying*/
-std::string assembleEnemyModelKey(u16 idx) {
-    return std::string("ENEMY") + std::to_string(idx) + std::string(".DAT");
-}
-
 /*Constructor takes the IDs of all unique enemies which were loaded into the gContext enemies registry*/
 SrBattleAnimationRegistry::SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs) {
 

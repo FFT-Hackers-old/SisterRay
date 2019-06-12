@@ -30,7 +30,7 @@ SISTERRAY_API void addItem(SrConsumableData data, u16 modItemID, const char* mod
     auto name = std::string(modName) + std::to_string(modItemID);
     gContext.items.add_element(name, data.baseData);
     gContext.itemOnUseData.add_element(name, data.useData);
-    gContext.itemTypeData.add_element(name, ITYPE_CONSUMABLE, ICONTYPE_CONSUMABLE);
+    gContext.itemTypeData.append_item(name, ITYPE_CONSUMABLE, ICONTYPE_CONSUMABLE);
 
     gContext.gameStrings.item_names.add_resource(EncodedString::from_unicode(data.itemName));
     gContext.gameStrings.item_descriptions.add_resource(EncodedString::from_unicode(data.itemDesc));

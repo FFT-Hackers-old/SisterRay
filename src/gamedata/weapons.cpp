@@ -32,7 +32,7 @@ SISTERRAY_API void addWeapon(SrWeaponData data, u16 modweaponID, const char* mod
     gContext.auxWeapons.add_element(name, data.auxData);
 
     u8 iconType = getWeaponIcon(characterID);
-    gContext.itemTypeData.add_element(name, ITYPE_WEAPON, iconType);
+    gContext.itemTypeData.append_item(name, ITYPE_WEAPON, iconType);
 
     const ItemTypeData& typeData = gContext.itemTypeData.get_element(name);
     auto relativeIndex = typeData.type_relative_id;

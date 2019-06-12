@@ -1,8 +1,8 @@
 #include "animation_registry.h"
 #include "../../impl.h"
 
-std::string assembleAnimKey(u16 idx) {
-    return std::to_string(idx) + std::string(BASE_PREFIX);
+const std::string assembleAnimKey(u16 idx) {
+    return std::string(BASE_PREFIX) + std::to_string(idx);
 }
 
 /*Constructor takes the IDs of all unique enemies which were loaded into the gContext enemies registry*/
@@ -45,8 +45,8 @@ SrBattleAnimationRegistry::SrBattleAnimationRegistry(std::unordered_set<u16> ene
             auto animHeader = (DaAnimHeader*)animDataStartPtr;
             u32* frameDataPtr = animDataStartPtr + 3;
 
-            auto currentAnimation = createAnimationFromDABuffer(1, animHeader->bonesCount, animHeader->framesCount, frameDataPtr);
-            SrAnimation srAnim = { (((12 * animHeader->bonesCount) + 24) * animHeader->framesCount), currentAnimation };
+            auto currentAnimation = createAnimationFromDABuffer(1, animHeader->bonesCount, animHeader->framesCount, frameDataPtr); //dynamically allocated by the game
+            SrAnimation srAnim = { ((12 * animHeader->bonesCount) + 24) * animHeader->framesCount, currentAnimation };
             if (animationIdx < BASE_WEAPON_OFFSET) {
                 modelAnims.modelAnimations[assembleAnimKey(animationIdx)] = srAnim;
             }

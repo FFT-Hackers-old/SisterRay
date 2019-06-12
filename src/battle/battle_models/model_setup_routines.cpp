@@ -17,16 +17,13 @@ typedef void(*PFNSRSUB42B66A)(u8);
 void convertEnemyBDataToPtr() {
     u8* byte_BFD0E0 = (u8*)0xBFD0E0;
     u8* byte_BF2DF8 = (u8*)0xBF2DF8;
+    u8* enemyCountGlobal = (u8*)0xBF20F0;
     ModelPositionStruct* actorPositionArray = (ModelPositionStruct*)(0xBFD0A0);
     ModelPositionStruct* enemyInitialPositionArray = (ModelPositionStruct*)(0xBF2056);
 
-    for (auto enemyActorIdx = 4; enemyActorIdx < enemyCountGlobal + 4; ++enemyActorIdx)
-        MODEL_DATA_74_ARRAY[enemyActorIdx].modelDataIndex = 0; //Should investigate this structure
-
-    for (auto enemyActorIdx = 4; enemyActorIdx < enemyCountGlobal + 4; ++enemyActorIdx)
+    for (auto enemyActorIdx = 4; enemyActorIdx < *enemyCountGlobal + 4; ++enemyActorIdx) {
+        MODEL_DATA_74_ARRAY[enemyActorIdx].modelDataIndex = 0;
         initEnemyModelsFromAB(enemyActorIdx);
-
-    for (auto enemyActorIdx = 4; enemyActorIdx < enemyCountGlobal + 4; ++enemyActorIdx) {
         byte_BF2DF8[enemyActorIdx] = UNK_ACTOR_STRUCT_ARRAY[enemyActorIdx].field_1;
         actorPositionArray[enemyActorIdx].xPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].xPosition;
         actorPositionArray[enemyActorIdx].yPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].yPosition;

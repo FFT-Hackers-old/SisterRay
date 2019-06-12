@@ -27,6 +27,8 @@ typedef struct {
     std::map<std::string, SrAnimationScript> modelAnimScripts;
 } SrModelScripts;
 
+SrModelScripts createSrModelScripts(const std::string archiveName);
+
 class SrBattleAnimScriptRegistry : public SrNamedResourceRegistry<SrModelScripts, std::string> {
 public:
     SrBattleAnimScriptRegistry(std::unordered_set<u16> enemyModelIDs);

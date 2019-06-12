@@ -46,7 +46,7 @@ typedef struct {
 
 /*This data lives in a registry, and is copied into the right place when the game is allocating models for a given battle
   This is necessary to avoid the game attempting to */
-typedef struct {
+typedef struct SrModelAnimations {
     SrModelType type;
     u16 modelAnimationCount;
     u16 weaponsAnimationCount;
@@ -54,6 +54,8 @@ typedef struct {
     std::map<std::string, SrAnimation> modelAnimations;
     std::map<std::string, SrAnimation> weaponAnimations;
 } SrModelAnimations;
+
+SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon);
 
 /*Registry which holds animation data in memory for the various models, player data models will be keyed by named,
   Enemies will be keyed by their their model index number*/

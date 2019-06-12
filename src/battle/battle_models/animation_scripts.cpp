@@ -5,62 +5,43 @@ std::string assembleAnimScriptKey(u16 idx) {
     return std::to_string(idx) + std::string(BASE_PREFIX);
 }
 
+SrModelScripts createSrModelScripts(const std::string archiveName) {
+    LGPContext lgpContext = { 0, 1, 2, (PFNFF7MANGLER)0x5E2198 };
+    auto abFilePtr = srOpenABFile(&lgpContext, archiveName.c_str());
+    ModelABHeader* header = (ModelABHeader*)abFilePtr;
+
+    SrModelScripts srModelScripts = SrModelScripts();
+    srModelScripts.header = *header;
+
+    u32* scriptPtrTable = (u32*)(((u8*)abFilePtr) + AB_PTR_TABLE_OFFSET);
+    for (auto scriptIdx = 0; scriptIdx < BASE_ENEMY_SCRIPT_MAX; scriptIdx++) {
+        u8* animScriptStart = ((u8*)abFilePtr) + scriptPtrTable[scriptIdx];
+        u16 animScriptLength = scriptPtrTable[scriptIdx + 1] - scriptPtrTable[scriptIdx];
+        auto animationScript = animScriptFromAB(animScriptStart, animScriptLength);
+        SrAnimationScript srAnimScript = { animScriptLength, animationScript };
+        srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
+    }
+    free(abFilePtr);
+    return srModelScripts;
+}
+
 // Initialize, enemy script related data so that we may reassemble in a way the game understands
 SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> enemyModelIDs) : SrNamedResourceRegistry<SrModelScripts, std::string>() {
 
     LGPContext lgpContext = { 0, 1, 2, (PFNFF7MANGLER)0x5E2198 }; //This is used by the game, the name mangler is at 0x5E2198 and called when opening an lgp file
     for (auto modelID : enemyModelIDs) {
         auto name = assembleEnemyModelKey(modelID);
-        auto abFilePtr = srOpenABFile(&lgpContext, name.c_str());
-        ModelABHeader* header = (ModelABHeader*)abFilePtr;
-
-        SrModelScripts srModelScripts = SrModelScripts();
-        srModelScripts.header = *header;
-
-        u32* scriptPtrTable = (u32*)(((u8*)abFilePtr) + AB_PTR_TABLE_OFFSET);
-        for (auto scriptIdx = 0; scriptIdx < BASE_ENEMY_SCRIPT_MAX; scriptIdx++) {
-            u8* animScriptStart = ((u8*)abFilePtr) + scriptPtrTable[scriptIdx];
-            u16 animScriptLength = scriptPtrTable[scriptIdx + 1] - scriptPtrTable[scriptIdx];
-            auto animationScript = animScriptFromAB(animScriptStart, animScriptLength);
-            SrAnimationScript srAnimScript = { animScriptLength, animationScript };
-            srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
-        }
+        SrModelScripts srModelScripts = createSrModelScripts(name);
         add_element(name, srModelScripts);
     }
 
     for (auto name : characterModelNames) {
-        auto abFilePtr = srOpenABFile(&lgpContext, name.c_str());
-        ModelABHeader* header = (ModelABHeader*)abFilePtr;
-
-        SrModelScripts srModelScripts = SrModelScripts();
-        srModelScripts.header = *header;
-
-        u32* scriptPtrTable = (u32*)(((u8*)abFilePtr) + AB_PTR_TABLE_OFFSET);
-        for (auto scriptIdx = 0; scriptIdx < BASE_PARTY_SCRIPT_MAX; scriptIdx++) {
-            u8* animScriptStart = ((u8*)abFilePtr) + scriptPtrTable[scriptIdx];
-            u16 animScriptLength = scriptPtrTable[scriptIdx + 1] - scriptPtrTable[scriptIdx];
-            auto animationScript = animScriptFromAB(animScriptStart, animScriptLength);
-            SrAnimationScript srAnimScript = { animScriptLength, animationScript };
-            srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
-        }
+        SrModelScripts srModelScripts = createSrModelScripts(name);
         add_element(name, srModelScripts);
     }
 
     for (auto name : specialModelNames) {
-        auto abFilePtr = srOpenABFile(&lgpContext, name.c_str());
-        ModelABHeader* header = (ModelABHeader*)abFilePtr;
-
-        SrModelScripts srModelScripts = SrModelScripts();
-        srModelScripts.header = *header;
-
-        u32* scriptPtrTable = (u32*)(((u8*)abFilePtr) + AB_PTR_TABLE_OFFSET);
-        for (auto scriptIdx = 0; scriptIdx < BASE_ENEMY_SCRIPT_MAX; scriptIdx++) {
-            u8* animScriptStart = ((u8*)abFilePtr) + scriptPtrTable[scriptIdx];
-            u16 animScriptLength = scriptPtrTable[scriptIdx + 1] - scriptPtrTable[scriptIdx];
-            auto animationScript = animScriptFromAB(animScriptStart, animScriptLength);
-            SrAnimationScript srAnimScript = { animScriptLength, animationScript };
-            srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
-        }
+        SrModelScripts srModelScripts = createSrModelScripts(name);
         add_element(name, srModelScripts);
     }
 }

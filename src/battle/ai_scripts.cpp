@@ -62,24 +62,6 @@ void initAIScriptStruct(BattleAIData& srAIData, const u8* const scriptBlockStart
     SceneAIOffsets scriptStarts = { wordReader[0], wordReader[1], wordReader[2], wordReader[3], wordReader[4], wordReader[5], wordReader[6], wordReader[7] };
     memcpy(&(scriptStarts.customEventScripts[0]), (const void*)(scriptBlockStart + 16), 16);
 
-        scriptStarts.initScript,
-        scriptStarts.mainScript,
-        scriptStarts.genCounter,
-        scriptStarts.deathCounter,
-        scriptStarts.physCounter,
-        scriptStarts.magCounter,
-        scriptStarts.endBattle,
-        scriptStarts.preActionScript,
-        scriptStarts.customEventScripts[0],
-        scriptStarts.customEventScripts[1],
-        scriptStarts.customEventScripts[2],
-        scriptStarts.customEventScripts[3],
-        scriptStarts.customEventScripts[4],
-        scriptStarts.customEventScripts[5],
-        scriptStarts.customEventScripts[6],
-        scriptStarts.customEventScripts[7]
-    );
-
     /*This is a bit ugly, consider refactoring the AI data stucture later so a loop will work*/
     const u8* scriptStart;
     if (scriptStarts.initScript != 0xFFFF) {

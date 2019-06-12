@@ -40,8 +40,8 @@ extern "C" {
 #include "menus/menu.h"
 #include "party/party.h"
 #include "party/characters.h"
-#include "battle/animation_scripts.h"
 #include "battle/battle_models/animation_registry.h"
+#include "battle/battle_models/animation_scripts.h"
 #include <map>
 #include <memory>
 
@@ -68,6 +68,7 @@ typedef struct {
     SrAuxMateriaRegistry                auxMaterias;
 
     SrBattleAnimationRegistry           battleAnimations;
+    SrBattleAnimScriptRegistry          battleAnimationScripts;
     SrCommandRegistry                   commands;
     SrAttackRegistry                    attacks;
     SrCharacterRegistry                 characters;

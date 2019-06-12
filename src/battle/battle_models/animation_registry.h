@@ -4,7 +4,7 @@
 #include "model_animations.h"
 #include <unordered_set>
 #include <unordered_map>
-#include "battle_model_utils.h"
+#include "../../sr_named_registry.h"
 
 #define BASE_WEAPON_OFFSET = 0x34 //This is the offset between a model animation and its weapon animation for player models
 //Indexes 0x2C - 0x34 are reserve for limits, but the data doesn't appear to be in the animation file
@@ -58,10 +58,10 @@ typedef struct {
   Enemies will be keyed by their their model index number*/
 class SrBattleAnimationRegistry : public SrNamedResourceRegistry<SrModelAnimations, std::string> {
 public:
-    SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs) : SrNamedResourceRegistry<SrModelAnimations, std::string>(); 
+    SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs); 
     SrBattleAnimationRegistry() : SrNamedResourceRegistry<SrModelAnimations, std::string>() {}
 };
 
-
+std::string assembleAnimKey(u16 idx);
 void initAnimations();
 #endif // !1

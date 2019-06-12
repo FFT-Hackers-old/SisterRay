@@ -36,7 +36,7 @@ SISTERRAY_API void addAccessory(SrAccessoryData data, u16 modItemID, const char*
     auto name = std::string(modName) + std::to_string(modItemID);
     gContext.accessories.add_element(name, data.baseData);
     gContext.auxAccessories.add_element(name, data.auxData);
-    gContext.itemTypeData.add_element(name, ITYPE_ACC, ICONTYPE_ACC);
+    gContext.itemTypeData.append_item(name, ITYPE_ACC, ICONTYPE_ACC);
 
     gContext.gameStrings.accessory_names.add_resource(EncodedString::from_unicode(data.accessoryName));
     gContext.gameStrings.accessory_descriptions.add_resource(EncodedString::from_unicode(data.accessoryDesc));

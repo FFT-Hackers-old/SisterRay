@@ -16,7 +16,7 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInit
         absoluteIndex = absoluteBase + relativeIndex;
 
         auto name = std::string(BASE_PREFIX) + std::to_string(absoluteIndex);
-        gContext.itemTypeData.add_element(name, itemType, iconType);
+        gContext.itemTypeData.append_item(name, itemType, iconType);
 
         switch (itemType) {
             case 0:
@@ -55,7 +55,7 @@ void SrItemTypeRegistry::append_item(const std::string& name, u8 itemType, u8 ic
     }
     auto relative_item_id = reverseRegistry.size() - 1;
     ItemTypeData baseData = { itemType, relative_item_id, iconType };
-    add_element(baseData);
+    add_element(name, baseData);
 }
 
 /*Only used when loading from kernel to initialize the augmented data from kernel*/

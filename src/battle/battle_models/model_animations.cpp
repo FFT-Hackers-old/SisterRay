@@ -48,9 +48,9 @@ u32 getSrAnimsCount(ModelAAHeader *aaHeader, const char * filename) {
 
 /*Use the games utility for decompressing */
 BattleAnimation* createAnimationFromDABuffer(u32 unkArg, u32 boneCount, u32 frameCount, void* frameDataBuffer) {
-    loadAnimationFromDA(unkArg, boneCount, frameCount, frameDataBuffer);
+    return loadAnimationFromDA(unkArg, boneCount, frameCount, frameDataBuffer);
 }
 
 BattleAnimation* srCreateBattleAnimation(u32 frameCount, u32 boneCount, u32 modelTypeData) {
-    createBattleAnimation(frameCount, boneCount, modelTypeData);
+    return createBattleAnimation(frameCount, boneCount, modelTypeData);
 }

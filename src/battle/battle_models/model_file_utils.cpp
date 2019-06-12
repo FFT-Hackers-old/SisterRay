@@ -7,8 +7,7 @@ void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename) {
 
 void* srOpenDAFile(LGPContext* context, char* baseFileName) {
     i32 bytesRead;
-    u32 *daArchiveFile;
-    u32 *daFilePtr;
+    void* daArchiveFile;
     char daFileNameBuffer[204];
 
     u32 archiveIndex = 0;
@@ -19,12 +18,10 @@ void* srOpenDAFile(LGPContext* context, char* baseFileName) {
 
 void* srOpenABFile(LGPContext* context, char* baseFileName) {
     i32 bytesRead;
-    u32 *abFile;
-    u32 *abFilePtr;
+    void *abFile;
     char abFileNameBuffer[204];
 
-    u32 archiveIndex = 0;
-    createABFilename(archiveIndex, baseFileName, &(abFileNameBuffer[0]));
+    createABFilename(baseFileName, &(abFileNameBuffer[0]));
     abFile = srLoadLGPFile(context, &bytesRead, &(abFileNameBuffer[0]));// loads the da file
     return abFile;
 }

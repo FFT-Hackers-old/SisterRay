@@ -5,9 +5,8 @@
 
 BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *aaHeader, UnkModelLoadStruct *loadStruct, FileContext *fileContext, char * filename) {
     BattleModel *modelData;
-    i32 bytesRead;
-    char bExtensionString[204];
     char FF7Directory[204];
+    u32 bytesRead;
 
     if (readTypeFlag)
         noLGPgetDirectory(&fileContext->lgpContext, FF7Directory);
@@ -21,8 +20,7 @@ BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *a
         modelData = allocateModelData(animationsCount, aaHeader->weaponCount);
         if (modelData) {
             if (aaHeader->loadBFileFlag) {
-                getBFileName(filename, &(bExtensionString[0]));
-                modelData->animScriptStruct = srLoadLGPFile(&fileContext->lgpContext, &bytesRead, &(bExtensionString[0]));
+                modelData->animScriptStruct = srOpenABFile(&(fileContext->lgpContext), filename);
             }
             if (aaHeader->initSkeletonFlag) {
                 modelData->skeletonData = createSkeleton(0, 0, aaHeader->modelBoneCount, aaHeader->boneDataPtr, aaHeader, loadStruct, fileContext, filename);

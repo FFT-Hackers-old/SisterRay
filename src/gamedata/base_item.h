@@ -32,7 +32,7 @@ typedef struct {
 } ItemTypeData;
 
 /*Holds type information about every item in the game, used for inventory index to specific data type lookups*/
-class SrItemTypeRegistry : private SrNamedResourceRegistry<ItemTypeData, std::string> {
+class SrItemTypeRegistry : public SrNamedResourceRegistry<ItemTypeData, std::string> {
 public:
     SrItemTypeRegistry() : SrNamedResourceRegistry<ItemTypeData, std::string>() {}
     void initialize_augmented_data(u8 itemType, u16 numberToInitialize);

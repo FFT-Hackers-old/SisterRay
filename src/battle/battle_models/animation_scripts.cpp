@@ -6,12 +6,12 @@ std::string assembleAnimScriptKey(u16 idx) {
 }
 
 // Initialize, enemy script related data so that we may reassemble in a way the game understands
-SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> enemyModelIDs) {
+SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> enemyModelIDs) : SrNamedResourceRegistry<SrModelScripts, std::string>() {
 
-    LGPContext lgpContext = { 0, 1, 2, 0x5E2198 }; //This is used by the game, the name mangler is at 0x5E2198 and called when opening an lgp file
+    LGPContext lgpContext = { 0, 1, 2, (PFNFF7MANGLER)0x5E2198 }; //This is used by the game, the name mangler is at 0x5E2198 and called when opening an lgp file
     for (auto modelID : enemyModelIDs) {
         auto name = assembleEnemyModelKey(modelID);
-        auto abFilePtr = srGetABFile(lgpContext, name.c_str());
+        auto abFilePtr = srOpenABFile(&lgpContext, name.c_str());
         ModelABHeader* header = (ModelABHeader*)abFilePtr;
 
         SrModelScripts srModelScripts = SrModelScripts();
@@ -23,13 +23,13 @@ SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> e
             u16 animScriptLength = scriptPtrTable[scriptIdx + 1] - scriptPtrTable[scriptIdx];
             auto animationScript = animScriptFromAB(animScriptStart, animScriptLength);
             SrAnimationScript srAnimScript = { animScriptLength, animationScript };
-            srModelScripts.modelAnimScripts.insert(assembleAnimScriptKey(scriptIdx), srAnimScript);
+            srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
         }
-        add_element(name, srModelScripts)
+        add_element(name, srModelScripts);
     }
 
     for (auto name : characterModelNames) {
-        auto abFilePtr = srGetABFile(lgpContext, name.c_str());
+        auto abFilePtr = srOpenABFile(&lgpContext, name.c_str());
         ModelABHeader* header = (ModelABHeader*)abFilePtr;
 
         SrModelScripts srModelScripts = SrModelScripts();
@@ -41,13 +41,13 @@ SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> e
             u16 animScriptLength = scriptPtrTable[scriptIdx + 1] - scriptPtrTable[scriptIdx];
             auto animationScript = animScriptFromAB(animScriptStart, animScriptLength);
             SrAnimationScript srAnimScript = { animScriptLength, animationScript };
-            srModelScripts.modelAnimScripts.insert(assembleAnimScriptKey(scriptIdx), srAnimScript);
+            srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
         }
-        add_element(name, srModelScripts)
+        add_element(name, srModelScripts);
     }
 
     for (auto name : specialModelNames) {
-        auto abFilePtr = srGetABFile(lgpContext, name.c_str());
+        auto abFilePtr = srOpenABFile(&lgpContext, name.c_str());
         ModelABHeader* header = (ModelABHeader*)abFilePtr;
 
         SrModelScripts srModelScripts = SrModelScripts();
@@ -59,10 +59,23 @@ SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> e
             u16 animScriptLength = scriptPtrTable[scriptIdx + 1] - scriptPtrTable[scriptIdx];
             auto animationScript = animScriptFromAB(animScriptStart, animScriptLength);
             SrAnimationScript srAnimScript = { animScriptLength, animationScript };
-            srModelScripts.modelAnimScripts.insert(assembleAnimScriptKey(scriptIdx), srAnimScript);
+            srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
         }
-        add_element(name, srModelScripts)
+        add_element(name, srModelScripts);
     }
+}
+
+u32 SrBattleAnimScriptRegistry::getMemoryBufferSize(const std::string& name){
+    auto scriptData = get_element(name);
+    auto scriptCount = 0;
+    auto scriptLength = 0;
+    for (auto element : scriptData.modelAnimScripts) {
+        auto script = element.second;
+        scriptLength += script.scriptLength;
+        scriptCount++;
+    }
+    srLogWrite("model %s has %i animations with a total length of %i", name.c_str(), scriptCount, scriptLength);
+    return AB_PTR_TABLE_OFFSET + 4 * scriptCount + scriptLength;
 }
 
 AnimationScript animScriptFromAB(u8* animScriptStart, u16 animScriptLength) {
@@ -72,7 +85,13 @@ AnimationScript animScriptFromAB(u8* animScriptStart, u16 animScriptLength) {
         animScript.push_back(*animScriptStart);
         scriptPosition++;
     }
-    return animScript
+    return animScript;
+}
+
+void initAnimationScripts() {
+    auto enemyModelIDs = gContext.enemies.getUniqueModelIDs();
+    gContext.battleAnimationScripts = SrBattleAnimScriptRegistry(enemyModelIDs);
+    srLogWrite("Loaded model scripts for %lu unique models", (unsigned long)gContext.battleAnimations.resource_count());
 }
 
 NewActorAnimScripts::NewActorAnimScripts() {

@@ -25,4 +25,13 @@ typedef struct {
 } TwoMemberPositionStruct;
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+typedef struct {
+    u16 angles[2];
+} UnkTwoPartyStruct;
+#pragma pack(pop)
+
+void convertEnemyBDataToPtr();
+void convertsBDataToRealPtr();
+
 #endif

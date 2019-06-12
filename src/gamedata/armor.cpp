@@ -32,7 +32,7 @@ SISTERRAY_API void addArmor(SrArmorData data, u16 modItemID, const char* modName
     auto name = std::string(modName) + std::to_string(modItemID);
     gContext.armors.add_element(name, data.baseData);
     gContext.auxArmors.add_element(name, data.auxData);
-    gContext.itemTypeData.add_element(name, ITYPE_ARMOR, ICONTYPE_ARMOR);
+    gContext.itemTypeData.append_item(name, ITYPE_ARMOR, ICONTYPE_ARMOR);
 
     gContext.gameStrings.armor_names.add_resource(EncodedString::from_unicode(data.armorName));
     gContext.gameStrings.armor_descriptions.add_resource(EncodedString::from_unicode(data.armorDesc));

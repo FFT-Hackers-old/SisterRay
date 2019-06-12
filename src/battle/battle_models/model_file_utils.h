@@ -58,7 +58,7 @@ typedef struct {
 //This header is copied into the models, 
 typedef struct {
     u16 characterID;
-    u8[34];
+    u8 lepad[34];
     u32 unkFileOffsets[8]; //There are 8 pointers to a block after the animation scripts (end of file for model animations)
     u8 unk[32];
 } ModelABHeader;
@@ -66,7 +66,7 @@ typedef struct {
 typedef struct{
     ModelABHeader header;
     u32 offsets[74];
-    void* scriptData
+    void* scriptData;
 } ABFile;
 
 typedef struct {
@@ -96,7 +96,8 @@ typedef void*(*PFNSRSUB6829FE)(LGPContext*, int*, char*);
 #define ff7LoadModelFile   ((PFNSRSUB6829FE)0x6829FE)
 
 void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename);
-void* srOpenDAFile(LGPContext* context, char* baseFileName);
+void* srOpenDAFile(LGPContext* context, const char* baseFileName);
+void* srOpenABFile(LGPContext* context, const char* baseFileName);
 
 typedef void(*PFNSRSUB5E1449)(char*, char*);
 #define createABFilename       ((PFNSRSUB5E1449)0x5E1449)

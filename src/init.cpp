@@ -137,6 +137,7 @@ static void Init(void)
     initFormationsRegistries();; //initialize all data from the scene.bin
     //Register base callbacks
     initAnimations(); //Must be called after the formation registries have been initialized
+    initAnimationScripts();
     registerEquipMenuListeners();
     initializeEquipMenu();
     registerInventoryMenuListeners();

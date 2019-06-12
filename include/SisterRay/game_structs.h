@@ -207,7 +207,7 @@ typedef struct {
 
 typedef struct {
     u16 xCoordinate;
-    u16 yCoorindate;
+    u16 yCoordinate;
     u16 zCoordinate;
 } ModelPosition;
 
@@ -222,16 +222,18 @@ typedef struct {
     u8 field_C;
     u8 field_D;
     u16 runningAnimIdx; //0xE
-	u8 padding2[18]; //BE117C, 0x10
+    u16 field_10;
+    u16 field_12;
+    u16 field_14;
+    u16 field_16;
+    u16 field_18;
+	u8 padding2[8]; //BE117C, 0x1A
 	u8 AnimationEffect; //BE119A, 0x22
 	u8 commandID; //BE119B, 0x23
     u32 field_24; 
-    u32 field_28;
-    u32 field_2C;
-    u32 field_30;
-    u32 field_34;
-    u16 field_38;
-    u8 field_3A;
+    u16 field_28;
+    u8 field_2A;
+    u8 bData0x12[16]; //0x2B
     u8 isScriptExecuting; //0x3B
     u8 currentScriptPosition; //0x3C
     u8 waitFrames;            //0x3D
@@ -242,11 +244,35 @@ typedef struct {
     u16 field_162;
     u16 field_164;
     ModelPosition restingPosition; //0x166
-	u8 padding3[0x1980];
+	u8 padding4[0x1980];
 } BattleModelState;
 #pragma pack(pop)
 
 #define gBigAnimBlock       ((BattleModelState*)0xBE1170)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 field_0;
+    u8 field_1;
+    u8 field_2;
+    u8 field_3;
+    u16 bData68[4];
+    u16 field_C;
+    u16 bData76[6];
+    u16 bData88[6];
+    u16 field_26;
+    u16 field_28;
+    u16 field_2A;
+    u8 field_2C;
+    u8 field_2D;
+    u16 field_2E;
+    u16 field_30;
+    u8 modelDataIndex; //0x032
+    u8 unkValues[0x41]; //0x33]
+} BattleModelStateSmall;
+#pragma pack(pop)
+
+#define MODEL_DATA_74_ARRAY ((BattleModelStateSmall*)0xBF23C0)
 
 #pragma pack(push, 1)
 typedef struct {

@@ -105,9 +105,11 @@ u16 SrItemTypeRegistry::get_absolute_id(u8 itemType, u8 relativeIndex) {
     }
 }
 
-void populatekernelStatBoosts(u8* stats, u8* amts, ActorStatBoosts& boosts, u8 count) {
-    for (auto idx = 0; idx < count; idx++) {
+void populatekernelStatBoosts(const u8* const stats, const u8* const amts, ActorStatBoosts& boosts, u8 count) {
+    for (u16 idx = 0; idx < count; idx++) {
         auto statType = stats[idx];
+        if (statType == 0xFF)
+            continue;
         auto& boost = getStatBoostFromID(boosts, statType);
         boost.amount = amts[idx];
     }

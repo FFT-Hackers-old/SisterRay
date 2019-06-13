@@ -49,6 +49,6 @@ protected:
 u8 getKernelIconType(u8 itemType, u16 typeRelativeIndex);
 SISTERRAY_API void initItemTypeData();
 
-void populatekernelStatBoosts(u8* stats, u8* amts, ActorStatBoosts& boosts, u8 count);
+void populatekernelStatBoosts(const u8* const stats, const u8* const amts, ActorStatBoosts& boosts, u8 count);
 
 #endif // !BASE_ITEM_H

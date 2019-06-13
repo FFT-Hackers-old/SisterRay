@@ -8,7 +8,7 @@ typedef void(*PFNFF7MANGLER)(char*, char*);
 typedef struct {
     u32 mode;
     u32 useLGP;
-    u32 field_8;
+    u32 lgpTableIdx;
     PFNFF7MANGLER mangler;
 } LGPContext;
 
@@ -29,7 +29,7 @@ typedef struct {
 typedef struct {
     u32 field_0;
     u32 field_4;
-    u32 field_8;
+    u32 lgpTableIdx;
     u8 unk[0x38];
 } UnkModelLoadStruct;
 
@@ -99,10 +99,10 @@ void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename);
 void* srOpenDAFile(LGPContext* context, const char* baseFileName);
 void* srOpenABFile(LGPContext* context, const char* baseFileName);
 
-typedef void(*PFNSRSUB5E1449)(char*, char*);
+typedef void(*PFNSRSUB5E1449)(const char*, char*);
 #define createABFilename       ((PFNSRSUB5E1449)0x5E1449)
 
-typedef void(*PFNSRSUB5E826A)(u32, char*, char*);
+typedef void(*PFNSRSUB5E826A)(u32, const char*, char*);
 #define createDAFilename   ((PFNSRSUB5E826A)0x5E826A)
 
 #endif // !MODEL_FILE_UTILS_H

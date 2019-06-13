@@ -157,7 +157,7 @@ typedef struct {
     u8 field_4;
     u8 field_5;
     u16 field_6;
-    u32 field_8;
+    u32 lgpTableIdx;
     u32 field_C;
 }UnkBattleStruct;
 #pragma pack(pop)

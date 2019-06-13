@@ -1,12 +1,13 @@
 #include "animation_scripts.h"
 #include "../../impl.h"
+#include "../../system/ff7memory.h"
 
 std::string assembleAnimScriptKey(u16 idx) {
     return std::to_string(idx) + std::string(BASE_PREFIX);
 }
 
 SrModelScripts createSrModelScripts(const std::string archiveName) {
-    LGPContext lgpContext = { 0, 1, 2, (PFNFF7MANGLER)0x5E2198 };
+    LGPContext lgpContext = { 0, 1, 2, (PFNFF7MANGLER)0x5E2908 };
     auto abFilePtr = srOpenABFile(&lgpContext, archiveName.c_str());
     ModelABHeader* header = (ModelABHeader*)abFilePtr;
 
@@ -21,7 +22,7 @@ SrModelScripts createSrModelScripts(const std::string archiveName) {
         SrAnimationScript srAnimScript = { animScriptLength, animationScript };
         srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
     }
-    free(abFilePtr);
+    ff7freeMemory(abFilePtr, nullptr, 0);
     return srModelScripts;
 }
 
@@ -29,18 +30,22 @@ SrModelScripts createSrModelScripts(const std::string archiveName) {
 SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> enemyModelIDs) : SrNamedResourceRegistry<SrModelScripts, std::string>() {
 
     LGPContext lgpContext = { 0, 1, 2, (PFNFF7MANGLER)0x5E2198 }; //This is used by the game, the name mangler is at 0x5E2198 and called when opening an lgp file
+    srLogWrite("Loading animations for %i enemies", enemyModelIDs.size());
     for (auto modelID : enemyModelIDs) {
         auto name = assembleEnemyModelKey(modelID);
+        srLogWrite("Loading model animation scripts from SR registry for model %s constructed from modelID: %i", name.c_str(), modelID);
         SrModelScripts srModelScripts = createSrModelScripts(name);
         add_element(name, srModelScripts);
     }
 
     for (auto name : characterModelNames) {
+        srLogWrite("Loading model animation scripts from SR registry for model %s constructed from modelID: %i", name.c_str());
         SrModelScripts srModelScripts = createSrModelScripts(name);
         add_element(name, srModelScripts);
     }
 
     for (auto name : specialModelNames) {
+        srLogWrite("Loading model animation scripts from SR registry for model %s constructed from modelID: %i", name.c_str());
         SrModelScripts srModelScripts = createSrModelScripts(name);
         add_element(name, srModelScripts);
     }

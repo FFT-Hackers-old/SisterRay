@@ -17,6 +17,7 @@
 #include "battle/ai_script_engine.h"
 #include "battle/battle.h"
 #include "battle/battle_context.h"
+#include "files/lgp_loader.h"
 
 
 SrContext gContext;
@@ -120,6 +121,7 @@ PFNRUNANIMSCRIPT* oldRunAnimationScript;
 
 static void Init(void)
 {
+    MessageBoxA(NULL, "Sister Ray drawing power...", "SisterRay", 0);
     initLog();
     srInitLua();
     initFunctionRegistry();
@@ -136,6 +138,7 @@ static void Init(void)
     testFillInventory();
     initFormationsRegistries();; //initialize all data from the scene.bin
     //Register base callbacks
+    setupLGPTable(BATTLE_LGP_PATH, 2);
     initAnimations(); //Must be called after the formation registries have been initialized
     initAnimationScripts();
     registerEquipMenuListeners();

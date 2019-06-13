@@ -6,7 +6,8 @@ std::unordered_set<u16> SrEnemyRegistry::getUniqueModelIDs() {
     auto size = resource_count();
     auto modelIDs = std::unordered_set<u16>();
     for (auto i = 0; i < size; ++i) {
-        modelIDs.insert(get_resource(i).modelID);
+        if (get_resource(i).modelID != 0xFFFF)
+            modelIDs.insert(get_resource(i).modelID);
     }
     return modelIDs;
 }

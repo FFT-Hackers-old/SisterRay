@@ -1,17 +1,22 @@
 #include "animation_registry.h"
 #include "../../impl.h"
 #include "../../system/ff7memory.h"
+#include "../../files/lgp_loader.h"
 
 const std::string assembleAnimKey(u16 idx) {
     return std::string(BASE_PREFIX) + std::to_string(idx);
 }
 
 /*Creates an SrModleAnimation from a da file archive. It is NOT responsible for the underlying animation, so you must free this if you need*/
-SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon) {
+SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon, u8* battleLGP) {
     LGPContext lgpContext = { 0, 1, 2, (PFNFF7MANGLER)0x5E2908 };
-    //srLogWrite("lgp context initialized");
-    u32* daFilePtr = (u32*)srOpenDAFile(&lgpContext, archiveName.c_str());
-    //srLogWrite("daFilePtr successfully opened");
+    char mangledName[32];
+    lgpContext.mangler(archiveName.c_str(), &(mangledName[0]));
+    srLogWrite("mangled name: %s", mangledName);
+    LGPArchiveFile archiveFile = lgpArchiveRead(battleLGP, mangledName);
+    u32* daFilePtr = (u32*)(archiveFile.buffer);
+    //u32* daFilePtr = (u32*)srOpenDAFile(&lgpContext, archiveName.c_str());
+    srLogWrite("daFilePtr successfully opened at %p, first bytes: %c, %c, %c, %c, %c, size: %i", daFilePtr, daFilePtr[0], daFilePtr[1], daFilePtr[2], daFilePtr[3], daFilePtr[4], archiveFile.size);
     auto totalAnims = daFilePtr[0];
     u32* animDataStartPtr = &(daFilePtr[1]);
 
@@ -55,22 +60,25 @@ SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::stri
 
 /*Constructor takes the IDs of all unique enemies which were loaded into the gContext enemies registry*/
 SrBattleAnimationRegistry::SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs) : SrNamedResourceRegistry<SrModelAnimations, std::string>() {
+    auto battleLGP = readLGPArchive(BATTLE_LGP_PATH);
+    auto battlelgpHeader = (LGPHeader*)battleLGP;
+    srLogWrite("lgpArchive loaded, name: %s, filecount:%i", battlelgpHeader->name, battlelgpHeader->fileCount);
     srLogWrite("Loading animations for %i enemies", enemyModelIDs.size());
     for (auto modelID : enemyModelIDs) {
         auto name = assembleEnemyModelKey(modelID);
         srLogWrite("Loading model animations from SR registry for model %s constructed from modelID: %i", name.c_str(), modelID);
-        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_ENEMY, name, false);
+        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_ENEMY, name, false, (u8*)battleLGP);
         add_element(name, modelAnims);
     }
     for (auto name : characterModelNames) {
 
         srLogWrite("Loading model animation from SR registry for model %s", name.c_str());
-        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, true);
+        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, true, (u8*)battleLGP);
         add_element(name, modelAnims);
     }
     for (auto name : specialModelNames) {
         srLogWrite("Loading model animation from SR registry for model %s", name.c_str());
-        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, false);
+        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, false, (u8*)battleLGP);
         add_element(name, modelAnims);
     }
 }

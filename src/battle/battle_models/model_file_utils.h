@@ -3,7 +3,9 @@
 
 #include <SisterRay/SisterRay.h>
 
-typedef void(*PFNFF7MANGLER)(char*, char*);
+#define BATTLE_LGP_PATH "C:\Games\FF7\data\battle\battle.lgp"
+
+typedef void(*PFNFF7MANGLER)(const char*, char*);
 
 typedef struct {
     u32 mode;

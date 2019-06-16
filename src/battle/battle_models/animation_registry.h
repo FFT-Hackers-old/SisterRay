@@ -55,16 +55,17 @@ typedef struct SrModelAnimations {
     std::map<std::string, SrAnimation> weaponAnimations;
 } SrModelAnimations;
 
-SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon);
+SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon, void* battleLGPBuffer);
 
 /*Registry which holds animation data in memory for the various models, player data models will be keyed by named,
   Enemies will be keyed by their their model index number*/
 class SrBattleAnimationRegistry : public SrNamedResourceRegistry<SrModelAnimations, std::string> {
 public:
-    SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs); 
+    SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs, void* battleLGPBuffer); 
     SrBattleAnimationRegistry() : SrNamedResourceRegistry<SrModelAnimations, std::string>() {}
 };
 
 const std::string assembleAnimKey(u16 idx);
-void initAnimations();
+void initAnimations(void* battleLGPBuffer);
+void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const char* filename, ModelAAHeader* aaHeader);
 #endif // !1

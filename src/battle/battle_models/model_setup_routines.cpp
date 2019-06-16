@@ -1,4 +1,5 @@
 #include "model_setup_routines.h"
+#include "../../impl.h"
 
 typedef void(*PFNSRSUB42B4AF)();
 #define sub_42B4AF  ((PFNSRSUB42B4AF)0x42B4AF)
@@ -14,7 +15,7 @@ typedef void(*PFNSRSUB42B66A)(u8);
 
 /*Rewritten because we are now initializing b-data dynamically, so do not want the original
   loops which could only initialize a fixed number of animations scripts*/
-void convertEnemyBDataToPtr() {
+void translateEnemyABData() {
     u8* byte_BFD0E0 = (u8*)0xBFD0E0;
     u8* byte_BF2DF8 = (u8*)0xBF2DF8;
     u8* enemyCountGlobal = (u8*)0xBF20F0;
@@ -66,7 +67,7 @@ void convertEnemyBDataToPtr() {
     }
 }
 
-void convertsBDataToRealPtr() {
+void translatePlayerABData() {
     u8* gCharacterModelCount = (u8*)(0xBF2E0C);
     u8* byte_BFD0E0 = (u8*)0xBFD0E0;
     u8* byte_BF2DF8 = (u8*)0xBF2DF8;
@@ -137,9 +138,20 @@ void convertsBDataToRealPtr() {
     for (auto partyIdx = 0; partyIdx < 3; ++partyIdx)
         byte_BF2DF8[partyIdx] = UNK_ACTOR_STRUCT_ARRAY[partyIdx].field_1;
 
+
     for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
+        u8* byteViewAnimBlock = (u8*)&(gBigAnimBlock[partyIdx].actorID);
         gBigAnimBlock[partyIdx].restingPosition.xCoordinate = partyPositionArray[partyIdx].xPosition;
         gBigAnimBlock[partyIdx].restingPosition.yCoordinate = partyPositionArray[partyIdx].yPosition;
         gBigAnimBlock[partyIdx].restingPosition.zCoordinate = partyPositionArray[partyIdx].zPosition;
+        //*(byteViewAnimBlock + (6982 * partyIdx) + 0x166) = partyPositionArray[partyIdx].xPosition;
+        //*(byteViewAnimBlock + (6982 * partyIdx) + 0x168) = partyPositionArray[partyIdx].yPosition;
+        //*(byteViewAnimBlock + (6982 * partyIdx) + 0x16A) = partyPositionArray[partyIdx].zPosition;
+        srLogWrite("offset of resting position structure in battle model state: %p", (&(gBigAnimBlock[partyIdx].restingPosition.xCoordinate) - &(gBigAnimBlock[partyIdx].actorID)));
+        srLogWrite("positioning party member %i at location %i, %i, %i", partyIdx,
+            gBigAnimBlock[partyIdx].restingPosition.xCoordinate,
+            gBigAnimBlock[partyIdx].restingPosition.yCoordinate,
+            gBigAnimBlock[partyIdx].restingPosition.zCoordinate
+        );
     }
 }

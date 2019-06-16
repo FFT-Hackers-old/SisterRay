@@ -205,29 +205,34 @@ typedef struct {
 
 #define gActorTimerBlock ((ActorTimerData*)(0x9A8B10))
 
+
+#pragma pack(push, 1)
 typedef struct {
     u16 xCoordinate;
     u16 yCoordinate;
     u16 zCoordinate;
 } ModelPosition;
+#pragma pack(pop)
 
 /*Should  have size 0x1AEC*/
 #pragma pack(push, 1)
 typedef struct {
-	u16 ActorID; //BE1170, 0
+	u16 actorID; //BE1170, 0
     u16 animScriptIndex; //BE1172, 2
 	u8 padding1[4]; //BE1174, 4
 	u16 AnimationData; //BE1178, 8
-	u16 commandAnimID; //BE117A, 0xA
-    u8 field_C;
-    u8 field_D;
+	u16 animScriptID; //BE117A, 0xA
+    u16 field_C;
     u16 runningAnimIdx; //0xE
     u16 field_10;
     u16 field_12;
     u16 field_14;
     u16 field_16;
     u16 field_18;
-	u8 padding2[8]; //BE117C, 0x1A
+    u16 field_1A;
+    u16 field_1C;
+    u16 field_1E;
+    u16 field_20;
 	u8 AnimationEffect; //BE119A, 0x22
 	u8 commandID; //BE119B, 0x23
     u32 field_24; 

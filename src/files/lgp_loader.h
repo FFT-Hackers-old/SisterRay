@@ -2,6 +2,7 @@
 #define LGP_LOADER_H
 
 #include <SisterRay/SisterRay.h>
+#include <string>
 
 //Sets up the LGP load path, so that we may load at SR init time from the archives
 typedef void(*PFNSRSUB675511)(char*, u32);
@@ -39,6 +40,8 @@ typedef struct {
     void* buffer;
 } LGPArchiveFile;
 
+
+std::string lowerCaseStr(const std::string& stringToLower);
 void setupLGPTable(char *filePath, u32 tableIdx);
 
 void* readLGPArchive(const char* filepath);

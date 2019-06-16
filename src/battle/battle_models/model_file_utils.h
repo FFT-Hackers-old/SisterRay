@@ -2,8 +2,9 @@
 #define MODEL_FILE_UTILS_H
 
 #include <SisterRay/SisterRay.h>
+#include "../../files/lgp_loader.h"
 
-#define BATTLE_LGP_PATH "C:\Games\FF7\data\battle\battle.lgp"
+#define BATTLE_LGP_PATH "C:\\Games\\FF7\\data\\battle\\battle.lgp"
 
 typedef void(*PFNFF7MANGLER)(const char*, char*);
 
@@ -98,8 +99,8 @@ typedef void*(*PFNSRSUB6829FE)(LGPContext*, int*, char*);
 #define ff7LoadModelFile   ((PFNSRSUB6829FE)0x6829FE)
 
 void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename);
-void* srOpenDAFile(LGPContext* context, const char* baseFileName);
-void* srOpenABFile(LGPContext* context, const char* baseFileName);
+LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer);
+LGPArchiveFile srOpenABFile(LGPContext* context, const char* baseFileName, void* battleLGpBuffer);
 
 typedef void(*PFNSRSUB5E1449)(const char*, char*);
 #define createABFilename       ((PFNSRSUB5E1449)0x5E1449)

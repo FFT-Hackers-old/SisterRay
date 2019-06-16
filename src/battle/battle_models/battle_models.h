@@ -5,6 +5,9 @@
 #include "model_file_utils.h"
 #include "model_skeleton.h"
 #include "model_animations.h"
+#include "model_setup_routines.h"
+
+#define FF7_CREATE_MODEL    ((void*)0x5E149A)
 
 //Malloc call that creates this has an arg size of 0x94 + 32
 typedef struct {

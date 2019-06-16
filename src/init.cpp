@@ -18,6 +18,7 @@
 #include "battle/battle.h"
 #include "battle/battle_context.h"
 #include "files/lgp_loader.h"
+#include "battle/sr_battle_engine.h"
 
 
 SrContext gContext;
@@ -138,9 +139,12 @@ static void Init(void)
     testFillInventory();
     initFormationsRegistries();; //initialize all data from the scene.bin
     //Register base callbacks
-    setupLGPTable(BATTLE_LGP_PATH, 2);
-    initAnimations(); //Must be called after the formation registries have been initialized
-    initAnimationScripts();
+    //setupLGPTable(BATTLE_LGP_PATH, 2);
+    auto battleLGP = readLGPArchive(BATTLE_LGP_PATH);
+    srLogWrite("battleLGP opened read");
+    initAnimations(battleLGP); //Must be called after the formation registries have been initialized
+    initAnimationScripts(battleLGP);
+    free(battleLGP);
     registerEquipMenuListeners();
     initializeEquipMenu();
     registerInventoryMenuListeners();
@@ -148,6 +152,7 @@ static void Init(void)
     registerMateriaMenuListeners();
     initializeMateriaMenu();
     registerPartyCallbacks();
+    initializeSrBattleEngine();
     //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);

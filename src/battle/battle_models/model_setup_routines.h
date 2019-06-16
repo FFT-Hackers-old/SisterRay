@@ -3,6 +3,9 @@
 
 #include <SisterRay/SisterRay.h>
 
+#define FF7_TRANSLATE_ENEMY_BDATA    ((void*)0x42B8D2)
+#define FF7_TRANSLATE_PLAYER_BDATA   ((void*)0x42AE73)
+
 #pragma pack(push, 1)
 typedef struct {
     u16 xPosition;
@@ -31,7 +34,7 @@ typedef struct {
 } UnkTwoPartyStruct;
 #pragma pack(pop)
 
-void convertEnemyBDataToPtr();
-void convertsBDataToRealPtr();
+void translateEnemyABData();
+void translatePlayerABData();
 
 #endif

@@ -7,6 +7,7 @@
 #include "battle_model_utils.h"
 #include "model_file_utils.h"
 #include "../../sr_named_registry.h"
+#include "model_animations.h"
 
 #define BASE_PARTY_SCRIPT_MAX 74
 #define BASE_ENEMY_SCRIPT_MAX 32
@@ -27,17 +28,18 @@ typedef struct {
     std::map<std::string, SrAnimationScript> modelAnimScripts;
 } SrModelScripts;
 
-SrModelScripts createSrModelScripts(const std::string archiveName);
+SrModelScripts createSrModelScripts(SrModelType modelType, const std::string archiveName, void* battleLGPBuffer);
 
 class SrBattleAnimScriptRegistry : public SrNamedResourceRegistry<SrModelScripts, std::string> {
 public:
-    SrBattleAnimScriptRegistry(std::unordered_set<u16> enemyModelIDs);
+    SrBattleAnimScriptRegistry(std::unordered_set<u16> enemyModelIDs, void* battleLGPBuffer);
     SrBattleAnimScriptRegistry() : SrNamedResourceRegistry<SrModelScripts, std::string>() {}
     u32 getMemoryBufferSize(const std::string& name);
 };
 
-AnimationScript animScriptFromAB(u8* animScriptStart, u16 animScriptLength);
-void initAnimationScripts();
+AnimationScript animScriptFromAB(u8* animScriptStart, u16 animScriptLength, u16* trueScriptLength);
+void initAnimationScripts(void* battleLGPBuffer);
+void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader);
 
 SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scripts, u32 unk1, u32 unk2);
 static unsigned char newAnimScript[] = { 0xE8, 0xFC, 0x00, 0xED, 0xE6, 0xEA, 0x00, 0x00, 0xEC, 0x00, 0x00, 0xFA, 0xE5, 0xEE };

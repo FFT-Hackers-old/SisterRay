@@ -8,25 +8,31 @@ void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename) {
     return ff7LoadModelFile(context, bytesReadBuf, filename);
 }
 
-void* srOpenDAFile(LGPContext* context, const char* baseFileName) {
+LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer) {
     i32 bytesRead = 0;
     void* daArchiveFile;
     char daFileNameBuffer[204];
-
+    char mangledName[32];
     u32 archiveIndex = 0;
+
     createDAFilename(archiveIndex, baseFileName, &(daFileNameBuffer[0]));
-    srLogWrite("Printing name of animation file to seek: %s", &(daFileNameBuffer[0]));
-    daArchiveFile = srLoadLGPFile(context, &bytesRead, &(daFileNameBuffer[0]));// loads the da file
-    srLogWrite("file open complete, da archive ptr: %p bytes read: %i:", daArchiveFile, bytesRead);
-    return daArchiveFile;
+    context->mangler(&(daFileNameBuffer[0]), &(mangledName[0]));
+
+    //srLogWrite("mangled name: %s", mangledName);
+    LGPArchiveFile archiveFile = lgpArchiveRead((u8*)battleLGPBuffer, mangledName);
+    return archiveFile;
 }
 
-void* srOpenABFile(LGPContext* context, const char* baseFileName) {
+LGPArchiveFile srOpenABFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer) {
     i32 bytesRead = 0;
     void *abFile;
     char abFileNameBuffer[204];
+    char mangledName[32];
 
     createABFilename(baseFileName, &(abFileNameBuffer[0]));
-    abFile = srLoadLGPFile(context, &bytesRead, &(abFileNameBuffer[0]));// loads the da file
-    return abFile;
+    context->mangler(&(abFileNameBuffer[0]), &(mangledName[0]));
+
+    //srLogWrite("mangled name: %s", mangledName);
+    LGPArchiveFile archiveFile = lgpArchiveRead((u8*)battleLGPBuffer, mangledName);
+    return archiveFile;
 }

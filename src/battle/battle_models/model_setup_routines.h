@@ -17,15 +17,24 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    ModelPositionStruct partyPostions[3];
+    ModelPositionStruct enemyPosition[3];
 } FullPartyPositionStruct;
 #pragma pack(pop)
 
 
 #pragma pack(push, 1)
 typedef struct {
-    ModelPositionStruct partyPostions[2];
+    ModelPositionStruct enemyPosition[2];
 } TwoMemberPositionStruct;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    ModelPositionStruct enemyPosition;
+    u16 unk1;
+    u16 unk2;
+    u16 unk3;
+} EnemyPositionStruct;
 #pragma pack(pop)
 
 #pragma pack(push, 1)

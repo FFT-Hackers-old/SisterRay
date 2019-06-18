@@ -221,7 +221,7 @@ typedef struct {
     u16 animScriptIndex; //BE1172, 2
 	u8 padding1[4]; //BE1174, 4
 	u16 AnimationData; //BE1178, 8
-	u16 animScriptID; //BE117A, 0xA
+	u16 animScriptPtr; //BE117A, 0xA
     u16 field_C;
     u16 runningAnimIdx; //0xE
     u16 field_10;
@@ -253,7 +253,7 @@ typedef struct {
 } BattleModelState;
 #pragma pack(pop)
 
-#define gBigAnimBlock       ((BattleModelState*)0xBE1170)
+#define gBigAnimBlock       ((BattleModelState*)0xBE1178)
 
 #pragma pack(push, 1)
 typedef struct {

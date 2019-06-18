@@ -150,7 +150,7 @@ void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader)
     /*Initialize the actual form of the animation scripts data in memory from the ba file data*/
     auto scriptIdx = 0;
     for (auto animScriptElement : animScriptsData.modelAnimScripts) {
-        tableBufferPtr[scriptIdx] = (u8*)(scriptBufferPtr - animScriptBuffer); // use the relative index like in the file for the time being
+        tableBufferPtr[scriptIdx] = scriptBufferPtr; // use the relative index like in the file for the time being
         srLogWrite("writing animation script: %s", animScriptElement.first.c_str());
         srLogWrite("script ptr value: %p for tableEntry at %p", tableBufferPtr[scriptIdx], &(tableBufferPtr[scriptIdx]));
         auto animScript = animScriptElement.second;
@@ -173,15 +173,15 @@ SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scrip
     u8** tablePtr = (u8**)ptr_to_anim_scripts;
     srLogWrite("bigblock size:%i", (sizeof(BattleModelState)));
     u16* byteViewAnimBlock = (u16*)&(gBigAnimBlock[actor_id].actorID);
-    srLogWrite("ANIMATION SCRIPT RUN CALLED for actor %i with command ID:%i and animScriptID:%i", actor_id, gBigAnimBlock[actor_id].commandID, gBigAnimBlock[actor_id].animScriptID);
+    srLogWrite("ANIMATION SCRIPT RUN CALLED for actor %i with command ID:%i and animScriptID:%i", actor_id, gBigAnimBlock[actor_id].commandID, gBigAnimBlock[actor_id].animScriptIndex);
     srLogWrite("scriptPosition:%i, scriptExecuting:%i", gBigAnimBlock[actor_id].currentScriptPosition, gBigAnimBlock[actor_id].isScriptExecuting);
-    srLogWrite("Ptr to anim scripts: %p", tablePtr[gBigAnimBlock[actor_id].animScriptID]);
+    srLogWrite("Ptr to anim scripts: %p", tablePtr[gBigAnimBlock[actor_id].animScriptIndex]);
     srLogWrite("Addres of block head %p, address of positions: %p", &gBigAnimBlock[actor_id].actorID, &gBigAnimBlock[actor_id].restingPosition.xCoordinate);
     srLogWrite("coordinate position: %i, %i, %i", gBigAnimBlock[actor_id].restingPosition.xCoordinate, gBigAnimBlock[actor_id].restingPosition.yCoordinate, gBigAnimBlock[actor_id].restingPosition.zCoordinate);
     srLogWrite("coordinate position: %i, %i, %i", *(byteViewAnimBlock + ((6982/2)*actor_id) + (0x166/2)), *(byteViewAnimBlock + ((6982/2) * actor_id) + (0x168/2)), *(byteViewAnimBlock + ((6982/2) * actor_id) + (0x16A/2)));
-    if ((gBigAnimBlock[actor_id].commandID == CMD_LIMIT) && (gBigAnimBlock[actor_id].animScriptID == 0x3D)) {
+    if ((gBigAnimBlock[actor_id].commandID == CMD_LIMIT) && (gBigAnimBlock[actor_id].animScriptPtr == 0x3D)) {
         srLogWrite("Redirecting animation script execution for actor %i", actor_id);
-        srLogWrite("Writing to address %p, base %p", &gBigAnimBlock[actor_id].animScriptID, &gBigAnimBlock[0].animScriptID);
+        srLogWrite("Writing to address %p, base %p", &gBigAnimBlock[actor_id].animScriptPtr, &gBigAnimBlock[0].animScriptPtr);
         ptr_to_new_animation = (u32)&(actorAnimArray);
         srLogWrite("actor animation address:%p, passed address %p", &actorAnimArray, ptr_to_new_animation);
     }

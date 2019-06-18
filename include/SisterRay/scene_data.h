@@ -1,7 +1,7 @@
 #ifndef SCENE_DATA_H
 #define SCENE_DATA_H
 
-#include "game_data_types.h"
+#include <SisterRay/game_data_types.h>
 
 #pragma pack(push, 1)
 typedef struct {

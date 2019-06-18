@@ -4,6 +4,7 @@
 #include "../sr_named_registry.h"
 #include "ai_scripts.h"
 #include "../EncodedString.h"
+#include <unordered_set>
 
 typedef struct {
     EnemyData enemyData;
@@ -21,6 +22,7 @@ typedef struct {
 class SrEnemyRegistry : public SrNamedResourceRegistry<SrEnemyData, std::string> {
 public:
     SrEnemyRegistry() : SrNamedResourceRegistry<SrEnemyData, std::string>() {}
+    std::unordered_set<u16> getUniqueModelIDs();
 };
 
 class SrEnemyAttackRegistry : public SrNamedResourceRegistry<EnemyAttack, std::string> {

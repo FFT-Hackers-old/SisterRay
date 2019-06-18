@@ -1,6 +1,8 @@
 #ifndef GAME_DATA_TYPES_H
 #define GAME_DATA_TYPES_H
 
+#include <SisterRay/srparty.h>
+
 typedef enum {
     SR_GEAR_WEAPON,
     SR_GEAR_ARMOR
@@ -45,7 +47,14 @@ typedef struct {
     bool can_revive;
     bool target_all;
     bool requires_target;
-} onUseItemData;
+} ConsumableUseData;
+
+typedef struct {
+    ItemData baseData;
+    ConsumableUseData useData;
+    const char* itemName;
+    const char* itemDesc;
+} SrConsumableData;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -77,6 +86,17 @@ typedef struct {
 } WeaponData;
 #pragma pack(pop)
 
+typedef struct {
+    ActorStatBoosts boosts;
+} AuxWeaponData;
+
+typedef struct {
+    WeaponData baseData;
+    AuxWeaponData auxData;
+    const char* weaponName;
+    const char* weaponDesc;
+} SrWeaponData;
+
 #pragma pack(push, 1)
 typedef struct {
     u8      unknown;
@@ -99,6 +119,17 @@ typedef struct {
 } ArmorData;
 #pragma pack(pop)
 
+typedef struct {
+    ActorStatBoosts boosts;
+} AuxArmorData;
+
+typedef struct {
+    ArmorData baseData;
+    AuxArmorData auxData;
+    const char* armorName;
+    const char* armorDesc;
+} SrArmorData;
+
 #pragma pack(push, 1)
 typedef struct {
     u8      stats_to_boost[2];
@@ -112,6 +143,17 @@ typedef struct {
 } AccessoryData;
 #pragma pack(pop)
 
+typedef struct {
+    ActorStatBoosts boosts;
+} AuxAccessoryData;
+
+typedef struct {
+    AccessoryData baseData;
+    AuxAccessoryData auxData;
+    const char* accessoryName;
+    const char* accessoryDesc;
+} SrAccessoryData;
+
 #pragma pack(push, 1)
 typedef struct {
     u16     apLevel[4];
@@ -124,9 +166,19 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    u16 item_id;
-    u32 materia_ap; //u24 originally 
-} MateriaInventoryEntry;
+    ActorStatBoosts equipEffects;
+} AuxMateriaData;
 
+typedef struct {
+    MateriaData baseData;
+    AuxMateriaData auxData;
+    const char* materiaName;
+    const char* materiaDesc;
+} SrMateriaData;
+
+typedef struct {
+    u16 item_id;
+    u32 materia_ap;
+} MateriaInventoryEntry;
 
 #endif // !GAME_DATA_TYPES_H

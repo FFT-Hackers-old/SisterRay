@@ -19,6 +19,7 @@ extern "C" {
 #include <SisterRay/SisterRay.h>
 
 #include "kernel.h"
+#include "gamedata/base_item.h"
 #include "gamedata/commands.h"
 #include "gamedata/items.h"
 #include "gamedata/materia.h"
@@ -28,6 +29,7 @@ extern "C" {
 #include "gamedata/attacks.h"
 #include "battle/formations.h"
 #include "battle/enemies.h"
+#include "battle/scene_loader.h"
 #include "inventories/inventory.h"
 #include "inventories/battle_inventory.h"
 #include "inventories/materia_inventory.h"
@@ -38,6 +40,8 @@ extern "C" {
 #include "menus/menu.h"
 #include "party/party.h"
 #include "party/characters.h"
+#include "battle/battle_models/animation_registry.h"
+#include "battle/battle_models/animation_scripts.h"
 #include <map>
 #include <memory>
 
@@ -47,25 +51,37 @@ typedef struct {
     lua_State*                          L;
     HWND                                console;
     FILE*                               logFile;
+
+    SrItemTypeRegistry                  itemTypeData;
     SrItemRegistry                      items;
-    SrCommandRegistry                   commands;
+    SrOnUseItemDataRegistry             itemOnUseData;
+    srOnUseCallbackRegistry             onUseHandlers; /*Registry of function pointers for using items*/
+    srNoTargetCallbackRegistry          untargeted_handlers;
+
     SrWeaponRegistry                    weapons;
+    SrAuxWeaponRegistry                 auxWeapons;
     SrArmorRegistry                     armors;
+    SrAuxArmorRegistry                  auxArmors;
     SrAccessoryRegistry                 accessories;
+    SrAuxAccessoryRegistry              auxAccessories;
     SrMateriaRegistry                   materias;
+    SrAuxMateriaRegistry                auxMaterias;
+
+    SrBattleAnimationRegistry           battleAnimations;
+    SrBattleAnimScriptRegistry          battleAnimationScripts;
+    SrCommandRegistry                   commands;
+    SrAttackRegistry                    attacks;
+    SrCharacterRegistry                 characters;
+    SrPartyDataRegistry                 party;
+
+    SrFormationRegistry                 formations;
+    SrEnemyRegistry                     enemies;
+
     std::unique_ptr<SrItemInventory>    inventory;
     std::unique_ptr<SrBattleInventory>  battleInventory;
     std::unique_ptr<SrMateriaInventory> materiaInventory;
     SrGearViewData                      gearViewData;
-    SrItemTypeRegistry                  itemTypeData;
-    srOnUseCallbackRegistry             onUseHandlers; /*Registry of function pointers for using items*/
-    srNoTargetCallbackRegistry          untargeted_handlers;
-    SrOnUseItemDataRegistry             itemOnUseData;
-    SrCharacterRegistry                 characters;
-    SrPartyDataRegistry                 party;
-    SrFormationRegistry                 formations;
-    SrEnemyRegistry                     enemies;
-    SrAttackRegistry                    attacks;
+
     SrGameStrings                       gameStrings;
     MenuRegistry                        menuWidgets;
     EventBus                            eventBus;
@@ -95,5 +111,9 @@ SISTERRAY_API void LoadKernelFile(void** dst, size_t sectionCount, const char* p
 SISTERRAY_API const void* srLoadFunction(const char* name);
 SISTERRAY_API const void* srRegisterFunction(const char* name, const void* func);
 SISTERRAY_API const char* srGetGamePath(const char* suffix);
+
+/*For testing redirection of animation scripts*/
+typedef void (PFNRUNANIMSCRIPT)(u16, u32, u32, u32);
+SISTERRAY_GLOBAL PFNRUNANIMSCRIPT* oldRunAnimationScript;
 
 #endif

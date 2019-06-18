@@ -1,11 +1,9 @@
 #ifndef REGISTRY_TEMPLATE_H
 #define REGISTRY_TEMPLATE_H
 
-#include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "kernel.h"
 #include <vector>
-#include <memory>
 
 /*Simple C++ template to replace all the old school manually resized C arrays
   And unify our String Registry and all of our various item registries*/

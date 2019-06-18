@@ -1,16 +1,39 @@
 #include "items.h"
 #include "../impl.h"
 
-SISTERRAY_API ItemData getItem(u16 itemID) {
-    return gContext.items.get_resource(itemID);
+SISTERRAY_API SrConsumableData getItem(u16 modItemID, const char* modName) {
+    SrConsumableData srItem = SrConsumableData();
+    auto name = std::string(modName) + std::to_string(modItemID);
+    srItem.baseData = gContext.items.get_element(name);
+    srItem.useData = gContext.itemOnUseData.get_element(name);
+
+    ItemTypeData typeData = gContext.itemTypeData.get_element(name);
+    auto relativeIndex = typeData.type_relative_id;
+    srItem.itemName = gContext.gameStrings.item_names.get_string(relativeIndex);
+    srItem.itemDesc = gContext.gameStrings.item_descriptions.get_string(relativeIndex);
+
+    return srItem;
 }
 
-SISTERRAY_API void setItemData(ItemData data, u16 itemID) {
-    gContext.items.update_resource(itemID, data);
+SISTERRAY_API void setItemData(SrConsumableData data, u16 modItemID, const char* modName) {
+    auto name = std::string(modName) + std::to_string(modItemID);
+    gContext.items.update_element(name, data.baseData);
+    gContext.itemOnUseData.update_element(name, data.useData);
+
+    ItemTypeData typeData = gContext.itemTypeData.get_element(name);
+    auto relativeIndex = typeData.type_relative_id;
+    gContext.gameStrings.item_names.update_resource(relativeIndex, EncodedString::from_unicode(data.itemName));
+    gContext.gameStrings.item_descriptions.update_resource(relativeIndex, EncodedString::from_unicode(data.itemDesc));
 }
 
-SISTERRAY_API void addItem(ItemData data, char* name) {
-    gContext.items.add_element(std::string(name), data);
+SISTERRAY_API void addItem(SrConsumableData data, u16 modItemID, const char* modName) {
+    auto name = std::string(modName) + std::to_string(modItemID);
+    gContext.items.add_element(name, data.baseData);
+    gContext.itemOnUseData.add_element(name, data.useData);
+    gContext.itemTypeData.append_item(name, ITYPE_CONSUMABLE, ICONTYPE_CONSUMABLE);
+
+    gContext.gameStrings.item_names.add_resource(EncodedString::from_unicode(data.itemName));
+    gContext.gameStrings.item_descriptions.add_resource(EncodedString::from_unicode(data.itemDesc));
 }
 
 static const u32 kPatchStructBase[] = {
@@ -69,7 +92,7 @@ void createOnUseItemData(u16 hp_heal_amount, u16 mp_heal_amount,
     u16 stat_to_boost, u16 character_restriction_mask, u8 hp_heal_percent,
     u8 mp_heal_percent, bool can_revive, bool target_all, bool requires_target) {
 
-    onUseItemData itemData = {
+    ConsumableUseData itemData = {
         hp_heal_amount,
         mp_heal_amount,
         stat_to_boost,
@@ -85,8 +108,7 @@ void createOnUseItemData(u16 hp_heal_amount, u16 mp_heal_amount,
 
 }
 
-SISTERRAY_API void initItems(SrKernelStream* stream)
-{
+SISTERRAY_API void initItems(SrKernelStream* stream) {
     gContext.items = SrItemRegistry(stream);
     gContext.itemTypeData.initialize_augmented_data((u8)0, gContext.items.resource_count());
     patchItems();

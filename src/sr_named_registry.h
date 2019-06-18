@@ -9,16 +9,38 @@
 
 /*Simple C++ template to replace all the old school manually resized C arrays
   And unify our String Registry and all of our various item registries*/
-template<class T, class S> class SrNamedResourceRegistry: public SrResourceRegistry<T> {
+template<class T, class S> class SrNamedResourceRegistry: public SrResourceRegistry<T> { //Publicly inherited, but should be private after refactor/cleanup
 public:
     std::unordered_map<S, u32> named_registry;
     SrNamedResourceRegistry(): SrResourceRegistry() {};
-    SrNamedResourceRegistry(SrKernelStream* stream) : SrResourceRegistry(stream) {};
+    SrNamedResourceRegistry(SrKernelStream* stream) {
+        size_t read_size;
+        T object;
+
+        /*Here we read from the KernelStream, and create objects with names ff7Base+idx*/
+        u16 idx = 0;
+        for (;;) {
+            read_size = srKernelStreamRead(stream, &object, sizeof(object));
+            if (read_size != sizeof(object))
+                break;
+            auto name = std::string(BASE_PREFIX) + std::to_string(idx);
+            add_element(name, object);
+            idx++;
+        }
+    }
 
     void add_element(const std::string& name, const T& element) {
+        if (contains(name))
+            return;
         add_resource(element);
         u32 index = resource_count() - 1;
         named_registry[name] = index;
+    }
+
+    void update_element(const std::string& name, const T& element) {
+        if (!contains(name))
+            return;
+        update_resource(named_registry[name], element);
     }
 
     const T& get_element(const std::string& name) const {

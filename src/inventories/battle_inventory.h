@@ -1,8 +1,7 @@
 #ifndef BATTLE_INVENTORY_H
 #define BATTLE_INVENTORY_H
 
-#include <SisterRay/types.h>
-#include <SisterRay/SisterRay.h>
+#include "sr_inventory_template.h"
 
 #define BATTLE_INVENTORY_SIZE (i16)1024 //maximum allowable inventory size within the menu engine
 
@@ -24,8 +23,6 @@ public:
 };
 
 SISTERRAY_API void initBattleInventory();
-
-/*utility for decrementing the quantity of an item at a particular inventory index*/
 
 #endif
 

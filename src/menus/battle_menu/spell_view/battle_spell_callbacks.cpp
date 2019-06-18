@@ -8,7 +8,7 @@ using namespace BattleSpellWidgetNames;
 
 void initializeBattleSpellMenu() {
     CursorContext spellSelection = { 0, 0, 3, 3, 0, 0, 3, MAGIC_COUNT / 3, 0, 0, 0, 0, 0, 1 };
-    Cursor spellChoiceCursor = { spellSelection, 36, 364, 32, 156 };
+    Cursor spellChoiceCursor = { spellSelection, 8, 364, 32, 156 };
 
     Cursor cursorArray[3] = { spellChoiceCursor, spellChoiceCursor, spellChoiceCursor }; /*One cursor per party member*/
     auto battleSpellMenu = createMenu(INIT_BATTLE_SPELL, 3, &cursorArray[0]);

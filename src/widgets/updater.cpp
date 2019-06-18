@@ -117,19 +117,16 @@ void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
     if (self->collectionType != GridWidgetClass()) {
         return;
     }
-    srLogWrite("ATTEMPTING TO DISPLAY COMMAND NAME at index %i", flatIndex);
     auto typedPtr = (CursorGridWidget*)self;
     auto commands = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].enabledCommandArray;
     auto commandID = commands[flatIndex].commandID;
     if (commandID == 0xFF) {
-        srLogWrite("DISABLING TEXT WIDGET FOR COMMAND NAME at index %i", flatIndex);
         disableWidget(widget);
         return;
     }
     enableWidget(widget);
     updateText(widget, gContext.gameStrings.command_names.get_string(commandID));
     updateTextColor(widget, COLOR_WHITE);
-    srLogWrite("ENABLED TEXT WIDGET FOR COMMAND NAME at index %i", flatIndex);
 }
 
 void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -138,14 +135,13 @@ void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex)
     }
     auto typedPtr = (CursorGridWidget*)self;
     auto& magics = gContext.party.get_element(getPartyKey(*MAT_MENU_PARTY_INDEX)).actorMagics;
-    srLogWrite("drawing text for spell %i at index %i for actor %i from struct at %p, key:%s", magics[flatIndex].magicIndex, flatIndex, *MAT_MENU_PARTY_INDEX, &magics, getPartyKey(*BATTLE_ACTIVE_ACTOR_ID).c_str());
     if (magics[flatIndex].magicIndex == 0xFF) {
-        srLogWrite("Disableing widget");
         disableWidget(widget);
         return;
     }
     enableWidget(widget);
     updateText(widget, gContext.attacks.get_element(assemblekey(CMD_MAGIC, magics[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(widget, COLOR_WHITE);
 }
 
 void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -160,6 +156,7 @@ void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
     }
     enableWidget(widget);
     updateText(widget, gContext.attacks.get_element(assemblekey(CMD_SUMMON, summons[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(widget, COLOR_WHITE);
 }
 
 void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -174,6 +171,7 @@ void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
     }
     enableWidget(widget);
     updateText(widget, gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(widget, COLOR_WHITE);
 }
 
 void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -189,6 +187,7 @@ void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
     }
     enableWidget(getChild(widget, std::string("TXT")));
     updateText(getChild(widget, std::string("TXT")), gContext.attacks.get_element(assemblekey(CMD_MAGIC, magics[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(widget, COLOR_WHITE);
     if (magics[flatIndex].allCount) {
         enableWidget(getChild(widget, std::string("ARW")));
         return;
@@ -208,6 +207,7 @@ void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
     }
     enableWidget(widget);
     updateText(widget, gContext.attacks.get_element(assemblekey(CMD_SUMMON, summons[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(widget, COLOR_WHITE);
 }
 
 void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
@@ -222,6 +222,7 @@ void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
     }
     enableWidget(widget);
     updateText(widget, gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(widget, COLOR_WHITE);
 }
 
 void battleInventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {

@@ -3,36 +3,21 @@
 
 #include <SisterRay/SisterRay.h>
 
-typedef struct {
-    u16 statIndex;
-    u16 amount;
-    u16 percentAmount;
-} StatBoost;
-
-/*Equip Effects exist in this form*/
-typedef struct ActorStatBoosts {
-    StatBoost strBoost;
-    StatBoost strPenalty;
-    StatBoost vitBoost;
-    StatBoost vitPenalty;
-    StatBoost magBoost;
-    StatBoost magPenalty;
-    StatBoost magDefBoost;
-    StatBoost magDefPenalty;
-    StatBoost dexBoost;
-    StatBoost dexPenalty;
-    StatBoost luckBoost;
-    StatBoost luckPenalty;
-    StatBoost maxHPBoost;
-    StatBoost maxHPPenalty;
-    StatBoost maxMPBoost;
-    StatBoost maxMPPenalty;
-    StatBoost coverChance;
-    ActorStatBoosts();
-} ActorStatBoosts;
-
+SISTERRAY_API ActorStatBoosts createActorStatBoosts();
 
 StatBoost addStatBoosts(StatBoost& a, StatBoost& b);
 void addActorBoosts(ActorStatBoosts& accum, ActorStatBoosts& added);
+
+StatBoost& getStatBoostFromID(ActorStatBoosts& boosts, u8 statID);
+StatBoost& getStatPenaltyFromID(ActorStatBoosts& boosts, u8 statID);
+
+SISTERRAY_API void setStrBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
+SISTERRAY_API void setVitBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
+SISTERRAY_API void setMagBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
+SISTERRAY_API void setSprBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
+SISTERRAY_API void setDexBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
+SISTERRAY_API void setLuckBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
+SISTERRAY_API void setHPBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
+SISTERRAY_API void setMPBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
 
 #endif

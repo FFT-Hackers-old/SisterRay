@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include "containers.h"
 #include "../impl.h"
-#include "../api.h"
 
 /*The static grid class does not update based on a reference to a mutable cursor object*/
 

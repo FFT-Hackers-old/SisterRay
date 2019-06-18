@@ -205,148 +205,79 @@ typedef struct {
 
 #define gActorTimerBlock ((ActorTimerData*)(0x9A8B10))
 
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 xCoordinate;
+    u16 yCoordinate;
+    u16 zCoordinate;
+} ModelPosition;
+#pragma pack(pop)
+
 /*Should  have size 0x1AEC*/
 #pragma pack(push, 1)
 typedef struct {
-	u16 ActorID; //BE1170
-	u8 padding1[6]; //BE1171
-	u16 AnimationData; //BE1178
-	u16 commandAnimID; //BE117A
-	u8 padding2[30]; //BE117C
-	u8 AnimationEffect; //BE119A
-	u8 commandID; //BE119B
-	u8 padding3[0x1AC0];
-} BigAnimBlock;
+	u16 actorID; //BE1170, 0
+    u16 animScriptIndex; //BE1172, 2
+	u8 padding1[4]; //BE1174, 4
+	u16 AnimationData; //BE1178, 8
+	u16 animScriptPtr; //BE117A, 0xA
+    u16 field_C;
+    u16 runningAnimIdx; //0xE
+    u16 field_10;
+    u16 field_12;
+    u16 field_14;
+    u16 field_16;
+    u16 field_18;
+    u16 field_1A;
+    u16 field_1C;
+    u16 field_1E;
+    u16 field_20;
+	u8 AnimationEffect; //BE119A, 0x22
+	u8 commandID; //BE119B, 0x23
+    u32 field_24; 
+    u16 field_28;
+    u8 field_2A;
+    u8 bData0x12[16]; //0x2B
+    u8 isScriptExecuting; //0x3B
+    u8 currentScriptPosition; //0x3C
+    u8 waitFrames;            //0x3D
+    u8 modelEffectFlags;      //0x3E
+    u8 padding3[0x11F];       //0x3F
+    u16 field_15E;
+    u16 field_160;
+    u16 field_162;
+    u16 field_164;
+    ModelPosition restingPosition; //0x166
+	u8 padding4[0x1980];
+} BattleModelState;
 #pragma pack(pop)
 
-#define gBigAnimBlock       ((BigAnimBlock*)0xBE1170)
+#define gBigAnimBlock       ((BattleModelState*)0xBE1178)
 
 #pragma pack(push, 1)
 typedef struct {
-    u8 commandID;
-    u8 cursorCommandType;
-    u8 targetingData;
-    u8 commandFlags;
-    u8 allCount;
-    u8 HPMPAbsorbFags;
-} EnabledCommandStruct;
+    u8 field_0;
+    u8 field_1;
+    u8 field_2;
+    u8 field_3;
+    u16 bData68[4];
+    u16 field_C;
+    u16 bData76[6];
+    u16 bData88[6];
+    u16 field_26;
+    u16 field_28;
+    u16 field_2A;
+    u8 field_2C;
+    u8 field_2D;
+    u16 field_2E;
+    u16 field_30;
+    u8 modelDataIndex; //0x032
+    u8 unkValues[0x41]; //0x33]
+} BattleModelStateSmall;
 #pragma pack(pop)
 
-/*This is the structure of attack data*/
-typedef struct {
-    u8 abilityHitRate; //0x00
-    u8 impactEffectID; //0x01
-    u8 targetReactionID; //0x02
-    u8 unkbyte;          //0x03
-    u16 MPCost;          //0x04
-    u16 impactSoundID;   //0x06
-    u16 cameraMovementSingle;   //0x08
-    u16 cameraMovementMultiple;  //0x0A
-    u8 targetingFlags;           //0x0C
-    u8 animationEffectID;        //0x0D
-    u8 damageFormula;            //0x0E
-    u8 attackPower;              //0x0F
-    u8 restoreTypes;             //0x10
-    u8 statusInflictType;         //0x11
-    u8 additionalEffect;         //0x12
-    u8 additionalEffectModifier;  //0x13
-    u32 statusMask;               //0x14
-    u16 elementMask;              //0x18
-    u16 specialAttackFlags;       //0x1A
-} AttackData;
-
-/*This contains a bit vector of flags for spells*/
-#pragma pack(push, 1)
-typedef struct {
-    u8 magicIndex;
-    u8 mpCost;
-    u8 allCount; //used as summon count for summons
-    u8 quadEnabled;
-    u8 quadCount;
-    u8 targetData;
-    u8 propertiesMask;
-    u8 supportEffectsMask; //HP Absorb, etc
-} EnabledSpell;
-#pragma pack(pop)
-
-
-typedef enum {
-    AUTOACT_NO_ACTION,
-    SNEAK_ATTACK,
-    COUNTER_ACTION,
-    FINAL_ATTACK,
-} AutoActionType;
-
-typedef struct {
-    AutoActionType dispatchType;
-    u8 commandIndex;
-    u16 actionIndex;
-    u8 activationChance; //as a %
-    u8 counterCount; //based on the level of the linked counter, 0xFF for unlimited counters
-} SrAutoAction;
-
-#pragma pack(push,1)
-typedef struct {
-    u32 statToIncrease;
-    u32 increaseValue;
-} statIncrease;
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-/*Three of these are maintained for each active party member, they have size 0x440*/
-typedef struct {
-    u8 characterID; //0x00
-    u8 coverChance; //0x01
-    u8 strength; //0x02
-    u8 vitality; //0x03
-    u8 magic; //0x04
-    u8 spirit; //0x05
-    u8 speed; //0x06
-    u8 luck; //0x07
-    u16 physAttack; //0x08
-    u16 physDefense; //0x0A
-    u16 magAttack; //0x0C
-    u16 magDefense; //0x0E
-    u16 currentHP; //0x10
-    u16 maxHP; //0x12
-    u16 currentMP; //0x14
-    u16 maxMP; //0x16
-    u32 timer; //0x18
-    u16 counterActionIndex; //0x1C
-    u16 counterChance; //0x1E
-    u8 unkbyte; //0x20
-    u8 commandColumns; //0x21
-    u8 unknownDiviosr; //0x22
-    u8 commandRows; //0x23
-    u8 unknown24bitInts[24]; //0x24
-    u16 attackElementsMask; //0x3C
-    u16 halvedElementsMask; //003E
-    u16 nulledElementsMask; //0x40
-    u16 absorbeElementsMask; //0x42
-    u32 attackStatusesMask; //0x44
-    u32 immuneStatusesMask; //0x48
-    EnabledCommandStruct enabledCommandArray[16]; //0x4C
-    u8 enabledLimitBytes[8]; //0xAC
-    AttackData enabledLimitData[3]; //0xB4
-    EnabledSpell enabledMagicsData[54]; //0x108
-    EnabledSpell unusedMagics[2]; //0x2B8
-    EnabledSpell enabledSummons[16]; //0x2C8
-    EnabledSpell enabledEnemySkills[24]; //0x348
-    u8 weaponData[5]; //0x408
-    u16 weaponStatus; //0x40D
-    u8 lepad;
-    u8 weaponAccuracy; //0x410
-    u8 paddin[7];
-    u32 additionalAttackElements;
-    statIncrease statsToIncrease[4];
-    u8 charGilBonus;
-    u8 encounterRate;
-    u8 chocoboChance;
-    u8 preEmptiveChance;
-} ActivePartyMemberStruct;
-#pragma pack(pop)
-
-#define PARTY_STRUCT_ARRAY ((ActivePartyMemberStruct*)0xDBA498)
+#define MODEL_DATA_74_ARRAY ((BattleModelStateSmall*)0xBF23C0)
 
 #pragma pack(push, 1)
 typedef struct {
@@ -409,23 +340,4 @@ typedef struct {
 #pragma pack(pop)
 
 #define CHARACTER_RECORD_ARRAY ((characterRecord*)0xDBFD8C)
-
-#pragma pack(push, 1)
-typedef struct {
-    u32 relativeColumnIndex;
-    u32 relativeRowIndex;
-    u32 viewColumnBound;
-    u32 viewRowBound;
-    u32 baseColumnIndex;
-    u32 baseRowIndex;
-    u32 maxColumnBound;
-    u32 maxRowBound;
-    u32 ninth_dword;
-    u32 tenth_dword;
-    u32 eleventh_dword;
-    u32 twelth_dword;
-    u32 thirteenth_dword;
-    u32 fourteenh_dword;
-} CursorContext;
-#pragma pack(pop)
 #endif

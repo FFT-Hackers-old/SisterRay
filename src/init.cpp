@@ -17,6 +17,8 @@
 #include "battle/ai_script_engine.h"
 #include "battle/battle.h"
 #include "battle/battle_context.h"
+#include "files/lgp_loader.h"
+#include "battle/sr_battle_engine.h"
 
 
 SrContext gContext;
@@ -115,8 +117,12 @@ static void srLoadKernelBin(void)
     fclose(kernel);
 }
 
+
+PFNRUNANIMSCRIPT* oldRunAnimationScript;
+
 static void Init(void)
 {
+    MessageBoxA(NULL, "Sister Ray drawing power...", "SisterRay", 0);
     initLog();
     srInitLua();
     initFunctionRegistry();
@@ -133,6 +139,12 @@ static void Init(void)
     testFillInventory();
     initFormationsRegistries();; //initialize all data from the scene.bin
     //Register base callbacks
+    //setupLGPTable(BATTLE_LGP_PATH, 2);
+    auto battleLGP = readLGPArchive(BATTLE_LGP_PATH);
+    srLogWrite("battleLGP opened read");
+    initAnimations(battleLGP); //Must be called after the formation registries have been initialized
+    initAnimationScripts(battleLGP);
+    free(battleLGP);
     registerEquipMenuListeners();
     initializeEquipMenu();
     registerInventoryMenuListeners();
@@ -140,6 +152,7 @@ static void Init(void)
     registerMateriaMenuListeners();
     initializeMateriaMenu();
     registerPartyCallbacks();
+    initializeSrBattleEngine();
     //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
@@ -154,12 +167,13 @@ static void Init(void)
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
     mogReplaceFunction(TRANSFORM_ENEMY_COMMAND, &transformEnemyCommand);
     mogReplaceFunction(GET_MP_COST, &getMPCost);
-    mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
+    /*mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
-    initializeBattleMenu();
+    initializeBattleMenu();*/
+    oldRunAnimationScript = (PFNRUNANIMSCRIPT*)mogRedirectFunction(RUN_ANIMATION_SCRIPT, &animationScriptTrampoline);
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

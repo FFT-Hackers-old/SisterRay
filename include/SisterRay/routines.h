@@ -223,4 +223,22 @@ typedef void(*pfnsub435139)(i32, u8, u8, i16);
 
 typedef i32(*pfnsub5C8684)(u32, u32);
 #define getLimitRelativeIndex           ((pfnsub5C8684)0x5C8684)
+
+typedef i32(*pfnsub5D7FE4)(i32, i32, i32);
+#define runAIScript              ((pfnsub5D7FE4)0x5D7FE4)
+
+typedef u8(*pfnsub5C8BA1)(void);
+#define getRandomNumber          ((pfnsub5C8BA1)0x5C8BA1)
+
+typedef i32(*pfnsub5D9550)(i32, i32, i32);
+#define sub_5D9550               ((pfnsub5D9550)0x5D9550)
+
+typedef i32(*pfnsub43258A)(u8*);
+#define enqueueBattleAction      ((pfnsub43258A)0x43258A)
+
+typedef u8*(*pfnsub436E15)(u8, u8, u8, i16);
+#define createAnimationEvent     ((pfnsub436E15)0x436E15)
+
+typedef i32(*pfnsub437185)(i32, i32, u8, i32);
+#define sub_437185               ((pfnsub437185)0x437185)
 #endif

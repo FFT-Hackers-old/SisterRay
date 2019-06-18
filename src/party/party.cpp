@@ -43,10 +43,13 @@ void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::ve
     bool magicEnabled = false;
     bool summonEnabled = false;
     for (auto materia : equippedMaterias) {
+        if (materia.item_id == 0xFFFF)
+            continue;
         if ((getMateriaTopType(materia.item_id) == 0x9) || (getMateriaTopType(materia.item_id) == 0xA))
             magicEnabled = true;
-        if ((getMateriaTopType(materia.item_id) == 0xB) || (getMateriaTopType(materia.item_id) == 0xC))
+        if ((getMateriaTopType(materia.item_id) == 0xB) || (getMateriaTopType(materia.item_id) == 0xC)) {
             summonEnabled = true;
+        }
     }
     enableDefaultCommands(partyIndex, magicEnabled, summonEnabled);
 
@@ -59,7 +62,6 @@ void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::ve
         EnableAbilitiesEvent enableActionEvent = { partyIndex, materia, gContext.materias.get_resource(materia.item_id), materiaLevel, &boosts };
         auto topkey = getTopKey(getMateriaTopType(materia.item_id));
         auto subkey = getSubKey(getMateriaSubType(materia.item_id));
-        srLogWrite("Dispatching enable action event with party index: %i", partyIndex);
         std::vector<SrEventContext> dispatchContexts = { topkey, subkey };
         gContext.eventBus.dispatch(ENABLE_ACTIONS, &enableActionEvent, dispatchContexts);
     }
@@ -242,7 +244,6 @@ SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 partyIndex, u32 enabledSlotIn
 /*Public API methods for enabling an action at a specific command index*/
 SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
     auto& enabledMagics = gContext.party.get_element(getPartyKey(partyIndex)).actorMagics;
-    srLogWrite("enabling spell: %i at index: %i for actor: %i for struct located at %p, retrieved with key %s", commandlRelativeIndex, enabledIndex, partyIndex, &enabledMagics, getPartyKey(partyIndex).c_str());
     if (enabledIndex < enabledMagics.max_size()) {
         auto& enabledSlot = enabledMagics[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
@@ -321,14 +322,13 @@ void srRecalculateDerivedStats(u32 partyIndex) {
     std::vector<MateriaInventoryEntry> armVector = std::vector<MateriaInventoryEntry>();
     armVector.resize(armorMaterias.max_size());
 
-
     std::copy(begin(weaponMaterias), end(weaponMaterias), begin(equippedMaterias));
     std::copy(begin(armorMaterias), end(armorMaterias), begin(equippedMaterias) + weaponMaterias.size());
     std::copy(begin(weaponMaterias), end(weaponMaterias), begin(wpnVector));
     std::copy(begin(armorMaterias), end(armorMaterias), begin(armVector));
 
     gContext.party.clearActions(partyIndex);
-    ActorStatBoosts statBoosts = ActorStatBoosts();
+    ActorStatBoosts statBoosts = createActorStatBoosts();
     gContext.party.handleMateriaActorUpdates(partyIndex, equippedMaterias, statBoosts); //Enable spells, counters, commands, and fill out stat boosts based on materia stuff
     applyLinkedMateriaModifiers(partyIndex, wpnVector, SR_GEAR_WEAPON, statBoosts);
     applyLinkedMateriaModifiers(partyIndex, armVector, SR_GEAR_ARMOR, statBoosts);

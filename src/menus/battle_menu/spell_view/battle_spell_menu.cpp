@@ -10,17 +10,13 @@ void battleSpellUpdateHandler(i32 updateStateMask) {
     auto menuWidget = menuObject->menuWidget;
     setMenuState(menuObject, *BATTLE_ACTIVE_ACTOR_ID); //Here each party member is treated as a "menu state" for the view, which we set to always match the greater battle menu
 
-    srLogWrite("Enabling/disabling various character view widgets");
     std::vector<std::string> names = { PARTY_1_SPELL_GRID, PARTY_2_SPELL_GRID, PARTY_3_SPELL_GRID };
     for (i32 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
-        srLogWrite("determing whether to enable menu %i", partyIdx);
         if (partyIdx == *BATTLE_ACTIVE_ACTOR_ID) {
-            srLogWrite("enabling spell grid widget for member %i", partyIdx);
             enableWidget(getChild(getChild(menuWidget, BATTLE_SPELL_MENU_NAME), names[partyIdx]));
             continue;
         }
         disableWidget(getChild(getChild(menuWidget, BATTLE_SPELL_MENU_NAME), names[partyIdx]));
-        srLogWrite("disabling spell grid widget for member %i", partyIdx);
     }
 
     BattleSpellInputEvent event = { menuObject, menuObject->currentState };

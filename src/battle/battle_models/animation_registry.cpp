@@ -35,7 +35,7 @@ SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::stri
         auto animHeader = (DaAnimHeader*)animDataStartPtr;
         u8* frameDataPtr = (u8*)(animDataStartPtr + 3);
         auto currentAnimation = createAnimationFromDABuffer(1, animHeader->bonesCount, animHeader->framesCount, (u32*)frameDataPtr);
-        u32 animSize = ((12 * animHeader->bonesCount + 24)) * animHeader->framesCount;
+        u32 animSize = ((12 * (animHeader->bonesCount - 1)) + 24) * animHeader->framesCount;
         SrAnimation srAnim = { animSize, currentAnimation };
         if (hasWeapon) {
             if (animationIdx < BASE_WEAPON_OFFSET) {
@@ -102,21 +102,12 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
     /*Copy every model animation, in order, into the buffer*/
     for (auto animationElement : animations) {
         auto srAnim = animationElement.second;
-        u32 size = srAnim.rawBufferSize;
+        u32 rawBufferSize = srAnim.rawBufferSize;
         void* newAnimBuffer = srCreateBattleAnimation(srAnim.animationData->frameCount, srAnim.animationData->BonesCount, srAnim.animationData->unkDword);
         BattleAnimation* headerView = (BattleAnimation*)newAnimBuffer;
         auto frameDataTable = headerView->frameDataView;
-        srLogWrite("Pointer to animation table: %p", animationDataTable);
-        for (auto frameIdx = 0; frameIdx < srAnim.animationData->frameCount; frameIdx++) {
-            srLogWrite("Printing pointers used in anim data map: %p, %p, %p", frameDataTable[frameIdx], srAnim.animationData->rawAnimationDataBuffer, headerView->rawAnimationDataBuffer);
-            frameDataTable[frameIdx] = (AnimationFrame*)(((int)frameDataTable[frameIdx] - (int)srAnim.animationData->rawAnimationDataBuffer) + (int)headerView->rawAnimationDataBuffer);
-        }
-        srLogWrite("finished create new animations table");
-        memcpy(headerView->rawAnimationDataBuffer, (void*)srAnim.animationData->rawAnimationDataBuffer, size);
-        srLogWrite("finished copying raw frames data");
-
+        memcpy(headerView->rawAnimationDataBuffer, (void*)srAnim.animationData->rawAnimationDataBuffer, rawBufferSize);
         animationDataTable[tableIdx] = newAnimBuffer;
-        srLogWrite("assigned ptr:%p to table index: %i", newAnimBuffer, tableIdx);
         tableIdx++;
         if (tableIdx > tableSize) {
             srLogWrite("ERROR: Assigning animation to invalid index for model %s", filename);
@@ -125,9 +116,11 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
     if (aaHeader->weaponCount) {
         for (auto animationElement : weaponAnimations) {
             auto srAnim = animationElement.second;
-            u32 size = srAnim.rawBufferSize;
-            void* newAnimBuffer = ff7allocateMemory(1, size, nullptr, 0);
-            memcpy(newAnimBuffer, (void*)srAnim.animationData, size);
+            u32 rawBufferSize = srAnim.rawBufferSize;
+            void* newAnimBuffer = srCreateBattleAnimation(srAnim.animationData->frameCount, srAnim.animationData->BonesCount, srAnim.animationData->unkDword);
+            BattleAnimation* headerView = (BattleAnimation*)newAnimBuffer;
+            auto frameDataTable = headerView->frameDataView;
+            memcpy(headerView->rawAnimationDataBuffer, (void*)srAnim.animationData->rawAnimationDataBuffer, rawBufferSize);
             animationDataTable[tableIdx] = newAnimBuffer;
             tableIdx++;
             if (tableIdx > tableSize) {

@@ -40,7 +40,7 @@ typedef struct {
     u32 BonesCount;
     u32 unkDword;
     void* rawAnimationDataBuffer;
-    AnimationFrame* frameDataView; //size here is frameCount
+    AnimationFrame** frameDataView; //size here is frameCount, this is a ptr to a table of ptrs
 } BattleAnimation;
 
 
@@ -48,7 +48,7 @@ u32 getSrAnimsCount(ModelAAHeader *aaHeader, const char * filename);
 void srLoadBattleModelAnimations(void** animatioNDataTable, u32 startingIndex, char* filename);
 void srReadDaFile(u32 someFlag, u32* animDataStartPtr, u32 animsToRead, void** animationDataTable);
 
-BattleAnimation* srCreateAnimation(u32 frameCount, u32 boneCount, u32 modelTypeData);
+BattleAnimation* srCreateBattleAnimation(u32 frameCount, u32 boneCount, u32 modelTypeData);
 typedef BattleAnimation*(*PFNSRSUB691F03)(u32, u32, u32);
 #define createBattleAnimation   ((PFNSRSUB691F03)0x691F03)
 

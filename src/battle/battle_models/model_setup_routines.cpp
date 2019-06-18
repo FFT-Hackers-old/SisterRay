@@ -26,21 +26,17 @@ void translateEnemyABData() {
         MODEL_DATA_74_ARRAY[enemyActorIdx].modelDataIndex = 0;
         initEnemyModelsFromAB(enemyActorIdx);
         byte_BF2DF8[enemyActorIdx] = UNK_ACTOR_STRUCT_ARRAY[enemyActorIdx].field_1;
-        srLogWrite("SETTING POSITION OF ENEMY AT INDEX %i, x:%i, y:%i, z:%i", enemyActorIdx,
-            enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.xPosition,
-            enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.yPosition,
-            enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.zPosition
-        );
         actorPositionArray[enemyActorIdx].xPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.xPosition;
         actorPositionArray[enemyActorIdx].yPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.yPosition;
         actorPositionArray[enemyActorIdx].zPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.zPosition;
         gBigAnimBlock[enemyActorIdx].field_162 = 0;
         gBigAnimBlock[enemyActorIdx].field_15E = 0;
         switch (*battleType) {
-            case 1:
+            case 1: {
                 gBigAnimBlock[enemyActorIdx].field_18 = 2048;
                 gBigAnimBlock[enemyActorIdx].field_160 = 0;
                 break;
+            }
             case 3:
             case 5:
             case 6:
@@ -60,8 +56,7 @@ void translateEnemyABData() {
                     gBigAnimBlock[enemyActorIdx].field_160 = 0;
                     gBigAnimBlock[enemyActorIdx].field_18 = 0;
                 }
-                else
-                {
+                else {
                     gBigAnimBlock[enemyActorIdx].field_160 = 2048;
                     gBigAnimBlock[enemyActorIdx].field_18 = 2048;
                 }
@@ -104,7 +99,6 @@ void translatePlayerABData() {
             auto relIndex = 0;
             for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
                 if (UNK_ACTOR_STRUCT_ARRAY[partyIdx].characterID != 0xFF) {
-                    /*This surrounding code is basically an inlined body of sub_42B4AF, with the correct position ptr*/
                     if (UNK_ACTOR_STRUCT_ARRAY[partyIdx].field_6 & 1) {
                         if (twoPartyAngles[*battleType].angles[relIndex])
                             twoPartyPositionArray[*battleType].enemyPosition[relIndex].zPosition -= 516;
@@ -139,23 +133,11 @@ void translatePlayerABData() {
         }
     }
 
-    for (auto partyIdx = 0; partyIdx < 3; ++partyIdx)
-        byte_BF2DF8[partyIdx] = UNK_ACTOR_STRUCT_ARRAY[partyIdx].field_1;
-
-
     for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
+        byte_BF2DF8[partyIdx] = UNK_ACTOR_STRUCT_ARRAY[partyIdx].field_1;
         u8* byteViewAnimBlock = (u8*)&(gBigAnimBlock[partyIdx].actorID);
         gBigAnimBlock[partyIdx].restingPosition.xCoordinate = actorPositionArray[partyIdx].xPosition;
         gBigAnimBlock[partyIdx].restingPosition.yCoordinate = actorPositionArray[partyIdx].yPosition;
         gBigAnimBlock[partyIdx].restingPosition.zCoordinate = actorPositionArray[partyIdx].zPosition;
-        *(byteViewAnimBlock + (6982 * partyIdx) + 0x166) = actorPositionArray[partyIdx].xPosition;
-        *(byteViewAnimBlock + (6982 * partyIdx) + 0x168) = actorPositionArray[partyIdx].yPosition;
-        *(byteViewAnimBlock + (6982 * partyIdx) + 0x16A) = actorPositionArray[partyIdx].zPosition;
-        srLogWrite("offset of resting position structure in battle model state: %p", (&(gBigAnimBlock[partyIdx].restingPosition.xCoordinate) - &(gBigAnimBlock[partyIdx].actorID)));
-        srLogWrite("positioning party member %i at location %i, %i, %i", partyIdx,
-            gBigAnimBlock[partyIdx].restingPosition.xCoordinate,
-            gBigAnimBlock[partyIdx].restingPosition.yCoordinate,
-            gBigAnimBlock[partyIdx].restingPosition.zCoordinate
-        );
     }
 }

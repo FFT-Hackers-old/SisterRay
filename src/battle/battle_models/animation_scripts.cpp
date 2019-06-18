@@ -38,7 +38,6 @@ SrModelScripts createSrModelScripts(SrModelType modelType, const std::string arc
     }
     for (auto scriptIdx = 0; scriptIdx < animScriptCount; scriptIdx++) {
         u8* animScriptStart = ((u8*)abFilePtr) + scriptPtrTable[scriptIdx];
-        srLogWrite("animation script at idx: %i loaded with characters: %x, %x, %x, %x, %x", scriptIdx, animScriptStart[0], animScriptStart[1], animScriptStart[2], animScriptStart[3], animScriptStart[4]);
         if ((modelType == MODEL_TYPE_ENEMY) && scriptIdx == 31) {
             animScriptLength = 32;
         }
@@ -51,17 +50,14 @@ SrModelScripts createSrModelScripts(SrModelType modelType, const std::string arc
             animScriptLength = scriptPtrTable[scriptIdx + 1] - scriptPtrTable[scriptIdx];
         }
         else {
-            srLogWrite("length heurestic returning negative length, defaulting to 32", scriptIdx);
             animScriptLength = 32;
         }
         if (animScriptLength) {
             if (animScriptStart[0] == 0 && animScriptStart[1] == 0) {
-                srLogWrite("Null script detected, redirecting to idle");
                 u16 trueAnimScriptLength = 4;
                 auto animationScript = animScriptFromAB((((u8*)abFilePtr) + scriptPtrTable[0]), animScriptLength, &trueAnimScriptLength);
                 SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
                 u8* scriptPtr = srAnimScript.animScript.data();
-                srLogWrite("redirected script at idx: %i loaded with characters: %x, %x, %x, %x, %x", scriptIdx, scriptPtr[0], scriptPtr[1], scriptPtr[2], scriptPtr[3], scriptPtr[4]);
                 srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
                 continue;
             }
@@ -69,7 +65,6 @@ SrModelScripts createSrModelScripts(SrModelType modelType, const std::string arc
             auto animationScript = animScriptFromAB(animScriptStart, animScriptLength, &trueAnimScriptLength);
             SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
             u8* scriptPtr = srAnimScript.animScript.data();
-            srLogWrite("animation script at idx: %i loaded with characters: %x, %x, %x, %x, %x", scriptIdx, scriptPtr[0], scriptPtr[1], scriptPtr[2], scriptPtr[3], scriptPtr[4]);
             srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
         }
     }
@@ -108,20 +103,16 @@ u32 SrBattleAnimScriptRegistry::getMemoryBufferSize(const std::string& name){
         scriptLength += script.scriptLength;
         scriptCount++;
     }
-    srLogWrite("model %s has %i animations with a total length of %i", name.c_str(), scriptCount, scriptLength);
     return AB_PTR_TABLE_OFFSET + 4 * scriptCount + scriptLength;
 }
 
 AnimationScript animScriptFromAB(u8* animScriptStart, u16 animScriptLength, u16* trueScriptLength) {
     auto animScript = AnimationScript();
     auto scriptPosition = 0;
-    srLogWrite("reading script with suggested length %i, starting at %p", animScriptLength, animScriptStart);
     while (scriptPosition < animScriptLength) {
-        srLogWrite("adding byte %X to script", animScriptStart[scriptPosition]);
         animScript.push_back(animScriptStart[scriptPosition]);
         if (animScriptStart[scriptPosition] == 0xEE || animScriptStart[scriptPosition] == 0xFF || ((animScriptStart[scriptPosition - 1] == 0xFE) && (animScriptStart[scriptPosition] == 0xC0))) {
             *trueScriptLength = scriptPosition + 1;
-            srLogWrite("ACTUAL LENGTH: %i", *trueScriptLength);
             break;
         }
         scriptPosition++;
@@ -132,7 +123,6 @@ AnimationScript animScriptFromAB(u8* animScriptStart, u16 animScriptLength, u16*
 void initAnimationScripts(void* battleLGPBuffer) {
     auto enemyModelIDs = gContext.enemies.getUniqueModelIDs();
     gContext.battleAnimationScripts = SrBattleAnimScriptRegistry(enemyModelIDs, battleLGPBuffer);
-    srLogWrite("Loaded model scripts for %lu unique models", (unsigned long)gContext.battleAnimations.resource_count());
 }
 
 
@@ -141,24 +131,19 @@ void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader)
     auto bufferSize = gContext.battleAnimationScripts.getMemoryBufferSize(std::string(filename));
     u8* animScriptBuffer = (u8*)ff7allocateMemory(1, bufferSize, nullptr, 0);
     u8** tableBufferPtr = (u8**)(animScriptBuffer + (AB_PTR_TABLE_OFFSET)); //advance this ptr to the start of the animation data table
-    srLogWrite("allocating a table for script count: %i with a total buffer size of %i", animScriptsData.scriptCount, bufferSize);
     u8* scriptBufferPtr = (u8*)(animScriptBuffer + (AB_PTR_TABLE_OFFSET + (animScriptsData.scriptCount * 4))); //advance this tpr to the start of the raw animation script data
     /*Copy the header data from the ba file*/
     memcpy(animScriptBuffer, (void*)&(animScriptsData.header), AB_PTR_TABLE_OFFSET);
-    srLogWrite("Initial pointers state: head: %p, table: %p, scriptBuffer: %p", animScriptBuffer, tableBufferPtr, scriptBufferPtr);
 
     /*Initialize the actual form of the animation scripts data in memory from the ba file data*/
     auto scriptIdx = 0;
     for (auto animScriptElement : animScriptsData.modelAnimScripts) {
         tableBufferPtr[scriptIdx] = scriptBufferPtr; // use the relative index like in the file for the time being
-        srLogWrite("writing animation script: %s", animScriptElement.first.c_str());
-        srLogWrite("script ptr value: %p for tableEntry at %p", tableBufferPtr[scriptIdx], &(tableBufferPtr[scriptIdx]));
         auto animScript = animScriptElement.second;
         memcpy((void*)scriptBufferPtr, (void*)animScript.animScript.data(), animScript.scriptLength);
         scriptBufferPtr += animScript.scriptLength;
         scriptIdx++;
     }
-    srLogWrite("loaded all animations scripts for model %s -- total: %i", filename, scriptIdx);
     return animScriptBuffer;
 }
 
@@ -171,14 +156,7 @@ SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scrip
     u32* modelDatPtrArray = (u32*)0x0BFB2B8;
     u32 ptr_to_new_animation;
     u8** tablePtr = (u8**)ptr_to_anim_scripts;
-    srLogWrite("bigblock size:%i", (sizeof(BattleModelState)));
     u16* byteViewAnimBlock = (u16*)&(gBigAnimBlock[actor_id].actorID);
-    srLogWrite("ANIMATION SCRIPT RUN CALLED for actor %i with command ID:%i and animScriptID:%i", actor_id, gBigAnimBlock[actor_id].commandID, gBigAnimBlock[actor_id].animScriptIndex);
-    srLogWrite("scriptPosition:%i, scriptExecuting:%i", gBigAnimBlock[actor_id].currentScriptPosition, gBigAnimBlock[actor_id].isScriptExecuting);
-    srLogWrite("Ptr to anim scripts: %p", tablePtr[gBigAnimBlock[actor_id].animScriptIndex]);
-    srLogWrite("Addres of block head %p, address of positions: %p", &gBigAnimBlock[actor_id].actorID, &gBigAnimBlock[actor_id].restingPosition.xCoordinate);
-    srLogWrite("coordinate position: %i, %i, %i", gBigAnimBlock[actor_id].restingPosition.xCoordinate, gBigAnimBlock[actor_id].restingPosition.yCoordinate, gBigAnimBlock[actor_id].restingPosition.zCoordinate);
-    srLogWrite("coordinate position: %i, %i, %i", *(byteViewAnimBlock + ((6982/2)*actor_id) + (0x166/2)), *(byteViewAnimBlock + ((6982/2) * actor_id) + (0x168/2)), *(byteViewAnimBlock + ((6982/2) * actor_id) + (0x16A/2)));
     if ((gBigAnimBlock[actor_id].commandID == CMD_LIMIT) && (gBigAnimBlock[actor_id].animScriptPtr == 0x3D)) {
         srLogWrite("Redirecting animation script execution for actor %i", actor_id);
         srLogWrite("Writing to address %p, base %p", &gBigAnimBlock[actor_id].animScriptPtr, &gBigAnimBlock[0].animScriptPtr);

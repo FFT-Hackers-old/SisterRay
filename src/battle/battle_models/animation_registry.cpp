@@ -103,9 +103,20 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
     for (auto animationElement : animations) {
         auto srAnim = animationElement.second;
         u32 size = srAnim.rawBufferSize;
-        void* newAnimBuffer = ff7allocateMemory(1, size, nullptr, 0);
-        memcpy(newAnimBuffer, (void*)srAnim.animationData, size);
+        void* newAnimBuffer = srCreateBattleAnimation(srAnim.animationData->frameCount, srAnim.animationData->BonesCount, srAnim.animationData->unkDword);
+        BattleAnimation* headerView = (BattleAnimation*)newAnimBuffer;
+        auto frameDataTable = headerView->frameDataView;
+        srLogWrite("Pointer to animation table: %p", animationDataTable);
+        for (auto frameIdx = 0; frameIdx < srAnim.animationData->frameCount; frameIdx++) {
+            srLogWrite("Printing pointers used in anim data map: %p, %p, %p", frameDataTable[frameIdx], srAnim.animationData->rawAnimationDataBuffer, headerView->rawAnimationDataBuffer);
+            frameDataTable[frameIdx] = (AnimationFrame*)(((int)frameDataTable[frameIdx] - (int)srAnim.animationData->rawAnimationDataBuffer) + (int)headerView->rawAnimationDataBuffer);
+        }
+        srLogWrite("finished create new animations table");
+        memcpy(headerView->rawAnimationDataBuffer, (void*)srAnim.animationData->rawAnimationDataBuffer, size);
+        srLogWrite("finished copying raw frames data");
+
         animationDataTable[tableIdx] = newAnimBuffer;
+        srLogWrite("assigned ptr:%p to table index: %i", newAnimBuffer, tableIdx);
         tableIdx++;
         if (tableIdx > tableSize) {
             srLogWrite("ERROR: Assigning animation to invalid index for model %s", filename);

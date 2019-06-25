@@ -42,6 +42,7 @@ extern "C" {
 #include "party/characters.h"
 #include "battle/battle_models/animation_registry.h"
 #include "battle/battle_models/animation_scripts.h"
+#include "battle/battle_models/battle_models.h"
 #include <map>
 #include <memory>
 
@@ -115,5 +116,8 @@ SISTERRAY_API const char* srGetGamePath(const char* suffix);
 /*For testing redirection of animation scripts*/
 typedef void (PFNRUNANIMSCRIPT)(u16, u32, u32, u32);
 SISTERRAY_GLOBAL PFNRUNANIMSCRIPT* oldRunAnimationScript;
+
+typedef BattleModel*(PFNSETPLAYERDATA)(i32, i32, u8, char*);
+SISTERRAY_GLOBAL PFNSETPLAYERDATA* oldSetPlayerModel;
 
 #endif

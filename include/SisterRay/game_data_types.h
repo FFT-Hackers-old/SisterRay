@@ -1,12 +1,31 @@
 #ifndef GAME_DATA_TYPES_H
 #define GAME_DATA_TYPES_H
 
-#include <SisterRay/srparty.h>
+#include <SisterRay/types.h>
 
 typedef enum {
     SR_GEAR_WEAPON,
     SR_GEAR_ARMOR
 } SrGearType;
+
+typedef struct {
+    u32 sign;
+    u16 statIndex;
+    u16 amount;
+    u16 percentAmount;
+} StatBoost;
+
+typedef struct {
+    StatBoost strBoost;
+    StatBoost vitBoost;
+    StatBoost magBoost;
+    StatBoost magDefBoost;
+    StatBoost dexBoost;
+    StatBoost luckBoost;
+    StatBoost maxHPBoost;
+    StatBoost maxMPBoost;
+    StatBoost coverChance;
+} ActorStatBoosts;
 
 #pragma pack(push, 1)
 typedef struct {

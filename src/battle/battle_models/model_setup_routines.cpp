@@ -1,5 +1,6 @@
 #include "model_setup_routines.h"
 #include "../../impl.h"
+#include "../../party/party_utils.h"
 
 typedef void(*PFNSRSUB42B4AF)();
 #define sub_42B4AF  ((PFNSRSUB42B4AF)0x42B4AF)
@@ -135,9 +136,113 @@ void translatePlayerABData() {
 
     for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
         byte_BF2DF8[partyIdx] = UNK_ACTOR_STRUCT_ARRAY[partyIdx].field_1;
-        u8* byteViewAnimBlock = (u8*)&(gBigAnimBlock[partyIdx].actorID);
+        u8* byteViewAnimBlock = (u8*)&(gBigAnimBlock[partyIdx].characterID);
         gBigAnimBlock[partyIdx].restingPosition.xCoordinate = actorPositionArray[partyIdx].xPosition;
         gBigAnimBlock[partyIdx].restingPosition.yCoordinate = actorPositionArray[partyIdx].yPosition;
         gBigAnimBlock[partyIdx].restingPosition.zCoordinate = actorPositionArray[partyIdx].zPosition;
+    }
+}
+
+typedef void(*SRPFNSUB66335F)(u8, u8, u8);
+#define sub_66335F    ((SRPFNSUB66335F)0x66335F)
+
+typedef void(*SRPFNSUB68CF75)(u8, LocalWeaponStruct*);
+#define zeroWeaponStruct ((SRPFNSUB68CF75)0x68CF75)
+
+typedef i32(*SRPFNSUB66101A)();
+#define sub_66101A ((SRPFNSUB66101A)0x66101A)
+
+typedef u8(*SRPFNSUB429343)(i32);
+#define sub_429343 ((SRPFNSUB429343)0x429343)
+
+typedef void(*SRPFNSUB684F73)(LocalWeaponStruct*, void*);
+#define sub_684F73  ((SRPFNSUB684F73)0x684F73)
+
+typedef void(*SRPFNSUB5E0DDE)(u16, u16, u16, u16, BattleModel*);
+#define playWeaponAnimation   ((SRPFNSUB5E0DDE)0x5E0DDE)
+
+typedef float*(*SRPFNSUB67C9BE)(u32, MatrixStruct*);
+#define getMatrix     ((SRPFNSUB67C9BE)0x67C9BE)
+
+typedef void(*SRPFNSUB6616CF)(void*, float*);
+#define sub_6616CF    ((SRPFNSUB6616CF)0x6616CF)
+
+/*This function offsets the animation index that is playing and animations the weapon*/
+void playCorrectWeaponAnimation(u32 actorIdx) {
+    int v5; 
+    int v6; 
+    LocalWeaponStruct localWeaponStruct;
+    int v14;
+    u32* dword_90C9F0 = (u32*)(0x90C9F0);
+    u8* byte_BE0E30 = (u8*)(0xBE0E30);
+
+    if (!(*dword_90C9F0))
+        return;
+
+    auto& modelState = gBigAnimBlock[actorIdx];
+    if (!(modelState.field_25 & 4)) {
+        sub_66335F(modelState.field_28, modelState.field_29, modelState.field_2A);
+        
+        auto actorDataPtr = getActivePartyMember(actorIdx);
+        if (!actorDataPtr)
+            return;
+
+        BattleModel* modelData = (BattleModel *)modelState.modelDataPtr;
+        if (!modelData) {
+            return;
+        }
+
+        u8 weaponModelID = actorDataPtr->weaponData.weapon_model & 0xF;
+        ModelSkeleton* weaponDataPtr = modelData->weaponModels[weaponModelID];
+        if (!weaponDataPtr) {
+            return;
+        }
+
+        LocalWeaponStruct* structPtr = &localWeaponStruct;
+        zeroWeaponStruct(0, structPtr);
+        //This logic is very strange
+        (*((u32*)&structPtr->unkBytes[8])) = sub_66101A();
+        structPtr->unkBytes[11] = sub_429343(modelState.field_14);
+        //End strange logic
+        if (modelState.field_28 || modelState.field_29 || modelState.field_2A) {
+            structPtr->unkBytes[0] = 9;
+        }
+        else {
+            structPtr->unkBytes[0] = 10;
+        }
+
+        /*Probably modulate opacity based on fraction of HP*/
+        /*bool isUltimaWeapon = (!modelState.characterID && weaponModelID == 15);
+        if (isUltimaWeapon) {
+            if (modelState.field_3F & 8) {
+                v6 = 0;
+                void * ffContext = GetContext();  // This is a graphics/game context object, it is large so I don't want to define so it's a void* for now
+                sub_660C9A(ffContext);
+            }
+            else {
+                v6 = 1;
+            }
+            sub_685028(v6, (void(__cdecl *)(u32, u32)(0x4303BE)), weaponDataPtr);
+            sub_66C4BC(-4, weaponDataPtr);
+            i32 cloudHPRatio = sub_6DC910();
+            sub_685028(cloudHPRatio, (void(__cdecl *)(u32, u32))(0x68F758), weaponDataPtr);
+        }*/
+
+        sub_684F73(structPtr, weaponDataPtr);
+        modelData->unk1 = 0;
+        modelData->unk2 = 0;
+
+        std::string& modelName = gContext.party.get_element(getPartyKey(actorIdx)).modelName;
+        u16 weaponOffset = 0;
+        if (modelState.setForLimitBreaks) {
+            weaponOffset = 8;
+        }
+        else {
+            weaponOffset = gContext.battleAnimations.get_element(modelName).modelAnimationCount;
+        }
+        srLogWrite("Animating weapon offset %i for model %s", weaponOffset, modelName);
+        playWeaponAnimation(modelState.setForLimitBreaks, modelState.tableRelativeModelAnimIdx + weaponOffset, modelState.currentPlayingFrame, weaponModelID, modelData);
+        float* matrix = getMatrix(0, weaponDataPtr->bonesArray->polygonData->texDataPtr->texMatrices->matrixStructPtr);
+        sub_6616CF(&(byte_BE0E30[64 * actorIdx]), matrix);
     }
 }

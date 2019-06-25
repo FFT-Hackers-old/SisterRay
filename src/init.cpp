@@ -173,7 +173,6 @@ static void Init(void)
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     initializeBattleMenu();*/
-    oldRunAnimationScript = (PFNRUNANIMSCRIPT*)mogRedirectFunction(RUN_ANIMATION_SCRIPT, &animationScriptTrampoline);
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

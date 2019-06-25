@@ -33,7 +33,20 @@ typedef struct {
     u32 field_0;
     u32 field_4;
     u32 lgpTableIdx;
-    u8 unk[0x38];
+    u32 field_C;
+    u32 field_10;
+    u32 field_14;
+    u32 field_18;
+    u32 field_1C;
+    u32 field_20;
+    u32 field_24;
+    u32 field_28;
+    u32 loadWeapon;
+    u32 field_30;
+    u32 field_34;
+    u32 field_38;
+    u32 field_3C;
+    u32 field_40;
 } UnkModelLoadStruct;
 
 typedef struct {

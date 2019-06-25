@@ -156,7 +156,7 @@ SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scrip
     u32* modelDatPtrArray = (u32*)0x0BFB2B8;
     u32 ptr_to_new_animation;
     u8** tablePtr = (u8**)ptr_to_anim_scripts;
-    u16* byteViewAnimBlock = (u16*)&(gBigAnimBlock[actor_id].actorID);
+    u16* byteViewAnimBlock = (u16*)&(gBigAnimBlock[actor_id].characterID);
     if ((gBigAnimBlock[actor_id].commandID == CMD_LIMIT) && (gBigAnimBlock[actor_id].animScriptPtr == 0x3D)) {
         srLogWrite("Redirecting animation script execution for actor %i", actor_id);
         srLogWrite("Writing to address %p, base %p", &gBigAnimBlock[actor_id].animScriptPtr, &gBigAnimBlock[0].animScriptPtr);

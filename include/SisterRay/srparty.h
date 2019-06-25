@@ -2,6 +2,7 @@
 #define SR_PARTY_H
 
 #include <SisterRay/types.h>
+#include <SisterRay/game_data_types.h>
 
 /*This is the structure of attack data*/
 typedef struct {
@@ -25,25 +26,6 @@ typedef struct {
     u16 elementMask;              //0x18
     u16 specialAttackFlags;       //0x1A
 } AttackData;
-
-typedef struct {
-    u32 sign;
-    u16 statIndex;
-    u16 amount;
-    u16 percentAmount;
-} StatBoost;
-
-typedef struct {
-    StatBoost strBoost;
-    StatBoost vitBoost;
-    StatBoost magBoost;
-    StatBoost magDefBoost;
-    StatBoost dexBoost;
-    StatBoost luckBoost;
-    StatBoost maxHPBoost;
-    StatBoost maxMPBoost;
-    StatBoost coverChance;
-} ActorStatBoosts;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -132,13 +114,9 @@ typedef struct {
     EnabledSpell unusedMagics[2]; //0x2B8
     EnabledSpell enabledSummons[16]; //0x2C8
     EnabledSpell enabledEnemySkills[24]; //0x348
-    u8 weaponData[5]; //0x408
-    u16 weaponStatus; //0x40D
-    u8 lepad;
-    u8 weaponAccuracy; //0x410
-    u8 paddin[7];
-    u32 additionalAttackElements;
-    statIncrease statsToIncrease[4];
+    WeaponData weaponData;
+    u32 unkthing2;
+    u32 unkthing;
     u8 charGilBonus;
     u8 encounterRate;
     u8 chocoboChance;

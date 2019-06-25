@@ -13,7 +13,7 @@ typedef struct {
 i16 srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void));
 i32 srExecuteAIScript(i32 actorIndex, i32 scriptID, i32 unkInt);
 i32 srExecuteFormationScripts();
-i32  enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex);
+i32  enqueueScriptAction(i16 characterID, i16 commandIndex, i16 relAttackIndex);
 void* transformEnemyCommand();
 
 void dispatchAutoActions(i32 partyIndex, i32 actionType);

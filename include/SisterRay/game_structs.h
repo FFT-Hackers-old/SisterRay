@@ -217,7 +217,7 @@ typedef struct {
 /*Should  have size 0x1AEC*/
 #pragma pack(push, 1)
 typedef struct {
-	u16 actorID; //BE1170, 0
+	u16 characterID; //BE1170, 0
     u16 animScriptIndex; //BE1172, 2
 	u8 padding1[4]; //BE1174, 4
 	u16 AnimationData; //BE1178, 8
@@ -233,10 +233,14 @@ typedef struct {
     u16 field_1C;
     u16 field_1E;
     u16 field_20;
-	u8 AnimationEffect; //BE119A, 0x22
+	u8 animationEffect; //BE119A, 0x22
 	u8 commandID; //BE119B, 0x23
-    u32 field_24; 
-    u16 field_28;
+    u8 field_24;
+    u8 field_25;
+    u8 field_26;
+    u8 field_27;
+    u8 field_28;
+    u8 field_29;
     u8 field_2A;
     u8 bData0x12[16]; //0x2B
     u8 isScriptExecuting; //0x3B
@@ -249,7 +253,14 @@ typedef struct {
     u16 field_162;
     u16 field_164;
     ModelPosition restingPosition; //0x166
-	u8 padding4[0x1980];
+    u8 padding5[0xA30];
+    u32 playedAnimFrames;
+    u32 currentPlayingFrame;
+    u32 tableRelativeModelAnimIdx;
+    void* modelDataPtr;
+	u8 padding4[0xF17];
+    u32 setForLimitBreaks;
+    u8 padd5[37];
 } BattleModelState;
 #pragma pack(pop)
 

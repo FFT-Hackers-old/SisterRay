@@ -92,4 +92,12 @@ u16 getMateriaID(u8 characterID, u8 slot, u8 gearType) {
     return materiaID;
 }
 
+bool isPartyActor(u8 actorIdx) {
+    return (actorIdx < 3);
+}
+
+bool actorHasStatus(u8 actorID, u32 maskOfStatus) {
+    auto& actorAIStates = AI_BATTLE_CONTEXT->actorAIStates;
+    return actorAIStates[actorID].statusMask & maskOfStatus;
+}
 

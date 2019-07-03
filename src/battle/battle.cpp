@@ -8,17 +8,16 @@
 #include <memory>
 #include "../EncodedString.h"
 
-i16 srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
-    i16 ret; 
+void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
     char v4; 
     int enemyIndex;
     void *v16; 
     i32 sceneSize; 
     i32 sceneIndex; 
-    FormationEnemies* formationEnemiesPtr = (FormationEnemies*)(0x9A8748);
-    FormationSetup* formationSetupPtr = (FormationSetup*)(0x9A8750);
-    FormationCamera* formationCameraPtr = (FormationCamera*)(0x9A8764);
-    FormationActorDataArray* formationActorDataPtr = (FormationActorDataArray*)(0x9A8794);
+    FormationEnemies* formationEnemiesPtr = getFormationEnemies();
+    FormationSetup* formationSetupPtr = getFormationSetup();
+    FormationCamera* formationCameraPtr = getFormationCamera();
+    FormationActorDataArray* formationActorDataPtr = getFormationActorData;
     EnemyData* enemyDataPtr = (EnemyData*)(0x9A8E9C);
     FormationEnemyIDs* sceneAIDataPtr = (FormationEnemyIDs*)(0x9A9CFC);
     u32* formationAIDataPtr = (u32*)(0x9A9AFC);
@@ -30,14 +29,12 @@ i16 srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
     u16* word_9AAD0E = (u16*)(0x9AAD0E);
     u32* dword_9ACB68 = (u32*)(0x9ACB68);
     u8* battleTypeArray = (u8*)(0x7B76F0);
-
-    ret = *dword_C069BC;  // this code coordinates, along with a2, additional setup for "next battle"
+    // this code coordinates, along with a2, additional setup for "next battle"
     if (*dword_C069BC) {
         if (*dword_C069BC != 1) {
             if (*dword_C069BC != 2) {
                 *dword_C069BC = 0;
                 *dword_9A89D0 = 1;
-                return ret;
             }
             goto LABEL_11;
         }
@@ -45,7 +42,8 @@ i16 srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
     else {
         *dword_C069BC = 1;
     }
-    if (!modelAppearCallback) { //This contained a bunch of code which loads stuff from scene. This is not necessary now
+
+    if (!modelAppearCallback) { 
         *dword_C069BC = 2;
 
     LABEL_11:
@@ -94,35 +92,28 @@ i16 srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
         *gEscapeFlag = formationSetupPtr->escapeCounter;
         if (*gFormationType == 1 || *gFormationType == 3)
             *gEscapeFlag = 1;
-        ret = *gEscapeFlag;
         *word_9AAD0E = *gEscapeFlag;
         *dword_C069BC = 0;
         *dword_9A89D0 = 1;
-        return ret;
     }
-    ret = modelAppearCallback();
+
+    modelAppearCallback();
     if (dword_9ACB68) {
         dword_9ACB68 = 0;
         *dword_C069BC = 2;
     }
-    srLogWrite("Scene successfully loaded");
-    return ret;
 }
 
-i32 srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
-    i32 result;
+void srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
     scriptAnimDataCpy modelDataCpys[10];
     const u8* scriptPtr = nullptr;
     u8 characterScriptIndex = 0xFF; 
-    FormationActorDataArray* formationActorDataPtr = (FormationActorDataArray*)(0x9A8794);
+    FormationActorDataArray* formationActorDataPtr = getFormationActorData();
     FormationEnemyIDs* sceneAIDataPtr = (FormationEnemyIDs*)(0x9A9CFC);
     u8* linkedScriptArray = (u8*)(0x8FEE38);
-
-    result = 1 << scriptType; 
     u16* unknownPtr = (u16*)(0x9AAD14);
-    *unknownPtr |= 1 << scriptType;
 
-    srLogWrite("running AI script for actor %i of type %i", actorIndex, scriptType);
+    *unknownPtr |= 1 << scriptType;
 
     switch (actorIndex) {
         case 0:
@@ -146,13 +137,8 @@ i32 srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
         case 9: {
             auto formationEnemyID = formationActorDataPtr->formationDatas[actorIndex - 4].enemyID; //fetch the formation relative ID, it's modified from the absolute ID
             auto uniqueID = sceneAIDataPtr->uniqueIDs[formationEnemyID];
-            srLogWrite("fetching script information for the following enemy: %s", uniqueID.c_str());
             auto& enemyAIData = gContext.enemies.get_element(uniqueID).enemyAI;
             scriptPtr = getScriptPtr(enemyAIData, scriptType);
-            if (scriptPtr) {
-                srLogWrite("executing enemy AI script with chars:%x %x %x %x %x %x %x %x %x %x %x %x",
-                    scriptPtr[0], scriptPtr[1], scriptPtr[2], scriptPtr[3], scriptPtr[4], scriptPtr[5], scriptPtr[6], scriptPtr[7], scriptPtr[8], scriptPtr[9], scriptPtr[10], scriptPtr[11]);
-            }
             break;
         }
         default: {
@@ -168,7 +154,7 @@ i32 srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
         }
 
         sub_5D9550(actorIndex, a3, 0); //Not sure what this function does yet
-        result = runAIScript(actorIndex, (i32)scriptPtr, characterScriptIndex);
+        runAIScript(actorIndex, (i32)scriptPtr, characterScriptIndex);
 
         /*If the size scale or animation has changed, we call some functions*/
         for (auto actorID = 0; actorID < 10; ++actorID) {
@@ -179,7 +165,6 @@ i32 srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
                 sub_437185(actorID, modelDataCpys[actorID].damagedAnim, gAiActorVariables[actorID].damageAnimID, 0);
         }
     }
-    return result;
 }
 
 i32 srExecuteFormationScripts() {
@@ -257,6 +242,7 @@ void dispatchAutoActions(i32 partyIndex, i32 actionType) {
         }
         case 1: {
             dispatchType = SNEAK_ATTACK;
+            gActorTimerBlock[partyIndex].unkActorFlags |= 4;
             break;
         }
         case 2: {
@@ -274,6 +260,7 @@ void dispatchAutoActions(i32 partyIndex, i32 actionType) {
         if (action.counterCount == 0 || action.counterCount == 0xFF)
             continue;
         if (dispatchType == action.dispatchType) {
+            //Add counter chance based code here
             auto finalAction = getActionToDispatch(action);
             auto targetMask = setTargetMask(partyIndex, action);
             auto priority = 1;

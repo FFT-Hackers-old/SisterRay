@@ -34,7 +34,7 @@ typedef struct {
     u8 targetingData;
     u8 commandFlags;
     u8 allCount;
-    u8 HPMPAbsorbFags;
+    u8 supportMatFlags;
 } EnabledCommandStruct;
 #pragma pack(pop)
 

@@ -3,6 +3,7 @@
 
 #include <SisterRay/SisterRay.h>
 #include <cstdio>
+#include "scene_globals.h"
 
 typedef struct {
     u8 sizeScale;
@@ -11,7 +12,7 @@ typedef struct {
 } scriptAnimDataCpy;
 
 i16 srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void));
-i32 srExecuteAIScript(i32 actorIndex, i32 scriptID, i32 unkInt);
+void srExecuteAIScript(i32 actorIndex, i32 scriptID, i32 unkInt);
 i32 srExecuteFormationScripts();
 i32  enqueueScriptAction(i16 characterID, i16 commandIndex, i16 relAttackIndex);
 void* transformEnemyCommand();

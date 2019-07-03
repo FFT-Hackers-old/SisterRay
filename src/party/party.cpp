@@ -170,7 +170,7 @@ SISTERRAY_API void voidCommand(u8 partyIndex, u8 enabledIndex) {
     command.targetingData = 0xFF;
     command.commandFlags = 1;
     command.allCount = 0;
-    command.HPMPAbsorbFags = 0;
+    command.supportMatFlags = 0;
 }
 
 SISTERRAY_API u8 getEnabledSlotIndex(u8 partyIndex, u8 commandIndex){

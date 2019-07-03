@@ -37,7 +37,7 @@ public:
     u32 getMemoryBufferSize(const std::string& name);
 };
 
-AnimationScript animScriptFromAB(u8* animScriptStart, u16 animScriptLength, u16* trueScriptLength);
+AnimationScript animScriptFromBuffer(u8* animScriptStart, u16 animScriptLength, u16* trueScriptLength);
 void initAnimationScripts(void* battleLGPBuffer);
 void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader);
 

@@ -130,3 +130,17 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
     }
     srLogWrite("initialized %i total animations for model %s", tableIdx, filename);
 }
+
+
+SISTERRAY_API void addModelAnimation(const char* modelName, const SrAnimation animation) {
+    auto& modelAnimations = gContext.battleAnimations.get_element(modelName);
+    modelAnimations.modelAnimations[assembleAnimKey(modelAnimations.totalAnimationCount)] = animation;
+    modelAnimations.totalAnimationCount++;
+}
+
+
+SISTERRAY_API void addPlayerModelAnimation(const char* modelName, const SrAnimation animation, const SrAnimation weaponAnimation) {
+    auto& modelAnimations = gContext.battleAnimations.get_element(modelName);
+    modelAnimations.modelAnimations[assembleAnimKey(modelAnimations.totalAnimationCount)] = animation;
+    modelAnimations.totalAnimationCount++;
+}

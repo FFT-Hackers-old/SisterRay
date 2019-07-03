@@ -6,6 +6,7 @@
 #include "kernel.h"
 #include <unordered_map>
 #include "sr_registry_template.h"
+#include "gamedata/gdata_utils.h"
 
 /*Simple C++ template to replace all the old school manually resized C arrays
   And unify our String Registry and all of our various item registries*/
@@ -23,7 +24,7 @@ public:
             read_size = srKernelStreamRead(stream, &object, sizeof(object));
             if (read_size != sizeof(object))
                 break;
-            auto name = std::string(BASE_PREFIX) + std::to_string(idx);
+            auto name = assembleGDataKey(idx);
             add_element(name, object);
             idx++;
         }

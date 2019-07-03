@@ -176,7 +176,7 @@ void updatePlayerSpellData(EnabledSpell* spellData, const AttackData& abilityDat
         }
     }
     if ((executingAction.entryPriority >= 5) && !(gDamageContextPtr->miscActionflags & 0x400000)) //priority 5 and 6 actions? what are those
-        gDamageContextPtr->addedCutMPHPAbsorbByte = spellData->supportEffectsMask;
+        gDamageContextPtr->supportMatFlags = spellData->supportEffectsMask;
 }
 
 void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask) {
@@ -185,10 +185,8 @@ void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask) 
     gDamageContextPtr->rmStatusMask = 0;      
     gDamageContextPtr->toggleStatusMask = 0;
     auto statusType = statusInflictionByte >> 6;
-    if (statusType < 3)
-    {
-        if (inflictedStatusMask >= 0)
-        {
+    if (statusType < 3) {
+        if (inflictedStatusMask >= 0) {
             gDamageContextPtr->inflictStatusChance = 4 * (statusInflictionByte & 0x3F);// statusInflictionChance
             switch (statusType) {
                 case 0:
@@ -205,8 +203,7 @@ void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask) 
                 }
             }
         }
-        else
-        {
+        else {
             gDamageContextPtr->addStatusMask = 2147483648; //Figure out why this gets set
             *word_9AAD1E = (i8)inflictedStatusMask & 3;
         }

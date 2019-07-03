@@ -39,6 +39,21 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
+    u16 animationScriptIndex;
+    u8 damageCalculationByte; //We can probably modularize this
+    u16 miscCommandFlags;
+} AuxCommandData;
+#pragma pack(pop)
+
+typedef struct {
+    CommandData baseData;
+    AuxCommandData auxData;
+    const char* commandName;
+    const char* commandDesc;
+} SrConsumableData;
+
+#pragma pack(push, 1)
+typedef struct {
     u8      unknown[8];
     u16     camera_data;
     u16     restriction_mask;

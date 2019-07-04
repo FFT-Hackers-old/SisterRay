@@ -150,7 +150,7 @@ void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader)
 /*Add an animation script from a provided buffer, with a given Length*/
 SISTERRAY_API void addAnimationScript(const char* modelName, u8* script, u16 scriptLength) {
     u16 trueAnimScriptLength = 0;
-    auto animationScript = animScriptFromBuffer(script, scriptLength, &trueScriptLength);
+    auto animationScript = animScriptFromBuffer(script, scriptLength, &trueAnimScriptLength);
     SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
     auto& modelScripts = gContext.battleAnimationScripts.get_element(modelName);
     modelScripts.modelAnimScripts[assembleAnimScriptKey(modelScripts.scriptCount)] = srAnimScript;

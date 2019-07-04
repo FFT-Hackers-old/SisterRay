@@ -75,12 +75,11 @@ typedef struct {
     u32 abilityPowerCopy; //0xC4
     u32 attackerStatusMask; //0xC8
     u32 targetReactionAnimation; //0xCC
-    u32 unkDWord2; //0xD0
-    u32 unkDWord3; //0xD4
+    u8 followUpActions[8]; //0xD0
     u32 throwFormulaPower; //0xD8
     u32 displayString; //0xDC
     u32 incOnDamageDealt; //0xE0
-    u32 unkDWord4; //0xE4
+    u32 unkDword8; //0xE4
     u32 MPTurboBoost; //0xE8
     u32 usedTargetMask; //0xEC
     u32 supportMatFlags; //0xF0

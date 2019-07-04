@@ -1,111 +1,132 @@
 #include "pre_action_callbacks.h"
+#include "../battle.h"
+#include "../../impl.h"
 
-void runPreActionScripts(BattleQueueEntry* poppedAction, u8 issuingActorID) {
+void runPreActionScripts(ActionContextEvent* actionEvent) {
+    auto damageContext = actionEvent->damageContext;
+    auto issuingActorID = actionEvent->issuingActorID;
+    auto poppedAction = actionEvent->poppedAction;
+    auto battleAIContext = actionEvent->battleAIContext;
+    auto& actorAIStates = battleAIContext->actorAIStates;
     u16* gAttackerMask = (u16*)0x9AAD30;
 
     if (poppedAction->entryPriority >= 2)
-        gAttackerMask = 1 << poppedAction->queueAction.attackerActorID;
-    AI_BATTLE_CONTEXT->lastCommandIdx = poppedAction->queueAction.actionCommandIndex;
-    AI_BATTLE_CONTEXT->lastActionIdx = poppedAction->queueAction.actionAttackIndex;
+        *gAttackerMask = 1 << poppedAction->queueAction.attackerActorID;
+    battleAIContext->lastCommandIdx = poppedAction->queueAction.actionCommandIndex;
+    battleAIContext->lastActionIdx = poppedAction->queueAction.actionAttackIndex;
     if (poppedAction->entryPriority > 0) {
         for (auto actorIdx = 0; actorIdx < 10; ++actorIdx)
             srExecuteAIScript(actorIdx, 7, 0);
     }
 }
 
-void initDamageContext(BattleQueueEntry* poppedAction, u8 issuingActorID) {
-    gDamageContextPtr->attackerID = issuingActorID;
-    gDamageContextPtr->commandIndex = poppedAction->queueAction.commandIndex;
-    gDamageContextPtr->relAttackIndex = (u16)poppedAction->queueAction.attackIndex;
-    gDamageContextPtr->targetMask = (u16)poppedAction->queueAction.targetMask;
-    gDamageContextPtr->attackerLevel = actorAIStates[issuingActorID].level;
-    gDamageContextPtr->attackerStatusMask = actorAIStates[issuingActorID].statusMask;
-    gDamageContextPtr->activeAllies = 1;
-    gDamageContextPtr->animationScriptID = gContext.auxCommands.get_resource(gDamageContextPtr->commandIndex).animationScriptIndex;
-    gDamageContextPtr->damageFormulaID = gContext.auxCommands.get_resource(gDamageContextPtr->commandIndex).damageCalculationByte;
-    gDamageContextPtr->miscActionFlags = gContext.auxCommands.get_resource(gDamageContextPtr->commandIndex).miscCommandFlags;
-    gDamageContextPtr->animationBaseOffset = -1;
-    gDamageContextPtr->impactSound = -1;
-    gDamageContextPtr->critAtkSound = -1;
-    gDamageContextPtr->missAtkSound = -1;
-    gDamageContextPtr->impactEffectID = -1;
-    gDamageContextPtr->enemySceneIndex = -1;
-    gDamageContextPtr->specialAbilityFlags = -1;
-    gDamageContextPtr->cameraDataSingle = -1;
-    gDamageContextPtr->cameraDataMultiple = -1;
-    gDamageContextPtr->additionalEffects = -1;
-    gDamageContextPtr->displayString = -1;
-    gDamageContextPtr->unkDword8 = -1;
-    gDamageContextPtr->attackerMask = 1 << issuingActorID;
-    gDamageContextPtr->finalTargetMask = gDamageContextPtr->targetMask;
-    gDamageContextPtr->sceneAbilityIndex = gDamageContextPtr->relAttackIndex;
-    gDamageContextPtr->doubleCutRelated = 1;
-    gDamageContextPtr->inflictStatusChance = 0xFF;
-    gDamageContextPtr->abilityTargetingFlags = 0xFFFF;
+void initDamageContext(ActionContextEvent* actionEvent) {
+    auto damageContext = actionEvent->damageContext;
+    auto issuingActorID = actionEvent->issuingActorID;
+    auto poppedAction = actionEvent->poppedAction;
+    auto battleAIContext = actionEvent->battleAIContext;
+    auto& actorAIStates = battleAIContext->actorAIStates;
+
+    damageContext->attackerID = issuingActorID;
+    damageContext->commandIndex = poppedAction->queueAction.actionCommandIndex;
+    damageContext->relAttackIndex = (u16)poppedAction->queueAction.actionAttackIndex;
+    damageContext->targetMask = (u16)poppedAction->queueAction.actionTargetMask;
+    damageContext->attackerLevel = actorAIStates[issuingActorID].level;
+    damageContext->attackerStatusMask = actorAIStates[issuingActorID].statusMask;
+    damageContext->activeAllies = 1;
+    damageContext->animationScriptID = gContext.auxCommands.get_resource(damageContext->commandIndex).auxData.animationScriptIndex;
+    damageContext->damageFormulaID = gContext.auxCommands.get_resource(damageContext->commandIndex).auxData.damageCalculationByte;
+    damageContext->miscActionFlags = gContext.auxCommands.get_resource(damageContext->commandIndex).auxData.miscCommandFlags;
+    damageContext->enabledMagicsIndex = -1;
+    damageContext->impactSound = -1;
+    damageContext->critAtkSound = -1;
+    damageContext->missAtkSound = -1;
+    damageContext->impactEffectID = -1;
+    damageContext->enemySceneIndex = -1;
+    damageContext->specialAbilityFlags = -1;
+    damageContext->cameraDataSingle = -1;
+    damageContext->cameraDataMultiple = -1;
+    damageContext->additionalEffects = -1;
+    damageContext->displayString = -1;
+    damageContext->unkDword8 = -1;
+    damageContext->attackerMask = 1 << issuingActorID;
+    damageContext->finalTargetMask = damageContext->targetMask;
+    damageContext->sceneAbilityIndex = damageContext->relAttackIndex;
+    damageContext->doubleCutRelated = 1;
+    damageContext->inflictStatusChance = 0xFF;
+    damageContext->abilityTargetingFlags = 0xFFFF;
     for (auto followUpIdx = 0; followUpIdx < 8; ++followUpIdx)// null follow ups
-        gDamageContextPtr->followUpActions[followUpIdx] = -1;
+        damageContext->followUpActions[followUpIdx] = -1;
+
+    FormationActorDataArray* formationData = getFormationActorData();
+    if (issuingActorID >= 4)
+        damageContext->enemySceneIndex = formationData->formationDatas[issuingActorID - 4].enemyID;
 }
 
-void setCommandData(BattleQueueEntry* poppedAction, u8 issuingActorID) {
+void setCommandData(ActionContextEvent* actionEvent) {
+    auto damageContext = actionEvent->damageContext;
+    auto issuingActorID = actionEvent->issuingActorID;
+    auto poppedAction = actionEvent->poppedAction;
+
     if (!isPartyActor(issuingActorID))
         return;
 
-    if (gDamageContextPtr->commandIndex != CMD_ENEMY_ACTION) {
-        gDamageContextPtr->abilityTargetingFlags = gContext.commands.get_resource(gDamageContextPtr->commandIndex).targetingFlags;
-        gDamageContextPtr->cameraDataSingle = gContext.commands.get_resource(gDamageContextPtr->commandIndex).singleCameraID;
-        gDamageContextPtr->cameraDataMultiple = gContext.commands.get_resource(gDamageContextPtr->commandIndex).multipleCameraID;
+    if (damageContext->commandIndex != CMD_ENEMY_ACTION) {
+        damageContext->abilityTargetingFlags = gContext.commands.get_resource(damageContext->commandIndex).targetingFlags;
+        damageContext->cameraDataSingle = gContext.commands.get_resource(damageContext->commandIndex).singleCameraID;
+        damageContext->cameraDataMultiple = gContext.commands.get_resource(damageContext->commandIndex).multipleCameraID;
     }
 
     //Set the CommandIndexCopy correctly for W-Spells
-    switch (gDamageContextPtr->commandIndex) {
+    switch (damageContext->commandIndex) {
         case 21: {
-            gDamageContextPtr->commandIndexCopy = CMD_MAGIC;
+            damageContext->commandIndexCopy = CMD_MAGIC;
             break;
         }
         case 22: {
-            gDamageContextPtr->commandIndexCopy = CMD_SUMMON;
+            damageContext->commandIndexCopy = CMD_SUMMON;
             break;
         }
         case 23: {
-            gDamageContextPtr->commandIndexCopy = CMD_ITEM;
+            damageContext->commandIndexCopy = CMD_ITEM;
             break;
         }
         default: {
-            gDamageContextPtr->commandIndexCopy = gDamageContextPtr->commandIndex;
+            damageContext->commandIndexCopy = damageContext->commandIndex;
         }
     }
 
-    gDamageContextPtr->absAttackIndex = gDamageContextPtr->relAttackIndex;
+    damageContext->absAttackIndex = damageContext->relAttackIndex;
 
 
     // calculateSpellOffsets(issuingActorID);
     auto enabledComandData = PARTY_STRUCT_ARRAY[issuingActorID].enabledCommandArray;
-    if (!(gDamageContextPtr->miscActionFlags & 0x400000)) {
+    if (!(damageContext->miscActionFlags & 0x400000)) {
         for (auto commandIdx = 0; commandIdx < 16; ++commandIdx) {
-            if (!(enabledComandData[commandIdx].commandID == gDamageContextPtr->commandIndex))
+            if (!(enabledComandData[commandIdx].commandID == damageContext->commandIndex))
                 continue;
 
             if (poppedAction->entryPriority >= 5) {
-                gDamageContextPtr->supportMatFlags = enabledComandData[commandIdx].supportMatFlags;
+                damageContext->supportMatFlags = enabledComandData[commandIdx].supportMatFlags;
             }
 
-            switch (gDamageContextPtr->commandIndex) {
+            switch (damageContext->commandIndex) {
                 case 5:
                 case 6:
                 case 9:
                 case 0xA:
                 case 0xB:
                 case 0x11:
-                    if (gDamageContextPtr->miscActionFlags & 0x200) {
+                    if (damageContext->miscActionFlags & 0x200) {
                         if (enabledComandData[commandIdx].allCount) {
                             --enabledComandData[commandIdx].allCount;
                             srCreateEvent(2, issuingActorID, 21, 1);
                         }
                         else {
-                            gDamageContextPtr->miscActionFlags |= 0x100000u;
+                            damageContext->miscActionFlags |= 0x100000u;
                         }
                     }
-                    gDamageContextPtr->abilityTargetingFlags = enabledComandData[commandIdx].targetingData;
+                    damageContext->abilityTargetingFlags = enabledComandData[commandIdx].targetingData;
                     break;
                 default: {
 
@@ -116,30 +137,41 @@ void setCommandData(BattleQueueEntry* poppedAction, u8 issuingActorID) {
     }
 }
 
-void handleToad(BattleQueueEntry* poppedAction, u8 issuingActorID) {
+void handleToad(ActionContextEvent* actionEvent) {
+    auto damageContext = actionEvent->damageContext;
+    auto issuingActorID = actionEvent->issuingActorID;
+    auto poppedAction = actionEvent->poppedAction;
+
     if (!isPartyActor(issuingActorID))
         return;
 
-    if (actorHasStatus(issuingActorID, STS_TOAD) {
+    if (actorHasStatus(issuingActorID, STS_TOAD)) {
         if (poppedAction->queueAction.actionCommandIndex == sub_43740B(issuingActorID)) {
             poppedAction->queueAction.actionCommandIndex = 1;
-                poppedAction->queueAction.actionTargetMask = getRandomTarget(poppedAction->queueAction.actionTargetMask);
+            poppedAction->queueAction.actionTargetMask = getRandomTarget(poppedAction->queueAction.actionTargetMask);
         }
     }
 }
 
-void setAllFlag(BattleQueueEntry* poppedAction, u8 issuingActorID) {
-    if (gDamageContextPtr->finalTargetMask) {
-        if (countTargets(gDamageContextPtr->finalTargetMask) > 1) {
-            gDamageContextPtr->miscActionFlags = (gDamageContextPtr->miscActionFlags |= 2u);
+void setAllFlag(ActionContextEvent* actionEvent) {
+    auto damageContext = actionEvent->damageContext;
+    auto issuingActorID = actionEvent->issuingActorID;
+    auto poppedAction = actionEvent->poppedAction;
+
+    if (damageContext->finalTargetMask) {
+        if (countTargets(damageContext->finalTargetMask) > 1) {
+            damageContext->miscActionFlags = (damageContext->miscActionFlags |= 2u);
         }
     }
     else if (isPartyActor(issuingActorID)) {
-        gDamageContextPtr->miscActionFlags = (gDamageContextPtr->miscActionFlags |= 2u);
+        damageContext->miscActionFlags = (damageContext->miscActionFlags |= 2u);
     }
 }
 
-void prepareMimedAction(BattleQueueEntry* poppedAction, u8 issuingActorID) {
+void prepareMimedAction(ActionContextEvent* actionEvent) {
+    auto damageContext = actionEvent->damageContext;
+    auto issuingActorID = actionEvent->issuingActorID;
+    auto poppedAction = actionEvent->poppedAction;
     u16 prevActionSupportFlags = -1;
     if (!(poppedAction->queueAction.actionCommandIndex & 0x40))
         return;
@@ -154,12 +186,12 @@ void prepareMimedAction(BattleQueueEntry* poppedAction, u8 issuingActorID) {
 
     if (prevActionSupportFlags != -1) {
         if (prevActionSupportFlags >> 8) {
-            gDamageContextPtr->quadEnabled = prevActionSupportFlags >> 8;       // quadEnabled?
-            gDamageContextPtr->quadCount = gDamageContextPtr->quadCount + 3;
+            damageContext->quadEnabled = prevActionSupportFlags >> 8;       // quadEnabled?
+            damageContext->quadCount = damageContext->quadCount + 3;
         }
-        if (gDamageContextPtr->quadCount > 8)
-            gDamageContextPtr->quadCount = 8;
-        gDamageContextPtr->supportMatFlags = prevActionSupportFlags;
-        gDamageContextPtr->miscActionFlags |= 0x400000u;
+        if (damageContext->quadCount > 8)
+            damageContext->quadCount = 8;
+        damageContext->supportMatFlags = prevActionSupportFlags;
+        damageContext->miscActionFlags |= 0x400000u;
     }
 }

@@ -31,4 +31,9 @@ public:
 SISTERRAY_API void runSetupCallbacks(const char* name);
 void runSetupCallbacks(u16 commandIdx);
 SISTERRAY_API void initCommands(SrKernelStream* stream);
+u16 getDefaultCmdAnimScript(u16 idx);
+u8 getDefaultCmdDamage(u16 commandIdx);
+u16 getDefaultCmdFlags(u16 commandIdx);
+void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand);
+
 #endif

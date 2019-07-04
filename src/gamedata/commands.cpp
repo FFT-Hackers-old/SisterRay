@@ -157,23 +157,23 @@ u8 getDefaultCmdDamage(u16 commandIdx) {
             break;
         }
         case 18: {
-            return 0x11h;
+            return 0x11;
             break;
         }
         case 24: {
-            return 0x11h;;
+            return 0x11;;
             break;
         }
         case 25: {
-            return 0x11h;;
+            return 0x11;;
             break;
         }
         case 26: {
-            return 0x11h;;
+            return 0x11;;
             break;
         }
         case 27: {
-            return 0x11h;;
+            return 0x11;;
             break;
         }
         case 35: {
@@ -188,7 +188,7 @@ u8 getDefaultCmdDamage(u16 commandIdx) {
 }
 
 
-void getDefaultCmdFlags(u16 commandIdx) {
+u16 getDefaultCmdFlags(u16 commandIdx) {
     switch (commandIdx) {
         case 4:
         case 23: {

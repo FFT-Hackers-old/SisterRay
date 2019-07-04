@@ -1,4 +1,5 @@
 #include "command_sr_callbacks.h"
+#include "../impl.h"
 
 void srSetupAction(CommandSetupEvent setupEvent) {
     i32 sceneAbilityIndex;
@@ -41,10 +42,10 @@ void srSetupAction(CommandSetupEvent setupEvent) {
             break;
         }
     }
-    if (damageContext->commandIndex == CMD_MAGIC && damageContext->absAttackIndex == 54) //death sentence case hardcoded
+    if (damageContext->commandIndex == CMD_MAGIC && damageContext->relAttackIndex == 54) //death sentence case hardcoded
         deathSentenceFlag = 1;
 
-    if ((damageContext->enabledMagicsIndex != -1) && !((damageContext->miscActionflags) & 0x400000)) {
+    if ((damageContext->enabledMagicsIndex != -1) && !((damageContext->miscActionFlags) & 0x400000)) {
         EnabledSpell* spellData = getSpellSlot(damageContext->attackerID, damageContext->commandIndexCopy, damageContext->relAttackIndex);
         if (spellData)
             updatePlayerSpellData(damageContext, spellData, abilityData);
@@ -66,7 +67,7 @@ void srSetupAction(CommandSetupEvent setupEvent) {
 
     if (damageContext->MPCost < 0)
         damageContext->MPCost = abilityData.MPCost;
-    if (executingAction.entryPriority == 3 || damageContext->miscActionflags & 0x400000) //This is triggered by mime
+    if (executingAction.entryPriority == 3 || damageContext->miscActionFlags & 0x400000) //This is triggered by mime
         damageContext->MPCost = 0;
     damageContext->abilityHitRate = abilityData.abilityHitRate;
     damageContext->damageFormulaID = abilityData.damageFormula;
@@ -148,10 +149,10 @@ void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellD
     damageContext->MPCost = spellData->mpCost;
     if (spellData->quadCount && spellData->quadEnabled) {
         spellData->quadCount = spellData->quadCount - 1;
-        damageContext->unkDWord5 = spellData->quadEnabled;// quadEnabled?
-        damageContext->unkDWord1 = damageContext->unkDWord5 + 3;  // numberOfCasts?
-        if (damageContext->unkDWord1 > 8) {
-            damageContext->unkDWord1 = 8;
+        damageContext->quadEnabled = spellData->quadEnabled;// quadEnabled?
+        damageContext->quadCount = damageContext->quadEnabled + 3;  // numberOfCasts?
+        if (damageContext->quadCount > 8) {
+            damageContext->quadCount = 8;
         }
         srCreateEvent(2, damageContext->attackerID, 21, 6);
     }
@@ -166,7 +167,7 @@ void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellD
             damageContext->displayString = 121; //Probably displays "Summon Power is all used up"
         }
     }
-    else if (damageContext->miscActionflags & 0x200) { //Handle the all case
+    else if (damageContext->miscActionFlags & 0x200) { //Handle the all case
         if (spellData->allCount) {
             if (spellData->allCount != 255) {
                 spellData->allCount = spellData->allCount - 1;
@@ -174,10 +175,10 @@ void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellD
             }
         }
         else if (abilityData.targetingFlags & 8) {
-            damageContext->miscActionflags |= 0x100000u;
+            damageContext->miscActionFlags |= 0x100000u;
         }
     }
-    if ((executingAction.entryPriority >= 5) && !(damageContext->miscActionflags & 0x400000)) //priority 5 and 6 actions? what are those
+    if ((executingAction.entryPriority >= 5) && !(damageContext->miscActionFlags & 0x400000)) //priority 5 and 6 actions? what are those
         damageContext->supportMatFlags = spellData->supportEffectsMask;
 }
 

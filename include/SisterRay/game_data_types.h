@@ -50,7 +50,7 @@ typedef struct {
     AuxCommandData auxData;
     const char* commandName;
     const char* commandDesc;
-} SrConsumableData;
+} SrCommandData;
 
 #pragma pack(push, 1)
 typedef struct {

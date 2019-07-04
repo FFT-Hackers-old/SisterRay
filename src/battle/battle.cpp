@@ -17,7 +17,7 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
     FormationEnemies* formationEnemiesPtr = getFormationEnemies();
     FormationSetup* formationSetupPtr = getFormationSetup();
     FormationCamera* formationCameraPtr = getFormationCamera();
-    FormationActorDataArray* formationActorDataPtr = getFormationActorData;
+    FormationActorDataArray* formationActorDataPtr = getFormationActorData();
     EnemyData* enemyDataPtr = (EnemyData*)(0x9A8E9C);
     FormationEnemyIDs* sceneAIDataPtr = (FormationEnemyIDs*)(0x9A9CFC);
     u32* formationAIDataPtr = (u32*)(0x9A9AFC);
@@ -217,9 +217,8 @@ i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex) {
     return var;
 }
 
-void* transformEnemyCommand() {
+/*void* transformEnemyCommand() {
     gDamageContextPtr->absAttackIndex = gDamageContextPtr->relAttackIndex;
-    /*The following is temporary code until the kernel abilities are properly loaded and expandable*/
     if (gDamageContextPtr->commandIndex == CMD_ENEMY_ACTION) {
         u16 baseOffsets[5] = { 0, 56, 72, 96, 256 };
         u16 commandIndexes[4] = { 2, 3, 13, 20 };
@@ -231,7 +230,7 @@ void* transformEnemyCommand() {
         }
     }
     return (void*)gDamageContextPtr;
-}
+}*/
 
 void dispatchAutoActions(i32 partyIndex, i32 actionType) {
     AutoActionType dispatchType;

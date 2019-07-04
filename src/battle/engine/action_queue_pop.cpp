@@ -5,10 +5,11 @@
 #include <memory>
 
 /*Re-implemented to modularize adding commands to the game*/
-void mainActionRoutine(BattleQueueEntry* poppedAction) {
+void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
     u32* dword_9AEA84 = (u32*)0x9AEA84;
     u32* dword_9AEA60 = (u32*)0x9AEA60;
     u32* dword_9AEA6C = (u32*)0x9AEA6C;
+    u16* word_9AAD10 = (u16*)0x9AAD10;
 
     if (*dword_9AEA84 > 2)
         return;
@@ -18,9 +19,9 @@ void mainActionRoutine(BattleQueueEntry* poppedAction) {
     if (!(*dword_9AEA84)) {
         *dword_9AEA6C = 0;
         *dword_9AEA60 = 0;
-        word_9AAD10 = 0;
+        *word_9AAD10 = 0;
         preActionHandles(poppedAction, issuingActorID);
-        dword_9AEA84 = 1;
+        *dword_9AEA84 = 1;
     }
 
     runSetupCallbacks(gDamageContextPtr->commandIndex);
@@ -48,7 +49,7 @@ void mainActionRoutine(BattleQueueEntry* poppedAction) {
     }*/
 
     if (!dword_9AEA60) {
-        postActionHandles(issuingActorID);
+        postActionHandles(poppedAction, issuingActorID);
         *dword_9AEA84 = 0;
         *dword_9AEA6C = 1;
     }
@@ -68,12 +69,8 @@ void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
     incrementRandom();
     memset((void*)gDamageContextPtr, 0, sizeof(DamageCalcStruct));
 
-    runPreActionScripts(poppedAction, issuingActorID);
-    handleToad(poppedAction, issuingActorID);
-    initDamageContext(poppedAction, issuingActorID);
-    setAllFlag(poppedAction, issuingActorID);
-    prepareMimedAction(poppedAction, issuingActorID);
-    setCommandData(poppedAction, issuingActorID);
+    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID };
+    gContext.eventBus.dispatch(ACTION_PRE_COMMAND, &actionEvent);
 
     //Display Lucky 7's text
     if (gActorTimerBlock[issuingActorID].unkActorFlags & 0x80) {
@@ -83,11 +80,6 @@ void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
             *word_9AAD18 = 47;
         }
     }
-
-    FormationActorDataArray* formationData = getFormationActorData();
-    if (issuingActorID >= 4)
-        gDamageContextPtr->enemySceneIndex = formationData->formationDatas[issuingActorID - 4].enemyID;
-
     //Display caught by surprise string
     if (gActorTimerBlock[issuingActorID].unkActorFlags & 4) {
         u32 strArgs = issuingActorID;
@@ -96,17 +88,15 @@ void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
     }
 }
 
-void postActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
-    sub_436CF2();
-    setMimeData(poppedAction, issuingActorID);
-    handleAddedCut(poppedAction, issuingActorID);
+typedef void(*PFNSUBSR436CF2)();
+#define setDamageEventFlags   ((PFNSUBSR436CF2)0x436CF2)
 
-    if (gDamageContextPtr->commandIndexCopy == CMD_SENSE) {
-        gDamageContextPtr->wasDamagedMask = 0;
-        gDamageContextPtr->actionCounterable = 0;
-    }
-    handleCounters(poppedAction, issuingActorID);
-    handleLuckySevens(poppedAction, issuingActorID)
+void postActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
+    u32* dword_9AD1B4 = (u32*)0x9AD1B4;
+    setDamageEventFlags();
+
+    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID };
+    gContext.eventBus.dispatch(ACTION_POST_COMMAND, &actionEvent);
 
     if (*dword_9AD1B4) {
         --(*dword_9AD1B4);
@@ -114,4 +104,20 @@ void postActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
     else if (poppedAction->entryPriority <= 2) {
         ++gActorTimerBlock[issuingActorID].field_2A;
     }
+}
+
+void registerActionPopCallbacks() {
+    const auto& modName = std::string("srFF7Base");
+    gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&runPreActionScripts, modName);
+    gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&handleToad, modName);
+    gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&initDamageContext, modName);
+    gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&setAllFlag, modName);
+    gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&prepareMimedAction, modName);
+    gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&setCommandData, modName);
+
+    gContext.eventBus.addListener(ACTION_POST_COMMAND, (SrEventCallback)&setMimeData, modName);
+    gContext.eventBus.addListener(ACTION_POST_COMMAND, (SrEventCallback)&handleAddedCut, modName);
+    gContext.eventBus.addListener(ACTION_POST_COMMAND, (SrEventCallback)&handleSense, modName);
+    gContext.eventBus.addListener(ACTION_POST_COMMAND, (SrEventCallback)&handleCounters, modName);
+    gContext.eventBus.addListener(ACTION_POST_COMMAND, (SrEventCallback)&handleLuckySevens, modName);
 }

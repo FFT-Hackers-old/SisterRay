@@ -51,7 +51,7 @@ void setupSense(CommandSetupEvent event) {
     ff7PushSenseStrings();
 }
 
-#define ff7SetupMime (((FF7PFNCOMMANDSETUP)0x5CA465)
+#define ff7SetupMime ((FF7PFNCOMMANDSETUP)0x5CA465)
 void setupMime(CommandSetupEvent event) {
     ff7SetupMime();
 }

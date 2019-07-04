@@ -7,4 +7,11 @@
 typedef struct {
     DamageCalcStruct* damageContext;
 } CommandSetupEvent;
+
+typedef struct {
+    DamageCalcStruct* damageContext;
+    BattleQueueEntry* poppedAction;
+    u16 issuingActorID;
+    AIBattleContext* battleAIContext;
+} ActionContextEvent;
 #endif // !BATTLE_EVENT_H

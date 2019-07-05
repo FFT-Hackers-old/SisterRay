@@ -3,6 +3,7 @@
 
 #include <SisterRay/SisterRay.h>
 #include "../../events/battle_events.h"
+#include "../battle_utils.h"
 
 void runPreActionScripts(ActionContextEvent* actionEvent);
 void initDamageContext(ActionContextEvent* actionEvent);

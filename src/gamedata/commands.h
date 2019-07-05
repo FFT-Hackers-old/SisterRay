@@ -27,6 +27,7 @@ public:
     SrAuxCommandRegistry() : SrNamedResourceRegistry<PAuxCommandData, std::string>() {}
 };
 
+void initializeAuxCommandRegistry();
 
 SISTERRAY_API void runSetupCallbacks(const char* name);
 void runSetupCallbacks(u16 commandIdx);

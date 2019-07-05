@@ -137,6 +137,12 @@ void setCommandData(ActionContextEvent* actionEvent) {
     }
 }
 
+typedef i32(*PFNSUBSR43740B)(u32);
+#define sub_43740B   ((PFNSUBSR43740B)0x43740B)
+
+typedef u16(*PFNSUBSR5C80B5)(u16);
+#define getRandomTarget  ((PFNSUBSR5C80B5)0x5C80B5)
+
 void handleToad(ActionContextEvent* actionEvent) {
     auto damageContext = actionEvent->damageContext;
     auto issuingActorID = actionEvent->issuingActorID;

@@ -3,7 +3,7 @@
 
 SISTERRAY_API void initCommands(SrKernelStream* stream) {
     gContext.commands = SrCommandRegistry(stream);
-    gContext.auxWeapons = SrAuxCommandRegistry();
+    gContext.auxCommands = SrAuxCommandRegistry();
     initializeAuxCommandRegistry();
     srLogWrite("kernel.bin: Loaded %lu commands", (unsigned long)gContext.commands.resource_count());
 }
@@ -29,7 +29,7 @@ SISTERRAY_API void runSetupCallbacks(const char* name) {
 }
 
 void runSetupCallbacks(u16 commandIdx) {
-    auto setupEvent = CommandSetupEvent(gDamageContextPtr);
+    CommandSetupEvent setupEvent = { gDamageContextPtr };
     auto& callbacks = gContext.auxCommands.get_resource(commandIdx).setupCallbacks;
     for (auto callback : callbacks) {
         callback(setupEvent);
@@ -38,7 +38,7 @@ void runSetupCallbacks(u16 commandIdx) {
 
 
 /*One off functions used to initialize data in the registries*/
-u16 getDefaultCmdAnimScript(u16 idx) {
+u16 getDefaultCmdAnimScript(u16 commandIdx) {
     switch (commandIdx) {
         case 1: {
             return 0x14;

@@ -2,11 +2,17 @@
 #include "../battle.h"
 #include "../../impl.h"
 
+typedef void(*PFNSRSUB5C89E2)(u32, u32, u32);
+#define actorDeathHandler ((PFNSRSUB5C89E2)0x5C89E2)
+
 void handleCounters(ActionContextEvent* actionEvent) {
     auto damageContext = actionEvent->damageContext;
     auto issuingActorID = actionEvent->issuingActorID;
     auto poppedAction = actionEvent->poppedAction;
     auto battleAIContext = actionEvent->battleAIContext;
+    u16* gAttackerMask = (u16*)0x9AAD30;
+    u16* gRemovedMask = (u16*)0x9AAD38;
+    u16* gEscapedMask = (u16*)0x9AAD24;
 
     auto issuingActorMask = 1 << issuingActorID;
     battleAIContext->specialAttackFlags = damageContext->specialAbilityFlags;
@@ -43,7 +49,7 @@ void handleCounters(ActionContextEvent* actionEvent) {
             if (issuingActorID >= 4)
                 dispatchAutoActions(actorIdx, 2);
 
-            if (word_9AB0CE & 4) {
+            if (battleAIContext->specialAttackFlags & 4) {
                 actorAIStates[actorIdx].prevMagAttackerMask = issuingActorMask;
                 srExecuteAIScript(actorIdx, 5, 0);
             }
@@ -72,8 +78,8 @@ void setMimeData(ActionContextEvent* actionEvent) {
                 G_MIME_ACTIONS[mimeActionIdx].relAttackIdx = damageContext->relAttackIndex;
                 G_MIME_ACTIONS[mimeActionIdx].targetMask = damageContext->finalTargetMask;
                 mimeSupportFlags[mimeActionIdx] = damageContext->supportMatFlags;
-                if (damageContext->unkDword9)
-                    mimeSupportFlags[mimeActionIdx] |= (u16)(damageContext->unkDword9 << 8);
+                if (damageContext->quadEnabled)
+                    mimeSupportFlags[mimeActionIdx] |= (u16)(damageContext->quadEnabled << 8);
                 if (mimeActionIdx + 1 < 2)
                     G_MIME_ACTIONS[mimeActionIdx].attackerID = -1;
                 break;
@@ -81,6 +87,9 @@ void setMimeData(ActionContextEvent* actionEvent) {
         }
     }
 }
+
+typedef void(*PFNSRSUB436B84)();
+#define enqueue7777Hits     ((PFNSRSUB436B84)0x436B84)
 
 void handleLuckySevens(ActionContextEvent* actionEvent) {
     auto damageContext = actionEvent->damageContext;

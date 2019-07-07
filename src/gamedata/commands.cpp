@@ -5,7 +5,7 @@ SISTERRAY_API void initCommands(SrKernelStream* stream) {
     gContext.commands = SrCommandRegistry(stream);
     gContext.auxCommands = SrAuxCommandRegistry();
     initializeAuxCommandRegistry();
-    initializeEnemyAttack();
+    initializeNonPlayerCommands();
     srLogWrite("kernel.bin: Loaded %lu commands", (unsigned long)gContext.commands.resource_count());
 }
 
@@ -24,19 +24,23 @@ void initializeAuxCommandRegistry() {
     }
 }
 
-void initializeEnemyAttack() {
-    auto name = assembleGDataKey(CMD_ENEMY_ACTION);
-    auto& playerCommand = CommandData();
-    gContext.commands.add_element(name, playerCommand);
-    auto& kernelCommand = gContext.commands.get_element(name);
+void initializeNonPlayerCommands() {
+    std::vector<u16> auxCommandIDs = { CMD_ENEMY_ACTION, 33, 34, CMD_POISONTICK };
+    for (auto commandIdx : auxCommandIDs) {
+        auto name = assembleGDataKey(commandIdx);
+        auto& playerCommand = CommandData();
+        gContext.commands.add_element(name, playerCommand);
+        auto& kernelCommand = gContext.commands.get_element(name);
 
-    auto animScriptIdx = getDefaultCmdAnimScript(CMD_ENEMY_ACTION);
-    auto damageByte = getDefaultCmdDamage(CMD_ENEMY_ACTION);
-    auto commandFlags = getDefaultCmdFlags(CMD_ENEMY_ACTION);
-    PAuxCommandData auxCommand = { animScriptIdx, damageByte, commandFlags };
-    srLogWrite("Registering execution callbacks for command %i", CMD_ENEMY_ACTION);
-    registerDefaultCallbacks(CMD_ENEMY_ACTION, auxCommand);
-    gContext.auxCommands.add_element(name, auxCommand);
+        auto animScriptIdx = getDefaultCmdAnimScript(commandIdx);
+        auto damageByte = getDefaultCmdDamage(commandIdx);
+        auto commandFlags = getDefaultCmdFlags(commandIdx);
+        PAuxCommandData auxCommand = { animScriptIdx, damageByte, commandFlags };
+        srLogWrite("Registering execution callbacks for command %i", commandIdx);
+        registerDefaultCallbacks(commandIdx, auxCommand);
+        gContext.auxCommands.add_element(name, auxCommand);
+    }
+
 }
 
 /*run every initializer callback in order*/
@@ -209,11 +213,6 @@ u8 getDefaultCmdDamage(u16 commandIdx) {
 
 u16 getDefaultCmdFlags(u16 commandIdx) {
     switch (commandIdx) {
-        case 4:
-        case 23: {
-            return 0x37;
-            break;
-        }
         case 5: {
             return 0x6;
             break;
@@ -228,6 +227,10 @@ u16 getDefaultCmdFlags(u16 commandIdx) {
         }
         case 17: {
             return 0x4;
+            break;
+        }
+        case 18: {
+            return 0x2;
             break;
         }
         case 25: {
@@ -366,13 +369,14 @@ void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
             break;
         }
         case 33: {
-            auxCommand.setupCallbacks.push_back(&setupPoison);
             break;
         }
         case 34: {
             break;
         }
         case 35: {
+            auxCommand.setupCallbacks.push_back(&setupPoison);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
             break;
         }
         case 36: {

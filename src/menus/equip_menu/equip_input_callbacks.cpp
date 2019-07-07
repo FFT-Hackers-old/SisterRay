@@ -219,12 +219,14 @@ u16 setupGearMenu(u8 itemType) {
     u8 characterID = (CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX];
     u16 equippableGearCount = 0;
     gContext.gearViewData = SrGearViewData();
-    for (i32 inventoryEntry = 0; inventoryEntry < gContext.inventory->current_capacity(); inventoryEntry++) {
+    for (i32 inventoryIdx = 0; inventoryIdx < gContext.inventory->current_capacity(); inventoryIdx++) {
+        auto inventoryEntry = gContext.inventory->get_resource(inventoryIdx).item_id;
         if (gContext.itemTypeData.get_resource(inventoryEntry).item_type != itemType) {
             continue;
         }
-        if (characterCanEquipItem(characterID, gContext.inventory->get_resource(inventoryEntry).item_id)) {
+        if (characterCanEquipItem(characterID, inventoryEntry)) {
             GearViewData data = { gContext.itemTypeData.get_resource(inventoryEntry).type_relative_id };
+            srLogWrite("initialized gear view data with id: %i", data.relative_item_id);
             gContext.gearViewData.add_resource(data);
             equippableGearCount++;
         }

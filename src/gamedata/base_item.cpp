@@ -8,7 +8,7 @@ SISTERRAY_API void initItemTypeData() {
 
 /*Called to initialize from kernel data the base types of items*/
 void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInitialize) {
-    u16 absoluteBase = resource_count() - 1;
+    u16 absoluteBase = resource_count();
     u16 absoluteIndex;
     for (u16 relativeIndex = 0; relativeIndex < numberToInitialize; relativeIndex++) {
         auto iconType = getKernelIconType(itemType, relativeIndex);
@@ -19,14 +19,25 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInit
         gContext.itemTypeData.append_item(name, itemType, iconType);
 
         switch (itemType) {
-            case 0:
+            case 0: {
                 reverseItemRegistry.push_back(absoluteIndex);
-            case 1:
+                break;
+            }
+            case 1: {
                 reverseWeaponRegistry.push_back(absoluteIndex);
-            case 2:
+                break;
+            }
+            case 2: {
                 reverseArmorRegistry.push_back(absoluteIndex);
-            case 3:
+                break;
+            }
+            case 3: {
                 reverseAccessoryRegistry.push_back(absoluteIndex);
+                break;
+            }
+            default: {
+                return;
+            }
         }
     }
 }
@@ -37,23 +48,27 @@ void SrItemTypeRegistry::append_item(const std::string& name, u8 itemType, u8 ic
 
     std::vector<i16>& reverseRegistry = reverseItemRegistry;
     switch (itemType) {
-        case 0:
+        case 0: {
             reverseRegistry = reverseItemRegistry;
             break;
-        case 1:
+        }
+        case 1: {
             reverseRegistry = reverseWeaponRegistry;
             break;
-        case 2:
+        }
+        case 2: {
             reverseRegistry = reverseArmorRegistry;
             break;
-        case 3:
+        }
+        case 3: {
             reverseRegistry = reverseAccessoryRegistry;
             break;
+        }
         default: {
             return;
         }
     }
-    auto relative_item_id = reverseRegistry.size() - 1;
+    auto relative_item_id = reverseRegistry.size();
     ItemTypeData baseData = { itemType, relative_item_id, iconType };
     add_element(name, baseData);
 }

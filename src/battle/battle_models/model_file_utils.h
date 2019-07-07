@@ -111,9 +111,14 @@ typedef void(*PFNSRSUB5DFE51)(char*);
 typedef void*(*PFNSRSUB6829FE)(LGPContext*, int*, char*);
 #define ff7LoadModelFile   ((PFNSRSUB6829FE)0x6829FE)
 
+typedef void*(*PFNSRSUB5E82DE)(u32, u32, void**, LGPContext*, char*);
+#define ff7InitAnimations   ((PFNSRSUB5E82DE)0x5E82DE)
+
 void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename);
 LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer);
 LGPArchiveFile srOpenABFile(LGPContext* context, const char* baseFileName, void* battleLGpBuffer);
+void* srGameLoadABFile(LGPContext* context, char* baseFileName);
+void srGameInitAnimations(u32 lgpIndex, u32 unkint, void** srAnimsTable, LGPContext* context, char* filename);
 
 typedef void(*PFNSRSUB5E1449)(const char*, char*);
 #define createABFilename       ((PFNSRSUB5E1449)0x5E1449)

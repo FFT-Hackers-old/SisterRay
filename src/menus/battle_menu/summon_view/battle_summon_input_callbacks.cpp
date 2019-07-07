@@ -9,6 +9,7 @@ using namespace BattleSummonWidgetNames;
 void handleSelectSummon(const BattleSpellInputEvent* event) {
     auto summonChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
     auto& enabledSummons = gContext.party.get_element(getPartyKey(event->menuState)).actorSummons;
+    srLogWrite("Select Summon input handler");
     if (*ACCEPTING_BATTLE_INPUT)
         return;
     if (*BATTLE_MENU_STATE != 7)
@@ -16,7 +17,10 @@ void handleSelectSummon(const BattleSpellInputEvent* event) {
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (summonChoiceCursor.maxColumnBound * (summonChoiceCursor.relativeRowIndex + summonChoiceCursor.baseRowIndex)) + summonChoiceCursor.relativeColumnIndex;
-    if (enabledSummons[flatIndex].propertiesMask & 2 || enabledSummons[flatIndex].magicIndex == 255) {
+    srLogWrite("trying to execute summon with flat index: %i", flatIndex);
+    srLogWrite("magic index: %i", enabledSummons[flatIndex].magicIndex);
+    srLogWrite("properties mask: %x", enabledSummons[flatIndex].propertiesMask);
+    if (enabledSummons[flatIndex].propertiesMask & 2 || enabledSummons[flatIndex].magicIndex == 0xFF) {
         playMenuSound(3);
     }
     else {
@@ -34,6 +38,7 @@ void handleSelectSummon(const BattleSpellInputEvent* event) {
 void handleExitSummon(const BattleSpellInputEvent* event) {
     if (*BATTLE_MENU_STATE != 7)
         return;
+    srLogWrite("HANDLING EXIT SUMMON MENU");
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
     *BATTLE_MENU_STATE = 1;

@@ -12,14 +12,12 @@ void enableAblT0S2(const EnableAbilitiesEvent* const event) {
 
 /*This enables all materia on the command Materia, instead of just the "highest level" command*/
 void enableAblT6S1(const EnableAbilitiesEvent* const event) {
-    srLogWrite("ENABLING COMMAND CALLBACK CALLED");
     for (auto dataIdx = 0; dataIdx < 5; dataIdx++) {
         auto commandID = event->materiaData.data[dataIdx];
         if (commandID == 0xFF) {
             return;
         }
         if (dataIdx < event->materiaLevel) //Insert a command as long as there is enough space and it is not already enabled
-            srLogWrite("enabling command with index %i", commandID);
             insertEnabledCommand(event->partyIndex, commandID);
     }
 }
@@ -78,8 +76,9 @@ void enableAblT11S3(const EnableAbilitiesEvent* const event) {
     auto spellIdx = event->materiaData.data[0];
     enableSummon(event->partyIndex, spellIdx, spellIdx);
     auto spellSlotPtr = getEnabledSummonSlot(event->partyIndex, spellIdx);
-    for (auto dataIdx = 1; dataIdx < 6; dataIdx++) {
-        if (dataIdx < event->materiaLevel)
-            spellSlotPtr->allCount = event->materiaData.data[dataIdx];
+    if ((event->materiaLevel < 1) || (event->materiaLevel > 5)) {
+        srLogWrite("INVALID MATERIA LEVEL ENCOUNTERED");
+        return;
     }
+    spellSlotPtr->allCount = event->materiaData.data[event->materiaLevel];
 }

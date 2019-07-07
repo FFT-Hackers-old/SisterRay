@@ -4,6 +4,19 @@
 #include <SisterRay/types.h>
 #include <SisterRay/game_data_types.h>
 
+#pragma pack(push, 1)
+typedef struct {
+    u8 field_0;
+    u8 attackerID;
+    u8 commandIdx;
+    u16 relAttackIdx;
+    u16 targetMask;
+    u8 pad;
+} MimeAction;
+#pragma pack(pop)
+
+#define G_MIME_ACTIONS ((MimeAction*)(0x9A9ADD))
+
 /*This is the structure of attack data*/
 typedef struct {
     u8 abilityHitRate; //0x00
@@ -34,7 +47,7 @@ typedef struct {
     u8 targetingData;
     u8 commandFlags;
     u8 allCount;
-    u8 HPMPAbsorbFags;
+    u8 supportMatFlags;
 } EnabledCommandStruct;
 #pragma pack(pop)
 

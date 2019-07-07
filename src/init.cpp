@@ -40,8 +40,7 @@ struct Kernel2Entry {
     int             count;
 };
 
-static void srLoadKernel2Bin(void)
-{
+static void srLoadKernel2Bin(void) {
     static const Kernel2Entry kKernel2Entries[] = {
         { &gContext.gameStrings.command_descriptions,   0x20  },
         { &gContext.gameStrings.magic_descriptions,     0x100 },
@@ -80,13 +79,11 @@ static void srLoadKernel2Bin(void)
 
     segBase = 0;
 
-    for (const auto& entry : kKernel2Entries)
-    {
+    for (const auto& entry : kKernel2Entries) {
         memcpy((char*)&segLen, buffer + segBase, 4);
         segStart = segBase + 4;
         memcpy((char*)&offsetTable, buffer + segStart, 2 * entry.count);
-        for (int i = 0; i < entry.count; ++i)
-        {
+        for (int i = 0; i < entry.count; ++i) {
             srLogWrite("loading kernel2 string: %s", EncodedString(buffer + segStart + offsetTable[i]).str());
             entry.registry->add_resource(EncodedString(buffer + segStart + offsetTable[i]));
         }
@@ -96,16 +93,14 @@ static void srLoadKernel2Bin(void)
     delete[] buffer;
 }
 
-static void srLoadKernelBin(void)
-{
+static void srLoadKernelBin(void) {
     FILE* kernel;
     SrKernelStream stream;
     SrKernelStreamHandler handler;
     initItemTypeData(); //initially allocate the mapping used for inventory_id -> relative resource id
 
     kernel = fopen(srGetGamePath("data/kernel/kernel.bin"), "rb");
-    for (int i = 0; i < 9; ++i)
-    {
+    for (int i = 0; i < 9; ++i) {
         srKernelStreamOpen(&stream, kernel);
         handler = kKernelBinHandlers[i];
         if (handler)
@@ -120,8 +115,7 @@ static void srLoadKernelBin(void)
 
 PFNRUNANIMSCRIPT* oldRunAnimationScript;
 
-static void Init(void)
-{
+static void Init(void) {
     MessageBoxA(NULL, "Sister Ray drawing power...", "SisterRay", 0);
     initLog();
     srInitLua();
@@ -156,23 +150,18 @@ static void Init(void)
     //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
-    /*mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
-    mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);
-    mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);*/
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
     mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);
     mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);
     mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
-    mogReplaceFunction(TRANSFORM_ENEMY_COMMAND, &transformEnemyCommand);
     mogReplaceFunction(GET_MP_COST, &getMPCost);
-    /*mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
+    mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
-    mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
-    initializeBattleMenu();*/
+    initializeBattleMenu();
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 
@@ -183,8 +172,7 @@ static void Init(void)
     srInitLuaConsole();
 }
 
-SISTERRAY_API __declspec(dllexport) void rayInit()
-{
+SISTERRAY_API __declspec(dllexport) void rayInit() {
     /* Hook into WinMain (required for Win32 stuff) */
     mogReplaceNop((void*)0x67dbbb, 0x3e);
     mogInsertCall((void*)0x67dbbb, &Init);

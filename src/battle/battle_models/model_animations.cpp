@@ -38,10 +38,7 @@ void srLoadBattleModelAnimations(void** animatioNDataTable, u32 startingIndex, c
 }
 
 u32 getSrAnimsCount(ModelAAHeader *aaHeader, const char * filename) {
-    u32 srNewAnimsCount;
     u32 animCount = aaHeader->weaponAnimAcount + aaHeader->modelAnimCount;
-    aaHeader->modelAnimCount += srNewAnimsCount;
-    aaHeader->weaponAnimAcount += srNewAnimsCount;
     return animCount;
 }
 

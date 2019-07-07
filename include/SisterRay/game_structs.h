@@ -3,14 +3,23 @@
 
 #include <SisterRay/types.h>
 
+
+#pragma pack(push, 1)
 typedef struct {
-    u8 entryPriority;
-    u8 entryOffset;
     u8 attackerActorID;
     u8 actionCommandIndex;
     u16 actionAttackIndex;
-    u16 actionTargetmask;
+    u16 actionTargetMask;
+} QueueAction;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 entryPriority;
+    u8 entryOffset;
+    QueueAction queueAction;
 } BattleQueueEntry;
+#pragma pack(pop)
 
 //This struct has size 260h and is referenced by the main context ptr
 #pragma pack(push, 1)
@@ -44,39 +53,38 @@ typedef struct {
     u32 impactEffectID; //0x68
     u32 specialAbilityFlags; //0x6C
     u8 padding1[8]; //0x70, 0x74
-    u32 damageCalcMask; //0x78
-    u32 unkTHATCRASHEDTHEGAME; // 0x7C
+    u32 wasDamagedMask; //0x78
+    u32 wasKilledMask; // 0x7C
     u32 addStatusMask; //0x80
     u32 rmStatusMask; //0x84
     u32 toggleStatusMask; //0x88
     u32 inflictStatusChance; //0x8C
-    u32 miscActionflags; //0x90
+    u32 miscActionFlags; //0x90
     u32 finalTargetMask; //0x94
     u32 sceneAbilityIndex; //0x98
     u8 padding2[4];
     u32 formulaType; //0xA0
     u32 formulaID; //0xA4
-    u32 SenseFlag; //0xA8
-    u32 unkDWord1; //0xAC
+    u32 actionCounterable; //0xA8
+    u32 quadCount; //0xAC
     u32 attackHitCount; //0xB0
-    u32 doubleCutRelated; //0xB4
+    u32 actionCount; //0xB4
     u32 targetCount; //0xB8
     u32 additionalEffects; //0xBC
     u32 additionalEffectsModifer; //0xC0
     u32 abilityPowerCopy; //0xC4
     u32 attackerStatusMask; //0xC8
     u32 targetReactionAnimation; //0xCC
-    u32 unkDWord2; //0xD0
-    u32 unkDWord3; //0xD4
+    u8 followUpActions[8]; //0xD0
     u32 throwFormulaPower; //0xD8
     u32 displayString; //0xDC
     u32 incOnDamageDealt; //0xE0
-    u32 unkDWord4; //0xE4
+    u32 unkDword8; //0xE4
     u32 MPTurboBoost; //0xE8
     u32 usedTargetMask; //0xEC
-    u32 addedCutMPHPAbsorbByte; //0xF0
+    u32 supportMatFlags; //0xF0
     u32 currentUnitIDTempt; //0xF4
-    u32 unkDWord5; //0xF8
+    u32 quadEnabled; //0xF8
     u32 hitCountCopy; //0xFC
     /*256 unused bytes*/
     u8 padding3[0x100];
@@ -173,38 +181,109 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u16 vTimerIncrement; //0x00
-    u16 yurnTimerIncrement; //0x02
-    u16 charATBValue; //0x04
-    u16 unk[2];       //0x06
-    u16 CTimerIncrement; //0xA
-    u8 unk1;             //0x0B
-    u8 unk2;             //0x0C
-    u8 activeCommandsMask; //0x0D
-    u8 unk3;               //0x0F
-    u8 unk4;               //0x10
-    u8 align[3];           //0x11
-    u8 unk5;               //0x15
-    u8 unk6;               //0x16
-    u8 PoisonTick;         //0x17
-    u8 align2[9];           //0x20
-    u8 unk7;               //0x21
-    u8 align3[7];           //0x28
-    u8 unk8;               //0x29
-    u8 unk9;               //0x2A
-    u8 unk10;              //0x2B
-    u32 unkdword1;         //0x2C
-    u32 unkdword2;         //0x30
-    u32 unkdowrd3;         //0x34
-    u32 unkdword4;         //0x38
-    u16 currentHP;          //0x3C
-    u16 currentMP;          //0x3E
-    u8 padding[4];         //0x40
+    u8 lastCommandIdx; //00
+    u8 lastActionIdx;  //08
+    u8 bankAccessValue; //10
+    u8 dummyByte;   //18
+    u8 battleType;  //20
+    u8 unk1; //28
+    u8 unk2; //30
+    u8 limitLevel; //38
+    u8 unk3; //40
+    u8 unk4; //48
+    u8 pad;
+    u16 activeActorMask; //50
+    u16 scriptOwnerMask;  //60
+    u16 actionTargetMask;  //70
+    u16 actorAlliesMask;   //80
+    u16 activeAlliesMask;  //90
+    u16 actorEnemiesMask;  //A0
+    u16 activeEnemiesMask;  //B0
+    u16 actorPartyMask;     //C0
+    u16 unkMask;            //D0
+    u16 allActorsMask;      //E0
+    u16 unkMask2;            //F0
+    u16 unkMask3;            //0x100
+    u16 endBattleFlags;      //2110
+    u16 lastActionElements;  //2120
+    u16 unkDword3;           //130
+    u16 battleFormationIdx;  //140
+    u16 lastAbsActionIdx;   //150
+    u16 unkBattleFlags;      //160
+    u16 specialAttackFlags;  //170
+    u16 unkLimitDivisor;     //180
+    u32 unkDword;            //190
+    u16 somethingEmerald;    //1A0
+    u32 partyGil;            //1C0
+    ActorBattleVars actorAIStates[10];
+} AIBattleContext;
+#pragma pack(pop)
+
+#define AI_BATTLE_CONTEXT   ((AIBattleContext*)0x9AB0A0)
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 vTimerIncrement;       //0x00
+    u16 yurnTimerIncrement;    //0x02
+    u16 charATBValue;          //0x04
+    u16 field_6;               //0x06
+    u16 field_8;
+    u16 CTimerIncrement;       //0xA
+    u16 field_C;
+    u8 activeCommandsMask;     //0x0D
+    u8 field_F;                //0x0F
+    u8 field_10;               //0x10
+    u8 field_11;               //0x11
+    u8 field_12;
+    u8 field_13;
+    u8 field_14;
+    u8 field_15;               //0x15
+    u8 field_16;               //0x16
+    u8 poisonTick;             //0x17
+    u8 field_18;
+    u8 field_19;
+    u8 field_1A;
+    u8 field_1B;
+    u8 field_1C;
+    u8 field_1D;
+    u8 field_1E;
+    u8 field_1F;
+    u8 field_20;
+    u8 field_21;
+    u8 field_22;
+    u8 field_23;
+    u8 field_24;
+    u8 field_25;
+    u8 field_26;
+    u8 field_27;
+    u8 field_28;
+    u8 unkActorFlags;           //0x29
+    u8 field_2A;                //0x2A
+    u8 field_2B;                //0x2B
+    u32 field_2C;               //0x2C
+    u32 field_30;               //0x30
+    u32 field_34;               //0x34
+    u32 field_38;               //0x38
+    u16 currentHP;              //0x3C
+    u16 currentMP;              //0x3E
+    u8 field_40;                //0x40
+    u8 field_41;
+    u8 field_42;
+    u8 field_43;
 } ActorTimerData;
 #pragma pack(pop)
 
 #define gActorTimerBlock ((ActorTimerData*)(0x9A8B10))
 
+#pragma pack(push, 1)
+typedef struct {
+    u8 field_0[0x18];
+    u16 previousSupportMasks[2];
+    u8 field_1C[24];
+}UnkActorState;
+#pragma pack(pop)
+
+#define gUnkActorArray  ((UnkActorState*)(0x09A8DB8))
 
 #pragma pack(push, 1)
 typedef struct {
@@ -240,7 +319,7 @@ typedef struct {
     u8 field_26;
     u8 field_27;
     u8 field_28;
-    u8 field_29;
+    u8 unkActorFlags;
     u8 field_2A;
     u8 bData0x12[16]; //0x2B
     u8 isScriptExecuting; //0x3B

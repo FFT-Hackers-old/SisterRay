@@ -181,7 +181,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
 
     auto& modelState = gBigAnimBlock[actorIdx];
     if (!(modelState.field_25 & 4)) {
-        sub_66335F(modelState.field_28, modelState.field_29, modelState.field_2A);
+        sub_66335F(modelState.field_28, modelState.unkActorFlags, modelState.field_2A);
         
         auto actorDataPtr = getActivePartyMember(actorIdx);
         if (!actorDataPtr)
@@ -204,7 +204,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         (*((u32*)&structPtr->unkBytes[8])) = sub_66101A();
         structPtr->unkBytes[11] = sub_429343(modelState.field_14);
         //End strange logic
-        if (modelState.field_28 || modelState.field_29 || modelState.field_2A) {
+        if (modelState.field_28 || modelState.unkActorFlags || modelState.field_2A) {
             structPtr->unkBytes[0] = 9;
         }
         else {
@@ -240,7 +240,6 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         else {
             weaponOffset = gContext.battleAnimations.get_element(modelName).modelAnimationCount;
         }
-        srLogWrite("Animating weapon offset %i for model %s", weaponOffset, modelName);
         playWeaponAnimation(modelState.setForLimitBreaks, modelState.tableRelativeModelAnimIdx + weaponOffset, modelState.currentPlayingFrame, weaponModelID, modelData);
         float* matrix = getMatrix(0, weaponDataPtr->bonesArray->polygonData->texDataPtr->texMatrices->matrixStructPtr);
         sub_6616CF(&(byte_BE0E30[64 * actorIdx]), matrix);

@@ -18,7 +18,7 @@ void initializeBattleSummonMenu() {
 
 void registerSummonMenuListeners() {
     const auto& modName = std::string("srFF7Base");
-    const auto& contextKeys = std::unordered_set<SrEventContext>({BATTLE_SPELL_VIEW});
+    const auto& contextKeys = std::unordered_set<SrEventContext>({BATTLE_SUMMON_VIEW});
     gContext.eventBus.addListener(INIT_BATTLE_SUMMON, (SrEventCallback)&initBattleSummonViewWidget, modName);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&handleSelectSummon, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&handleExitSummon, modName, contextKeys);

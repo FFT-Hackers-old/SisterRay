@@ -11,7 +11,9 @@ void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
     auto typedPtr = (CursorGridWidget*)self;
     auto gearType = gContext.gearViewData.getItemType();
     auto relativeItemID = gContext.gearViewData.get_resource(flatIndex).relative_item_id;
+    srLogWrite("updating gear view widget with item ID: %i at relative index %i", relativeItemID, flatIndex);
     const char* name = getNameFromRelativeID(relativeItemID, gearType);
+    srLogWrite("updating gear view widget with name: %s", name);
     updateText(widget, name);
 
 }
@@ -24,10 +26,12 @@ void inventoryViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIn
 
     auto typedPtr = (CursorGridWidget*)self;
     auto itemID = gContext.inventory->get_resource(flatIndex).item_id;
+    srLogWrite("updating gear view widget with item ID: %i at index %i", itemID, flatIndex);
     if (itemID != 0xFFFF) {
         enableWidget(widget);
         auto textColor = usableInInventoryMenu(itemID) ? COLOR_GRAY: COLOR_WHITE;
         const char* name = getNameFromItemID(itemID);
+        srLogWrite("displaying name of item: %s", name);
         updateText(widget, name);
         updateTextColor(widget, textColor);
     }
@@ -202,12 +206,12 @@ void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
     auto typedPtr = (CursorGridWidget*)self;
     auto summons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
     if (summons[flatIndex].magicIndex == 0xFF) {
-        disableWidget(widget);
+        disableWidget(getChild(widget, std::string("TXT")));
         return;
     }
-    enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_SUMMON, summons[flatIndex].magicIndex)).attackName.str());
-    updateTextColor(widget, COLOR_WHITE);
+    enableWidget(getChild(widget, std::string("TXT")));
+    updateText(getChild(widget, std::string("TXT")), gContext.attacks.get_element(assemblekey(CMD_SUMMON, summons[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(getChild(widget, std::string("TXT")), COLOR_WHITE);
 }
 
 void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {

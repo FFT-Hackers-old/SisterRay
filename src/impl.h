@@ -71,6 +71,7 @@ typedef struct {
     SrBattleAnimationRegistry           battleAnimations;
     SrBattleAnimScriptRegistry          battleAnimationScripts;
     SrCommandRegistry                   commands;
+    SrAuxCommandRegistry                auxCommands;
     SrAttackRegistry                    attacks;
     SrCharacterRegistry                 characters;
     SrPartyDataRegistry                 party;

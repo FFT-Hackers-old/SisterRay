@@ -101,6 +101,7 @@ void initGameStrings(){
 }
 
 const char* getNameFromRelativeID(u16 relativeID, u8 itemType) {
+    srLogWrite("attempting to fetch string with relative ID: %i", relativeID);
     switch (itemType) {
     case 0:
         return gContext.gameStrings.item_names.get_string(relativeID);
@@ -138,10 +139,11 @@ const char* getDescriptionFromRelativeID(u16 relativeID, u8 itemType) {
     }
 }
 
-const char* getNameFromItemID(u16 item_id)
-{
+const char* getNameFromItemID(u16 item_id){
     auto itemType = gContext.itemTypeData.get_resource(item_id).item_type;
+    srLogWrite("item type: %x", itemType);
     auto relativeID = gContext.itemTypeData.get_resource(item_id).type_relative_id;
+    srLogWrite("fetching name with relative ID: %i", relativeID);
     return getNameFromRelativeID(relativeID, itemType);
 }
 

@@ -43,7 +43,7 @@ void srLoadAbilityData() {
         }
         if (gDamageContextPtr->commandIndex == CMD_MAGIC && gDamageContextPtr->absAttackIndex == 54) //death sentence case hardcoded
             deathSentenceFlag = 1;
-        if ((gDamageContextPtr->enabledMagicsIndex != -1) && !((gDamageContextPtr->miscActionflags) & 0x400000)) {
+        if ((gDamageContextPtr->enabledMagicsIndex != -1) && !((gDamageContextPtr->miscActionFlags) & 0x400000)) {
             EnabledSpell* spellData = getSpellSlot(gDamageContextPtr->attackerID, gDamageContextPtr->commandIndexCopy, gDamageContextPtr->relAttackIndex);
             if (spellData)
                 updatePlayerSpellData(spellData, abilityData);
@@ -64,7 +64,7 @@ void srLoadAbilityData() {
         }
         if (gDamageContextPtr->MPCost < 0)
             gDamageContextPtr->MPCost = abilityData.MPCost;
-        if (executingAction.entryPriority == 3 || gDamageContextPtr->miscActionflags & 0x400000) //This is triggered by mime
+        if (executingAction.entryPriority == 3 || gDamageContextPtr->miscActionFlags & 0x400000) //This is triggered by mime
             gDamageContextPtr->MPCost = 0;
         gDamageContextPtr->abilityHitRate = abilityData.abilityHitRate;
         gDamageContextPtr->damageFormulaID = abilityData.damageFormula;
@@ -146,10 +146,10 @@ void updatePlayerSpellData(EnabledSpell* spellData, const AttackData& abilityDat
     gDamageContextPtr->MPCost = spellData->mpCost;
     if (spellData->quadCount && spellData->quadEnabled) {
         spellData->quadCount = spellData->quadCount - 1;
-        gDamageContextPtr->unkDWord5 = spellData->quadEnabled;// quadEnabled?
-        gDamageContextPtr->unkDWord1 = gDamageContextPtr->unkDWord5 + 3;  // numberOfCasts?
-        if (gDamageContextPtr->unkDWord1 > 8) {
-            gDamageContextPtr->unkDWord1 = 8;
+        gDamageContextPtr->quadEnabled = spellData->quadEnabled;// quadEnabled?
+        gDamageContextPtr->quadCount = gDamageContextPtr->quadEnabled + 3;  // numberOfCasts?
+        if (gDamageContextPtr->quadCount > 8) {
+            gDamageContextPtr->quadCount = 8;
         }
         srCreateEvent(2, gDamageContextPtr->attackerID, 21, 6);
     }
@@ -164,7 +164,7 @@ void updatePlayerSpellData(EnabledSpell* spellData, const AttackData& abilityDat
             gDamageContextPtr->displayString = 121; //Probably displays "Summon Power is all used up"
         }
     }
-    else if (gDamageContextPtr->miscActionflags & 0x200) { //Handle the all case
+    else if (gDamageContextPtr->miscActionFlags & 0x200) { //Handle the all case
         if (spellData->allCount) {
             if (spellData->allCount != 255) {
                 spellData->allCount = spellData->allCount - 1;
@@ -172,11 +172,11 @@ void updatePlayerSpellData(EnabledSpell* spellData, const AttackData& abilityDat
             }
         }
         else if (abilityData.targetingFlags & 8) {
-            gDamageContextPtr->miscActionflags |= 0x100000u;
+            gDamageContextPtr->miscActionFlags |= 0x100000u;
         }
     }
-    if ((executingAction.entryPriority >= 5) && !(gDamageContextPtr->miscActionflags & 0x400000)) //priority 5 and 6 actions? what are those
-        gDamageContextPtr->addedCutMPHPAbsorbByte = spellData->supportEffectsMask;
+    if ((executingAction.entryPriority >= 5) && !(gDamageContextPtr->miscActionFlags & 0x400000)) //priority 5 and 6 actions? what are those
+        gDamageContextPtr->supportMatFlags = spellData->supportEffectsMask;
 }
 
 void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask) {
@@ -185,10 +185,8 @@ void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask) 
     gDamageContextPtr->rmStatusMask = 0;      
     gDamageContextPtr->toggleStatusMask = 0;
     auto statusType = statusInflictionByte >> 6;
-    if (statusType < 3)
-    {
-        if (inflictedStatusMask >= 0)
-        {
+    if (statusType < 3) {
+        if (inflictedStatusMask >= 0) {
             gDamageContextPtr->inflictStatusChance = 4 * (statusInflictionByte & 0x3F);// statusInflictionChance
             switch (statusType) {
                 case 0:
@@ -205,8 +203,7 @@ void setStatusInflictionData(i32 statusInflictionByte, i32 inflictedStatusMask) 
                 }
             }
         }
-        else
-        {
+        else {
             gDamageContextPtr->addStatusMask = 2147483648; //Figure out why this gets set
             *word_9AAD1E = (i8)inflictedStatusMask & 3;
         }

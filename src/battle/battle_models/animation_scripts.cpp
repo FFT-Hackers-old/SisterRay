@@ -55,14 +55,14 @@ SrModelScripts createSrModelScripts(SrModelType modelType, const std::string arc
         if (animScriptLength) {
             if (animScriptStart[0] == 0 && animScriptStart[1] == 0) {
                 u16 trueAnimScriptLength = 4;
-                auto animationScript = animScriptFromAB((((u8*)abFilePtr) + scriptPtrTable[0]), animScriptLength, &trueAnimScriptLength);
+                auto animationScript = animScriptFromBuffer((((u8*)abFilePtr) + scriptPtrTable[0]), animScriptLength, &trueAnimScriptLength);
                 SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
                 u8* scriptPtr = srAnimScript.animScript.data();
                 srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
                 continue;
             }
             u16 trueAnimScriptLength = animScriptLength;
-            auto animationScript = animScriptFromAB(animScriptStart, animScriptLength, &trueAnimScriptLength);
+            auto animationScript = animScriptFromBuffer(animScriptStart, animScriptLength, &trueAnimScriptLength);
             SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
             u8* scriptPtr = srAnimScript.animScript.data();
             srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
@@ -106,7 +106,7 @@ u32 SrBattleAnimScriptRegistry::getMemoryBufferSize(const std::string& name){
     return AB_PTR_TABLE_OFFSET + 4 * scriptCount + scriptLength;
 }
 
-AnimationScript animScriptFromAB(u8* animScriptStart, u16 animScriptLength, u16* trueScriptLength) {
+AnimationScript animScriptFromBuffer(u8* animScriptStart, u16 animScriptLength, u16* trueScriptLength) {
     auto animScript = AnimationScript();
     auto scriptPosition = 0;
     while (scriptPosition < animScriptLength) {
@@ -147,6 +147,16 @@ void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader)
     return animScriptBuffer;
 }
 
+/*Add an animation script from a provided buffer, with a given Length*/
+SISTERRAY_API void addAnimationScript(const char* modelName, u8* script, u16 scriptLength) {
+    u16 trueAnimScriptLength = 0;
+    auto animationScript = animScriptFromBuffer(script, scriptLength, &trueAnimScriptLength);
+    SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
+    auto& modelScripts = gContext.battleAnimationScripts.get_element(modelName);
+    modelScripts.modelAnimScripts[assembleAnimScriptKey(modelScripts.scriptCount)] = srAnimScript;
+    modelScripts.scriptCount++;
+}
+
 NewActorAnimScripts::NewActorAnimScripts() {
     transformScript = (u32)&(transformationScript);
 }
@@ -168,8 +178,4 @@ SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scrip
     }
 
     oldRunAnimationScript(actor_id, (u32)ptr_to_new_animation, unk1, unk1);
-}
-
-void srExecuteAnimationScript(u16 actor_id, u32 ptr_to_anim_scripts, u32 unk1, u32 unk2) {
-
 }

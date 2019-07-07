@@ -13,20 +13,19 @@ void handleCounters(ActionContextEvent* actionEvent) {
     u16* gAttackerMask = (u16*)0x9AAD30;
     u16* gRemovedMask = (u16*)0x9AAD38;
     u16* gEscapedMask = (u16*)0x9AAD24;
-
+    
     auto issuingActorMask = 1 << issuingActorID;
-    battleAIContext->specialAttackFlags = damageContext->specialAbilityFlags;
+    //battleAIContext->specialAttackFlags = damageContext->specialAbilityFlags;
     battleAIContext->lastCommandIdx = damageContext->commandIndex;
     battleAIContext->lastActionIdx = damageContext->relAttackIndex;
-    battleAIContext->lastAbsActionIdx = damageContext->absAttackIndex;
-    battleAIContext->lastActionElements = damageContext->attackElementsMask;
+    //battleAIContext->lastAbsActionIdx = damageContext->absAttackIndex;
+    //battleAIContext->lastActionElements = damageContext->attackElementsMask;
     auto& actorAIStates = battleAIContext->actorAIStates;
 
     u16 notRemovedMask = ~(*gRemovedMask | *gEscapedMask);
     u16 wasDamagedMask = notRemovedMask & damageContext->wasDamagedMask;
     u16 willCounterMask = notRemovedMask & damageContext->actionCounterable;
     u16 wasKilledMask = notRemovedMask & damageContext->wasKilledMask;
-
     for (auto actorIdx = 0; actorIdx < 10; ++actorIdx) {
         if ((1 << actorIdx) & wasKilledMask) {
             actorAIStates[actorIdx].prevAttackerMask = issuingActorMask;

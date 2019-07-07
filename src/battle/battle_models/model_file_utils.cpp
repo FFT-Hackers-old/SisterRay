@@ -3,9 +3,22 @@
 
 
 void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename) {
-    srLogWrite("attempting to call game LGP load with arguments LGP Context: %p, bytesBuf: %p, filename:%s", context, bytesReadBuf, filename);
-    srLogWrite("lgp context: %i, %i, %i, %p", context->mode, context->useLGP, context->lgpTableIdx, context->mangler);
     return ff7LoadModelFile(context, bytesReadBuf, filename);
+}
+
+/*Used when loading b file for summons and other models that do not need to be SR'd yet*/
+void* srGameLoadABFile(LGPContext* context, char* baseFileName) {
+    i32 bytesRead = 0;
+    void *abFile;
+    char abFileNameBuffer[204];
+
+    createABFilename(baseFileName, &(abFileNameBuffer[0]));
+    return ff7LoadModelFile(context, &bytesRead, abFileNameBuffer);
+}
+
+
+void srGameInitAnimations(u32 lgpIndex, u32 unkint, void** srAnimsTable, LGPContext* context, char* filename) {
+    ff7InitAnimations(lgpIndex, unkint, srAnimsTable, context, filename);
 }
 
 LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer) {

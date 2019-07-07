@@ -5,6 +5,7 @@ SISTERRAY_API void initCommands(SrKernelStream* stream) {
     gContext.commands = SrCommandRegistry(stream);
     gContext.auxCommands = SrAuxCommandRegistry();
     initializeAuxCommandRegistry();
+    initializeEnemyAttack();
     srLogWrite("kernel.bin: Loaded %lu commands", (unsigned long)gContext.commands.resource_count());
 }
 
@@ -17,9 +18,25 @@ void initializeAuxCommandRegistry() {
         auto damageByte = getDefaultCmdDamage(commandIdx);
         auto commandFlags = getDefaultCmdFlags(commandIdx);
         PAuxCommandData auxCommand = { animScriptIdx, damageByte, commandFlags };
+        srLogWrite("Registering execution callbacks for command %i", commandIdx);
         registerDefaultCallbacks(commandIdx, auxCommand);
         gContext.auxCommands.add_element(name, auxCommand);
     }
+}
+
+void initializeEnemyAttack() {
+    auto name = assembleGDataKey(CMD_ENEMY_ACTION);
+    auto& playerCommand = CommandData();
+    gContext.commands.add_element(name, playerCommand);
+    auto& kernelCommand = gContext.commands.get_element(name);
+
+    auto animScriptIdx = getDefaultCmdAnimScript(CMD_ENEMY_ACTION);
+    auto damageByte = getDefaultCmdDamage(CMD_ENEMY_ACTION);
+    auto commandFlags = getDefaultCmdFlags(CMD_ENEMY_ACTION);
+    PAuxCommandData auxCommand = { animScriptIdx, damageByte, commandFlags };
+    srLogWrite("Registering execution callbacks for command %i", CMD_ENEMY_ACTION);
+    registerDefaultCallbacks(CMD_ENEMY_ACTION, auxCommand);
+    gContext.auxCommands.add_element(name, auxCommand);
 }
 
 /*run every initializer callback in order*/
@@ -29,9 +46,11 @@ SISTERRAY_API void runSetupCallbacks(const char* name) {
 }
 
 void runSetupCallbacks(u16 commandIdx) {
+    srLogWrite("running command callbacks for command idx: %i", commandIdx);
     CommandSetupEvent setupEvent = { gDamageContextPtr };
     auto& callbacks = gContext.auxCommands.get_resource(commandIdx).setupCallbacks;
     for (auto callback : callbacks) {
+        srLogWrite("Running command callback");
         callback(setupEvent);
     }
 }
@@ -161,19 +180,19 @@ u8 getDefaultCmdDamage(u16 commandIdx) {
             break;
         }
         case 24: {
-            return 0x11;;
+            return 0x11;
             break;
         }
         case 25: {
-            return 0x11;;
+            return 0x11;
             break;
         }
         case 26: {
-            return 0x11;;
+            return 0x11;
             break;
         }
         case 27: {
-            return 0x11;;
+            return 0x11;
             break;
         }
         case 35: {
@@ -312,6 +331,7 @@ void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
             break;
         }
         case 20: {
+            auxCommand.setupCallbacks.push_back(&setupLimit);
             auxCommand.setupCallbacks.push_back(&loadAbility);
             auxCommand.setupCallbacks.push_back(&applyDamage);
             break;
@@ -322,8 +342,8 @@ void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
             break;
         }
         case 25: {
-            auxCommand.setupCallbacks.push_back(&weaponSetup);
             auxCommand.setupCallbacks.push_back(&setupDoubleCut);
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
             auxCommand.setupCallbacks.push_back(&applyDamage);
             break;
         }
@@ -334,12 +354,13 @@ void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
             break;
         }
         case 27: {
-            auxCommand.setupCallbacks.push_back(&weaponSetup);
             auxCommand.setupCallbacks.push_back(&setupQuadCut);
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
             auxCommand.setupCallbacks.push_back(&applyDamage);
             break;
         }
         case 32: {
+            auxCommand.setupCallbacks.push_back(&setupEnemyAttack);
             auxCommand.setupCallbacks.push_back(&loadAbility);
             auxCommand.setupCallbacks.push_back(&applyDamage);
             break;

@@ -68,7 +68,7 @@ typedef struct {
     u32 actionCounterable; //0xA8
     u32 quadCount; //0xAC
     u32 attackHitCount; //0xB0
-    u32 doubleCutRelated; //0xB4
+    u32 actionCount; //0xB4
     u32 targetCount; //0xB8
     u32 additionalEffects; //0xBC
     u32 additionalEffectsModifer; //0xC0
@@ -223,23 +223,23 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u16 vTimerIncrement; //0x00
-    u16 yurnTimerIncrement; //0x02
-    u16 charATBValue; //0x04
-    u16 field_6;       //0x06
+    u16 vTimerIncrement;       //0x00
+    u16 yurnTimerIncrement;    //0x02
+    u16 charATBValue;          //0x04
+    u16 field_6;               //0x06
     u16 field_8;
-    u16 CTimerIncrement; //0xA
+    u16 CTimerIncrement;       //0xA
     u16 field_C;
-    u8 activeCommandsMask; //0x0D
-    u8 field_F;               //0x0F
+    u8 activeCommandsMask;     //0x0D
+    u8 field_F;                //0x0F
     u8 field_10;               //0x10
-    u8 field_11;           //0x11
+    u8 field_11;               //0x11
     u8 field_12;
     u8 field_13;
     u8 field_14;
     u8 field_15;               //0x15
     u8 field_16;               //0x16
-    u8 poisonTick;         //0x17
+    u8 poisonTick;             //0x17
     u8 field_18;
     u8 field_19;
     u8 field_1A;
@@ -258,15 +258,15 @@ typedef struct {
     u8 field_27;
     u8 field_28;
     u8 unkActorFlags;           //0x29
-    u8 field_2A;               //0x2A
-    u8 field_2B;              //0x2B
-    u32 field_2C;         //0x2C
-    u32 field_30;         //0x30
-    u32 field_34;         //0x34
-    u32 field_38;         //0x38
-    u16 currentHP;          //0x3C
-    u16 currentMP;          //0x3E
-    u8 field_40;         //0x40
+    u8 field_2A;                //0x2A
+    u8 field_2B;                //0x2B
+    u32 field_2C;               //0x2C
+    u32 field_30;               //0x30
+    u32 field_34;               //0x34
+    u32 field_38;               //0x38
+    u16 currentHP;              //0x3C
+    u16 currentMP;              //0x3E
+    u8 field_40;                //0x40
     u8 field_41;
     u8 field_42;
     u8 field_43;

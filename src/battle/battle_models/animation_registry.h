@@ -38,6 +38,26 @@ static const std::vector<std::string> specialModelNames = {
     std::string("CHAOS.DAT")
 };
 
+static const std::vector <std::string> summonModelnames = {
+    std::string("LIMIT/MOGURIDA.DAT"),
+    std::string("LIMIT/CYVADAT.DAT"),
+    std::string("LIMIT/IFREETDA.DAT"),
+    std::string("LIMIT/LAMDAT.DAT"),
+    std::string("LIMIT/TITANDAT.DAT"),
+    std::string("LIMIT/ODIN_ZDA.DAT"),
+    std::string("LIMIT/RIVADAT.DAT"),
+    std::string("LIMIT/BAHAMDAT.DAT"),
+    std::string("LIMIT/KUJATADA.DAT"),
+    std::string("LIMIT/ALEXDAT.DAT"),
+    std::string("LIMIT/PHEONIXD.DAT"),
+    std::string("LIMIT/BAHAMRDA.DAT"),
+    std::string("LIMIT/HADESDAT.DAT"),
+    std::string("LIMIT/TUPONDAT.DAT"),
+    std::string("LIMIT/BAHAMZDA.DAT"),
+    std::string("LIMIT/DEBCYODA.DAT"),
+    std::string("LIMIT/ODIN_GDA.DAT")
+};
+
 /*Raw buffer size is used for memcpying the relevant information when a model attempts to seek it*/
 typedef struct {
     u32 rawBufferSize; //This is used when memcopying to the buffers actually used in battle

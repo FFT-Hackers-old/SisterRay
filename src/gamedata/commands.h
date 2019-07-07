@@ -28,7 +28,7 @@ public:
 };
 
 void initializeAuxCommandRegistry();
-
+void initializeEnemyAttack();
 SISTERRAY_API void runSetupCallbacks(const char* name);
 void runSetupCallbacks(u16 commandIdx);
 SISTERRAY_API void initCommands(SrKernelStream* stream);

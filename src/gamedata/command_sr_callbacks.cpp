@@ -45,7 +45,7 @@ void srSetupAction(CommandSetupEvent setupEvent) {
     if (damageContext->commandIndex == CMD_MAGIC && damageContext->relAttackIndex == 54) //death sentence case hardcoded
         deathSentenceFlag = 1;
 
-    if ((damageContext->enabledMagicsIndex != -1) && !((damageContext->miscActionFlags) & 0x400000)) {
+    if (!((damageContext->miscActionFlags) & 0x400000)) {
         EnabledSpell* spellData = getSpellSlot(damageContext->attackerID, damageContext->commandIndexCopy, damageContext->relAttackIndex);
         if (spellData)
             updatePlayerSpellData(damageContext, spellData, abilityData);
@@ -65,23 +65,29 @@ void srSetupAction(CommandSetupEvent setupEvent) {
         }
     }
 
-    if (damageContext->MPCost < 0)
+    if (damageContext->MPCost = -1)
         damageContext->MPCost = abilityData.MPCost;
+
     if (executingAction.entryPriority == 3 || damageContext->miscActionFlags & 0x400000) //This is triggered by mime
         damageContext->MPCost = 0;
+
     damageContext->abilityHitRate = abilityData.abilityHitRate;
     damageContext->damageFormulaID = abilityData.damageFormula;
+
     if (abilityData.elementMask == 0xFFFF)
         elementMask = 0;
     else
         elementMask = abilityData.elementMask;
+
     damageContext->attackElementsMask = elementMask;
     damageContext->abilityPower = abilityData.attackPower;
     damageContext->targetReactionAnimation = abilityData.targetReactionID;
-    if (damageContext->abilityTargetingFlags == 255)
-        damageContext->abilityTargetingFlags = abilityData.targetingFlags;
+
+    damageContext->abilityTargetingFlags = abilityData.targetingFlags;
+
     if (damageContext->commandIndexCopy == CMD_LIMIT)
         cameraOverrideData = (((*(u16*)0x9AB0CC) & 8) != 0) ? abilityData.cameraMovementMultiple : abilityData.cameraMovementSingle;
+
     if (cameraOverrideData == 0xFFFF) {
         damageContext->cameraDataSingle = abilityData.cameraMovementSingle;
         damageContext->cameraDataMultiple = abilityData.cameraMovementMultiple;
@@ -90,6 +96,7 @@ void srSetupAction(CommandSetupEvent setupEvent) {
         damageContext->cameraDataSingle = cameraOverrideData;
         damageContext->cameraDataMultiple = cameraOverrideData;
     }
+
     if (abilityData.impactEffectID != 255)
         damageContext->impactEffectID = abilityData.impactEffectID;
     damageContext->animationEffectID = abilityData.animationEffectID;
@@ -97,9 +104,11 @@ void srSetupAction(CommandSetupEvent setupEvent) {
     damageContext->impactSound = abilityData.impactSoundID;
     damageContext->critAtkSound = abilityData.impactSoundID;
     damageContext->missAtkSound = abilityData.impactSoundID;
+
     if (!((damageContext->specialAbilityFlags) & 4) && gAiActorVariables[damageContext->attackerID].statusMask & 0x4000000)
         damageContext->abilityHitRate >>= 1; //(half hit chance)
     setStatusInflictionData(damageContext, abilityData.statusInflictType, abilityData.statusMask);
+
     if (deathSentenceFlag)
         gAiActorVariables[damageContext->attackerID].statusMask &= 0xFFDFFFFF;
     copyAdditionalEffects(abilityData.additionalEffect, abilityData.additionalEffectModifier);
@@ -147,6 +156,7 @@ void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellD
     BattleQueueEntry executingAction = (*(BattleQueueEntry*)0x9A9884);
 
     damageContext->MPCost = spellData->mpCost;
+    srLogWrite("Setting MP Cost for player spell to: %i", damageContext->MPCost);
     if (spellData->quadCount && spellData->quadEnabled) {
         spellData->quadCount = spellData->quadCount - 1;
         damageContext->quadEnabled = spellData->quadEnabled;// quadEnabled?

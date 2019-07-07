@@ -198,6 +198,12 @@ SISTERRAY_API EnabledSpell* getSpellSlot(u8 partyIndex, u8 commandIndex, u16 act
                     return &spell;
             }
         }
+        case 14:{
+            for (auto& spell : partyData.actorEnemySkills) {
+                if (spell.magicIndex == actionIndex)
+                    return &spell;
+            }
+        }        
         default: {
             return nullptr;
         }
@@ -489,15 +495,14 @@ bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
                 targetData = (targetData & 0xF7) | 4;
             }
 
-            it->targetData = targetData;// update target data
+            it->targetData = targetData;
             if ((actorMP >= it->mpCost) && !(actorStatusMask & 0x80) && ((actorStatusMask & 0x800) == 0 || spellID == 10)) {
-                spellFlags &= 0xFDu; //enable the spell
-                commandEnabled = true;                        // enable the command
+                spellFlags &= 0xFDu; 
+                commandEnabled = true;                       
             }
         }
         it->propertiesMask = spellFlags;
     }
-    srLogWrite("enable magic command bool: %s", (commandEnabled == true) ? "true" : "false");
     return commandEnabled;
 }
 

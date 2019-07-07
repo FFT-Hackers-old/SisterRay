@@ -12,6 +12,7 @@ void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
     auto gearType = gContext.gearViewData.getItemType();
     auto relativeItemID = gContext.gearViewData.get_resource(flatIndex).relative_item_id;
     const char* name = getNameFromRelativeID(relativeItemID, gearType);
+    srLogWrite("updating gear view widget with name: %s", name);
     updateText(widget, name);
 
 }
@@ -202,12 +203,12 @@ void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
     auto typedPtr = (CursorGridWidget*)self;
     auto summons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
     if (summons[flatIndex].magicIndex == 0xFF) {
-        disableWidget(widget);
+        disableWidget(getChild(widget, std::string("TXT")));
         return;
     }
-    enableWidget(widget);
-    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_SUMMON, summons[flatIndex].magicIndex)).attackName.str());
-    updateTextColor(widget, COLOR_WHITE);
+    enableWidget(getChild(widget, std::string("TXT")));
+    updateText(getChild(widget, std::string("TXT")), gContext.attacks.get_element(assemblekey(CMD_SUMMON, summons[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(getChild(widget, std::string("TXT")), COLOR_WHITE);
 }
 
 void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {

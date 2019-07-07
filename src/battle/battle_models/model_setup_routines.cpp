@@ -240,7 +240,6 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         else {
             weaponOffset = gContext.battleAnimations.get_element(modelName).modelAnimationCount;
         }
-        srLogWrite("Animating weapon offset %i for model %s", weaponOffset, modelName);
         playWeaponAnimation(modelState.setForLimitBreaks, modelState.tableRelativeModelAnimIdx + weaponOffset, modelState.currentPlayingFrame, weaponModelID, modelData);
         float* matrix = getMatrix(0, weaponDataPtr->bonesArray->polygonData->texDataPtr->texMatrices->matrixStructPtr);
         sub_6616CF(&(byte_BE0E30[64 * actorIdx]), matrix);

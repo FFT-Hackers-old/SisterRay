@@ -25,5 +25,6 @@ void setupSteal(CommandSetupEvent event);
 void setupDoubleCut(CommandSetupEvent event);
 void setupQuadCut(CommandSetupEvent event);
 void setupPoison(CommandSetupEvent event);
+void setupEnemyAttack(CommandSetupEvent setupEvent);
 
 #endif // !COMMAND_CALLBACKS_H

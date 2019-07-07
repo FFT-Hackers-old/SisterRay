@@ -3,6 +3,7 @@
 #include "../battle.h"
 #include "../../party/party_utils.h"
 #include <memory>
+#include "../../impl.h"
 
 /*Re-implemented to modularize adding commands to the game*/
 void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
@@ -48,7 +49,7 @@ void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
         }
     }*/
 
-    if (!dword_9AEA60) {
+    if (!(*dword_9AEA60)) {
         postActionHandles(poppedAction, issuingActorID);
         *dword_9AEA84 = 0;
         *dword_9AEA6C = 1;
@@ -69,7 +70,7 @@ void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
     incrementRandom();
     memset((void*)gDamageContextPtr, 0, sizeof(DamageCalcStruct));
 
-    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID };
+    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
     gContext.eventBus.dispatch(ACTION_PRE_COMMAND, &actionEvent);
 
     //Display Lucky 7's text
@@ -95,8 +96,9 @@ void postActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
     u32* dword_9AD1B4 = (u32*)0x9AD1B4;
     setDamageEventFlags();
 
-    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID };
+    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
     gContext.eventBus.dispatch(ACTION_POST_COMMAND, &actionEvent);
+    srLogWrite("Running post action callbacks");
 
     if (*dword_9AD1B4) {
         --(*dword_9AD1B4);
@@ -113,7 +115,8 @@ void registerActionPopCallbacks() {
     gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&initDamageContext, modName);
     gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&setAllFlag, modName);
     gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&prepareMimedAction, modName);
-    gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&setCommandData, modName);
+    gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&setEnemyCommandData, modName);
+    gContext.eventBus.addListener(ACTION_PRE_COMMAND, (SrEventCallback)&setPlayerCommandData, modName);
 
     gContext.eventBus.addListener(ACTION_POST_COMMAND, (SrEventCallback)&setMimeData, modName);
     gContext.eventBus.addListener(ACTION_POST_COMMAND, (SrEventCallback)&handleAddedCut, modName);

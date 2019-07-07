@@ -52,7 +52,7 @@ void initDamageContext(ActionContextEvent* actionEvent) {
     damageContext->attackerMask = 1 << issuingActorID;
     damageContext->finalTargetMask = damageContext->targetMask;
     damageContext->sceneAbilityIndex = damageContext->relAttackIndex;
-    damageContext->doubleCutRelated = 1;
+    damageContext->actionCount = 1;
     damageContext->inflictStatusChance = 0xFF;
     damageContext->abilityTargetingFlags = 0xFFFF;
     for (auto followUpIdx = 0; followUpIdx < 8; ++followUpIdx)// null follow ups
@@ -63,7 +63,17 @@ void initDamageContext(ActionContextEvent* actionEvent) {
         damageContext->enemySceneIndex = formationData->formationDatas[issuingActorID - 4].enemyID;
 }
 
-void setCommandData(ActionContextEvent* actionEvent) {
+void setEnemyCommandData(ActionContextEvent* actionEvent) {
+    auto damageContext = actionEvent->damageContext;
+    auto issuingActorID = actionEvent->issuingActorID;
+    auto poppedAction = actionEvent->poppedAction;
+
+    if (damageContext->commandIndex != CMD_ENEMY_ACTION)
+        return;
+    damageContext->commandIndexCopy = CMD_ENEMY_ACTION;
+}
+
+void setPlayerCommandData(ActionContextEvent* actionEvent) {
     auto damageContext = actionEvent->damageContext;
     auto issuingActorID = actionEvent->issuingActorID;
     auto poppedAction = actionEvent->poppedAction;
@@ -166,11 +176,11 @@ void setAllFlag(ActionContextEvent* actionEvent) {
 
     if (damageContext->finalTargetMask) {
         if (countTargets(damageContext->finalTargetMask) > 1) {
-            damageContext->miscActionFlags = (damageContext->miscActionFlags |= 2u);
+            damageContext->miscActionFlags = (damageContext->miscActionFlags |= 0x200);
         }
     }
     else if (isPartyActor(issuingActorID)) {
-        damageContext->miscActionFlags = (damageContext->miscActionFlags |= 2u);
+        damageContext->miscActionFlags = (damageContext->miscActionFlags |= 0x200);
     }
 }
 

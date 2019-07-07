@@ -1,15 +1,18 @@
 #include "command_callbacks.h"
 #include "command_sr_callbacks.h"
+#include "../impl.h"
 
 #define ff7ApplyDamage   ((FF7PFNCOMMANDSETUP)0x5D9940)
 #define ff7weaponSetup   ((FF7PFNCOMMANDSETUP)0x5C9C64)
 
 //The following callbacks are shared between many commands
 void applyDamage(CommandSetupEvent event) {
+    srLogWrite("Running apply Damage callback");
     ff7ApplyDamage();
 }
 
 void weaponSetup(CommandSetupEvent event) {
+    srLogWrite("Running weapon setup callback");
     ff7weaponSetup();
 }
 
@@ -104,4 +107,9 @@ void setupQuadCut(CommandSetupEvent event) {
 #define ff7SetupPoison     ((FF7PFNCOMMANDSETUP)0x5C9FC0)
 void setupPoison(CommandSetupEvent event) {
     ff7SetupPoison();
+}
+
+void setupEnemyAttack(CommandSetupEvent setupEvent) {
+    auto damageContext = setupEvent.damageContext;
+    damageContext->absAttackIndex = damageContext->relAttackIndex;
 }

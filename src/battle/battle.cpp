@@ -12,8 +12,6 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
     char v4; 
     int enemyIndex;
     void *v16; 
-    i32 sceneSize; 
-    i32 sceneIndex; 
     FormationEnemies* formationEnemiesPtr = getFormationEnemies();
     FormationSetup* formationSetupPtr = getFormationSetup();
     FormationCamera* formationCameraPtr = getFormationCamera();
@@ -35,6 +33,7 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
             if (*dword_C069BC != 2) {
                 *dword_C069BC = 0;
                 *dword_9A89D0 = 1;
+                return;
             }
             goto LABEL_11;
         }
@@ -95,11 +94,12 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
         *word_9AAD0E = *gEscapeFlag;
         *dword_C069BC = 0;
         *dword_9A89D0 = 1;
+        return;
     }
 
     modelAppearCallback();
-    if (dword_9ACB68) {
-        dword_9ACB68 = 0;
+    if (*dword_9ACB68) {
+        *dword_9ACB68 = 0;
         *dword_C069BC = 2;
     }
 }

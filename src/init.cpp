@@ -150,9 +150,6 @@ static void Init(void) {
     //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
-    /*mogReplaceFunction(RENDER_BATTLE_ITEM_MENU, &renderBattleItemView);
-    mogReplaceFunction(INIT_BATTLE_ITEM_MENU_CURSOR, &initializeBattleItemMenuCursor);
-    mogReplaceFunction(BATTLE_ITEM_MENU_INPUT_HANDLER, &battleItemMenuInputHandler);*/
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
     mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);
@@ -160,12 +157,11 @@ static void Init(void) {
     mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
     mogReplaceFunction(GET_MP_COST, &getMPCost);
-    /*mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
+    mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
-    mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
-    initializeBattleMenu();*/
+    initializeBattleMenu();
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

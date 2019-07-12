@@ -9,6 +9,10 @@ typedef struct {
 } CommandSetupEvent;
 
 typedef struct {
+
+} SelectCommandEvent;
+
+typedef struct {
     DamageCalcStruct* damageContext;
     BattleQueueEntry* poppedAction;
     u16 issuingActorID;

@@ -13,6 +13,7 @@
 typedef struct {
     AuxCommandData auxData;
     std::vector<SRPFNCOMMANDSETUP> setupCallbacks;
+    std::vector<SRPFNSCMDSELECTCALLBACK> selectCallbacks;
 } PAuxCommandData;
 
 class SrCommandRegistry : public SrNamedResourceRegistry<CommandData, std::string> {

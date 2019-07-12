@@ -59,6 +59,8 @@ typedef struct {
     u32 menuState;
 } BattleSpellInputEvent;
 
+typedef struct{};
+
 typedef struct {
     Menu* menuObject;
 } BattleInitEvent;

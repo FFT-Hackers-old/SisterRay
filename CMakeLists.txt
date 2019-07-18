@@ -26,6 +26,8 @@ if (SUPERBUILD)
             "-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/third_party"
             "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
             "-DVERSION=${VERSION}"
+            "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+            "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
         DEPENDS
         zlib
         lua

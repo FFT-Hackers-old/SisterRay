@@ -4,7 +4,7 @@
 #include <SisterRay/SisterRay.h>
 #include "../../files/lgp_loader.h"
 
-#define BATTLE_LGP_PATH "C:\\Games\\FF7\\data\\battle\\battle.lgp"
+#define BATTLE_LGP_PATH "data\\battle\\battle.lgp"
 
 typedef void(*PFNFF7MANGLER)(const char*, char*);
 

@@ -124,7 +124,6 @@ static void Init(void) {
     initBattleInventory();
     initMateriaInventory();
     initGameStrings();
-    enableNoCD();
     srLoadKernel2Bin();
     srLoadKernelBin();
     initOnUseItemDataRegistry();
@@ -134,7 +133,7 @@ static void Init(void) {
     initFormationsRegistries();; //initialize all data from the scene.bin
     //Register base callbacks
     //setupLGPTable(BATTLE_LGP_PATH, 2);
-    auto battleLGP = readLGPArchive(BATTLE_LGP_PATH);
+    auto battleLGP = readLGPArchive(srGetGamePath(BATTLE_LGP_PATH));
     srLogWrite("battleLGP opened read");
     initAnimations(battleLGP); //Must be called after the formation registries have been initialized
     initAnimationScripts(battleLGP);
@@ -173,6 +172,9 @@ static void Init(void) {
 }
 
 SISTERRAY_API __declspec(dllexport) void rayInit() {
+    /* Early NoCD */
+    enableNoCD();
+
     /* Hook into WinMain (required for Win32 stuff) */
     mogReplaceNop((void*)0x67dbbb, 0x3e);
     mogInsertCall((void*)0x67dbbb, &Init);

@@ -2,8 +2,9 @@
 #define INVENTORY_WIDGET_NAMES_H
 
 namespace InventoryWidgetNames {
+    const std::string INVENTORY_MENU_NAME = "INVENTORY_MENU";
     //Names of TOP LEVEL WIDGETS
-    const std::string INVENTORY_MENU_NAME = "INVENTORY_MENU_WIDGET";
+    const std::string INVENTORY_WIDGET_NAME = "INVENTORY_MENU_WIDGET";
     const std::string VIEW_CHOICE_WIDGET_NAME = "VIEW_CHOICE_WIDGET";
     const std::string ITEM_VIEW_WIDGET_NAME = "ITEM_VIEW_WIDGET";
     const std::string PARTY_VIEW_WIDGET_NAME = "PARTY_VIEW_WIDGET";

@@ -16,4 +16,9 @@ void initMateriaDataWidget(const MateriaInitEvent* event);
 void initCommandViewWidget(const MateriaInitEvent* event);
 void initSpellViewWidget(const MateriaInitEvent* event);
 
+void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+
 #endif

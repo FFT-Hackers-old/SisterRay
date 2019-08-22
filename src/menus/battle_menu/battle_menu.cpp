@@ -1,6 +1,26 @@
 #include "battle_menu.h"
 #include "../../impl.h"
 
+using namespace BattleMenuWidgetNames;
+
+void battleMenuUpdateHandler(i32 updateStateMask) {
+    Menu* menuObject = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+
+    sub_6C98A6();
+    auto menuWidget = menuObject->menuWidget;
+
+    BattleSpellInputEvent event = { menuObject, menuObject->currentState };
+    gContext.eventBus.dispatch(DRAW_BATTLE_MENU, &event);
+    drawWidget(menuWidget);
+
+    drawCursor(getStateCursor(menuObject, menuObject->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f); /*Here we just draw the cursor for each state, as they are independent party states*/
+
+    //Do not dispatch the input if the menu is paused
+    Menu* menuObject = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    dispatchMenuInput(0, menuObject, BATTLE_MENU);
+}
+}
+
 typedef i32(*pfnsub6DD041)();
 #define displayBaseMenu ((pfnsub6DD041)(0x6DD041))
 
@@ -86,6 +106,62 @@ u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState) {
     return ((*byte_DC3654) = (*byte_DC3654 + 1)) + 1;
 }
 
+/*void battleMenuHandler() {
+    Menu* menuObject = gContext.menuWidgets.get_element("BATTLE_MENU");
+    auto menuWidget = menuObject->menuWidget;
+    BattleMenuDrawEvent event = { menuObject, menuObject->currentState };
+
+    gContext.eventBus.dispatch(DRAW_BATTLE_MENU, &event);
+    drawWidget(menuWidget);
+
+    displayBattleMenuCursorStates(menuObject, menuObject->currentState);
+    if (!is_input_handling_enabled()) {
+        dispatchMenuInput(updateStateMask, menuObject, BATTLE_MENU);
+    }
+}
+
+void displayBattleMenuCursorStates(Menu* menuObject, u32 state) {
+
+}
+
+void battleMenuMain() {
+    void* ffContext;
+    u8* gBattlePaused = (u8*)(0xDC0E70);
+
+    dword_DB9580 = 0;
+    if (dword_91BD68 != dword_BF2848) {
+        dword_DB9580 = 1;
+        word_DC1F3C = word_9A889E;
+        sub_6D0BF1();
+        dword_DC1F48 = 0;
+    }
+    dword_DC1F40 ^= 1u;
+    sub_6D1C78();
+    ffContext = GetContext();
+    sub_41A21E(ffContext);
+    if (dword_91BD68 != dword_BF2848)
+    {
+        dword_91BD68 = dword_BF2848;
+        gamePausedGlobal = *gBattlePaused;
+    }
+
+    sub_6D1B88((int)&unk_DC1768 + 16 * dword_DC1F40);
+    drawMenuStuff();
+    if (!*gBattlePaused)
+        battleInputHandler();
+
+    if (receivedInput(2048) && byte_BFCDFC == 4) {
+        *gBattlePaused ^= 1u;
+        if (*gBattlePaused)
+            sub_6CE882(0x99u);
+        else
+            sub_6CE882(0x98u);
+    }
+    if (!*gBattlePaused)
+        incrementTimers();
+    ++dword_DC1F44;
+}*/
+
 
 #define DRAW_BATTLE_VIEWS                  ((void*)0x6D82EA)
 #define BATTLE_SPELL_INPUT_HANDLER         ((void*)0x6D9B98)
@@ -96,7 +172,7 @@ u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState) {
 void initializeBattleMenu() {
     registerSpellMenuListeners();
     initializeBattleSpellMenu();
-    registerSummonMenuListeners();
+    registerSummonViewListeners();
     initializeBattleSummonMenu();
     registerItemMenuListeners();
     initializeBattleItemMenu();

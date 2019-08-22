@@ -3,8 +3,10 @@
 #include "windows.h"
 #include "../menu_utils.h"
 
+using namespace MateriaWidgetNames;
+
 SISTERRAY_API void materiaMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menuObject = gContext.menuWidgets.get_element("MATERIA_MENU");
+    Menu* menuObject = gContext.menuWidgets.get_element(MATERIA_MENU_NAME);
     auto menuWidget = menuObject->menuWidget;
     MateriaDrawEvent event = { menuObject, menuObject->currentState };
     srLogWrite("current materia menu state:%i", menuObject->currentState);

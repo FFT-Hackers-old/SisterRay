@@ -17,4 +17,8 @@ void keyItemsViewWidget(const InventoryInitEvent* event);
 void itemDescriptionWidget(const InventoryInitEvent* event);
 void arrangeTypeWidget(const InventoryInitEvent* event);
 
+Widget* allocateInventoryRow(const char* name, i32 xCoordinate, i32 yCoordinate);
+void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+
 #endif

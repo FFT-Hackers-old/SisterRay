@@ -221,10 +221,24 @@ void initGearListWidget(const EquipInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
-    gridParams = { gearChoiceCursor, &gearViewNameUpdater, 427, 193 };
+    gridParams = { EQUIP_MENU_NAME, 1, &gearViewNameUpdater, 427, 193, nullptr, 0 };
     auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextWidgetKlass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 
     addChildWidget(mainWidget, gearListWidget, GEAR_LIST_WIDGET_NAME);
 }
 
+
+void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+
+    auto typedPtr = (CursorGridWidget*)self;
+    auto gearType = gContext.gearViewData.getItemType();
+    auto relativeItemID = gContext.gearViewData.get_resource(flatIndex).relative_item_id;
+    srLogWrite("updating gear view widget with item ID: %i at relative index %i", relativeItemID, flatIndex);
+    const char* name = getNameFromRelativeID(relativeItemID, gearType);
+    srLogWrite("updating gear view widget with name: %s", name);
+    updateText(widget, name);
+}

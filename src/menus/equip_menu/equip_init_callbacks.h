@@ -15,4 +15,7 @@ void initGearDescWidget(const EquipInitEvent* event);
 void initStatDiffWidget(const EquipInitEvent* event);
 void initGearListWidget(const EquipInitEvent* event);
 
+
+void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+
 #endif

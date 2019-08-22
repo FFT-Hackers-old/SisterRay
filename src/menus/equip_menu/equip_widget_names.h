@@ -2,8 +2,9 @@
 #define EQUIP_WIDGET_NAMES_H
 
 namespace EquipWidgetNames {
+    const std::string EQUIP_MENU_NAME = "EQUIP_MENU";
     //Names of TOP LEVEL WIDGETS
-    const std::string EQUIP_MENU_NAME = "EQUIP_MENU_WIDGET";
+    const std::string EQUIP_WIDGET_NAME = "EQUIP_MENU_WIDGET";
     const std::string CHAR_DATA_WIDGET_NAME = "CHAR_DATA_WIDGET";
     const std::string GEAR_DESC_WIDGET_NAME = "GEAR_DESC_WIDGET";
     const std::string GEAR_SLOTS_WIDGET_NAME = "GEAR_SLOTS_WIDGET";

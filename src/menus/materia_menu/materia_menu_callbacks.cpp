@@ -38,8 +38,8 @@ void initializeMateriaMenu() {
         arrangeViewCursor, arrangeViewCursor
     };
     auto materiaMenu = createMenu(INIT_MATERIA_MENU, 12, &(cursorArray[0]));
-    gContext.menuWidgets.add_element("MATERIA_MENU", materiaMenu);
-    gContext.menuWidgets.initializeMenu("MATERIA_MENU", MATERIA_MENU_NAME);
+    gContext.menuWidgets.add_element(MATERIA_MENU_NAME, materiaMenu);
+    gContext.menuWidgets.initializeMenu(MATERIA_MENU_NAME, MATERIA_WIDGET_NAME);
 }
 
 void registerMateriaMenuListeners() {

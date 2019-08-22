@@ -22,8 +22,8 @@ void initializeInventoryMenu() {
 
     Cursor cursorArray[6] = { topBarCursor, itemViewCursor, charViewCursor, keyItemsViewCursor, arrangeViewCursor, customSortViewCursor };
     auto inventoryMenu = createMenu(INIT_INVENTORY_MENU, 6, &(cursorArray[0]));
-    gContext.menuWidgets.add_element("INVENTORY_MENU", inventoryMenu);
-    gContext.menuWidgets.initializeMenu("INVENTORY_MENU", INVENTORY_MENU_NAME);
+    gContext.menuWidgets.add_element(INVENTORY_MENU_NAME, inventoryMenu);
+    gContext.menuWidgets.initializeMenu(INVENTORY_MENU_NAME, INVENTORY_WIDGET_NAME);
 }
 
 void registerInventoryMenuListeners() {

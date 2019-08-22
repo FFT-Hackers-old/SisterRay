@@ -171,11 +171,13 @@ typedef struct CollectionWidget_ CollectionWidget;
 typedef void(*SRLISTUPDATERPROC)(CollectionWidget*, Widget*, u16);
 typedef Widget*(*SRLISTALLOCPROC)(const char*, i32, i32);
 typedef struct {
-    Cursor* cursor;
+    const char* cursorName;
+    u32 menuState;
     SRLISTUPDATERPROC updater;
     i32 xCoordinate;
     i32 yCoordinate;
     SRLISTALLOCPROC allocator;
+    u32 cursorIdx;
 } drawGridParams;
 
 typedef struct CursorGridWidget_ CursorGridWidget;

@@ -4,7 +4,7 @@
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "../../menu_utils.h"
-#include "battle_command_widget_names.h"
+#include "../battle_menu_widget_names.h"
 #include "battle_command_callbacks.h"
 #include "../../../widgets/widget.h"
 #include "../../../events/menu_events.h"

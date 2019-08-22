@@ -33,7 +33,7 @@ const WidgetClass* getChildTypeFromID(u16 widgetTypeID) {
 
 /*Grid widgets positions are automatically updated and track the position of the cursor they are initialized with*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
-    auto context = cursorGrid->cursor->context;
+    auto context = gContext.menuWidgets.get_element(cursorGrid->cursorName)->cursors[cursorGrid->menuState][cursorGrid->cursorIdx].context;
     auto size = cursorGrid->widget.widget.children.size();
     if (size < (context.viewRowBound * context.viewColumnBound)) {
         auto idx = size - 1;
@@ -73,7 +73,9 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
   Do not use your own childTypes here, use the pre-defined widget types in sister ray*/
 CursorGridWidget* createGridWidget(drawGridParams params, std::string name, const WidgetClass* childType) {
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType, sizeof(CursorGridWidget));
-    widget->cursor = params.cursor;
+    widget->cursorName = params.cursorName;
+    widget->menuState = params.menuState;
+    widget->cursorIdx = params.cursorIdx;
     widget->updater = params.updater;
     widget->allocator = params.allocator;
     widget->widget.widget.xCoordinate = params.xCoordinate;

@@ -89,8 +89,6 @@ void initCharViewWidget(const InventoryInitEvent* event) {
 
 //Handles the base display
 void initItemViewWidget(const InventoryInitEvent* event) {
-    auto itemChoiceCursor = getStateCursor(event->menuObject, 1);
-
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
@@ -114,30 +112,64 @@ void initItemViewWidget(const InventoryInitEvent* event) {
     // gameDrawAsset(548, 37 * visibleItem + 9 * baseColumnIndex + 114, 213, (u8)textColor, .1f);
 
     auto normalItemViewWidget = createWidget(NORMAL_ITEM_VIEW_NAME);
-    gridParams = { itemChoiceCursor, &inventoryViewNameUpdater, 373, 109 };
-    gridWidget = createGridWidget(gridParams, ITEM_VIEW_NAMES, TextWidgetKlass());
+    gridParams = { INVENTORY_MENU_NAME.c_str(), 1, &inventoryRowUpdater, 373, 109, &allocateInventoryRow, 0 };
+    gridWidget = createGridWidget(gridParams, ITEM_VIEW_NAMES);
     addChildWidget(normalItemViewWidget, (Widget*)gridWidget, ITEM_VIEW_NAMES);
-
-    gridParams = { itemChoiceCursor, &inventoryViewQuantityUpdater, 550, 112 };
-    gridWidget = createGridWidget(gridParams, ITEM_VIEW_QUANTITIES, NumberWidgetKlass());
-    addChildWidget(normalItemViewWidget, (Widget*)gridWidget, ITEM_VIEW_QUANTITIES);
 
     addChildWidget(itemViewWidget, normalItemViewWidget, NORMAL_ITEM_VIEW_NAME);
 
     //This second cursor tracks the inventory when custom sort is activated, and is toggled in the draw menus//
     auto customItemViewWidget = createWidget(CUSTOM_ITEM_VIEW_NAME);
-    auto customSortCursor = getStateCursor(event->menuObject, 5);
-    gridParams = { customSortCursor, &inventoryViewNameUpdater, 373, 109 };
-    gridWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_NAMES, TextWidgetKlass());
-    addChildWidget(customItemViewWidget, (Widget*)gridWidget, CUSTOM_SORT_VIEW_NAMES);
 
-    gridParams = { customSortCursor, &inventoryViewQuantityUpdater, 550, 112 };
-    gridWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_QUANTITIES, NumberWidgetKlass());
-    addChildWidget(customItemViewWidget, (Widget*)gridWidget, CUSTOM_SORT_VIEW_QUANTITIES);
+    gridParams = { INVENTORY_MENU_NAME.c_str(), 5, &inventoryRowUpdater, 373, 109, &allocateInventoryRow, 0 };
+    gridWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_NAMES, TextWidgetKlass());
+    addChildWidget(customItemViewWidget, 5, (Widget*)gridWidget, CUSTOM_SORT_VIEW_NAMES);
 
     addChildWidget(itemViewWidget, customItemViewWidget, CUSTOM_ITEM_VIEW_NAME);
 
     addChildWidget(mainWidget, itemViewWidget, ITEM_VIEW_WIDGET_NAME);
+}
+
+Widget* allocateInventoryRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
+    auto inventoryWidget = createWidget(name);
+    moveWidget(inventoryWidget, xCoordinate, yCoordinate);
+    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
+    addChildWidget(inventoryWidget, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
+    DrawNumberParams numberParams = { xCoordinate + 177, yCoordinate, 0, 2, COLOR_WHITE, 0.1f };
+    addChildWidget(inventoryWidget, (Widget*)createNumberWidget(textParams, std::string("AMT")), std::string("AMT"));
+    return inventoryWidget;
+}
+
+/*Update the current view of the inventory based on the relevant cursor*/
+void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+
+    auto typedPtr = (CursorGridWidget*)self;
+    auto itemID = gContext.inventory->get_resource(flatIndex).item_id;
+    auto textWidget = getChild(widget, std::string("TXT"));
+    auto numberWidget = getChild(widget, std::string("AMT"));
+
+    if (itemID != 0xFFFF) {
+        enableWidget(textWidget);
+        auto textColor = usableInInventoryMenu(itemID) ? COLOR_GRAY : COLOR_WHITE;
+        const char* name = getNameFromItemID(itemID);
+        srLogWrite("displaying name of item: %s", name);
+        updateText(textWidget, name);
+        updateTextColor(textWidget, textColor);
+
+
+        enableWidget(numberWidget);
+        auto numberColor = usableInInventoryMenu(itemID) ? COLOR_GRAY : COLOR_WHITE;
+        auto itemQuantity = gContext.inventory->get_resource(flatIndex).quantity;
+        updateNumber(numberWidget, itemQuantity);
+        updateNumberColor(numberWidget, numberColor);
+    }
+    else {
+        disableWidget(textWidget);
+        disableWidget(numberWidget);
+    }
 }
 
 
@@ -162,11 +194,29 @@ void keyItemsViewWidget(const InventoryInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, KEY_ITEMS_BOX);
     addChildWidget(keyItemsWidget, (Widget*)boxWidget, KEY_ITEMS_BOX);
 
-    gridParams = { keyItemsChoice, &keyItemViewNameUpdater, 53, 124};
+    gridParams = { INVENTORY_MENU_NAME.c_str(), 3, &keyItemViewNameUpdater, 53, 124, nullptr, 0};
     auto cursorListWidget = createGridWidget(gridParams, KEY_ITEMS_GRID, TextWidgetKlass());
     addChildWidget(keyItemsWidget, (Widget*)cursorListWidget, KEY_ITEMS_GRID);
 
     addChildWidget(mainWidget, keyItemsWidget, KEY_ITEMS_VIEW_NAME);
+}
+
+void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+
+    auto typedPtr = (CursorGridWidget*)self;
+    auto keyItemIndex = (KEY_ITEMS_INVENTORY_PTR)[(u8)(flatIndex)];
+    if (keyItemIndex != 0xFFFF) {
+        enableWidget(widget);
+        const char* name = gContext.gameStrings.key_item_names.get_string(flatIndex);
+        updateText(widget, name);
+        updateTextColor(widget, COLOR_WHITE);
+    }
+    else {
+        disableWidget(widget);
+    }
 }
 
 void itemDescriptionWidget(const InventoryInitEvent* event) {
@@ -226,7 +276,6 @@ void arrangeTypeWidget(const InventoryInitEvent* event) {
         auto textChild = createTextWidget(textParams, listNames[sortType]);
         addChildWidget(arrangeTypeWidget, (Widget*)textChild, listNames[sortType]);
     }
-
 
     addChildWidget(mainWidget, arrangeTypeWidget, ARRANGE_TYPE_WIDGET_NAME);
 }

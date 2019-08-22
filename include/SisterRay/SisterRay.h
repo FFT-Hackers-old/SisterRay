@@ -39,6 +39,7 @@ typedef enum {
     DRAW_MATERIA_MENU,
     DRAW_MATERIA_DATA, //Dispatches on keyed subtypes
     INIT_BATTLE_MENU,
+    DRAW_BATTLE_MENU,
     DRAW_BATTLE_COMMAND,
     INIT_BATTLE_COMMAND,
     DRAW_BATTLE_SPELL,

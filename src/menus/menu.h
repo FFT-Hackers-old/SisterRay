@@ -8,20 +8,20 @@
 #include "../events/event.h"
 #include "cursor.h"
 #include "menu_interface.h"
+#include <vector>
+#include <unordered_map>
 
 /*The Menu type is exposed via the public API, and therefore is defined only in terms of C types
   It is in encapsulated via opaque pointer, and should be interacted with the provided functions*/
 struct _Menu {
-    i32 currentState;
-    i32 stateCount;
+    u32 currentState;
+    u32 stateCount;
     Widget* menuWidget;
     SrEventType initEvent;
-    Cursor* contexts;
-    i32 contextCapacity;
-    i32 contextSize;
+    std::unordered_map<u32, std::unordered_map<u32, Cursor>> cursors; //associate cursors to a various state by name
 };
 
-Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* contexts);
+Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* cursors);
 void destroyMenu(Menu* menu);
 
 class MenuRegistry : public SrNamedResourceRegistry<Menu*, std::string> {

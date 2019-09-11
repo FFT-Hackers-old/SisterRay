@@ -3,7 +3,7 @@
 #include "../../../impl.h"
 #include "../battle_menu_utils.h"
 
-using namespace BattleSpellWidgetNames;
+using namespace BattleMenuWidgetNames;
 
 /*Spell selection handler*/
 void handleSelectSpell(const BattleSpellInputEvent* event) {

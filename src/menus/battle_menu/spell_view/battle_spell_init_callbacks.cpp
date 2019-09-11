@@ -1,7 +1,7 @@
 #include "battle_spell_init_callbacks.h"
 #include "../../../impl.h"
 
-using namespace BattleSpellWidgetNames;
+using namespace BattleMenuWidgetNames;
 
 void initBattleMagicViewWidget(const BattleSpellDrawEvent* event) {
     drawGridParams gridParams;

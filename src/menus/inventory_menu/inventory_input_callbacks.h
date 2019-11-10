@@ -8,17 +8,17 @@
 #include "../../events/menu_events.h"
 #include "inventory_widget_names.h"
 
-void chooseViewHandler(const InventoryInputEvent* event);
-void selectItemHandler(const InventoryInputEvent* event);
-void executeSwapHandler(const InventoryInputEvent* event);
-void useTargetedItemHandler(const InventoryInputEvent* event);
-void arrangeItemsHandler(const InventoryInputEvent* event);
-void exitInventoryHandler(const InventoryInputEvent* event);
-void exitItemView(const InventoryInputEvent* event);
-void exitSwapHandler(const InventoryInputEvent* event);
-void exitTargetingHandler(const InventoryInputEvent* event);
-void exitArrangeHandler(const InventoryInputEvent* event);
-void exitKeyItemsHandler(const InventoryInputEvent* event);
+void chooseViewHandler(const MenuInputEvent* event);
+void selectItemHandler(const MenuInputEvent* event);
+void executeSwapHandler(const MenuInputEvent* event);
+void useTargetedItemHandler(const MenuInputEvent* event);
+void arrangeItemsHandler(const MenuInputEvent* event);
+void exitInventoryHandler(const MenuInputEvent* event);
+void exitItemView(const MenuInputEvent* event);
+void exitSwapHandler(const MenuInputEvent* event);
+void exitTargetingHandler(const MenuInputEvent* event);
+void exitArrangeHandler(const MenuInputEvent* event);
+void exitKeyItemsHandler(const MenuInputEvent* event);
 void handleUsableItemEffects(u16 item_ID, u16 inventory_index, u32 partyMemberIndex, Menu* menu);
 
 #endif

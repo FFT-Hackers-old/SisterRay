@@ -5,6 +5,7 @@ using namespace BattleMenuWidgetNames;
 
 void battleMenuUpdateHandler(i32 updateStateMask) {
     Menu* menuObject = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    i32* menuStateMask = (i32*)(0xDC35B4);
 
     sub_6C98A6();
     auto menuWidget = menuObject->menuWidget;
@@ -17,8 +18,7 @@ void battleMenuUpdateHandler(i32 updateStateMask) {
 
     //Do not dispatch the input if the menu is paused
     Menu* menuObject = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
-    dispatchMenuInput(0, menuObject, BATTLE_MENU);
-}
+    dispatchMenuInput(*menuStateMask, menuObject, BATTLE_MENU);
 }
 
 typedef i32(*pfnsub6DD041)();
@@ -106,6 +106,8 @@ u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState) {
     return ((*byte_DC3654) = (*byte_DC3654 + 1)) + 1;
 }
 
+
+
 /*void battleMenuHandler() {
     Menu* menuObject = gContext.menuWidgets.get_element("BATTLE_MENU");
     auto menuWidget = menuObject->menuWidget;
@@ -122,11 +124,13 @@ u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState) {
 
 void displayBattleMenuCursorStates(Menu* menuObject, u32 state) {
 
-}
+}*/
 
-void battleMenuMain() {
+void dispatchBattleUpdates() {
     void* ffContext;
     u8* gBattlePaused = (u8*)(0xDC0E70);
+    u8* gamePausedGlobal = (u8*)0xDC0E6C;
+    i32* menuStateMask = (i32*)(0xDC35B4);
 
     dword_DB9580 = 0;
     if (dword_91BD68 != dword_BF2848) {
@@ -142,14 +146,15 @@ void battleMenuMain() {
     if (dword_91BD68 != dword_BF2848)
     {
         dword_91BD68 = dword_BF2848;
-        gamePausedGlobal = *gBattlePaused;
+        *gamePausedGlobal = *gBattlePaused;
     }
 
     sub_6D1B88((int)&unk_DC1768 + 16 * dword_DC1F40);
-    drawMenuStuff();
-    if (!*gBattlePaused)
-        battleInputHandler();
+    battleMenuUpdateHandler(*menuStateMask);
+    /*if (!*gBattlePaused)
+        battleInputHandler();*/
 
+    //This code handles activating paused status
     if (receivedInput(2048) && byte_BFCDFC == 4) {
         *gBattlePaused ^= 1u;
         if (*gBattlePaused)
@@ -160,7 +165,7 @@ void battleMenuMain() {
     if (!*gBattlePaused)
         incrementTimers();
     ++dword_DC1F44;
-}*/
+}
 
 
 #define DRAW_BATTLE_VIEWS                  ((void*)0x6D82EA)

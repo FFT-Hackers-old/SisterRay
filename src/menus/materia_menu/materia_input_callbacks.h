@@ -8,25 +8,25 @@
 #include "../../events/menu_events.h"
 #include "materia_widget_names.h"
 
-void checkArrangeChoiceHandler(const MateriaInputEvent* event);
-void enterMateriaViewHandler(const MateriaInputEvent* event);
-void equipMateriaHandler(const MateriaInputEvent* event);
-void selectCheckViewHandler(const MateriaInputEvent* event);
-void arrangeChoiceHandler(const MateriaInputEvent* event);
-void trashMateriaHandler(const MateriaInputEvent* event);
-void confirmTrashHandler(const MateriaInputEvent* event);
+void checkArrangeChoiceHandler(const MenuInputEvent* event);
+void enterMateriaViewHandler(const MenuInputEvent* event);
+void equipMateriaHandler(const MenuInputEvent* event);
+void selectCheckViewHandler(const MenuInputEvent* event);
+void arrangeChoiceHandler(const MenuInputEvent* event);
+void trashMateriaHandler(const MenuInputEvent* event);
+void confirmTrashHandler(const MenuInputEvent* event);
 
-void exitMenuHandler(const MateriaInputEvent* event);
-void exitMateriaView(const MateriaInputEvent* event);
-void exitCheckArrangeView(const MateriaInputEvent* event);
-void exitSpellCheckView(const MateriaInputEvent* event);
-void exitTrashMateriaView(const MateriaInputEvent* event);
-void exitTrashConfirmView(const MateriaInputEvent* event);
+void exitMenuHandler(const MenuInputEvent* event);
+void exitMateriaView(const MenuInputEvent* event);
+void exitCheckArrangeView(const MenuInputEvent* event);
+void exitSpellCheckView(const MenuInputEvent* event);
+void exitTrashMateriaView(const MenuInputEvent* event);
+void exitTrashConfirmView(const MenuInputEvent* event);
 
-void removeMateriaHandler(const MateriaInputEvent* event);
+void removeMateriaHandler(const MenuInputEvent* event);
 
-void enterSlotView(const MateriaInputEvent* event);
-void enterOptionView(const MateriaInputEvent* event);
+void enterSlotView(const MenuInputEvent* event);
+void enterOptionView(const MenuInputEvent* event);
 
 
 #endif

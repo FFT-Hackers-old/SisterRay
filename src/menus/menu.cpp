@@ -45,8 +45,11 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     auto cursorArray = getStateCursor(menuObject, menuState);
     auto menuWidget = menuObject->menuWidget;
 
-    MateriaInputEvent event = { menuObject, menuState };
+    MenuInputEvent event = { menuObject, menuState };
     auto dispatchContext = std::vector<SrEventContext>({ menuContext });
+    if (checkInputReceived2(2048)) {
+        gContext.eventBus.dispatch(MENU_INPUT_START, &event, dispatchContext)
+    }
     if (checkInputReceived(32)) {
         gContext.eventBus.dispatch(MENU_INPUT_OK, &event, dispatchContext);
     }
@@ -59,10 +62,10 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     else if (checkInputReceived(8)) {
         gContext.eventBus.dispatch(MENU_INPUT_R1, &event, dispatchContext);
     }
-    else if (checkInputReceived(128)) { //When switching to the materia view, square
+    else if (checkInputReceived(128)) {
         gContext.eventBus.dispatch(MENU_INPUT_SQUARE, &event, dispatchContext);
     }
-    else if (checkInputReceived(16)) { //unequip accessory
+    else if (checkInputReceived(16)) { 
         gContext.eventBus.dispatch(MENU_INPUT_TRIANGLE, &event, dispatchContext);
     }
     else if (captureDirectionInput(0x2000, 4)) {

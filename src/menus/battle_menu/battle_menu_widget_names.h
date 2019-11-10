@@ -2,9 +2,10 @@
 #define BATTLE_MENU_WIDGET_NAMES
 
 #define BATTLE_INACTIVE 0xFFFFFFFF
-#define BATTLE_COMD_TARGETING 0
+#define BATTLE_TARGETING_STATE 0
 #define BATTLE_CMD_STATE 1
 #define SUMMON_BATTLE_STATE  7
+#define BATTLE_MAGIC_STATE 6
 
 namespace BattleMenuWidgetNames {
     const std::string BATTLE_MENU_NAME = std::string("BATTLE_MENU");

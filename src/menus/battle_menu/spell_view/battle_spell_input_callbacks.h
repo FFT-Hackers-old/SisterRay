@@ -6,7 +6,7 @@
 #include "battle_spell_init_callbacks.h"
 #include "battle_spell_input_callbacks.h"
 
-void handleSelectSpell(const BattleSpellInputEvent* event);
-void handleExitSpell(const BattleSpellInputEvent* event);
+void handleSelectSpell(const MenuInputEvent* event);
+void handleExitSpell(const MenuInputEvent* event);
 
 #endif

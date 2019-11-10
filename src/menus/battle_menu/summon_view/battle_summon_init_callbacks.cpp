@@ -10,7 +10,6 @@ void initBattleSummonViewWidget(const BattleSpellDrawEvent* event) {
     DrawBoxParams boxParams;
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
-
     auto battleSummonView = createWidget(BATTLE_SUMMON_WIDGET_NAME);
 
     /*boxParams = {
@@ -22,7 +21,6 @@ void initBattleSummonViewWidget(const BattleSpellDrawEvent* event) {
     };
     boxWidget = createBoxWidget(boxParams, MATERIA_GRID_BOX);
     addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);*/
-
 
     std::vector<std::string> names = { PARTY_1_SUMMON_GRID, PARTY_2_SUMMON_GRID, PARTY_3_SUMMON_GRID };
     for (auto idx = 0; idx < names.size(); idx++) {

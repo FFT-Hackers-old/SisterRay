@@ -14,7 +14,7 @@ void battleMenuUpdateHandler(i32 updateStateMask) {
     gContext.eventBus.dispatch(DRAW_BATTLE_MENU, &event);
     drawWidget(menuWidget);
 
-    drawCursor(getStateCursor(menuObject, menuObject->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f); /*Here we just draw the cursor for each state, as they are independent party states*/
+    drawCursor(getStateCursor(menuObject, menuObject->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
 
     //Do not dispatch the input if the menu is paused
     Menu* menuObject = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);

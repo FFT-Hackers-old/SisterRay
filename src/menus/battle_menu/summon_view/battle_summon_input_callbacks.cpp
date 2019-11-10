@@ -6,7 +6,7 @@
 using namespace BattleMenuWidgetNames;
 
 /*Spell selection handler*/
-void handleSelectSummon(const BattleSpellInputEvent* event) {
+void handleSelectSummon(const MenuInputEvent* event) {
     auto summonChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
     auto& enabledSummons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
     if (*ACCEPTING_BATTLE_INPUT)
@@ -26,16 +26,16 @@ void handleSelectSummon(const BattleSpellInputEvent* event) {
         *GLOBAL_USED_ACTION_TARGET_DATA = enabledSummons[flatIndex].targetData;
         *GLOBAL_USED_MENU_INDEX = flatIndex;
         setCursorTargetingData();
-        setMenuState(menu, 0);
+        setMenuState(menu, BATTLE_TARGETING_STATE);
         *PREVIOUS_BATTLE_MENU_STATE = SUMMON_BATTLE_STATE;
     }
 }
 
 
-void handleExitSummon(const BattleSpellInputEvent* event) {
+void handleExitSummon(const MenuInputEvent* event) {
     if (event->menuState != SUMMON_BATTLE_STATE)
         return;
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
-    setMenuState(event->menu, 1);
+    setMenuState(event->menu, BATTLE_CMD_STATE)
 }

@@ -6,7 +6,7 @@
 #include "battle_summon_init_callbacks.h"
 #include "battle_summon_input_callbacks.h"
 
-void handleSelectSummon(const BattleSpellInputEvent* event);
-void handleExitSummon(const BattleSpellInputEvent* event);
+void handleSelectSummon(const MenuInputEvent* event);
+void handleExitSummon(const MenuInputEvent* event);
 
 #endif

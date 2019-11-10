@@ -1,4 +1,3 @@
-
 #include "battle_base_callbacks.h"
 #include "../../menu.h"
 #include <unordered_set>

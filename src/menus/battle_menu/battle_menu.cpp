@@ -175,6 +175,11 @@ void dispatchBattleUpdates() {
 #define BATTLE_ITEM_INPUT_HANDLER          ((void*)0x6D98E3)
 
 void initializeBattleMenu() {
+    auto battleSpellMenu = createMenu(INIT_BATTLE_MENU, 64);
+    gContext.menuWidgets.add_element(BATTLE_MENU_NAME, battleSpellMenu);
+    gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
+    registerBaseViewListeners();
+    initializeBattleBaseMenu();
     registerSpellMenuListeners();
     initializeBattleSpellMenu();
     registerSummonViewListeners();

@@ -24,8 +24,8 @@ void initBattleSummonViewWidget(const BattleSpellDrawEvent* event) {
 
     std::vector<std::string> names = { PARTY_1_SUMMON_GRID, PARTY_2_SUMMON_GRID, PARTY_3_SUMMON_GRID };
     for (auto idx = 0; idx < names.size(); idx++) {
-        auto summonChoice = getStateCursor(event->menu, SUMMON_BATTLE_STATE, idx);
-        gridParams = { BATTLE_MENU_NAME, summonChoice, SUMMON_BATTLE_STATE, &battleSummonNameViewUpdater, 42, 360, allocateSummonRow, idx };
+        auto summonChoice = getStateCursor(event->menu, BATTLE_SUMMON_STATE, idx);
+        gridParams = { BATTLE_MENU_NAME, summonChoice, BATTLE_SUMMON_STATE, &battleSummonNameViewUpdater, 42, 360, allocateSummonRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleSummonView, (Widget*)gridWidget, names[idx]);
     }

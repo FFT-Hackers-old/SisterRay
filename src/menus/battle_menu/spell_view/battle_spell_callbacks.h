@@ -8,7 +8,7 @@
 #include "battle_spell_draw_callbacks.h"
 
 
-void initializeBattleSpellMenu();
+void initializeBattleSpellMenu(std::string battleMenuName);
 void registerSpellMenuListeners();
 
 #endif

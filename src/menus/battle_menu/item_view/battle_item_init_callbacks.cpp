@@ -1,7 +1,7 @@
 #include "battle_item_init_callbacks.h"
 #include "../../../impl.h"
 
-using namespace BattleItemWidgetNames;
+using namespace BattleMenuWidgetNames;
 
 void initBattleItemViewWidget(const BattleSpellDrawEvent* event) {
     drawGridParams gridParams;
@@ -10,7 +10,7 @@ void initBattleItemViewWidget(const BattleSpellDrawEvent* event) {
     DrawBoxParams boxParams;
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
-    auto battleItemView = createWidget(BATTLE_ITEM_MENU_NAME);
+    auto battleItemView = createWidget(BATTLE_ITEM_WIDGET_NAME);
 
     /*boxParams = {
         380,
@@ -30,7 +30,7 @@ void initBattleItemViewWidget(const BattleSpellDrawEvent* event) {
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleItemView, (Widget*)gridWidget, names[idx]);
     }
-    addChildWidget(mainWidget, battleItemView, BATTLE_ITEM_MENU_NAME);
+    addChildWidget(mainWidget, battleItemView, BATTLE_ITEM_WIDGET_NAME);
 }
 
 /*Allocator to be used with battle row widget*/

@@ -27,6 +27,4 @@ void setupQuadCut(CommandSetupEvent event);
 void setupPoison(CommandSetupEvent event);
 void setupEnemyAttack(CommandSetupEvent setupEvent);
 
-typedef void(*SRPFNSCMDSELECTCALLBACK)(SelectCommandEvent);
-
 #endif // !COMMAND_CALLBACKS_H

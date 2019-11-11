@@ -19,6 +19,7 @@ struct _Menu {
     Widget* menuWidget;
     SrEventType initEvent;
     std::unordered_map<u32, std::unordered_map<u32, Cursor>> cursors; //associate cursors to a various state by name
+    std::unordered_map<u32, u32> activeStateCursors
 };
 
 Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* cursors);

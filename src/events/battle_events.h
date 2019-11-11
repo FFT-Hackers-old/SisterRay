@@ -9,7 +9,8 @@ typedef struct {
 } CommandSetupEvent;
 
 typedef struct {
-
+    Menu*  menuObect;
+    EnabledCommandStruct* command
 } SelectCommandEvent;
 
 typedef struct {

@@ -6,6 +6,7 @@
 #include "../sr_named_registry.h"
 #include "game_data_interface.h"
 #include "command_callbacks.h"
+#include "cmd_select_callbacks.h"
 #include "gdata_utils.h"
 
 #define KERNEL_COMMAND_COUNT 32
@@ -32,6 +33,8 @@ void initializeAuxCommandRegistry();
 void initializeNonPlayerCommands();
 SISTERRAY_API void runSetupCallbacks(const char* name);
 void runSetupCallbacks(u16 commandIdx);
+SISTERRAY_API void runSelectCallbacks(const char* name, Menu* menu, EnabledCommandStruct* command);
+void runSelectCallbacks(EnabledCommandStruct* command, Menu* menu);
 SISTERRAY_API void initCommands(SrKernelStream* stream);
 u16 getDefaultCmdAnimScript(u16 idx);
 u8 getDefaultCmdDamage(u16 commandIdx);

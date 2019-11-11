@@ -9,11 +9,10 @@ using namespace BattleMenuWidgetNames;
 void initializeBattleSpellMenu() {
     CursorContext spellSelection = { 0, 0, 3, 3, 0, 0, 3, MAGIC_COUNT / 3, 0, 0, 0, 0, 0, 1 };
     Cursor spellChoiceCursor = { spellSelection, 8, 364, 32, 156 };
-
-    Cursor cursorArray[3] = { spellChoiceCursor, spellChoiceCursor, spellChoiceCursor }; /*One cursor per party member*/
-    auto battleSpellMenu = createMenu(INIT_BATTLE_SPELL, 3, &cursorArray[0]);
-    gContext.menuWidgets.add_element("BATTLE_SPELL", battleSpellMenu);
-    gContext.menuWidgets.initializeMenu("BATTLE_SPELL", BATTLE_SPELL_MENU_NAME);
+    auto battleMenu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    setStateCursor(battleMenu, BATTLE_MAGIC_STATE, summonChoiceCursor, 0);
+    setStateCursor(battleMenu, BATTLE_MAGIC_STATE, summonChoiceCursor, 1);
+    setStateCursor(battleMenu, BATTLE_MAGIC_STATE, summonChoiceCursor, 2);
 }
 
 void registerSpellMenuListeners() {

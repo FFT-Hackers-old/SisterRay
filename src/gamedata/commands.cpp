@@ -59,6 +59,22 @@ void runSetupCallbacks(u16 commandIdx) {
     }
 }
 
+/*run every select callback in order*/
+SISTERRAY_API void runSelectCallbacks(const char* name, Menu* menu, EnabledCommandStruct* command) {
+    auto idx = gContext.auxCommands.get_resource_index(std::string(name));
+    runSelectCallbacks(command, menu);
+}
+
+void runSelectCallbacks(EnabledCommandStruct* command, Menu* menu) {
+    srLogWrite("running command select callbacks for command idx: %i", commandIdx);
+    SelectCommandEvent setupEvent = { menu, command };
+    auto& callbacks = gContext.auxCommands.get_resource(command->commandID).selectCallbacks;
+    for (auto callback : callbacks) {
+        srLogWrite("Running command select callback");
+        callback(setupEvent);
+    }
+}
+
 
 /*One off functions used to initialize data in the registries*/
 u16 getDefaultCmdAnimScript(u16 commandIdx) {
@@ -253,6 +269,145 @@ u16 getDefaultCmdFlags(u16 commandIdx) {
 }
 
 void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
+    switch (commandIdx) {
+        case 0:
+        case 1: {
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 2:
+        case 21:
+        case 3:
+        case 22: {
+            auxCommand.setupCallbacks.push_back(&loadAbility);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 4:
+        case 23: {
+            auxCommand.setupCallbacks.push_back(&setupItem);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 5: {
+            auxCommand.setupCallbacks.push_back(&setupSteal);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 6: {
+            auxCommand.setupCallbacks.push_back(&setupSense);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 7: {
+            auxCommand.setupCallbacks.push_back(&setupCoin);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 8: {
+            auxCommand.setupCallbacks.push_back(&setupThrow);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 9: {
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
+            auxCommand.setupCallbacks.push_back(&setupMorph);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 10: {
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
+            auxCommand.setupCallbacks.push_back(&setupDeathblow);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 11: {
+            auxCommand.setupCallbacks.push_back(&setupManipulate);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 12: {
+            auxCommand.setupCallbacks.push_back(&setupMime);
+            break;
+        }
+        case 13: {
+            auxCommand.setupCallbacks.push_back(&loadAbility);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 17: {
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 18: {
+            auxCommand.setupCallbacks.push_back(&setupMove);
+            break;
+        }
+        case 19: {
+            //Defend setup
+            break;
+        }
+        case 20: {
+            auxCommand.setupCallbacks.push_back(&setupLimit);
+            auxCommand.setupCallbacks.push_back(&loadAbility);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 24: {
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 25: {
+            auxCommand.setupCallbacks.push_back(&setupDoubleCut);
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 26: {
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
+            auxCommand.setupCallbacks.push_back(&setupFlash);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 27: {
+            auxCommand.setupCallbacks.push_back(&setupQuadCut);
+            auxCommand.setupCallbacks.push_back(&weaponSetup);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 32: {
+            auxCommand.setupCallbacks.push_back(&setupEnemyAttack);
+            auxCommand.setupCallbacks.push_back(&loadAbility);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 33: {
+            break;
+        }
+        case 34: {
+            break;
+        }
+        case 35: {
+            auxCommand.setupCallbacks.push_back(&setupPoison);
+            auxCommand.setupCallbacks.push_back(&applyDamage);
+            break;
+        }
+        case 36: {
+            break;
+        }
+        case 37: {
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+}
+
+void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
     switch (commandIdx) {
         case 0:
         case 1: {

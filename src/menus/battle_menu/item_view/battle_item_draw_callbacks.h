@@ -1,5 +1,5 @@
-#ifndef BATTLE_SUMMON_DRAW_CALLBACKS_H
-#define BATTLE_SUMMON_DRAW_CALLBACKS_H
+#ifndef BATTLE_ITEM_DRAW_CALLBACKS_H
+#define BATTLE_ITEM_DRAW_CALLBACKS_H
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>

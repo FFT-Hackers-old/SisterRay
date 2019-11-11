@@ -12,7 +12,7 @@ void handleSelectSummon(const MenuInputEvent* event) {
     if (*ACCEPTING_BATTLE_INPUT)
         return;
 
-    if (event->menuState != SUMMON_BATTLE_STATE)
+    if (event->menuState != BATTLE_SUMMON_STATE)
         return;
 
     *ACCEPTING_BATTLE_INPUT = 1;
@@ -27,13 +27,13 @@ void handleSelectSummon(const MenuInputEvent* event) {
         *GLOBAL_USED_MENU_INDEX = flatIndex;
         setCursorTargetingData();
         setMenuState(menu, BATTLE_TARGETING_STATE);
-        *PREVIOUS_BATTLE_MENU_STATE = SUMMON_BATTLE_STATE;
+        *PREVIOUS_BATTLE_MENU_STATE = BATTLE_SUMMON_STATE;
     }
 }
 
 
 void handleExitSummon(const MenuInputEvent* event) {
-    if (event->menuState != SUMMON_BATTLE_STATE)
+    if (event->menuState != BATTLE_SUMMON_STATE)
         return;
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;

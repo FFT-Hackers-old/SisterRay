@@ -3,11 +3,11 @@
 #include "../../../impl.h"
 #include "../battle_menu_utils.h"
 
-using namespace BattleItemWidgetNames;
+using namespace BattleMenuWidgetNames;
 
 /*Spell selection handler*/
-void handleSelectItem(const BattleSpellInputEvent* event) {
-    auto itemCursorChoice = getStateCursor(event->menu, event->menuState)->context;
+void handleSelectItem(const MenuInputEvent* event) {
+    auto itemCursorChoice = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
     u16* restoreTypeGlobal = (u16*)(0xDC2088);
     if (*byte_9AC111) {
         *byte_9AC111 = 0;
@@ -16,7 +16,7 @@ void handleSelectItem(const BattleSpellInputEvent* event) {
     if (*ACCEPTING_BATTLE_INPUT)
         return;
 
-    if (*BATTLE_MENU_STATE != 5)
+    if (event->menuState != BATTLE_ITEM_STATE)
         return;
 
     *ACCEPTING_BATTLE_INPUT = 1;
@@ -29,12 +29,12 @@ void handleSelectItem(const BattleSpellInputEvent* event) {
         *GLOBAL_USED_ACTION_TARGET_DATA = gContext.battleInventory->get_resource(flatIndex).targetFlags;
         *GLOBAL_USED_MENU_INDEX = flatIndex;
         setCursorTargetingData();
-        *BATTLE_MENU_STATE = 0;
-        *PREVIOUS_BATTLE_MENU_STATE = 5;
+        setMenuState(event->menu, BATTLE_TARGETING_STATE)
+        *PREVIOUS_BATTLE_MENU_STATE = BATTLE_ITEM_STATE;
         auto restoreType = gContext.items.get_resource(itemID).resource_conditions;
-        *restoreTypeGlobal = restoreType;
+        /*restoreTypeGlobal = restoreType;
         if (*restoreTypeGlobal != 0xFFFF)
-            initHandlerCursorState(-1, -1, 21);
+            initHandlerCursorState(-1, -1, 21);*/
     }
     else {
         playMenuSound(3);
@@ -43,10 +43,10 @@ void handleSelectItem(const BattleSpellInputEvent* event) {
 
 
 void handleExitItem(const BattleSpellInputEvent* event) {
-    if (*BATTLE_MENU_STATE != 5)
+    if (event->menuState != BATTLE_ITEM_STATE)
         return;
+
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
-    *BATTLE_MENU_STATE = 1;
-    setHandlerState(5, 3);
+    setMenuState(event->menu, BATTLE_CMD_STATE)
 }

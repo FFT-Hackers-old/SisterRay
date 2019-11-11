@@ -29,7 +29,8 @@ Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* cursors) {
     menu->initEvent = initEvent;
     menu->currentState = 0;
     for (auto i = 0; i < stateCount; i++) {
-        menu->cursors[i][std::string(std::to_string(0))] = cursors[stateCount];
+        menu->cursors[i][0] = cursors[stateCount];
+        menu->activeStateCursors[i] = 0
     }
     menu->menuWidget = nullptr;
     return menu;
@@ -42,7 +43,7 @@ void destroyMenu(Menu* menu) {
 
 void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext menuContext) {
     auto menuState = menuObject->currentState;
-    auto cursorArray = getStateCursor(menuObject, menuState);
+    auto activeCursor = getStateCursor(menuObject, menuState, getActiveCursorIndex(menuObject, menuState));
     auto menuWidget = menuObject->menuWidget;
 
     MenuInputEvent event = { menuObject, menuState };
@@ -74,7 +75,7 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     else if (captureDirectionInput(0x8000, 8)) {
         gContext.eventBus.dispatch(MENU_INPUT_LEFT, &event, dispatchContext);
     }
-    handleCursorPositionUpdate((u32*)(&(cursorArray->context)));
+    handleCursorPositionUpdate((u32*)(&(activeCursor->context)));
 }
 
 SISTERRAY_API void addState(Menu* menu, Cursor* cursor) {
@@ -110,4 +111,16 @@ SISTERRAY_API void setMenuState(Menu* menu, u32 value) {
 
 SISTERRAY_API Widget* getWidget(Menu* menu) {
     return menu->menuWidget;
+}
+
+SISTERRAY_API u32 getActiveCursorIndex(Menu* menu, u32 menuState) {
+    return menu->activeStateCursors[menuState]
+}
+
+SISTERRAY_API void setActiveCursorIndex(Menu* menu, u32 menuState, u32 cursorIndex) {
+    if (menuState < menu->stateCount) {
+        if (menu->cursors[menuState].find(cursorIndex) != menu->cursors[menuState].end()) {
+            menu->activeStateCursors[menuState] = cursorIndex;
+        }
+    }
 }

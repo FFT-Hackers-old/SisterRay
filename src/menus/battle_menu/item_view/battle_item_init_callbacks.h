@@ -7,7 +7,7 @@
 #include "../../../widgets/widget.h"
 #include "../../../events/menu_events.h"
 #include "../../menu.h"
-#include "battle_item_widget_names.h"
+#include "battle_menu_widget_names.h"
 
 
 void initBattleItemViewWidget(const BattleSpellDrawEvent* event);

@@ -7,7 +7,7 @@ using namespace BattleMenuWidgetNames;
 
 /*Spell selection handler*/
 void handleSelectSpell(const MenuInputEvent* event) {
-    auto magicChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
+    auto magicChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
     auto& enabledSpells = gContext.party.get_element(getPartyKey(event->menuState)).actorMagics;
     u16* restoreTypeGlobal = (u16*)(0xDC2088);
     if (*ACCEPTING_BATTLE_INPUT)
@@ -38,7 +38,7 @@ void handleSelectSpell(const MenuInputEvent* event) {
 
 
 void handleExitSpell(const MenuInputEvent* event) {
-    if (event->menuState != SUMMON_BATTLE_STATE)
+    if (event->menuState != BATTLE_SUMMON_STATE)
         return;
 
     playMenuSound(4);

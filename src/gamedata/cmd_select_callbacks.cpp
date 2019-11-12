@@ -1,6 +1,6 @@
 #include "cmd_select_callbacks.h"
 
-handleBasePhysicalCommand(SelectCommandEvent* event) {
+handleCommandTarget(SelectCommandEvent* event) {
     // attack case
     u8* byte_DC3C8C = (u8*)0xDC3C8C;
     *byte_DC3C8C = 1;
@@ -8,7 +8,16 @@ handleBasePhysicalCommand(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
     *GLOBAL_USED_ACTION_TARGET_DATA = event->command->targetingData;
     setCursorTargetingData();
-    return;
+}
+
+handleWeaponTarget(SelectCommandEvent* event) {
+    // attack case
+    u8* byte_DC3C8C = (u8*)0xDC3C8C;
+    *byte_DC3C8C = 0;
+    *PREVIOUS_BATTLE_MENU_STATE = 1;
+    setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
+    *GLOBAL_USED_ACTION_TARGET_DATA = event->command->targetingData;
+    setCursorTargetingData();
 }
 
 handleSelectMagic(SelectCommandEvent* event) {

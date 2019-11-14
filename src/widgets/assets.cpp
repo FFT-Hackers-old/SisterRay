@@ -445,8 +445,6 @@ DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority
     return menuTextAsset
 }
 
-
-
 void setStarShaded(Widget* widgetToUpdate, bool shaded) {
     if (isGameAssetWidget(widgetToUpdate)) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;

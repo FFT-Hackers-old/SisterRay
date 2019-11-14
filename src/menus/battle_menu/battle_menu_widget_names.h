@@ -12,6 +12,19 @@ namespace BattleMenuWidgetNames {
     const std::string BATTLE_MENU_NAME = std::string("BATTLE_MENU");
     const std::string BATTLE_MENU_WIDGET_NAME = std::string("BATTLE_MENU_WIDGET");
 
+    //Base Menu Names
+    const std::string TIME_ASSET_NAME = std::string("TIME_ASSET");
+    const std::string WAIT_ASSET_NAME = std::string("WAIT_ASSET");
+    const std::string CHAR_ASSET_NAME = std::string("CHAR_ASSET");
+    const std::string HP_ASSET_NAME = std::string("HP_ASSET");
+    const std::string MP_ASSET_NAME = std::string("MP_ASSET");
+    const std::string LIMIT_ASSET_NAME = std::string("LIMIT_ASSET");
+    const std::string BARRIER_ASSET_NAME = std::string("BARRIER_ASSET");
+    const std::string PARTY_1_STATE_NAME = std::string("1_PARTY");
+    const std::string PARTY_2_STATE_NAME = std::string("2_PARTY");
+    const std::string PARTY_3_STATE_NAME = std::string("3_PARTY");
+
+
     //Command Names
     const std::string BATTLE_COMMAND_WIDGET_NAME = std::string("BATTLE_COMMAND");
     const std::string PARTY_1_CMD_GRID = std::string("1_CMD_GRID");

@@ -12,7 +12,9 @@
 
 
 void initBattleSummonViewWidget(const BattleSpellDrawEvent* event);
-Widget* allocateSummonRow(const char* name, i32 xCoordinate, i32 yCoordinate);
+
+Widget* allocateBarriersWidget(const char* name, i32 xCoordinate, i32 yCoordinate);
+Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 
 
 #endif

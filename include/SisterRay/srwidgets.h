@@ -152,13 +152,29 @@ typedef struct {
     i32 yCoordinate;
     i32 fraction;
     i32 unk1;
-    i32 unk2
+    i32 unk2;
     float priority;
 } DrawBarParams;
 
 typedef struct BarWidget_ BarWidget;
 typedef void(*PFNSRNEWBARSWIDGETPROC)(Widget*, DrawBarParams, char*);
-typedef void(*PFNSRSETBARPARAMSPROC)(DrawBarParams*, i32, i32, i32, i32, i32 float);
+typedef void(*PFNSRSETBARPARAMSPROC)(BarWidget*, DrawBarParams);
+
+typedef struct {
+    i16 xCoordinate;
+    i16 yCoordinate;
+    i16 length;
+    i16 thickness;
+    i16 seg1start;
+    i16 seg1end;
+    i16 seg2start;
+    i16 seg2end;
+    float priority;
+} DrawResourceBarParams;
+
+typedef struct ResourceBarWidget_ ResourceBarWidget;
+typedef void(*PFNSRNEWRESOURCEBARSWIDGETPROC)(Widget*, DrawResourceBarParams, char*);
+typedef void(*PFNSRSETRESOURCEBARPARAMSPROC)(ResourceBarWidget*, DrawResourceBarParams);
 
 
 typedef struct {

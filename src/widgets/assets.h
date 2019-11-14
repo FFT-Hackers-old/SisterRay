@@ -112,6 +112,23 @@ const WidgetClass* BarWidgetKlass();
 BarWidget* createBarWidget(DrawBarParams params, std::string name);
 bool isBarWidget(Widget* widget);
 
+struct ResourceBarWidget_ {
+    Widget widget;
+    i16 length;
+    i16 thickness;
+    i16 seg1start;
+    i16 seg1end;
+    i16 seg2starrt;
+    i16 seg2end;
+    float priority;
+};
+
+void drawResourceBarWidget(ResourceBarWidget* barWidget);
+const WidgetClass kResourceBarWidgetClass = { (SRWIDGETDRAWPROC)drawResourceBarWidget };
+const WidgetClass* ResourceBarWidgetKlass();
+ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::string name);
+bool isResourceBarWidget(Widget* widget);
+
 struct GameAssetWidget_ {
     Widget widget;
     i32 unk1;

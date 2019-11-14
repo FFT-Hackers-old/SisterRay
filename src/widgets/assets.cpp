@@ -502,3 +502,39 @@ bool isBarWidget(Widget* widget) {
 const WidgetClass* BarWidgetKlass() {
     return &kBarWidgetClass;
 }
+
+void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
+    DrawResourceBarParams params = {
+        resourceBarWidget->xCoordinate,
+        resourceBarWidget->yCoordinate,
+        resourceBarWidget->length,
+        resourceBarWidget->thickness,
+        scrollerPortrait->seg1start,
+        scrollerPortrait->seg1end,
+        scrollerPortrait->seg2start,
+        scrollerPortrait->seg2end
+    };
+    gameDrawResourceBar((i16*)&params, resourceBarWidget->priority);
+}
+
+ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::string name) {
+    ResourceBarWidget* widget = (ResourceBarWidget*)createWidget(name, sizeof(ResourceBarWidget), &kResourceBarWidgetClass);
+    widget->widget.xCoordinate = params.xCoordinate;
+    widget->widget.yCoordinate = params.yCoordinate;
+    widget->length = params.length;
+    widget->thickness = params.thickness;
+    widget->seg1start = params.seg1start;
+    widget->seg1end = params.seg1end;
+    widget->seg2start = params.seg2start;
+    widget->seg2end = params.seg2end;
+    widget->priority = params.priority;
+    return widget;
+}
+
+bool isResourceBarWidget(Widget* widget) {
+    return ((widget->klass == &kResourceBarWidgetClass));
+}
+
+const WidgetClass* ResourceBarWidgetKlass() {
+    return &kResourceBarWidgetClass;
+}

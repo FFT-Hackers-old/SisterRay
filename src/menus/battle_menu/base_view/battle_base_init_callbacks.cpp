@@ -42,8 +42,11 @@ Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
     addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("NAME")), std::string("NAME"));
 
-    Widget atbWidget = allocateATBWidget(std::string("ATB").c_str(), xCoordinate, yCoordinate);
+    Widget atbWidget = allocateBarWidget(std::string("ATB").c_str(), xCoordinate, yCoordinate);
     addChildWidget(baseDataWidget, atbWidget, std::string("ATB"));
+
+    Widget limitWidget = allocateBarWidget(std::string("LIMIT").c_str(), xCoordinate, yCoordinate);
+    addChildWidget(baseDataWidget, limitWidget, std::string("LIMIT"));
 
     Widget barrierWidget = allocateBarriersWidget(std::string("BARRIERS").c_str(), i32 xCoordinate, i32 yCoordinate);
     addChildWidget(baseDataWidget, barrierWidget, std::string("BARRIERS");
@@ -51,17 +54,32 @@ Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     return baseDataWidget;
 }
 
-Widget* allocateATBBarWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
+Widget* allocateBarWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
     auto atbDataWidget = createWidget(name);
     moveWidget(atbDataWidget, xCoordinate, yCoordinate);
 
     DrawGameAssetParams barBorder = BarBorder(xCoordinate, yCoordinate, 0.6f);
     addChildWidget(barriersDataWidget, (Widget*)createGameAssetWidget(barBorder, std::string("BORDER")), std::string("BORDER"));
 
+    DrawBarParams atbBarParams = { xCoordinate, yCoordinate, 0, 12, -2139095040, 0.6f };
+    addChildWidget(atbDataWidget, (Widget*)createBarWidget(atbBarParams, std::string("BAR")), std::string("BAR"));
+    return atbDataWidget;
+}
 
-    DrawBarParams atbBarParams = { xCoordinate, yCoordinate, 0, 8, -2139095040, 0.6f };
-    addChildWidget(atbDataWidget, (Widget*)createBarWidget(atbBarParams, std::string("ATB_BAR")), std::string("ATB_BAR"));
+Widget* allocateResourceWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
+    auto resourceWidget = createWidget(name);
+    moveWidget(resourceWidget, xCoordinate, yCoordinate);
 
+    DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate, 120, 2, 0, 0, 0, 0, 0.6f };
+    addChildWidget(resourceWidget, (Widget*)createResourceBarWidget(resourceBar, std::string("BAR")), std::string("BAR"));
+
+    DrawNumberParams numberParams = { xCoordinate, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
+    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("CURRENT")), std::string("CURRENT"));
+
+    DrawNumberParams numberParams = { xCoordinate, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
+    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("MAX")), std::string("MAX"));
+
+    return resourceWidget;
 }
 
 Widget* allocateBarriersWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {

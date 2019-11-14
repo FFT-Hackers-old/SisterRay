@@ -15,3 +15,4 @@ void drawBattleSummonViewWidget(const BattleSpellDrawEvent* event) {
         disableWidget(getChild(getChild(menuWidget, BATTLE_SUMMON_WIDGET_NAME), names[partyIdx]));
     }
 }
+

@@ -147,6 +147,19 @@ typedef void(*PFNSRNEWSLOTSWIDGETPROC)(Widget*, drawSlotsParams, char*);
 typedef void(*PFNSRSETSLOTSPARAMSPROC)(drawSlotsParams*, i32, i32, u8*, MateriaInventoryEntry*);
 typedef void(*PFNSRUPDATEMATERIASLOTSPROC)(Widget*, u8*);
 
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    i32 fraction;
+    i32 unk1;
+    i32 unk2
+    float priority;
+} DrawBarParams;
+
+typedef struct BarWidget_ BarWidget;
+typedef void(*PFNSRNEWBARSWIDGETPROC)(Widget*, DrawBarParams, char*);
+typedef void(*PFNSRSETBARPARAMSPROC)(DrawBarParams*, i32, i32, i32, i32, i32 float);
+
 
 typedef struct {
     i32 xCoordinate;

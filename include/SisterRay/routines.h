@@ -69,6 +69,9 @@ typedef i32(*pfnsub6F535C)(i32, i32);
 typedef i32(*pfnsub6F7BFB)(i32, i32, i32, i32, i32, i32, i32, i32, i32, float);
 #define drawComplexGameAsset          ((pfnsub6F7BFB)0x6F7BFB)
 
+typedef void(*pfnsub6F7346)(i32, i32, i32, i32, i32, float);
+#define gameDrawBar          ((pfnsub6F7346)0x6F7346)
+
 /*These are routines used in the inventory menu handler*/
 typedef i32(*pfnsub6F0D7D)(i32, i32, float);
 #define sub_6F0D7D                      ((pfnsub6F0D7D)0x6F0D7D)

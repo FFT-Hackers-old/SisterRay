@@ -3,7 +3,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void initBaseViewWidget(const BattleSpellDrawEvent* event) {
+void initBaseViewWidget(const BattleDrawEvent* event) {
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
@@ -11,28 +11,25 @@ void initBaseViewWidget(const BattleSpellDrawEvent* event) {
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
-    auto battleSummonView = createWidget(BATTLE_SUMMON_WIDGET_NAME);
+    auto baseWidget = createWidget(BATTLE_BASE_WIDGET_NAME);
 
-    /*boxParams = {
-        380,
-        190,
-        260,
-        300,
+    boxParams = {
+        0,
+        340,
+        680,
+        140,
         0.3f
     };
-    boxWidget = createBoxWidget(boxParams, MATERIA_GRID_BOX);
-    addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);*/
+    boxWidget = createBoxWidget(boxParams, BASE_BOX_NAME);
+    addChildWidget(baseWidget, (Widget*)boxWidget, BASE_BOX_NAME);
 
-
-    std::vector<std::string> names = { PARTY_1_SUMMON_GRID, PARTY_2_SUMMON_GRID, PARTY_3_SUMMON_GRID };
+    std::vector<std::string> names = { PARTY_1_STATE_NAME, PARTY_2_STATE_NAME, PARTY_3_STATE_NAME };
     for (auto idx = 0; idx < names.size(); idx++) {
-        auto summonChoice = getStateCursor(event->menu, SUMMON_BATTLE_STATE, idx);
-        gridParams = { BATTLE_MENU_NAME, summonChoice, SUMMON_BATTLE_STATE, &battleSummonNameViewUpdater, 42, 360, allocateSummonRow, idx };
-        gridWidget = createGridWidget(gridParams, names[idx]);
-        addChildWidget(battleSummonView, (Widget*)gridWidget, names[idx]);
+        auto baseRowWidget = allocateBaseRow(names[idx].c_str(), 28, 32 * idx + 348);
+        addChildWidget(baseRowWidget, (Widget*)gridWidget, names[idx]);
     }
 
-    addChildWidget(mainWidget, battleSummonView, BATTLE_SUMMON_WIDGET_NAME);
+    addChildWidget(mainWidget, baseWidget, BATTLE_BASE_WIDGET_NAME);
 }
 
 Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
@@ -42,14 +39,20 @@ Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
     addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("NAME")), std::string("NAME"));
 
-    Widget atbWidget = allocateBarWidget(std::string("ATB").c_str(), xCoordinate, yCoordinate);
+    Widget atbWidget = allocateBarWidget(std::string("ATB").c_str(), xCoordinate + 532, yCoordinate);
     addChildWidget(baseDataWidget, atbWidget, std::string("ATB"));
 
-    Widget limitWidget = allocateBarWidget(std::string("LIMIT").c_str(), xCoordinate, yCoordinate);
+    Widget limitWidget = allocateBarWidget(std::string("LIMIT").c_str(), xCoordinate + 454, yCoordinate);
     addChildWidget(baseDataWidget, limitWidget, std::string("LIMIT"));
 
-    Widget barrierWidget = allocateBarriersWidget(std::string("BARRIERS").c_str(), i32 xCoordinate, i32 yCoordinate);
+    Widget barrierWidget = allocateBarriersWidget(std::string("BARRIERS").c_str(), xCoordinate + 168, yCoordinate);
     addChildWidget(baseDataWidget, barrierWidget, std::string("BARRIERS");
+
+    Widget hpWidget = allocateHPResourceWidget(std::string("HP").c_str(), xCoordinate + 260, yCoordinate);
+    addChildWidget(baseDataWidget, hpWidget, std::string("HP"));
+
+    Widget mpWidget = allocateMPResourceWidget(std::string("MP").c_str(), xCoordinate + 388, yCoordinate);
+    addChildWidget(baseDataWidget, mpWidget, std::string("MP"));
 
     return baseDataWidget;
 }
@@ -66,17 +69,33 @@ Widget* allocateBarWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
     return atbDataWidget;
 }
 
-Widget* allocateResourceWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
+Widget* allocateHPResourceWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
     auto resourceWidget = createWidget(name);
     moveWidget(resourceWidget, xCoordinate, yCoordinate);
 
-    DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate, 120, 2, 0, 0, 0, 0, 0.6f };
+    DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate + 16, 120, 2, 0, 0, 0, 0, 0.6f };
     addChildWidget(resourceWidget, (Widget*)createResourceBarWidget(resourceBar, std::string("BAR")), std::string("BAR"));
 
     DrawNumberParams numberParams = { xCoordinate, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
     addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("CURRENT")), std::string("CURRENT"));
 
-    DrawNumberParams numberParams = { xCoordinate, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
+    DrawNumberParams numberParams = { xCoordinate + 64, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
+    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("MAX")), std::string("MAX"));
+
+    return resourceWidget;
+}
+
+Widget* allocateMPResourceWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
+    auto resourceWidget = createWidget(name);
+    moveWidget(resourceWidget, xCoordinate, yCoordinate);
+
+    DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate + 16, 60, 2, 0, 0, 0, 0, 0.6f };
+    addChildWidget(resourceWidget, (Widget*)createResourceBarWidget(resourceBar, std::string("BAR")), std::string("BAR"));
+
+    DrawNumberParams numberParams = { xCoordinate, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };
+    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("CURRENT")), std::string("CURRENT"));
+
+    DrawNumberParams numberParams = { xCoordinate + 64, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };
     addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("MAX")), std::string("MAX"));
 
     return resourceWidget;

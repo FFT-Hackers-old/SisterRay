@@ -11,7 +11,7 @@
 
 
 
-void initBattleSummonViewWidget(const BattleSpellDrawEvent* event);
+void initBaseViewWidget(const BattleDrawEvent* event);
 
 Widget* allocateBarriersWidget(const char* name, i32 xCoordinate, i32 yCoordinate);
 Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate);

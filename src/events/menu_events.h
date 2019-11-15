@@ -31,11 +31,6 @@ typedef struct {
 } MateriaDrawEvent;
 
 typedef struct {
-    Menu* menu;
-    u32 menuState;
-} MenuInputEvent;
-
-typedef struct {
     Menu* menuObject;
 } MateriaInitEvent;
 
@@ -44,13 +39,11 @@ typedef struct {
     u32 menuState;
 } MenuInputEvent;
 
-
 typedef struct {
     Menu* menu;
     u32 menuState;
-} BattleSpellDrawEvent;
+} BattleDrawEvent;
 
-typedef struct{};
 
 typedef struct {
     Menu* menuObject;

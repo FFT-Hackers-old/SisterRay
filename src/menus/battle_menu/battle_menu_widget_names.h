@@ -13,6 +13,8 @@ namespace BattleMenuWidgetNames {
     const std::string BATTLE_MENU_WIDGET_NAME = std::string("BATTLE_MENU_WIDGET");
 
     //Base Menu Names
+    const std::string BATTLE_BASE_WIDGET_NAME = std::string("BATTLE_BASE");
+    const std::string BASE_BOX_NAME = std::string("BASE_BOX")
     const std::string TIME_ASSET_NAME = std::string("TIME_ASSET");
     const std::string WAIT_ASSET_NAME = std::string("WAIT_ASSET");
     const std::string CHAR_ASSET_NAME = std::string("CHAR_ASSET");

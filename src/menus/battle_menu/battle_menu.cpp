@@ -128,51 +128,43 @@ void displayBattleMenuCursorStates(Menu* menuObject, u32 state) {
 
 void dispatchBattleUpdates() {
     void* ffContext;
-    u8* gBattlePaused = (u8*)(0xDC0E70);
-    u8* gamePausedGlobal = (u8*)0xDC0E6C;
     i32* menuStateMask = (i32*)(0xDC35B4);
+    u32* dword_91BD68 = (u32*)(0x91BD68);
+    u32* dword_BF2848 = (u32*)(0xBF2848);
+    u32* dword_DB9580 = (u32*)(0xDB9580);
+    u32* dword_DC1F40 = (u32*)(0xDC1F40);
+    u32* dword_91E7B8 = (u32*)(0x91E7B8);
+    u32* dword_DC2094 = (u32*)(0xDC2094);
+    u32* dword_DC2098 = (u32*)(0xDC1F40);
+    u32* dword_DC1F44 = (u32*)(0xDC1F44);
+    u16* word_DC1F3C = (u16*)(0xDC1F3C);
 
-    dword_DB9580 = 0;
-    if (dword_91BD68 != dword_BF2848) {
-        dword_DB9580 = 1;
-        word_DC1F3C = word_9A889E;
-        sub_6D0BF1();
-        dword_DC1F48 = 0;
+    *dword_DB9580 = 0;
+    if (*dword_91BD68 != *dword_BF2848) {
+        *dword_DB9580 = 1;
+        *word_DC1F3C = *LIMIT_ACTIVE_MASK;
+        *dword_91E7B8 = 0;
+        *dword_DC2094 = -256;
+        *dword_DC2098 = -256;
+        *dword_DC1F48 = 0;
     }
-    dword_DC1F40 ^= 1u;
-    sub_6D1C78();
-    ffContext = GetContext();
+    *dword_DC1F40 ^= 1u;
+    
+    ffContext = getGraphicsCtx();
     sub_41A21E(ffContext);
-    if (dword_91BD68 != dword_BF2848)
-    {
-        dword_91BD68 = dword_BF2848;
-        *gamePausedGlobal = *gBattlePaused;
+
+    if (*dword_91BD68 != *dword_BF2848) {
+        *dword_91BD68 = *dword_BF2848;
+        *BATTLE_PAUSED_GLOBAL = *gBattlePaused;
     }
 
-    sub_6D1B88((int)&unk_DC1768 + 16 * dword_DC1F40);
     battleMenuUpdateHandler(*menuStateMask);
-    /*if (!*gBattlePaused)
-        battleInputHandler();*/
-
-    //This code handles activating paused status
-    if (receivedInput(2048) && byte_BFCDFC == 4) {
-        *gBattlePaused ^= 1u;
-        if (*gBattlePaused)
-            sub_6CE882(0x99u);
-        else
-            sub_6CE882(0x98u);
-    }
+ 
     if (!*gBattlePaused)
         incrementTimers();
-    ++dword_DC1F44;
+    ++(*dword_DC1F44);
 }
 
-
-#define DRAW_BATTLE_VIEWS                  ((void*)0x6D82EA)
-#define BATTLE_SPELL_INPUT_HANDLER         ((void*)0x6D9B98)
-#define BATTLE_SUMMON_INPUT_HANDLER        ((void*)0x6DA072)
-#define BATTLE_ESKILL_INPUT_HANDLER        ((void*)0x6DA3A8)
-#define BATTLE_ITEM_INPUT_HANDLER          ((void*)0x6D98E3)
 
 void initializeBattleMenu() {
     auto battleSpellMenu = createMenu(INIT_BATTLE_MENU, 64);
@@ -180,6 +172,10 @@ void initializeBattleMenu() {
     gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
     registerBaseViewListeners();
     initializeBattleBaseMenu();
+    registerTargetingMenuListeners();
+    initializeBattleTargetingMenu();
+    registerCommandMenuListeners();
+    initializeBattleCommandMenu();
     registerSpellMenuListeners();
     initializeBattleSpellMenu();
     registerSummonViewListeners();
@@ -188,11 +184,6 @@ void initializeBattleMenu() {
     initializeBattleItemMenu();
     registerESkillMenuListeners();
     initializeBattleESkillMenu();
-    mogReplaceFunction(DRAW_BATTLE_VIEWS, &drawBattleHandlers);
-    mogReplaceFunction(BATTLE_SPELL_INPUT_HANDLER, &battleSpellInputHandler);
-    mogReplaceFunction(BATTLE_SUMMON_INPUT_HANDLER, &battleSummonInputHandler);
-    mogReplaceFunction(BATTLE_ESKILL_INPUT_HANDLER, &battleESkillInputHandler);
-    mogReplaceFunction(BATTLE_ITEM_INPUT_HANDLER, &battleItemInputHandler);
 }
 
 /*Change this code so we can add more choices*/

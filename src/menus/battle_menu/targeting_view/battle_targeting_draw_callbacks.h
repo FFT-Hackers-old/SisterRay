@@ -1,5 +1,5 @@
-#ifndef BATTLE_BASE_DRAW_CALLBACKS_H
-#define BATTLE_BASE_DRAW_CALLBACKS_H
+#ifndef BATTLE_TARGETING_DRAW_CALLBACKS_H
+#define BATTLE_TARGETING_DRAW_CALLBACKS_H
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
@@ -10,5 +10,4 @@
 #include "../battle_menu_widget_names.h"
 
 
-void drawBattleBaseViewWidget(const BattleDrawEvent* event);
-void handleActorReady(const BattleDrawEvent* event);
+void drawTargetingCursors(const BattleDrawEvent* event);

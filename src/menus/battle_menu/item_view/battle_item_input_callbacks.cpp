@@ -26,8 +26,8 @@ void handleSelectItem(const MenuInputEvent* event) {
     if (didSucceed) {
         playMenuSound(1);
         *ISSUED_ACTION_ID = itemID;
-        *GLOBAL_USED_ACTION_TARGET_DATA = gContext.battleInventory->get_resource(flatIndex).targetFlags;
-        *GLOBAL_USED_MENU_INDEX = flatIndex;
+        *ISSUED_ACTION_TARGET_DATA = gContext.battleInventory->get_resource(flatIndex).targetFlags;
+        *ISSUED_ACTION_MENU_INDEX = flatIndex;
         setCursorTargetingData();
         setMenuState(event->menu, BATTLE_TARGETING_STATE)
         *PREVIOUS_BATTLE_MENU_STATE = BATTLE_ITEM_STATE;
@@ -35,6 +35,11 @@ void handleSelectItem(const MenuInputEvent* event) {
         /*restoreTypeGlobal = restoreType;
         if (*restoreTypeGlobal != 0xFFFF)
             initHandlerCursorState(-1, -1, 21);*/
+        // Decrement the item when it is chosen to solve the W-Item bug
+
+        if (*W_COMMAND_ENABLED == 2) {
+            gContext.battleInventory->decrementInventoryEntry(flatIndex, 1);
+        }
     }
     else {
         playMenuSound(3);

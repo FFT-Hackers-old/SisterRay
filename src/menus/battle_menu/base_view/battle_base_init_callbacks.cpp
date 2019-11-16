@@ -37,22 +37,22 @@ Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     moveWidget(baseDataWidget, xCoordinate, yCoordinate);
     
     DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
-    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("NAME")), std::string("NAME"));
+    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, PARTY_DATA_NAME), std::string("NAME"));
 
-    Widget atbWidget = allocateBarWidget(std::string("ATB").c_str(), xCoordinate + 532, yCoordinate);
-    addChildWidget(baseDataWidget, atbWidget, std::string("ATB"));
+    Widget atbWidget = allocateBarWidget(PARTY_DATA_ATB.c_str(), xCoordinate + 532, yCoordinate);
+    addChildWidget(baseDataWidget, atbWidget, PARTY_DATA_ATB);
 
-    Widget limitWidget = allocateBarWidget(std::string("LIMIT").c_str(), xCoordinate + 454, yCoordinate);
-    addChildWidget(baseDataWidget, limitWidget, std::string("LIMIT"));
+    Widget limitWidget = allocateBarWidget(PARTY_DATA_LIMIT.c_str(), xCoordinate + 454, yCoordinate);
+    addChildWidget(baseDataWidget, limitWidget, PARTY_DATA_LIMIT);
 
-    Widget barrierWidget = allocateBarriersWidget(std::string("BARRIERS").c_str(), xCoordinate + 168, yCoordinate);
-    addChildWidget(baseDataWidget, barrierWidget, std::string("BARRIERS");
+    Widget barrierWidget = allocateBarriersWidget(PARTY_DATA_BARRIERS.c_str(), xCoordinate + 168, yCoordinate);
+    addChildWidget(baseDataWidget, barrierWidget, PARTY_DATA_BARRIERS;
 
-    Widget hpWidget = allocateHPResourceWidget(std::string("HP").c_str(), xCoordinate + 260, yCoordinate);
-    addChildWidget(baseDataWidget, hpWidget, std::string("HP"));
+    Widget hpWidget = allocateHPResourceWidget(PARTY_DATA_HP.c_str(), xCoordinate + 260, yCoordinate);
+    addChildWidget(baseDataWidget, hpWidget, PARTY_DATA_HP);
 
-    Widget mpWidget = allocateMPResourceWidget(std::string("MP").c_str(), xCoordinate + 388, yCoordinate);
-    addChildWidget(baseDataWidget, mpWidget, std::string("MP"));
+    Widget mpWidget = allocateMPResourceWidget(PARTY_DATA_MP.c_str(), xCoordinate + 388, yCoordinate);
+    addChildWidget(baseDataWidget, mpWidget, PARTY_DATA_MP);
 
     return baseDataWidget;
 }
@@ -62,9 +62,9 @@ Widget* allocateBarWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
     moveWidget(atbDataWidget, xCoordinate, yCoordinate);
 
     DrawGameAssetParams barBorder = BarBorder(xCoordinate, yCoordinate, 0.6f);
-    addChildWidget(barriersDataWidget, (Widget*)createGameAssetWidget(barBorder, std::string("BORDER")), std::string("BORDER"));
+    addChildWidget(atbDataWidget, (Widget*)createGameAssetWidget(barBorder, std::string("BORDER")), std::string("BORDER"));
 
-    DrawBarParams atbBarParams = { xCoordinate, yCoordinate, 0, 12, -2139095040, 0.6f };
+    DrawBarParams atbBarParams = { xCoordinate, yCoordinate, 0, 12, 0, 0.6f };
     addChildWidget(atbDataWidget, (Widget*)createBarWidget(atbBarParams, std::string("BAR")), std::string("BAR"));
     return atbDataWidget;
 }

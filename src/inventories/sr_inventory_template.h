@@ -31,6 +31,13 @@ public:
         }
     }
 
+    void addResourceAtIndex(u16 inventory_index, u16 itemID) {
+        if (_resource_registry[inventory_index].item_id == 0xFFFF) {
+            _resource_registry[inventory_index].item_id = itemID;
+            _resource_registry[inventory_index].quantity = 1;
+        }
+    }
+
     u16 findItemInventoryIndex(u16 itemID) {
         for (auto it = begin(_resource_registry); it != end(_resource_registry); ++it) {
             if ((*it).item_id == itemID) {

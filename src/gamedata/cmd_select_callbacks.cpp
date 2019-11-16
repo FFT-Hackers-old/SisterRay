@@ -1,4 +1,5 @@
 #include "cmd_select_callbacks.h"
+#include "../battle/engine/battle_engine_interface.h
 
 handleCommandTarget(SelectCommandEvent* event) {
     // attack case
@@ -16,7 +17,7 @@ handleWeaponTarget(SelectCommandEvent* event) {
     *byte_DC3C8C = 0;
     *PREVIOUS_BATTLE_MENU_STATE = 1;
     setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
-    *GLOBAL_USED_ACTION_TARGET_DATA = event->command->targetingData;
+    setChosenActionTargetData(event->command->targetingData);
     setCursorTargetingData();
 }
 
@@ -32,7 +33,7 @@ handleSelectItem(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_ITEM_STATE);
 }
 
-void chooseBattleMenuCommands()
+/*void chooseBattleMenuCommands()
 {
     __int16 relativeRowIdx; // ST10_2
     __int16 relativeColumnIdx; // [esp+8h] [ebp-18h]
@@ -218,4 +219,4 @@ void chooseBattleMenuCommands()
             }
         }
     }
-}
+}*/

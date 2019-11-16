@@ -483,13 +483,12 @@ void drawBarWidget(BarWidget* barWidget) {
     );
 }
 
-const WidgetClass* BarWidgetKlass();
 BarWidget* createBarWidget(DrawBarParams params, std::string name) {
     BarWidget* widget = (BarWidget*)createWidget(name, sizeof(BarWidget), &kBarWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
-    widget->fraction = params.fraction;
-    widget->unk1 = params.unk1;
+    widget->length = params.length;
+    widget->thickness = params.thickness;
     widget->unk2 = params.unk2;
     widget->priority = params.priority;
     return widget;
@@ -501,6 +500,24 @@ bool isBarWidget(Widget* widget) {
 
 const WidgetClass* BarWidgetKlass() {
     return &kBarWidgetClass;
+}
+
+void updateBarLength(BarWidget* barWidget, u32 length) {
+    if (isBarWidget(barWidget)) {
+        barWidget->fraction = length
+    }
+    else {
+        srLogWrite("attempting to update bar length field of an invalid Widget type");
+    }
+}
+
+void updateBarColor(BarWidget* barWidget, i32 colorMask) {
+    if (isBarWidget(barWidget)) {
+        barWidget->unk2 = colorMask
+    }
+    else {
+        srLogWrite("attempting to update bar length field of an invalid Widget type");
+    }
 }
 
 void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {

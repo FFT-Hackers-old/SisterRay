@@ -7,6 +7,7 @@
 #define BATTLE_SUMMON_STATE  7
 #define BATTLE_MAGIC_STATE 6
 #define BATTLE_ITEM_STATE 5
+#define BATTLE_MANIP_STATE 19
 
 namespace BattleMenuWidgetNames {
     const std::string BATTLE_MENU_NAME = std::string("BATTLE_MENU");
@@ -14,7 +15,7 @@ namespace BattleMenuWidgetNames {
 
     //Base Menu Names
     const std::string BATTLE_BASE_WIDGET_NAME = std::string("BATTLE_BASE");
-    const std::string BASE_BOX_NAME = std::string("BASE_BOX")
+    const std::string BASE_BOX_NAME = std::string("BASE_BOX");
     const std::string TIME_ASSET_NAME = std::string("TIME_ASSET");
     const std::string WAIT_ASSET_NAME = std::string("WAIT_ASSET");
     const std::string CHAR_ASSET_NAME = std::string("CHAR_ASSET");
@@ -25,6 +26,14 @@ namespace BattleMenuWidgetNames {
     const std::string PARTY_1_STATE_NAME = std::string("1_PARTY");
     const std::string PARTY_2_STATE_NAME = std::string("2_PARTY");
     const std::string PARTY_3_STATE_NAME = std::string("3_PARTY");
+
+    //BASE PARTY DATA NAMES
+    const std::string PARTY_DATA_NAME = std::string("NAME");
+    const std::string PARTY_DATA_ATB = std::string("ATB");
+    const std::string PARTY_DATA_LIMIT = std::string("LIMIT");
+    const std::string PARTY_DATA_BARRIERS = std::string("BARRIERS");
+    const std::string PARTY_DATA_HP = std::string("HP");
+    const std::string PARTY_DATA_MP = std::string("MP");
 
 
     //Command Names

@@ -75,11 +75,17 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     else if (captureDirectionInput(0x8000, 8)) {
         gContext.eventBus.dispatch(MENU_INPUT_LEFT, &event, dispatchContext);
     }
-    handleCursorPositionUpdate((u32*)(&(activeCursor->context)));
+    if (activeCursor != nullptr)
+        handleCursorPositionUpdate((u32*)(&(activeCursor->context)));
 }
 
 SISTERRAY_API void addState(Menu* menu, Cursor* cursor) {
     std::unordered_map<std::string, Cursor> stateCursors = {{std::string(std::to_string(0)), cursor}};
+    menu->cursors[menu->stateCount++] = stateCursors;
+}
+
+SISTERRAY_API void addCursorlessState(Menu* menu) {
+    std::unordered_map<std::string, Cursor> stateCursors = { {std::string(std::to_string(0)), nullptr} };
     menu->cursors[menu->stateCount++] = stateCursors;
 }
 

@@ -106,9 +106,10 @@ typedef struct {
     u16 maxHP; //0x12
     u16 currentMP; //0x14
     u16 maxMP; //0x16
-    u32 timer; //0x18
-    u16 counterActionIndex; //0x1C
-    u16 counterChance; //0x1E
+    u16 atbTimer; //0x18
+    u16 limitGuage;
+    u16 barrierGauge; //0x1C
+    u16 mBarrierGauge; //0x1E
     u8 unkbyte; //0x20
     u8 commandColumns; //0x21
     u8 unknownDiviosr; //0x22

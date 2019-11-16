@@ -100,8 +100,8 @@ bool isSlotsWidget(Widget* widget);
 
 struct BarWidget_ {
     Widget widget;
-    i32 fraction;
-    i32 unk1;
+    i32 length;
+    i32 thickness;
     i32 unk2;
     float priority;
 };
@@ -111,6 +111,8 @@ const WidgetClass kBarWidgetClass = { (SRWIDGETDRAWPROC)drawBarWidget };
 const WidgetClass* BarWidgetKlass();
 BarWidget* createBarWidget(DrawBarParams params, std::string name);
 bool isBarWidget(Widget* widget);
+void updateBarLength(BarWidget* barWidget, u32 length);
+void updateBarColor(BarWidget* barWidget, i32 colorMask);
 
 struct ResourceBarWidget_ {
     Widget widget;

@@ -36,10 +36,26 @@
 #define PREVIOUS_BATTLE_MENU_STATE           (u32*)0x91EF98
 #define BATTLE_ACTIVE_ACTOR_ID               (u8*)0xDC3C7C
 #define COMMAND_TRIGGER_INDEX                (u8*)0xDC3C74
+
+
+#define ISSUED_COMMAND_ID                    (u8*)0xDC3C70;
+
 #define ISSUED_ACTION_ID                     (u16*)0xDC3C78
-#define GLOBAL_USED_ACTION_TARGET_DATA       (u16*)0xDC3C84
-#define GLOBAL_USED_MENU_INDEX               (u16*)0xDC3C54
-#define GLOBAL_USED_ITEM_RESTORE             (u16*)0xDC2088
+#define ISSUED_ACTION_TARGET_DATA            (u16*)0xDC3C84
+#define ISSUED_ACTION_MENU_INDEX             (u16*)0xDC3C54
+#define ISSUED_ACTION_RESTORE_FLAG           (u16*)0xDC2088
+#define ISSUED_ACTION_TARGET_TYPE            (u8*)0xDC3C90  
+#define ISSUED_ACTION_TARGET_INDEX           (u8*)0xDC3C94
+#define ISSUED_ACTION_STARTING_ROW           (u8*)0xDC3C58
+#define ISSUED_ACTION_VALID_TARGET_MASK      (u16*)0xDC3C60;
+
+#define W_FIRST_ACTION_USED 
+#define W_FIRST_ACTION_INDEX
+#define W_FIRST_TARGETING_CURSOR_TYPE
+#define W_FIRST_VALID_TARGET_MASK 
+#define W_FIRST_TARGET_INDEX
+#define W_FIRST_STARTING_ROW
+
 #define ACCEPTING_BATTLE_INPUT               (u32*)0xDC35AC //checked in menu handlers to determine if input can be accepted. Maybe pause?
 #define HANDLER_STATE_ARRAY                  (u8*)0xDC2068
 #define byte_9AC111                          (u8*)0x9AC111
@@ -83,5 +99,12 @@
 #define byte_DD18C8                          (u8*)0xDD18C8
 #define dword_DC20D8                         (u32*)0xDC20D8
 #define REMEMBER_CURSOR_POSITION             (u32*)0xDC3C5C
+#define ENEMY_ACTOR_IDX                      (u32*)0xDC3C64
+#define gBattlePaused                        (u8*)0xDC0E70
+#define BATTLE_PAUSED_GLOBAL                 (u8*)0xDC0E6C
+#define BATTLE_TARGETED_GLOBAL               (u8*)0xDC3C9C
+#define LIMIT_ACTIVE_MASK                    (u8*)0x9A889E
+#define word_9A889A                          (u16*)0x9A889A;
+#define W_COMMAND_ENABLED                    (u8*)0xDC3C88;
 
 #endif

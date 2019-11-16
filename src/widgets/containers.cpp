@@ -61,7 +61,7 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
                 moveWidget(child, elementX, elementY);
                 u16 startIndex = ((context.maxColumnBound) * (context.baseRowIndex)) + (context.baseColumnIndex);
                 if (cursorGrid->updater) {
-                    cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex+flatIndex);
+                    cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex + flatIndex);
                 }
                 drawWidget(child);
             }

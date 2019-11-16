@@ -150,8 +150,8 @@ typedef void(*PFNSRUPDATEMATERIASLOTSPROC)(Widget*, u8*);
 typedef struct {
     i32 xCoordinate;
     i32 yCoordinate;
-    i32 fraction;
-    i32 unk1;
+    i32 length;
+    i32 thickness;
     i32 unk2;
     float priority;
 } DrawBarParams;

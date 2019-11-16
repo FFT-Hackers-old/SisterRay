@@ -244,4 +244,28 @@ typedef u8*(*pfnsub436E15)(u8, u8, u8, i16);
 
 typedef i32(*pfnsub437185)(i32, i32, u8, i32);
 #define sub_437185               ((pfnsub437185)0x437185)
+
+typedef i16(*pfnsub437506)(void);
+#define getActorCycleTop         ((pfnsub437506)0x437506)
+
+
+typedef void(*pfnsub43753A)(void);
+#define cycleActors              ((pfnsub437506)0x43758A)
+
+typedef void(*pfnsub6CE882)(i16);
+#define sub_6CE882   ((pfnsub6CE882)0x6CE882)
+
+typedef void(*pfnsub6D1B5C)(void*, i16);
+#define gameDrawTargetingCursors     ((pfnsub6D1B5C)0x6D1B5C)
+
+
+typedef void*(*pfnsub676578)(void);
+#define getGraphicsCtx             ((pfnsub676578)0x676578)
+
+typedef void(*pfnsub41A21E)(void*);
+#define sub_41A21E                 ((pfnsub41A21E)0x41A21E)
+
+typedef void(*pfnsub4320AC)(void)
+#define incrementTimers            ((pfnsub4320AC)0x4320AC)
+
 #endif

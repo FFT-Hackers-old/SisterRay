@@ -5,14 +5,8 @@
 
 using namespace BattleMenuWidgetNames;
 
-typedef void(*pfnsub6CE882)(i16);
-#define sub_6CE862   ((pfnsub6CE882)0x6CE882)
-
 /*Spell selection handler*/
 void handlePauseBattle(const MenuInputEvent* event) {
-    void* ffContext;
-    u8* gBattlePaused = (u8*)(0xDC0E70);
-    u8* gamePausedGlobal = (u8*)0xDC0E6C;
     i32* menuStateMask = (i32*)(0xDC35B4);
     u8* byte_BFCDFC = (u8*)(0xBFCDFC);
 
@@ -23,5 +17,18 @@ void handlePauseBattle(const MenuInputEvent* event) {
             sub_6CE882(0x99u);
         else
             sub_6CE882(0x98u);
+    }
+}
+
+void swapCharacterBattle(const MenuInputEvent* event) {
+    u8* byte_DC2069 = (u8*)(0xDC2069);
+    u8* byte_DC207B = (u8*)(0xDC207B);
+    u8* byte_DC2082 = (u8*)(0xDC2082);
+    u8* byte_DC2083 = (u8*)(0xDC2083);
+    if (!*ACCEPTING_BATTLE_INPUT && (*byte_DC2069 == 2 || *byte_DC207B == 2) && *byte_DC2082 != 2 && *byte_DC2083 != 2) {
+        playMenuSound(1);
+        cycleActors();
+        setMenuState(event->menu, BATTLE_INACTIVE);
+        *ACCEPTING_BATTLE_INPUT = 1;
     }
 }

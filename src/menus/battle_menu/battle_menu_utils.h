@@ -1,13 +1,11 @@
 #ifndef BATTLE_MENU_UTILS_H
 #define BATTLE_MENU_UTILS_H
 
-
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "../menu_utils.h"
 #include "../../widgets/widget.h"
 #include "../../events/menu_events.h"
-#include "spell_view/battle_spell_menu.h"
 
 /*Return True if the character is usable by the character attempting to use it*/
 bool isUsableInBattle(u16 itemID);

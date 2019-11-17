@@ -12,5 +12,4 @@
 
 void initializeBattleSummonMenu();
 void registerSummonViewListeners();
-
 #endif

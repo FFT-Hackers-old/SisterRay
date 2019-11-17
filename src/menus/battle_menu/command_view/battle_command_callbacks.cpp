@@ -10,9 +10,9 @@ void initializeBattleCommandMenu() {
     CursorContext commandSelection = { 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 1, 1, 0, 0 };
     Cursor cmdChoiceCursor = { commandSelection, 156, 350, 24, 88 };
     auto battleMenu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
-    setStateCursor(battleMenu, BATTLE_CMD_STATE, summonChoiceCursor, 0);
-    setStateCursor(battleMenu, BATTLE_CMD_STATE, summonChoiceCursor, 1);
-    setStateCursor(battleMenu, BATTLE_CMD_STATE, summonChoiceCursor, 2);
+    setStateCursor(battleMenu, BATTLE_CMD_STATE, &cmdChoiceCursor, 0);
+    setStateCursor(battleMenu, BATTLE_CMD_STATE, &cmdChoiceCursor, 1);
+    setStateCursor(battleMenu, BATTLE_CMD_STATE, &cmdChoiceCursor, 2);
 }
 
 void registerCommandMenuListeners() {
@@ -20,5 +20,4 @@ void registerCommandMenuListeners() {
     const auto& contextKeys = std::unordered_set<SrEventContext>({BATTLE_MENU});
     gContext.eventBus.addListener(INIT_BATTLE_COMMAND, (SrEventCallback)&initBattleCommandViewWidget, modName);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&handleSelectCommand, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&handleExitSpell, modName, contextKeys);
 }

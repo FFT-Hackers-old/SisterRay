@@ -203,7 +203,6 @@ void initStatDiffWidget(const EquipInitEvent* event) {
 void initGearListWidget(const EquipInitEvent* event) {
     auto gearChoiceCursor = getStateCursor(event->menuObject, 1);
 
-    drawGridParams gridParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
     auto menuObject = event->menuObject;
@@ -221,7 +220,7 @@ void initGearListWidget(const EquipInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
-    gridParams = { EQUIP_MENU_NAME, 1, &gearViewNameUpdater, 427, 193, nullptr, 0 };
+    drawGridParams gridParams = { EQUIP_MENU_NAME, 1, &gearViewNameUpdater, 427, 193, nullptr, 0 };
     auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextWidgetKlass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 

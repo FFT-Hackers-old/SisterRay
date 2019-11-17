@@ -3,5 +3,6 @@
 
 #include <SisterRay/SisterRay.h>
 #include "action_interface.h"
+#include "action_targeting.h"
 
 #endif

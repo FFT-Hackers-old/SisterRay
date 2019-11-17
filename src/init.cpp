@@ -160,6 +160,7 @@ static void Init(void) {
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
+    mogReplaceFunction(DISPATCH_BATTLE_UPDATES, &dispatchBattleUpdates);
     initializeBattleMenu();
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);

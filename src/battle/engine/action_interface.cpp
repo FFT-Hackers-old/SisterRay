@@ -9,7 +9,7 @@ u8 getChosenCommandID() {
 }
 
 void setChosenActionID(u16 actionID) {
-    *ISSUED_ACTION_ID = actionID
+    *ISSUED_ACTION_ID = actionID;
 }
 
 u16 getChosenActionID() {
@@ -48,7 +48,6 @@ u8 getChosenActionTargetIndex() {
     return *ISSUED_ACTION_TARGET_INDEX;
 }
 
-
 void setChosenActionTargetRow(u8 targetRow) {
     *ISSUED_ACTION_STARTING_ROW = targetRow;
 }
@@ -56,7 +55,6 @@ void setChosenActionTargetRow(u8 targetRow) {
 u8 getChosenActionTargetRow() {
     return *ISSUED_ACTION_STARTING_ROW;
 }
-
 
 void setChosenActionValidTargetMask(u16 targetMask) {
     *ISSUED_ACTION_VALID_TARGET_MASK = targetMask;

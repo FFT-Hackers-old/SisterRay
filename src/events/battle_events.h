@@ -10,7 +10,7 @@ typedef struct {
 
 typedef struct {
     Menu*  menuObect;
-    EnabledCommandStruct* command
+    EnabledCommandStruct* command;
 } SelectCommandEvent;
 
 typedef struct {

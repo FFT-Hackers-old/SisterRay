@@ -60,15 +60,15 @@ void runSetupCallbacks(u16 commandIdx) {
 }
 
 /*run every select callback in order*/
-SISTERRAY_API void runSelectCallbacks(const char* name, Menu* menu, EnabledCommandStruct* command) {
+SISTERRAY_API void dispatchSelectCallbacks(const char* name, Menu* menu, EnabledCommandStruct& command) {
     auto idx = gContext.auxCommands.get_resource_index(std::string(name));
     runSelectCallbacks(command, menu);
 }
 
-void runSelectCallbacks(EnabledCommandStruct* command, Menu* menu) {
-    srLogWrite("running command select callbacks for command idx: %i", commandIdx);
-    SelectCommandEvent setupEvent = { menu, command };
-    auto& callbacks = gContext.auxCommands.get_resource(command->commandID).selectCallbacks;
+void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu) {
+    srLogWrite("running command select callbacks for command idx: %i", command.commandID);
+    SelectCommandEvent setupEvent = { menu, &command };
+    auto& callbacks = gContext.auxCommands.get_resource(command.commandID).selectCallbacks;
     for (auto callback : callbacks) {
         srLogWrite("Running command select callback");
         callback(setupEvent);

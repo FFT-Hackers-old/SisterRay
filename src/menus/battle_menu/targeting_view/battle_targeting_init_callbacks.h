@@ -9,8 +9,6 @@
 #include "../../menu.h"
 #include "../battle_menu_widget_names.h"
 
-
-
 void initTargetingViewWidget(const BattleDrawEvent* event);
 
 

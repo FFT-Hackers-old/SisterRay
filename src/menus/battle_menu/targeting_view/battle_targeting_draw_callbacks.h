@@ -11,3 +11,4 @@
 
 
 void drawTargetingCursors(const BattleDrawEvent* event);
+#endif

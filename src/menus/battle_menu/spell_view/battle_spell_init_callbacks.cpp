@@ -3,7 +3,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void initBattleMagicViewWidget(const BattleSpellDrawEvent* event) {
+void initBattleMagicViewWidget(const BattleInitEvent* event) {
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
@@ -28,7 +28,7 @@ void initBattleMagicViewWidget(const BattleSpellDrawEvent* event) {
     srLogWrite("Initializing battle spell grid widgets, names.size = %i", names.size());
     for (auto idx = 0; idx < names.size(); idx++) {
         auto magicItemChoice = getStateCursor(event->menu, idx);
-        gridParams = { magicItemChoice, &battleSpellNameViewUpdater, 42, 360, allocateSpellRow };
+        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_MAGIC_STATE, &battleSpellNameViewUpdater, 42, 360, allocateSpellRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleSpellView, (Widget*)gridWidget, names[idx]);
         srLogWrite("parent: %s child: %s bound to cursor %p", battleSpellView->name.c_str(), gridWidget->widget.widget.name.c_str(), magicItemChoice);

@@ -10,4 +10,5 @@
 #include "../battle_menu_widget_names.h"
 
 
-void drawBattleSummonViewWidget(const BattleSpellDrawEvent* event);
+void drawBattleSummonViewWidget(const BattleDrawEvent* event);
+#endif

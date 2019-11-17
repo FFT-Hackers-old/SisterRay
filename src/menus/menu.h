@@ -19,10 +19,10 @@ struct _Menu {
     Widget* menuWidget;
     SrEventType initEvent;
     std::unordered_map<u32, std::unordered_map<u32, Cursor>> cursors; //associate cursors to a various state by name
-    std::unordered_map<u32, u32> activeStateCursors
+    std::unordered_map<u32, u32> activeStateCursors;
 };
 
-Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* cursors);
+Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* cursors=nullptr);
 void destroyMenu(Menu* menu);
 
 class MenuRegistry : public SrNamedResourceRegistry<Menu*, std::string> {
@@ -44,6 +44,5 @@ typedef struct {
 #define equipMenuWindowConfig ((oldDrawBoxParams*)0x920AC8)
 
 void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext menuContext);
-
 
 #endif

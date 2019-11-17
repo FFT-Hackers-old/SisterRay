@@ -6,10 +6,10 @@
 #include "../menus/menu_interface.h"
 #include "../menus/battle_menu/battle_menu_widget_names.h"
 
-typedef void(*SRPFNSCMDSELECTCALLBACK)(SelectCommandEvent);
+typedef void(*SRPFNCMDSELECTCALLBACK)(SelectCommandEvent);
 
-handleSelectMagic(SelectCommandEvent* event);
-handleSelectSummon(SelectCommandEvent* event);
-handleSelectItem(SelectCommandEvent* event);
+void handleSelectMagic(SelectCommandEvent* event);
+void handleSelectSummon(SelectCommandEvent* event);
+void handleSelectItem(SelectCommandEvent* event);
 
 #endif // !COMMAND_CALLBACKS_H

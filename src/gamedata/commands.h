@@ -14,7 +14,7 @@
 typedef struct {
     AuxCommandData auxData;
     std::vector<SRPFNCOMMANDSETUP> setupCallbacks;
-    std::vector<SRPFNSCMDSELECTCALLBACK> selectCallbacks;
+    std::vector<SRPFNCMDSELECTCALLBACK> selectCallbacks;
 } PAuxCommandData;
 
 class SrCommandRegistry : public SrNamedResourceRegistry<CommandData, std::string> {
@@ -33,8 +33,8 @@ void initializeAuxCommandRegistry();
 void initializeNonPlayerCommands();
 SISTERRAY_API void runSetupCallbacks(const char* name);
 void runSetupCallbacks(u16 commandIdx);
-SISTERRAY_API void runSelectCallbacks(const char* name, Menu* menu, EnabledCommandStruct* command);
-void runSelectCallbacks(EnabledCommandStruct* command, Menu* menu);
+void runSelectCallbacks(const char* name, Menu* menu, EnabledCommandStruct& command);
+void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu);
 SISTERRAY_API void initCommands(SrKernelStream* stream);
 u16 getDefaultCmdAnimScript(u16 idx);
 u8 getDefaultCmdDamage(u16 commandIdx);

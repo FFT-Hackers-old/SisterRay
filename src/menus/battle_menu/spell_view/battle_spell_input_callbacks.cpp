@@ -2,6 +2,7 @@
 #include "../../menu.h"
 #include "../../../impl.h"
 #include "../battle_menu_utils.h"
+#include "../../../battle/engine/battle_engine_interface.h"
 
 using namespace BattleMenuWidgetNames;
 
@@ -20,28 +21,26 @@ void handleSelectSpell(const MenuInputEvent* event) {
     auto flatIndex = (magicChoiceCursor.maxColumnBound * (magicChoiceCursor.relativeRowIndex + magicChoiceCursor.baseRowIndex)) + magicChoiceCursor.relativeColumnIndex;
     if (enabledSpells[flatIndex].propertiesMask & 2 || enabledSpells[flatIndex].magicIndex == 255) {
         playMenuSound(3);
+        return;
     }
-    else {
-        playMenuSound(1);
-        *ISSUED_ACTION_ID = enabledSpells[flatIndex].magicIndex;
-        *GLOBAL_USED_ACTION_TARGET_DATA = enabledSpells[flatIndex].targetData;
-        *GLOBAL_USED_MENU_INDEX = flatIndex;
-        setCursorTargetingData();
-        setMenuState(event->menu, BATTLE_TARGETING_STATE)
-        *PREVIOUS_BATTLE_MENU_STATE = BATTLE_MAGIC_STATE;
-        //auto restoreType = gContext.attacks.get_element(assemblekey(2, enabledSpells[flatIndex].magicIndex)).attackData.restoreTypes;
-        //*restoreTypeGlobal = restoreType;
-        // if (*restoreTypeGlobal != 0xFFFF)
-        //    initHandlerCursorState(-1, -1, 21); //Open up the "restore view" if it's defined
-    }
+    playMenuSound(1);
+    setChosenActionID(enabledSpells[flatIndex].magicIndex);
+    setChosenActionMenuIndex(flatIndex);
+    setTargetingFromFlags(enabledSpells[flatIndex].targetData, false);
+    setMenuState(event->menu, BATTLE_TARGETING_STATE);
+    *PREVIOUS_BATTLE_MENU_STATE = BATTLE_MAGIC_STATE;
+    //auto restoreType = gContext.attacks.get_element(assemblekey(2, enabledSpells[flatIndex].magicIndex)).attackData.restoreTypes;
+    //*restoreTypeGlobal = restoreType;
+    // if (*restoreTypeGlobal != 0xFFFF)
+    //    initHandlerCursorState(-1, -1, 21); //Open up the "restore view" if it's defined
 }
 
 
 void handleExitSpell(const MenuInputEvent* event) {
-    if (event->menuState != BATTLE_SUMMON_STATE)
+    if (event->menuState != BATTLE_MAGIC_STATE)
         return;
 
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
-    setMenuState(event->menu, BATTLE_CMD_STATE)
+    setMenuState(event->menu, BATTLE_CMD_STATE);
 }

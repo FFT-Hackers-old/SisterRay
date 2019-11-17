@@ -1,4 +1,4 @@
-#include "battle_input_targeting_callbacks.h"
+#include "battle_targeting_input_callbacks.h"
 #include "../../menu.h"
 #include "../../../impl.h"
 #include "../battle_menu_utils.h"
@@ -7,10 +7,13 @@
 using namespace BattleMenuWidgetNames;
 
 void handleSelectTargets(const MenuInputEvent* event) {
-    if (!ACCEPTING_BATTLE_INPUT) {
+    if (event->menuState != BATTLE_TARGETING_STATE)
+        return;
+
+    if (!*ACCEPTING_BATTLE_INPUT) {
         if (byte_BFB2EC || word_DC38D0) {
                 playMenuSound(3);
-                ACCEPTING_BATTLE_INPUT = 1;
+                *ACCEPTING_BATTLE_INPUT = 1;
                 return;
         }
         if (*W_COMMAND_ENABLED) {
@@ -18,6 +21,7 @@ void handleSelectTargets(const MenuInputEvent* event) {
                 executeWCommand();
                 return;
             }
+
             auto menuChoice = getStateCursor(event->menu, getMenuState(event->menu), *BATTLE_ACTIVE_ACTOR_ID)->context;
             auto flatIndex = menuChoice.baseRowIndex + menuChoice.relativeRowIndex;
             if (*ISSUED_COMMAND_ID == CMD_W_ITEM) {
@@ -47,6 +51,10 @@ void handleSelectTargets(const MenuInputEvent* event) {
 }
 
 void handleExitSelectTargets(const MenuInputEvent* event) {
+
+    if (event->menuState != BATTLE_TARGETING_STATE)
+        return;
+
     if (*W_COMMAND_ENABLED == 2 && (*ISSUED_COMMAND_ID == CMD_W_ITEM)) {
         const BattleInventoryEntry& inventoryEntry = gContext.battleInventory->get_resource(*W_FIRST_ACTION_INDEX);
         if (inventoryEntry.item_id == 0xFFFF) {
@@ -61,4 +69,6 @@ void handleExitSelectTargets(const MenuInputEvent* event) {
     if (byte_DC207D)
         setViewState3(21);
 }
-}
+
+
+

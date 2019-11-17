@@ -9,5 +9,6 @@
 #include "../battle_menu_widget_names.h"
 
 void handlePauseBattle(const MenuInputEvent* event);
+void swapCharacterBattle(const MenuInputEvent* event);
 
 #endif

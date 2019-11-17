@@ -8,6 +8,6 @@ void drawTargetingCursors(const BattleDrawEvent* event) {
     if (event->menuState != BATTLE_TARGETING_STATE) {
         return;
     }
-    gameDrawTargetingCursors(0xDC1768, *BATTLE_TARGETED_GLOBAL);
+    gameDrawTargetingCursors((void*)0xDC1768, *BATTLE_TARGETED_GLOBAL);
 }
 

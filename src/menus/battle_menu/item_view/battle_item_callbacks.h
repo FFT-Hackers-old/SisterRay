@@ -5,6 +5,7 @@
 #include <SisterRay/SisterRay.h>
 #include "battle_item_init_callbacks.h"
 #include "battle_item_input_callbacks.h"
+#include "battle_item_draw_callbacks.h"
 
 
 void initializeBattleItemMenu();

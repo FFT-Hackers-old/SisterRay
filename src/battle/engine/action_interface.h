@@ -2,6 +2,7 @@
 #define ACTION_INTERFACE_H
 
 #include <SisterRay/SisterRay.h>
+
 SISTERRAY_API void setChosenCommandID(u8 commandID);
 SISTERRAY_API u8 getChosenCommandID();
 SISTERRAY_API void setChosenActionID(u16 actionID);
@@ -18,5 +19,6 @@ SISTERRAY_API u8 getChosenActionTargetIndex();
 SISTERRAY_API void setChosenActionTargetRow(u8 targetRow);
 SISTERRAY_API u8 getChosenActionTargetRow();
 SISTERRAY_API void setChosenActionValidTargetMask(u16 targetMask);
-SISTERRAY_API u8 getChosenActionValidTargetMask()
+SISTERRAY_API u8 getChosenActionValidTargetMask();
+
 #endif 

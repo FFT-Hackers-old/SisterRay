@@ -42,6 +42,7 @@
 #define RECALCULATE_DERIVED_STATS       ((void*)0x5CB2CC)
 #define UPDATE_COMMANDS_ACTIVE          ((void*)0x437679)
 #define DISPATCH_AUTO_ACTIONS           ((void*)0x5C8CFA)
+#define DISPATCH_BATTLE_UPDATES         ((void*)0x6CE98C)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);
@@ -265,7 +266,11 @@ typedef void*(*pfnsub676578)(void);
 typedef void(*pfnsub41A21E)(void*);
 #define sub_41A21E                 ((pfnsub41A21E)0x41A21E)
 
-typedef void(*pfnsub4320AC)(void)
+typedef void(*pfnsub4320AC)(void);
 #define incrementTimers            ((pfnsub4320AC)0x4320AC)
 
+typedef void(*pfnsub6E59BC)(u8);
+#define sub_6E59BC                 ((pfnsub6E59BC)0x6E59BC)
+
+// const pfnsub6E59BC sub_deez_nuts = ((pfnsub6E59BC)0x6E59BC);
 #endif

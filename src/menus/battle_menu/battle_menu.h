@@ -15,6 +15,7 @@
 #include "item_view/battle_item_callbacks.h"
 
 u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState);
+void dispatchBattleUpdates();
 void initializeBattleMenu();
 
 #endif

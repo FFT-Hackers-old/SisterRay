@@ -6,16 +6,14 @@
 using namespace BattleMenuWidgetNames;
 
 void initializeBattleBaseMenu(std::string battleMenuName) {
-    CursorContext summonSelection = { 0, 0, 1, 3, 0, 0, 1, SUMMON_COUNT, 0, 0, 0, 0, 0, 1 };
-    Cursor summonChoiceCursor = { summonSelection, 8, 364, 32, 156 };
-    auto battleSpellMenu = gContext.menuWidgets.get_element(battleMenuName);
-    setStateCursor(battleSpellMenu, SUMMON_BATTLE_STATE, summonChoiceCursor, 0);
-    setStateCursor(battleSpellMenu, SUMMON_BATTLE_STATE, summonChoiceCursor, 1);
-    setStateCursor(battleSpellMenu, SUMMON_BATTLE_STATE, summonChoiceCursor, 2);
+    srLogWrite(std::string("Initializing base battle view").c_str());
 }
 
 void registerBaseViewListeners() {
     const auto& modName = std::string("srFF7Base");
     const auto& contextKeys = std::unordered_set<SrEventContext>({BATTLE_MENU});
+    gContext.eventBus.addListener(INIT_BATTLE_MENU, (SrEventCallback)&initBaseViewWidget, modName);
+    gContext.eventBus.addListener(DRAW_BATTLE_MENU, (SrEventCallback)&drawBaseViewWidget, modName);
     gContext.eventBus.addListener(MENU_INPUT_START, (SrEventCallback)&handlePauseBattle, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_TRIANGLE, (SrEventCallback)&swapCharacterBattle, modName, contextKeys);
 }

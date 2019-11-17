@@ -2,6 +2,7 @@
 #include "../../menu.h"
 #include "../../../impl.h"
 #include "../battle_menu_utils.h"
+#include "../../../battle/engine/battle_engine_interface.h"
 
 using namespace BattleMenuWidgetNames;
 
@@ -25,11 +26,10 @@ void handleSelectItem(const MenuInputEvent* event) {
     bool didSucceed = didItemUseSucceed(itemID);
     if (didSucceed) {
         playMenuSound(1);
-        *ISSUED_ACTION_ID = itemID;
-        *ISSUED_ACTION_TARGET_DATA = gContext.battleInventory->get_resource(flatIndex).targetFlags;
-        *ISSUED_ACTION_MENU_INDEX = flatIndex;
-        setCursorTargetingData();
-        setMenuState(event->menu, BATTLE_TARGETING_STATE)
+        setChosenActionID(itemID);
+        setChosenActionMenuIndex(flatIndex);
+        setTargetingFromFlags(gContext.battleInventory->get_resource(flatIndex).targetFlags, false);
+        setMenuState(event->menu, BATTLE_TARGETING_STATE);
         *PREVIOUS_BATTLE_MENU_STATE = BATTLE_ITEM_STATE;
         auto restoreType = gContext.items.get_resource(itemID).resource_conditions;
         /*restoreTypeGlobal = restoreType;
@@ -47,11 +47,11 @@ void handleSelectItem(const MenuInputEvent* event) {
 }
 
 
-void handleExitItem(const BattleSpellInputEvent* event) {
+void handleExitItem(const MenuInputEvent* event) {
     if (event->menuState != BATTLE_ITEM_STATE)
         return;
 
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
-    setMenuState(event->menu, BATTLE_CMD_STATE)
+    setMenuState(event->menu, BATTLE_CMD_STATE);
 }

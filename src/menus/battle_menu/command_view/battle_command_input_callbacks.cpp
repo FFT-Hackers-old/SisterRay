@@ -1,13 +1,13 @@
-#include "battle_spell_callbacks.h"
+#include "battle_command_input_callbacks.h"
 #include "../../menu.h"
 #include "../../../impl.h"
 #include "../battle_menu_utils.h"
 #include "../../../battle/engine/battle_engine_interface.h"
 
-using namespace BattleSpellWidgetNames;
+using namespace BattleMenuWidgetNames;
 
 /*Spell selection handler*/
-void handleSelectCommand(const BattleSpellInputEvent* event) {
+void handleSelectCommand(const MenuInputEvent* event) {
     auto commandChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
     auto& enabledCommands = PARTY_STRUCT_ARRAY[*BATTLE_ACTIVE_ACTOR_ID].enabledCommandArray;
 
@@ -20,7 +20,7 @@ void handleSelectCommand(const BattleSpellInputEvent* event) {
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (commandChoiceCursor.maxColumnBound * (commandChoiceCursor.relativeRowIndex + commandChoiceCursor.baseRowIndex)) + commandChoiceCursor.relativeColumnIndex;
-    if (enabledCommands[flatIndex].commandFlags & 2 || enabledCommands[flatIndex].magicIndex == 255) {
+    if (enabledCommands[flatIndex].commandFlags & 2 || enabledCommands[flatIndex].commandID == 255) {
         playMenuSound(3);
     }
     else {

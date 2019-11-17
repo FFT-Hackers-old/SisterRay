@@ -18,7 +18,6 @@ SISTERRAY_API i32 getMenuState(Menu* menu);
 SISTERRAY_API void setMenuState(Menu* menu, i32 value);
 SISTERRAY_API Widget* getWidget(Menu* menu);
 SISTERRAY_API u32 getActiveCursorIndex(Menu* menu, u32 menuState);
-SISTERRAY_API void setActiveCursorIndex(Menu* menu, u32 menuState, u32 cursorIndex)
-
+SISTERRAY_API void setActiveCursorIndex(Menu* menu, u32 menuState, u32 cursorIndex);
 
 #endif

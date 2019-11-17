@@ -2,7 +2,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void drawBattleSummonViewWidget(const BattleSpellDrawEvent* event) {
+void drawBattleSummonViewWidget(const BattleDrawEvent* event) {
 
     auto menuWidget = event->menu->menuWidget;
     if (event->menuState != BATTLE_SUMMON_STATE) {
@@ -15,7 +15,7 @@ void drawBattleSummonViewWidget(const BattleSpellDrawEvent* event) {
     for (i32 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
         if (partyIdx == *BATTLE_ACTIVE_ACTOR_ID) {
             enableWidget(getChild(getChild(menuWidget, BATTLE_SUMMON_WIDGET_NAME), names[partyIdx]));
-            setActiveCursorIndex(event->menu, BATTLE_SUMMON_STATE, *BATTLE_ACTIVE_ACTOR_ID)
+            setActiveCursorIndex(event->menu, BATTLE_SUMMON_STATE, *BATTLE_ACTIVE_ACTOR_ID);
             continue;
         }
         disableWidget(getChild(getChild(menuWidget, BATTLE_SUMMON_WIDGET_NAME), names[partyIdx]));

@@ -1,5 +1,5 @@
-#ifndef BATTLE_SUMMON_DRAW_CALLBACKS_H
-#define BATTLE_SUMMON_DRAW_CALLBACKS_H
+#ifndef BATTLE_COMMAND_DRAW_CALLBACKS_H
+#define BATTLE_COMMAND_DRAW_CALLBACKS_H
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
@@ -9,5 +9,6 @@
 #include "../../menu.h"
 #include "../battle_menu_widget_names.h"
 
+void drawBattleCommandViewWidget(const BattleDrawEvent* event);
 
-void drawBattleCommandViewWidget(const BattleSpellDrawEvent* event);
+#endif

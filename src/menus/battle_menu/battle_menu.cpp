@@ -10,14 +10,11 @@ void battleMenuUpdateHandler(i32 updateStateMask) {
     sub_6C98A6();
     auto menuWidget = menuObject->menuWidget;
 
-    BattleSpellInputEvent event = { menuObject, menuObject->currentState };
+    MenuInputEvent event = { menuObject, menuObject->currentState };
     gContext.eventBus.dispatch(DRAW_BATTLE_MENU, &event);
     drawWidget(menuWidget);
 
     drawCursor(getStateCursor(menuObject, menuObject->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
-
-    //Do not dispatch the input if the menu is paused
-    Menu* menuObject = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
     dispatchMenuInput(*menuStateMask, menuObject, BATTLE_MENU);
 }
 
@@ -46,10 +43,7 @@ typedef i32(*pfnsub6E384F)();
 #define sub_6E384F      ((pfnsub6E384F)(0x6E384F))
 
 
-/*this function will replace the games version, handling drawing for battle menu view based on the menu state passed in as an argument
-  It also handles input, so we will NOP the input functions the game relied on up to this point, which are separate, for these views
-  We will also have to kill the games cursor/box drawing stuff eventually*/
-u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState) {
+/*u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState) {
     u8* byte_DC3654 = (u8*)(0xDC3654);
     switch (battleMenuState) {
         case 0:
@@ -137,6 +131,7 @@ void dispatchBattleUpdates() {
     u32* dword_DC2094 = (u32*)(0xDC2094);
     u32* dword_DC2098 = (u32*)(0xDC1F40);
     u32* dword_DC1F44 = (u32*)(0xDC1F44);
+    u32* dword_DC1F48 = (u32*)0xDC1F48;
     u16* word_DC1F3C = (u16*)(0xDC1F3C);
 
     *dword_DB9580 = 0;
@@ -176,14 +171,14 @@ void initializeBattleMenu() {
     initializeBattleTargetingMenu();
     registerCommandMenuListeners();
     initializeBattleCommandMenu();
-    registerSpellMenuListeners();
-    initializeBattleSpellMenu();
-    registerSummonViewListeners();
-    initializeBattleSummonMenu();
-    registerItemMenuListeners();
-    initializeBattleItemMenu();
-    registerESkillMenuListeners();
-    initializeBattleESkillMenu();
+    //registerSpellMenuListeners();
+    //initializeBattleSpellMenu();
+    //registerSummonViewListeners();
+    //initializeBattleSummonMenu();
+    //registerItemMenuListeners();
+    //initializeBattleItemMenu();
+    //registerESkillMenuListeners();
+    //initializeBattleESkillMenu();
 }
 
 /*Change this code so we can add more choices*/

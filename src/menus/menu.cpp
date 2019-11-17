@@ -28,9 +28,11 @@ Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* cursors) {
     menu->stateCount = stateCount;
     menu->initEvent = initEvent;
     menu->currentState = 0;
-    for (auto i = 0; i < stateCount; i++) {
-        menu->cursors[i][0] = cursors[stateCount];
-        menu->activeStateCursors[i] = 0
+    if (cursors != nullptr) {
+        for (auto i = 0; i < stateCount; i++) {
+            menu->cursors[i][0] = cursors[stateCount];
+            menu->activeStateCursors[i] = 0
+        }
     }
     menu->menuWidget = nullptr;
     return menu;
@@ -85,8 +87,7 @@ SISTERRAY_API void addState(Menu* menu, Cursor* cursor) {
 }
 
 SISTERRAY_API void addCursorlessState(Menu* menu) {
-    std::unordered_map<std::string, Cursor> stateCursors = { {std::string(std::to_string(0)), nullptr} };
-    menu->cursors[menu->stateCount++] = stateCursors;
+    menu->cursors[menu->stateCount++];
 }
 
 SISTERRAY_API Cursor* getStateCursor(Menu* menu, u32 menuState, u32 cursorIdx) {
@@ -101,7 +102,10 @@ SISTERRAY_API Cursor* getStateCursor(Menu* menu, u32 menuState, u32 cursorIdx) {
 
 SISTERRAY_API void setStateCursor(Menu* menu, u32 menuState, Cursor* cursor, u32 cursorIdx) {
     if (menuState < menu->stateCount) {
-        menu->cursors[menuState][cursorIdx] = *cursor;
+        auto it = menu->cursors[menuState].find(cursorIdx);
+        if (it != menu->cursors[menuState].end()) {
+            menu->cursors[menuState][cursorIdx] = *cursor;
+        }
     }
 }
 

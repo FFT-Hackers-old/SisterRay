@@ -39,19 +39,19 @@ Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
     addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, PARTY_DATA_NAME), std::string("NAME"));
 
-    Widget atbWidget = allocateBarWidget(PARTY_DATA_ATB.c_str(), xCoordinate + 532, yCoordinate);
+    auto atbWidget = allocateBarWidget(PARTY_DATA_ATB.c_str(), xCoordinate + 532, yCoordinate);
     addChildWidget(baseDataWidget, atbWidget, PARTY_DATA_ATB);
 
-    Widget limitWidget = allocateBarWidget(PARTY_DATA_LIMIT.c_str(), xCoordinate + 454, yCoordinate);
+    auto limitWidget = allocateBarWidget(PARTY_DATA_LIMIT.c_str(), xCoordinate + 454, yCoordinate);
     addChildWidget(baseDataWidget, limitWidget, PARTY_DATA_LIMIT);
 
-    Widget barrierWidget = allocateBarriersWidget(PARTY_DATA_BARRIERS.c_str(), xCoordinate + 168, yCoordinate);
-    addChildWidget(baseDataWidget, barrierWidget, PARTY_DATA_BARRIERS;
+    auto barrierWidget = allocateBarriersWidget(PARTY_DATA_BARRIERS.c_str(), xCoordinate + 168, yCoordinate);
+    addChildWidget(baseDataWidget, barrierWidget, PARTY_DATA_BARRIERS);
 
-    Widget hpWidget = allocateHPResourceWidget(PARTY_DATA_HP.c_str(), xCoordinate + 260, yCoordinate);
+    auto hpWidget = allocateHPResourceWidget(PARTY_DATA_HP.c_str(), xCoordinate + 260, yCoordinate);
     addChildWidget(baseDataWidget, hpWidget, PARTY_DATA_HP);
 
-    Widget mpWidget = allocateMPResourceWidget(PARTY_DATA_MP.c_str(), xCoordinate + 388, yCoordinate);
+    auto mpWidget = allocateMPResourceWidget(PARTY_DATA_MP.c_str(), xCoordinate + 388, yCoordinate);
     addChildWidget(baseDataWidget, mpWidget, PARTY_DATA_MP);
 
     return baseDataWidget;
@@ -76,11 +76,11 @@ Widget* allocateHPResourceWidget(const char* name, i32 xCoordinate, i32 yCoordin
     DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate + 16, 120, 2, 0, 0, 0, 0, 0.6f };
     addChildWidget(resourceWidget, (Widget*)createResourceBarWidget(resourceBar, std::string("BAR")), std::string("BAR"));
 
-    DrawNumberParams numberParams = { xCoordinate, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
-    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("CURRENT")), std::string("CURRENT"));
+    DrawNumberParams currentAmtParams = { xCoordinate, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
+    addChildWidget(resourceWidget, (Widget*)createNumberWidget(currentAmtParams, std::string("CURRENT")), std::string("CURRENT"));
 
-    DrawNumberParams numberParams = { xCoordinate + 64, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
-    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("MAX")), std::string("MAX"));
+    DrawNumberParams maxAmtParams = { xCoordinate + 64, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
+    addChildWidget(resourceWidget, (Widget*)createNumberWidget(maxAmtParams, std::string("MAX")), std::string("MAX"));
 
     return resourceWidget;
 }
@@ -92,11 +92,11 @@ Widget* allocateMPResourceWidget(const char* name, i32 xCoordinate, i32 yCoordin
     DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate + 16, 60, 2, 0, 0, 0, 0, 0.6f };
     addChildWidget(resourceWidget, (Widget*)createResourceBarWidget(resourceBar, std::string("BAR")), std::string("BAR"));
 
-    DrawNumberParams numberParams = { xCoordinate, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };
-    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("CURRENT")), std::string("CURRENT"));
+    DrawNumberParams currentAmtParams = { xCoordinate, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };
+    addChildWidget(resourceWidget, (Widget*)createNumberWidget(currentAmtParams, std::string("CURRENT")), std::string("CURRENT"));
 
-    DrawNumberParams numberParams = { xCoordinate + 64, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };
-    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, std::string("MAX")), std::string("MAX"));
+    DrawNumberParams maxAmtParams = { xCoordinate + 64, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };
+    addChildWidget(resourceWidget, (Widget*)createNumberWidget(maxAmtParams, std::string("MAX")), std::string("MAX"));
 
     return resourceWidget;
 }
@@ -113,5 +113,5 @@ Widget* allocateBarriersWidget(const char* name, i32 xCoordinate, i32 yCoordinat
     DrawBarParams mBarrierBarParams = { xCoordinate, yCoordinate, 0, 8, -2139078656, 0.6f };
     addChildWidget(barriersDataWidget, (Widget*)createBarWidget(mBarrierBarParams, std::string("MBARRIER_BAR")), std::string("MBARRIER_BAR"));
 
-    return barriersDataWidget
+    return barriersDataWidget;
 }

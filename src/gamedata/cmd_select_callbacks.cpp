@@ -1,35 +1,33 @@
 #include "cmd_select_callbacks.h"
-#include "../battle/engine/battle_engine_interface.h
+#include "../battle/engine/battle_engine_interface.h"
 
-handleCommandTarget(SelectCommandEvent* event) {
+void handleCommandTarget(SelectCommandEvent* event) {
     // attack case
     u8* byte_DC3C8C = (u8*)0xDC3C8C;
     *byte_DC3C8C = 1;
     *PREVIOUS_BATTLE_MENU_STATE = 1;
     setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
-    *GLOBAL_USED_ACTION_TARGET_DATA = event->command->targetingData;
-    setCursorTargetingData();
+    setTargetingFromFlags(event->command->targetingData, false);
 }
 
-handleWeaponTarget(SelectCommandEvent* event) {
+void handleWeaponTarget(SelectCommandEvent* event) {
     // attack case
     u8* byte_DC3C8C = (u8*)0xDC3C8C;
     *byte_DC3C8C = 0;
     *PREVIOUS_BATTLE_MENU_STATE = 1;
     setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
-    setChosenActionTargetData(event->command->targetingData);
-    setCursorTargetingData();
+    setTargetingFromFlags(event->command->targetingData, false);
 }
 
-handleSelectMagic(SelectCommandEvent* event) {
+void handleSelectMagic(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_MAGIC_STATE);
 }
 
-handleSelectSummon(SelectCommandEvent* event) {
+void handleSelectSummon(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_SUMMON_STATE);
 }
 
-handleSelectItem(SelectCommandEvent* event) {
+void handleSelectItem(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_ITEM_STATE);
 }
 

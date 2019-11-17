@@ -2,6 +2,7 @@
 #include "../../menu.h"
 #include "../../../impl.h"
 #include "../battle_menu_utils.h"
+#include "../../../battle/engine/battle_engine_interface.h"
 
 using namespace BattleMenuWidgetNames;
 
@@ -19,16 +20,14 @@ void handleSelectSummon(const MenuInputEvent* event) {
     auto flatIndex = (summonChoiceCursor.maxColumnBound * (summonChoiceCursor.relativeRowIndex + summonChoiceCursor.baseRowIndex)) + summonChoiceCursor.relativeColumnIndex;
     if (enabledSummons[flatIndex].propertiesMask & 2 || enabledSummons[flatIndex].magicIndex == 0xFF) {
         playMenuSound(3);
+        return;
     }
-    else {
-        playMenuSound(1);
-        *ISSUED_ACTION_ID = enabledSummons[flatIndex].magicIndex;
-        *GLOBAL_USED_ACTION_TARGET_DATA = enabledSummons[flatIndex].targetData;
-        *GLOBAL_USED_MENU_INDEX = flatIndex;
-        setCursorTargetingData();
-        setMenuState(menu, BATTLE_TARGETING_STATE);
-        *PREVIOUS_BATTLE_MENU_STATE = BATTLE_SUMMON_STATE;
-    }
+    playMenuSound(1);
+    setChosenActionID(enabledSummons[flatIndex].magicIndex);
+    setChosenActionMenuIndex(flatIndex);
+    setTargetingFromFlags(enabledSummons[flatIndex].targetData, false);
+    setMenuState(event->menu, BATTLE_TARGETING_STATE);
+    *PREVIOUS_BATTLE_MENU_STATE = BATTLE_SUMMON_STATE;
 }
 
 
@@ -37,5 +36,5 @@ void handleExitSummon(const MenuInputEvent* event) {
         return;
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
-    setMenuState(event->menu, BATTLE_CMD_STATE)
+    setMenuState(event->menu, BATTLE_CMD_STATE);
 }

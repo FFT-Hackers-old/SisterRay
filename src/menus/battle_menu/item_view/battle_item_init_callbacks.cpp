@@ -3,8 +3,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void initBattleItemViewWidget(const BattleSpellDrawEvent* event) {
-    drawGridParams gridParams;
+void initBattleItemViewWidget(const BattleInitEvent* event) {
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
@@ -26,7 +25,7 @@ void initBattleItemViewWidget(const BattleSpellDrawEvent* event) {
     std::vector<std::string> names = { PARTY_1_SPELL_GRID, PARTY_2_SPELL_GRID, PARTY_3_SPELL_GRID };
     for (auto idx = 0; idx < names.size(); idx++) {
         auto battleItemChoice = getStateCursor(event->menu, idx);
-        gridParams = { battleItemChoice, &battleInventoryRowUpdater, 98, 360, allocateBattleInventoryRow };
+        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_ITEM_STATE, &battleInventoryRowUpdater, 98, 360, allocateBattleInventoryRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleItemView, (Widget*)gridWidget, names[idx]);
     }

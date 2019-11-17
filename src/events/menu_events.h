@@ -46,7 +46,7 @@ typedef struct {
 
 
 typedef struct {
-    Menu* menuObject;
+    Menu* menu;
 } BattleInitEvent;
 
 /*Event on which we dispatch handlers for displaying the various types of materia*/

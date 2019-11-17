@@ -6,12 +6,7 @@
 using namespace BattleMenuWidgetNames;
 
 void initializeBattleTargetingMenu() {
-    CursorContext summonSelection = { 0, 0, 1, 3, 0, 0, 1, SUMMON_COUNT, 0, 0, 0, 0, 0, 1 };
-    Cursor summonChoiceCursor = { summonSelection, 8, 364, 32, 156 };
-    auto battleSpellMenu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
-    setStateCursor(battleSpellMenu, SUMMON_BATTLE_STATE, summonChoiceCursor, 0);
-    setStateCursor(battleSpellMenu, SUMMON_BATTLE_STATE, summonChoiceCursor, 1);
-    setStateCursor(battleSpellMenu, SUMMON_BATTLE_STATE, summonChoiceCursor, 2);
+    srLogWrite(std::string("initializing targeting menu").c_str());
 }
 
 void registerTargetingMenuListeners() {

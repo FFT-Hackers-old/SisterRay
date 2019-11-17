@@ -3,15 +3,15 @@
 #include <unordered_set>
 #include "../../../impl.h"
 
-using namespace BattleItemWidgetNames;
+using namespace BattleMenuWidgetNames;
 
 void initializeBattleItemMenu() {
     CursorContext itemContext = { 0, 0, 1, 3, 0, 0, 1, gContext.battleInventory->slots_in_use, 0, 0, 0, 0, 0, 1 };
-    Cursor itemCursor = { itemContext, 36, 364, 32, 156 };
+    Cursor itemChoiceCursor = { itemContext, 36, 364, 32, 156 };
     auto battleMenu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
-    setStateCursor(battleMenu, BATTLE_ITEM_STATE, summonChoiceCursor, 0);
-    setStateCursor(battleMenu, BATTLE_ITEM_STATE, summonChoiceCursor, 1);
-    setStateCursor(battleMenu, BATTLE_ITEM_STATE, summonChoiceCursor, 2);
+    setStateCursor(battleMenu, BATTLE_ITEM_STATE, &itemChoiceCursor, 0);
+    setStateCursor(battleMenu, BATTLE_ITEM_STATE, &itemChoiceCursor, 1);
+    setStateCursor(battleMenu, BATTLE_ITEM_STATE, &itemChoiceCursor, 2);
 }
 
 void registerItemMenuListeners() {

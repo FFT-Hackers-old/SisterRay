@@ -5,6 +5,7 @@
 #include <SisterRay/SisterRay.h>
 #include "battle_eskill_init_callbacks.h"
 #include "battle_eskill_input_callbacks.h"
+#include "battle_eskill_draw_callbacks.h"
 
 
 void initializeBattleESkillMenu();

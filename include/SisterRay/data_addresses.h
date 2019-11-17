@@ -38,7 +38,7 @@
 #define COMMAND_TRIGGER_INDEX                (u8*)0xDC3C74
 
 
-#define ISSUED_COMMAND_ID                    (u8*)0xDC3C70;
+#define ISSUED_COMMAND_ID                    (u8*)0xDC3C70
 
 #define ISSUED_ACTION_ID                     (u16*)0xDC3C78
 #define ISSUED_ACTION_TARGET_DATA            (u16*)0xDC3C84
@@ -47,7 +47,7 @@
 #define ISSUED_ACTION_TARGET_TYPE            (u8*)0xDC3C90  
 #define ISSUED_ACTION_TARGET_INDEX           (u8*)0xDC3C94
 #define ISSUED_ACTION_STARTING_ROW           (u8*)0xDC3C58
-#define ISSUED_ACTION_VALID_TARGET_MASK      (u16*)0xDC3C60;
+#define ISSUED_ACTION_VALID_TARGET_MASK      (u16*)0xDC3C60
 
 #define W_FIRST_ACTION_USED 
 #define W_FIRST_ACTION_INDEX
@@ -79,12 +79,12 @@
 #define dword_DCA628                         (u32*)0xDCA628
 // End
 
-#define MAT_MENU_PARTY_INDEX             (u32*)0xDD1638
+#define MAT_MENU_PARTY_INDEX                 (u32*)0xDD1638
 //These Globals are used to communicate between update loops by the magic menu
 #define enabledSpellTypeMask                 (u8*)0xDC0927
 //
 
-#define CURRENT_PARTY_MEMBER_ARRAY           (u32*)0xDC0230 /*Length 3, contains party member ID, from the savemap*/
+#define CURRENT_PARTY_MEMBER_ARRAY           ((u32*)0xDC0230) /*Length 3, contains party member ID, from the savemap*/
 
 
 #define dword_DD1AE4                         (u32*)0xDD1AE4 // Not sure what this is, but it is only called in key-item view contexts
@@ -104,7 +104,8 @@
 #define BATTLE_PAUSED_GLOBAL                 (u8*)0xDC0E6C
 #define BATTLE_TARGETED_GLOBAL               (u8*)0xDC3C9C
 #define LIMIT_ACTIVE_MASK                    (u8*)0x9A889E
-#define word_9A889A                          (u16*)0x9A889A;
-#define W_COMMAND_ENABLED                    (u8*)0xDC3C88;
+#define word_9A889A                          (u16*)0x9A889A
+#define W_COMMAND_ENABLED                    (u8*)0xDC3C88
+#define BATTLE_ROW_MASKS                     ((u16*)0x9A88AA)
 
 #endif

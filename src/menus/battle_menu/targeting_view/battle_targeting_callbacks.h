@@ -1,5 +1,5 @@
 #ifndef BATTLE_TARGETING_CALLBACKS_H
-#define BATTLE_TARGETIN_CALLBACKS_H
+#define BATTLE_TARGETING_CALLBACKS_H
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>

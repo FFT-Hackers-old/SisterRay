@@ -7,10 +7,10 @@
 #include "../../../widgets/widget.h"
 #include "../../../events/menu_events.h"
 #include "../../menu.h"
-#include "battle_menu_widget_names.h"
+#include "../battle_menu_widget_names.h"
 
 
-void initBattleItemViewWidget(const BattleSpellDrawEvent* event);
+void initBattleItemViewWidget(const BattleInitEvent* event);
 Widget* allocateBattleInventoryRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 
 

@@ -14,7 +14,8 @@
 #include "eskill_view/battle_eskill_callbacks.h"
 #include "item_view/battle_item_callbacks.h"
 
-u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState);
+
+void battleMenuUpdateHandler(i32 updateStateMask);
 void dispatchBattleUpdates();
 void initializeBattleMenu();
 

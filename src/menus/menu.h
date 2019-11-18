@@ -7,6 +7,7 @@
 #include "../widgets/widget.h"
 #include "../events/event.h"
 #include "cursor.h"
+#include "transition.h"
 #include "menu_interface.h"
 #include <vector>
 #include <unordered_map>

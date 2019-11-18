@@ -35,83 +35,27 @@ typedef i32(*pfnsub6E3135)();
 typedef i32(*pfnsub6E384F)();
 #define sub_6E384F      ((pfnsub6E384F)(0x6E384F))
 
-
-/*u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState) {
-    u8* byte_DC3654 = (u8*)(0xDC3654);
-    switch (battleMenuState) {
-        case 0:
-            displayBaseMenu();
-            break;
-        case 1:
-            displayCommands();
-            break;
-        case 2:
-            //drawChangeView(); //We want to expand change to add extra commands
-            break;
-        case 3:
-            //drawDefendView(); 
-        case 4: // This one will be redone with the widget system
-            battleESkillUpdateHandler(updateStateMask);
-            break;
-        case 5:
-            battleItemUpdateHandler(updateStateMask);
-            break;
-        case 6:
-            battleSpellUpdateHandler(updateStateMask);
-            break;
-        case 7: // last one to be redone with the widget system
-            battleSummonUpdateHandler(updateStateMask);
-            break;
-        case 9:
-            sub_6E4B3C();
-            break;
-        case 19:
-            //displayManipulateView(); //Needs to be re-implemented so that it still works
-            break;
-        case 20:
-            sub_6E0D28();
-            break;
-        case 21:
-            sub_6E1308();
-            break;
-        case 24:
-            //displayLimitView();
-            break;
-        case 26:
-            sub_6E2170();
-            break;
-        case 27:
-            sub_6E3135();
-            break;
-        case 28:
-            sub_6E384F();
-            break;
-        default:
-            //sub_6DC1EB();
-            break;
-    }
-    return ((*byte_DC3654) = (*byte_DC3654 + 1)) + 1;
+void resetBattleMenu() {
+    byte_C05F6C = 4;
+    sub_6CE811(4);
+    byte_DC3D14 = 1;
+    byte_DC3860 = 0;
+    byte_DC3650 = dword_DC08B8 & 0x7F;
+    byte_DC3864 = 0;
+    sub_6DCBAA();
+    byte_DC38F8 = ACTIVE_LIMIT_MASK;
+    word_DC38D4 = 1;
+    BATTLE_MENU_STATE = -1;
+    sub_6DB0BC();
+    if (word_DC38D4)
+        word_DC38D4 = 0;
+    gamePausedGlobal = 0;
+    gBattlePaused = 0;
+    word_DC1F3C = ACTIVE_LIMIT_MASK;
+    CURSOR_MEMORY_ACTIVE = ((signed int)(unsigned __int16)word_DC0E12 >> 4) & 3;
+    initHandlerCursorState(-1, -1, 0);
+    word_CC0828 = 2;
 }
-
-
-
-/*void battleMenuHandler() {
-    Menu* menuObject = gContext.menuWidgets.get_element("BATTLE_MENU");
-    auto menuWidget = menuObject->menuWidget;
-    BattleMenuDrawEvent event = { menuObject, menuObject->currentState };
-
-    gContext.eventBus.dispatch(DRAW_BATTLE_MENU, &event);
-    drawWidget(menuWidget);
-
-    displayBattleMenuCursorStates(menuObject, menuObject->currentState);
-    if (!is_input_handling_enabled()) {
-        dispatchMenuInput(updateStateMask, menuObject, BATTLE_MENU);
-    }
-}
-
-void displayBattleMenuCursorStates(Menu* menuObject, u32 state) {
-
-}*/
 
 void dispatchBattleUpdates() {
     void* ffContext;

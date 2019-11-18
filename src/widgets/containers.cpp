@@ -85,8 +85,8 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
 
     /*If a primitive childtype or allocator is specified, type allocate the results*/
     if (childType || params.allocator) {
-        auto context = gContext.menuWidgets.get_element(cursorGrid->cursorName)->cursors[cursorGrid->menuState][cursorGrid->cursorIdx].context;
-        auto slotCount = (wicontext.viewRowBound) * (context.viewColumnBound);
+        auto context = gContext.menuWidgets.get_element(widget->cursorName)->cursors[widget->menuState][widget->cursorIdx].context;
+        auto slotCount = (context.viewRowBound) * (context.viewColumnBound);
         for (u32 slot = 0; slot < slotCount; slot++) {
             auto name = std::to_string(slot);
             auto child = typeAllocate(childType, name, widget->allocator);

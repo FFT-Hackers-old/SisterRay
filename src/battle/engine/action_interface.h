@@ -20,5 +20,6 @@ SISTERRAY_API void setChosenActionTargetRow(u8 targetRow);
 SISTERRAY_API u8 getChosenActionTargetRow();
 SISTERRAY_API void setChosenActionValidTargetMask(u16 targetMask);
 SISTERRAY_API u8 getChosenActionValidTargetMask();
+SISTERRAY_API void issueChosenAction(u16 actorID, u16 commandID, u16 actionID, u16 targetMask);
 
 #endif 

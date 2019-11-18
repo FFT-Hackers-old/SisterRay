@@ -160,6 +160,7 @@ typedef struct BarWidget_ BarWidget;
 typedef void(*PFNSRNEWBARSWIDGETPROC)(Widget*, DrawBarParams, char*);
 typedef void(*PFNSRSETBARPARAMSPROC)(BarWidget*, DrawBarParams);
 
+#pragma pack(push, 1)
 typedef struct {
     i16 xCoordinate;
     i16 yCoordinate;
@@ -171,6 +172,7 @@ typedef struct {
     i16 seg2end;
     float priority;
 } DrawResourceBarParams;
+#pragma pack(pop)
 
 typedef struct ResourceBarWidget_ ResourceBarWidget;
 typedef void(*PFNSRNEWRESOURCEBARSWIDGETPROC)(Widget*, DrawResourceBarParams, char*);

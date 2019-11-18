@@ -272,5 +272,11 @@ typedef void(*pfnsub4320AC)(void);
 typedef void(*pfnsub6E59BC)(u8);
 #define sub_6E59BC                 ((pfnsub6E59BC)0x6E59BC)
 
+typedef void(*pfnsub6F63FC)(void*, float);
+#define gameDrawResourceBar        ((pfnsub6F63FC)0x6F63FC)
+
+typedef void(*pfnsub432AA2)(u16, u16, u16, u16);
+#define gameIssueChosenAction     ((pfnsub432AA2)0x432AA2)
+
 // const pfnsub6E59BC sub_deez_nuts = ((pfnsub6E59BC)0x6E59BC);
 #endif

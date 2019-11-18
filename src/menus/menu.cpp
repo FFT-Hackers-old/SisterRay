@@ -82,7 +82,9 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
 }
 
 SISTERRAY_API void addState(Menu* menu, Cursor* cursor) {
-    std::unordered_map<std::string, Cursor> stateCursors = {{std::string(std::to_string(0)), cursor}};
+    std::unordered_map<u32, Cursor> stateCursors(
+        { {0, *cursor} }
+    );
     menu->cursors[menu->stateCount++] = stateCursors;
 }
 

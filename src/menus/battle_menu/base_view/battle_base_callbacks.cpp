@@ -5,7 +5,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void initializeBattleBaseMenu(std::string battleMenuName) {
+void initializeBattleBaseMenu() {
     srLogWrite(std::string("Initializing base battle view").c_str());
 }
 

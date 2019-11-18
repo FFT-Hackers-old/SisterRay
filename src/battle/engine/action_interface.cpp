@@ -63,3 +63,7 @@ void setChosenActionValidTargetMask(u16 targetMask) {
 u8 getChosenActionValidTargetMask() {
     return *ISSUED_ACTION_VALID_TARGET_MASK;
 }
+
+SISTERRAY_API void issueChosenAction(u16 actorID, u16 commandID, u16 actionID, u16 targetMask) {
+    gameIssueChosenAction(actorID, commandID, actionID, targetMask);
+}

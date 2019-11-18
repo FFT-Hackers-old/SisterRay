@@ -12,5 +12,7 @@ void initializeBattleTargetingMenu() {
 void registerTargetingMenuListeners() {
     const auto& modName = std::string("srFF7Base");
     const auto& contextKeys = std::unordered_set<SrEventContext>({BATTLE_MENU});
-    gContext.eventBus.addListener(MENU_INPUT_START, (SrEventCallback)&handlePauseBattle, modName, contextKeys);
+    gContext.eventBus.addListener(DRAW_BATTLE_MENU, (SrEventCallback)&drawTargetingCursors, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&handleSelectTargets, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&handleExitSelectTargets, modName, contextKeys);
 }

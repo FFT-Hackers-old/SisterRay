@@ -531,7 +531,7 @@ void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
         resourceBarWidget->seg2start,
         resourceBarWidget->seg2end
     };
-    gameDrawResourceBar((i16*)&params, resourceBarWidget->priority);
+    gameDrawResourceBar((void*)&params, resourceBarWidget->priority);
 }
 
 ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::string name) {

@@ -4,5 +4,6 @@
 #include <SisterRay/SisterRay.h>
 #include "action_interface.h"
 #include "action_targeting.h"
+#include "action_dispatch.h"
 
 #endif

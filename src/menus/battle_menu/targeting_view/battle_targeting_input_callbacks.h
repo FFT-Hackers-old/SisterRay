@@ -9,5 +9,6 @@
 #include "../battle_menu_widget_names.h"
 
 void handleSelectTargets(const MenuInputEvent* event);
+void handleExitSelectTargets(const MenuInputEvent* event);
 
 #endif

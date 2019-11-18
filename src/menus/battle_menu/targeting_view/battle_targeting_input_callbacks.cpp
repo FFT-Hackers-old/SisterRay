@@ -23,7 +23,8 @@ void handleSelectTargets(const MenuInputEvent* event) {
         }
         if (*W_COMMAND_ENABLED) {
             if (*W_COMMAND_ENABLED == 2) {
-                executeWCommand();
+                dispatchFirstWAction();
+                dispatchChosenBattleAction();
                 return;
             }
             if (*ISSUED_COMMAND_ID == CMD_W_ITEM) {
@@ -43,7 +44,10 @@ void handleSelectTargets(const MenuInputEvent* event) {
         if ((*ISSUED_COMMAND_ID == CMD_ITEM || *ISSUED_COMMAND_ID == CMD_W_ITEM || *ISSUED_COMMAND_ID == CMD_THROW)){
             gContext.battleInventory->decrementInventoryEntry(flatIndex, 1);
         }
-        dispatchBattleCommand();
+        playMenuSound(1);
+        *ACCEPTING_BATTLE_INPUT = 1;
+        setMenuState(event->menu, BATTLE_INACTIVE);
+        dispatchChosenBattleAction();
     }
 }
 

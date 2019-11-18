@@ -171,7 +171,7 @@ typedef void(*pfnsub6C497C)(i32, char);
 #define sub_6C497C                      ((pfnsub6C497C)0x6C497C)
 
 typedef i32(*pfnsub6C9808)(void);
-#define is_input_handling_enabled       ((pfnsub6C9808)0x6C9808)
+#define checkMenuInputEnabled       ((pfnsub6C9808)0x6C9808)
 
 typedef bool(*pfnsub715026)(i32);
 #define knows_all_prereq_limits         ((pfnsub715026)0x715026)

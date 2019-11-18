@@ -9,7 +9,7 @@
 #include "../../menu.h"
 #include "../battle_menu_widget_names.h"
 
-void initBaseViewWidget(const BattleDrawEvent* event);
+void initBaseViewWidget(const MenuInitEvent* event);
 
 Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 Widget* allocateBarWidget(const char* name, i32 xCoordinate, i32 yCoordinate);

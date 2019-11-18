@@ -23,6 +23,7 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct _Cursor Cursor;
+typedef struct _TransitionData TransitionData;
 enum color { COLOR_GRAY, COLOR_UNKNOWN_1, COLOR_RED, COLOR_UNKNOWN_2, COLOR_UNKNOWN_3, COLOR_TEAL, COLOR_GREEN, COLOR_WHITE };
 
 typedef struct Widget_ Widget;

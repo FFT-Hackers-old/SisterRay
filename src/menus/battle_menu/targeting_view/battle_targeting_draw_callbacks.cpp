@@ -2,7 +2,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void drawTargetingCursors(const BattleDrawEvent* event) {
+void drawTargetingCursors(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     /*This should be a draw callback, probably*/
     if (event->menuState != BATTLE_TARGETING_STATE) {

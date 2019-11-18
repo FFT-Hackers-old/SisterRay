@@ -5,7 +5,7 @@
 
 using namespace MateriaWidgetNames;
 
-void initMateraCharDataWidget(const MateriaInitEvent* event) {
+void initMateraCharDataWidget(const MenuInitEvent* event) {
     const char * menuText;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
@@ -64,7 +64,7 @@ void initMateraCharDataWidget(const MateriaInitEvent* event) {
     addChildWidget(mainWidget, currentMateriaWidget, CHAR_DATA_WIDGET_NAME);
 }
 
-void initMateriaDescWidget(const MateriaInitEvent* event) {
+void initMateriaDescWidget(const MenuInitEvent* event) {
     const char* materiaDescription;
     u16 materiaID;
     auto characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
@@ -98,7 +98,7 @@ void initMateriaDescWidget(const MateriaInitEvent* event) {
 }
 
 //Handles the base display
-void initMateriaViewWidget(const MateriaInitEvent* event) {
+void initMateriaViewWidget(const MenuInitEvent* event) {
     auto materiaChoiceCursor = getStateCursor(event->menuObject, 2);
 
     CursorGridWidget* gridWidget;
@@ -166,7 +166,7 @@ void materiaEntryUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
 }
 
 
-void initMateriaDataWidget(const MateriaInitEvent* event) {
+void initMateriaDataWidget(const MenuInitEvent* event) {
     DrawTextParams textParams;
     DrawBoxParams boxParams;
     DrawGameAssetParams gameAssetParams;
@@ -273,7 +273,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 }
 
 /*Initializes the command view widget used */
-void initCommandViewWidget(const MateriaInitEvent* event) {
+void initCommandViewWidget(const MenuInitEvent* event) {
     auto commandChoiceCursor = getStateCursor(event->menuObject, 3);
 
     drawGridParams gridParams;
@@ -320,7 +320,7 @@ void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
 }
 
 /*Initializes the spell view Widget used*/
-void initSpellViewWidget(const MateriaInitEvent* event) {
+void initSpellViewWidget(const MenuInitEvent* event) {
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;

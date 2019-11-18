@@ -10,7 +10,7 @@
 #include "../battle_menu_widget_names.h"
 
 
-void initBattleMagicViewWidget(const BattleInitEvent* event);
+void initBattleMagicViewWidget(const MenuInitEvent* event);
 Widget* allocateSpellRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 
 

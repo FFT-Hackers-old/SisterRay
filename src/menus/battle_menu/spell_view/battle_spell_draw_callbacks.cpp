@@ -2,7 +2,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void drawBattleSpellViewWidget(const BattleDrawEvent* event) {
+void drawBattleSpellViewWidget(const MenuDrawEvent* event) {
 
     auto menuWidget = event->menu->menuWidget;
     /*This should be a draw callback, probably*/

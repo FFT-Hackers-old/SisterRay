@@ -4,7 +4,7 @@
 
 using namespace InventoryWidgetNames;
 
-void handleCustomSortActive(const InventoryDrawEvent* event) {
+void handleCustomSortActive(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
 
     auto normalWidget = getChild(getChild(menuWidget, ITEM_VIEW_WIDGET_NAME), NORMAL_ITEM_VIEW_NAME);
@@ -23,7 +23,7 @@ void handleCustomSortActive(const InventoryDrawEvent* event) {
     }
 }
 
-void handleMenuViewActive(const InventoryDrawEvent* event) {
+void handleMenuViewActive(const MenuDrawEvent* event) {
     auto viewChoice = getStateCursor(event->menu, 0)->context;
     auto itemViewWidget = getChild(event->menu->menuWidget, ITEM_VIEW_WIDGET_NAME);
     if (viewChoice.relativeColumnIndex != 2) {
@@ -33,7 +33,7 @@ void handleMenuViewActive(const InventoryDrawEvent* event) {
     disableWidget(itemViewWidget);
 }
 
-void handleUpdateDescription(const InventoryDrawEvent* event) {
+void handleUpdateDescription(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     auto itemDescWidget = getChild(menuWidget, ITEM_DESC_WIDGET_NAME);
     const char* fetchedDescription;
@@ -92,7 +92,7 @@ void handleUpdateDescription(const InventoryDrawEvent* event) {
     }
 }
 
-void handleKeyItemsViewActive(const InventoryDrawEvent* event){
+void handleKeyItemsViewActive(const MenuDrawEvent* event){
     auto viewChoice = getStateCursor(event->menu, 0)->context;
     auto keyItemsWidget = getChild(event->menu->menuWidget, KEY_ITEMS_VIEW_NAME);
     if (viewChoice.relativeColumnIndex == 2) {
@@ -102,7 +102,7 @@ void handleKeyItemsViewActive(const InventoryDrawEvent* event){
     disableWidget(keyItemsWidget);
 }
 
-void handlePartyViewActive(const InventoryDrawEvent* event) {
+void handlePartyViewActive(const MenuDrawEvent* event) {
     auto viewChoice = getStateCursor(event->menu, 0)->context;
     auto portraitsWidget = getChild(event->menu->menuWidget, PARTY_VIEW_WIDGET_NAME);
     if (viewChoice.relativeColumnIndex != 2) {
@@ -112,7 +112,7 @@ void handlePartyViewActive(const InventoryDrawEvent* event) {
     disableWidget(portraitsWidget);
 }
 
-void handleArrangeActive(const InventoryDrawEvent* event) {
+void handleArrangeActive(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     if (event->menuState != 4) {
         disableWidget(getChild(menuWidget, ARRANGE_TYPE_WIDGET_NAME));

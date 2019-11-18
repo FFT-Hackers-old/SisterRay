@@ -4,18 +4,11 @@
 using namespace BattleMenuWidgetNames;
 
 void battleMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menuObject = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
     i32* menuStateMask = (i32*)(0xDC35B4);
-
     sub_6C98A6();
-    auto menuWidget = menuObject->menuWidget;
-
-    MenuInputEvent event = { menuObject, menuObject->currentState };
-    gContext.eventBus.dispatch(DRAW_BATTLE_MENU, &event);
-    drawWidget(menuWidget);
-
+    runMenu(menu,, menuStateMask)
     drawCursor(getStateCursor(menuObject, menuObject->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
-    dispatchMenuInput(*menuStateMask, menuObject, BATTLE_MENU);
 }
 
 typedef i32(*pfnsub6DD041)();
@@ -162,8 +155,8 @@ void dispatchBattleUpdates() {
 
 
 void initializeBattleMenu() {
-    auto battleSpellMenu = createMenu(INIT_BATTLE_MENU, 64);
-    gContext.menuWidgets.add_element(BATTLE_MENU_NAME, battleSpellMenu);
+    auto battleMenu = createMenu(INIT_BATTLE_MENU, DRAW_BATTLE_MENU, BATTLE_MENU, 64);
+    gContext.menuWidgets.add_element(BATTLE_MENU_NAME, battleMenu);
     gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
     registerBaseViewListeners();
     initializeBattleBaseMenu();

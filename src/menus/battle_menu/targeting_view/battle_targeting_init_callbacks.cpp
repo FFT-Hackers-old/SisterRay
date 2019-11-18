@@ -3,5 +3,5 @@
 
 using namespace BattleMenuWidgetNames;
 
-void initTargetingViewWidget(const BattleDrawEvent* event) {
+void initTargetingViewWidget(const MenuInitEvent* event) {
 }

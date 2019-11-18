@@ -18,12 +18,17 @@ struct _Menu {
     u32 stateCount;
     Widget* menuWidget;
     SrEventType initEvent;
+    SrEventType drawEvent;
+    SrEventContext inputContext;
     std::unordered_map<u32, std::unordered_map<u32, Cursor>> cursors; //associate cursors to a various state by name
     std::unordered_map<u32, u32> activeStateCursors;
+    std::unordered_map<u32, TransitionData> transitionData;
+    std::unordered_map<u32, u8> stateStatus;
 };
 
-Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* cursors=nullptr);
+Menu* createMenu(SrEventType initEvent, SrEventType drawEvent, SrEventContext inputContext, u32 stateCount, Cursor* cursors=nullptr);
 void destroyMenu(Menu* menu);
+void runMenu(Menu* menu, u32 updateStateMask)
 
 class MenuRegistry : public SrNamedResourceRegistry<Menu*, std::string> {
 public:

@@ -10,5 +10,5 @@
 #include "../battle_menu_widget_names.h"
 
 
-void drawTargetingCursors(const BattleDrawEvent* event);
+void drawTargetingCursors(const MenuDrawEvent* event);
 #endif

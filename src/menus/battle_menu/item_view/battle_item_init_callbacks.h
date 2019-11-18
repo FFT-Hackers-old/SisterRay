@@ -9,7 +9,7 @@
 #include "../../menu.h"
 #include "../battle_menu_widget_names.h"
 
-void initBattleItemViewWidget(const BattleInitEvent* event);
+void initBattleItemViewWidget(const MenuInitEvent* event);
 Widget* allocateBattleInventoryRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 
 #endif

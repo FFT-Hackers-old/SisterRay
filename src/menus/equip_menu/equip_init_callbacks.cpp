@@ -10,7 +10,7 @@
 
 using namespace EquipWidgetNames;
 
-void initCharDataWidget(const EquipInitEvent* event) {
+void initCharDataWidget(const MenuInitEvent* event) {
     const char * menuText;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     auto menuObject = event->menuObject;
@@ -58,7 +58,7 @@ void initCharDataWidget(const EquipInitEvent* event) {
     addChildWidget(mainWidget, currentEquipWidget, CHAR_DATA_WIDGET_NAME);
 }
 
-void initGearDescWidget(const EquipInitEvent* event) {
+void initGearDescWidget(const MenuInitEvent* event) {
     const char* fetchedName;
     u16 kernelObjectID;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
@@ -92,7 +92,7 @@ void initGearDescWidget(const EquipInitEvent* event) {
 }
 
 /* Initialize the Widget for the characters Materia Slots. This will be updated when Handling in Handlers*/
-void initGearMateriaSlotWidget(const EquipInitEvent* event) {
+void initGearMateriaSlotWidget(const MenuInitEvent* event) {
     const char * menuText;
     u8 materiaGrowth;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
@@ -146,7 +146,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
 }
 
 /*Initialize the Widget That displays stats*/
-void initStatDiffWidget(const EquipInitEvent* event) {
+void initStatDiffWidget(const MenuInitEvent* event) {
     u16 windowTop = equipMenuWindowConfig[3].drawDistance2 + 26;
     const char* menuText;
 
@@ -200,7 +200,7 @@ void initStatDiffWidget(const EquipInitEvent* event) {
 
 
 //Initialize the gear list with just a box and a series of disabled widgets.
-void initGearListWidget(const EquipInitEvent* event) {
+void initGearListWidget(const MenuInitEvent* event) {
     auto gearChoiceCursor = getStateCursor(event->menuObject, 1);
 
     BoxWidget* boxWidget;

@@ -10,7 +10,7 @@
 
 using namespace InventoryWidgetNames;
 
-void initViewChoiceWidget(const InventoryInitEvent* event) {
+void initViewChoiceWidget(const MenuInitEvent* event) {
     const char * menuText;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
@@ -45,7 +45,7 @@ void initViewChoiceWidget(const InventoryInitEvent* event) {
     addChildWidget(mainWidget, (Widget*)viewChoiceWidget, VIEW_CHOICE_WIDGET_NAME);
 }
 
-void initCharViewWidget(const InventoryInitEvent* event) {
+void initCharViewWidget(const MenuInitEvent* event) {
     const char * menuText;
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
@@ -88,7 +88,7 @@ void initCharViewWidget(const InventoryInitEvent* event) {
 }
 
 //Handles the base display
-void initItemViewWidget(const InventoryInitEvent* event) {
+void initItemViewWidget(const MenuInitEvent* event) {
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
@@ -173,7 +173,7 @@ void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
 }
 
 
-void keyItemsViewWidget(const InventoryInitEvent* event) {
+void keyItemsViewWidget(const MenuInitEvent* event) {
     auto keyItemsChoice = getStateCursor(event->menuObject, 3);
 
     drawGridParams gridParams;
@@ -219,7 +219,7 @@ void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
     }
 }
 
-void itemDescriptionWidget(const InventoryInitEvent* event) {
+void itemDescriptionWidget(const MenuInitEvent* event) {
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 
@@ -247,7 +247,7 @@ void itemDescriptionWidget(const InventoryInitEvent* event) {
     addChildWidget(mainWidget, itemDescWidget, ITEM_DESC_WIDGET_NAME);
 }
 
-void arrangeTypeWidget(const InventoryInitEvent* event) {
+void arrangeTypeWidget(const MenuInitEvent* event) {
     auto menuObject = event->menuObject;
     auto mainWidget = menuObject->menuWidget;
 

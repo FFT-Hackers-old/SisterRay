@@ -14,7 +14,7 @@ void initializeEquipMenu() {
     Cursor gearChoiceCursor = { gearSelection, 385, 197, 36, 0 };
 
     Cursor cursorArray[2] = { gearTypeCursor, gearChoiceCursor };
-    auto equipMenu = createMenu(INIT_EQUIP_MENU, 2, &cursorArray[0]);
+    auto equipMenu = createMenu(INIT_EQUIP_MENU, DRAW_EQUIP_MENU, EQUIP_MENU_CONTEXT, 2, &cursorArray[0]);
     gContext.menuWidgets.add_element(EQUIP_MENU_NAME, equipMenu);
     gContext.menuWidgets.initializeMenu(EQUIP_MENU_NAME, EQUIP_WIDGET_NAME);
 }

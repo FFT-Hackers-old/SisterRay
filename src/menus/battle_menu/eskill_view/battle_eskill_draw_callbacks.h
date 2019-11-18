@@ -9,6 +9,6 @@
 #include "../../menu.h"
 #include "../battle_menu_widget_names.h"
 
-void drawBattleESkillViewWidget(const BattleDrawEvent* event);
+void drawBattleESkillViewWidget(const MenuDrawEvent* event);
 
 #endif

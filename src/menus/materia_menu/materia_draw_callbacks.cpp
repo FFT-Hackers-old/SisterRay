@@ -4,7 +4,7 @@
 
 using namespace MateriaWidgetNames;
 
-void handleChangeCharacter(const MateriaDrawEvent* event) {
+void handleChangeCharacter(const MenuDrawEvent* event) {
     const char * fetchedName;
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
@@ -33,7 +33,7 @@ void handleChangeCharacter(const MateriaDrawEvent* event) {
     updateMateriaData(getChild(topWidget, GEAR_2_SLOTS), materiaPtr);
 }
 
-void handleUpdateMateriaDescription(const MateriaDrawEvent* event) {
+void handleUpdateMateriaDescription(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
     u16 materiaID;
@@ -70,7 +70,7 @@ void handleUpdateMateriaDescription(const MateriaDrawEvent* event) {
     updateText(descriptionWidget, fetchedDescription);
 }
 
-void handleUpdateMateriaView(const MateriaDrawEvent* event) {
+void handleUpdateMateriaView(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
     MateriaInventoryEntry materia;
@@ -88,7 +88,7 @@ void handleUpdateMateriaView(const MateriaDrawEvent* event) {
     disableWidget(getChild(gridWidget, MATERIA_GRID));
 }
 
-void handleUpdateMateriaData(const MateriaDrawEvent* event) {
+void handleUpdateMateriaData(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
     MateriaInventoryEntry materia;
@@ -187,7 +187,7 @@ void dispatchMateriaTypeHandlers(Widget* displayWidget, const MateriaInventoryEn
 }
 
 /*Initializes the command view widget used */
-void drawCommandViewWidget(const MateriaDrawEvent* event) {
+void drawCommandViewWidget(const MenuDrawEvent* event) {
     auto viewChoiceCursor = getStateCursor(event->menu, 0);
     auto commandChoiceCursor = getStateCursor(event->menu, 3);
     auto commandViewWidget = getChild(event->menu->menuWidget, COMMAND_VIEW_WIDGET_NAME);
@@ -203,7 +203,7 @@ void drawCommandViewWidget(const MateriaDrawEvent* event) {
     resizeBox(getChild(commandViewWidget, CMD_GRID_BOX), 0x2F, 0xD6, 65 * commandChoiceCursor->context.maxColumnBound + 0x98, 0x78);
 }
 
-void drawSpellsWidget(const MateriaDrawEvent* event) {
+void drawSpellsWidget(const MenuDrawEvent* event) {
     auto magicGrids = getChild(event->menu->menuWidget, SPELL_VIEW_WIDGET_NAME);
     auto spellBox = getChild(magicGrids, SPELL_VIEW_BOX);
     auto magicGrid = getChild(magicGrids, SPELL_GRID);

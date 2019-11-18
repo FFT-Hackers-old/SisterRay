@@ -8,46 +8,12 @@
 typedef struct {
     Menu* menu;
     u32 menuState;
-} EquipDrawEvent;
+    i32 updateStateMask;
+} MenuDrawEvent;
 
 typedef struct {
     Menu* menuObject;
-} EquipInitEvent;
-
-typedef struct {
-    Menu* menu;
-    u32 menuState;
-} InventoryDrawEvent;
-
-
-typedef struct {
-    Menu* menuObject;
-} InventoryInitEvent;
-
-
-typedef struct {
-    Menu* menu;
-    u32 menuState;
-} MateriaDrawEvent;
-
-typedef struct {
-    Menu* menuObject;
-} MateriaInitEvent;
-
-typedef struct {
-    Menu* menu;
-    u32 menuState;
-} MenuInputEvent;
-
-typedef struct {
-    Menu* menu;
-    u32 menuState;
-} BattleDrawEvent;
-
-
-typedef struct {
-    Menu* menu;
-} BattleInitEvent;
+} MenuInitEvent;
 
 /*Event on which we dispatch handlers for displaying the various types of materia*/
 typedef struct {

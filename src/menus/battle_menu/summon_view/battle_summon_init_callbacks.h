@@ -10,7 +10,7 @@
 #include "../battle_menu_widget_names.h"
 
 
-void initBattleSummonViewWidget(const BattleInitEvent* event);
+void initBattleSummonViewWidget(const MenuInitEvent* event);
 Widget* allocateSummonRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 
 

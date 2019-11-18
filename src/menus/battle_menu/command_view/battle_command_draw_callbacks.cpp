@@ -2,7 +2,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void drawBattleCommandViewWidget(const BattleDrawEvent* event) {
+void drawBattleCommandViewWidget(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
 
     if (event->menuState != BATTLE_CMD_STATE) {

@@ -23,10 +23,12 @@ return gContext.menuWidgets.get_element(std::string(menuName));
 }
 
 /* create menu with default cursors */
-Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* cursors) {
+Menu* createMenu(SrEventType initEvent, SrEventType drawEvent, SrEventContext inputContext, u32 stateCount, Cursor* cursors) {
     Menu* menu = new Menu();
     menu->stateCount = stateCount;
     menu->initEvent = initEvent;
+    menu->drawEvent = drawEvent;
+    menu->inputContext = inputContext;
     menu->currentState = 0;
     if (cursors != nullptr) {
         for (auto i = 0; i < stateCount; i++) {
@@ -36,6 +38,21 @@ Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* cursors) {
     }
     menu->menuWidget = nullptr;
     return menu;
+}
+
+void runMenu(Menu* menu, u32 updateStateMask) {
+    MenuDrawEvent event = { menu, getMenuState(menu), updateStateMask };
+    gContext.eventBus.dispatch(menu->drawEvent, &event);
+    drawWidget(menu->menuWidget);
+    if (menu->inputContext == BATTLE_MENU) {
+        if (!*gBattlePaused) {
+            dispatchMenuInput(updateStateMask, menuObject, menu->inputContext);
+        }
+        return;
+    }
+    if (!checkMenuInputEnabled()){
+        dispatchMenuInput(updateStateMask, menuObject, menu->inputContext);
+    }
 }
 
 void destroyMenu(Menu* menu) {

@@ -17,23 +17,14 @@ SISTERRAY_API i32 onEnterInventory() {
 }
 
 SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menuObject = gContext.menuWidgets.get_element(INVENTORY_MENU_NAME);
-    auto menuWidget = menuObject->menuWidget;
-    InventoryDrawEvent event = { menuObject, menuObject->currentState };
-
-    gContext.eventBus.dispatch(DRAW_INVENTORY_MENU, &event);
-    drawWidget(menuWidget);
-
+    Menu* menu = gContext.menuWidgets.get_element(INVENTORY_MENU_NAME);
+    runMenu(menu updateStateMask);
     displayInventoryCursorStates(menuObject, menuObject->currentState, updateStateMask);
-    if (!is_input_handling_enabled()) {
-        dispatchMenuInput(updateStateMask, menuObject, INVENTORY_MENU_CONTEXT);
-    }
 }
 
 /*Might just want to include cursors in the draw callbacks*/
 void displayInventoryCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
-
     u16 item_ID;
 
     sub_6C98A6();

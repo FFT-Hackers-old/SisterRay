@@ -10,7 +10,7 @@
 #include "../battle_menu_widget_names.h"
 
 
-void initBattleESkillViewWidget(const BattleDrawEvent* event);
+void initBattleESkillViewWidget(const MenuInitEvent* event);
 Widget* allocateEskillRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 
 

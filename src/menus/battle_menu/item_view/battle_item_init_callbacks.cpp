@@ -3,7 +3,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void initBattleItemViewWidget(const BattleInitEvent* event) {
+void initBattleItemViewWidget(const MenuInitEvent* event) {
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;

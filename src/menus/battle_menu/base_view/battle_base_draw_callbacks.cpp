@@ -2,7 +2,7 @@
 
 using namespace BattleMenuWidgetNames;
 
-void drawBaseViewWidget(const BattleDrawEvent* event) {
+void drawBaseViewWidget(const MenuDrawEvent* event) {
 
     auto menuWidget = event->menu->menuWidget;
     /*This should be a draw callback, probably*/
@@ -46,7 +46,7 @@ void drawBaseViewWidget(const BattleDrawEvent* event) {
     }
 }
 
-void handleActorReady(const BattleDrawEvent* event) {
+void handleActorReady(const MenuDrawEvent* event) {
     u8* byte_DC2069 = (u8*)0xDC2069;
     u8* byte_DC207B = (u8*)0xDC207B;
     u8* byte_DC2084 = (u8*)0xDC2084;

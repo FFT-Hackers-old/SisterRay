@@ -37,7 +37,7 @@ void initializeMateriaMenu() {
         eSkillViewCursor, arrangeViewCursor, destroyMateriaCursor,
         arrangeViewCursor, arrangeViewCursor
     };
-    auto materiaMenu = createMenu(INIT_MATERIA_MENU, 12, &(cursorArray[0]));
+    auto materiaMenu = createMenu(INIT_MATERIA_MENU, DRAW_MATERIA_MENU, MATERIA_MENU_CONTEXT, 12, &(cursorArray[0]));
     gContext.menuWidgets.add_element(MATERIA_MENU_NAME, materiaMenu);
     gContext.menuWidgets.initializeMenu(MATERIA_MENU_NAME, MATERIA_WIDGET_NAME);
 }

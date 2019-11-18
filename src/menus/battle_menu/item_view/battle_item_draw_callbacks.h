@@ -9,5 +9,5 @@
 #include "../../menu.h"
 #include "../battle_menu_widget_names.h"
 
-void drawBattleItemViewWidget(const BattleDrawEvent* event);
+void drawBattleItemViewWidget(const MenuDrawEvent* event);
 #endif

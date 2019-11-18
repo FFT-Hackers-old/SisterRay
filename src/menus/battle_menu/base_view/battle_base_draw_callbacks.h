@@ -10,6 +10,6 @@
 #include "../battle_menu_widget_names.h"
 
 
-void drawBaseViewWidget(const BattleDrawEvent* event);
-void handleActorReady(const BattleDrawEvent* event);
+void drawBaseViewWidget(const MenuDrawEvent* event);
+void handleActorReady(const MenuDrawEvent* event);
 #endif

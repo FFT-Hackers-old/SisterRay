@@ -376,12 +376,12 @@ DrawGameAssetParams AllArrow(i32 xCoordinate, i32 yCoordinate, float priority) {
 
 DrawGameAssetParams BarBorder(i32 xCoordinate, i32 yCoordinate, float priority) {
     DrawGameAssetParams barBorder = { xCoordinate, yCoordinate, 16, 0, 40, 10, 1, 0, 0, priority };
-    return barBorder
+    return barBorder;
 }
 
 DrawGameAssetParams BarrierBarBorder(i32 xCoordinate, i32 yCoordinate, float priority) {
     DrawGameAssetParams barrierBarBorder = { xCoordinate, yCoordinate, 160, 16, 38, 12, 1, 0, 0, priority };
-    return barrierBarBorder
+    return barrierBarBorder;
 }
 
 #define MENU_ASSET_TIME 0
@@ -442,7 +442,7 @@ DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority
     }
 
     DrawGameAssetParams menuTextAsset = { xCoordinate, yCoordinate, unk1, unk2, unk3, 5, 1, 0, 0, priority };
-    return menuTextAsset
+    return menuTextAsset;
 }
 
 void setStarShaded(Widget* widgetToUpdate, bool shaded) {
@@ -476,8 +476,8 @@ void drawBarWidget(BarWidget* barWidget) {
     gameDrawBar(
         barWidget->widget.xCoordinate,
         barWidget->widget.yCoordinate,
-        barWidget->fraction,
-        barWidget->unk1,
+        barWidget->length,
+        barWidget->thickness,
         barWidget->unk2,
         barWidget->priority
     );
@@ -503,8 +503,8 @@ const WidgetClass* BarWidgetKlass() {
 }
 
 void updateBarLength(BarWidget* barWidget, u32 length) {
-    if (isBarWidget(barWidget)) {
-        barWidget->fraction = length
+    if (isBarWidget((Widget*)barWidget)) {
+        barWidget->length = length;
     }
     else {
         srLogWrite("attempting to update bar length field of an invalid Widget type");
@@ -512,8 +512,8 @@ void updateBarLength(BarWidget* barWidget, u32 length) {
 }
 
 void updateBarColor(BarWidget* barWidget, i32 colorMask) {
-    if (isBarWidget(barWidget)) {
-        barWidget->unk2 = colorMask
+    if (isBarWidget((Widget*)barWidget)) {
+        barWidget->unk2 = colorMask;
     }
     else {
         srLogWrite("attempting to update bar length field of an invalid Widget type");
@@ -522,14 +522,14 @@ void updateBarColor(BarWidget* barWidget, i32 colorMask) {
 
 void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
     DrawResourceBarParams params = {
-        resourceBarWidget->xCoordinate,
-        resourceBarWidget->yCoordinate,
+        resourceBarWidget->widget.xCoordinate,
+        resourceBarWidget->widget.yCoordinate,
         resourceBarWidget->length,
         resourceBarWidget->thickness,
-        scrollerPortrait->seg1start,
-        scrollerPortrait->seg1end,
-        scrollerPortrait->seg2start,
-        scrollerPortrait->seg2end
+        resourceBarWidget->seg1start,
+        resourceBarWidget->seg1end,
+        resourceBarWidget->seg2start,
+        resourceBarWidget->seg2end
     };
     gameDrawResourceBar((i16*)&params, resourceBarWidget->priority);
 }

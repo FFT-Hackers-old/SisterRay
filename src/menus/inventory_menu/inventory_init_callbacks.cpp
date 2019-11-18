@@ -123,7 +123,7 @@ void initItemViewWidget(const InventoryInitEvent* event) {
 
     gridParams = { INVENTORY_MENU_NAME.c_str(), 5, &inventoryRowUpdater, 373, 109, &allocateInventoryRow, 0 };
     gridWidget = createGridWidget(gridParams, CUSTOM_SORT_VIEW_NAMES, TextWidgetKlass());
-    addChildWidget(customItemViewWidget, 5, (Widget*)gridWidget, CUSTOM_SORT_VIEW_NAMES);
+    addChildWidget(customItemViewWidget, (Widget*)gridWidget, CUSTOM_SORT_VIEW_NAMES);
 
     addChildWidget(itemViewWidget, customItemViewWidget, CUSTOM_ITEM_VIEW_NAME);
 
@@ -136,7 +136,7 @@ Widget* allocateInventoryRow(const char* name, i32 xCoordinate, i32 yCoordinate)
     DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
     addChildWidget(inventoryWidget, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
     DrawNumberParams numberParams = { xCoordinate + 177, yCoordinate, 0, 2, COLOR_WHITE, 0.1f };
-    addChildWidget(inventoryWidget, (Widget*)createNumberWidget(textParams, std::string("AMT")), std::string("AMT"));
+    addChildWidget(inventoryWidget, (Widget*)createNumberWidget(numberParams, std::string("AMT")), std::string("AMT"));
     return inventoryWidget;
 }
 

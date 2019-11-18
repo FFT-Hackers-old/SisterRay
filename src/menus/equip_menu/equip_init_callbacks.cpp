@@ -220,7 +220,7 @@ void initGearListWidget(const EquipInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
-    drawGridParams gridParams = { EQUIP_MENU_NAME, 1, &gearViewNameUpdater, 427, 193, nullptr, 0 };
+    drawGridParams gridParams = { EQUIP_MENU_NAME.c_str(), 1, &gearViewNameUpdater, 427, 193, nullptr, 0 };
     auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextWidgetKlass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 

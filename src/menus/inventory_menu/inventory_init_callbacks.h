@@ -8,6 +8,7 @@
 #include "../../events/menu_events.h"
 #include "inventory_widget_names.h"
 #include "../menu.h"
+#include "../../inventories/inventory_utils.h"
 
 
 void initViewChoiceWidget(const InventoryInitEvent* event);

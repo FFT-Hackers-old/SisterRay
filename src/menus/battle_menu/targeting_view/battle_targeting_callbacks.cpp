@@ -1,4 +1,4 @@
-#include "battle_base_callbacks.h"
+#include "battle_targeting_callbacks.h"
 #include "../../menu.h"
 #include <unordered_set>
 #include "../../../impl.h"

@@ -19,15 +19,15 @@ void handleWeaponTarget(SelectCommandEvent* event) {
     setTargetingFromFlags(event->command->targetingData, false);
 }
 
-void handleSelectMagic(SelectCommandEvent* event) {
+void cmdMagicSelectHandler(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_MAGIC_STATE);
 }
 
-void handleSelectSummon(SelectCommandEvent* event) {
+void cmdSummonSelectHandler(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_SUMMON_STATE);
 }
 
-void handleSelectItem(SelectCommandEvent* event) {
+void cmdItemSelectHandler(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_ITEM_STATE);
 }
 

@@ -16,6 +16,10 @@ void initMateriaDataWidget(const MateriaInitEvent* event);
 void initCommandViewWidget(const MateriaInitEvent* event);
 void initSpellViewWidget(const MateriaInitEvent* event);
 
+
+Widget* allocateMateriaRow(const char* name, i32 xCoordinate, i32 yCoordinate);
+void materiaEntryUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex);
+
 void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);

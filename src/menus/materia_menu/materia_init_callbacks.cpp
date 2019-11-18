@@ -101,7 +101,6 @@ void initMateriaDescWidget(const MateriaInitEvent* event) {
 void initMateriaViewWidget(const MateriaInitEvent* event) {
     auto materiaChoiceCursor = getStateCursor(event->menuObject, 2);
 
-    drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
@@ -121,7 +120,7 @@ void initMateriaViewWidget(const MateriaInitEvent* event) {
     addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);
 
     auto normalMateriaViewWidget = createWidget(MATERIA_GRID);
-    gridParams = { MATERIA_MENU_NAME 2, &materiaEntryUpdater, 427, 210, &allocateMateriaRow, 0 };
+    drawGridParams gridParams = { MATERIA_MENU_NAME.c_str(), 2, &materiaEntryUpdater, 427, 210, &allocateMateriaRow, 0 };
     gridWidget = createGridWidget(gridParams, MATERIA_GRID_NAMES);
     addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_NAMES);
 
@@ -137,7 +136,7 @@ Widget* allocateMateriaRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     addChildWidget(materiaWidget, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
 
     DrawGameAssetParams assetInitParams = MateriaSphere(xCoordinate - 20, yCoordinate, 0, 0.1f);
-    addChildWidget(materiaWidget, (Widget*)createNumberWidget(textParams, std::string("SPH")), std::string("SPH"));
+    addChildWidget(materiaWidget, (Widget*)createGameAssetWidget(assetInitParams, std::string("SPH")), std::string("SPH"));
     return materiaWidget;
 }
 
@@ -146,8 +145,8 @@ void materiaEntryUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto textWidget = getChild(typedPtr, std::string("TXT"));
-    auto sphereWidget = getChild(typedPtr, std::string("SPH"));
+    auto textWidget = getChild(widget, std::string("TXT"));
+    auto sphereWidget = getChild(widget, std::string("SPH"));
     auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
     if (materiaID != 0xFFFF) {
         enableWidget(textWidget);
@@ -395,3 +394,4 @@ void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
     enableWidget(widget);
     updateText(widget, gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex)).attackName.str());
     updateTextColor(widget, COLOR_WHITE);
+}

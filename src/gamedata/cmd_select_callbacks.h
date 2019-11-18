@@ -6,10 +6,13 @@
 #include "../menus/menu_interface.h"
 #include "../menus/battle_menu/battle_menu_widget_names.h"
 
-typedef void(*SRPFNCMDSELECTCALLBACK)(SelectCommandEvent);
+typedef void(*SRPFNCMDSELECTCALLBACK)(SelectCommandEvent*);
 
-void handleSelectMagic(SelectCommandEvent* event);
-void handleSelectSummon(SelectCommandEvent* event);
-void handleSelectItem(SelectCommandEvent* event);
+void handleCommandTarget(SelectCommandEvent* event);
+void handleWeaponTarget(SelectCommandEvent* event);
+void cmdMagicSelectHandler(SelectCommandEvent* event);
+void cmdSummonSelectHandler(SelectCommandEvent* event);
+void cmdItemSelectHandler(SelectCommandEvent* event);
+
 
 #endif // !COMMAND_CALLBACKS_H

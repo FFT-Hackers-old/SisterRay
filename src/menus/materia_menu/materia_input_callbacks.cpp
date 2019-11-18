@@ -42,7 +42,7 @@ void enterSlotView(const MenuInputEvent* event) {
     setMenuState(event->menu, 1);
 }
 
-void enterOptionView(const MateriaInputEvent* event) {
+void enterOptionView(const MenuInputEvent* event) {
     if (event->menuState != 1 || (getStateCursor(event->menu, 1)->context.relativeColumnIndex != 0))
         return;
     playMenuSound(1);

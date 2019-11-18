@@ -11,7 +11,7 @@ void initBattleMagicViewWidget(const BattleInitEvent* event) {
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
-    auto battleSpellView = createWidget(BATTLE_SPELL_MENU_NAME);
+    auto battleSpellView = createWidget(BATTLE_SPELL_WIDGET_NAME);
     srLogWrite("CALLING BATTLE SPELL INIT HANDLER");
 
     /*boxParams = {
@@ -34,7 +34,7 @@ void initBattleMagicViewWidget(const BattleInitEvent* event) {
         srLogWrite("parent: %s child: %s bound to cursor %p", battleSpellView->name.c_str(), gridWidget->widget.widget.name.c_str(), magicItemChoice);
     }
 
-    addChildWidget(mainWidget, battleSpellView, BATTLE_SPELL_MENU_NAME);
+    addChildWidget(mainWidget, battleSpellView, BATTLE_SPELL_WIDGET_NAME);
 }
 
 Widget* allocateSpellRow(const char* name, i32 xCoordinate, i32 yCoordinate) {

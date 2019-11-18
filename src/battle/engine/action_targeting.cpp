@@ -92,3 +92,12 @@ void setValidTargetMask() {
     }
     setChosenActionValidTargetMask(*word_9A8898);
 }
+
+void storeFirstWCommandIssued() {
+    *W_FIRST_ACTION_USED = getChosenActionID();
+    *W_FIRST_ACTION_INDEX = getChosenActionMenuIndex();
+    *W_FIRST_TARGETING_CURSOR_TYPE = getChosenActionTargetType();
+    *W_FIRST_VALID_TARGET_MASK = getChosenActionValidTargetMask();
+    *W_FIRST_TARGET_INDEX = getChosenActionTargetIndex();
+    *W_FIRST_STARTING_ROW = getChosenActionTargetType();
+}

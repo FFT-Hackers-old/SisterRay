@@ -7,5 +7,6 @@ void setTargetingFromFlags(u8 flags, bool reverseRow);
 void setTargetingDataGlobals(bool reverseRow);
 u8 getTargetRow();
 void setValidTargetMask();
+void storeFirstWCommandIssued();
 
 #endif 

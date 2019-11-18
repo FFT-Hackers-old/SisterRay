@@ -49,12 +49,12 @@
 #define ISSUED_ACTION_STARTING_ROW           (u8*)0xDC3C58
 #define ISSUED_ACTION_VALID_TARGET_MASK      (u16*)0xDC3C60
 
-#define W_FIRST_ACTION_USED 
-#define W_FIRST_ACTION_INDEX
-#define W_FIRST_TARGETING_CURSOR_TYPE
-#define W_FIRST_VALID_TARGET_MASK 
-#define W_FIRST_TARGET_INDEX
-#define W_FIRST_STARTING_ROW
+#define W_FIRST_ACTION_USED                  (u16*)0xDC38F4
+#define W_FIRST_ACTION_INDEX                 (u16*)0xDC3638
+#define W_FIRST_TARGETING_CURSOR_TYPE        (u8*)0xDC35C0
+#define W_FIRST_VALID_TARGET_MASK            (u16*)0xDC35B0
+#define W_FIRST_TARGET_INDEX                 (u8*)0xDC1F58
+#define W_FIRST_STARTING_ROW                 (u8*)0xDC35BC
 
 #define ACCEPTING_BATTLE_INPUT               (u32*)0xDC35AC //checked in menu handlers to determine if input can be accepted. Maybe pause?
 #define HANDLER_STATE_ARRAY                  (u8*)0xDC2068

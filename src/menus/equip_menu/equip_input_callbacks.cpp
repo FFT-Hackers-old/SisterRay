@@ -62,11 +62,10 @@ void selectGearHandler(const MenuInputEvent* event) {
     else {
         playMenuSound(3);
     }
-
 }
 
 /*Handlers for "Cancel" inputs, one per menu State*/
-void exitEquipViewListener(const EquipInputEvent* event) {
+void exitEquipViewListener(const MenuInputEvent* event) {
     setMenuState(event->menu, 0);
 }
 

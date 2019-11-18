@@ -33,7 +33,9 @@ const WidgetClass* getChildTypeFromID(u16 widgetTypeID) {
 
 /*Grid widgets positions are automatically updated and track the position of the cursor they are initialized with*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
-    auto context = gContext.menuWidgets.get_element(cursorGrid->cursorName)->cursors[cursorGrid->menuState][cursorGrid->cursorIdx].context;
+
+    auto cursor = gContext.menuWidgets.get_element(cursorGrid->cursorName)->cursors[cursorGrid->menuState][cursorGrid->cursorIdx];
+    auto context = cursor.context;
     auto size = cursorGrid->widget.widget.children.size();
     if (size < (context.viewRowBound * context.viewColumnBound)) {
         auto idx = size - 1;
@@ -56,8 +58,8 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
             u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex);
             auto child = getChild((Widget*)cursorGrid, flatIndex);
             if (child) {
-                auto elementX = (cursorGrid->cursor->columnSpacing * columnIndex) + cursorGrid->widget.widget.xCoordinate;
-                auto elementY = (cursorGrid->cursor->rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
+                auto elementX = (cursor.columnSpacing * columnIndex) + cursorGrid->widget.widget.xCoordinate;
+                auto elementY = (cursor.rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
                 u16 startIndex = ((context.maxColumnBound) * (context.baseRowIndex)) + (context.baseColumnIndex);
                 if (cursorGrid->updater) {
@@ -83,7 +85,8 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
 
     /*If a primitive childtype or allocator is specified, type allocate the results*/
     if (childType || params.allocator) {
-        auto slotCount = (widget->cursor->context.viewRowBound) * (widget->cursor->context.viewColumnBound);
+        auto context = gContext.menuWidgets.get_element(cursorGrid->cursorName)->cursors[cursorGrid->menuState][cursorGrid->cursorIdx].context;
+        auto slotCount = (wicontext.viewRowBound) * (context.viewColumnBound);
         for (u32 slot = 0; slot < slotCount; slot++) {
             auto name = std::to_string(slot);
             auto child = typeAllocate(childType, name, widget->allocator);

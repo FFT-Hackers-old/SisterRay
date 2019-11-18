@@ -120,7 +120,7 @@ struct ResourceBarWidget_ {
     i16 thickness;
     i16 seg1start;
     i16 seg1end;
-    i16 seg2starrt;
+    i16 seg2start;
     i16 seg2end;
     float priority;
 };

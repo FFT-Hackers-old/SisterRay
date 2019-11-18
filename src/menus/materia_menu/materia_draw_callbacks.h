@@ -9,7 +9,7 @@
 #include "materia_widget_names.h"
 #include "../../gamedata/materia.h"
 
-void handleChangeCharacter(const MenuDrawEvent* event);
+void handleChangeMateriaCharacter(const MenuDrawEvent* event);
 void handleUpdateMateriaDescription(const MenuDrawEvent* event);
 void handleUpdateMateriaData(const MenuDrawEvent* event);
 void handleUpdateMateriaView(const MenuDrawEvent* event);

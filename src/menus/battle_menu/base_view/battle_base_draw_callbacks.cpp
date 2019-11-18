@@ -56,6 +56,7 @@ void handleActorReady(const MenuDrawEvent* event) {
         if (actorIdx != 255 && !*byte_DC2069 && !*byte_DC207B && (getMenuState(event->menu) == BATTLE_INACTIVE)) {
             if (actorIdx < 4) {
                 *BATTLE_ACTIVE_ACTOR_ID = actorIdx;
+                setActiveCursorIndex(event->menu, BATTLE_CMD_STATE, actorIdx);
                 setMenuState(event->menu, BATTLE_CMD_STATE);
             }
             else {

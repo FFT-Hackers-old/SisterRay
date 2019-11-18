@@ -278,5 +278,14 @@ typedef void(*pfnsub6F63FC)(void*, float);
 typedef void(*pfnsub432AA2)(u16, u16, u16, u16);
 #define gameIssueChosenAction     ((pfnsub432AA2)0x432AA2)
 
+typedef void(*pfnsub66067A)(u32, u32, u32, u32, void*);
+#define setViewport               ((pfnsub66067A)0x66067A)
+
+typedef void(*pfnsub6DC1EB)(void);
+#define runContextCallbacks       ((pfnsub6DC1EB)0x6DC1EB)
+
+typedef u32(*pfnsub41AB67)(u32);
+#define sub_41AB67                ((pfnsub41AB67)0x41AB67)
+
 // const pfnsub6E59BC sub_deez_nuts = ((pfnsub6E59BC)0x6E59BC);
 #endif

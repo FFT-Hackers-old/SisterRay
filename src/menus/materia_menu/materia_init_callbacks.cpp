@@ -7,7 +7,7 @@ using namespace MateriaWidgetNames;
 
 void initMateraCharDataWidget(const MenuInitEvent* event) {
     const char * menuText;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
@@ -73,7 +73,7 @@ void initMateriaDescWidget(const MenuInitEvent* event) {
     DrawTextParams textParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto MatDescWidget = createWidget(MATERIA_DESC_WIDGET_NAME);
@@ -99,12 +99,12 @@ void initMateriaDescWidget(const MenuInitEvent* event) {
 
 //Handles the base display
 void initMateriaViewWidget(const MenuInitEvent* event) {
-    auto materiaChoiceCursor = getStateCursor(event->menuObject, 2);
+    auto materiaChoiceCursor = getStateCursor(event->menu, 2);
 
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto materiaViewWidget = createWidget(MATERIA_GRID_WIDGET_NAME);
@@ -175,7 +175,7 @@ void initMateriaDataWidget(const MenuInitEvent* event) {
 
     const char* menuText;
 
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto materiaDataWidget = createWidget(MATERIA_DATA_WIDGET_NAME);
@@ -274,13 +274,13 @@ void initMateriaDataWidget(const MenuInitEvent* event) {
 
 /*Initializes the command view widget used */
 void initCommandViewWidget(const MenuInitEvent* event) {
-    auto commandChoiceCursor = getStateCursor(event->menuObject, 3);
+    auto commandChoiceCursor = getStateCursor(event->menu, 3);
 
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto commandViewWidget = createWidget(COMMAND_VIEW_WIDGET_NAME);
@@ -325,7 +325,7 @@ void initSpellViewWidget(const MenuInitEvent* event) {
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto mainWidget = event->menuObject->menuWidget;
+    auto mainWidget = event->menu->menuWidget;
 
     auto spellViewWidget = createWidget(SPELL_VIEW_WIDGET_NAME);
 

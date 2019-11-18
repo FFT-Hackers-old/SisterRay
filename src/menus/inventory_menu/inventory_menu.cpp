@@ -18,8 +18,8 @@ SISTERRAY_API i32 onEnterInventory() {
 
 SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
     Menu* menu = gContext.menuWidgets.get_element(INVENTORY_MENU_NAME);
-    runMenu(menu updateStateMask);
-    displayInventoryCursorStates(menuObject, menuObject->currentState, updateStateMask);
+    runMenu(menu, updateStateMask);
+    displayInventoryCursorStates(menu, menu->currentState, updateStateMask);
 }
 
 /*Might just want to include cursors in the draw callbacks*/

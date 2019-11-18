@@ -4,7 +4,7 @@
 
 using namespace MateriaWidgetNames;
 
-void handleChangeCharacter(const MenuDrawEvent* event) {
+void handleChangeMateriaCharacter(const MenuDrawEvent* event) {
     const char * fetchedName;
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;

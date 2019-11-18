@@ -29,7 +29,7 @@ struct _Menu {
 
 Menu* createMenu(SrEventType initEvent, SrEventType drawEvent, SrEventContext inputContext, u32 stateCount, Cursor* cursors=nullptr);
 void destroyMenu(Menu* menu);
-void runMenu(Menu* menu, u32 updateStateMask)
+void runMenu(Menu* menu, u32 updateStateMask);
 
 class MenuRegistry : public SrNamedResourceRegistry<Menu*, std::string> {
 public:

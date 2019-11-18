@@ -12,7 +12,7 @@ using namespace InventoryWidgetNames;
 
 void initViewChoiceWidget(const MenuInitEvent* event) {
     const char * menuText;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
@@ -47,7 +47,7 @@ void initViewChoiceWidget(const MenuInitEvent* event) {
 
 void initCharViewWidget(const MenuInitEvent* event) {
     const char * menuText;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
@@ -93,7 +93,7 @@ void initItemViewWidget(const MenuInitEvent* event) {
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto itemViewWidget = createWidget(ITEM_VIEW_WIDGET_NAME);
@@ -174,12 +174,12 @@ void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
 
 
 void keyItemsViewWidget(const MenuInitEvent* event) {
-    auto keyItemsChoice = getStateCursor(event->menuObject, 3);
+    auto keyItemsChoice = getStateCursor(event->menu, 3);
 
     drawGridParams gridParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto keyItemsWidget = createWidget(KEY_ITEMS_VIEW_NAME);
@@ -220,7 +220,7 @@ void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
 }
 
 void itemDescriptionWidget(const MenuInitEvent* event) {
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
@@ -248,7 +248,7 @@ void itemDescriptionWidget(const MenuInitEvent* event) {
 }
 
 void arrangeTypeWidget(const MenuInitEvent* event) {
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;

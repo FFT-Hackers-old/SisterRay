@@ -23,7 +23,7 @@ void handleChangeCharacter(const MenuDrawEvent* event) {
     }
 }
 
-void handleUpdateDescription(const MenuDrawEvent* event) {
+void handleUpdateEquipDescription(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
     u16 kernelObjectID;

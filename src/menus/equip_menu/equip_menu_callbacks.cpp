@@ -30,7 +30,7 @@ void registerEquipMenuListeners() {
     gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initGearListWidget, modName);
 
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
-    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateDescription, modName);
+    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateEquipDescription, modName);
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateGearSlotsWidget, modName);
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateStatMenuWidget, modName);
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&enableListWidget, modName);

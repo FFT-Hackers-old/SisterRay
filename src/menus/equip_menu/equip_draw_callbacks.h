@@ -9,7 +9,7 @@
 #include "equip_widget_names.h"
 
 void handleChangeCharacter(const MenuDrawEvent* event);
-void handleUpdateDescription(const MenuDrawEvent* event);
+void handleUpdateEquipDescription(const MenuDrawEvent* event);
 void handleUpdateGearSlotsWidget(const MenuDrawEvent* event);
 void handleUpdateStatMenuWidget(const MenuDrawEvent* event);
 void enableListWidget(const MenuDrawEvent* event);

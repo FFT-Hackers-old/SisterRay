@@ -53,7 +53,7 @@ void registerMateriaMenuListeners() {
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initCommandViewWidget, modName);
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initSpellViewWidget, modName);
 
-    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleChangeMateriaCharacter, modName); 
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaDescription, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaData, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaView, modName);

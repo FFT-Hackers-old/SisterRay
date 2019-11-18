@@ -12,8 +12,14 @@ typedef struct {
 } MenuDrawEvent;
 
 typedef struct {
-    Menu* menuObject;
+    Menu* menu;
 } MenuInitEvent;
+
+
+typedef struct {
+    Menu* menu;
+    u32 menuState;
+} MenuInputEvent;
 
 /*Event on which we dispatch handlers for displaying the various types of materia*/
 typedef struct {

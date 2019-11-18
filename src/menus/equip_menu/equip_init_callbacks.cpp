@@ -13,7 +13,7 @@ using namespace EquipWidgetNames;
 void initCharDataWidget(const MenuInitEvent* event) {
     const char * menuText;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
@@ -67,7 +67,7 @@ void initGearDescWidget(const MenuInitEvent* event) {
     DrawTextParams textParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto GearDescWidget = createWidget(GEAR_DESC_WIDGET_NAME);
@@ -103,7 +103,7 @@ void initGearMateriaSlotWidget(const MenuInitEvent* event) {
     drawSlotsParams slotsParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto equipMateraSlotWidget = createWidget(GEAR_SLOTS_WIDGET_NAME);
@@ -158,7 +158,7 @@ void initStatDiffWidget(const MenuInitEvent* event) {
     DrawSimpleAssetParams simpleAssetParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto statDiffWidget = createWidget(STAT_DIFF_WIDGET_NAME);
@@ -201,11 +201,11 @@ void initStatDiffWidget(const MenuInitEvent* event) {
 
 //Initialize the gear list with just a box and a series of disabled widgets.
 void initGearListWidget(const MenuInitEvent* event) {
-    auto gearChoiceCursor = getStateCursor(event->menuObject, 1);
+    auto gearChoiceCursor = getStateCursor(event->menu, 1);
 
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto gearListWidget = createWidget(GEAR_LIST_WIDGET_NAME);

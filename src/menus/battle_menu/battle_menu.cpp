@@ -7,8 +7,8 @@ void battleMenuUpdateHandler(i32 updateStateMask) {
     Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
     i32* menuStateMask = (i32*)(0xDC35B4);
     sub_6C98A6();
-    runMenu(menu,, menuStateMask)
-    drawCursor(getStateCursor(menuObject, menuObject->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
+    runMenu(menu, *menuStateMask);
+    drawCursor(getStateCursor(menu, menu->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
 }
 
 typedef i32(*pfnsub6DD041)();
@@ -35,7 +35,7 @@ typedef i32(*pfnsub6E3135)();
 typedef i32(*pfnsub6E384F)();
 #define sub_6E384F      ((pfnsub6E384F)(0x6E384F))
 
-void resetBattleMenu() {
+/*void resetBattleMenu() {
     byte_C05F6C = 4;
     sub_6CE811(4);
     byte_DC3D14 = 1;
@@ -55,7 +55,7 @@ void resetBattleMenu() {
     CURSOR_MEMORY_ACTIVE = ((signed int)(unsigned __int16)word_DC0E12 >> 4) & 3;
     initHandlerCursorState(-1, -1, 0);
     word_CC0828 = 2;
-}
+}*/
 
 void dispatchBattleUpdates() {
     void* ffContext;

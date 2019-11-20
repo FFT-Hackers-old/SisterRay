@@ -51,19 +51,10 @@ void runMenu(Menu* menu, u32 updateStateMask) {
     gContext.eventBus.dispatch(menu->drawEvent, &event);
     drawWidget(menu->menuWidget);
     for (u32 menuState = 0; menuState < menu->stateCount; menuState++) {
-        auto contains = menu->stateStatus.find(menuState);
-        auto stateStatus = 0;
-        if (contains != menu->stateStatus.end()) {
-            stateStatus = menu->stateStatus[menuState];
-        }
-        if ((stateStatus == 1) || (stateStatus == 2)) {
-            auto containsT = menu->transitionData.find(menuState);
-            if (containsT != menu->transitionData.end()) {
-                auto transition = menu->transitionData[menuState];
-                controlStateView(transition);
-            }
-        }
+        handleTransition(menu, menuState);
     }
+
+    
     if (menu->inputContext == BATTLE_MENU) {
         if (!*gBattlePaused) {
             dispatchMenuInput(updateStateMask, menu, menu->inputContext);

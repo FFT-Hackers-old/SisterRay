@@ -1,4 +1,5 @@
 #include "transition.h"
+#include "menu.h"
 
 void controlStateView(const TransitionData& transition){
     u8* byte_DC206D = (u8*)0xDC206D;
@@ -25,4 +26,57 @@ void controlStateView(const TransitionData& transition){
         transition.field_C,
         transition.field_E,
         ctx);
+}
+
+void handleOpenMenuState(Menu* menu, u32 menuState, TransitionData& transition) {
+    transition.field_C += transition.cIncrement;
+    transition.field_E += transition.eIncrement;
+    if (transition.field_C > transition.field_4 && transition.field_E > transition.field_6) {
+        setNoTransitionState(menu, menuState);
+    }
+    if (transition.field_C > transition.field_4) {
+        transition.field_C = transition.field_4;
+    }
+    if (transition.field_E > transition.field_6)
+        transition.field_E = transition.field_6;
+
+    transition.field_8 = (transition.field_4 / 2) - transition.field_C / 2;
+    transition.field_A = (transition.field_6 / 2) - transition.field_E / 2;
+}
+
+void handleCloseMenuState(Menu* menu, u32 menuState, TransitionData& transition) {
+    transition.field_C -= transition.cIncrement;
+    transition.field_E -= transition.eIncrement;
+    if (transition.field_C < 1 && transition.field_E < 1) {
+        setNoTransitionState(menu, menuState);
+    }
+    if (transition.field_C <  1) {
+        transition.field_C <  1;
+    }
+    if (transition.field_E < 1) {
+        transition.field_E = 1;
+    }
+    transition.field_8 = (transition.field_4 / 2) - transition.field_C / 2;
+    transition.field_A = (transition.field_6 / 2) - transition.field_E / 2;
+}
+
+void handleTransition(Menu* menu, u32 menuState) {
+    auto contains = menu->stateStatus.find(menuState);
+    auto stateStatus = 0;
+    if (contains != menu->stateStatus.end()) {
+        stateStatus = menu->stateStatus[menuState];
+    }
+    if ((stateStatus == 1) || (stateStatus == 2)) {
+        auto containsT = menu->transitionData.find(menuState);
+        if (containsT != menu->transitionData.end()) {
+            auto transition = menu->transitionData[menuState];
+            controlStateView(transition);
+            if (stateStatus == 1) {
+                handleOpenMenuState(menu, menuState, transition);
+            }
+            if (stateStatus == 2) {
+                handleCloseMenuState(menu, menuState, transition);
+            }
+        }
+    }
 }

@@ -60,6 +60,7 @@
 #define HANDLER_STATE_ARRAY                  (u8*)0xDC2068
 #define byte_9AC111                          (u8*)0x9AC111
 #define BATTLE_PAUSED                        (u8*)0xDC7E70
+#define CURSOR_MEMORY_ACTIVE                 (u32*)0xDC3C5C
 // End
 
 //These Globals are used to communicate between update loops by the Equip Menu

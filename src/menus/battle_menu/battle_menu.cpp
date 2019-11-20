@@ -35,27 +35,47 @@ typedef i32(*pfnsub6E3135)();
 typedef i32(*pfnsub6E384F)();
 #define sub_6E384F      ((pfnsub6E384F)(0x6E384F))
 
-/*void resetBattleMenu() {
-    byte_C05F6C = 4;
-    sub_6CE811(4);
-    byte_DC3D14 = 1;
-    byte_DC3860 = 0;
-    byte_DC3650 = dword_DC08B8 & 0x7F;
-    byte_DC3864 = 0;
+
+typedef void(*pfnsub6DCBAA)();
+#define sub_6DCBAA      ((pfnsub6DCBAA)(0x6DCBAA))
+
+void resetBattleMenu() {
+    u8* byte_C05F6C = (u8*)0xC05F6C;
+    u8* byte_DC3864 = (u8*)0xDC3864;
+    u8* byte_91BD6C = (u8*)0x91BD6C;
+    u8* byte_DC3D14 = (u8*)0xDC3D14;
+    u8* byte_DC3860 = (u8*)0xDC3860;
+    u8* byte_DC3650 = (u8*)0xDC3650;
+    u8* byte_DC38F8 = (u8*)0xDC38F8;
+    u16* word_DC38D4 = (u16*)0xDC38D4;
+    u16* word_DC1F3C = (u16*)0xDC1F3C;
+    u16* word_CC0828 = (u16*)0xCC0828;
+    u16* word_DC0E12 = (u16*)0xDC0E12;
+    u32* dword_DC08B8 = (u32*)0xDC08B8;
+
+    *byte_C05F6C = 4;
+    *byte_91BD6C = 4;
+    *byte_DC3D14 = 1;
+    *byte_DC3860 = 0;
+    *byte_DC3650 = *dword_DC08B8 & 0x7F;
+    *byte_DC3864 = 0;
+
     sub_6DCBAA();
-    byte_DC38F8 = ACTIVE_LIMIT_MASK;
-    word_DC38D4 = 1;
-    BATTLE_MENU_STATE = -1;
-    sub_6DB0BC();
-    if (word_DC38D4)
-        word_DC38D4 = 0;
-    gamePausedGlobal = 0;
-    gBattlePaused = 0;
-    word_DC1F3C = ACTIVE_LIMIT_MASK;
-    CURSOR_MEMORY_ACTIVE = ((signed int)(unsigned __int16)word_DC0E12 >> 4) & 3;
-    initHandlerCursorState(-1, -1, 0);
-    word_CC0828 = 2;
-}*/
+    *byte_DC38F8 = *LIMIT_ACTIVE_MASK;
+    *word_DC38D4 = 1;
+
+    Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    setMenuState(menu, BATTLE_INACTIVE);
+
+    if (*word_DC38D4)
+        *word_DC38D4 = 0;
+    *BATTLE_PAUSED_GLOBAL = 0;
+    *BATTLE_PAUSED = 0;
+    *word_DC1F3C = *LIMIT_ACTIVE_MASK;
+    *CURSOR_MEMORY_ACTIVE = (*word_DC0E12 >> 4) & 3;
+    setOpeningState(menu, BATTLE_INACTIVE);
+    *word_CC0828 = 2;
+}
 
 void dispatchBattleUpdates() {
     void* ffContext;
@@ -102,6 +122,8 @@ void initializeBattleMenu() {
     auto battleMenu = createMenu(INIT_BATTLE_MENU, DRAW_BATTLE_MENU, BATTLE_MENU, 64);
     gContext.menuWidgets.add_element(BATTLE_MENU_NAME, battleMenu);
     gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
+    TransitionData baseTransition = { 0x14C, 0x280, 0x70, 0, 0, 0x280, 0x70, 14, 1 };
+    setTransitionData(battleMenu, BATTLE_INACTIVE, baseTransition);
     registerBaseViewListeners();
     initializeBattleBaseMenu();
     registerTargetingMenuListeners();

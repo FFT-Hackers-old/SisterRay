@@ -98,7 +98,7 @@
 #define TGT_TYPE_ALLIES_ALL      ((u8)0x05)
 #define TGT_TYPE_ENEMIES_ALL     ((u8)0x06)
 
-#define BATTLE_INACTIVE          0xFFFFFFFF
+#define BATTLE_INACTIVE          33
 #define BATTLE_TARGETING_STATE   0
 #define BATTLE_CMD_STATE         1
 #define BATTLE_SUMMON_STATE      7

@@ -35,7 +35,7 @@ Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     moveWidget(baseDataWidget, xCoordinate, yCoordinate);
     
     DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
-    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, PARTY_DATA_NAME), std::string("NAME"));
+    addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, PARTY_DATA_NAME), PARTY_DATA_NAME);
 
     auto atbWidget = allocateBarWidget(PARTY_DATA_ATB.c_str(), xCoordinate + 532, yCoordinate);
     addChildWidget(baseDataWidget, atbWidget, PARTY_DATA_ATB);

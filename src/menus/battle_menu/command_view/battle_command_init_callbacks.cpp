@@ -14,11 +14,11 @@ void initBattleCommandViewWidget(const MenuInitEvent* event) {
     srLogWrite("CALLING BATTLE COMMAND INIT HANDLER");
 
     boxParams = {
-        135,
+        145,
         350,
-        88,
+        120,
         130,
-        0.3f
+        0.502f
     };
     boxWidget = createBoxWidget(boxParams, CMD_GRID_BOX);
     addChildWidget(battleCommandView, (Widget*)boxWidget, CMD_GRID_BOX);
@@ -28,7 +28,7 @@ void initBattleCommandViewWidget(const MenuInitEvent* event) {
     for (auto idx = 0; idx < names.size(); idx++) {
         auto cmdItemChoice = getStateCursor(event->menu, idx);
 
-        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_CMD_STATE, &battleCommandNameViewUpdater, 42, 360, allocateCommandRow, idx };
+        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_CMD_STATE, &battleCommandNameViewUpdater, 156, 360, allocateCommandRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleCommandView, (Widget*)gridWidget, names[idx]);
         srLogWrite("parent: %s child: %s bound to cursor %p", battleCommandView->name.c_str(), gridWidget->widget.widget.name.c_str(), cmdItemChoice);
@@ -40,19 +40,21 @@ void initBattleCommandViewWidget(const MenuInitEvent* event) {
 Widget* allocateCommandRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     auto cmdWidget = createWidget(name);
     moveWidget(cmdWidget, xCoordinate, yCoordinate);
-    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
+    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.501f };
     addChildWidget(cmdWidget, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
-    DrawGameAssetParams gameAssetParams = AllArrow(xCoordinate + 4, yCoordinate, 0.1f);
+    DrawGameAssetParams gameAssetParams = AllArrow(xCoordinate + 4, yCoordinate, 0.501f);
     addChildWidget(cmdWidget, (Widget*)createGameAssetWidget(gameAssetParams, std::string("ARW")), std::string("ARW"));
     return cmdWidget;
 }
 
 void battleCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    srLogWrite("RUNNING UPDATER FOR COMMAND WIDGET");
     if (self->collectionType != GridWidgetClass()) {
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
     const auto& commands = PARTY_STRUCT_ARRAY[*BATTLE_ACTIVE_ACTOR_ID].enabledCommandArray;
+    srLogWrite("updating active commands");
     if (commands[flatIndex].commandID == 0xFF) {
         disableWidget(getChild(widget, std::string("ARW")));
         disableWidget(getChild(widget, std::string("TXT")));

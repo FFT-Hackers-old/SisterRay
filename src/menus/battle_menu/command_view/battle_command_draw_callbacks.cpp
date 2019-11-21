@@ -11,6 +11,7 @@ void drawBattleCommandViewWidget(const MenuDrawEvent* event) {
         return;
     }
     srLogWrite("BATTLE STATE COMMAND ACTIVE!");
+    updateCommandsActive(*BATTLE_ACTIVE_ACTOR_ID, 0);
 
     enableWidget(getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME));
     std::vector<std::string> names = { PARTY_1_CMD_GRID, PARTY_2_CMD_GRID, PARTY_3_CMD_GRID };

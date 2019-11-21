@@ -4,6 +4,9 @@
 using namespace BattleMenuWidgetNames;
 
 void drawBaseViewWidget(const MenuDrawEvent* event) {
+    u8* byte_DC3930  = (u8*)0xDC3930;
+    u32* dword_DC3BB0 = (u32*)0xDC3BB0;
+    u32* dword_DC3AA0 = (u32*)0xDC3AA0;
 
     auto menuWidget = event->menu->menuWidget;
     /*This should be a draw callback, probably*/
@@ -14,6 +17,10 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
             auto dataWidget = getChild(getChild(menuWidget, BATTLE_BASE_WIDGET_NAME), names[partyIdx]);
             enableWidget(dataWidget);
 
+            u8 characterID = getCharacterRecordIndex(partyIdx);
+            auto name = &(CHARACTER_RECORD_ARRAY[characterID].character_name);
+            updateText(getChild(dataWidget, PARTY_DATA_NAME), (const char*)name);
+
             i32 atbValue = PARTY_STRUCT_ARRAY[partyIdx].atbTimer;
             updateBarLength((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), atbValue >> 10);
             updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), -2146402240);
@@ -23,7 +30,6 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
                     i32 colorMask = ((*word_DC3BE4 / 2) << 8) | (*word_DC3BE4 << 16);
                     updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), colorMask);
                 }
-
             }
 
             i32 limitValue = PARTY_STRUCT_ARRAY[partyIdx].limitGuage;
@@ -41,6 +47,31 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
             else if (gAiActorVariables[partyIdx].statusMask & STS_SADNESS) {
                 updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), 0x80800000);
             }
+            updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), -2146402240);
+
+            i32 maxHP = PARTY_STRUCT_ARRAY[partyIdx].maxHP;
+            auto displayHP = dword_DC3AA0[partyIdx] >> 8;
+            auto HPWidget = getChild(dataWidget, PARTY_DATA_HP);
+            updateSegment(
+                (ResourceBarWidget*)getChild(HPWidget, std::string("BAR")),
+                (i16)byte_DC3930[partyIdx],
+                (i16)maxHP,
+                (i16)(dword_DC3BB0[partyIdx] >> 8)
+            );
+            updateResourceBarColor(
+                (ResourceBarWidget*)getChild(HPWidget, std::string("BAR")),
+                0x800080FF
+            );
+            updateNumber(getChild(HPWidget, std::string("MAX")), maxHP);
+            updateNumber(getChild(HPWidget, std::string("CURRENT")), displayHP);
+            auto isDead = (PLAYER_FLAG_COPIES[partyIdx].flags & 1);
+            if (isDead) {
+                updateNumberColor(getChild(HPWidget, std::string("CURRENT")), COLOR_RED);
+            }
+            else if (displayHP < (maxHP / 2)){
+                updateNumberColor(getChild(HPWidget, std::string("CURRENT")), COLOR_GREEN);
+            }
+            updateNumberColor(getChild(HPWidget, std::string("CURRENT")), COLOR_WHITE);
             continue;
         }
         disableWidget(getChild(getChild(menuWidget, BATTLE_BASE_WIDGET_NAME), names[partyIdx]));

@@ -122,6 +122,7 @@ struct ResourceBarWidget_ {
     i16 seg1end;
     i16 seg2start;
     i16 seg2end;
+    i32 colorMask;
     float priority;
 };
 
@@ -130,6 +131,8 @@ const WidgetClass kResourceBarWidgetClass = { (SRWIDGETDRAWPROC)drawResourceBarW
 const WidgetClass* ResourceBarWidgetKlass();
 ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::string name);
 bool isResourceBarWidget(Widget* widget);
+void updateResourceBarColor(ResourceBarWidget* barWidget, i32 colorMask);
+void updateSegment(ResourceBarWidget* barWidget, i16 start, i16 end, i16 midpoint);
 
 struct GameAssetWidget_ {
     Widget widget;

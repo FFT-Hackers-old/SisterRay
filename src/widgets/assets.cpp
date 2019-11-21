@@ -473,7 +473,6 @@ void updateItemIcon(Widget* widgetToUpdate, i32 iconType) {
 }
 
 void drawBarWidget(BarWidget* barWidget) {
-    srLogWrite("drawing bar widget with name %s", barWidget->widget.name);
     gameDrawBar(
         barWidget->widget.xCoordinate,
         barWidget->widget.yCoordinate,
@@ -522,7 +521,6 @@ void updateBarColor(BarWidget* barWidget, i32 colorMask) {
 }
 
 void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
-    srLogWrite("drawing resource bar widget with name %s", resourceBarWidget->widget.name);
     DrawResourceBarParams params = {
         resourceBarWidget->widget.xCoordinate,
         resourceBarWidget->widget.yCoordinate,
@@ -531,10 +529,10 @@ void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
         resourceBarWidget->seg1start,
         resourceBarWidget->seg1end,
         resourceBarWidget->seg2start,
-        resourceBarWidget->seg2end
+        resourceBarWidget->seg2end,
+        resourceBarWidget->colorMask
     };
     gameDrawResourceBar((void*)&params, resourceBarWidget->priority);
-    srLogWrite("drew resource bar widget with name %s", resourceBarWidget->widget.name);
 }
 
 ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::string name) {
@@ -547,6 +545,7 @@ ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::st
     widget->seg1end = params.seg1end;
     widget->seg2start = params.seg2start;
     widget->seg2end = params.seg2end;
+    widget->colorMask = params.colorMask;
     widget->priority = params.priority;
     return widget;
 }
@@ -557,4 +556,25 @@ bool isResourceBarWidget(Widget* widget) {
 
 const WidgetClass* ResourceBarWidgetKlass() {
     return &kResourceBarWidgetClass;
+}
+
+void updateResourceBarColor(ResourceBarWidget* barWidget, i32 colorMask) {
+    if (isResourceBarWidget((Widget*)barWidget)) {
+        barWidget->colorMask = colorMask;
+    }
+    else {
+        srLogWrite("attempting to update resource bar length field of an invalid Widget type");
+    }
+}
+
+void updateSegment(ResourceBarWidget* barWidget, i16 start, i16 end, i16 midpoint) {
+    if (isResourceBarWidget((Widget*)barWidget)) {
+        barWidget->seg1start = midpoint;
+        barWidget->seg1end = end;
+        barWidget->seg2start = start;
+        barWidget->seg2end = midpoint;
+    }
+    else {
+        srLogWrite("attempting to update resource bar length field of an invalid Widget type");
+    }
 }

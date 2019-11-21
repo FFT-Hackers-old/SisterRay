@@ -171,6 +171,7 @@ typedef struct {
     i16 seg1end;
     i16 seg2start;
     i16 seg2end;
+    i32 colorMask;
     float priority;
 } DrawResourceBarParams;
 #pragma pack(pop)

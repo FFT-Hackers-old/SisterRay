@@ -8,6 +8,7 @@ void battleMenuUpdateHandler(i32 updateStateMask) {
     i32* menuStateMask = (i32*)(0xDC35B4);
     sub_6C98A6();
     runMenu(menu, *menuStateMask);
+    srLogWrite("DRAWING CURSOR AT %p", getStateCursor(menu, menu->currentState, *BATTLE_ACTIVE_ACTOR_ID));
     drawCursor(getStateCursor(menu, menu->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
 }
 

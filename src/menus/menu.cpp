@@ -98,8 +98,11 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     else if (captureDirectionInput(0x8000, 8)) {
         gContext.eventBus.dispatch(MENU_INPUT_LEFT, &event, dispatchContext);
     }
-    if (activeCursor != nullptr)
+    if (activeCursor != nullptr) {
+        srLogWrite("DISPATCHING SELECT BEHAVIOR FOR STATE: %d, CURSOR IDX: %d", menuState, getActiveCursorIndex(menuObject, menuState));
+        srLogWrite("UPDATING CURSOR AT %p", &(activeCursor->context));
         handleCursorPositionUpdate((u32*)(&(activeCursor->context)));
+    }
 }
 
 SISTERRAY_API void addState(Menu* menu, Cursor* cursor) {
@@ -131,10 +134,9 @@ SISTERRAY_API Cursor* getStateCursor(Menu* menu, u32 menuState, u32 cursorIdx) {
 
 SISTERRAY_API void setStateCursor(Menu* menu, u32 menuState, Cursor cursor, u32 cursorIdx) {
     if (menuState < menu->stateCount) {
-        auto it = menu->cursors[menuState].find(cursorIdx);
-        if (it != menu->cursors[menuState].end()) {
-            menu->cursors[menuState][cursorIdx] = cursor;
-        }
+        srLogWrite("Setting cursor for state %d, idx %d", menuState, cursorIdx);
+        menu->cursors[menuState][cursorIdx] = cursor;
+        srLogWrite("Cursor values: %d, %d", menu->cursors[menuState][cursorIdx].xCoordinate, menu->cursors[menuState][cursorIdx].yCoordinate);
     }
 }
 

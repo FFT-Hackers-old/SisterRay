@@ -1,4 +1,5 @@
 #include "cursor.h"
+#include "../impl.h"
 
 Cursor* createCursor(CursorContext* context, i32 xCoordinate, i32 yCoordinate, i32 rowSpacing, i32 columnSpacing) {
     Cursor* cursor = new Cursor();
@@ -20,6 +21,7 @@ SISTERRAY_API void drawCursor(Cursor* cursor, float priority) {
     }
     auto xCoordinate = (cursor->columnSpacing * cursor->context.relativeColumnIndex) + cursor->xCoordinate;
     auto yCoordinate = (cursor->rowSpacing * cursor->context.relativeRowIndex) + cursor->yCoordinate;
+    srLogWrite("DRAWING CURSOR AT %d, %d", xCoordinate, yCoordinate);
     displayCursor(xCoordinate, yCoordinate, priority);
 }
 

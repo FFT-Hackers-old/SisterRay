@@ -473,6 +473,7 @@ void updateItemIcon(Widget* widgetToUpdate, i32 iconType) {
 }
 
 void drawBarWidget(BarWidget* barWidget) {
+    srLogWrite("drawing bar widget with name %s", barWidget->widget.name);
     gameDrawBar(
         barWidget->widget.xCoordinate,
         barWidget->widget.yCoordinate,
@@ -521,6 +522,7 @@ void updateBarColor(BarWidget* barWidget, i32 colorMask) {
 }
 
 void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
+    srLogWrite("drawing resource bar widget with name %s", resourceBarWidget->widget.name);
     DrawResourceBarParams params = {
         resourceBarWidget->widget.xCoordinate,
         resourceBarWidget->widget.yCoordinate,
@@ -532,6 +534,7 @@ void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
         resourceBarWidget->seg2end
     };
     gameDrawResourceBar((void*)&params, resourceBarWidget->priority);
+    srLogWrite("drew resource bar widget with name %s", resourceBarWidget->widget.name);
 }
 
 ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::string name) {

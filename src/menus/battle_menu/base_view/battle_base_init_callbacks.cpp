@@ -4,8 +4,6 @@
 using namespace BattleMenuWidgetNames;
 
 void initBaseViewWidget(const MenuInitEvent* event) {
-    drawGridParams gridParams;
-    CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
     auto menuObject = event->menu;
@@ -13,22 +11,22 @@ void initBaseViewWidget(const MenuInitEvent* event) {
 
     auto baseWidget = createWidget(BATTLE_BASE_WIDGET_NAME);
 
-    boxParams = {
+    /*boxParams = {
         0,
         340,
         680,
         140,
-        0.3f
+        0.7f
     };
     boxWidget = createBoxWidget(boxParams, BASE_BOX_NAME);
-    addChildWidget(baseWidget, (Widget*)boxWidget, BASE_BOX_NAME);
+    addChildWidget(baseWidget, (Widget*)boxWidget, BASE_BOX_NAME);*/
 
     std::vector<std::string> names = { PARTY_1_STATE_NAME, PARTY_2_STATE_NAME, PARTY_3_STATE_NAME };
+
     for (auto idx = 0; idx < names.size(); idx++) {
         auto baseRowWidget = allocateBaseRow(names[idx].c_str(), 28, 32 * idx + 348);
-        addChildWidget(baseRowWidget, (Widget*)gridWidget, names[idx]);
+        addChildWidget(baseWidget, (Widget*)baseRowWidget, names[idx]);
     }
-
     addChildWidget(mainWidget, baseWidget, BATTLE_BASE_WIDGET_NAME);
 }
 

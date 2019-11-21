@@ -32,7 +32,7 @@ Menu* createMenu(SrEventType initEvent, SrEventType drawEvent, SrEventContext in
     menu->currentState = 0;
     if (cursors != nullptr) {
         for (auto i = 0; i < stateCount; i++) {
-            menu->cursors[i][0] = cursors[stateCount];
+            menu->cursors[i][0] = cursors[i];
             menu->activeStateCursors[i] = 0;
             menu->stateStatus[i] = 0;
         }
@@ -50,11 +50,9 @@ void runMenu(Menu* menu, u32 updateStateMask) {
     MenuDrawEvent event = { menu, getMenuState(menu), updateStateMask };
     gContext.eventBus.dispatch(menu->drawEvent, &event);
     drawWidget(menu->menuWidget);
-    for (u32 menuState = 0; menuState < menu->stateCount; menuState++) {
+    /*for (u32 menuState = 0; menuState < menu->stateCount; menuState++) {
         handleTransition(menu, menuState);
-    }
-
-    
+    }*/
     if (menu->inputContext == BATTLE_MENU) {
         if (!*gBattlePaused) {
             dispatchMenuInput(updateStateMask, menu, menu->inputContext);
@@ -123,9 +121,11 @@ SISTERRAY_API Cursor* getStateCursor(Menu* menu, u32 menuState, u32 cursorIdx) {
     if (menuState < menu->stateCount) {
         auto it = menu->cursors[menuState].find(cursorIdx);
         if (it != menu->cursors[menuState].end()) {
+            srLogWrite("returning cursor at %p", &(it->second));
             return &(it->second);
         }
     }
+    srLogWrite("returning nullptr cursor");
     return nullptr;
 }
 

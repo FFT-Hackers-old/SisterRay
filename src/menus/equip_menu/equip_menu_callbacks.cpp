@@ -8,6 +8,7 @@ using namespace EquipWidgetNames;
 
 
 void initializeEquipMenu() {
+    srLogWrite("initializin equip menu");
     CursorContext gearTypeSelection = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0 };
     Cursor gearTypeCursor = { gearTypeSelection, 207, 17, 36, 0 };
     CursorContext gearSelection = { 0, 0, 1, 8, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };

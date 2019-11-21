@@ -119,9 +119,10 @@ void dispatchBattleUpdates() {
 
 
 void initializeBattleMenu() {
+    mogReplaceFunction(DISPATCH_BATTLE_UPDATES, &dispatchBattleUpdates);
+    mogReplaceFunction(INIT_BATTLE_DATA, &resetBattleMenu);
     auto battleMenu = createMenu(INIT_BATTLE_MENU, DRAW_BATTLE_MENU, BATTLE_MENU, 64);
     gContext.menuWidgets.add_element(BATTLE_MENU_NAME, battleMenu);
-    gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
     TransitionData baseTransition = { 0x14C, 0x280, 0x70, 0, 0, 0x280, 0x70, 14, 1 };
     setTransitionData(battleMenu, BATTLE_INACTIVE, baseTransition);
     registerBaseViewListeners();
@@ -138,6 +139,7 @@ void initializeBattleMenu() {
     //initializeBattleItemMenu();
     //registerESkillMenuListeners();
     //initializeBattleESkillMenu();
+    gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
 }
 
 /*Change this code so we can add more choices*/

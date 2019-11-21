@@ -7,6 +7,7 @@ using namespace MateriaWidgetNames;
 
 
 void initializeMateriaMenu() {
+    srLogWrite("initializing mateia menu");
     /*The Materia menu has 11 well-defined viewing states*/
     CursorContext checkArrangeContext = { 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0 };
     Cursor checkArrangeCursor = { checkArrangeContext, 240, 62, 51, 0 };

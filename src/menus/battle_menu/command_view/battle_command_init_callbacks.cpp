@@ -11,7 +11,7 @@ void initBattleCommandViewWidget(const MenuInitEvent* event) {
     auto mainWidget = menuObject->menuWidget;
 
     auto battleCommandView = createWidget(BATTLE_COMMAND_WIDGET_NAME);
-    srLogWrite("CALLING BATTLE SPELL INIT HANDLER");
+    srLogWrite("CALLING BATTLE COMMAND INIT HANDLER");
 
     boxParams = {
         135,

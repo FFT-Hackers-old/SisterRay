@@ -42,7 +42,8 @@
 #define RECALCULATE_DERIVED_STATS       ((void*)0x5CB2CC)
 #define UPDATE_COMMANDS_ACTIVE          ((void*)0x437679)
 #define DISPATCH_AUTO_ACTIONS           ((void*)0x5C8CFA)
-#define DISPATCH_BATTLE_UPDATES         ((void*)0x6CE98C)
+#define DISPATCH_BATTLE_UPDATES         ((void*)0x6CE8B3)
+#define INIT_BATTLE_DATA                ((void*)0x6DB716)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);
@@ -273,7 +274,7 @@ typedef void(*pfnsub6E59BC)(u8);
 #define sub_6E59BC                 ((pfnsub6E59BC)0x6E59BC)
 
 typedef void(*pfnsub6F63FC)(void*, float);
-#define gameDrawResourceBar        ((pfnsub6F63FC)0x6F63FC)
+#define gameDrawResourceBar        ((pfnsub6F63FC)0x6F638C)
 
 typedef void(*pfnsub432AA2)(u16, u16, u16, u16);
 #define gameIssueChosenAction     ((pfnsub432AA2)0x432AA2)

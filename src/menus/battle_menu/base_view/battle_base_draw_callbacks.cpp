@@ -1,4 +1,5 @@
 #include "battle_base_draw_callbacks.h"
+#include "../../../impl.h"
 
 using namespace BattleMenuWidgetNames;
 
@@ -40,7 +41,7 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
             else if (gAiActorVariables[partyIdx].statusMask & STS_SADNESS) {
                 updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), 0x80800000);
             }
-           
+            continue;
         }
         disableWidget(getChild(getChild(menuWidget, BATTLE_BASE_WIDGET_NAME), names[partyIdx]));
     }
@@ -51,10 +52,14 @@ void handleActorReady(const MenuDrawEvent* event) {
     u8* byte_DC207B = (u8*)0xDC207B;
     u8* byte_DC2084 = (u8*)0xDC2084;
 
+
+    srLogWrite("RUNNING ACTOR ACTION READY CALLBACK");
     if (!*byte_DC2084) {
         auto actorIdx = getActorCycleTop();
-        if (actorIdx != 255 && !*byte_DC2069 && !*byte_DC207B && (getMenuState(event->menu) == BATTLE_INACTIVE)) {
+        srLogWrite("ACTOR INDEX FROM CYCLE: %d", actorIdx);
+        if (actorIdx != -1 && !*byte_DC2069 && !*byte_DC207B && (getMenuState(event->menu) == BATTLE_INACTIVE)) {
             if (actorIdx < 4) {
+                srLogWrite("TRANSITIONING TO COMMMAND ACTIVE STATE");
                 *BATTLE_ACTIVE_ACTOR_ID = actorIdx;
                 setActiveCursorIndex(event->menu, BATTLE_CMD_STATE, actorIdx);
                 setMenuState(event->menu, BATTLE_CMD_STATE);

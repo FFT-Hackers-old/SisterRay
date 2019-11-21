@@ -15,6 +15,9 @@ void deleteCursor(Cursor* cursor) {
 }
 
 SISTERRAY_API void drawCursor(Cursor* cursor, float priority) {
+    if (cursor == nullptr) {
+        return;
+    }
     auto xCoordinate = (cursor->columnSpacing * cursor->context.relativeColumnIndex) + cursor->xCoordinate;
     auto yCoordinate = (cursor->rowSpacing * cursor->context.relativeRowIndex) + cursor->yCoordinate;
     displayCursor(xCoordinate, yCoordinate, priority);

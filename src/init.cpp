@@ -146,6 +146,8 @@ static void Init(void) {
     initializeMateriaMenu();
     registerPartyCallbacks();
     initializeSrBattleEngine();
+
+    srLogWrite("menus initialization complete");
     //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
@@ -160,8 +162,8 @@ static void Init(void) {
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
-    mogReplaceFunction(DISPATCH_BATTLE_UPDATES, &dispatchBattleUpdates);
     initializeBattleMenu();
+    srLogWrite("initialization complete");
     LoadMods();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

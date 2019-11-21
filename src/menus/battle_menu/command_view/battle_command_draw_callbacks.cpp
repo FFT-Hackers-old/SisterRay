@@ -1,4 +1,5 @@
 #include "battle_command_draw_callbacks.h"
+#include "../../../impl.h"
 
 using namespace BattleMenuWidgetNames;
 
@@ -9,6 +10,7 @@ void drawBattleCommandViewWidget(const MenuDrawEvent* event) {
         disableWidget(getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME));
         return;
     }
+    srLogWrite("BATTLE STATE COMMAND ACTIVE!");
 
     enableWidget(getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME));
     std::vector<std::string> names = { PARTY_1_CMD_GRID, PARTY_2_CMD_GRID, PARTY_3_CMD_GRID };

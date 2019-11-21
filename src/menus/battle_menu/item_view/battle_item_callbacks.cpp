@@ -17,7 +17,8 @@ void initializeBattleItemMenu() {
 void registerItemMenuListeners() {
     const auto& modName = std::string("srFF7Base");
     const auto& contextKeys = std::unordered_set<SrEventContext>({BATTLE_MENU});
-    gContext.eventBus.addListener(INIT_BATTLE_ITEM, (SrEventCallback)&initBattleItemViewWidget, modName);
+    gContext.eventBus.addListener(INIT_BATTLE_MENU, (SrEventCallback)&initBattleItemViewWidget, modName);
+    gContext.eventBus.addListener(DRAW_BATTLE_MENU, (SrEventCallback)&drawBattleItemViewWidget, modName);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&handleSelectItem, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&handleExitItem, modName, contextKeys);
 }

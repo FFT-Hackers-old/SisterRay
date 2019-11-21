@@ -6,6 +6,7 @@
 using namespace InventoryWidgetNames;
 
 void initializeInventoryMenu() {
+    srLogWrite("initializing inventory menu");
     CursorContext topBarContext = { 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0, 0 };
     Cursor topBarCursor = { topBarContext, 13, 26, 0, 93 };
     CursorContext itemViewContext = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1 };

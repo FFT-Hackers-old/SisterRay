@@ -15,7 +15,7 @@ void initBattleSummonViewWidget(const MenuInitEvent* event) {
         0,
         340,
         640,
-        120,
+        140,
         0.4f
     };
     boxWidget = createBoxWidget(boxParams, SUMMON_GRID_BOX);

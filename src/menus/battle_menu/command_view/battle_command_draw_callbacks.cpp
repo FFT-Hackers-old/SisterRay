@@ -28,5 +28,5 @@ void drawBattleCommandViewWidget(const MenuDrawEvent* event) {
     auto commandChoiceCursor = getStateCursor(event->menu, BATTLE_CMD_STATE, *BATTLE_ACTIVE_ACTOR_ID);
     commandChoiceCursor->context.maxColumnBound = PARTY_STRUCT_ARRAY[*BATTLE_ACTIVE_ACTOR_ID].commandColumns;
     commandChoiceCursor->context.viewColumnBound = PARTY_STRUCT_ARRAY[*BATTLE_ACTIVE_ACTOR_ID].commandColumns;
-    resizeBox(getChild(menuWidget, CMD_GRID_BOX), 135, 350, 88 * commandChoiceCursor->context.maxColumnBound, 130);
+    resizeBox(getChild(menuWidget, CMD_GRID_BOX), 135, 340, 88 * commandChoiceCursor->context.maxColumnBound, 150);
 }

@@ -532,6 +532,7 @@ void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
         resourceBarWidget->seg2end,
         resourceBarWidget->colorMask
     };
+    srLogWrite("DRAWING RESOURCE BAR WITH PRIORITY: %f", resourceBarWidget->priority);
     gameDrawResourceBar((void*)&params, resourceBarWidget->priority);
 }
 

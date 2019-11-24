@@ -18,7 +18,7 @@ void initBattleMagicViewWidget(const MenuInitEvent* event) {
         0,
         340,
         640,
-        120,
+        140,
         0.4f
     };
     boxWidget = createBoxWidget(boxParams, SPELL_GRID_BOX);

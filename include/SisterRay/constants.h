@@ -107,4 +107,9 @@
 #define BATTLE_ESKILL_STATE      4
 #define BATTLE_MANIP_STATE       19
 
+#define SLOT_LEFT_LINKED           3
+#define SLOT_RIGHT_LINKED          2
+#define SLOT_LEFT_LINKED_2         7
+#define SLOT_RIGHT_LINKED_2        6
+
 #endif

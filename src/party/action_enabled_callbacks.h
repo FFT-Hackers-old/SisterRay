@@ -10,5 +10,7 @@ void enableAblT2S1(const EnableAbilitiesEvent* const event);
 void enableAblT3S3(const EnableAbilitiesEvent* const event);
 void enableAblT9S1(const EnableAbilitiesEvent* const event);
 void enableAblT11S3(const EnableAbilitiesEvent* const event);
+void enableAblT10S0(const EnableAbilitiesEvent* const event);
+void enableAblT12S0(const EnableAbilitiesEvent* const event);
 
 #endif

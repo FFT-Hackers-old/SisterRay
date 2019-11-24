@@ -2,7 +2,6 @@
 #include "../battle/engine/battle_engine_interface.h"
 
 void handleCommandTarget(SelectCommandEvent* event) {
-    // attack case
     u8* byte_DC3C8C = (u8*)0xDC3C8C;
     *byte_DC3C8C = 1;
     setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
@@ -10,7 +9,6 @@ void handleCommandTarget(SelectCommandEvent* event) {
 }
 
 void handleWeaponTarget(SelectCommandEvent* event) {
-    // attack case
     u8* byte_DC3C8C = (u8*)0xDC3C8C;
     *byte_DC3C8C = 0;
     setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
@@ -29,20 +27,19 @@ void cmdItemSelectHandler(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_ITEM_STATE);
 }
 
-void cmdWMagicSelectHandler(SelectCommandEvent* event){
+void cmdWMagicSelectHandler(SelectCommandEvent* event) {
     *W_COMMAND_ENABLED = 1;
-    cmdMagicSelectHandler();
+    cmdMagicSelectHandler(event);
 }
 
 void cmdWSummonSelectHandler(SelectCommandEvent* event) {
     *W_COMMAND_ENABLED = 1;
-    cmdSummonSelectHandler();
-    setMenuState(event->menuObect, BATTLE_SUMMON_STATE);
+    cmdSummonSelectHandler(event);
 }
 
 void cmdWItemSelectHandler(SelectCommandEvent* event) {
     *W_COMMAND_ENABLED = 1;
-    cmdItemSelectHandler();
+    cmdItemSelectHandler(event);
 }
 
 

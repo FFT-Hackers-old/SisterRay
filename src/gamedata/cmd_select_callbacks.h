@@ -15,7 +15,6 @@ void cmdSummonSelectHandler(SelectCommandEvent* event);
 void cmdItemSelectHandler(SelectCommandEvent* event);
 void cmdWMagicSelectHandler(SelectCommandEvent* event);
 void cmdWSummonSelectHandler(SelectCommandEvent* event);
-void cmdWItemSelectHandler(SelectCommandEvent* event)
-
+void cmdWItemSelectHandler(SelectCommandEvent* event);
 
 #endif // !COMMAND_CALLBACKS_H

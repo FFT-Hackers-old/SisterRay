@@ -84,9 +84,16 @@ u8 getCommandRows(u8 partyIndex) {
 /*Applys modifiers when support materia are paired with others*/
 void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType, ActorStatBoosts& boosts) {
     for (auto pairIndex = 0; pairIndex < 8; pairIndex += 2) {
+        auto slots = getMateriaSlots(partyIndex, gearType);
+        auto leftSlot = slots[pairIndex];
+        auto rightSlot = slots[pairIndex];
+
+        if (!slotsAreLinked(leftSlot, rightSlot)) {
+            return;
+        }
+
         auto& leftMateria = equippedMaterias[pairIndex];
         auto& rightMateria = equippedMaterias[pairIndex + 1];
-        /*If either of the linked slots is a support materia, dispatch handlers*/
         if (getMateriaTopType(leftMateria.item_id) == 5) {
             dispatchSupportHandlers(partyIndex, leftMateria, rightMateria, gearType, boosts);
         }
@@ -94,6 +101,28 @@ void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInvento
             dispatchSupportHandlers(partyIndex, rightMateria, leftMateria, gearType, boosts);
         }
     }
+}
+
+u8* getMateriaSlots(u8 partyIdx, SrGearType gearType) {
+    u8 characterRecordArrayIndex = getCharacterRecordIndex(partyIdx);
+    u16 kernelObjectID;
+    u8* materiaSlots;
+
+    kernelObjectID = getEquippedGear(characterRecordArrayIndex, gearType);
+
+    if (gearType == SR_GEAR_WEAPON)
+        auto materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
+    else if (gearType == SR_GEAR_ARMOR)
+        auto materiaSlots = &(gContext.armors.get_resource(kernelObjectID).materia_slots[0]);
+    return materiaSlots;
+}
+
+bool slotsAreLinked(u8 leftSlot, u8 rightSlot) {
+    if (leftSlot == SLOT_RIGHT_LINKED && rightSlot == SLOT_LEFT_LINKED)
+        return true;
+    if (leftSlot == SLOT_RIGHT_LINKED_2 && rightSlot == SLOT_LEFT_LINKED_2)
+        return true;
+    return false;
 }
 
 /*Dispatch support materia handlers, keyed on contexts corresponding to the type and subtype of the paired materia*/
@@ -130,10 +159,12 @@ void clearCommandArray(u8 partyIndex) {
 void enableDefaultCommands(u8 partyIndex, bool magicEnabled, bool summonEnabled) {
     enableCommand(partyIndex, 0, CMD_ATTACK);
     enableCommand(partyIndex, 3, CMD_ITEM);
-    if (magicEnabled)
+    if (magicEnabled) {
         enableCommand(partyIndex, 1, CMD_MAGIC);
-    if (summonEnabled)
+    }
+    if (summonEnabled) {
         enableCommand(partyIndex, 2, CMD_SUMMON);
+    }
 }
 
 

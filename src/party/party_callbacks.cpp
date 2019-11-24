@@ -14,4 +14,9 @@ void registerPartyCallbacks() {
     std::unordered_set<SrEventContext> dispatchContextT11S3 = { MAT_HIGH_TYPE_11, MAT_SUB_TYPE_3 };
     gContext.eventBus.addListener(ENABLE_ACTIONS, (SrEventCallback)enableAblT11S3, modName, dispatchContextT11S3);
     gContext.eventBus.addListener(APPLY_SUPPORT, (SrEventCallback)mCounterT11S3, modName, dispatchContextT11S3);
+
+    std::unordered_set<SrEventContext> dispatchContextT3S3 = { MAT_HIGH_TYPE_3, MAT_SUB_TYPE_3 };
+    gContext.eventBus.addListener(ENABLE_ACTIONS, (SrEventCallback)enableAblT3S3, modName, dispatchContextT3S3);
+
+
 }

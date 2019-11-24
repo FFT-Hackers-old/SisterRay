@@ -29,6 +29,24 @@ void cmdItemSelectHandler(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_ITEM_STATE);
 }
 
+void cmdWMagicSelectHandler(SelectCommandEvent* event){
+    *W_COMMAND_ENABLED = 1;
+    cmdMagicSelectHandler();
+}
+
+void cmdWSummonSelectHandler(SelectCommandEvent* event) {
+    *W_COMMAND_ENABLED = 1;
+    cmdSummonSelectHandler();
+    setMenuState(event->menuObect, BATTLE_SUMMON_STATE);
+}
+
+void cmdWItemSelectHandler(SelectCommandEvent* event) {
+    *W_COMMAND_ENABLED = 1;
+    cmdItemSelectHandler();
+}
+
+
+
 /*void chooseBattleMenuCommands()
 {
     __int16 relativeRowIdx; // ST10_2

@@ -16,7 +16,7 @@ public:
     void dispatch(
         SrEventType eventType,
         void* event,
-        const std::vector<SrEventContext>& contexts = std::vector<SrEventContext>()
+        const std::vector<SrEventContext>& cursors = std::vector<SrEventContext>()
     );
     SrEventListener addListener(
         SrEventType eventType,

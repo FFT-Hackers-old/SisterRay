@@ -98,6 +98,42 @@ const WidgetClass* SlotsWidgetKlass();
 SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name);
 bool isSlotsWidget(Widget* widget);
 
+struct BarWidget_ {
+    Widget widget;
+    i32 length;
+    i32 thickness;
+    i32 unk2;
+    float priority;
+};
+
+void drawBarWidget(BarWidget* barWidget);
+const WidgetClass kBarWidgetClass = { (SRWIDGETDRAWPROC)drawBarWidget };
+const WidgetClass* BarWidgetKlass();
+BarWidget* createBarWidget(DrawBarParams params, std::string name);
+bool isBarWidget(Widget* widget);
+void updateBarLength(BarWidget* barWidget, u32 length);
+void updateBarColor(BarWidget* barWidget, i32 colorMask);
+
+struct ResourceBarWidget_ {
+    Widget widget;
+    i16 length;
+    i16 thickness;
+    i16 seg1start;
+    i16 seg1end;
+    i16 seg2start;
+    i16 seg2end;
+    i32 colorMask;
+    float priority;
+};
+
+void drawResourceBarWidget(ResourceBarWidget* barWidget);
+const WidgetClass kResourceBarWidgetClass = { (SRWIDGETDRAWPROC)drawResourceBarWidget };
+const WidgetClass* ResourceBarWidgetKlass();
+ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::string name);
+bool isResourceBarWidget(Widget* widget);
+void updateResourceBarColor(ResourceBarWidget* barWidget, i32 colorMask);
+void updateSegment(ResourceBarWidget* barWidget, i16 start, i16 end, i16 midpoint);
+
 struct GameAssetWidget_ {
     Widget widget;
     i32 unk1;
@@ -123,6 +159,9 @@ DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereCo
 DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority, bool shaded);
 DrawGameAssetParams ItemIcon(i32 xCoordinate, i32 yCoordinate, i32 iconType, float priority);
 DrawGameAssetParams AllArrow(i32 xCoordinate, i32 yCoordinate, float priority);
+DrawGameAssetParams BarBorder(i32 xCoordinate, i32 yCoordinate, float priority);
+DrawGameAssetParams BarrierBarBorder(i32 xCoordinate, i32 yCoordinate, float priority);
+DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority, int type);
 void setStarShaded(Widget* widgetToUpdate, bool shaded);
 void updateItemIcon(Widget* widgetToUpdate, i32 iconType);
 

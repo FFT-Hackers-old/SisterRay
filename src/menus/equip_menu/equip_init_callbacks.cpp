@@ -10,10 +10,10 @@
 
 using namespace EquipWidgetNames;
 
-void initCharDataWidget(const EquipInitEvent* event) {
+void initCharDataWidget(const MenuInitEvent* event) {
     const char * menuText;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
@@ -58,7 +58,7 @@ void initCharDataWidget(const EquipInitEvent* event) {
     addChildWidget(mainWidget, currentEquipWidget, CHAR_DATA_WIDGET_NAME);
 }
 
-void initGearDescWidget(const EquipInitEvent* event) {
+void initGearDescWidget(const MenuInitEvent* event) {
     const char* fetchedName;
     u16 kernelObjectID;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
@@ -67,7 +67,7 @@ void initGearDescWidget(const EquipInitEvent* event) {
     DrawTextParams textParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto GearDescWidget = createWidget(GEAR_DESC_WIDGET_NAME);
@@ -92,7 +92,7 @@ void initGearDescWidget(const EquipInitEvent* event) {
 }
 
 /* Initialize the Widget for the characters Materia Slots. This will be updated when Handling in Handlers*/
-void initGearMateriaSlotWidget(const EquipInitEvent* event) {
+void initGearMateriaSlotWidget(const MenuInitEvent* event) {
     const char * menuText;
     u8 materiaGrowth;
     auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
@@ -103,7 +103,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
     drawSlotsParams slotsParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto equipMateraSlotWidget = createWidget(GEAR_SLOTS_WIDGET_NAME);
@@ -146,7 +146,7 @@ void initGearMateriaSlotWidget(const EquipInitEvent* event) {
 }
 
 /*Initialize the Widget That displays stats*/
-void initStatDiffWidget(const EquipInitEvent* event) {
+void initStatDiffWidget(const MenuInitEvent* event) {
     u16 windowTop = equipMenuWindowConfig[3].drawDistance2 + 26;
     const char* menuText;
 
@@ -158,7 +158,7 @@ void initStatDiffWidget(const EquipInitEvent* event) {
     DrawSimpleAssetParams simpleAssetParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto statDiffWidget = createWidget(STAT_DIFF_WIDGET_NAME);
@@ -200,13 +200,12 @@ void initStatDiffWidget(const EquipInitEvent* event) {
 
 
 //Initialize the gear list with just a box and a series of disabled widgets.
-void initGearListWidget(const EquipInitEvent* event) {
-    auto gearChoiceCursor = getStateCursor(event->menuObject, 1);
+void initGearListWidget(const MenuInitEvent* event) {
+    auto gearChoiceCursor = getStateCursor(event->menu, 1);
 
-    drawGridParams gridParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto gearListWidget = createWidget(GEAR_LIST_WIDGET_NAME);
@@ -221,10 +220,24 @@ void initGearListWidget(const EquipInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
-    gridParams = { gearChoiceCursor, &gearViewNameUpdater, 427, 193 };
+    drawGridParams gridParams = { EQUIP_MENU_NAME.c_str(), 1, &gearViewNameUpdater, 427, 193, nullptr, 0 };
     auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextWidgetKlass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 
     addChildWidget(mainWidget, gearListWidget, GEAR_LIST_WIDGET_NAME);
 }
 
+
+void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+
+    auto typedPtr = (CursorGridWidget*)self;
+    auto gearType = gContext.gearViewData.getItemType();
+    auto relativeItemID = gContext.gearViewData.get_resource(flatIndex).relative_item_id;
+    srLogWrite("updating gear view widget with item ID: %i at relative index %i", relativeItemID, flatIndex);
+    const char* name = getNameFromRelativeID(relativeItemID, gearType);
+    srLogWrite("updating gear view widget with name: %s", name);
+    updateText(widget, name);
+}

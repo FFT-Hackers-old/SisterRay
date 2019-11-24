@@ -7,22 +7,29 @@
 #include "../widgets/widget.h"
 #include "../events/event.h"
 #include "cursor.h"
+#include "transition.h"
 #include "menu_interface.h"
+#include <vector>
+#include <unordered_map>
 
 /*The Menu type is exposed via the public API, and therefore is defined only in terms of C types
   It is in encapsulated via opaque pointer, and should be interacted with the provided functions*/
 struct _Menu {
-    i32 currentState;
-    i32 stateCount;
+    u32 currentState;
+    u32 stateCount;
     Widget* menuWidget;
     SrEventType initEvent;
-    Cursor* contexts;
-    i32 contextCapacity;
-    i32 contextSize;
+    SrEventType drawEvent;
+    SrEventContext inputContext;
+    std::unordered_map<u32, std::unordered_map<u32, Cursor>> cursors; //associate cursors to a various state by name
+    std::unordered_map<u32, u32> activeStateCursors;
+    std::unordered_map<u32, TransitionData> transitionData;
+    std::unordered_map<u32, u8> stateStatus;
 };
 
-Menu* createMenu(SrEventType initEvent, i32 stateCount, Cursor* contexts);
+Menu* createMenu(SrEventType initEvent, SrEventType drawEvent, SrEventContext inputContext, u32 stateCount, Cursor* cursors=nullptr);
 void destroyMenu(Menu* menu);
+void runMenu(Menu* menu, u32 updateStateMask);
 
 class MenuRegistry : public SrNamedResourceRegistry<Menu*, std::string> {
 public:
@@ -43,6 +50,5 @@ typedef struct {
 #define equipMenuWindowConfig ((oldDrawBoxParams*)0x920AC8)
 
 void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext menuContext);
-
 
 #endif

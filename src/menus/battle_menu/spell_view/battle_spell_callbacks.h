@@ -5,6 +5,7 @@
 #include <SisterRay/SisterRay.h>
 #include "battle_spell_init_callbacks.h"
 #include "battle_spell_input_callbacks.h"
+#include "battle_spell_draw_callbacks.h"
 
 
 void initializeBattleSpellMenu();

@@ -2,7 +2,7 @@
 #include "../../impl.h"
 #include "../../party/party_utils.h"
 
-void equipGearHandler(const EquipInputEvent* event) {
+void equipGearHandler(const MenuInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 0)->context;
     auto gearChoice = getStateCursor(event->menu, 1)->context;
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
@@ -40,7 +40,7 @@ void equipGearHandler(const EquipInputEvent* event) {
 
 }
 
-void selectGearHandler(const EquipInputEvent* event) {
+void selectGearHandler(const MenuInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 0)->context;
     i32 cursorViewBound = 0;
     u16 equippableGearCount = 0;
@@ -62,15 +62,14 @@ void selectGearHandler(const EquipInputEvent* event) {
     else {
         playMenuSound(3);
     }
-
 }
 
 /*Handlers for "Cancel" inputs, one per menu State*/
-void exitEquipViewListener(const EquipInputEvent* event) {
+void exitEquipViewListener(const MenuInputEvent* event) {
     setMenuState(event->menu, 0);
 }
 
-void exitMenuListener(const EquipInputEvent* event) {
+void exitMenuListener(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
 
@@ -88,7 +87,7 @@ void exitMenuListener(const EquipInputEvent* event) {
 }
 
 /*Handlers for L1/R1 "switching" inputs, for states where they function*/
-void changeCharLeft(const EquipInputEvent* event) {
+void changeCharLeft(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
 
@@ -99,7 +98,7 @@ void changeCharLeft(const EquipInputEvent* event) {
     //update displayed character Data in the Widget
 }
 
-void changeCharRight(const EquipInputEvent* event) {
+void changeCharRight(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
 
@@ -110,7 +109,7 @@ void changeCharRight(const EquipInputEvent* event) {
     //update displayed character Data in the Widget
 }
 
-void changeToMateriaMenu(const EquipInputEvent* event) {
+void changeToMateriaMenu(const MenuInputEvent* event) {
     if ((*word_DD1BC0 || *dword_DC1290)) { //When switching to the materia view, square
         playMenuSound(1);
         sub_6C9812(4, 3);
@@ -119,7 +118,7 @@ void changeToMateriaMenu(const EquipInputEvent* event) {
     }
 }
 
-void handleUnequipAcc(const EquipInputEvent* event) {
+void handleUnequipAcc(const MenuInputEvent* event) {
     characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     auto characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     if (!(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2) {

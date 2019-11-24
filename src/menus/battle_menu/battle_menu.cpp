@@ -1,6 +1,15 @@
 #include "battle_menu.h"
 #include "../../impl.h"
 
+using namespace BattleMenuWidgetNames;
+
+void battleMenuUpdateHandler(i32 updateStateMask) {
+    Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    i32* menuStateMask = (i32*)(0xDC35B4);
+    runMenu(menu, *menuStateMask);
+    drawCursor(getStateCursor(menu, menu->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
+}
+
 typedef i32(*pfnsub6DD041)();
 #define displayBaseMenu ((pfnsub6DD041)(0x6DD041))
 
@@ -26,87 +35,110 @@ typedef i32(*pfnsub6E384F)();
 #define sub_6E384F      ((pfnsub6E384F)(0x6E384F))
 
 
-/*this function will replace the games version, handling drawing for battle menu view based on the menu state passed in as an argument
-  It also handles input, so we will NOP the input functions the game relied on up to this point, which are separate, for these views
-  We will also have to kill the games cursor/box drawing stuff eventually*/
-u8 drawBattleHandlers(i32 updateStateMask, i16 battleMenuState) {
-    u8* byte_DC3654 = (u8*)(0xDC3654);
-    switch (battleMenuState) {
-        case 0:
-            displayBaseMenu();
-            break;
-        case 1:
-            displayCommands();
-            break;
-        case 2:
-            //drawChangeView(); //We want to expand change to add extra commands
-            break;
-        case 3:
-            //drawDefendView(); 
-        case 4: // This one will be redone with the widget system
-            battleESkillUpdateHandler(updateStateMask);
-            break;
-        case 5:
-            battleItemUpdateHandler(updateStateMask);
-            break;
-        case 6:
-            battleSpellUpdateHandler(updateStateMask);
-            break;
-        case 7: // last one to be redone with the widget system
-            battleSummonUpdateHandler(updateStateMask);
-            break;
-        case 9:
-            sub_6E4B3C();
-            break;
-        case 19:
-            //displayManipulateView(); //Needs to be re-implemented so that it still works
-            break;
-        case 20:
-            sub_6E0D28();
-            break;
-        case 21:
-            sub_6E1308();
-            break;
-        case 24:
-            //displayLimitView();
-            break;
-        case 26:
-            sub_6E2170();
-            break;
-        case 27:
-            sub_6E3135();
-            break;
-        case 28:
-            sub_6E384F();
-            break;
-        default:
-            //sub_6DC1EB();
-            break;
+typedef void(*pfnsub6DCBAA)();
+#define sub_6DCBAA      ((pfnsub6DCBAA)(0x6DCBAA))
+
+void resetBattleMenu() {
+    u8* byte_C05F6C = (u8*)0xC05F6C;
+    u8* byte_DC3864 = (u8*)0xDC3864;
+    u8* byte_91BD6C = (u8*)0x91BD6C;
+    u8* byte_DC3D14 = (u8*)0xDC3D14;
+    u8* byte_DC3860 = (u8*)0xDC3860;
+    u8* byte_DC3650 = (u8*)0xDC3650;
+    u8* byte_DC38F8 = (u8*)0xDC38F8;
+    u16* word_DC38D4 = (u16*)0xDC38D4;
+    u16* word_DC1F3C = (u16*)0xDC1F3C;
+    u16* word_CC0828 = (u16*)0xCC0828;
+    u16* word_DC0E12 = (u16*)0xDC0E12;
+    u32* dword_DC08B8 = (u32*)0xDC08B8;
+
+    *byte_C05F6C = 4;
+    *byte_91BD6C = 4;
+    *byte_DC3D14 = 1;
+    *byte_DC3860 = 0;
+    *byte_DC3650 = *dword_DC08B8 & 0x7F;
+    *byte_DC3864 = 0;
+
+    sub_6DCBAA();
+    *byte_DC38F8 = *LIMIT_ACTIVE_MASK;
+    *word_DC38D4 = 1;
+
+    Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    setMenuState(menu, BATTLE_INACTIVE);
+
+    if (*word_DC38D4)
+        *word_DC38D4 = 0;
+    *BATTLE_PAUSED_GLOBAL = 0;
+    *BATTLE_PAUSED = 0;
+    *word_DC1F3C = *LIMIT_ACTIVE_MASK;
+    *CURSOR_MEMORY_ACTIVE = (*word_DC0E12 >> 4) & 3;
+    setOpeningState(menu, BATTLE_INACTIVE);
+    *word_CC0828 = 2;
+}
+
+void dispatchBattleUpdates() {
+    void* ffContext;
+    i32* menuStateMask = (i32*)(0xDC35B4);
+    u32* dword_91BD68 = (u32*)(0x91BD68);
+    u32* dword_BF2848 = (u32*)(0xBF2848);
+    u32* dword_DB9580 = (u32*)(0xDB9580);
+    u32* dword_DC1F40 = (u32*)(0xDC1F40);
+    u32* dword_91E7B8 = (u32*)(0x91E7B8);
+    u32* dword_DC2094 = (u32*)(0xDC2094);
+    u32* dword_DC2098 = (u32*)(0xDC1F40);
+    u32* dword_DC1F44 = (u32*)(0xDC1F44);
+    u32* dword_DC1F48 = (u32*)0xDC1F48;
+    u16* word_DC1F3C = (u16*)(0xDC1F3C);
+
+    *dword_DB9580 = 0;
+    if (*dword_91BD68 != *dword_BF2848) {
+        *dword_DB9580 = 1;
+        *word_DC1F3C = *LIMIT_ACTIVE_MASK;
+        *dword_91E7B8 = 0;
+        *dword_DC2094 = -256;
+        *dword_DC2098 = -256;
+        *dword_DC1F48 = 0;
     }
-    return ((*byte_DC3654) = (*byte_DC3654 + 1)) + 1;
+    *dword_DC1F40 ^= 1u;
+    
+    ffContext = getGraphicsCtx();
+    sub_41A21E(ffContext);
+
+    if (*dword_91BD68 != *dword_BF2848) {
+        *dword_91BD68 = *dword_BF2848;
+        *BATTLE_PAUSED_GLOBAL = *BATTLE_PAUSED;
+    }
+
+    battleMenuUpdateHandler(*menuStateMask);
+ 
+    if (!*BATTLE_PAUSED)
+        incrementTimers();
+    ++(*dword_DC1F44);
 }
 
 
-#define DRAW_BATTLE_VIEWS                  ((void*)0x6D82EA)
-#define BATTLE_SPELL_INPUT_HANDLER         ((void*)0x6D9B98)
-#define BATTLE_SUMMON_INPUT_HANDLER        ((void*)0x6DA072)
-#define BATTLE_ESKILL_INPUT_HANDLER        ((void*)0x6DA3A8)
-#define BATTLE_ITEM_INPUT_HANDLER          ((void*)0x6D98E3)
-
 void initializeBattleMenu() {
+    mogReplaceFunction(DISPATCH_BATTLE_UPDATES, &dispatchBattleUpdates);
+    mogReplaceFunction(INIT_BATTLE_DATA, &resetBattleMenu);
+    auto battleMenu = createMenu(INIT_BATTLE_MENU, DRAW_BATTLE_MENU, BATTLE_MENU, 64);
+    gContext.menuWidgets.add_element(BATTLE_MENU_NAME, battleMenu);
+    TransitionData baseTransition = { 0x14C, 0x280, 0x70, 0, 0, 0x280, 0x70, 14, 1 };
+    setTransitionData(battleMenu, BATTLE_INACTIVE, baseTransition);
+    registerBaseViewListeners();
+    initializeBattleBaseMenu();
+    registerTargetingMenuListeners();
+    initializeBattleTargetingMenu();
+    registerCommandMenuListeners();
+    initializeBattleCommandMenu();
     registerSpellMenuListeners();
     initializeBattleSpellMenu();
-    registerSummonMenuListeners();
+    registerSummonViewListeners();
     initializeBattleSummonMenu();
     registerItemMenuListeners();
     initializeBattleItemMenu();
     registerESkillMenuListeners();
     initializeBattleESkillMenu();
-    mogReplaceFunction(DRAW_BATTLE_VIEWS, &drawBattleHandlers);
-    mogReplaceFunction(BATTLE_SPELL_INPUT_HANDLER, &battleSpellInputHandler);
-    mogReplaceFunction(BATTLE_SUMMON_INPUT_HANDLER, &battleSummonInputHandler);
-    mogReplaceFunction(BATTLE_ESKILL_INPUT_HANDLER, &battleESkillInputHandler);
-    mogReplaceFunction(BATTLE_ITEM_INPUT_HANDLER, &battleItemInputHandler);
+    gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
 }
 
 /*Change this code so we can add more choices*/

@@ -20,6 +20,7 @@ void initializeAuxCommandRegistry() {
         PAuxCommandData auxCommand = { animScriptIdx, damageByte, commandFlags };
         srLogWrite("Registering execution callbacks for command %i", commandIdx);
         registerDefaultCallbacks(commandIdx, auxCommand);
+        registerSelectCallbacks(commandIdx, auxCommand);
         gContext.auxCommands.add_element(name, auxCommand);
     }
 }
@@ -56,6 +57,22 @@ void runSetupCallbacks(u16 commandIdx) {
     for (auto callback : callbacks) {
         srLogWrite("Running command callback");
         callback(setupEvent);
+    }
+}
+
+/*run every select callback in order*/
+void dispatchSelectCallbacks(const char* name, Menu* menu, EnabledCommandStruct& command) {
+    auto idx = gContext.auxCommands.get_resource_index(std::string(name));
+    runSelectCallbacks(command, menu);
+}
+
+void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu) {
+    srLogWrite("running command select callbacks for command idx: %i", command.commandID);
+    SelectCommandEvent setupEvent = { menu, &command };
+    auto& callbacks = gContext.auxCommands.get_resource(command.commandID).selectCallbacks;
+    for (auto callback : callbacks) {
+        srLogWrite("Running command select callback");
+        callback(&setupEvent);
     }
 }
 
@@ -383,6 +400,43 @@ void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
             break;
         }
         case 37: {
+            break;
+        }
+        default: {
+            break;
+        }
+    }
+}
+
+void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
+    switch (commandIdx) {
+        case 0:
+        case 1: {
+            auxCommand.selectCallbacks.push_back(&handleWeaponTarget);
+            break;
+        }
+        case 2: {
+            auxCommand.selectCallbacks.push_back(&cmdMagicSelectHandler);
+            break;
+        }
+        case 21: {
+            auxCommand.selectCallbacks.push_back(&cmdMagicSelectHandler);
+            break;
+        }
+        case 3: {
+            auxCommand.selectCallbacks.push_back(&cmdSummonSelectHandler);
+            break;
+        }
+        case 22: {
+            auxCommand.selectCallbacks.push_back(&cmdSummonSelectHandler);
+            break;
+        }
+        case 4: {
+            auxCommand.selectCallbacks.push_back(&cmdItemSelectHandler);
+            break;
+        }
+        case 23: {
+            auxCommand.selectCallbacks.push_back(&cmdItemSelectHandler);
             break;
         }
         default: {

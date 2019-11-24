@@ -11,7 +11,7 @@ EventBus::EventBus(): _listenerCount(0), _listenerCapacity(1) {
 EventBus::~EventBus() {
 }
 
-void EventBus::dispatch(SrEventType eventType, void* event, const std::vector<SrEventContext>& contexts) {
+void EventBus::dispatch(SrEventType eventType, void* event, const std::vector<SrEventContext>& cursors) {
     if (!eventType)
         return;
 
@@ -23,9 +23,9 @@ void EventBus::dispatch(SrEventType eventType, void* event, const std::vector<Sr
 
     for (size_t listenerID : eventListeners) {
         const auto& keys = _listenerContexts[listenerID];
-        if ((!keys.empty()) && (!contexts.empty())) {
+        if ((!keys.empty()) && (!cursors.empty())) {
             filtered = false;
-            for (auto context : contexts) {
+            for (auto context : cursors) {
                 if (keys.find(context) == keys.end()) {
                     filtered = true;
                 }

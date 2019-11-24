@@ -5,9 +5,9 @@
 
 using namespace MateriaWidgetNames;
 
-void initMateraCharDataWidget(const MateriaInitEvent* event) {
+void initMateraCharDataWidget(const MenuInitEvent* event) {
     const char * menuText;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     TextWidget* textWidget;
@@ -64,7 +64,7 @@ void initMateraCharDataWidget(const MateriaInitEvent* event) {
     addChildWidget(mainWidget, currentMateriaWidget, CHAR_DATA_WIDGET_NAME);
 }
 
-void initMateriaDescWidget(const MateriaInitEvent* event) {
+void initMateriaDescWidget(const MenuInitEvent* event) {
     const char* materiaDescription;
     u16 materiaID;
     auto characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
@@ -73,7 +73,7 @@ void initMateriaDescWidget(const MateriaInitEvent* event) {
     DrawTextParams textParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto MatDescWidget = createWidget(MATERIA_DESC_WIDGET_NAME);
@@ -98,14 +98,13 @@ void initMateriaDescWidget(const MateriaInitEvent* event) {
 }
 
 //Handles the base display
-void initMateriaViewWidget(const MateriaInitEvent* event) {
-    auto materiaChoiceCursor = getStateCursor(event->menuObject, 2);
+void initMateriaViewWidget(const MenuInitEvent* event) {
+    auto materiaChoiceCursor = getStateCursor(event->menu, 2);
 
-    drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto materiaViewWidget = createWidget(MATERIA_GRID_WIDGET_NAME);
@@ -121,21 +120,53 @@ void initMateriaViewWidget(const MateriaInitEvent* event) {
     addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);
 
     auto normalMateriaViewWidget = createWidget(MATERIA_GRID);
-    gridParams = { materiaChoiceCursor, &materiaNameViewUpdater, 427, 210 };
-    gridWidget = createGridWidget(gridParams, MATERIA_GRID_NAMES, TextWidgetKlass());
+    drawGridParams gridParams = { MATERIA_MENU_NAME.c_str(), 2, &materiaEntryUpdater, 427, 210, &allocateMateriaRow, 0 };
+    gridWidget = createGridWidget(gridParams, MATERIA_GRID_NAMES);
     addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_NAMES);
 
-    gridParams = { materiaChoiceCursor, &materiaSphereViewUpdater, 403, 210 };
-    DrawGameAssetParams assetInitParams = MateriaSphere(0, 0, 0, 0.1f);
-    gridWidget = createGridWidget(gridParams, MATERIA_GRID_SPHERES, GameAssetWidgetKlass());
-    /*This configuration causes spheres to display, we need to map these*/
-    addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_SPHERES);
     addChildWidget(materiaViewWidget, normalMateriaViewWidget, MATERIA_GRID);
 
     addChildWidget(mainWidget, materiaViewWidget, MATERIA_GRID_WIDGET_NAME);
 }
 
-void initMateriaDataWidget(const MateriaInitEvent* event) {
+Widget* allocateMateriaRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
+    auto materiaWidget = createWidget(name);
+    moveWidget(materiaWidget, xCoordinate, yCoordinate);
+    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
+    addChildWidget(materiaWidget, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
+
+    DrawGameAssetParams assetInitParams = MateriaSphere(xCoordinate - 20, yCoordinate, 0, 0.1f);
+    addChildWidget(materiaWidget, (Widget*)createGameAssetWidget(assetInitParams, std::string("SPH")), std::string("SPH"));
+    return materiaWidget;
+}
+
+void materiaEntryUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto textWidget = getChild(widget, std::string("TXT"));
+    auto sphereWidget = getChild(widget, std::string("SPH"));
+    auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
+    if (materiaID != 0xFFFF) {
+        enableWidget(textWidget);
+        const char* name = gContext.gameStrings.materia_names.get_string(materiaID);
+        updateText(textWidget, name);
+        updateTextColor(textWidget, COLOR_WHITE);
+
+        enableWidget(sphereWidget);
+        transformAsset(sphereWidget, 128, 32, 16, 16);
+        auto materiaAssetType = getMateriaColorType(materiaID);
+        updateAssetType(sphereWidget, materiaAssetType);
+    }
+    else {
+        disableWidget(textWidget);
+        disableWidget(sphereWidget);
+    }
+}
+
+
+void initMateriaDataWidget(const MenuInitEvent* event) {
     DrawTextParams textParams;
     DrawBoxParams boxParams;
     DrawGameAssetParams gameAssetParams;
@@ -144,7 +175,7 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 
     const char* menuText;
 
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto materiaDataWidget = createWidget(MATERIA_DATA_WIDGET_NAME);
@@ -242,14 +273,14 @@ void initMateriaDataWidget(const MateriaInitEvent* event) {
 }
 
 /*Initializes the command view widget used */
-void initCommandViewWidget(const MateriaInitEvent* event) {
-    auto commandChoiceCursor = getStateCursor(event->menuObject, 3);
+void initCommandViewWidget(const MenuInitEvent* event) {
+    auto commandChoiceCursor = getStateCursor(event->menu, 3);
 
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto menuObject = event->menuObject;
+    auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto commandViewWidget = createWidget(COMMAND_VIEW_WIDGET_NAME);
@@ -264,22 +295,37 @@ void initCommandViewWidget(const MateriaInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, CMD_GRID_BOX);
     addChildWidget(commandViewWidget, (Widget*)boxWidget, CMD_GRID_BOX);
 
-    gridParams = { commandChoiceCursor, &commandNameViewUpdater, 0x2F + 10, 0xD6 + 11 };
+    gridParams = { MATERIA_MENU_NAME.c_str(), 3, &commandNameViewUpdater, 0x2F + 10, 0xD6 + 11, nullptr, 0 };
     gridWidget = createGridWidget(gridParams, CMD_GRID, TextWidgetKlass());
     addChildWidget(commandViewWidget, (Widget*)gridWidget, CMD_GRID);
 
     addChildWidget(mainWidget, commandViewWidget, COMMAND_VIEW_WIDGET_NAME);
 }
 
-/*Initializes the spell view Widget used*/
-void initSpellViewWidget(const MateriaInitEvent* event) {
-    Cursor* spellViewCursor;
+/*Temporary function until we also provide infrastructure for extending the number of commands*/
+void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto commands = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].enabledCommandArray;
+    auto commandID = commands[flatIndex].commandID;
+    if (commandID == 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.gameStrings.command_names.get_string(commandID));
+    updateTextColor(widget, COLOR_WHITE);
+}
 
+/*Initializes the spell view Widget used*/
+void initSpellViewWidget(const MenuInitEvent* event) {
     drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    auto mainWidget = event->menuObject->menuWidget;
+    auto mainWidget = event->menu->menuWidget;
 
     auto spellViewWidget = createWidget(SPELL_VIEW_WIDGET_NAME);
 
@@ -293,17 +339,59 @@ void initSpellViewWidget(const MateriaInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, SPELL_VIEW_BOX);
     addChildWidget(spellViewWidget, (Widget*)boxWidget, SPELL_VIEW_BOX);
 
-    spellViewCursor = getStateCursor(event->menuObject, 4);
-    gridParams = { spellViewCursor, &spellNameViewUpdater, 0x2F + 35, 0x157 + 13 };
+    gridParams = { MATERIA_MENU_NAME.c_str(), 4, &spellNameViewUpdater, 0x2F + 35, 0x157 + 13, nullptr, 0 };
     addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, SPELL_GRID, TextWidgetKlass()), SPELL_GRID);
 
-    spellViewCursor = getStateCursor(event->menuObject, 5);
-    gridParams = { spellViewCursor, &summonNameViewUpdater, 0x2F + 93, 0x157 + 13 };
+    gridParams = { MATERIA_MENU_NAME.c_str(), 5, &summonNameViewUpdater, 0x2F + 93, 0x157 + 13, nullptr, 0 };
     addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, SUMMON_GRID, TextWidgetKlass()) , SUMMON_GRID);
 
-    spellViewCursor = getStateCursor(event->menuObject, 6);
-    gridParams = { spellViewCursor, &eskillNameViewUpdater, 0x2F + 40 , 0x157 + 13 };
+    gridParams = { MATERIA_MENU_NAME.c_str(), 6, &eskillNameViewUpdater, 0x2F + 40 , 0x157 + 13, nullptr, 0 };
     addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, ESKILL_GRID, TextWidgetKlass()), ESKILL_GRID);
 
     addChildWidget(mainWidget, spellViewWidget, SPELL_VIEW_WIDGET_NAME);
+}
+
+void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto& magics = gContext.party.get_element(getPartyKey(*MAT_MENU_PARTY_INDEX)).actorMagics;
+    if (magics[flatIndex].magicIndex == 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_MAGIC, magics[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(widget, COLOR_WHITE);
+}
+
+void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto summons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
+    if (summons[flatIndex].magicIndex == 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_SUMMON, summons[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(widget, COLOR_WHITE);
+}
+
+void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != GridWidgetClass()) {
+        return;
+    }
+    auto typedPtr = (CursorGridWidget*)self;
+    auto eSkills = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorEnemySkills;
+    if (eSkills[flatIndex].magicIndex == 0xFF) {
+        disableWidget(widget);
+        return;
+    }
+    enableWidget(widget);
+    updateText(widget, gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex)).attackName.str());
+    updateTextColor(widget, COLOR_WHITE);
 }

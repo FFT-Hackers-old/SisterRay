@@ -2,45 +2,40 @@
 #include "../../menu.h"
 #include "../../../impl.h"
 #include "../battle_menu_utils.h"
+#include "../../../battle/engine/battle_engine_interface.h"
 
-using namespace BattleSummonWidgetNames;
+using namespace BattleMenuWidgetNames;
 
 /*Spell selection handler*/
-void handleSelectSummon(const BattleSpellInputEvent* event) {
-    auto summonChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
-    auto& enabledSummons = gContext.party.get_element(getPartyKey(event->menuState)).actorSummons;
-    srLogWrite("Select Summon input handler");
-    if (*ACCEPTING_BATTLE_INPUT)
+void handleSelectSummon(const MenuInputEvent* event) {
+    if (!checkHandlingInput())
         return;
-    if (*BATTLE_MENU_STATE != 7)
+
+    if (event->menuState != BATTLE_SUMMON_STATE)
         return;
+
+    auto summonChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
+    auto& enabledSummons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (summonChoiceCursor.maxColumnBound * (summonChoiceCursor.relativeRowIndex + summonChoiceCursor.baseRowIndex)) + summonChoiceCursor.relativeColumnIndex;
-    srLogWrite("trying to execute summon with flat index: %i", flatIndex);
-    srLogWrite("magic index: %i", enabledSummons[flatIndex].magicIndex);
-    srLogWrite("properties mask: %x", enabledSummons[flatIndex].propertiesMask);
     if (enabledSummons[flatIndex].propertiesMask & 2 || enabledSummons[flatIndex].magicIndex == 0xFF) {
         playMenuSound(3);
+        return;
     }
-    else {
-        playMenuSound(1);
-        *ISSUED_ACTION_ID = enabledSummons[flatIndex].magicIndex;
-        *GLOBAL_USED_ACTION_TARGET_DATA = enabledSummons[flatIndex].targetData;
-        *GLOBAL_USED_MENU_INDEX = flatIndex;
-        setCursorTargetingData();
-        *BATTLE_MENU_STATE = 0;
-        *PREVIOUS_BATTLE_MENU_STATE = 7;
-    }
+    playMenuSound(1);
+    setChosenActionID(enabledSummons[flatIndex].magicIndex);
+    setChosenActionMenuIndex(flatIndex);
+    setTargetingFromFlags(enabledSummons[flatIndex].targetData, false);
+    setMenuState(event->menu, BATTLE_TARGETING_STATE);
+    *PREVIOUS_BATTLE_MENU_STATE = BATTLE_SUMMON_STATE;
 }
 
 
-void handleExitSummon(const BattleSpellInputEvent* event) {
-    if (*BATTLE_MENU_STATE != 7)
+void handleExitSummon(const MenuInputEvent* event) {
+    if (event->menuState != BATTLE_SUMMON_STATE)
         return;
-    srLogWrite("HANDLING EXIT SUMMON MENU");
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
-    *BATTLE_MENU_STATE = 1;
-    setHandlerState(7, 3);
+    setMenuState(event->menu, BATTLE_CMD_STATE);
 }

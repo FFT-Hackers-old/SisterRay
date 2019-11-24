@@ -5,10 +5,11 @@
 #include <SisterRay/SisterRay.h>
 #include "battle_summon_init_callbacks.h"
 #include "battle_summon_input_callbacks.h"
-#include "battle_summon_widget_names.h"
+#include "battle_summon_draw_callbacks.h"
+#include "../battle_menu_widget_names.h"
+
 
 
 void initializeBattleSummonMenu();
-void registerSummonMenuListeners();
-
+void registerSummonViewListeners();
 #endif

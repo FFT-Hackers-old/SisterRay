@@ -219,7 +219,19 @@ typedef struct {
 } AIBattleContext;
 #pragma pack(pop)
 
+
 #define AI_BATTLE_CONTEXT   ((AIBattleContext*)0x9AB0A0)
+
+#pragma pack(push)
+typedef struct {
+    u32 flags;
+    u32 unk1;
+    u32 unk2;
+    u32 unk3;
+} PlayerFlagCopies;
+#pragma pack(pop)
+
+#define PLAYER_FLAG_COPIES  ((PlayerFlagCopies*)0x9A8800)
 
 #pragma pack(push, 1)
 typedef struct {

@@ -33,7 +33,9 @@ const WidgetClass* getChildTypeFromID(u16 widgetTypeID) {
 
 /*Grid widgets positions are automatically updated and track the position of the cursor they are initialized with*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
-    auto context = cursorGrid->cursor->context;
+
+    auto cursor = gContext.menuWidgets.get_element(cursorGrid->cursorName)->cursors[cursorGrid->menuState][cursorGrid->cursorIdx];
+    auto context = cursor.context;
     auto size = cursorGrid->widget.widget.children.size();
     if (size < (context.viewRowBound * context.viewColumnBound)) {
         auto idx = size - 1;
@@ -56,12 +58,12 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
             u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex);
             auto child = getChild((Widget*)cursorGrid, flatIndex);
             if (child) {
-                auto elementX = (cursorGrid->cursor->columnSpacing * columnIndex) + cursorGrid->widget.widget.xCoordinate;
-                auto elementY = (cursorGrid->cursor->rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
+                auto elementX = (cursor.columnSpacing * columnIndex) + cursorGrid->widget.widget.xCoordinate;
+                auto elementY = (cursor.rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
                 moveWidget(child, elementX, elementY);
                 u16 startIndex = ((context.maxColumnBound) * (context.baseRowIndex)) + (context.baseColumnIndex);
                 if (cursorGrid->updater) {
-                    cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex+flatIndex);
+                    cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex + flatIndex);
                 }
                 drawWidget(child);
             }
@@ -73,7 +75,9 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
   Do not use your own childTypes here, use the pre-defined widget types in sister ray*/
 CursorGridWidget* createGridWidget(drawGridParams params, std::string name, const WidgetClass* childType) {
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType, sizeof(CursorGridWidget));
-    widget->cursor = params.cursor;
+    widget->cursorName = params.cursorName;
+    widget->menuState = params.menuState;
+    widget->cursorIdx = params.cursorIdx;
     widget->updater = params.updater;
     widget->allocator = params.allocator;
     widget->widget.widget.xCoordinate = params.xCoordinate;
@@ -81,7 +85,13 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
 
     /*If a primitive childtype or allocator is specified, type allocate the results*/
     if (childType || params.allocator) {
-        auto slotCount = (widget->cursor->context.viewRowBound) * (widget->cursor->context.viewColumnBound);
+        srLogWrite("initializing menu with name: %s", widget->cursorName);
+        srLogWrite("initializing widget for menu state: %i", widget->menuState);
+        srLogWrite("initializing widget for cursorIdx: %i", widget->cursorIdx);
+        auto context = gContext.menuWidgets.get_element(widget->cursorName)->cursors[widget->menuState][widget->cursorIdx].context;
+        auto slotCount = (context.viewRowBound) * (context.viewColumnBound);
+
+        srLogWrite("initializing widget with %d slots", slotCount);
         for (u32 slot = 0; slot < slotCount; slot++) {
             auto name = std::to_string(slot);
             auto child = typeAllocate(childType, name, widget->allocator);

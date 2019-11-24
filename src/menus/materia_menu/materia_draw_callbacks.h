@@ -9,12 +9,12 @@
 #include "materia_widget_names.h"
 #include "../../gamedata/materia.h"
 
-void handleChangeCharacter(const MateriaDrawEvent* event);
-void handleUpdateMateriaDescription(const MateriaDrawEvent* event);
-void handleUpdateMateriaData(const MateriaDrawEvent* event);
-void handleUpdateMateriaView(const MateriaDrawEvent* event);
+void handleChangeMateriaCharacter(const MenuDrawEvent* event);
+void handleUpdateMateriaDescription(const MenuDrawEvent* event);
+void handleUpdateMateriaData(const MenuDrawEvent* event);
+void handleUpdateMateriaView(const MenuDrawEvent* event);
 void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia);
 void dispatchMateriaTypeHandlers(Widget* displayWidget, const MateriaInventoryEntry& materia, u8 materiaLevel);
-void drawCommandViewWidget(const MateriaDrawEvent* event);
-void drawSpellsWidget(const MateriaDrawEvent* event);
+void drawCommandViewWidget(const MenuDrawEvent* event);
+void drawSpellsWidget(const MenuDrawEvent* event);
 #endif

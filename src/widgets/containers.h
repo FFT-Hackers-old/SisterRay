@@ -6,7 +6,9 @@
 
 struct CursorGridWidget_ {
     CollectionWidget widget;
-    Cursor* cursor;
+    const char* cursorName;
+    u32 menuState;
+    u32 cursorIdx;
     SRLISTUPDATERPROC updater;
     SRLISTALLOCPROC allocator;
 };

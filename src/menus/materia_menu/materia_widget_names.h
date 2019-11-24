@@ -2,8 +2,9 @@
 #define MATERIA_WIDGET_NAMES_H
 
 namespace MateriaWidgetNames {
+    const std::string MATERIA_MENU_NAME = "MATERIA_MENU";
     //Names of TOP LEVEL WIDGETS
-    const std::string MATERIA_MENU_NAME = "MAT_MENU";
+    const std::string MATERIA_WIDGET_NAME = "MAT_WIDGET";
     const std::string CHAR_DATA_WIDGET_NAME = "CHAR_DATA";
     const std::string CHAR_DATA_BOX_NAME = "CHAR_DATA_BOX";
     const std::string MATERIA_GRID_WIDGET_NAME = "MATERIA_VIEW";

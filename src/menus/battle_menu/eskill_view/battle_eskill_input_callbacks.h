@@ -3,10 +3,9 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "battle_eskill_init_callbacks.h"
-#include "battle_eskill_input_callbacks.h"
+#include "../battle_menu_widget_names.h"
 
-void handleSelectESkill(const BattleSpellInputEvent* event);
-void handleExitESkill(const BattleSpellInputEvent* event);
+void handleSelectESkill(const MenuInputEvent* event);
+void handleExitESkill(const MenuInputEvent* event);
 
 #endif

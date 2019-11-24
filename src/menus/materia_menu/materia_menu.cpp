@@ -3,18 +3,12 @@
 #include "windows.h"
 #include "../menu_utils.h"
 
-SISTERRAY_API void materiaMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menuObject = gContext.menuWidgets.get_element("MATERIA_MENU");
-    auto menuWidget = menuObject->menuWidget;
-    MateriaDrawEvent event = { menuObject, menuObject->currentState };
-    srLogWrite("current materia menu state:%i", menuObject->currentState);
-    gContext.eventBus.dispatch(DRAW_MATERIA_MENU, &event);
-    drawWidget(menuWidget);
+using namespace MateriaWidgetNames;
 
-    displayMateriaCursorStates(menuObject, menuObject->currentState, updateStateMask);
-    if (!is_input_handling_enabled()) {
-        dispatchMenuInput(updateStateMask, menuObject, MATERIA_MENU_CONTEXT);
-    }
+SISTERRAY_API void materiaMenuUpdateHandler(i32 updateStateMask) {
+    Menu* menu = gContext.menuWidgets.get_element(MATERIA_MENU_NAME);
+    runMenu(menu, updateStateMask);
+    displayMateriaCursorStates(menu, getMenuState(menu), updateStateMask);
 }
 
 //Cursors will also need to be done by callback registered to a particular menu state

@@ -8,10 +8,10 @@
 #include "../../events/menu_events.h"
 #include "inventory_widget_names.h"
 
-void handleCustomSortActive(const InventoryDrawEvent* event);
-void handleKeyItemsViewActive(const InventoryDrawEvent* event);
-void handlePartyViewActive(const InventoryDrawEvent* event);
-void handleUpdateDescription(const InventoryDrawEvent* event);
-void handleArrangeActive(const InventoryDrawEvent* event);
-void handleMenuViewActive(const InventoryDrawEvent* event);
+void handleCustomSortActive(const MenuDrawEvent* event);
+void handleKeyItemsViewActive(const MenuDrawEvent* event);
+void handlePartyViewActive(const MenuDrawEvent* event);
+void handleUpdateDescription(const MenuDrawEvent* event);
+void handleArrangeActive(const MenuDrawEvent* event);
+void handleMenuViewActive(const MenuDrawEvent* event);
 #endif

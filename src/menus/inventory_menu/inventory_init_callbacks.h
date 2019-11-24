@@ -8,13 +8,18 @@
 #include "../../events/menu_events.h"
 #include "inventory_widget_names.h"
 #include "../menu.h"
+#include "../../inventories/inventory_utils.h"
 
 
-void initViewChoiceWidget(const InventoryInitEvent* event);
-void initCharViewWidget(const InventoryInitEvent* event);
-void initItemViewWidget(const InventoryInitEvent* event);
-void keyItemsViewWidget(const InventoryInitEvent* event);
-void itemDescriptionWidget(const InventoryInitEvent* event);
-void arrangeTypeWidget(const InventoryInitEvent* event);
+void initViewChoiceWidget(const MenuInitEvent* event);
+void initCharViewWidget(const MenuInitEvent* event);
+void initItemViewWidget(const MenuInitEvent* event);
+void keyItemsViewWidget(const MenuInitEvent* event);
+void itemDescriptionWidget(const MenuInitEvent* event);
+void arrangeTypeWidget(const MenuInitEvent* event);
+
+Widget* allocateInventoryRow(const char* name, i32 xCoordinate, i32 yCoordinate);
+void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
+void keyItemViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 
 #endif

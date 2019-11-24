@@ -8,10 +8,10 @@
 #include "../../events/menu_events.h"
 #include "equip_widget_names.h"
 
-void handleChangeCharacter(const EquipDrawEvent* event);
-void handleUpdateDescription(const EquipDrawEvent* event);
-void handleUpdateGearSlotsWidget(const EquipDrawEvent* event);
-void handleUpdateStatMenuWidget(const EquipDrawEvent* event);
-void enableListWidget(const EquipDrawEvent* event);
+void handleChangeCharacter(const MenuDrawEvent* event);
+void handleUpdateEquipDescription(const MenuDrawEvent* event);
+void handleUpdateGearSlotsWidget(const MenuDrawEvent* event);
+void handleUpdateStatMenuWidget(const MenuDrawEvent* event);
+void enableListWidget(const MenuDrawEvent* event);
 color getStatDisplayColor(u8 equippedStat, u8 toEquipStat);
 #endif

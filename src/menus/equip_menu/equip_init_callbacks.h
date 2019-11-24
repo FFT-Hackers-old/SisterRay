@@ -9,10 +9,13 @@
 #include "equip_widget_names.h"
 #include "../menu.h"
 
-void initCharDataWidget(const EquipInitEvent* event);
-void initGearMateriaSlotWidget(const EquipInitEvent* event);
-void initGearDescWidget(const EquipInitEvent* event);
-void initStatDiffWidget(const EquipInitEvent* event);
-void initGearListWidget(const EquipInitEvent* event);
+void initCharDataWidget(const MenuInitEvent* event);
+void initGearMateriaSlotWidget(const MenuInitEvent* event);
+void initGearDescWidget(const MenuInitEvent* event);
+void initStatDiffWidget(const MenuInitEvent* event);
+void initGearListWidget(const MenuInitEvent* event);
+
+
+void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 
 #endif

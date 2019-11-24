@@ -3,10 +3,10 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "battle_item_init_callbacks.h"
-#include "battle_item_input_callbacks.h"
+#include "../../../events/menu_events.h"
+#include "../battle_menu_widget_names.h"
 
-void handleSelectItem(const BattleSpellInputEvent* event);
-void handleExitItem(const BattleSpellInputEvent* event);
+void handleSelectItem(const MenuInputEvent* event);
+void handleExitItem(const MenuInputEvent* event);
 
 #endif

@@ -7,19 +7,11 @@
 using namespace EquipWidgetNames;
 
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menuObject = gContext.menuWidgets.get_element("EQUIP_MENU");
-    auto equipMenuState = menuObject->currentState;
+    Menu* menu = gContext.menuWidgets.get_element("EQUIP_MENU");
 
     sub_6C98A6();
-    auto menuWidget = menuObject->menuWidget;
-    EquipDrawEvent event = { menuObject, menuObject->currentState };
-    gContext.eventBus.dispatch(DRAW_EQUIP_MENU, &event);
-    drawWidget(menuWidget);
-    displayMenuCursors(menuObject, equipMenuState, updateStateMask);
-
-    if (!is_input_handling_enabled()) {
-        dispatchMenuInput(updateStateMask, menuObject, EQUIP_MENU_CONTEXT);
-    }
+    runMenu(menu, updateStateMask);
+    displayMenuCursors(menu, getMenuState(menu), updateStateMask);
 }
 
 /*Need a self-updating bar*/

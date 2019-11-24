@@ -83,4 +83,28 @@
 #define SR_WIDGET_BOX_TYPE    ((u16)0x02)
 #define SR_WIDGET_ARROW_TYPE  ((u16)0x03)
 
+#define TGT_FLAG_ENABLE_SELECT   ((u8)0x01)
+#define TGT_FLAG_START_ENEMIES   ((u8)0x02)
+#define TGT_FLAG_START_MULTIPLE  ((u8)0x04)
+#define TGT_FLAG_TOGGLE_MULTIPLE ((u8)0x08)
+#define TGT_FLAG_ONE_ROW         ((u8)0x10)
+#define TGT_SHORT_RANGE          ((u8)0x20)
+#define TGT_FLAG_ALL_ROWS        ((u8)0x40)
+#define TGT_FLAG_RANDOM          ((u8)0x80)
+
+
+#define TGT_TYPE_ALLIES          ((u8)0x01)
+#define TGT_TYPE_ENEMIES         ((u8)0x02)
+#define TGT_TYPE_ALLIES_ALL      ((u8)0x05)
+#define TGT_TYPE_ENEMIES_ALL     ((u8)0x06)
+
+#define BATTLE_INACTIVE          33
+#define BATTLE_TARGETING_STATE   0
+#define BATTLE_CMD_STATE         1
+#define BATTLE_SUMMON_STATE      7
+#define BATTLE_MAGIC_STATE       6
+#define BATTLE_ITEM_STATE        5
+#define BATTLE_ESKILL_STATE      4
+#define BATTLE_MANIP_STATE       19
+
 #endif

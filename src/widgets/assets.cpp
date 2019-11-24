@@ -374,6 +374,77 @@ DrawGameAssetParams AllArrow(i32 xCoordinate, i32 yCoordinate, float priority) {
     return allArw;
 }
 
+DrawGameAssetParams BarBorder(i32 xCoordinate, i32 yCoordinate, float priority) {
+    DrawGameAssetParams barBorder = { xCoordinate, yCoordinate, 16, 0, 40, 10, 1, 0, 0, priority };
+    return barBorder;
+}
+
+DrawGameAssetParams BarrierBarBorder(i32 xCoordinate, i32 yCoordinate, float priority) {
+    DrawGameAssetParams barrierBarBorder = { xCoordinate, yCoordinate, 160, 16, 38, 12, 1, 0, 0, priority };
+    return barrierBarBorder;
+}
+
+#define MENU_ASSET_TIME 0
+#define MENU_ASSET_WAIT 1
+#define MENU_ASSET_CHAR 2
+#define MENU_ASSET_HP 3
+#define MENU_ASSET_MP 4
+#define MENU_ASSET_LIMIT 5
+#define MENU_ASSET_BARRIER 6
+
+DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority, int type) {
+    i32 unk1 = 0;
+    i32 unk2 = 0;
+    i32 unk3 = 0;
+    switch (type) {
+        case 0: {
+            unk1 = 96;
+            unk2 = 8;
+            unk3 = 24;
+            break;
+        }
+        case 1: {
+            unk1 = 112;
+            unk2 = 0;
+            unk3 = 24;
+            break;
+        }
+        case 2: {
+            unk1 = 128;
+            unk2 = 16;
+            unk3 = 26;
+            break;
+        }
+        case 3: {
+            unk1 = 80;
+            unk2 = 0;
+            unk3 = 16;
+            break;
+        }
+        case 4: {
+            unk1 = 96;
+            unk2 = 0;
+            unk3 = 16;
+            break;
+        }
+        case 5: {
+            unk1 = 56;
+            unk2 = 0;
+            unk3 = 24;
+            break;
+        }
+        case 6: {
+            unk1 = 56;
+            unk2 = 8;
+            unk3 = 38;
+            break;
+        }
+    }
+
+    DrawGameAssetParams menuTextAsset = { xCoordinate, yCoordinate, unk1, unk2, unk3, 5, 1, 0, 0, priority };
+    return menuTextAsset;
+}
+
 void setStarShaded(Widget* widgetToUpdate, bool shaded) {
     if (isGameAssetWidget(widgetToUpdate)) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;
@@ -401,4 +472,110 @@ void updateItemIcon(Widget* widgetToUpdate, i32 iconType) {
     }
 }
 
+void drawBarWidget(BarWidget* barWidget) {
+    gameDrawBar(
+        barWidget->widget.xCoordinate,
+        barWidget->widget.yCoordinate,
+        barWidget->length,
+        barWidget->thickness,
+        barWidget->unk2,
+        barWidget->priority
+    );
+}
 
+BarWidget* createBarWidget(DrawBarParams params, std::string name) {
+    BarWidget* widget = (BarWidget*)createWidget(name, sizeof(BarWidget), &kBarWidgetClass);
+    widget->widget.xCoordinate = params.xCoordinate;
+    widget->widget.yCoordinate = params.yCoordinate;
+    widget->length = params.length;
+    widget->thickness = params.thickness;
+    widget->unk2 = params.unk2;
+    widget->priority = params.priority;
+    return widget;
+}
+
+bool isBarWidget(Widget* widget) {
+    return ((widget->klass == &kBarWidgetClass));
+}
+
+const WidgetClass* BarWidgetKlass() {
+    return &kBarWidgetClass;
+}
+
+void updateBarLength(BarWidget* barWidget, u32 length) {
+    if (isBarWidget((Widget*)barWidget)) {
+        barWidget->length = length;
+    }
+    else {
+        srLogWrite("attempting to update bar length field of an invalid Widget type");
+    }
+}
+
+void updateBarColor(BarWidget* barWidget, i32 colorMask) {
+    if (isBarWidget((Widget*)barWidget)) {
+        barWidget->unk2 = colorMask;
+    }
+    else {
+        srLogWrite("attempting to update bar length field of an invalid Widget type");
+    }
+}
+
+void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
+    DrawResourceBarParams params = {
+        resourceBarWidget->widget.xCoordinate,
+        resourceBarWidget->widget.yCoordinate,
+        resourceBarWidget->length,
+        resourceBarWidget->thickness,
+        resourceBarWidget->seg1start,
+        resourceBarWidget->seg1end,
+        resourceBarWidget->seg2start,
+        resourceBarWidget->seg2end,
+        resourceBarWidget->colorMask
+    };
+    srLogWrite("DRAWING RESOURCE BAR WITH PRIORITY: %f", resourceBarWidget->priority);
+    gameDrawResourceBar((void*)&params, resourceBarWidget->priority);
+}
+
+ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::string name) {
+    ResourceBarWidget* widget = (ResourceBarWidget*)createWidget(name, sizeof(ResourceBarWidget), &kResourceBarWidgetClass);
+    widget->widget.xCoordinate = params.xCoordinate;
+    widget->widget.yCoordinate = params.yCoordinate;
+    widget->length = params.length;
+    widget->thickness = params.thickness;
+    widget->seg1start = params.seg1start;
+    widget->seg1end = params.seg1end;
+    widget->seg2start = params.seg2start;
+    widget->seg2end = params.seg2end;
+    widget->colorMask = params.colorMask;
+    widget->priority = params.priority;
+    return widget;
+}
+
+bool isResourceBarWidget(Widget* widget) {
+    return ((widget->klass == &kResourceBarWidgetClass));
+}
+
+const WidgetClass* ResourceBarWidgetKlass() {
+    return &kResourceBarWidgetClass;
+}
+
+void updateResourceBarColor(ResourceBarWidget* barWidget, i32 colorMask) {
+    if (isResourceBarWidget((Widget*)barWidget)) {
+        barWidget->colorMask = colorMask;
+    }
+    else {
+        srLogWrite("attempting to update resource bar length field of an invalid Widget type");
+    }
+}
+
+void updateSegment(ResourceBarWidget* barWidget, i16 start, i16 end, i16 midpoint) {
+    if (isResourceBarWidget((Widget*)barWidget)) {
+        barWidget->seg1start = midpoint;
+        barWidget->seg1end = end;
+        barWidget->seg2start = start;
+        barWidget->seg2end = midpoint;
+    }
+    else {
+        srLogWrite("attempting to update resource bar length field of an invalid Widget type");
+    }
+}

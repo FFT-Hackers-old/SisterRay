@@ -23,6 +23,7 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct _Cursor Cursor;
+typedef struct _TransitionData TransitionData;
 enum color { COLOR_GRAY, COLOR_UNKNOWN_1, COLOR_RED, COLOR_UNKNOWN_2, COLOR_UNKNOWN_3, COLOR_TEAL, COLOR_GREEN, COLOR_WHITE };
 
 typedef struct Widget_ Widget;
@@ -147,6 +148,38 @@ typedef void(*PFNSRNEWSLOTSWIDGETPROC)(Widget*, drawSlotsParams, char*);
 typedef void(*PFNSRSETSLOTSPARAMSPROC)(drawSlotsParams*, i32, i32, u8*, MateriaInventoryEntry*);
 typedef void(*PFNSRUPDATEMATERIASLOTSPROC)(Widget*, u8*);
 
+typedef struct {
+    i32 xCoordinate;
+    i32 yCoordinate;
+    i32 length;
+    i32 thickness;
+    i32 unk2;
+    float priority;
+} DrawBarParams;
+
+typedef struct BarWidget_ BarWidget;
+typedef void(*PFNSRNEWBARSWIDGETPROC)(Widget*, DrawBarParams, char*);
+typedef void(*PFNSRSETBARPARAMSPROC)(BarWidget*, DrawBarParams);
+
+#pragma pack(push, 1)
+typedef struct {
+    i16 xCoordinate;
+    i16 yCoordinate;
+    i16 length;
+    i16 thickness;
+    i16 seg1start;
+    i16 seg1end;
+    i16 seg2start;
+    i16 seg2end;
+    i32 colorMask;
+    float priority;
+} DrawResourceBarParams;
+#pragma pack(pop)
+
+typedef struct ResourceBarWidget_ ResourceBarWidget;
+typedef void(*PFNSRNEWRESOURCEBARSWIDGETPROC)(Widget*, DrawResourceBarParams, char*);
+typedef void(*PFNSRSETRESOURCEBARPARAMSPROC)(ResourceBarWidget*, DrawResourceBarParams);
+
 
 typedef struct {
     i32 xCoordinate;
@@ -171,11 +204,13 @@ typedef struct CollectionWidget_ CollectionWidget;
 typedef void(*SRLISTUPDATERPROC)(CollectionWidget*, Widget*, u16);
 typedef Widget*(*SRLISTALLOCPROC)(const char*, i32, i32);
 typedef struct {
-    Cursor* cursor;
+    const char* cursorName;
+    u32 menuState;
     SRLISTUPDATERPROC updater;
     i32 xCoordinate;
     i32 yCoordinate;
     SRLISTALLOCPROC allocator;
+    u32 cursorIdx;
 } drawGridParams;
 
 typedef struct CursorGridWidget_ CursorGridWidget;

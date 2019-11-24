@@ -5,7 +5,7 @@
 #include "../../inventories/inventory_utils.h"
 
 //INVENTORY_OK_HANDLERS
-void chooseViewHandler(const InventoryInputEvent* event) {
+void chooseViewHandler(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
 
@@ -32,7 +32,7 @@ void chooseViewHandler(const InventoryInputEvent* event) {
     }
 }
 
-void selectItemHandler(const InventoryInputEvent* event) {
+void selectItemHandler(const MenuInputEvent* event) {
     if (event->menuState != 1)
         return;
 
@@ -58,7 +58,7 @@ void selectItemHandler(const InventoryInputEvent* event) {
     }
 }
 
-void executeSwapHandler(const InventoryInputEvent* event) {
+void executeSwapHandler(const MenuInputEvent* event) {
     if (event->menuState != 5)
         return;
 
@@ -81,7 +81,7 @@ void executeSwapHandler(const InventoryInputEvent* event) {
     }
 }
 
-void useTargetedItemHandler(const InventoryInputEvent* event) {
+void useTargetedItemHandler(const MenuInputEvent* event) {
     if (event->menuState != 2)
         return;
 
@@ -98,7 +98,7 @@ void useTargetedItemHandler(const InventoryInputEvent* event) {
     handleUsableItemEffects(itemID, inventory_index, partyMemberIndex, event->menu);
 }
 
-void arrangeItemsHandler(const InventoryInputEvent* event) {
+void arrangeItemsHandler(const MenuInputEvent* event) {
     if (event->menuState != 4)
         return;
 
@@ -117,7 +117,7 @@ void arrangeItemsHandler(const InventoryInputEvent* event) {
 }
 
 //INVENTORY CANCEL HANDLERS
-void exitInventoryHandler(const InventoryInputEvent* event) {
+void exitInventoryHandler(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
 
@@ -126,14 +126,14 @@ void exitInventoryHandler(const InventoryInputEvent* event) {
     set_more_transition_data(0);
 }
 
-void exitItemView(const InventoryInputEvent* event) {
+void exitItemView(const MenuInputEvent* event) {
     if (event->menuState != 1)
         return;
     playMenuSound(4);
     setMenuState(event->menu, 0);
 }
 
-void exitSwapHandler(const InventoryInputEvent* event) {
+void exitSwapHandler(const MenuInputEvent* event) {
     if (event->menuState != 5)
         return;
 
@@ -142,7 +142,7 @@ void exitSwapHandler(const InventoryInputEvent* event) {
 
 }
 
-void exitTargetingHandler(const InventoryInputEvent* event) {
+void exitTargetingHandler(const MenuInputEvent* event) {
     if (event->menuState != 2)
         return;
 
@@ -150,7 +150,7 @@ void exitTargetingHandler(const InventoryInputEvent* event) {
     setMenuState(event->menu, 1);
 }
 
-void exitKeyItemsHandler(const InventoryInputEvent* event) {
+void exitKeyItemsHandler(const MenuInputEvent* event) {
     if (event->menuState != 3)
         return;
 
@@ -158,7 +158,7 @@ void exitKeyItemsHandler(const InventoryInputEvent* event) {
     setMenuState(event->menu, 0);
 }
 
-void exitArrangeHandler(const InventoryInputEvent* event) {
+void exitArrangeHandler(const MenuInputEvent* event) {
     if (event->menuState != 4)
         return;
 

@@ -12,6 +12,8 @@ bool isUsableInBattle(u16 itemID) {
     auto characterID = (PARTY_STRUCT_ARRAY)[party_member_index].characterID;
     bool characterCanUse = (bool)!(characterMask & (1 << characterID));
 
+    srLogWrite("itemisUsable, characterCanUse: %d, %d", itemIsUsuable, characterCanUse);
+
     return (itemIsUsuable && characterCanUse);
 }
 
@@ -31,14 +33,16 @@ bool didItemUseSucceed(u16 itemID) {
     bool isItemUsable;
     bool emptyItem = (itemID == 0xFFFF);
 
+    srLogWrite("Checking Item usable for item: %d", itemID);
     if (emptyItem)
         return false;
 
-    if (*COMMAND_TRIGGER_INDEX != 3 && *COMMAND_TRIGGER_INDEX != 10)
+    if (*ISSUED_COMMAND_ID == CMD_THROW) {
         isItemUsable = isThrowable(itemID);
-    else
-        isItemUsable = isUsableInBattle(itemID);
-
+        return isItemUsable;
+    }
+    isItemUsable = isUsableInBattle(itemID);
+    srLogWrite("Battle Item Usable return: %d", isItemUsable);
     return isItemUsable;
 }
 
@@ -55,4 +59,12 @@ u16 getRestoreTypeGlobal(i16 itemID) {
 i32 setHandlerState(u16 handlerIndex, i8 state) {
     (HANDLER_STATE_ARRAY)[handlerIndex] = state;
     return handlerIndex;
+}
+
+bool checkHandlingInput() {
+    if (*ACCEPTING_BATTLE_INPUT)
+        return  false;
+    if (*BATTLE_PAUSED)
+        return false;
+    return true;
 }

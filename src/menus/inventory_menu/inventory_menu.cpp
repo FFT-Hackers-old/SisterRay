@@ -3,6 +3,7 @@
 #include "windows.h"
 #include "../menu_utils.h"
 
+using namespace InventoryWidgetNames;
 
 SISTERRAY_API i32 onEnterInventory() {
     i32 ret;
@@ -16,24 +17,14 @@ SISTERRAY_API i32 onEnterInventory() {
 }
 
 SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menuObject = gContext.menuWidgets.get_element("INVENTORY_MENU");
-    auto menuWidget = menuObject->menuWidget;
-    InventoryDrawEvent event = { menuObject, menuObject->currentState };
-
-    gContext.eventBus.dispatch(DRAW_INVENTORY_MENU, &event);
-    drawWidget(menuWidget);
-
-    displayInventoryCursorStates(menuObject, menuObject->currentState, updateStateMask);
-    if (!is_input_handling_enabled())
-    {
-        dispatchMenuInput(updateStateMask, menuObject, INVENTORY_MENU_CONTEXT);
-    }
+    Menu* menu = gContext.menuWidgets.get_element(INVENTORY_MENU_NAME);
+    runMenu(menu, updateStateMask);
+    displayInventoryCursorStates(menu, menu->currentState, updateStateMask);
 }
 
 /*Might just want to include cursors in the draw callbacks*/
 void displayInventoryCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
-
     u16 item_ID;
 
     sub_6C98A6();

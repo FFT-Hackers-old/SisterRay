@@ -8,15 +8,16 @@ using namespace EquipWidgetNames;
 
 
 void initializeEquipMenu() {
+    srLogWrite("initializin equip menu");
     CursorContext gearTypeSelection = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0 };
     Cursor gearTypeCursor = { gearTypeSelection, 207, 17, 36, 0 };
     CursorContext gearSelection = { 0, 0, 1, 8, 0, 0, 1, 16, 0, 0, 0, 0, 0, 1 };
     Cursor gearChoiceCursor = { gearSelection, 385, 197, 36, 0 };
 
     Cursor cursorArray[2] = { gearTypeCursor, gearChoiceCursor };
-    auto equipMenu = createMenu(INIT_EQUIP_MENU, 2, &cursorArray[0]);
-    gContext.menuWidgets.add_element("EQUIP_MENU", equipMenu);
-    gContext.menuWidgets.initializeMenu("EQUIP_MENU", EQUIP_MENU_NAME);
+    auto equipMenu = createMenu(INIT_EQUIP_MENU, DRAW_EQUIP_MENU, EQUIP_MENU_CONTEXT, 2, &cursorArray[0]);
+    gContext.menuWidgets.add_element(EQUIP_MENU_NAME, equipMenu);
+    gContext.menuWidgets.initializeMenu(EQUIP_MENU_NAME, EQUIP_WIDGET_NAME);
 }
 
 void registerEquipMenuListeners() {
@@ -30,7 +31,7 @@ void registerEquipMenuListeners() {
     gContext.eventBus.addListener(INIT_EQUIP_MENU, (SrEventCallback)&initGearListWidget, modName);
 
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
-    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateDescription, modName);
+    gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateEquipDescription, modName);
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateGearSlotsWidget, modName);
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&handleUpdateStatMenuWidget, modName);
     gContext.eventBus.addListener(DRAW_EQUIP_MENU, (SrEventCallback)&enableListWidget, modName);

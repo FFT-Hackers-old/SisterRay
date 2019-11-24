@@ -4,7 +4,7 @@
 
 using namespace EquipWidgetNames;
 
-void handleChangeCharacter(const EquipDrawEvent* event) {
+void handleChangeCharacter(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u16 kernelObjectID;
     const char* fetchedName;
@@ -23,7 +23,7 @@ void handleChangeCharacter(const EquipDrawEvent* event) {
     }
 }
 
-void handleUpdateDescription(const EquipDrawEvent* event) {
+void handleUpdateEquipDescription(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
     u16 kernelObjectID;
@@ -46,7 +46,7 @@ void handleUpdateDescription(const EquipDrawEvent* event) {
     updateText(descrptionWidget, fetchedDescription);
 }
 
-void handleUpdateGearSlotsWidget(const EquipDrawEvent* event) {
+void handleUpdateGearSlotsWidget(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
     u16 kernelObjectID;
@@ -96,7 +96,7 @@ void handleUpdateGearSlotsWidget(const EquipDrawEvent* event) {
     updateText(growthWidget, menuText);
 }
 
-void handleUpdateStatMenuWidget(const EquipDrawEvent* event) {
+void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
     u8 statsToDisplay[7];
@@ -161,7 +161,7 @@ void handleUpdateStatMenuWidget(const EquipDrawEvent* event) {
 
 }
 
-void enableListWidget(const EquipDrawEvent* event) {
+void enableListWidget(const MenuDrawEvent* event) {
     auto widget = getChild(getChild(event->menu->menuWidget, GEAR_LIST_WIDGET_NAME), EQUIP_LIST);
     switch (event->menuState) {
         case 0:

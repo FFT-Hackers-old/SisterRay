@@ -36,14 +36,31 @@
 #define PREVIOUS_BATTLE_MENU_STATE           (u32*)0x91EF98
 #define BATTLE_ACTIVE_ACTOR_ID               (u8*)0xDC3C7C
 #define COMMAND_TRIGGER_INDEX                (u8*)0xDC3C74
+
+
+#define ISSUED_COMMAND_ID                    (u8*)0xDC3C70
+
 #define ISSUED_ACTION_ID                     (u16*)0xDC3C78
-#define GLOBAL_USED_ACTION_TARGET_DATA       (u16*)0xDC3C84
-#define GLOBAL_USED_MENU_INDEX               (u16*)0xDC3C54
-#define GLOBAL_USED_ITEM_RESTORE             (u16*)0xDC2088
+#define ISSUED_ACTION_TARGET_DATA            (u16*)0xDC3C84
+#define ISSUED_ACTION_MENU_INDEX             (u16*)0xDC3C54
+#define ISSUED_ACTION_RESTORE_FLAG           (u16*)0xDC2088
+#define ISSUED_ACTION_TARGET_TYPE            (u8*)0xDC3C90  
+#define ISSUED_ACTION_TARGET_INDEX           (u8*)0xDC3C94
+#define ISSUED_ACTION_STARTING_ROW           (u8*)0xDC3C58
+#define ISSUED_ACTION_VALID_TARGET_MASK      (u16*)0xDC3C60
+
+#define W_FIRST_ACTION_USED                  (u16*)0xDC38F4
+#define W_FIRST_ACTION_INDEX                 (u16*)0xDC3638
+#define W_FIRST_TARGETING_CURSOR_TYPE        (u8*)0xDC35C0
+#define W_FIRST_VALID_TARGET_MASK            (u16*)0xDC35B0
+#define W_FIRST_TARGET_INDEX                 (u8*)0xDC1F58
+#define W_FIRST_STARTING_ROW                 (u8*)0xDC35BC
+
 #define ACCEPTING_BATTLE_INPUT               (u32*)0xDC35AC //checked in menu handlers to determine if input can be accepted. Maybe pause?
 #define HANDLER_STATE_ARRAY                  (u8*)0xDC2068
 #define byte_9AC111                          (u8*)0x9AC111
 #define BATTLE_PAUSED                        (u8*)0xDC7E70
+#define CURSOR_MEMORY_ACTIVE                 (u32*)0xDC3C5C
 // End
 
 //These Globals are used to communicate between update loops by the Equip Menu
@@ -63,12 +80,12 @@
 #define dword_DCA628                         (u32*)0xDCA628
 // End
 
-#define MAT_MENU_PARTY_INDEX             (u32*)0xDD1638
+#define MAT_MENU_PARTY_INDEX                 (u32*)0xDD1638
 //These Globals are used to communicate between update loops by the magic menu
 #define enabledSpellTypeMask                 (u8*)0xDC0927
 //
 
-#define CURRENT_PARTY_MEMBER_ARRAY           (u32*)0xDC0230 /*Length 3, contains party member ID, from the savemap*/
+#define CURRENT_PARTY_MEMBER_ARRAY           ((u32*)0xDC0230) /*Length 3, contains party member ID, from the savemap*/
 
 
 #define dword_DD1AE4                         (u32*)0xDD1AE4 // Not sure what this is, but it is only called in key-item view contexts
@@ -83,5 +100,13 @@
 #define byte_DD18C8                          (u8*)0xDD18C8
 #define dword_DC20D8                         (u32*)0xDC20D8
 #define REMEMBER_CURSOR_POSITION             (u32*)0xDC3C5C
+#define ENEMY_ACTOR_IDX                      (u32*)0xDC3C64
+#define gBattlePaused                        (u8*)0xDC0E70
+#define BATTLE_PAUSED_GLOBAL                 (u8*)0xDC0E6C
+#define BATTLE_TARGETED_GLOBAL               (u8*)0xDC3C9C
+#define LIMIT_ACTIVE_MASK                    (u8*)0x9A889E
+#define word_9A889A                          (u16*)0x9A889A
+#define W_COMMAND_ENABLED                    (u8*)0xDC3C88
+#define BATTLE_ROW_MASKS                     ((u16*)0x9A88AA)
 
 #endif

@@ -7,6 +7,7 @@ using namespace MateriaWidgetNames;
 
 
 void initializeMateriaMenu() {
+    srLogWrite("initializing mateia menu");
     /*The Materia menu has 11 well-defined viewing states*/
     CursorContext checkArrangeContext = { 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0 };
     Cursor checkArrangeCursor = { checkArrangeContext, 240, 62, 51, 0 };
@@ -37,9 +38,9 @@ void initializeMateriaMenu() {
         eSkillViewCursor, arrangeViewCursor, destroyMateriaCursor,
         arrangeViewCursor, arrangeViewCursor
     };
-    auto materiaMenu = createMenu(INIT_MATERIA_MENU, 12, &(cursorArray[0]));
-    gContext.menuWidgets.add_element("MATERIA_MENU", materiaMenu);
-    gContext.menuWidgets.initializeMenu("MATERIA_MENU", MATERIA_MENU_NAME);
+    auto materiaMenu = createMenu(INIT_MATERIA_MENU, DRAW_MATERIA_MENU, MATERIA_MENU_CONTEXT, 12, &(cursorArray[0]));
+    gContext.menuWidgets.add_element(MATERIA_MENU_NAME, materiaMenu);
+    gContext.menuWidgets.initializeMenu(MATERIA_MENU_NAME, MATERIA_WIDGET_NAME);
 }
 
 void registerMateriaMenuListeners() {
@@ -53,7 +54,7 @@ void registerMateriaMenuListeners() {
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initCommandViewWidget, modName);
     gContext.eventBus.addListener(INIT_MATERIA_MENU, (SrEventCallback)&initSpellViewWidget, modName);
 
-    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleChangeCharacter, modName); 
+    gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleChangeMateriaCharacter, modName); 
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaDescription, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaData, modName);
     gContext.eventBus.addListener(DRAW_MATERIA_MENU, (SrEventCallback)&handleUpdateMateriaView, modName);

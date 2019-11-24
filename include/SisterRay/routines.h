@@ -42,6 +42,8 @@
 #define RECALCULATE_DERIVED_STATS       ((void*)0x5CB2CC)
 #define UPDATE_COMMANDS_ACTIVE          ((void*)0x437679)
 #define DISPATCH_AUTO_ACTIONS           ((void*)0x5C8CFA)
+#define DISPATCH_BATTLE_UPDATES         ((void*)0x6CE8B3)
+#define INIT_BATTLE_DATA                ((void*)0x6DB716)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);
@@ -68,6 +70,9 @@ typedef i32(*pfnsub6F535C)(i32, i32);
 
 typedef i32(*pfnsub6F7BFB)(i32, i32, i32, i32, i32, i32, i32, i32, i32, float);
 #define drawComplexGameAsset          ((pfnsub6F7BFB)0x6F7BFB)
+
+typedef void(*pfnsub6F7346)(i32, i32, i32, i32, i32, float);
+#define gameDrawBar          ((pfnsub6F7346)0x6F7346)
 
 /*These are routines used in the inventory menu handler*/
 typedef i32(*pfnsub6F0D7D)(i32, i32, float);
@@ -167,7 +172,7 @@ typedef void(*pfnsub6C497C)(i32, char);
 #define sub_6C497C                      ((pfnsub6C497C)0x6C497C)
 
 typedef i32(*pfnsub6C9808)(void);
-#define is_input_handling_enabled       ((pfnsub6C9808)0x6C9808)
+#define checkMenuInputEnabled       ((pfnsub6C9808)0x6C9808)
 
 typedef bool(*pfnsub715026)(i32);
 #define knows_all_prereq_limits         ((pfnsub715026)0x715026)
@@ -241,4 +246,47 @@ typedef u8*(*pfnsub436E15)(u8, u8, u8, i16);
 
 typedef i32(*pfnsub437185)(i32, i32, u8, i32);
 #define sub_437185               ((pfnsub437185)0x437185)
+
+typedef i16(*pfnsub437506)(void);
+#define getActorCycleTop         ((pfnsub437506)0x437506)
+
+
+typedef void(*pfnsub43753A)(void);
+#define cycleActors              ((pfnsub437506)0x43758A)
+
+typedef void(*pfnsub6CE882)(i16);
+#define sub_6CE882   ((pfnsub6CE882)0x6CE882)
+
+typedef void(*pfnsub6D1B5C)(void*, i16);
+#define gameDrawTargetingCursors     ((pfnsub6D1B5C)0x6D1B5C)
+
+
+typedef void*(*pfnsub676578)(void);
+#define getGraphicsCtx             ((pfnsub676578)0x676578)
+
+typedef void(*pfnsub41A21E)(void*);
+#define sub_41A21E                 ((pfnsub41A21E)0x41A21E)
+
+typedef void(*pfnsub4320AC)(void);
+#define incrementTimers            ((pfnsub4320AC)0x4320AC)
+
+typedef void(*pfnsub6E59BC)(u8);
+#define sub_6E59BC                 ((pfnsub6E59BC)0x6E59BC)
+
+typedef void(*pfnsub6F63FC)(void*, float);
+#define gameDrawResourceBar        ((pfnsub6F63FC)0x6F638C)
+
+typedef void(*pfnsub432AA2)(u16, u16, u16, u16);
+#define gameIssueChosenAction     ((pfnsub432AA2)0x432AA2)
+
+typedef void(*pfnsub66067A)(u32, u32, u32, u32, void*);
+#define setViewport               ((pfnsub66067A)0x66067A)
+
+typedef void(*pfnsub6DC1EB)(void);
+#define runContextCallbacks       ((pfnsub6DC1EB)0x6DC1EB)
+
+typedef u32(*pfnsub41AB67)(u32);
+#define sub_41AB67                ((pfnsub41AB67)0x41AB67)
+
+// const pfnsub6E59BC sub_deez_nuts = ((pfnsub6E59BC)0x6E59BC);
 #endif

@@ -7,7 +7,7 @@
 #define COMMAND_ROW_COUNT 4
 
 //MATERIA_MENU_OK_HANDLERS
-void checkArrangeChoiceHandler(const MateriaInputEvent* event) {
+void checkArrangeChoiceHandler(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
 
@@ -35,21 +35,21 @@ void checkArrangeChoiceHandler(const MateriaInputEvent* event) {
     }
 }
 
-void enterSlotView(const MateriaInputEvent* event) {
+void enterSlotView(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
     playMenuSound(1);
     setMenuState(event->menu, 1);
 }
 
-void enterOptionView(const MateriaInputEvent* event) {
+void enterOptionView(const MenuInputEvent* event) {
     if (event->menuState != 1 || (getStateCursor(event->menu, 1)->context.relativeColumnIndex != 0))
         return;
     playMenuSound(1);
     setMenuState(event->menu, 0);
 }
 
-void enterMateriaViewHandler(const MateriaInputEvent* event) {
+void enterMateriaViewHandler(const MenuInputEvent* event) {
     if (event->menuState != 1)
         return;
 
@@ -79,7 +79,7 @@ void enterMateriaViewHandler(const MateriaInputEvent* event) {
     setMenuState(event->menu, 2);
 }
 
-void equipMateriaHandler(const MateriaInputEvent* event) {
+void equipMateriaHandler(const MenuInputEvent* event) {
     if (event->menuState != 2)
         return;
 
@@ -115,7 +115,7 @@ void equipMateriaHandler(const MateriaInputEvent* event) {
 
 }
 
-void selectCheckViewHandler(const MateriaInputEvent* event) {
+void selectCheckViewHandler(const MenuInputEvent* event) {
     if (event->menuState != 3)
         return;
 
@@ -140,7 +140,7 @@ void selectCheckViewHandler(const MateriaInputEvent* event) {
     }
 }
 
-void arrangeChoiceHandler(const MateriaInputEvent* event) {
+void arrangeChoiceHandler(const MenuInputEvent* event) {
     if (event->menuState != 7)
         return;
 
@@ -186,7 +186,7 @@ void arrangeChoiceHandler(const MateriaInputEvent* event) {
     }
 }
 
-void trashMateriaHandler(const MateriaInputEvent* event) {
+void trashMateriaHandler(const MenuInputEvent* event) {
     if (event->menuState != 8)
         return;
 
@@ -202,7 +202,7 @@ void trashMateriaHandler(const MateriaInputEvent* event) {
     }
 }
 
-void confirmTrashHandler(const MateriaInputEvent* event) {
+void confirmTrashHandler(const MenuInputEvent* event) {
     if (event->menuState != 9)
         return;
 
@@ -223,13 +223,10 @@ void confirmTrashHandler(const MateriaInputEvent* event) {
 }
 
 //Materia Menu Cancel Handlers
-void exitMenuHandler(const MateriaInputEvent* event) {
-    srLogWrite("Running exit menu handler");
+void exitMenuHandler(const MenuInputEvent* event) {
     if ((event->menuState != 0) && (event->menuState != 1))
         return;
 
-
-    srLogWrite("attempting to exit menu");
     u32* dword_DC0E74 = (u32*)(0xDC0E74);
 
     playMenuSound(4);
@@ -238,7 +235,7 @@ void exitMenuHandler(const MateriaInputEvent* event) {
     *dword_DC0E74 = 0;
 }
 
-void exitMateriaView(const MateriaInputEvent* event) {
+void exitMateriaView(const MenuInputEvent* event) {
     srLogWrite("Running exit materia handler");
     if ((event->menuState != 2))
         return;
@@ -247,7 +244,7 @@ void exitMateriaView(const MateriaInputEvent* event) {
     setMenuState(event->menu, 1);
 }
 
-void exitCheckArrangeView(const MateriaInputEvent* event) {
+void exitCheckArrangeView(const MenuInputEvent* event) {
     srLogWrite("Running exit arrange handler");
     if ((event->menuState != 3) && (event->menuState != 7))
         return;
@@ -257,7 +254,7 @@ void exitCheckArrangeView(const MateriaInputEvent* event) {
     setMenuState(event->menu, 0);
 }
 
-void exitSpellCheckView(const MateriaInputEvent* event) {
+void exitSpellCheckView(const MenuInputEvent* event) {
     srLogWrite("Running exit spell handler");
     if (event->menuState != 4 && event->menuState != 5 && event->menuState != 6)
         return;
@@ -265,7 +262,7 @@ void exitSpellCheckView(const MateriaInputEvent* event) {
     setMenuState(event->menu, 3);
 }
 
-void exitTrashMateriaView(const MateriaInputEvent* event) {
+void exitTrashMateriaView(const MenuInputEvent* event) {
     srLogWrite("Running exit trash andler");
     if (event->menuState != 8)
         return;
@@ -274,7 +271,7 @@ void exitTrashMateriaView(const MateriaInputEvent* event) {
     setMenuState(event->menu, 7);
 }
 
-void exitTrashConfirmView(const MateriaInputEvent* event) {
+void exitTrashConfirmView(const MenuInputEvent* event) {
     if (event->menuState != 9)
         return;
 
@@ -283,7 +280,7 @@ void exitTrashConfirmView(const MateriaInputEvent* event) {
 }
 
 //TRIANGLE HANDLERS
-void removeMateriaHandler(const MateriaInputEvent* event) {
+void removeMateriaHandler(const MenuInputEvent* event) {
     if (event->menuState != 1)
         return;
 

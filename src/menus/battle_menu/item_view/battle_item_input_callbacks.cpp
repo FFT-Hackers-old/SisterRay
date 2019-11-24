@@ -52,6 +52,14 @@ void handleExitItem(const MenuInputEvent* event) {
     if (event->menuState != BATTLE_ITEM_STATE)
         return;
 
+    if (*W_COMMAND_ENABLED == 2 && (*ISSUED_COMMAND_ID == CMD_W_ITEM)) {
+        const BattleInventoryEntry& inventoryEntry = gContext.battleInventory->get_resource(*W_FIRST_ACTION_INDEX);
+        if (inventoryEntry.item_id == 0xFFFF) {
+            gContext.battleInventory->addResourceAtIndex(*W_FIRST_ACTION_INDEX, *W_FIRST_ACTION_USED);
+        }
+        gContext.battleInventory->incrementInventoryEntry(*W_FIRST_ACTION_INDEX, 1);
+    }
+
     playMenuSound(4);
     *ACCEPTING_BATTLE_INPUT = 1;
     setMenuState(event->menu, BATTLE_CMD_STATE);

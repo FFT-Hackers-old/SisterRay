@@ -2,6 +2,9 @@
 
 using namespace BattleMenuWidgetNames;
 
+typedef void(*pfnsub6E6291)();
+#define gameHandleTargetingInput  ((pfnsub6E6291)0x6E6291)
+
 void drawTargetingCursors(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     /*This should be a draw callback, probably*/
@@ -9,5 +12,6 @@ void drawTargetingCursors(const MenuDrawEvent* event) {
         return;
     }
     gameDrawTargetingCursors((void*)0xDC1768, *BATTLE_TARGETED_GLOBAL);
+    gameHandleTargetingInput();
 }
 

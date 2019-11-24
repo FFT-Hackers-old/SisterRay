@@ -97,8 +97,9 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
         gContext.eventBus.dispatch(MENU_INPUT_LEFT, &event, dispatchContext);
     }
     if (activeCursor != nullptr) {
-        if (menuObject->inputContext == BATTLE_MENU && !*BATTLE_PAUSED)
-            return
+        if (menuObject->inputContext == BATTLE_MENU && *BATTLE_PAUSED) {
+            return;
+        }
         handleCursorPositionUpdate((u32*)(&(activeCursor->context)));
     }
 }

@@ -15,7 +15,7 @@ void handleSelectTargets(const MenuInputEvent* event) {
     u16* word_DC38E0 = (u16*)0xDC38E0;
 
     if (!*ACCEPTING_BATTLE_INPUT) {
-        auto menuChoice = getStateCursor(event->menu, getMenuState(event->menu), *BATTLE_ACTIVE_ACTOR_ID);
+        auto menuChoice = getStateCursor(event->menu, *PREVIOUS_BATTLE_MENU_STATE, *BATTLE_ACTIVE_ACTOR_ID);
         if (menuChoice != nullptr) {
             auto context = menuChoice->context;
             auto flatIndex = (context.maxColumnBound * (context.relativeRowIndex + context.baseRowIndex)) + context.relativeColumnIndex;
@@ -28,6 +28,9 @@ void handleSelectTargets(const MenuInputEvent* event) {
                 if (*W_COMMAND_ENABLED == 2) {
                     dispatchFirstWAction();
                     dispatchChosenBattleAction();
+                    setMenuState(event->menu, BATTLE_INACTIVE);
+                    playMenuSound(1);
+                    *ACCEPTING_BATTLE_INPUT = 1;
                     return;
                 }
                 if (*ISSUED_COMMAND_ID == CMD_W_ITEM) {
@@ -50,7 +53,6 @@ void handleSelectTargets(const MenuInputEvent* event) {
         playMenuSound(1);
         *ACCEPTING_BATTLE_INPUT = 1;
         setMenuState(event->menu, BATTLE_INACTIVE);
-        srLogWrite("DISPATCHING CHOSEN BATTLE ACTION!");
         dispatchChosenBattleAction();
     }
 }
@@ -62,11 +64,12 @@ void handleExitSelectTargets(const MenuInputEvent* event) {
     u16* word_DC38E0 = (u16*)0xDC38E0;
 
     if (*W_COMMAND_ENABLED == 2 && (*ISSUED_COMMAND_ID == CMD_W_ITEM)) {
-        const BattleInventoryEntry& inventoryEntry = gContext.battleInventory->get_resource(*W_FIRST_ACTION_INDEX);
+        auto indexChosen = getChosenActionMenuIndex();
+        const BattleInventoryEntry& inventoryEntry = gContext.battleInventory->get_resource(indexChosen);
         if (inventoryEntry.item_id == 0xFFFF) {
-            gContext.battleInventory->addResourceAtIndex(*W_FIRST_ACTION_INDEX, *W_FIRST_ACTION_USED);
+            gContext.battleInventory->addResourceAtIndex(indexChosen, getChosenActionID());
         }
-        gContext.battleInventory->incrementInventoryEntry(*W_FIRST_ACTION_INDEX, 1);
+        gContext.battleInventory->incrementInventoryEntry(indexChosen, 1);
     }
     playMenuSound(4);
     setMenuState(event->menu, *PREVIOUS_BATTLE_MENU_STATE);

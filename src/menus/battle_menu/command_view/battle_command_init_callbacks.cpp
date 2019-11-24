@@ -14,24 +14,22 @@ void initBattleCommandViewWidget(const MenuInitEvent* event) {
     srLogWrite("CALLING BATTLE COMMAND INIT HANDLER");
 
     boxParams = {
-        145,
-        350,
-        120,
-        130,
+        0x90,
+        0x154,
+        0x6E,
+        0x70,
         0.502f
     };
     boxWidget = createBoxWidget(boxParams, CMD_GRID_BOX);
     addChildWidget(battleCommandView, (Widget*)boxWidget, CMD_GRID_BOX);
 
     std::vector<std::string> names = { PARTY_1_CMD_GRID, PARTY_2_CMD_GRID, PARTY_3_CMD_GRID };
-    srLogWrite("Initializing battle command grid widgets, names.size = %i", names.size());
     for (auto idx = 0; idx < names.size(); idx++) {
         auto cmdItemChoice = getStateCursor(event->menu, idx);
 
-        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_CMD_STATE, &battleCommandNameViewUpdater, 156, 360, allocateCommandRow, idx };
+        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_CMD_STATE, &battleCommandNameViewUpdater, 156, 350, allocateCommandRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleCommandView, (Widget*)gridWidget, names[idx]);
-        srLogWrite("parent: %s child: %s bound to cursor %p", battleCommandView->name.c_str(), gridWidget->widget.widget.name.c_str(), cmdItemChoice);
     }
 
     addChildWidget(mainWidget, battleCommandView, BATTLE_COMMAND_WIDGET_NAME);
@@ -48,13 +46,11 @@ Widget* allocateCommandRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
 }
 
 void battleCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
-    srLogWrite("RUNNING UPDATER FOR COMMAND WIDGET");
     if (self->collectionType != GridWidgetClass()) {
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
     const auto& commands = PARTY_STRUCT_ARRAY[*BATTLE_ACTIVE_ACTOR_ID].enabledCommandArray;
-    srLogWrite("updating active commands");
     if (commands[flatIndex].commandID == 0xFF) {
         disableWidget(getChild(widget, std::string("ARW")));
         disableWidget(getChild(widget, std::string("TXT")));

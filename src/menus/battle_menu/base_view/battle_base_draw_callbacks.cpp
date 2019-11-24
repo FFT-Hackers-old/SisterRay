@@ -7,6 +7,7 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
     u8* byte_DC3930  = (u8*)0xDC3930;
     u32* dword_DC3BB0 = (u32*)0xDC3BB0;
     u32* dword_DC3AA0 = (u32*)0xDC3AA0;
+    u32* dword_DC1F44 = (u32*)0xDC1F44;
 
     auto menuWidget = event->menu->menuWidget;
     /*This should be a draw callback, probably*/
@@ -20,6 +21,14 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
             u8 characterID = getCharacterRecordIndex(partyIdx);
             auto name = &(CHARACTER_RECORD_ARRAY[characterID].character_name);
             updateText(getChild(dataWidget, PARTY_DATA_NAME), (const char*)name);
+            updateTextColor(getChild(dataWidget, PARTY_DATA_NAME), COLOR_WHITE);
+            if (partyIdx == *BATTLE_ACTIVE_ACTOR_ID && getMenuState(event->menu) != BATTLE_INACTIVE) {
+                auto nameColor = COLOR_WHITE;
+                if (((*dword_DC1F44 >> 3) & 1) != 0)
+                    nameColor = COLOR_GRAY;
+
+                updateTextColor(getChild(dataWidget, PARTY_DATA_NAME), nameColor);
+            }
 
             i32 atbValue = PARTY_STRUCT_ARRAY[partyIdx].atbTimer;
             updateBarLength((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), atbValue >> 10);
@@ -49,7 +58,10 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
             }
             updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), -2146402240);
 
-            i32 maxHP = PARTY_STRUCT_ARRAY[partyIdx].maxHP;
+
+            auto isDead = (PLAYER_FLAG_COPIES[partyIdx].flags & 1);
+
+            u16 maxHP = PARTY_STRUCT_ARRAY[partyIdx].maxHP;
             auto displayHP = dword_DC3AA0[partyIdx] >> 8;
             auto HPWidget = getChild(dataWidget, PARTY_DATA_HP);
             updateSegment(
@@ -64,7 +76,6 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
             );
             updateNumber(getChild(HPWidget, std::string("MAX")), maxHP);
             updateNumber(getChild(HPWidget, std::string("CURRENT")), displayHP);
-            auto isDead = (PLAYER_FLAG_COPIES[partyIdx].flags & 1);
             if (isDead) {
                 updateNumberColor(getChild(HPWidget, std::string("CURRENT")), COLOR_RED);
             }
@@ -72,6 +83,31 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
                 updateNumberColor(getChild(HPWidget, std::string("CURRENT")), COLOR_GREEN);
             }
             updateNumberColor(getChild(HPWidget, std::string("CURRENT")), COLOR_WHITE);
+
+            u32* dword_DC3A68 = (u32*)0xDC3A68;
+            u32* byte_DC3A90 = (u32*)0xDC3A90;
+            u16 maxMP = PARTY_STRUCT_ARRAY[partyIdx].maxMP;
+            auto displayMP = dword_DC3A68[partyIdx] >> 8;
+            auto MPWidget = getChild(dataWidget, PARTY_DATA_MP);
+            updateSegment(
+                (ResourceBarWidget*)getChild(MPWidget, std::string("BAR")),
+                (i16)byte_DC3A90[partyIdx],
+                (i16)maxMP,
+                (i16)(dword_DC3A68[partyIdx] >> 8)
+            );
+            updateResourceBarColor(
+                (ResourceBarWidget*)getChild(MPWidget, std::string("BAR")),
+                0x800080FF
+            );
+            //updateNumber(getChild(MPWidget, std::string("MAX")), maxMP);
+            updateNumber(getChild(MPWidget, std::string("CURRENT")), displayMP);
+            if (isDead) {
+                updateNumberColor(getChild(MPWidget, std::string("CURRENT")), COLOR_RED);
+            }
+            else if (displayMP < (maxMP / 2)) {
+                updateNumberColor(getChild(MPWidget, std::string("CURRENT")), COLOR_GREEN);
+            }
+            updateNumberColor(getChild(MPWidget, std::string("CURRENT")), COLOR_WHITE);
             continue;
         }
         disableWidget(getChild(getChild(menuWidget, BATTLE_BASE_WIDGET_NAME), names[partyIdx]));
@@ -108,4 +144,11 @@ void handleActorReady(const MenuDrawEvent* event) {
             setMenuState(event->menu, BATTLE_INACTIVE);
         }
     }
+}
+
+void handleUpdateInputActive(const MenuDrawEvent* event) {
+    if (*BATTLE_PAUSED)
+        return;
+
+    *ACCEPTING_BATTLE_INPUT = (sub_41AB67(128) != 0);
 }

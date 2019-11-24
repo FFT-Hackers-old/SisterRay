@@ -41,23 +41,27 @@ namespace BattleMenuWidgetNames {
     const std::string PARTY_1_SPELL_GRID = "1_SPELL_GRID";
     const std::string PARTY_2_SPELL_GRID = "2_SPELL_GRID";
     const std::string PARTY_3_SPELL_GRID = "3_SPELL_GRID";
+    const std::string SPELL_GRID_BOX = "SPELL_BOX";
 
     //Summon Names
     const std::string BATTLE_SUMMON_WIDGET_NAME = "BATTLE_SUMMON";
     const std::string PARTY_1_SUMMON_GRID = "1_SUMM_GRID";
     const std::string PARTY_2_SUMMON_GRID = "2_SUMM_GRID";
     const std::string PARTY_3_SUMMON_GRID = "3_SUMM_GRID";
+    const std::string SUMMON_GRID_BOX = "SUMMON_BOX";
 
     //Item Names
     const std::string BATTLE_ITEM_WIDGET_NAME = "BATTLE_ITEM";
     const std::string PARTY_1_ITEM_GRID = "1_ITEM_GRID";
     const std::string PARTY_2_ITEM_GRID = "2_ITEM_GRID";
     const std::string PARTY_3_ITEM_GRID = "3_ITEM_GRID";
+    const std::string ITEM_GRID_BOX = "ITEM_BOX";
 
     //Eskill Names
     const std::string BATTLE_ESKILL_WIDGET_NAME = "BATTLE_ESKILL";
     const std::string PARTY_1_ESKILL_GRID = "1_ESKILL_GRID";
     const std::string PARTY_2_ESKILL_GRID = "2_ESKILL_GRID";
     const std::string PARTY_3_ESKILL_GRID = "3_ESKILL_GRID";
+    const std::string ESKILL_GRID_BOX = "ESKILL_BOX";
 }
 #endif

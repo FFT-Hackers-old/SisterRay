@@ -12,4 +12,5 @@
 
 void drawBaseViewWidget(const MenuDrawEvent* event);
 void handleActorReady(const MenuDrawEvent* event);
+void handleUpdateInputActive(const MenuDrawEvent* event);
 #endif

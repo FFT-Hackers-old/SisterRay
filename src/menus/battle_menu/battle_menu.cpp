@@ -6,9 +6,7 @@ using namespace BattleMenuWidgetNames;
 void battleMenuUpdateHandler(i32 updateStateMask) {
     Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
     i32* menuStateMask = (i32*)(0xDC35B4);
-    sub_6C98A6();
     runMenu(menu, *menuStateMask);
-    srLogWrite("DRAWING CURSOR AT %p", getStateCursor(menu, menu->currentState, *BATTLE_ACTIVE_ACTOR_ID));
     drawCursor(getStateCursor(menu, menu->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
 }
 
@@ -108,12 +106,12 @@ void dispatchBattleUpdates() {
 
     if (*dword_91BD68 != *dword_BF2848) {
         *dword_91BD68 = *dword_BF2848;
-        *BATTLE_PAUSED_GLOBAL = *gBattlePaused;
+        *BATTLE_PAUSED_GLOBAL = *BATTLE_PAUSED;
     }
 
     battleMenuUpdateHandler(*menuStateMask);
  
-    if (!*gBattlePaused)
+    if (!*BATTLE_PAUSED)
         incrementTimers();
     ++(*dword_DC1F44);
 }
@@ -132,14 +130,14 @@ void initializeBattleMenu() {
     initializeBattleTargetingMenu();
     registerCommandMenuListeners();
     initializeBattleCommandMenu();
-    //registerSpellMenuListeners();
-    //initializeBattleSpellMenu();
-    //registerSummonViewListeners();
-    //initializeBattleSummonMenu();
-    //registerItemMenuListeners();
-    //initializeBattleItemMenu();
-    //registerESkillMenuListeners();
-    //initializeBattleESkillMenu();
+    registerSpellMenuListeners();
+    initializeBattleSpellMenu();
+    registerSummonViewListeners();
+    initializeBattleSummonMenu();
+    registerItemMenuListeners();
+    initializeBattleItemMenu();
+    registerESkillMenuListeners();
+    initializeBattleESkillMenu();
     gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
 }
 

@@ -11,15 +11,15 @@ void initBattleSummonViewWidget(const MenuInitEvent* event) {
     auto mainWidget = menuObject->menuWidget;
     auto battleSummonView = createWidget(BATTLE_SUMMON_WIDGET_NAME);
 
-    /*boxParams = {
-        380,
-        190,
-        260,
-        300,
-        0.3f
+    boxParams = {
+        0,
+        340,
+        640,
+        120,
+        0.4f
     };
-    boxWidget = createBoxWidget(boxParams, MATERIA_GRID_BOX);
-    addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);*/
+    boxWidget = createBoxWidget(boxParams, SUMMON_GRID_BOX);
+    addChildWidget(battleSummonView, (Widget*)boxWidget, SUMMON_GRID_BOX);
 
     std::vector<std::string> names = { PARTY_1_SUMMON_GRID, PARTY_2_SUMMON_GRID, PARTY_3_SUMMON_GRID };
     for (auto idx = 0; idx < names.size(); idx++) {
@@ -35,7 +35,7 @@ void initBattleSummonViewWidget(const MenuInitEvent* event) {
 Widget* allocateSummonRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     auto spellWidget = createWidget(name);
     moveWidget(spellWidget, xCoordinate, yCoordinate);
-    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
+    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.4f };
     addChildWidget(spellWidget, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
     return spellWidget;
 }

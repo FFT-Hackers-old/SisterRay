@@ -11,15 +11,15 @@ void initBaseViewWidget(const MenuInitEvent* event) {
 
     auto baseWidget = createWidget(BATTLE_BASE_WIDGET_NAME);
 
-    /*boxParams = {
+    boxParams = {
         0,
         340,
-        680,
+        640,
         140,
-        0.7f
+        0.6f
     };
     boxWidget = createBoxWidget(boxParams, BASE_BOX_NAME);
-    addChildWidget(baseWidget, (Widget*)boxWidget, BASE_BOX_NAME);*/
+    addChildWidget(baseWidget, (Widget*)boxWidget, BASE_BOX_NAME);
 
     std::vector<std::string> names = { PARTY_1_STATE_NAME, PARTY_2_STATE_NAME, PARTY_3_STATE_NAME };
 
@@ -34,7 +34,7 @@ Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     auto baseDataWidget = createWidget(name);
     moveWidget(baseDataWidget, xCoordinate, yCoordinate);
     
-    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
+    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.6f };
     addChildWidget(baseDataWidget, (Widget*)createTextWidget(textParams, PARTY_DATA_NAME), PARTY_DATA_NAME);
 
     auto atbWidget = allocateBarWidget(PARTY_DATA_ATB.c_str(), xCoordinate + 532, yCoordinate);
@@ -93,8 +93,8 @@ Widget* allocateMPResourceWidget(const char* name, i32 xCoordinate, i32 yCoordin
     DrawNumberParams currentAmtParams = { xCoordinate, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };
     addChildWidget(resourceWidget, (Widget*)createNumberWidget(currentAmtParams, std::string("CURRENT")), std::string("CURRENT"));
 
-    DrawNumberParams maxAmtParams = { xCoordinate + 64, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };
-    addChildWidget(resourceWidget, (Widget*)createNumberWidget(maxAmtParams, std::string("MAX")), std::string("MAX"));
+    //DrawNumberParams maxAmtParams = { xCoordinate + 32, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };
+    //addChildWidget(resourceWidget, (Widget*)createNumberWidget(maxAmtParams, std::string("MAX")), std::string("MAX"));
 
     return resourceWidget;
 }

@@ -54,9 +54,7 @@ void runMenu(Menu* menu, u32 updateStateMask) {
         handleTransition(menu, menuState);
     }*/
     if (menu->inputContext == BATTLE_MENU) {
-        if (!*gBattlePaused) {
-            dispatchMenuInput(updateStateMask, menu, menu->inputContext);
-        }
+        dispatchMenuInput(updateStateMask, menu, menu->inputContext);
         return;
     }
     if (!checkMenuInputEnabled()) {
@@ -99,8 +97,8 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
         gContext.eventBus.dispatch(MENU_INPUT_LEFT, &event, dispatchContext);
     }
     if (activeCursor != nullptr) {
-        srLogWrite("DISPATCHING SELECT BEHAVIOR FOR STATE: %d, CURSOR IDX: %d", menuState, getActiveCursorIndex(menuObject, menuState));
-        srLogWrite("UPDATING CURSOR AT %p", &(activeCursor->context));
+        if (menuObject->inputContext == BATTLE_MENU && !*BATTLE_PAUSED)
+            return
         handleCursorPositionUpdate((u32*)(&(activeCursor->context)));
     }
 }
@@ -128,15 +126,12 @@ SISTERRAY_API Cursor* getStateCursor(Menu* menu, u32 menuState, u32 cursorIdx) {
             return &(it->second);
         }
     }
-    srLogWrite("returning nullptr cursor");
     return nullptr;
 }
 
 SISTERRAY_API void setStateCursor(Menu* menu, u32 menuState, Cursor cursor, u32 cursorIdx) {
     if (menuState < menu->stateCount) {
-        srLogWrite("Setting cursor for state %d, idx %d", menuState, cursorIdx);
         menu->cursors[menuState][cursorIdx] = cursor;
-        srLogWrite("Cursor values: %d, %d", menu->cursors[menuState][cursorIdx].xCoordinate, menu->cursors[menuState][cursorIdx].yCoordinate);
     }
 }
 

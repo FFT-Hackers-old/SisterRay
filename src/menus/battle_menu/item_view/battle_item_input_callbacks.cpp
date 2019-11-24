@@ -8,22 +8,23 @@ using namespace BattleMenuWidgetNames;
 
 /*Spell selection handler*/
 void handleSelectItem(const MenuInputEvent* event) {
-    auto itemCursorChoice = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
-    u16* restoreTypeGlobal = (u16*)(0xDC2088);
-    if (*byte_9AC111) {
-        *byte_9AC111 = 0;
-        *ACCEPTING_BATTLE_INPUT = 1;
-    }
-    if (*ACCEPTING_BATTLE_INPUT)
+    if (!checkHandlingInput())
         return;
 
     if (event->menuState != BATTLE_ITEM_STATE)
         return;
 
+    auto itemCursorChoice = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
+    u16* restoreTypeGlobal = (u16*)(0xDC2088);
+    if (*byte_9AC111) {
+        *byte_9AC111 = 0;
+    }
+
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (itemCursorChoice.maxColumnBound * (itemCursorChoice.relativeRowIndex + itemCursorChoice.baseRowIndex)) + itemCursorChoice.relativeColumnIndex;
     auto itemID = gContext.battleInventory->get_resource(flatIndex).item_id;
     bool didSucceed = didItemUseSucceed(itemID);
+    srLogWrite("ITEM USE SUCCEED BOOL: %d", didSucceed);
     if (didSucceed) {
         playMenuSound(1);
         setChosenActionID(itemID);

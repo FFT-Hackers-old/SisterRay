@@ -16,6 +16,7 @@ void registerBaseViewListeners() {
     gContext.eventBus.addListener(INIT_BATTLE_MENU, (SrEventCallback)&initBaseViewWidget, modName);
     gContext.eventBus.addListener(DRAW_BATTLE_MENU, (SrEventCallback)&drawBaseViewWidget, modName);
     gContext.eventBus.addListener(DRAW_BATTLE_MENU, (SrEventCallback)&handleActorReady, modName);
+    gContext.eventBus.addListener(DRAW_BATTLE_MENU, (SrEventCallback)&handleUpdateInputActive, modName);
     gContext.eventBus.addListener(MENU_INPUT_START, (SrEventCallback)&handlePauseBattle, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_TRIANGLE, (SrEventCallback)&swapCharacterBattle, modName, contextKeys);
 }

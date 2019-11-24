@@ -13,5 +13,6 @@ bool isThrowable(u16 itemID);
 bool didItemUseSucceed(u16 itemID);
 u16 getRestoreTypeGlobal(i16 itemID);
 i32 setHandlerState(u16 handlerIndex, i8 state);
+bool checkHandlingInput();
 
 #endif // !BATTLE_MENU_UTILS_H

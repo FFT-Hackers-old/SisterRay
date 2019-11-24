@@ -5,7 +5,6 @@ void handleCommandTarget(SelectCommandEvent* event) {
     // attack case
     u8* byte_DC3C8C = (u8*)0xDC3C8C;
     *byte_DC3C8C = 1;
-    *PREVIOUS_BATTLE_MENU_STATE = 1;
     setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
     setTargetingFromFlags(event->command->targetingData, false);
 }
@@ -14,7 +13,6 @@ void handleWeaponTarget(SelectCommandEvent* event) {
     // attack case
     u8* byte_DC3C8C = (u8*)0xDC3C8C;
     *byte_DC3C8C = 0;
-    *PREVIOUS_BATTLE_MENU_STATE = 1;
     setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
     setTargetingFromFlags(event->command->targetingData, false);
 }

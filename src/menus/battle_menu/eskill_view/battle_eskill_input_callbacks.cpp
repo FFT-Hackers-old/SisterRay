@@ -8,13 +8,13 @@ using namespace BattleMenuWidgetNames;
 
 /*Spell selection handler*/
 void handleSelectESkill(const MenuInputEvent* event) {
-    auto eSkillChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
-    auto& enabledESkills = gContext.party.get_element(getPartyKey(event->menuState)).actorEnemySkills;
-    if (*ACCEPTING_BATTLE_INPUT)
+    if (!checkHandlingInput())
         return;
-
     if (event->menuState != BATTLE_ESKILL_STATE)
         return;
+
+    auto eSkillChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
+    auto& enabledESkills = gContext.party.get_element(getPartyKey(event->menuState)).actorEnemySkills;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (eSkillChoiceCursor.maxColumnBound * (eSkillChoiceCursor.relativeRowIndex + eSkillChoiceCursor.baseRowIndex)) + eSkillChoiceCursor.relativeColumnIndex;

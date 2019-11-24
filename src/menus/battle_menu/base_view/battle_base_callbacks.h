@@ -1,5 +1,5 @@
-#ifndef BATTLE_SUMMON_CALLBACKS_H
-#define BATTLE_SUMMON_CALLBACKS_H
+#ifndef BATTLE_BASE_CALLBACKS_H
+#define BATTLE_BASE_CALLBACKS_H
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>

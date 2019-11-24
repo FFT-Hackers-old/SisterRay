@@ -13,15 +13,15 @@ void initBattleESkillViewWidget(const MenuInitEvent* event) {
 
     auto battleESkillView = createWidget(BATTLE_ESKILL_WIDGET_NAME);
 
-    /*boxParams = {
-        380,
-        190,
-        260,
-        300,
-        0.3f
+    boxParams = {
+        0,
+        360,
+        640,
+        120,
+        0.4f
     };
-    boxWidget = createBoxWidget(boxParams, MATERIA_GRID_BOX);
-    addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);*/
+    boxWidget = createBoxWidget(boxParams, ESKILL_GRID_BOX);
+    addChildWidget(battleESkillView, (Widget*)boxWidget, ESKILL_GRID_BOX);
 
     std::vector<std::string> names = { PARTY_1_ESKILL_GRID, PARTY_2_ESKILL_GRID, PARTY_3_ESKILL_GRID };
     for (auto idx = 0; idx < names.size(); idx++) {

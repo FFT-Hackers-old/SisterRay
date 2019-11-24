@@ -8,14 +8,14 @@ using namespace BattleMenuWidgetNames;
 
 /*Spell selection handler*/
 void handleSelectSpell(const MenuInputEvent* event) {
+    if (!checkHandlingInput())
+        return;
+    if (event->menuState != BATTLE_MAGIC_STATE)
+        return;
+
     auto magicChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
     auto& enabledSpells = gContext.party.get_element(getPartyKey(event->menuState)).actorMagics;
     u16* restoreTypeGlobal = (u16*)(0xDC2088);
-    if (*ACCEPTING_BATTLE_INPUT)
-        return;
-
-    if (event->menuState != BATTLE_MAGIC_STATE)
-        return;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (magicChoiceCursor.maxColumnBound * (magicChoiceCursor.relativeRowIndex + magicChoiceCursor.baseRowIndex)) + magicChoiceCursor.relativeColumnIndex;

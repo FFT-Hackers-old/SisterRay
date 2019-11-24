@@ -11,15 +11,15 @@ void initBattleItemViewWidget(const MenuInitEvent* event) {
     auto mainWidget = menuObject->menuWidget;
     auto battleItemView = createWidget(BATTLE_ITEM_WIDGET_NAME);
 
-    /*boxParams = {
-        380,
-        190,
-        260,
-        300,
-        0.3f
+    boxParams = {
+    0,
+    340,
+    640,
+    120,
+    0.4f
     };
-    boxWidget = createBoxWidget(boxParams, MATERIA_GRID_BOX);
-    addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);*/
+    boxWidget = createBoxWidget(boxParams, ITEM_GRID_BOX);
+    addChildWidget(battleItemView, (Widget*)boxWidget, ITEM_GRID_BOX);
 
     /*One Grid for each active party member, use a custom allocator*/
     std::vector<std::string> names = { PARTY_1_ITEM_GRID, PARTY_2_ITEM_GRID, PARTY_3_ITEM_GRID };
@@ -38,11 +38,11 @@ Widget* allocateBattleInventoryRow(const char* name, i32 xCoordinate, i32 yCoord
     moveWidget(battleInventoryRow, xCoordinate, yCoordinate);
     DrawGameAssetParams gameAssetParams = ItemIcon(xCoordinate, yCoordinate, 0, 0.1f);
     addChildWidget(battleInventoryRow, (Widget*)createGameAssetWidget(gameAssetParams, std::string("ICN")), std::string("ICN"));
-    DrawTextParams textParams = { xCoordinate + 32, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
+    DrawTextParams textParams = { xCoordinate + 32, yCoordinate, getDefaultString(), COLOR_WHITE, 0.4f };
     addChildWidget(battleInventoryRow, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
-    DrawSimpleAssetParams simpleAssetParams = Cross(xCoordinate + 266, yCoordinate, COLOR_WHITE, 0.1f);
+    DrawSimpleAssetParams simpleAssetParams = Cross(xCoordinate + 266, yCoordinate, COLOR_WHITE, 0.4f);
     addChildWidget(battleInventoryRow, (Widget*)createSimpleGameAssetWidget(simpleAssetParams, std::string("CRS")), std::string("CRS"));
-    DrawNumberParams numberParams = { xCoordinate + 280, yCoordinate, 0, 3, COLOR_WHITE, 0.1f };
+    DrawNumberParams numberParams = { xCoordinate + 280, yCoordinate, 0, 3, COLOR_WHITE, 0.4f };
     addChildWidget(battleInventoryRow, (Widget*)createNumberWidget(numberParams, std::string("AMT")), std::string("AMT"));
     return battleInventoryRow;
 }

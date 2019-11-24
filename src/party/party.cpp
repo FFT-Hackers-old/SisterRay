@@ -105,16 +105,18 @@ void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInvento
 
 u8* getMateriaSlots(u8 partyIdx, SrGearType gearType) {
     u8 characterRecordArrayIndex = getCharacterRecordIndex(partyIdx);
-    u16 kernelObjectID;
-    u8* materiaSlots;
 
-    kernelObjectID = getEquippedGear(characterRecordArrayIndex, gearType);
+    auto kernelObjectID = getEquippedGear(characterRecordArrayIndex, gearType);
 
-    if (gearType == SR_GEAR_WEAPON)
+    if (gearType == SR_GEAR_WEAPON) {
         auto materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
-    else if (gearType == SR_GEAR_ARMOR)
+        return materiaSlots;
+    }
+    else if (gearType == SR_GEAR_ARMOR) {
         auto materiaSlots = &(gContext.armors.get_resource(kernelObjectID).materia_slots[0]);
-    return materiaSlots;
+        return materiaSlots;
+    }
+    return nullptr;
 }
 
 bool slotsAreLinked(u8 leftSlot, u8 rightSlot) {

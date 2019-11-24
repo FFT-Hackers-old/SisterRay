@@ -72,6 +72,8 @@ SISTERRAY_API void enableSummon(u8 partyIndex, u32 enabledIndex, u32 commandlRel
 SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u8 partyIndex, u32 enabledSlotIndex);
 SISTERRAY_API void enableESkill(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
 
+u8* getMateriaSlots(u8 partyIndex, SrGearType gearType);
+bool slotsAreLinked(u8 leftSlot, u8 rightSlot);
 void updateCommandsActive(i32 partyIndex, i32 commandType);
 bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask);
 bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask);

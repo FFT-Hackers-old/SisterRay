@@ -420,7 +420,7 @@ void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
             break;
         }
         case 21: {
-            auxCommand.selectCallbacks.push_back(&cmdMagicSelectHandler);
+            auxCommand.selectCallbacks.push_back(&cmdWMagicSelectHandler);
             break;
         }
         case 3: {
@@ -428,7 +428,7 @@ void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
             break;
         }
         case 22: {
-            auxCommand.selectCallbacks.push_back(&cmdSummonSelectHandler);
+            auxCommand.selectCallbacks.push_back(&cmdWSummonSelectHandler);
             break;
         }
         case 4: {
@@ -436,7 +436,7 @@ void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
             break;
         }
         case 23: {
-            auxCommand.selectCallbacks.push_back(&cmdItemSelectHandler);
+            auxCommand.selectCallbacks.push_back(&cmdWItemSelectHandler);
             break;
         }
         default: {

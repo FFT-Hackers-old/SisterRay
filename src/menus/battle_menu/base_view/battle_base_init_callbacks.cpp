@@ -71,7 +71,7 @@ Widget* allocateHPResourceWidget(const char* name, i32 xCoordinate, i32 yCoordin
     auto resourceWidget = createWidget(name);
     moveWidget(resourceWidget, xCoordinate, yCoordinate);
 
-    DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate + 16, 120, 2, 0, 0, 0, 0, 0.6f };
+    DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate + 16, 120, 2, 0, 0, 0, 0, 0, 0.6f };
     addChildWidget(resourceWidget, (Widget*)createResourceBarWidget(resourceBar, std::string("BAR")), std::string("BAR"));
 
     DrawNumberParams currentAmtParams = { xCoordinate, yCoordinate, 0, 4, COLOR_WHITE, 0.6f };
@@ -87,7 +87,7 @@ Widget* allocateMPResourceWidget(const char* name, i32 xCoordinate, i32 yCoordin
     auto resourceWidget = createWidget(name);
     moveWidget(resourceWidget, xCoordinate, yCoordinate);
 
-    DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate + 16, 60, 2, 0, 0, 0, 0, 0.6f };
+    DrawResourceBarParams resourceBar = { xCoordinate, yCoordinate + 16, 60, 2, 0, 0, 0, 0, 0, 0.6f };
     addChildWidget(resourceWidget, (Widget*)createResourceBarWidget(resourceBar, std::string("BAR")), std::string("BAR"));
 
     DrawNumberParams currentAmtParams = { xCoordinate, yCoordinate, 0, 3, COLOR_WHITE, 0.6f };

@@ -26,7 +26,7 @@ ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name
     return widget;
 }
 
-bool isScrollerWidget(Widget* widget) {
+u32 isScrollerWidget(Widget* widget) {
     return ((widget->klass == &kScrollerWidgetClass));
 }
 
@@ -66,7 +66,7 @@ PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name
     return widget;
 }
 
-bool isPortraitWidget(Widget* widget) {
+u32 isPortraitWidget(Widget* widget) {
     return ((widget->klass == &kPortraitWidgetClass));
 }
 
@@ -118,7 +118,7 @@ const WidgetClass* HPBarWidgetKlass() {
     return &kHPBarWidgetClass;
 }
 
-bool isHPBarWidget(Widget* widget) {
+u32 isHPBarWidget(Widget* widget) {
     return ((widget->klass == &kHPBarWidgetClass));
 }
 
@@ -184,7 +184,7 @@ SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
     return widget;
 }
 
-bool isSlotsWidget(Widget* widget) {
+u32 isSlotsWidget(Widget* widget) {
     return ((widget->klass == &kSlotsWidgetClass));
 }
 
@@ -245,7 +245,7 @@ SimpleAssetWidget* createSimpleGameAssetWidget(DrawSimpleAssetParams params, std
     return widget;
 }
 
-bool isSimpleAssetWidget(Widget* widget) {
+u32 isSimpleAssetWidget(Widget* widget) {
     return ((widget->klass == &kSimpleAssetWidgetClass));
 }
 
@@ -253,7 +253,7 @@ const WidgetClass* SimpleAssetWidgetKlass() {
     return &kSimpleAssetWidgetClass;
 }
 
-DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isPositive) {
+DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, u32 isPositive) {
     DrawSimpleAssetParams sign;
     if (isPositive) {
         sign = { xCoordinate, yCoordinate, 0xB3, color, priority };
@@ -305,7 +305,7 @@ GameAssetWidget* createGameAssetWidget(DrawGameAssetParams params, std::string n
     return widget;
 }
 
-bool isGameAssetWidget(Widget* widget) {
+u32 isGameAssetWidget(Widget* widget) {
     return ((widget->klass == &kGameAssetWidgetClass));
 }
 
@@ -355,7 +355,7 @@ DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereCo
     return sphere;
 }
 
-DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor, float priority, bool shaded) {
+DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor, float priority, u32 shaded) {
     if (shaded) {
         DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 32, 16, 16, starColor, 0, 0, priority };
         return star;
@@ -445,7 +445,7 @@ DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority
     return menuTextAsset;
 }
 
-void setStarShaded(Widget* widgetToUpdate, bool shaded) {
+void setStarShaded(Widget* widgetToUpdate, u32 shaded) {
     if (isGameAssetWidget(widgetToUpdate)) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;
         if (typedPtr->unk1 == 144) {
@@ -494,7 +494,7 @@ BarWidget* createBarWidget(DrawBarParams params, std::string name) {
     return widget;
 }
 
-bool isBarWidget(Widget* widget) {
+u32 isBarWidget(Widget* widget) {
     return ((widget->klass == &kBarWidgetClass));
 }
 
@@ -552,7 +552,7 @@ ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::st
     return widget;
 }
 
-bool isResourceBarWidget(Widget* widget) {
+u32 isResourceBarWidget(Widget* widget) {
     return ((widget->klass == &kResourceBarWidgetClass));
 }
 

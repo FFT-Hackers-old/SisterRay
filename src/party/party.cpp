@@ -40,8 +40,8 @@ void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::ve
     if (partyIndex > 3)
         return;
 
-    bool magicEnabled = false;
-    bool summonEnabled = false;
+    u32 magicEnabled = false;
+    u32 summonEnabled = false;
     for (auto materia : equippedMaterias) {
         if (materia.item_id == 0xFFFF)
             continue;
@@ -119,7 +119,7 @@ u8* getMateriaSlots(u8 partyIdx, SrGearType gearType) {
     return nullptr;
 }
 
-bool slotsAreLinked(u8 leftSlot, u8 rightSlot) {
+u32 slotsAreLinked(u8 leftSlot, u8 rightSlot) {
     if (leftSlot == SLOT_RIGHT_LINKED && rightSlot == SLOT_LEFT_LINKED)
         return true;
     if (leftSlot == SLOT_RIGHT_LINKED_2 && rightSlot == SLOT_LEFT_LINKED_2)
@@ -158,7 +158,7 @@ void clearCommandArray(u8 partyIndex) {
 }
 
 /*Hooking into here we can insert default commands for characters and such*/
-void enableDefaultCommands(u8 partyIndex, bool magicEnabled, bool summonEnabled) {
+void enableDefaultCommands(u8 partyIndex, u32 magicEnabled, u32 summonEnabled) {
     enableCommand(partyIndex, 0, CMD_ATTACK);
     enableCommand(partyIndex, 3, CMD_ITEM);
     if (magicEnabled) {
@@ -508,11 +508,11 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
     };
 }
 
-bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
+u32 updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
     auto actorMP = gActorTimerBlock[partyIndex].currentMP;
     auto& spellData = gContext.party.get_element(getPartyKey(partyIndex)).actorMagics;
 
-    bool commandEnabled = false;
+    u32 commandEnabled = false;
     for (auto it = begin(spellData); it != end(spellData); ++it) {
         auto spellID = it->magicIndex;
         u8 spellFlags = 2; //start by disabling the spell
@@ -540,11 +540,11 @@ bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
 }
 
 /*With this we can add a charge mechanic to summons*/
-bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
+u32 updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
     auto actorMP = gActorTimerBlock[partyIndex].currentMP;
     auto& summonData = gContext.party.get_element(getPartyKey(partyIndex)).actorSummons;
 
-    bool commandEnabled = false;
+    u32 commandEnabled = false;
     for (auto it = begin(summonData); it != end(summonData); ++it) {
         u8 spellFlags = 2;
         if (it->magicIndex != 0xFF) {
@@ -558,11 +558,11 @@ bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
     return commandEnabled;
 }
 
-bool updateESkillCommand(u8 partyIndex, u32 actorStatusMask) {
+u32 updateESkillCommand(u8 partyIndex, u32 actorStatusMask) {
     auto actorMP = gActorTimerBlock[partyIndex].currentMP;
     auto& ESkillData = gContext.party.get_element(getPartyKey(partyIndex)).actorEnemySkills;
 
-    bool commandEnabled = false;
+    u32 commandEnabled = false;
     for (auto it = begin(ESkillData); it != end(ESkillData); ++it) {
         u8 spellFlags = 2; 
         if (it->magicIndex != 0xFF) {

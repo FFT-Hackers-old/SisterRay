@@ -180,7 +180,7 @@ void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u1
     ArmorData newArmorData;
     MateriaInventoryEntry& equippedMateriaData = MateriaInventoryEntry();
     u8* materiaSlots;
-    bool shouldRemove = false;
+    u32 shouldRemove = false;
     auto characterID = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
 
     for (i32 materiaSlotIndex = 0; materiaSlotIndex < 8; ++materiaSlotIndex) {

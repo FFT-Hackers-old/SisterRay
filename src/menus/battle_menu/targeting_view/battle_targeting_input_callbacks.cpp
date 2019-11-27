@@ -41,9 +41,6 @@ void handleSelectTargets(const MenuInputEvent* event) {
                 setMenuState(event->menu, *PREVIOUS_BATTLE_MENU_STATE);
                 *word_DC38E0 = 1;
                 *ACCEPTING_BATTLE_INPUT = 1;
-                /*if (byte_DC207D)
-                    setViewState3(21);
-                }*/
                 return;
             }
             if ((*ISSUED_COMMAND_ID == CMD_ITEM || *ISSUED_COMMAND_ID == CMD_W_ITEM || *ISSUED_COMMAND_ID == CMD_THROW)) {

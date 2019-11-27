@@ -43,7 +43,7 @@ void drawScrollerWidget(ScrollerWidget* scrollerWidget);
 const WidgetClass kScrollerWidgetClass = { (SRWIDGETDRAWPROC)drawScrollerWidget };
 const WidgetClass* ScrollerWidgetKlass();
 ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name);
-bool isScrollerWidget(Widget* widget);
+u32 isScrollerWidget(Widget* widget);
 
 struct PortraitWidget_ {
     Widget widget;
@@ -55,7 +55,7 @@ void drawPortraitWidget(PortraitWidget* portraitWidget);
 const WidgetClass kPortraitWidgetClass = { (SRWIDGETDRAWPROC)drawPortraitWidget };
 const WidgetClass* PortraitWidgetKlass();
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name);
-bool isPortraitWidget(Widget* widget);
+u32 isPortraitWidget(Widget* widget);
 
 struct HPBarWidget_ {
     Widget widget;
@@ -67,7 +67,7 @@ void drawHPBarWidget(HPBarWidget* hpBarWidget);
 const WidgetClass kHPBarWidgetClass = { (SRWIDGETDRAWPROC)drawHPBarWidget };
 const WidgetClass* HPBarWidgetKlass();
 HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name);
-bool isHPBarWidget(Widget* widget);
+u32 isHPBarWidget(Widget* widget);
 
 struct SimpleAssetWidget_ {
     Widget widget;
@@ -80,8 +80,8 @@ void drawSimpleAssetWidget(SimpleAssetWidget* arrowWidget);
 const WidgetClass kSimpleAssetWidgetClass = { (SRWIDGETDRAWPROC)drawSimpleAssetWidget };
 const WidgetClass* SimpleAssetWidgetKlass();
 SimpleAssetWidget* createSimpleGameAssetWidget(DrawSimpleAssetParams params, std::string name);
-bool isSimpleAssetWidget(Widget* widget);
-DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isNegative = false);
+u32 isSimpleAssetWidget(Widget* widget);
+DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, u32 isNegative = false);
 DrawSimpleAssetParams Percent(i32 xCoordinate, i32 yCoordinate, color color, float priority);
 DrawSimpleAssetParams Arrow(i32 xCoordinate, i32 yCoordinate, color color, float priority);
 DrawSimpleAssetParams Cross(i32 xCoordinate, i32 yCoordinate, color color, float priority);
@@ -96,7 +96,7 @@ void drawSlotsWidget(SlotsWidget* slotsWidget);
 const WidgetClass kSlotsWidgetClass = { (SRWIDGETDRAWPROC)drawSlotsWidget };
 const WidgetClass* SlotsWidgetKlass();
 SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name);
-bool isSlotsWidget(Widget* widget);
+u32 isSlotsWidget(Widget* widget);
 
 struct BarWidget_ {
     Widget widget;
@@ -110,7 +110,7 @@ void drawBarWidget(BarWidget* barWidget);
 const WidgetClass kBarWidgetClass = { (SRWIDGETDRAWPROC)drawBarWidget };
 const WidgetClass* BarWidgetKlass();
 BarWidget* createBarWidget(DrawBarParams params, std::string name);
-bool isBarWidget(Widget* widget);
+u32 isBarWidget(Widget* widget);
 void updateBarLength(BarWidget* barWidget, u32 length);
 void updateBarColor(BarWidget* barWidget, i32 colorMask);
 
@@ -130,7 +130,7 @@ void drawResourceBarWidget(ResourceBarWidget* barWidget);
 const WidgetClass kResourceBarWidgetClass = { (SRWIDGETDRAWPROC)drawResourceBarWidget };
 const WidgetClass* ResourceBarWidgetKlass();
 ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::string name);
-bool isResourceBarWidget(Widget* widget);
+u32 isResourceBarWidget(Widget* widget);
 void updateResourceBarColor(ResourceBarWidget* barWidget, i32 colorMask);
 void updateSegment(ResourceBarWidget* barWidget, i16 start, i16 end, i16 midpoint);
 
@@ -150,19 +150,19 @@ void drawGameAssetWidget(GameAssetWidget* gameAssetWidget);
 const WidgetClass kGameAssetWidgetClass = { (SRWIDGETDRAWPROC)drawGameAssetWidget };
 const WidgetClass* GameAssetWidgetKlass();
 GameAssetWidget* createGameAssetWidget(DrawGameAssetParams params, std::string name);
-bool isGameAssetWidget(Widget* widget);
+u32 isGameAssetWidget(Widget* widget);
 SISTERRAY_API void setGameAssetParams(DrawGameAssetParams* params, i32 xCoordinate, i32 yCoordinate, i32 arg3, i32 arg4, i32 arg5, i32 arg6, i32 arg7, i32 arg8, i32 arg9, float priority);
 SISTERRAY_API void updateAssetType(Widget* widgetToUpdate, i32 type);
 SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1, i32 type2, i32 type3, i32 type4);
 //The following are a set of helper methods for fetching parameters that trigger load a specific game asset
 DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority);
-DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority, bool shaded);
+DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority, u32 shaded);
 DrawGameAssetParams ItemIcon(i32 xCoordinate, i32 yCoordinate, i32 iconType, float priority);
 DrawGameAssetParams AllArrow(i32 xCoordinate, i32 yCoordinate, float priority);
 DrawGameAssetParams BarBorder(i32 xCoordinate, i32 yCoordinate, float priority);
 DrawGameAssetParams BarrierBarBorder(i32 xCoordinate, i32 yCoordinate, float priority);
 DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority, int type);
-void setStarShaded(Widget* widgetToUpdate, bool shaded);
+void setStarShaded(Widget* widgetToUpdate, u32 shaded);
 void updateItemIcon(Widget* widgetToUpdate, i32 iconType);
 
 #endif

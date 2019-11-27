@@ -2,12 +2,12 @@
 #include "action_interface.h"
 
 
-void setTargetingFromFlags(u8 flags, bool reverseRow) {
+void setTargetingFromFlags(u8 flags, u32 reverseRow) {
     setChosenActionTargetData(flags);
     setTargetingDataGlobals(reverseRow);
 }
 
-void setTargetingDataGlobals(bool reverseRow) {
+void setTargetingDataGlobals(u32 reverseRow) {
     u8* byte_DC3C98 = (u8*)0xDC3C98;
     setValidTargetMask();
     auto targetData = getChosenActionTargetData();

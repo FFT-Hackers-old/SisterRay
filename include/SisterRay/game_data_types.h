@@ -78,9 +78,9 @@ typedef struct {
     u16 characterRestrictionMask; //Used to make certain items usable only by certain characters
     u8 hp_heal_percent;
     u8 mp_heal_percent;
-    bool can_revive;
-    bool target_all;
-    bool requires_target;
+    u32 can_revive;
+    u32 target_all;
+    u32 requires_target;
 } ConsumableUseData;
 
 typedef struct {

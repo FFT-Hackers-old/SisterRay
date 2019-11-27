@@ -23,8 +23,8 @@ void handleSelectItem(const MenuInputEvent* event) {
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (itemCursorChoice.maxColumnBound * (itemCursorChoice.relativeRowIndex + itemCursorChoice.baseRowIndex)) + itemCursorChoice.relativeColumnIndex;
     auto itemID = gContext.battleInventory->get_resource(flatIndex).item_id;
-    bool didSucceed = didItemUseSucceed(itemID);
-    srLogWrite("ITEM USE SUCCEED BOOL: %d", didSucceed);
+    u32 didSucceed = didItemUseSucceed(itemID);
+    srLogWrite("ITEM USE SUCCEED u32: %d", didSucceed);
     if (didSucceed) {
         playMenuSound(1);
         setChosenActionID(itemID);

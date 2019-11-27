@@ -107,7 +107,7 @@ void setChildWidget(Widget* parent, Widget* newChild, std::string name) {
     }
 }
 
-bool checkWidgetTypes(Widget* a, Widget* b) {
+u32 checkWidgetTypes(Widget* a, Widget* b) {
     return ((a->klass) == (b->klass));
 }
 

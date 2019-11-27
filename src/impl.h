@@ -30,6 +30,7 @@ extern "C" {
 #include "battle/formations.h"
 #include "battle/enemies.h"
 #include "battle/scene_loader.h"
+#include "battle/engine/animation_script_opcode.h"
 #include "inventories/inventory.h"
 #include "inventories/battle_inventory.h"
 #include "inventories/materia_inventory.h"
@@ -70,6 +71,7 @@ typedef struct {
 
     SrBattleAnimationRegistry           battleAnimations;
     SrBattleAnimScriptRegistry          battleAnimationScripts;
+    SrAnimOpCodeRegistry                animScriptOpcodes;
     SrCommandRegistry                   commands;
     SrAuxCommandRegistry                auxCommands;
     SrAttackRegistry                    attacks;

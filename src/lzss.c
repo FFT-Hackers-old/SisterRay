@@ -10,14 +10,14 @@ void lzssDecompress(char* dst, size_t dstLen, FILE* file)
     char buffer[LZSS_BUFFER];
     size_t bufferPos;
 
-    uint8_t b;
-    uint8_t blockControl;
-    uint8_t ref[2];
-    uint32_t fileLen;
-    uint32_t fileCursor;
-    uint16_t offset;
-    uint8_t len;
-    uint16_t run;
+    u328_t b;
+    u328_t blockControl;
+    u328_t ref[2];
+    u3232_t fileLen;
+    u3232_t fileCursor;
+    u3216_t offset;
+    u328_t len;
+    u3216_t run;
     size_t outLen;
 
     fread(&fileLen, 4, 1, file);
@@ -32,7 +32,7 @@ void lzssDecompress(char* dst, size_t dstLen, FILE* file)
     {
         fread(&blockControl, 1, 1, file);
         fileCursor++;
-        for (uint8_t i = 0; i < 8; ++i)
+        for (u328_t i = 0; i < 8; ++i)
         {
             if (blockControl & (1 << i))
             {
@@ -50,7 +50,7 @@ void lzssDecompress(char* dst, size_t dstLen, FILE* file)
                 len = (ref[1] & 0xf) + 3;
                 offset = ref[0] | ((ref[1] & 0xf0) << 4);
 
-                for (uint16_t j = 0; j < len; ++j)
+                for (u3216_t j = 0; j < len; ++j)
                 {
                     b = buffer[offset];
                     dst[outLen++] = b;

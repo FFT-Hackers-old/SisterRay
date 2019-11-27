@@ -2,6 +2,7 @@
 #define SISTER_RAY_ROUTINES_H
 
 #include <SisterRay/types.h>
+#include "game_module.h"
 
 #define FORMULA_TABLE_LOCATION          ((void*)0x8FF1F8)
 #define PHYSICAL_DAMAGE_FORMULA         ((void*)0x5DE5DF)
@@ -138,10 +139,10 @@ typedef i32(*pfnsub6CBA6A)(u8, u16);
 typedef i32(*pfnsub6CBBBF)(u8, u16);
 #define restore_party_member_mp         ((pfnsub6CBBBF)0x6CBBBF)
 
-typedef bool(*pfnsub7178BF)(u32);
+typedef u32(*pfnsub7178BF)(u32);
 #define check_member_HP_full            ((pfnsub7178BF)0x7178BF)
 
-typedef bool(*pfnsub7178F1)(u32);
+typedef u32(*pfnsub7178F1)(u32);
 #define check_member_MP_full            ((pfnsub7178F1)0x7178F1)
 
 typedef i32(*pfnsub6F4D30)(u32*, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32, i32);
@@ -174,7 +175,7 @@ typedef void(*pfnsub6C497C)(i32, char);
 typedef i32(*pfnsub6C9808)(void);
 #define checkMenuInputEnabled       ((pfnsub6C9808)0x6C9808)
 
-typedef bool(*pfnsub715026)(i32);
+typedef u32(*pfnsub715026)(i32);
 #define knows_all_prereq_limits         ((pfnsub715026)0x715026)
 
 typedef u8(*pfnsub6C545B)(i32);
@@ -261,7 +262,7 @@ typedef void(*pfnsub6D1B5C)(void*, i16);
 #define gameDrawTargetingCursors     ((pfnsub6D1B5C)0x6D1B5C)
 
 
-typedef void*(*pfnsub676578)(void);
+typedef GameContext*(*pfnsub676578)(void);
 #define getGraphicsCtx             ((pfnsub676578)0x676578)
 
 typedef void(*pfnsub41A21E)(void*);

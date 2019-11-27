@@ -48,7 +48,7 @@ public:
     }
 
     //Utility function for incrementing an item from its absolute item ID
-    bool incrementInventoryByItemID(u16 absoluteID, u8 stepSize) {
+    u32 incrementInventoryByItemID(u16 absoluteID, u8 stepSize) {
         u16 inventoryIndex = findItemInventoryIndex(absoluteID);
         if (inventoryIndex != 0xFFFF) {
             incrementInventoryEntry(inventoryIndex, stepSize);
@@ -57,7 +57,7 @@ public:
         return false;
     }
 
-    bool decrementInventoryByItemID(u16 absoluteID, u8 stepSize) {
+    u32 decrementInventoryByItemID(u16 absoluteID, u8 stepSize) {
         u16 inventoryIndex = findItemInventoryIndex(absoluteID);
         if (inventoryIndex != 0xFFFF) {
             decrementInventoryEntry(inventoryIndex, stepSize);

@@ -11,6 +11,7 @@
 #include <SisterRay/srwidgets.h>
 #include <SisterRay/srparty.h>
 #include <SisterRay/scene_data.h>
+#include <SisterRay/graphics.h>
 
 /*Macro for handling compilation in both C and C++*/
 #if defined(__cplusplus)
@@ -128,6 +129,6 @@ typedef void  (*PFNSRREPLACEFUNCTIONPROC)(void* dst, void* newAddr);
 typedef void* (*PFNSRREDIRECTFUNCTIONPROC)(void* dst, void* newAddr);
 typedef void  (*PFNSRREPLACESKIPPROC)(void* dst, size_t len);
 typedef void  (*PFNSRREPLACENOPPROC)(void* dst, size_t len);
-typedef void* (*PFNSRVIRTUALADDRESSPROC)(uint32_t fixedAddr);
+typedef void* (*PFNSRVIRTUALADDRESSPROC)(u3232_t fixedAddr);
 
 #endif

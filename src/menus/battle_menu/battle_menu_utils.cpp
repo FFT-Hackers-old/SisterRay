@@ -3,35 +3,35 @@
 #include "../../inventories/inventory_utils.h"
 
 /*Return True if the character is usable by the character attempting to use it*/
-bool isUsableInBattle(u16 itemID) {
+u32 isUsableInBattle(u16 itemID) {
     auto restrictionMask = get_restriction_mask(itemID);
     auto characterMask = gContext.itemOnUseData.get_resource(itemID).characterRestrictionMask;
-    bool itemIsUsuable = (bool)(!(restrictionMask & 2));
+    u32 itemIsUsuable = (u32)(!(restrictionMask & 2));
 
     auto party_member_index = (*BATTLE_ACTIVE_ACTOR_ID);
     auto characterID = (PARTY_STRUCT_ARRAY)[party_member_index].characterID;
-    bool characterCanUse = (bool)!(characterMask & (1 << characterID));
+    u32 characterCanUse = (u32)!(characterMask & (1 << characterID));
 
     srLogWrite("itemisUsable, characterCanUse: %d, %d", itemIsUsuable, characterCanUse);
 
     return (itemIsUsuable && characterCanUse);
 }
 
-bool isThrowable(u16 itemID) {
+u32 isThrowable(u16 itemID) {
     auto restrictionMask = get_restriction_mask(itemID);
     auto characterMask = gContext.itemOnUseData.get_resource(itemID).characterRestrictionMask;
-    bool itemIsThrowable = (bool)(!(restrictionMask & 8)); // Use new throwable variable
+    u32 itemIsThrowable = (u32)(!(restrictionMask & 8)); // Use new throwable variable
 
     auto party_member_index = (*BATTLE_ACTIVE_ACTOR_ID);
     auto characterID = (PARTY_STRUCT_ARRAY)[party_member_index].characterID;
-    bool characterCanUse = bool(characterMask & (1 << characterID));
+    u32 characterCanUse = u32(characterMask & (1 << characterID));
 
     return (itemIsThrowable && characterCanUse);
 }
 
-bool didItemUseSucceed(u16 itemID) {
-    bool isItemUsable;
-    bool emptyItem = (itemID == 0xFFFF);
+u32 didItemUseSucceed(u16 itemID) {
+    u32 isItemUsable;
+    u32 emptyItem = (itemID == 0xFFFF);
 
     srLogWrite("Checking Item usable for item: %d", itemID);
     if (emptyItem)
@@ -61,7 +61,7 @@ i32 setHandlerState(u16 handlerIndex, i8 state) {
     return handlerIndex;
 }
 
-bool checkHandlingInput() {
+u32 checkHandlingInput() {
     if (*ACCEPTING_BATTLE_INPUT)
         return  false;
     if (*BATTLE_PAUSED)

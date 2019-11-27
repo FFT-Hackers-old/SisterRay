@@ -2,7 +2,7 @@
 #include "../impl.h"
 
 /*Utility check if an item is usable on the menu*/
-bool usableInInventoryMenu(u16 item_id) {
+u32 usableInInventoryMenu(u16 item_id) {
     u16 restriction_mask = get_restriction_mask(item_id);
     if (restriction_mask & 4) {
         return true;

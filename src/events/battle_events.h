@@ -19,4 +19,12 @@ typedef struct {
     u16 issuingActorID;
     AIBattleContext* battleAIContext;
 } ActionContextEvent;
+
+typedef struct {
+    GameAnimationScriptContext* scriptContext;
+    u8* scriptPtr;
+    u8 currentScriptIdx;
+    BattleModelState* battleModelDataArray;
+    u8 actorID;
+} AnimScriptEvent;
 #endif // !BATTLE_EVENT_H

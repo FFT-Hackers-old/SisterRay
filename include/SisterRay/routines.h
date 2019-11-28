@@ -44,6 +44,7 @@
 #define DISPATCH_AUTO_ACTIONS           ((void*)0x5C8CFA)
 #define DISPATCH_BATTLE_UPDATES         ((void*)0x6CE8B3)
 #define INIT_BATTLE_DATA                ((void*)0x6DB716)
+#define PRINT_DEBUG_STRING              ((void*)0x664E30)
 
 typedef void(*pfnnullmasks)();
 typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);

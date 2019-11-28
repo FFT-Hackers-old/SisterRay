@@ -14,6 +14,10 @@ SISTERRAY_API void initLog(void)
     atexit(LogExitHandler);
 }
 
+void gameLogWrite(const char* str) {
+    srLogWrite("ff7.exe: %s", str);
+}
+
 SISTERRAY_API void srLogWrite(const char* format, ...)
 {
     char buffer[4096];
@@ -22,7 +26,7 @@ SISTERRAY_API void srLogWrite(const char* format, ...)
     va_start(ap, format);
     vsnprintf(buffer, sizeof(buffer), format, ap);
     fwrite(buffer, strlen(buffer), 1, gContext.logFile);
-    fwrite("\r\n", 2, 1, gContext.logFile);
+    if(!strstr(buffer, "\n")) fwrite("\n", 1, 1, gContext.logFile);
     fflush(gContext.logFile);
     va_end(ap);
 }

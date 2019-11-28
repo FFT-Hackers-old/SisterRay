@@ -250,7 +250,7 @@ typedef struct {
     SRGFXDRIVER_SETMATRIX setMatrix;
     SRGFXDRIVER_UNLOADTEXTURE;
     SRGFXDRIVER_LOADTEXTURE loadTexture;
-    gfx_palette_changed *palette_changed;
+    SRGFXDRIVER_PALETTECHANGED paletteChanged;
     gfx_write_palette *write_palette;
     gfx_blendmode *blendmode;
     gfx_light_polygon_set *light_polygon_set;

@@ -355,7 +355,7 @@ typedef struct {
 } BattleModelState;
 #pragma pack(pop)
 
-#define gBigAnimBlock       ((BattleModelState*)0xBE1178)
+#define BATTLE_MODEL_STATE_BIG_ARRAY       ((BattleModelState*)0xBE1178)
 
 #pragma pack(push, 1)
 typedef struct {
@@ -375,11 +375,76 @@ typedef struct {
     u16 field_2E;
     u16 field_30;
     u8 modelDataIndex; //0x032
-    u8 unkValues[0x41]; //0x33]
+    u8 field_32;
+    u8 field_33;
+    u8 field_34;
+    u8 field_35;
+    u8 field_36;
+    u8 field_37;
+    u8 field_38;
+    u8 field_39;
+    u8 field_3A;
+    u8 field_3B;
+    u8 field_3C;
+    u8 field_3D;
+    u8 field_3E;
+    u8 field_3F;
+    u8 field_40;
+    u8 field_41;
+    u8 field_42;
+    u8 field_43;
+    u8 field_44;
+    u8 field_45;
+    u8 field_46;
+    u8 field_47;
+    u8 field_48;
+    u8 field_49;
+    u8 field_4A;
+    u8 field_4B;
+    u8 field_4C;
+    u8 field_4D;
+    u8 field_4E;
+    u8 field_4F;
+    u8 field_50;
+    u8 field_51;
+    u8 field_52;
+    u8 field_53;
+    u8 field_54;
+    u8 field_55;
+    u8 field_56;
+    u8 field_57;
+    u8 field_58;
+    u8 field_59;
+    u8 field_5A;
+    u8 field_5B;
+    u8 field_5C;
+    u8 field_5D;
+    u8 field_5E;
+    u8 field_5F;
+    u8 field_60;
+    u8 field_61;
+    u8 field_62;
+    u8 field_63;
+    u8 field_64;
+    u8 field_65;
+    u8 field_66;
+    u8 field_67;
+    u8 field_68;
+    u8 field_69;
+    u8 field_6A;
+    u8 field_6B;
+    u8 field_6C;
+    u8 field_6D;
+    u8 field_6E;
+    u8 field_6F;
+    u8 field_70;
+    u8 field_71;
+    u8 field_72;
+    u8 field_73;
 } BattleModelStateSmall;
 #pragma pack(pop)
 
-#define MODEL_DATA_74_ARRAY ((BattleModelStateSmall*)0xBF23C0)
+#define BATTLE_MODEL_STATE74_ARRAY ((BattleModelStateSmall*)0xBF23C0)
 
 #pragma pack(push, 1)
 typedef struct {

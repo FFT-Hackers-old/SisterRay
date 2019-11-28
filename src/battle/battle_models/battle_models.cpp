@@ -95,8 +95,8 @@ BattleModel* srSetPlayerModel(i32 a1, i32 a2, u8 actorIndex, char *filename) {
         freeOldModel(BATTLE_MODEL_PTRS[actorIndex]);
         BATTLE_MODEL_PTRS[actorIndex] = nullptr;
         for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
-            if (BATTLE_MODEL_PTRS[actorIndex] == gBigAnimBlock[partyIdx].modelDataPtr)
-                gBigAnimBlock[partyIdx].modelDataPtr = nullptr;
+            if (BATTLE_MODEL_PTRS[actorIndex] == BATTLE_MODEL_STATE_BIG_ARRAY[partyIdx].modelDataPtr)
+                BATTLE_MODEL_STATE_BIG_ARRAY[partyIdx].modelDataPtr = nullptr;
         }
     }
     //The following code sets the 7 models that are active for the battle

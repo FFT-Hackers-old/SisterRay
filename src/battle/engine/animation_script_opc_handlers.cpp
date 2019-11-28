@@ -1,4 +1,5 @@
 #include "animation_script_opc_handlers.h"
+#include "../battle_models/battle_model_state_interface.h"
 
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
@@ -20,12 +21,15 @@ OpCodeControlSequence OpCode8F(AnimScriptEvent* srEvent) {
 OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     u32* off_C05FEC = (u32*)0xC05FEC;
     u32* off_C05FE8 = (u32*)0xC05FE8;
+    TextureSet** dword_9ADEE4 = (TextureSet**)(0x9ADEE4);
+    TextureSet** dword_9ADEE0 = (TextureSet**)(0x9ADEE0);
 
     auto modelDataArray = srEvent->battleModelDataArray;
     auto scriptCtx = srEvent->scriptContext;
     auto scriptPtr = srEvent->scriptPtr;
-    scriptCtx->field_15 = scriptPtr[modelDataArray[actor_id].currentScriptPosition++];
-    switch (srEvent->actorID) {
+    auto actorID = srEvent->actorID;
+    scriptCtx->field_15 = scriptPtr[getBattleModelState(actorID).currentScriptPosition++];
+    switch (actorID) {
     case 6: {
         *off_C05FE8 = 0;
         *off_C05FEC = scriptCtx->field_15;
@@ -50,33 +54,29 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
         break;
     }
     auto gameContext = getGraphicsCtx();
-    auto graphicsCallBacks = gameContext->graphicsDriverCallbacks;
-    v75 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-    v76 = &v70;
-    v72 = 8 * (v75 & 0x1F);
-    v71 = (v75 & 0x3E0) >> 2;
-    v70 = (v75 & 0x7C00) >> 7;
-    v73 = -1;
-    v79 = *off_C05FEC;
-    v77 = 0;
+    GraphicsDriverCallbacks* graphicsCallBacks = gameContext->graphicsDriverCallbacks;
+    auto wordArg = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    u8 v72 = 8 * (wordArg & 0x1F);
+    u8 v71 = (wordArg & 0x3E0) >> 2;
+    u8 v70 = (wordArg & 0x7C00) >> 7;
+    u8* v76 = &v70;
+    auto v73 = -1;
+    auto unkPaletteSwapArg = *off_C05FEC;
+    auto v77 = 0;
     dword_9ADEE8 = 0;
-    dword_9ADEE0 = 0;
-    dword_9ADEE4 = 0;
+    *dword_9ADEE0 = 0;
+    *dword_9ADEE4 = 0;
     dword_9ADEF0 = 0;
     dword_9ADEF4 = 0;
-    sub_685028(0, (void(__cdecl*)(int, _DWORD))sub_41FB1C, modelDataArray[4].modelDataPtr->skeletonPolygonData);
-    if (actor_id >= 8)
-        v69 = dword_9ADEE4;
-    else
-        v69 = dword_9ADEE0;
-    if (v69) {
-        sub_68924B(0, 1, v76, v79, v69);
-        (*(void(__cdecl**)(int, signed int, int, _DWORD, int))(graphicsCallBacks + 84))(
-            v79,
-            1,
-            v79,
-            *(_DWORD*)(v69 + 140),
-            v69);
+    sub_685028(0, sub_41FB1C, modelDataArray[4].modelDataPtr->skeletonPolygonData);
+
+    auto emeraldTextureSet = *dword_9ADEE0;
+    if (actorID >= 8)
+        emeraldTextureSet = *dword_9ADEE4;
+
+    if (emeraldTextureSet) {
+        sub_68924B(0, 1, v76, unkPaletteSwapArg, emeraldTextureSet);
+        graphicsCallBacks->paletteChanged)(unkPaletteSwapArg, 1, unkPaletteSwapArg, emeraldTextureSet->palette, emeraldTextureSet);
     }
     return RUN_NEXT;
 }

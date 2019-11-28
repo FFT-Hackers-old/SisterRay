@@ -1,15 +1,18 @@
 #include "animation_script_parser.h"
+#include "../battle_models/battle_model_state_interface.h"
 #include "../../impl.h"
 
-void __cdecl runAnimationScript(__int16 actor_id, void** ptrToScriptTable) {
+void runAnimationScript(u16 actorID, void** ptrToScriptTable) {
     GameAnimationScriptContext** ptrToScriptContext = (GameAnimationScriptContext**)0x8FE2AC;
+    auto scriptOwnerModelState = getBattleModelState(actorID);
+    auto scriptOwner74State = getBattleModelState74(actorID);
 
     if (!*BATTLE_PAUSED_GLOBAL) {
         GameAnimationScriptContext* scriptContextPtr = *ptrToScriptContext;
         byte_9ADEF8 = 0;
-        scriptContextPtr->isScriptActive = 1;    
-        scriptContextPtr->scriptPtr = (u8*)ptrToScriptTable[gBigAnimBlock[actor_id].animScriptIndex];
-        switch (gBigAnimBlock[actor_id].animScriptIndex) {
+        scriptContextPtr->isScriptActive = 1;
+        scriptContextPtr->scriptPtr = (u8*)ptrToScriptTable[scriptOwnerModelState->animScriptIndex];
+        switch (scriptOwnerModelState->animScriptIndex) {
         case 46:
             scriptContextPtr->scriptPtr = unk_7C10E0;
             break;
@@ -41,7 +44,7 @@ void __cdecl runAnimationScript(__int16 actor_id, void** ptrToScriptTable) {
             scriptContextPtr->scriptPtr = unk_7C1140;
             break;
         case 57:
-            gBigAnimBlock[actor_id].field_25 |= 0x80u;
+            BATTLE_MODEL_STATE_BIG_ARRAY[actor_id].field_25 |= 0x80u;
             scriptContextPtr->scriptPtr = unk_7C1110;
             break;
         case 58:
@@ -54,50 +57,69 @@ void __cdecl runAnimationScript(__int16 actor_id, void** ptrToScriptTable) {
             break;
         }
 
-        if (gBigAnimBlock[actor_id].modelEffectFlags & 1) {
+        if (scriptOwnerModelState.modelEffectFlags & 1) {
             resetScriptState(actor_id);
-            gBigAnimBlock[actor_id].modelEffectFlags &= 0xFEu;
+            scriptOwnerModelState.modelEffectFlags &= 0xFEu;
         }
-        if (gBigAnimBlock[actor_id].isScriptExecuting) {
-            gBigAnimBlock[actor_id].playedAnimFrames = 0;
-        LABEL_20:
+        if (scriptOwnerModelState.isScriptExecuting) {
+            scriptOwnerModelState.playedAnimFrames = 0;
             while (scriptContextPtr->isScriptActive) {
-                scriptContextPtr->currentOpCode = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-                AnimScriptEvent animScriptEvent = {scriptContextPtr, scriptPtr, scriptContextPtr->currentOpCode, gBigAnimBlock};
+                scriptContextPtr->currentOpCode = scriptContextPtr->scriptPtr[scriptOwnerModelState.currentScriptPosition++];
+                AnimScriptEvent animScriptEvent = { scriptContextPtr, scriptPtr, scriptContextPtr->currentOpCode, BATTLE_MODEL_STATE_BIG_ARRAY };
                 auto opcode = gContext.animScriptOpcodes.get_element(assembleOpCodeKey(scriptContextPtr->currentOpCode));
                 auto control = opcode(animScriptEvent);
-               
-        if (!(smallModelDataArray[actor_id].field_C & 2))
-        {
-            ++smallModelDataArray[actor_id].field_36;
-            if (gBigAnimBlock[actor_id].animScriptIndex == actorIdleAnimScripts[actor_id])// probably handles idle animations
-            {
-                v67 = smallModelDataArray[actor_id].field_33;
-                if (v67 == 1)
-                {
-                    playModelAnimation(actor_id);
-                    playModelAnimation(actor_id);
+                switch (control) {
+                case RUN_NEXT: {
+                    continue;
+                    break;
                 }
-                else if (v67 == 2)
-                {
-                    if (byte_BFD0E4 & 1)
-                        playModelAnimation(actor_id);
+                case BREAK: {
+                    return;
+                    break;
                 }
-                else
-                {
-                    if (v67 == 3)
-                    {
-                        *(_DWORD*)&gBigAnimBlock[actor_id].field_74 = 0;
-                        dword_BE0E28[16 * actor_id] = 0;
-                        byte_9ADEF8 = 1;
-                    }
-                    playModelAnimation(actor_id);
+                case PLAY_ANIM: {
+                    scriptOwnerModelState->runningAnimIdx = scriptContextPtr->currentOpCode;
+                    scriptOwnerModelState.field_74 = 0;
+                    getBattleModelState74(actorID)->field_36 = 0;
+                    dword_BE0E28[16 * actor_id] = 0;
+                    scriptContextPtr->isScriptActive = 0;
+                    break;
+                }
                 }
             }
-            else
-            {
+        }
+    }
+}
+
+void srPlayAnimation(u8 actorID) {
+    auto scriptOwnerModelState = getBattleModelState(actorID);
+    auto scriptOwner74State = getBattleModelState74(actorID);
+    if (!(scriptOwner74State.field_C & 2)) {
+        scriptOwner74State->field_36++;
+        if (scriptOwnerModelState->animScriptIndex == actorIdleAnimScripts[actor_id])// probably handles idle animations
+        {
+            auto unkModeToggle = scriptOwner74State.field_33;
+            if (unkModeToggle == 1) {
+                playModelAnimation(actor_id);
                 playModelAnimation(actor_id);
             }
+            else if (unkModeTogle == 2) {
+                if (byte_BFD0E4 & 1)
+                    playModelAnimation(actor_id);
+            }
+            else {
+                if (unkModeToggle == 3)
+                {
+                    scriptOwnerModelState->field_74 = 0;
+                    dword_BE0E28[16 * actor_id] = 0;
+                    byte_9ADEF8 = 1;
+                }
+                playModelAnimation(actor_id);
+            }
+        }
+        else
+        {
+            playModelAnimation(actor_id);
         }
     }
 }

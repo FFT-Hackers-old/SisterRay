@@ -12,6 +12,7 @@
 #include <SisterRay/srparty.h>
 #include <SisterRay/scene_data.h>
 #include <SisterRay/graphics.h>
+#include <SisterRay/game_module.h>
 
 /*Macro for handling compilation in both C and C++*/
 #if defined(__cplusplus)

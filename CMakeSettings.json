@@ -1,40 +1,40 @@
-﻿{
+{
   "configurations": [
     {
-      "name": "x86-Release",
-      "generator": "Ninja",
-      "configurationType": "Release",
-      "inheritEnvironments": [ "msvc_x86" ],
-      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\build\\${name}",
-      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\install\\${name}",
-      "cmakeCommandArgs": "-D CMAKE_C_COMPILER=cl.exe -D CMAKE_CXX_COMPILER=cl.exe",
-      "buildCommandArgs": "-v",
-      "ctestCommandArgs": "",
-      "variables": []
+        "name": "x86-Release",
+        "generator": "Ninja",
+        "configurationType": "Release",
+        "inheritEnvironments": [ "msvc_x86" ],
+        "buildRoot": "${projectDir}\\.dist\\build\\${name}",
+        "installRoot": "${projectDir}\\.dist\\install\\${name}",
+        "cmakeCommandArgs": "-D CMAKE_C_COMPILER=cl.exe -D CMAKE_CXX_COMPILER=cl.exe",
+        "buildCommandArgs": "-v",
+        "ctestCommandArgs": "",
+        "variables": []
     },
     {
-      "name": "x86-RelWithDebInfo",
-      "generator": "Ninja",
-      "configurationType": "RelWithDebInfo",
-      "inheritEnvironments": [ "msvc_x86" ],
-      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\build\\${name}",
-      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\install\\${name}",
-      "cmakeCommandArgs": "-D CMAKE_C_COMPILER=cl.exe -D CMAKE_CXX_COMPILER=cl.exe",
-      "buildCommandArgs": "-v",
-      "ctestCommandArgs": "",
-      "variables": []
+        "name": "x86-RelWithDebInfo",
+        "generator": "Ninja",
+        "configurationType": "RelWithDebInfo",
+        "inheritEnvironments": [ "msvc_x86" ],
+        "buildRoot": "${projectDir}\\.dist\\build\\${name}",
+        "installRoot": "${projectDir}\\.dist\\install\\${name}",
+        "cmakeCommandArgs": "-D CMAKE_C_COMPILER=cl.exe -D CMAKE_CXX_COMPILER=cl.exe",
+        "buildCommandArgs": "-v",
+        "ctestCommandArgs": "",
+        "variables": []
     },
     {
-      "name": "x86-Debug",
-      "generator": "Ninja",
-      "configurationType": "Debug",
-      "inheritEnvironments": [ "msvc_x86" ],
-      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\build\\${name}",
-      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\SisterRay\\install\\${name}",
-      "cmakeCommandArgs": "-D CMAKE_C_COMPILER=cl.exe -D CMAKE_CXX_COMPILER=cl.exe",
-      "buildCommandArgs": "-v",
-      "ctestCommandArgs": "",
-      "variables": []
+        "name": "x86-Debug",
+        "generator": "Ninja",
+        "configurationType": "Debug",
+        "inheritEnvironments": [ "msvc_x86" ],
+        "buildRoot": "${projectDir}\\.dist\\build\\${name}",
+        "installRoot": "${projectDir}\\.dist\\install\\${name}",
+        "cmakeCommandArgs": "-D CMAKE_C_COMPILER=cl.exe -D CMAKE_CXX_COMPILER=cl.exe",
+        "buildCommandArgs": "-v",
+        "ctestCommandArgs": "",
+        "variables": []
     }
   ]
 }

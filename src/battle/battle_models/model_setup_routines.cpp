@@ -165,11 +165,11 @@ typedef void(*SRPFNSUB684F73)(LocalWeaponStruct*, void*);
 typedef void(*SRPFNSUB5E0DDE)(u16, u16, u16, u16, BattleModel*);
 #define playWeaponAnimation   ((SRPFNSUB5E0DDE)0x5E0DDE)
 
-typedef float*(*SRPFNSUB67C9BE)(u32, MatrixSet*);
+typedef Matrix*(*SRPFNSUB67C9BE)(u32, MatrixSet*);
 #define getMatrix     ((SRPFNSUB67C9BE)0x67C9BE)
 
-typedef void(*SRPFNSUB6616CF)(void*, float*);
-#define sub_6616CF    ((SRPFNSUB6616CF)0x6616CF)
+typedef void(*SRPFNSUB6616CF)(GameRotationMatrix*, Matrix*);
+#define extractR3AndTranspose    ((SRPFNSUB6616CF)0x6616CF)
 
 /*This function offsets the animation index that is playing and animations the weapon*/
 void playCorrectWeaponAnimation(u32 actorIdx) {
@@ -245,7 +245,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
             weaponOffset = gContext.battleAnimations.get_element(modelName).modelAnimationCount;
         }
         playWeaponAnimation(modelState.setForLimitBreaks, modelState.tableRelativeModelAnimIdx + weaponOffset, modelState.currentPlayingFrame, weaponModelID, modelData);
-        float* matrix = getMatrix(0, weaponDataPtr->bonesArray->polygons->boneRSDPtr->polygonSet->matrixSet);
-        sub_6616CF(&(byte_BE0E30[64 * actorIdx]), matrix);
+        Matrix* matrix = getMatrix(0, weaponDataPtr->bonesArray->polygons->boneRSDPtr->polygonSet->matrixSet);
+        extractR3AndTranspose(&(getBattleModelRotationData(actorIdx)->rotationMatrix), matrix);
     }
 }

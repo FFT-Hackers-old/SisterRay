@@ -6,6 +6,7 @@ void runAnimationScript(u16 actorID, void** ptrToScriptTable) {
     GameAnimationScriptContext** ptrToScriptContext = (GameAnimationScriptContext**)0x8FE2AC;
     auto& scriptOwnerModelState = *getBattleModelState(actorID);
     auto& scriptOwner74State = *getBattleModelState74(actorID);
+    auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);
     u8* byte_9ADEF8 = (u8*)byte_9ADEF8;
 
     if (!*BATTLE_PAUSED_GLOBAL) {
@@ -13,6 +14,7 @@ void runAnimationScript(u16 actorID, void** ptrToScriptTable) {
         *byte_9ADEF8 = 0;
         scriptContextPtr->isScriptActive = 1;
         scriptContextPtr->scriptPtr = (u8*)ptrToScriptTable[scriptOwnerModelState.animScriptIndex];
+
         /*switch (scriptOwnerModelState->animScriptIndex) {
         case 46:
             scriptContextPtr->scriptPtr = unk_7C10E0;
@@ -60,7 +62,9 @@ void runAnimationScript(u16 actorID, void** ptrToScriptTable) {
         }*/
 
         if (scriptOwnerModelState.modelEffectFlags & 1) {
-            resetScriptState(actorID);
+            scriptOwnerModelState.isScriptExecuting = 1;
+            scriptOwnerModelState.currentScriptPosition = 0;
+            scriptOwnerModelState.waitFrames = 0;
             scriptOwnerModelState.modelEffectFlags &= 0xFEu;
         }
         if (scriptOwnerModelState.isScriptExecuting) {
@@ -80,10 +84,10 @@ void runAnimationScript(u16 actorID, void** ptrToScriptTable) {
                     break;
                 }
                 case PLAY_ANIM: {
-                    scriptOwnerModelState.runningAnimIdx = scriptContextPtr.currentOpCode;
+                    scriptOwnerModelState.runningAnimIdx = scriptContextPtr->currentOpCode;
                     scriptOwnerModelState.field_74 = 0;
                     scriptOwner74State.field_36 = 0;
-                    dword_BE0E28[16 * actor_id] = 0;
+                    scriptOwnerRotationData.field_0 = 0;
                     scriptContextPtr->isScriptActive = 0;
                     srHandleAnimateModel(actorID);
                     break;
@@ -95,34 +99,42 @@ void runAnimationScript(u16 actorID, void** ptrToScriptTable) {
 }
 
 void srHandleAnimateModel(u16 actorID) {
-    auto scriptOwnerModelState = getBattleModelState(actorID);
-    auto scriptOwner74State = getBattleModelState74(actorID);
+    u8* byte_9ADEF8 = (u8*)0x9ADEF8;
+    u8* byte_BFD0E4 = (u8*)0xBFD0E4;
+    auto& scriptOwnerModelState = *getBattleModelState(actorID);
+    auto& scriptOwner74State = *getBattleModelState74(actorID);
+    auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);
     if (!(scriptOwner74State.field_C & 2)) {
-        scriptOwner74State->field_36++;
-        if (scriptOwnerModelState->animScriptIndex == actorIdleAnimScripts[actorID]) {
+        scriptOwner74State.field_36++;
+        // Handle the idle animation case
+        if (scriptOwnerModelState.animScriptIndex == actorIdleAnimScripts[actorID]) {
             auto unkModeToggle = scriptOwner74State.field_33;
-            if (unkModeToggle == 1) {
+            switch (unkModeToggle) {
+            case 1: {
                 srPlayModelAnimation(actorID);
                 srPlayModelAnimation(actorID);
+                break;
             }
-            else if (unkModeTogle == 2) {
-                if (byte_BFD0E4 & 1)
-                    srPlayModelAnimation(actor_id);
+            case 2: {
+                if (*byte_BFD0E4 & 1)
+                    srPlayModelAnimation(actorID);
+                break;
             }
-            else {
-                if (unkModeToggle == 3)
-                {
-                    scriptOwnerModelState->field_74 = 0;
-                    dword_BE0E28[16 * actorID] = 0;
-                    byte_9ADEF8 = 1;
-                }
+            case 3: {
+                scriptOwnerModelState.field_74 = 0;
+                scriptOwnerRotationData.field_0 = 0;
+                *byte_9ADEF8 = 1;
                 srPlayModelAnimation(actorID);
+                break;
             }
+            default: {
+                srPlayModelAnimation(actorID);
+                break;
+            }
+            }
+            return;
         }
-        else
-        {
-            srPlayModelAnimation(actorID);
-        }
+        srPlayModelAnimation(actorID);
     }
 }
 
@@ -133,6 +145,7 @@ void srPlayModelAnimation(u16 actorID) {
     u8* byte_9ADEFC = (u8*)0x9ADEFC;
     u8* byte_9ADF04 = (u8*)0x9ADF04;
     u8* byte_9ADF00 = (u8*)0x9ADF00;
+    u8* byte_BF2A30 = (u8*)0xBF2A30;
 
     if (battleModel) {
         actorModelState.field_10 = battleModel->skeletonData->totalBones;

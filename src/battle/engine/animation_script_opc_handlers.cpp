@@ -40,7 +40,7 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     auto scriptCtx = srEvent->scriptContext;
     auto scriptPtr = srEvent->scriptPtr;
     auto actorID = srEvent->actorID;
-    scriptCtx->field_15 = scriptPtr[getBattleModelState(actorID)->currentScriptPosition++];
+    scriptCtx->field_15 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
     switch (actorID) {
     case 6: {
         *off_C05FE8 = 0;
@@ -67,7 +67,7 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     }
     auto gameContext = getGraphicsCtx();
     GraphicsDriverCallbacks* graphicsCallBacks = gameContext->graphicsDriverCallbacks;
-    auto wordArg = readOpCodeArg16(scriptPtr, *scriptCtx, getBattleModelState(actorID));
+    auto wordArg = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
     u8 v72 = 8 * (wordArg & 0x1F);
     u8 v71 = (wordArg & 0x3E0) >> 2;
     u8 v70 = (wordArg & 0x7C00) >> 7;

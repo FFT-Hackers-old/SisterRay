@@ -223,4 +223,23 @@ typedef struct {
 
 #define BATTLE_MODEL_STATE74_ARRAY ((BattleModelStateSmall*)0xBF23C0)
 
+#pragma pack(push, 1)
+typedef struct {
+    u32 field_0;
+    u32 field_4;
+    GameRotationMatrix rotationMatrix;
+    u16 field_26;
+    u32 field_28;
+    u16 field_2C;
+    u16 field_2E;
+    u16 field_30;
+    u16 field_32;
+    u32 field_34;
+    u32 field_38;
+    u32 field_3C;
+} ModelRotationData;
+#pragma pack(pop)
+
+#define BATTLE_MODEL_ROTATION_DATA ((ModelRotationData*)0xBE0E28)
+
 #endif // !MODEL_H

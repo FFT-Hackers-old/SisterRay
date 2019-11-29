@@ -9,3 +9,8 @@ SISTERRAY_API BattleModelState* getBattleModelState(u8 actorID) {
 SISTERRAY_API BattleModelStateSmall* getBattleModelState74(u8 actorID) {
     return &(BATTLE_MODEL_STATE74_ARRAY[actorID]);
 }
+
+
+SISTERRAY_API ModelRotationData* getBattleModelRotationData(u8 actorID) {
+    return &(BATTLE_MODEL_ROTATION_DATA[actorID]);
+}

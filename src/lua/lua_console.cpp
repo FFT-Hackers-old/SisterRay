@@ -41,7 +41,7 @@ static std::string execLua(const std::string input)
     return out;
 }
 
-static LRESULT CALLBACK consoleEditProc(HWND hwnd, u32 message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK consoleEditProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     RECT rect;
 
@@ -83,7 +83,7 @@ static LRESULT CALLBACK consoleEditProc(HWND hwnd, u32 message, WPARAM wParam, L
     return CallWindowProc(editProc, hwnd, message, wParam, lParam);
 }
 
-static LRESULT CALLBACK consoleWndProc(HWND hwnd, u32 message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK consoleWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     RECT rect;
 

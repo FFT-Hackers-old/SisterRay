@@ -87,7 +87,7 @@ void ablListH11S3(const DrawMateriaDataEvent* event) {
     }
 }
 
-void flagPercent(Widget* widget, u32 isEnabled) {
+void flagPercent(Widget* widget, bool isEnabled) {
     if (isEnabled) {
         enableWidget(getChild(widget, "AMT"));
         enableWidget(getChild(widget, "SIGN"));

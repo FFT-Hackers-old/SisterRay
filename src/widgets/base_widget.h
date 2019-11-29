@@ -24,7 +24,7 @@ struct Widget_ {
     std::unordered_map<std::string, u32> childrenNames; //Name Index Lookup
     u32 xCoordinate;
     u32 yCoordinate;
-    u32 enabled;
+    bool enabled;
 };
 
 struct CollectionWidget_ {
@@ -42,6 +42,6 @@ void addChildWidget(Widget* parent, Widget* child, std::string name);
 Widget* getChild(Widget* parent, std::string name);
 Widget* getChild(Widget* parent, u16 index);
 void setChildWidget(Widget* parent, Widget* newChild, std::string name);
-u32 checkWidgetTypes(Widget* a, Widget* b);
+bool checkWidgetTypes(Widget* a, Widget* b);
 
 #endif

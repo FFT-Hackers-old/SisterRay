@@ -6,7 +6,7 @@
 #include "animation_script_opcode.h"
 
 
-void runAnimationScript(u16 actorID, void** ptrToScriptTable);
+void runAnimationScript(u16 actorID, u8** ptrToScriptTable);
 void srPlayModelAnimation(u16 actorID);
 void srHandleAnimateModel(u16 actorID);
 

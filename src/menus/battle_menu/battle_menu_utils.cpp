@@ -3,35 +3,35 @@
 #include "../../inventories/inventory_utils.h"
 
 /*Return True if the character is usable by the character attempting to use it*/
-u32 isUsableInBattle(u16 itemID) {
+bool isUsableInBattle(u16 itemID) {
     auto restrictionMask = get_restriction_mask(itemID);
     auto characterMask = gContext.itemOnUseData.get_resource(itemID).characterRestrictionMask;
-    u32 itemIsUsuable = (u32)(!(restrictionMask & 2));
+    bool itemIsUsuable = (bool)(!(restrictionMask & 2));
 
     auto party_member_index = (*BATTLE_ACTIVE_ACTOR_ID);
     auto characterID = (PARTY_STRUCT_ARRAY)[party_member_index].characterID;
-    u32 characterCanUse = (u32)!(characterMask & (1 << characterID));
+    bool characterCanUse = (bool)!(characterMask & (1 << characterID));
 
     srLogWrite("itemisUsable, characterCanUse: %d, %d", itemIsUsuable, characterCanUse);
 
     return (itemIsUsuable && characterCanUse);
 }
 
-u32 isThrowable(u16 itemID) {
+bool isThrowable(u16 itemID) {
     auto restrictionMask = get_restriction_mask(itemID);
     auto characterMask = gContext.itemOnUseData.get_resource(itemID).characterRestrictionMask;
-    u32 itemIsThrowable = (u32)(!(restrictionMask & 8)); // Use new throwable variable
+    bool itemIsThrowable = (bool)(!(restrictionMask & 8)); // Use new throwable variable
 
     auto party_member_index = (*BATTLE_ACTIVE_ACTOR_ID);
     auto characterID = (PARTY_STRUCT_ARRAY)[party_member_index].characterID;
-    u32 characterCanUse = u32(characterMask & (1 << characterID));
+    bool characterCanUse = bool(characterMask & (1 << characterID));
 
     return (itemIsThrowable && characterCanUse);
 }
 
-u32 didItemUseSucceed(u16 itemID) {
-    u32 isItemUsable;
-    u32 emptyItem = (itemID == 0xFFFF);
+bool didItemUseSucceed(u16 itemID) {
+    bool isItemUsable;
+    bool emptyItem = (itemID == 0xFFFF);
 
     srLogWrite("Checking Item usable for item: %d", itemID);
     if (emptyItem)

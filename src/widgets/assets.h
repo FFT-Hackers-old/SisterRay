@@ -81,7 +81,7 @@ const WidgetClass kSimpleAssetWidgetClass = { (SRWIDGETDRAWPROC)drawSimpleAssetW
 const WidgetClass* SimpleAssetWidgetKlass();
 SimpleAssetWidget* createSimpleGameAssetWidget(DrawSimpleAssetParams params, std::string name);
 bool isSimpleAssetWidget(Widget* widget);
-DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, u32 isNegative = false);
+DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isPositive = false);
 DrawSimpleAssetParams Percent(i32 xCoordinate, i32 yCoordinate, color color, float priority);
 DrawSimpleAssetParams Arrow(i32 xCoordinate, i32 yCoordinate, color color, float priority);
 DrawSimpleAssetParams Cross(i32 xCoordinate, i32 yCoordinate, color color, float priority);
@@ -156,13 +156,13 @@ SISTERRAY_API void updateAssetType(Widget* widgetToUpdate, i32 type);
 SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1, i32 type2, i32 type3, i32 type4);
 //The following are a set of helper methods for fetching parameters that trigger load a specific game asset
 DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority);
-DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority, u32 shaded);
+DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority, bool shaded);
 DrawGameAssetParams ItemIcon(i32 xCoordinate, i32 yCoordinate, i32 iconType, float priority);
 DrawGameAssetParams AllArrow(i32 xCoordinate, i32 yCoordinate, float priority);
 DrawGameAssetParams BarBorder(i32 xCoordinate, i32 yCoordinate, float priority);
 DrawGameAssetParams BarrierBarBorder(i32 xCoordinate, i32 yCoordinate, float priority);
 DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority, int type);
-void setStarShaded(Widget* widgetToUpdate, u32 shaded);
+void setStarShaded(Widget* widgetToUpdate, bool shaded);
 void updateItemIcon(Widget* widgetToUpdate, i32 iconType);
 
 #endif

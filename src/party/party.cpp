@@ -40,8 +40,8 @@ void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::ve
     if (partyIndex > 3)
         return;
 
-    u32 magicEnabled = false;
-    u32 summonEnabled = false;
+    bool magicEnabled = false;
+    bool summonEnabled = false;
     for (auto materia : equippedMaterias) {
         if (materia.item_id == 0xFFFF)
             continue;
@@ -158,7 +158,7 @@ void clearCommandArray(u8 partyIndex) {
 }
 
 /*Hooking into here we can insert default commands for characters and such*/
-void enableDefaultCommands(u8 partyIndex, u32 magicEnabled, u32 summonEnabled) {
+void enableDefaultCommands(u8 partyIndex, bool magicEnabled, bool summonEnabled) {
     enableCommand(partyIndex, 0, CMD_ATTACK);
     enableCommand(partyIndex, 3, CMD_ITEM);
     if (magicEnabled) {

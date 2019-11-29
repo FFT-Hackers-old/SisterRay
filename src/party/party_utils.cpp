@@ -64,7 +64,7 @@ u16 getEquippedGear(u8 characterID, u8 gearType) {
     return kernelObjectID;
 }
 
-u32 characterCanEquipItem(u8 characterID, u16 item_id){
+bool characterCanEquipItem(u8 characterID, u16 item_id){
     auto characterMask = getCharacterRestrictionMask(item_id);
     u32 characterCanUse = (u32)(characterMask & (1 << characterID));
 
@@ -92,11 +92,11 @@ u16 getMateriaID(u8 characterID, u8 slot, u8 gearType) {
     return materiaID;
 }
 
-u32 isPartyActor(u8 actorIdx) {
+bool isPartyActor(u8 actorIdx) {
     return (actorIdx < 3);
 }
 
-u32 actorHasStatus(u8 actorID, u32 maskOfStatus) {
+bool actorHasStatus(u8 actorID, u32 maskOfStatus) {
     auto& actorAIStates = AI_BATTLE_CONTEXT->actorAIStates;
     return actorAIStates[actorID].statusMask & maskOfStatus;
 }

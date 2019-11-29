@@ -6,12 +6,12 @@
 #include <string>
 
 u16 getEquippedGear(u8 characterID, u8 gearType);
-u32 characterCanEquipItem(u8 characterID, u16 item_id);
+bool characterCanEquipItem(u8 characterID, u16 item_id);
 std::string getCharacterName(u8 characterID);
 u16 getMateriaID(u8 characterID, u8 slot, u8 gearType);
 u8 getCharacterRecordIndex(u8 partyIndex);
 ActivePartyMemberStruct* getActivePartyMember(u8 actorIdx);
-u32 isPartyActor(u8 actorIdx);
-u32 actorHasStatus(u8 actorID, u32 maskOfStatus);
+bool isPartyActor(u8 actorIdx);
+bool actorHasStatus(u8 actorID, u32 maskOfStatus);
 
 #endif

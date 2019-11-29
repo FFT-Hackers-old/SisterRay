@@ -11,7 +11,7 @@
 void ablListH0S2(const DrawMateriaDataEvent* event);
 void ablListH9S1(const DrawMateriaDataEvent* event);
 void ablListH11S3(const DrawMateriaDataEvent* event);
-void flagPercent(Widget* widget, u32 isEnabled);
+void flagPercent(Widget* widget, bool isEnabled);
 
 
 #endif

@@ -253,7 +253,7 @@ const WidgetClass* SimpleAssetWidgetKlass() {
     return &kSimpleAssetWidgetClass;
 }
 
-DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, u32 isPositive) {
+DrawSimpleAssetParams Sign(i32 xCoordinate, i32 yCoordinate, color color, float priority, bool isPositive) {
     DrawSimpleAssetParams sign;
     if (isPositive) {
         sign = { xCoordinate, yCoordinate, 0xB3, color, priority };
@@ -355,7 +355,7 @@ DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereCo
     return sphere;
 }
 
-DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor, float priority, u32 shaded) {
+DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 starColor, float priority, bool shaded) {
     if (shaded) {
         DrawGameAssetParams star = { xCoordinate, yCoordinate, 144, 32, 16, 16, starColor, 0, 0, priority };
         return star;
@@ -445,7 +445,7 @@ DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority
     return menuTextAsset;
 }
 
-void setStarShaded(Widget* widgetToUpdate, u32 shaded) {
+void setStarShaded(Widget* widgetToUpdate, bool shaded) {
     if (isGameAssetWidget(widgetToUpdate)) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;
         if (typedPtr->unk1 == 144) {

@@ -1,6 +1,6 @@
 #include "animation_script_opcode.h"
 
-u16 readOpCodeArg16(u8* scriptPtr, GameAnimationScriptContext ctx, BattleModelState* modelState) {
+u16 readOpCodeArg16(u8* scriptPtr, GameAnimationScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition + 1;
     auto wordReader = (u16*)argPosition;
     auto arg = *argPosition;
@@ -8,12 +8,12 @@ u16 readOpCodeArg16(u8* scriptPtr, GameAnimationScriptContext ctx, BattleModelSt
     return arg;
 }
 
-u16 readOpCodeArg32(u8* scriptPtr, GameAnimationScriptContext ctx, BattleModelState* modelState) {
+u16 readOpCodeArg32(u8* scriptPtr, GameAnimationScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition + 1;
     auto wordReader = (u32*)argPosition;
     auto arg = *argPosition;
     modelState->currentScriptPosition += 4;
-    return arg
+    return arg;
 }
 
 std::string assembleOpCodeKey(u16 opCode) {

@@ -101,7 +101,7 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
     return widget;
 }
 
-u32 isGridWidget(Widget* widget) {
+bool isGridWidget(Widget* widget) {
     return (widget->klass == &kGridWidgetClass);
 }
 
@@ -165,7 +165,7 @@ StaticGridWidget* createStaticGridWidget(DrawStaticGridParams params, std::strin
 }
 
 
-u32 isStaticGridWidget(Widget* widget) {
+bool isStaticGridWidget(Widget* widget) {
     return (widget->klass == &kStaticGridWidgetClass);
 }
 

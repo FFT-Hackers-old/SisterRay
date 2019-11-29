@@ -4,19 +4,36 @@
 #include "types.h"
 
 typedef struct {
-    ListNode* next;
+    void* next; //Type is GameListNode*, cast before usage
     void* element;
-} ListNode;
+} GameListNode;
 
 typedef struct {
-    bool use_assert_alloc;
+    bool useAssertAlloc;
     u32 field_4;
     u32 nodeCount;
-    ListNode *head;
-    ListNode *tail
+    GameListNode *head;
+    GameListNode *tail;
     void *destructor;
     void *recursiveFindCallback;
     u32 field_1C;
-} List;
+} GameList;
 
+typedef struct {
+    void* next; //type is GameHeap*, cast before usage
+    u32 size;					
+    void* last;	//type is GameHeap*, cast before usage	
+    u32 field_C;
+    u32 field_10;
+    u32 field_14;
+    u32 field_18;
+    u32 field_1C;
+    u32 field_20;
+    u32 field_24;
+    u32 field_28;
+    u32 field_2C;
+    u32 field_30;
+    void *callbackData;
+    void *callback;
+} GameHeap;
 #endif // !DATA_STRUCTURES_H

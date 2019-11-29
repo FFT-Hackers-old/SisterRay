@@ -26,7 +26,7 @@ ScrollerWidget* createScrollerWidget(drawScrollerParams params, std::string name
     return widget;
 }
 
-u32 isScrollerWidget(Widget* widget) {
+bool isScrollerWidget(Widget* widget) {
     return ((widget->klass == &kScrollerWidgetClass));
 }
 
@@ -66,7 +66,7 @@ PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name
     return widget;
 }
 
-u32 isPortraitWidget(Widget* widget) {
+bool isPortraitWidget(Widget* widget) {
     return ((widget->klass == &kPortraitWidgetClass));
 }
 
@@ -118,7 +118,7 @@ const WidgetClass* HPBarWidgetKlass() {
     return &kHPBarWidgetClass;
 }
 
-u32 isHPBarWidget(Widget* widget) {
+bool isHPBarWidget(Widget* widget) {
     return ((widget->klass == &kHPBarWidgetClass));
 }
 
@@ -184,7 +184,7 @@ SlotsWidget* createSlotsWidget(drawSlotsParams params, std::string name) {
     return widget;
 }
 
-u32 isSlotsWidget(Widget* widget) {
+bool isSlotsWidget(Widget* widget) {
     return ((widget->klass == &kSlotsWidgetClass));
 }
 
@@ -245,7 +245,7 @@ SimpleAssetWidget* createSimpleGameAssetWidget(DrawSimpleAssetParams params, std
     return widget;
 }
 
-u32 isSimpleAssetWidget(Widget* widget) {
+bool isSimpleAssetWidget(Widget* widget) {
     return ((widget->klass == &kSimpleAssetWidgetClass));
 }
 
@@ -305,7 +305,7 @@ GameAssetWidget* createGameAssetWidget(DrawGameAssetParams params, std::string n
     return widget;
 }
 
-u32 isGameAssetWidget(Widget* widget) {
+bool isGameAssetWidget(Widget* widget) {
     return ((widget->klass == &kGameAssetWidgetClass));
 }
 
@@ -494,7 +494,7 @@ BarWidget* createBarWidget(DrawBarParams params, std::string name) {
     return widget;
 }
 
-u32 isBarWidget(Widget* widget) {
+bool isBarWidget(Widget* widget) {
     return ((widget->klass == &kBarWidgetClass));
 }
 
@@ -552,7 +552,7 @@ ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::st
     return widget;
 }
 
-u32 isResourceBarWidget(Widget* widget) {
+bool isResourceBarWidget(Widget* widget) {
     return ((widget->klass == &kResourceBarWidgetClass));
 }
 

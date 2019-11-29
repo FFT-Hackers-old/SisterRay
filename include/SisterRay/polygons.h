@@ -6,7 +6,7 @@
 typedef struct {
     u16 vertex1;
     u16 vertex2;
-} PolygonEdge;
+} GamePolygonEdge;
 
 typedef struct {
     u16 field_0;
@@ -16,7 +16,7 @@ typedef struct {
     u16 normals[3];
     u16 edges[3];
     u32 field_14;
-} Polygon;
+} GamePolygon;
 
 typedef struct {
     u32 field_0;

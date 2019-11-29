@@ -119,7 +119,7 @@ u8* getMateriaSlots(u8 partyIdx, SrGearType gearType) {
     return nullptr;
 }
 
-u32 slotsAreLinked(u8 leftSlot, u8 rightSlot) {
+bool slotsAreLinked(u8 leftSlot, u8 rightSlot) {
     if (leftSlot == SLOT_RIGHT_LINKED && rightSlot == SLOT_LEFT_LINKED)
         return true;
     if (leftSlot == SLOT_RIGHT_LINKED_2 && rightSlot == SLOT_LEFT_LINKED_2)
@@ -508,11 +508,11 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
     };
 }
 
-u32 updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
+bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
     auto actorMP = gActorTimerBlock[partyIndex].currentMP;
     auto& spellData = gContext.party.get_element(getPartyKey(partyIndex)).actorMagics;
 
-    u32 commandEnabled = false;
+    bool commandEnabled = false;
     for (auto it = begin(spellData); it != end(spellData); ++it) {
         auto spellID = it->magicIndex;
         u8 spellFlags = 2; //start by disabling the spell
@@ -540,11 +540,11 @@ u32 updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
 }
 
 /*With this we can add a charge mechanic to summons*/
-u32 updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
+bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
     auto actorMP = gActorTimerBlock[partyIndex].currentMP;
     auto& summonData = gContext.party.get_element(getPartyKey(partyIndex)).actorSummons;
 
-    u32 commandEnabled = false;
+    bool commandEnabled = false;
     for (auto it = begin(summonData); it != end(summonData); ++it) {
         u8 spellFlags = 2;
         if (it->magicIndex != 0xFF) {
@@ -558,11 +558,11 @@ u32 updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
     return commandEnabled;
 }
 
-u32 updateESkillCommand(u8 partyIndex, u32 actorStatusMask) {
+bool updateESkillCommand(u8 partyIndex, u32 actorStatusMask) {
     auto actorMP = gActorTimerBlock[partyIndex].currentMP;
     auto& ESkillData = gContext.party.get_element(getPartyKey(partyIndex)).actorEnemySkills;
 
-    u32 commandEnabled = false;
+    bool commandEnabled = false;
     for (auto it = begin(ESkillData); it != end(ESkillData); ++it) {
         u8 spellFlags = 2; 
         if (it->magicIndex != 0xFF) {

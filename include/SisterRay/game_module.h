@@ -4,9 +4,12 @@
 #include "types.h"
 #include "graphics.h"
 #include "data_structures.h"
+#include <windows.h>
+#include <ddstream.h>
 
 typedef void(*GAMEMODULEHANDLER)(void);
 
+#pragma pack(push, 1)
 typedef struct {
     GAMEMODULEHANDLER initialize;
     GAMEMODULEHANDLER destroy;
@@ -16,8 +19,19 @@ typedef struct {
     u32 field_14;
     u32 field_18;
 } GameMainCallbacks;
+#pragma pack(pop)
 
-typedef struct {
+#pragma pack(push, 1)
+typedef struct{
+    u8 dummy[0xCC];
+} D3DDEVICEDESC;
+#pragma pack(pop)
+
+typedef struct _GameContext GameContext;
+typedef struct _GraphicsDriverCallbacks GraphicsDriverCallbacks;
+
+#pragma pack(push, 1)
+struct _GameContext {
     u32 unk0;
     u32 width;
     u32 heiht;
@@ -48,16 +62,16 @@ typedef struct {
     DDSURFACEDESC surfaceDesc2[3];
     void* surface2;
     u32 field_1D0;
-    IDirectDrawClipper clipper;
+    void* clipper; //DirectDrawClipper
     u32 field_1D8;
     DDSURFACEDESC surfaceDescD3D;
     void *directDrawCtx2;
     u32 field_24C;
     DDSURFACEDESC surfaceDesc;
-    List *d3ddev_list;
+    GameList *d3ddev_list;
     void *d3dinterface;
     void *surface_d3ddev;			// IDirect3DDevice
-    List *textureFormat_List;
+    GameList *textureFormat_List;
     void *d3ddev_struct;
     void *d3dviewport;
     void *d3dmaterial;
@@ -65,13 +79,13 @@ typedef struct {
     void *d3d2interface;
     void *d3d2device;
     void *d3dviewport2;
-    List *list_2E8;
+    GameList *list_2E8;
     PolygonSet* polygonSet2EC;
     PolygonSet* polygonSet2F0;
     void* matrixStack1;
     void* matrixStack2;
     Matrix* cameraMatrix;
-    struct graphics_instance *graphics_instance;
+    GraphicsInstance* graphicsInstance;
     u32 field_304;
     u32 field_308;
     u32 field_30C;
@@ -88,7 +102,7 @@ typedef struct {
     u32 field_798;
     TextureFormat surfaceTexture;
     u32 in_scene;
-    AuxillaryGFX* hundred_array[5];
+    AuxillaryGFX* auxillaries[5];
     void *applog_debug1;
     u32 applog_debug2;
     void *dxdbg_file;
@@ -115,7 +129,7 @@ typedef struct {
     Matrix matrix_890;
     Matrix matrix_8D0;
     void *dx_sfx_something;
-    List* textureListPtr;
+    GameList* textureListPtr;
     void* stack_918;
     u32 field_91C;
     void *_3d2d_something;
@@ -123,11 +137,11 @@ typedef struct {
     u32 field_928;
     u32 field_92C;
     u32 field_930;
-    GraphicsDriverCallbacks *graphicsDriverCallbacks;
+    GraphicsDriverCallbacks* graphicsDriverCallbacks;
     void *_3dobject_pool;
     u32 field_93C;
     AuxillaryGFX *currentAuxillary;
-    struct struc_81* field_944;
+    unkTextureStructure* someTextureStructure;
     u32 field_948;
     u32 field_94C;
     u32 field_950;
@@ -193,11 +207,8 @@ typedef struct {
     u32 tntFix;
     u32 noRivaFix;
     u32 field_A9C;
-} GameContext;
-
-typedef struct{
-    u8 dummy[0xCC];
-} D3DDEVICEDESC;
+};
+#pragma pack(pop)
 
 typedef u32(*SRGFXDRIVER_CREATE)(GameContext*);
 typedef void(*SRGFXDRIVER_DESTROY)(GameContext*);
@@ -215,23 +226,23 @@ typedef void(*SRGFXDRIVER_UNLOADTEXTURE)(TextureSet*);
 typedef TextureSet*(SRGFXDRIVER_LOADTEXTURE)(TextureSet*, TextureHeader*, TextureFormat*);
 typedef u32(*SRGFXDRIVER_PALETTECHANGED)(u32, u32, u32, Palette*, TextureSet*);
 typedef u32(*SRGFXDRIVER_WRITEPALLETTE)(u32, u32, void*, u32, Palette*, TextureSet*);
-typedef struct blend_mode *(SRGFXDRIVER_BLENDMODE)(u32, GameContext*);
-typedef void(SRGFXDRIVER_LIGHTPOLYGONSET)(PolygonSet*, void*);
+typedef struct blend_mode *(*SRGFXDRIVER_BLENDMODE)(u32, GameContext*);
+typedef void(*SRGFXDRIVER_LIGHTPOLYGONSET)(PolygonSet*, void*);
 typedef void(gfx_field_64)(u32, u32, GameContext*);
-typedef void(gfx_setrenderstate)(AuxillaryGFX*, GameContext*);
+typedef void(*SRGFXDRIVER_SETRENDERSTATE)(AuxillaryGFX*, GameContext*);
 typedef void(gfx_field_74)(u32, GameContext*);
 typedef void(gfx_field_78)(PolygonSet*, GameContext*);
-typedef void(gfx_draw_deferred)(struct struc_77 *, GameContext*);
+typedef void(*SRGFXDRIVER_DEFERREDDRAW)(PolygonSetChain*, GameContext*);
 typedef void(gfx_field_80)(GraphicsObject*, GameContext*);
 typedef void(gfx_field_84)(u32, GameContext*);
-typedef u32(gfx_begin_scene)(u32, GameContext*);
-typedef void(gfx_end_scene)(GameContext*);
+typedef u32(*SRGFXDRIVER_BEGINSCENE)(u32, GameContext*);
+typedef void(*SRGFXDRIVER_ENDSCENE)(GameContext*);
 typedef void(gfx_field_90)(u32);
-typedef void(SRGFXDRIVER_SETPOLYRENDER)(PolygonSet*, IndexedVertices*, GameContext*);
-typedef void(SRGFXDRIVER_DRAWVERTICES)(PolygonSet*, IndexedVertices*, GameContext*);
+typedef void(*SRGFXDRIVER_SETPOLYRENDER)(PolygonSet*, IndexedVertices*, GameContext*);
+typedef void(*SRGFXDRIVER_DRAWVERTICES)(PolygonSet*, IndexedVertices*, GameContext*);
 typedef void(gfx_field_EC)(GameContext*);
 
-typedef struct {
+struct _GraphicsDriverCallbacks {
     SRGFXDRIVER_CREATE createDriver;
     SRGFXDRIVER_DESTROY destroyDriver;
     SRGFXDRIVER_LOCK lock;
@@ -242,29 +253,29 @@ typedef struct {
     SRGFXDRIVER_SETVIEWPORT setViewPort;
     SRGFXDRIVER_SETBG setBackGround;
     u32 field_24;
-    ColorBGRA field_28;			// ?
+    ColorBGRA field_28;
     u32 field_38;
     u32 field_3C;
     SRGFXDRIVER_INITPOLYGONSET initPolygonSet;
     SRGFXDRIVER_LOADGROUP loadGroup;
     SRGFXDRIVER_SETMATRIX setMatrix;
-    SRGFXDRIVER_UNLOADTEXTURE;
+    SRGFXDRIVER_UNLOADTEXTURE unloadTexture;
     SRGFXDRIVER_LOADTEXTURE loadTexture;
     SRGFXDRIVER_PALETTECHANGED paletteChanged;
-    gfx_write_palette *write_palette;
-    gfx_blendmode *blendmode;
-    gfx_light_polygon_set *light_polygon_set;
+    SRGFXDRIVER_WRITEPALLETTE writePalette;
+    SRGFXDRIVER_BLENDMODE blendmode;
+    SRGFXDRIVER_LIGHTPOLYGONSET lightPolygonSet;
     gfx_field_64 *field_64;
-    gfx_setrenderstate *setrenderstate;
-    gfx_setrenderstate *_setrenderstate;
-    gfx_setrenderstate *__setrenderstate;
+    SRGFXDRIVER_SETRENDERSTATE setRenderState;
+    SRGFXDRIVER_SETRENDERSTATE _setRenderState;
+    SRGFXDRIVER_SETRENDERSTATE __setRenderState;
     gfx_field_74 *field_74;
     gfx_field_78 *field_78;
-    gfx_draw_deferred *draw_deferred;
+    SRGFXDRIVER_DEFERREDDRAW deferredDraw;
     gfx_field_80 *field_80;
     gfx_field_84 *field_84;
-    gfx_begin_scene *begin_scene;
-    gfx_end_scene *end_scene;
+    SRGFXDRIVER_BEGINSCENE beginScene;
+    SRGFXDRIVER_ENDSCENE endScene;
     gfx_field_90 *field_90;
     SRGFXDRIVER_SETPOLYRENDER *setrenderstate_flat2D;
     SRGFXDRIVER_SETPOLYRENDER *setrenderstate_smooth2D;
@@ -289,6 +300,6 @@ typedef struct {
     SRGFXDRIVER_DRAWVERTICES draw_flatlines;
     SRGFXDRIVER_DRAWVERTICES draw_smoothlines;
     gfx_field_EC *field_EC;
-} GraphicsDriverCallbacks;
+};
 
 #endif

@@ -2,7 +2,7 @@
 
 
 SISTERRAY_API BattleModelState* getBattleModelState(u8 actorID) {
-    return &(BATTLE_MODEL_STATE_BIG_ARRAY[actorID])
+    return &(BATTLE_MODEL_STATE_BIG_ARRAY[actorID]);
 }
 
 

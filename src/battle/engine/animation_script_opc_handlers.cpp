@@ -1,5 +1,6 @@
 #include "animation_script_opc_handlers.h"
 #include "../battle_models/battle_model_state_interface.h"
+#include "../battle_models/model_skeleton.h"
 
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
@@ -17,10 +18,21 @@ OpCodeControlSequence OpCode8F(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+typedef void(*SRPFNSUB41FB1C)(u32, PolygonSet*);
+#define sub_41FB1C    ((SRPFNSUB41FB1C)0x41FB1C)
+
+typedef void(*SRPFNSUB685028)(u32, SRPFNSUB41FB1C, ModelSkeleton*);
+#define loadEmeraldTextureSet    ((SRPFNSUB685028)0x685028)
+
+typedef void(*SRPFNSUB68924B)(u32, u32, u8*, u32, TextureSet*);
+#define sub_68924B    ((SRPFNSUB68924B)0x68924B)
 
 OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     u32* off_C05FEC = (u32*)0xC05FEC;
     u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* dword_9ADEF0 = (u32*)0x9ADEF0;
+    u32* dword_9ADEF4 = (u32*)0x9ADEF4;
+    u32* dword_9ADEE8 = (u32*)0x9ADEE8;
     TextureSet** dword_9ADEE4 = (TextureSet**)(0x9ADEE4);
     TextureSet** dword_9ADEE0 = (TextureSet**)(0x9ADEE0);
 
@@ -28,7 +40,7 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     auto scriptCtx = srEvent->scriptContext;
     auto scriptPtr = srEvent->scriptPtr;
     auto actorID = srEvent->actorID;
-    scriptCtx->field_15 = scriptPtr[getBattleModelState(actorID).currentScriptPosition++];
+    scriptCtx->field_15 = scriptPtr[getBattleModelState(actorID)->currentScriptPosition++];
     switch (actorID) {
     case 6: {
         *off_C05FE8 = 0;
@@ -55,7 +67,7 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     }
     auto gameContext = getGraphicsCtx();
     GraphicsDriverCallbacks* graphicsCallBacks = gameContext->graphicsDriverCallbacks;
-    auto wordArg = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    auto wordArg = readOpCodeArg16(scriptPtr, *scriptCtx, getBattleModelState(actorID));
     u8 v72 = 8 * (wordArg & 0x1F);
     u8 v71 = (wordArg & 0x3E0) >> 2;
     u8 v70 = (wordArg & 0x7C00) >> 7;
@@ -63,12 +75,12 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     auto v73 = -1;
     auto unkPaletteSwapArg = *off_C05FEC;
     auto v77 = 0;
-    dword_9ADEE8 = 0;
+    *dword_9ADEE8 = 0;
     *dword_9ADEE0 = 0;
     *dword_9ADEE4 = 0;
-    dword_9ADEF0 = 0;
-    dword_9ADEF4 = 0;
-    sub_685028(0, sub_41FB1C, modelDataArray[4].modelDataPtr->skeletonPolygonData);
+    *dword_9ADEF0 = 0;
+    *dword_9ADEF4 = 0;
+    loadEmeraldTextureSet(0, sub_41FB1C, modelDataArray[4].modelDataPtr->skeletonData);
 
     auto emeraldTextureSet = *dword_9ADEE0;
     if (actorID >= 8)
@@ -76,65 +88,12 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
 
     if (emeraldTextureSet) {
         sub_68924B(0, 1, v76, unkPaletteSwapArg, emeraldTextureSet);
-        graphicsCallBacks->paletteChanged)(unkPaletteSwapArg, 1, unkPaletteSwapArg, emeraldTextureSet->palette, emeraldTextureSet);
+        graphicsCallBacks->paletteChanged(unkPaletteSwapArg, 1, unkPaletteSwapArg, emeraldTextureSet->palette, emeraldTextureSet);
     }
     return RUN_NEXT;
 }
 
 /*
- case 0x90u:
-     scriptContextPtr->field_15 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     switch (actor_id) {
-     case 6:
-         *newAxisPosition = 0;
-         *off_C05FEC = scriptContextPtr->field_15;
-         break;
-     case 7:
-         *newAxisPosition = 0;
-         *off_C05FEC = scriptContextPtr->field_15 + 8;
-         break;
-     case 8:
-         *newAxisPosition = 1;
-         *off_C05FEC = scriptContextPtr->field_15;
-         break;
-     case 9:
-         *newAxisPosition = 1;
-         *off_C05FEC = scriptContextPtr->field_15 + 8;
-         break;
-     default:
-         break;
-     }
-     ffContext = GetContext();
-     v74 = GetGraphicsCallbacks(ffContext);
-     v75 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     v76 = &v70;
-     v72 = 8 * (v75 & 0x1F);
-     v71 = (v75 & 0x3E0) >> 2;
-     v70 = (v75 & 0x7C00) >> 7;
-     v73 = -1;
-     v79 = *off_C05FEC;
-     v77 = 0;
-     dword_9ADEE8 = 0;
-     dword_9ADEE0 = 0;
-     dword_9ADEE4 = 0;
-     dword_9ADEF0 = 0;
-     dword_9ADEF4 = 0;
-     sub_685028(0, (void(__cdecl*)(int, _DWORD))sub_41FB1C, gBigAnimBlock[4].modelDataPtr->skeletonPolygonData);
-     if (actor_id >= 8)
-         v69 = dword_9ADEE4;
-     else
-         v69 = dword_9ADEE0;
-     if (v69)
-     {
-         sub_68924B(0, 1, v76, v79, v69);
-         (*(void(__cdecl**)(int, signed int, int, _DWORD, int))(v74 + 84))(
-             v79,
-             1,
-             v79,
-             *(_DWORD*)(v69 + 140),
-             v69);
-     }
-     goto LABEL_20;
  case 0x91u:
      *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      v2 = setCastEffectHandler((int)sub_4255B7);

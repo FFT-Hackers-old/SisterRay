@@ -56,8 +56,8 @@ typedef struct {
     u32 minBitsPerPixel;
     u32 maxBitsPerPixel;
     u32 field_2C;
-    u32 palettes;					// ?
-    u32 paletteEntries;			// ?
+    u32 palettes;					
+    u32 paletteEntries;
     u32 bpp;
     TextureFormat textureFormat;
     u32 usePaletteColorKey;
@@ -73,6 +73,27 @@ typedef struct {
     u32 field_E4;
     u32 field_E8;
 } TextureHeader;
+
+#pragma pack(push, 1)
+typedef struct {
+    u32 field_0;
+    u32 paletteSize;
+    u32 bitsPerPixel;
+    u32 field_C;
+    u32 paletteEntries;
+    u32 field_14;
+    u32 field_18;
+    u32 field_1C;
+    u32 field_20;
+    void* d3dColorPal;
+    void* rgbaPalette;
+    void* paletteEntry;
+    u32 ddPalette;
+    u32 field_34;
+    u32 field_38;
+    u32 field_3C;
+} Palette;
+#pragma pack(pop)
 
 typedef struct {
     void *ddsurface1;
@@ -107,8 +128,8 @@ typedef struct {
     u32 field_74;
     u32 field_78;
     u32 *textureHandle;
-    TextureFormat *texture_format;
-    TextureHeader *tex_header;
+    TextureFormat *textureFormat;
+    TextureHeader *texHeader;
     u32 paletteIndex;
     Palette* palette;
     u32 field_90;
@@ -116,4 +137,19 @@ typedef struct {
     u32 field_98;
     u32 field_9C;
 } TextureSet;
+
+typedef struct {
+    u32 field_0;
+    u32 field_4;
+    u32 field_8;
+    u32 field_C;
+    u32 field_10;
+    u32 field_14;
+    u32 field_18;
+    u32 field_1C;
+    u32 field_20;
+    u32 vertexColor;
+    TextureSet* textureSet;
+} unkTextureStructure;
+
 #endif

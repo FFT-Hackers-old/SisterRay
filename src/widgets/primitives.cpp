@@ -37,7 +37,7 @@ SISTERRAY_API void setTextParams(DrawTextParams* params, i32 xCoordinate, i32 yC
     params->priority = priority;
 }
 
-u32 isTextWidget(Widget* widget) {
+bool isTextWidget(Widget* widget) {
     return (widget->klass == &kTextWidgetClass);
 }
 
@@ -146,7 +146,7 @@ SISTERRAY_API void setNumberParams(DrawNumberParams* params, i32 xCoord, i32 yCo
     params->numberThickness = priority;
 }
 
-u32 isNumberWidget(Widget* widget) {
+bool isNumberWidget(Widget* widget) {
     return (widget->klass == &kNumberWidgetClass);
 }
 
@@ -254,7 +254,7 @@ SISTERRAY_API void setBoxParams(DrawBoxParams* params, i16 drawDistance1, i16 dr
     params->boxFloat = priority;
 }
 
-u32 isBoxWidget(Widget* widget) {
+bool isBoxWidget(Widget* widget) {
     return (widget->klass == &kBoxWidgetClass);
 }
 

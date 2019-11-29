@@ -131,7 +131,7 @@ void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader)
     auto bufferSize = gContext.battleAnimationScripts.getMemoryBufferSize(std::string(filename));
     u8* animScriptBuffer = (u8*)ff7allocateMemory(1, bufferSize, nullptr, 0);
     u8** tableBufferPtr = (u8**)(animScriptBuffer + (AB_PTR_TABLE_OFFSET)); //advance this ptr to the start of the animation data table
-    u8* scriptBufferPtr = (u8*)(animScriptBuffer + (AB_PTR_TABLE_OFFSET + (animScriptsData.scriptCount * 4))); //advance this tpr to the start of the raw animation script data
+    u8* scriptBufferPtr = (u8*)(animScriptBuffer + (AB_PTR_TABLE_OFFSET + (animScriptsData.scriptCount * 4))); //advance this ptr to the start of the raw animation script data
     /*Copy the header data from the ba file*/
     memcpy(animScriptBuffer, (void*)&(animScriptsData.header), AB_PTR_TABLE_OFFSET);
 
@@ -162,7 +162,7 @@ NewActorAnimScripts::NewActorAnimScripts() {
 }
 
 /*Replace the current animation script function for command index 0x23 with a new one*/
-SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scripts, u32 unk1, u32 unk2) {
+/*SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scripts, u32 unk1, u32 unk2) {
     u32* modelDatPtrArray = (u32*)0x0BFB2B8;
     u32 ptr_to_new_animation;
     u8** tablePtr = (u8**)ptr_to_anim_scripts;
@@ -178,4 +178,4 @@ SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scrip
     }
 
     oldRunAnimationScript(actor_id, (u32)ptr_to_new_animation, unk1, unk1);
-}
+}*/

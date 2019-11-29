@@ -9,7 +9,7 @@ BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *a
     char FF7Directory[204];
     u32 bytesRead;
     u32 animationsCount;
-    srLogWrite("calling sr Create Model");
+
     if (readTypeFlag)
         noLGPgetDirectory(&fileContext->lgpContext, FF7Directory);
     else

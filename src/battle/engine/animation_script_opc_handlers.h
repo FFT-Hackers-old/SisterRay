@@ -8,5 +8,7 @@ OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCode8F(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCode91(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCode92(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCode93(AnimScriptEvent* srEvent);
 
 #endif 

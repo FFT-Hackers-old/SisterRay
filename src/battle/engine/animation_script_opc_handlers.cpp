@@ -2,6 +2,7 @@
 #include "../battle_models/battle_model_state_interface.h"
 #include "../battle_models/model_skeleton.h"
 #include "action_effects.h"
+#include "../../party/party_utils.h"
 
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
@@ -94,51 +95,97 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
-#define opCode91EffectHead ((0x4255B7))
+#define opCode91EffectHead       ((PFNSREFFECTCALLBACK)0x4255B7)
 OpCodeControlSequence OpCode91(AnimScriptEvent* srEvent) {
     u32* off_C05FE8 = (u32*)0xC05FE8;
     auto scriptCtx = srEvent->scriptContext;
     auto scriptPtr = srEvent->scriptPtr;
     auto actorID = srEvent->actorID;
     *off_C05FE8 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
-    scriptCtx->field_14 = srPushEffect60((PFNSREFFECTCALLBACK)opCode91EffectHead);
+    scriptCtx->field_14 = srPushEffect60(opCode91EffectHead);
     auto& effectCtx = *getEffectContext60(scriptCtx->field_14);
     effectCtx.wordArray[1] = *(u16*)off_C05FE8;
     return RUN_NEXT;
 }
 
+OpCodeControlSequence OpCode92(AnimScriptEvent* srEvent) {
+    u8* byte_BFB2EC = (u8*)0xBFB2EC;
+    *byte_BFB2EC = 1;
+    return RUN_NEXT;
+}
+
+#define opCode93EffectHead        ((PFNSREFFECTCALLBACK)0x5BCD42)
+OpCodeControlSequence OpCode93(AnimScriptEvent* srEvent) {
+    srPushEffect60(opCode93EffectHead);
+    return RUN_NEXT;
+}
+
+#define opCode94EffectHead       ((PFNSREFFECTCALLBACK)0x426899) //rotates model arg1-arg2 in arg3 step-sizes
+OpCodeControlSequence OpCode94(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C05FF0 = (u32*)0xC05FF0;
+    auto scriptCtx = srEvent->scriptContext;
+    auto scriptPtr = srEvent->scriptPtr;
+    auto actorID = srEvent->actorID;
+
+    *off_C05FE8 = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    *off_C05FEC = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    *off_C05FF0 = scriptCtx->scriptPtr[getBattleModelState(actorID)->currentScriptPosition++];
+
+    scriptCtx->field_14 = srPushEffect10(opCode94EffectHead);
+    auto& effectCtx = *getEffectContext60(scriptCtx->field_14);
+    effectCtx.wordArray[3] = actorID;
+    effectCtx.wordArray[4] = *(u16*)off_C05FE8;
+    effectCtx.wordArray[5] = *(u16*)off_C05FEC;
+    effectCtx.wordArray[6] = (*off_C05FEC - *off_C05FE8) / *off_C05FF0;
+    effectCtx.wordArray[1] = *(u16*)off_C05FF0;
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence opCode95(AnimScriptEvent* srEvent) {
+    u8* byte_BFD0E0 = (u8*)(0xBFD0E0);
+    auto& actorModelState = *getBattleModelState(srEvent->actorID);
+    if (*byte_BFD0E0 != 1 && *byte_BFD0E0 == 2 && srEvent->actorID < 4) {
+        actorModelState.field_18 = 2048;
+    }
+    actorModelState.field_160 = actorModelState.field_18;
+    return RUN_NEXT;
+}
+
+
+typedef void(*SRLOADMACHINEGUNEFFECT)(void);
+#define gameLoadMachineGunEffect        ((SRLOADMACHINEGUNEFFECT)0x4390F0)
+#define opCode96EffectHead       ((PFNSREFFECTCALLBACK)0x43937F) //machine-gun cb-chain head
+OpCodeControlSequence opCode96(AnimScriptEvent* srEvent) {
+    u16* someBarretWeaponData = (u16*)0x7C10B8;
+    u32** dword_9AEAF0 = (u32**)0x9AEAF0; //pointer to some struct
+    u32* dword_D8E490 = (u32*)0xD8E490;
+    u8* byte_BFCDE0 = (u8*)0xBFCDE0;
+    auto scriptCtx = srEvent->scriptContext;
+    auto scriptPtr = srEvent->scriptPtr;
+    auto actorID = srEvent->actorID;
+
+    scriptCtx->opCodeArgs[0] = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    scriptCtx->opCodeArgs[1] = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    auto actorData = getActivePartyMember(actorID);
+    if (actorData) {
+        u16 weaponModelIdx = actorData->weaponData.weapon_model & 0xF;
+        scriptCtx->opCodeArgs[2] = someBarretWeaponData[weaponModelIdx];
+        *dword_9AEAF0 = dword_D8E490;
+        gameLoadMachineGunEffect();
+        auto& effectCtx = *getEffectContext60(srPushEffect60(opCode96EffectHead));
+        effectCtx.wordArray[1] = *byte_BFCDE0;
+        effectCtx.wordArray[2] = actorID;
+        *(u32 *)&(effectCtx.wordArray[13]) = 0xFFFFFFFF;
+        effectCtx.wordArray[12] = scriptCtx->opCodeArgs[2];
+        effectCtx.wordArray[3] = scriptCtx->opCodeArgs[0];
+        effectCtx.wordArray[4] = scriptCtx->opCodeArgs[1];
+    }
+    return RUN_NEXT;
+}
+
 /*
- case 0x91u:
-     *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     v2 = setCastEffectHandler((int)sub_4255B7);
-     scriptContextPtr->field_14 = v2;
-     word_BFC3A4[16 * scriptContextPtr->field_14] = *(_WORD*)newAxisPosition;
-     goto LABEL_20;
- case 0x92u:
-     byte_BFB2EC = 1;
-     goto LABEL_20;
- case 0x93u:
-     setCastEffectHandler((int)sub_5BCD42);
-     goto LABEL_20;
- case 0x94u:
-     v4 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     *newAxisPosition = v4;
-     v5 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     *off_C05FEC = v5;
-     *off_C05FF0 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     v6 = sub_5BECF1((int)sub_426899);
-     scriptContextPtr->field_14 = v6;
-     word_BF2E78[16 * scriptContextPtr->field_14] = actor_id;
-     word_BF2E7A[16 * scriptContextPtr->field_14] = *(_WORD*)newAxisPosition;
-     word_BF2E7C[16 * scriptContextPtr->field_14] = *(_WORD*)off_C05FEC;
-     word_BF2E7E[16 * scriptContextPtr->field_14] = (*off_C05FEC - *newAxisPosition) / *off_C05FF0;
-     word_BF2E74[16 * scriptContextPtr->field_14] = *(_WORD*)off_C05FF0;
-     goto LABEL_20;
- case 0x95u:
-     if (byte_BFD0E0 != 1 && byte_BFD0E0 == 2 && actor_id < 4)
-         gBigAnimBlock[actor_id].field_18 = 2048;
-     gBigAnimBlock[actor_id].field_160 = gBigAnimBlock[actor_id].field_18;
-     goto LABEL_20;
  case 0x96u:
      scriptContextPtr->opCodeArgs[0] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      scriptContextPtr->opCodeArgs[1] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];

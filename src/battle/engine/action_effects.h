@@ -22,7 +22,9 @@ typedef struct {
 typedef u16(*PFNSRPUSHEFFECT)(PFNSREFFECTCALLBACK);
 u16 srPushEffect60(PFNSREFFECTCALLBACK callback);
 u16 srPushEffect100(PFNSREFFECTCALLBACK callback);
+u16 srPushEffect10(PFNSREFFECTCALLBACK callback);
 EffectContext* getEffectContext60(u16 effectIndex);
 EffectContext* getEffectContext100(u16 effectIndex);
+EffectContext* getEffectContext10(u16 effectIndex);
 
 #endif 

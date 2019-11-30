@@ -226,21 +226,21 @@ typedef void(*SRGFXDRIVER_UNLOADTEXTURE)(TextureSet*);
 typedef TextureSet*(SRGFXDRIVER_LOADTEXTURE)(TextureSet*, TextureHeader*, TextureFormat*);
 typedef u32(*SRGFXDRIVER_PALETTECHANGED)(u32, u32, u32, Palette*, TextureSet*);
 typedef u32(*SRGFXDRIVER_WRITEPALLETTE)(u32, u32, void*, u32, Palette*, TextureSet*);
-typedef struct blend_mode *(*SRGFXDRIVER_BLENDMODE)(u32, GameContext*);
+typedef BlendMode*(*SRGFXDRIVER_BLENDMODE)(u32, GameContext*);
 typedef void(*SRGFXDRIVER_LIGHTPOLYGONSET)(PolygonSet*, void*);
-typedef void(gfx_field_64)(u32, u32, GameContext*);
+typedef void(*SRGFXDRIVER_FIELD64CB)(u32, u32, GameContext*);
 typedef void(*SRGFXDRIVER_SETRENDERSTATE)(AuxillaryGFX*, GameContext*);
-typedef void(gfx_field_74)(u32, GameContext*);
-typedef void(gfx_field_78)(PolygonSet*, GameContext*);
+typedef void(*SRGFXDRIVER_FIELD74CB)(u32, GameContext*);
+typedef void(*SRGFXDRIVER_FIELD78CB)(PolygonSet*, GameContext*);
 typedef void(*SRGFXDRIVER_DEFERREDDRAW)(PolygonSetChain*, GameContext*);
-typedef void(gfx_field_80)(GraphicsObject*, GameContext*);
-typedef void(gfx_field_84)(u32, GameContext*);
+typedef void(*SRGFXDRIVER_FIELD80CB)(GraphicsObject*, GameContext*);
+typedef void(*SRGFXDRIVER_FIELD84CB)(u32, GameContext*);
 typedef u32(*SRGFXDRIVER_BEGINSCENE)(u32, GameContext*);
 typedef void(*SRGFXDRIVER_ENDSCENE)(GameContext*);
-typedef void(gfx_field_90)(u32);
+typedef void(*SRGFXDRIVER_FIELD90CB)(u32);
 typedef void(*SRGFXDRIVER_SETPOLYRENDER)(PolygonSet*, IndexedVertices*, GameContext*);
 typedef void(*SRGFXDRIVER_DRAWVERTICES)(PolygonSet*, IndexedVertices*, GameContext*);
-typedef void(gfx_field_EC)(GameContext*);
+typedef void(*SRGFXDRIVER_FIELDECCB)(GameContext*);
 
 struct _GraphicsDriverCallbacks {
     SRGFXDRIVER_CREATE createDriver;
@@ -265,18 +265,18 @@ struct _GraphicsDriverCallbacks {
     SRGFXDRIVER_WRITEPALLETTE writePalette;
     SRGFXDRIVER_BLENDMODE blendmode;
     SRGFXDRIVER_LIGHTPOLYGONSET lightPolygonSet;
-    gfx_field_64 *field_64;
+    SRGFXDRIVER_FIELD64CB *field_64;
     SRGFXDRIVER_SETRENDERSTATE setRenderState;
     SRGFXDRIVER_SETRENDERSTATE _setRenderState;
     SRGFXDRIVER_SETRENDERSTATE __setRenderState;
-    gfx_field_74 *field_74;
-    gfx_field_78 *field_78;
+    SRGFXDRIVER_FIELD74CB *field_74;
+    SRGFXDRIVER_FIELD78CB *field_78;
     SRGFXDRIVER_DEFERREDDRAW deferredDraw;
-    gfx_field_80 *field_80;
-    gfx_field_84 *field_84;
+    SRGFXDRIVER_FIELD80CB *field_80;
+    SRGFXDRIVER_FIELD84CB *field_84;
     SRGFXDRIVER_BEGINSCENE beginScene;
     SRGFXDRIVER_ENDSCENE endScene;
-    gfx_field_90 *field_90;
+    SRGFXDRIVER_FIELD90CB *field_90;
     SRGFXDRIVER_SETPOLYRENDER *setrenderstate_flat2D;
     SRGFXDRIVER_SETPOLYRENDER *setrenderstate_smooth2D;
     SRGFXDRIVER_SETPOLYRENDER *setrenderstate_textured2D;
@@ -299,7 +299,7 @@ struct _GraphicsDriverCallbacks {
     SRGFXDRIVER_SETPOLYRENDER *setrenderstate_smoothlines;
     SRGFXDRIVER_DRAWVERTICES draw_flatlines;
     SRGFXDRIVER_DRAWVERTICES draw_smoothlines;
-    gfx_field_EC *field_EC;
+    SRGFXDRIVER_FIELDECCB *field_EC;
 };
 
 #endif

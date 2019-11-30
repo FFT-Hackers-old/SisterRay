@@ -10,6 +10,18 @@
 typedef struct _GraphicsObject GraphicsObject;
 typedef struct _PolygonSet PolygonSet;
 
+typedef struct{
+    u32 field_0;
+    u32 zSort;
+    u32 vertexAlpha;
+    u32 srcBlendMode;
+    u32 srcBlendCaps;
+    u32 dstBlendMode;
+    u32 dstBlendCaps;
+    u32 field_1C;
+    u32 field_20;
+} BlendMode;
+
 #pragma pack(push, 1)
 typedef struct {
     u32 frameCounter;

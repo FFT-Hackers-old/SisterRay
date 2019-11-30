@@ -4,4 +4,9 @@
 #include <SisterRay/SisterRay.h>
 #include "animation_script_opcode.h"
 
+OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCode8F(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCode91(AnimScriptEvent* srEvent);
+
 #endif 

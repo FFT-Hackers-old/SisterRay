@@ -1,6 +1,7 @@
 #include "animation_script_opc_handlers.h"
 #include "../battle_models/battle_model_state_interface.h"
 #include "../battle_models/model_skeleton.h"
+#include "action_effects.h"
 
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
@@ -90,6 +91,19 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
         sub_68924B(0, 1, v76, unkPaletteSwapArg, emeraldTextureSet);
         graphicsCallBacks->paletteChanged(unkPaletteSwapArg, 1, unkPaletteSwapArg, emeraldTextureSet->palette, emeraldTextureSet);
     }
+    return RUN_NEXT;
+}
+
+#define opCode91EffectHead ((0x4255B7))
+OpCodeControlSequence OpCode91(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    auto scriptCtx = srEvent->scriptContext;
+    auto scriptPtr = srEvent->scriptPtr;
+    auto actorID = srEvent->actorID;
+    *off_C05FE8 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    scriptCtx->field_14 = srPushEffect60((PFNSREFFECTCALLBACK)opCode91EffectHead);
+    auto& effectCtx = *getEffectContext60(scriptCtx->field_14);
+    effectCtx.wordArray[1] = *(u16*)off_C05FE8;
     return RUN_NEXT;
 }
 

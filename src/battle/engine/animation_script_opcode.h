@@ -15,7 +15,7 @@ std::string assembleOpCodeKey(u16 opCode);
 
 class SrAnimOpCodeRegistry : public SrNamedResourceRegistry<SRPFNANMSCRIPTOPCODEHANDLER, std::string> {
 public:
-    SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMSCRIPTOPCODEHANDLER, std::string>() {}
+    SrAnimOpCodeRegistry();
 };
 
 #endif // !ANIMATION_OPCODE_H

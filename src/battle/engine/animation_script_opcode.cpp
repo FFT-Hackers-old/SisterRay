@@ -1,4 +1,18 @@
 #include "animation_script_opcode.h"
+#include "animation_script_opc_handlers.h"
+#include "../../impl.h"
+
+SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMSCRIPTOPCODEHANDLER, std::string>() {
+    add_element(assembleOpCodeKey(0x8E), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode8E);
+    add_element(assembleOpCodeKey(0x8F), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode8F);
+    add_element(assembleOpCodeKey(0x90), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode90);
+    add_element(assembleOpCodeKey(0x91), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode91);
+    return;
+}
+
+SISTERRAY_API void initAnimScriptOpCodes() {
+    gContext.animScriptOpcodes = SrAnimOpCodeRegistry();
+}
 
 u8 readOpCodeArg8(u8* scriptPtr, GameAnimationScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition + 1;

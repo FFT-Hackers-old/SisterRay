@@ -2,7 +2,7 @@
 #include "../events/party_events.h"
 #include "../impl.h"
 
-SrPartyDataRegistry::SrPartyDataRegistry() {
+SrPartyDataRegistry::SrPartyDataRegistry() : SrNamedResourceRegistry<SrPartyData, std::string>() {
     add_element(getPartyKey(0), SrPartyData());
     add_element(getPartyKey(1), SrPartyData());
     add_element(getPartyKey(2), SrPartyData());

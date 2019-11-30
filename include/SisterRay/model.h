@@ -115,8 +115,22 @@ typedef struct {
     u8 currentScriptPosition; //0x3C
     u8 waitFrames;            //0x3D
     u8 modelEffectFlags;      //0x3E
-
-    u8 padding3[0x11F];       //0x3F
+    u8 field_3F;
+    u32 field_40;
+    u32 field_44;
+    u32 field_48;
+    u32 field_4C;
+    u32 field_50;
+    u32 field_54;
+    u32 field_58;
+    u32 field_5C;
+    u32 field_60;
+    u32 field_64;
+    u32 field_68;
+    u32 field_6C;
+    u32 field_70;
+    u32 field_74;
+    u8 padding3[0xE9];       //0x75
     u16 field_15E;
     u16 field_160;
     u16 field_162;

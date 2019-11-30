@@ -61,7 +61,7 @@ i32 setHandlerState(u16 handlerIndex, i8 state) {
     return handlerIndex;
 }
 
-u32 checkHandlingInput() {
+bool checkHandlingInput() {
     if (*ACCEPTING_BATTLE_INPUT)
         return  false;
     if (*BATTLE_PAUSED)

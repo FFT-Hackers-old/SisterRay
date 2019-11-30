@@ -101,6 +101,7 @@ void runAnimationScript(u16 actorID, u8** ptrToScriptTable) {
 void srHandleAnimateModel(u16 actorID) {
     u8* byte_9ADEF8 = (u8*)0x9ADEF8;
     u8* byte_BFD0E4 = (u8*)0xBFD0E4;
+    u8* actorIdleAnimScripts = (u8*)0xBF2DF8;
     auto& scriptOwnerModelState = *getBattleModelState(actorID);
     auto& scriptOwner74State = *getBattleModelState74(actorID);
     auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);

@@ -2,8 +2,8 @@
 #define ACTION_EFFECTS_H
 
 #include <SisterRay/SisterRay.h>
+#include "action_effect_callbacks.h"
 
-typedef void(*PFNSREFFECTCALLBACK)(void);
 // This is primarily used for passing arguments through effect callback chains/persisting effect variables between runs
 // This is used for the effect pump which has a cap of 60 and the one with a cap of 100
 #pragma pack(push, 1)

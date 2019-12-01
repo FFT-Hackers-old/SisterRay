@@ -7,6 +7,13 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     add_element(assembleOpCodeKey(0x8F), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode8F);
     add_element(assembleOpCodeKey(0x90), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode90);
     add_element(assembleOpCodeKey(0x91), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode91);
+    add_element(assembleOpCodeKey(0x92), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode92);
+    add_element(assembleOpCodeKey(0x93), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode93);
+    add_element(assembleOpCodeKey(0x94), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode94);
+    add_element(assembleOpCodeKey(0x95), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode95);
+    add_element(assembleOpCodeKey(0x96), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode96);
+    add_element(assembleOpCodeKey(0x97), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode97);
+    add_element(assembleOpCodeKey(0x98), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode98);
     return;
 }
 

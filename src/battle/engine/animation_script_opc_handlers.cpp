@@ -131,7 +131,7 @@ OpCodeControlSequence OpCode94(AnimScriptEvent* srEvent) {
 
     *off_C05FE8 = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
     *off_C05FEC = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
-    *off_C05FF0 = scriptCtx->scriptPtr[getBattleModelState(actorID)->currentScriptPosition++];
+    *off_C05FF0 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));;
 
     scriptCtx->field_14 = srPushEffect10(opCode94EffectHead);
     auto& effectCtx = *getEffectContext60(scriptCtx->field_14);
@@ -143,7 +143,7 @@ OpCodeControlSequence OpCode94(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
-OpCodeControlSequence opCode95(AnimScriptEvent* srEvent) {
+OpCodeControlSequence OpCode95(AnimScriptEvent* srEvent) {
     u8* byte_BFD0E0 = (u8*)(0xBFD0E0);
     auto& actorModelState = *getBattleModelState(srEvent->actorID);
     if (*byte_BFD0E0 != 1 && *byte_BFD0E0 == 2 && srEvent->actorID < 4) {
@@ -157,7 +157,7 @@ OpCodeControlSequence opCode95(AnimScriptEvent* srEvent) {
 typedef void(*SRLOADMACHINEGUNEFFECT)(void);
 #define gameLoadMachineGunEffect        ((SRLOADMACHINEGUNEFFECT)0x4390F0)
 #define opCode96EffectHead       ((PFNSREFFECTCALLBACK)0x43937F) //machine-gun cb-chain head
-OpCodeControlSequence opCode96(AnimScriptEvent* srEvent) {
+OpCodeControlSequence OpCode96(AnimScriptEvent* srEvent) {
     u16* someBarretWeaponData = (u16*)0x7C10B8;
     u32** dword_9AEAF0 = (u32**)0x9AEAF0; //pointer to some struct
     u32* dword_D8E490 = (u32*)0xD8E490;
@@ -185,36 +185,79 @@ OpCodeControlSequence opCode96(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+typedef void(*SRPFNSUB42567E)(u16, u8, u8);
+#define sub_42567E         ((SRPFNSUB42567E)0x42567E)
+OpCodeControlSequence OpCode97(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C05FEC = (u32*)0xC05FEC;
+    auto scriptCtx = srEvent->scriptContext;
+    auto scriptPtr = srEvent->scriptPtr;
+    auto actorID = srEvent->actorID;
+
+    *off_C05FE8 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    *off_C05FEC = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    sub_42567E(actorID, *(u8*)off_C05FE8, *(u8*)off_C05FEC);
+    return RUN_NEXT;
+}
+
+//Displays strings with a delay
+OpCodeControlSequence OpCode98(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C05FEC = (u32*)0xC05FEC;
+    u8* byte_DC0E11 = (u8*)0xDC0E11;
+    auto scriptCtx = srEvent->scriptContext;
+    auto scriptPtr = srEvent->scriptPtr;
+    auto actorID = srEvent->actorID;
+
+    *off_C05FE8 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID)); //number of frames to wait
+    scriptCtx->field_14 = srPushEffect100((PFNSREFFECTCALLBACK)srDisplayActionStringEffect);;
+    auto& effectCtx = *getEffectContext100(scriptCtx->field_14);
+    effectCtx.wordArray[1] = ((u16)(*byte_DC0E11 >> 2)) + 4; //number of frames to display string
+    effectCtx.wordArray[2] = *(u16*)off_C05FE8; //delay before display begins
+    return RUN_NEXT;
+}
+
+#define moveCallback426A26  ((PFNSREFFECTCALLBACK)0x426A26)
+OpCodeControlSequence OpCode99(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C05FEC = (u32*)0xC05FEC;
+    u8* byte_BE10B4 = (u8*)0xBE10B4;
+    u8* isTargetingAll = (u8*)0xBF2E1C;
+    u16* currentTargetMask = (u16*)0xBFD0F8;
+    auto scriptCtx = srEvent->scriptContext;
+    auto scriptPtr = srEvent->scriptPtr;
+    auto actorID = srEvent->actorID;
+
+    *byte_BE10B4 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    scriptCtx->opCodeArgs[4] = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    *off_C05FE8 = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    scriptCtx->opCodeArgs[3] = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    if (*isTargetingAll) {
+        srComputeMultitargetMoveBase(*currentTargetMask, (ModelPosition*)&scriptCtx->field_16);
+        srDispatchMoveEffects(
+            actorID,
+            scriptPtr,
+            scriptCtx->opCodeArgs[4],
+            moveCallback426A26,
+            scriptCtx->opCodeArgs[3],
+            (ModelPosition*)&(scriptCtx->field_16));
+    }
+    else {
+        u8* byte_BFB198 = (u8*)0xBFB198;
+        auto targetID = *byte_BFB198;
+        srDispatchMoveEffects(
+            actorID,
+            scriptPtr,
+            scriptCtx->opCodeArgs[4],
+            moveCallback426A26,
+            scriptCtx->opCodeArgs[3],
+            &(getBattleModelState(targetID))->restingPosition);
+    }
+    return RUN_NEXT;
+}
+
+
 /*
- case 0x96u:
-     scriptContextPtr->opCodeArgs[0] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     scriptContextPtr->opCodeArgs[1] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     actorDataPtr = getPtrToActorDataStruct(actor_id);
-     if (actorDataPtr)
-     {
-         scriptContextPtr->opCodeArgs[2] = word_7C10B8[actorDataPtr->equippedWeaponData.weaponModel & 0xF];
-         sub_43930D(
-             byte_BFCDE0,
-             actor_id,
-             -1,
-             scriptContextPtr->opCodeArgs[2],
-             scriptContextPtr->opCodeArgs[0],
-             scriptContextPtr->opCodeArgs[1]);
-     }
-     goto LABEL_20;
- case 0x97u:
-     *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     *off_C05FEC = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     sub_42567E(actor_id, *(_BYTE*)newAxisPosition, *(_BYTE*)off_C05FEC);
-     goto LABEL_20;
- case 0x98u:
-     *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     v63 = pushEffect100Handler(functionAddr);
-     scriptContextPtr->field_14 = v63;
-     v64 = sub_5BE475();
-     struct100ContextArray[scriptContextPtr->field_14].framesToWait = v64;
-     struct100ContextArray[scriptContextPtr->field_14].field_6 = *(_WORD*)newAxisPosition;
-     goto LABEL_20;
  case 0x99u:
      byte_BE10B4 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      v18 = readWordArg(actor_id, scriptContextPtr->scriptPtr);

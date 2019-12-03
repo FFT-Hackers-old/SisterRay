@@ -3,6 +3,14 @@
 
 #include <SisterRay/types.h>
 
+typedef void(*SRPFNSPELLEFFECTCALLBACK)(u32, u32);
+typedef void(*SRPFNSPELLLOADERCALLBACK)();
+
+typedef struct {
+    SRPFNSPELLLOADERCALLBACK loadCallback;
+    SRPFNSPELLEFFECTCALLBACK dispatchCallback;
+} SpellEffect;
+
 typedef enum {
     SR_GEAR_WEAPON,
     SR_GEAR_ARMOR
@@ -42,6 +50,13 @@ typedef struct {
     u16 animationScriptIndex;
     u8 damageCalculationByte; //We can probably modularize this
     u16 miscCommandFlags;
+    u8 hasActions;
+    u8 animationType;
+    u8 animationEffectID;
+    u8 useOverride;
+    SpellEffect override;
+    u8 useMulti;
+    SpellEffect spellEffectMulti;
 } AuxCommandData;
 #pragma pack(pop)
 

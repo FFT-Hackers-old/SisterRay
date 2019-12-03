@@ -28,10 +28,6 @@ BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *a
         if (modelData) {
             if (aaHeader->loadBFileFlag) {
                 if (gContext.battleAnimationScripts.contains(filename)) {
-                    //char abFileNameBuffer[204];
-                    //int bytesRead;
-                    //createABFilename(filename, &(abFileNameBuffer[0]));
-                    //modelData->animScriptStruct = ff7LoadModelFile(&fileContext->lgpContext, &bytesRead, &(abFileNameBuffer[0]));
                     modelData->animScriptStruct = srInitializeAnimScriptsData(filename, aaHeader);
                 }
                 else {

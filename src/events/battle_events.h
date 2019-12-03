@@ -21,10 +21,19 @@ typedef struct {
 } ActionContextEvent;
 
 typedef struct {
-    GameAnimationScriptContext* scriptContext;
-    u8* scriptPtr;
-    u8 currentScriptIdx;
-    BattleModelState* battleModelDataArray;
     u8 actorID;
+    u8* scriptPtr;
+    AnimScriptContext* scriptContext;
+    u8 currentScriptIdx;
+    BattleModelState* battleModelState;
 } AnimScriptEvent;
+
+typedef struct {
+    u8 actorID;
+    u8 animationType;
+    u8 animationEffectID;
+    u8 commandIdx;
+    u16 actionIdx;
+    u16 targetMask;
+} AnimEffectEvent;
 #endif // !BATTLE_EVENT_H

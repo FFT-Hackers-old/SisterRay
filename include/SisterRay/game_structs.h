@@ -375,6 +375,7 @@ typedef struct {
     u16 field_18;
     u16 field_1A;
     u8 field_1C;
-} GameAnimationScriptContext;
+} AnimScriptContext;
 #pragma pack(pop)
+
 #endif

@@ -17,6 +17,7 @@ void initializeAuxCommandRegistry() {
         auto animScriptIdx = getDefaultCmdAnimScript(commandIdx);
         auto damageByte = getDefaultCmdDamage(commandIdx);
         auto commandFlags = getDefaultCmdFlags(commandIdx);
+        auto hasActions = getDefaultHasActions(commandIdx);
         PAuxCommandData auxCommand = { animScriptIdx, damageByte, commandFlags };
         srLogWrite("Registering execution callbacks for command %i", commandIdx);
         registerDefaultCallbacks(commandIdx, auxCommand);
@@ -442,5 +443,27 @@ void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
         default: {
             break;
         }
+    }
+}
+
+u16 getDefaultHasActions(u16 commandIdx) {
+    switch (commandIdx) {
+    case 2:
+    case 21:
+    case 3:
+    case 22: 
+    case 4: 
+    case 23:
+    case 20:
+    case 7:
+    case 8:
+    case 32: {
+        return 1;
+        break;
+    }
+    default: {
+        return 0;
+        break;
+    }
     }
 }

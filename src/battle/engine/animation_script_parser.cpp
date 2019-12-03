@@ -3,7 +3,7 @@
 #include "../../impl.h"
 
 void runAnimationScript(u16 actorID, u8** ptrToScriptTable) {
-    GameAnimationScriptContext* ptrToScriptContext = (GameAnimationScriptContext*)0x8FE2AC;
+    AnimScriptContext* ptrToScriptContext = (AnimScriptContext*)0x8FE2AC;
     auto& scriptOwnerModelState = *getBattleModelState(actorID);
     auto& scriptOwner74State = *getBattleModelState74(actorID);
     auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);
@@ -14,6 +14,8 @@ void runAnimationScript(u16 actorID, u8** ptrToScriptTable) {
         *byte_9ADEF8 = 0;
         scriptContext.isScriptActive = 1;
         scriptContext.scriptPtr = ptrToScriptTable[scriptOwnerModelState.animScriptIndex];
+        AnimScriptEvent srEvent = { actorID, scriptContext.scriptPtr, &scriptContext, scriptContext.currentOpCode, getBattleModelState(actorID) };
+        gContext.eventBus.dispatch(ON_RUN_ANIMATION_SCRIPT, (void*)&srEvent);
 
         /*switch (scriptOwnerModelState->animScriptIndex) {
         case 46:
@@ -71,7 +73,7 @@ void runAnimationScript(u16 actorID, u8** ptrToScriptTable) {
             scriptOwnerModelState.playedAnimFrames = 0;
             while (scriptContext.isScriptActive) {
                 scriptContext.currentOpCode = scriptContext.scriptPtr[scriptOwnerModelState.currentScriptPosition++];
-                AnimScriptEvent animScriptEvent = { &scriptContext, scriptContext.scriptPtr, scriptContext.currentOpCode, BATTLE_MODEL_STATE_BIG_ARRAY };
+                AnimScriptEvent animScriptEvent = { actorID, scriptContext.scriptPtr, &scriptContext, scriptContext.currentOpCode, getBattleModelState(actorID) };
                 auto opcode = gContext.animScriptOpcodes.get_element(assembleOpCodeKey(scriptContext.currentOpCode));
                 auto control = opcode(&animScriptEvent);
                 switch (control) {

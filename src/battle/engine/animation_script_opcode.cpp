@@ -14,14 +14,13 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     add_element(assembleOpCodeKey(0x96), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode96);
     add_element(assembleOpCodeKey(0x97), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode97);
     add_element(assembleOpCodeKey(0x98), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode98);
-    return;
 }
 
 SISTERRAY_API void initAnimScriptOpCodes() {
     gContext.animScriptOpcodes = SrAnimOpCodeRegistry();
 }
 
-u8 readOpCodeArg8(u8* scriptPtr, GameAnimationScriptContext* ctx, BattleModelState* modelState) {
+u8 readOpCodeArg8(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition + 1;
     auto wordReader = (u8*)argPosition;
     auto arg = *argPosition;
@@ -29,7 +28,7 @@ u8 readOpCodeArg8(u8* scriptPtr, GameAnimationScriptContext* ctx, BattleModelSta
     return arg;
 }
 
-u16 readOpCodeArg16(u8* scriptPtr, GameAnimationScriptContext* ctx, BattleModelState* modelState) {
+u16 readOpCodeArg16(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition + 1;
     auto wordReader = (u16*)argPosition;
     auto arg = *argPosition;
@@ -37,7 +36,7 @@ u16 readOpCodeArg16(u8* scriptPtr, GameAnimationScriptContext* ctx, BattleModelS
     return arg;
 }
 
-u32 readOpCodeArg32(u8* scriptPtr, GameAnimationScriptContext* ctx, BattleModelState* modelState) {
+u32 readOpCodeArg32(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition + 1;
     auto wordReader = (u32*)argPosition;
     auto arg = *argPosition;

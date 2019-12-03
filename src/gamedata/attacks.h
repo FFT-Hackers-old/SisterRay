@@ -6,6 +6,7 @@
 #include "../sr_named_registry.h"
 #include "game_data_interface.h"
 #include "../EncodedString.h"
+#include "../battle/engine/action_spell_effects.h"
 
 
 typedef enum {
@@ -13,7 +14,7 @@ typedef enum {
     SUMMON,
     ENEMY_SKILL,
     LIMIT,
-    ENEMY_ATTACK
+    ENEMY_ATTACK,
 } srAttackType;
 
 typedef struct {
@@ -23,6 +24,11 @@ typedef struct {
     srAttackType attackType; //Either Magic, Summon, Enemy Skill, Limit, Enemy Attack
     srAttackType animationType;
     EncodedString attackDescription;
+    u16 animScriptIndex; //Overrides the command ID if set, -1 treated as null
+    u8 useOverride;
+    u8 useMulti;
+    SpellEffect overrideEffect;
+    SpellEffect multiEffect;
 } SrAttackData;
 
 /*Due to the structure/access patterns for player spells, they need to be contiguous
@@ -37,5 +43,8 @@ public:
 
 std::string assemblekey(u8 commandIndex, u16 relativeAttackIndex);
 SISTERRAY_API void initAttacks(SrKernelStream* stream);
+
+u16 getDefaultMagicUseMulti(u16 actionID);
+SpellEffect getDefaultMagicMultiEffects(u16 actionID);
 
 #endif

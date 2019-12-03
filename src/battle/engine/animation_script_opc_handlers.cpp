@@ -3,6 +3,7 @@
 #include "../battle_models/model_skeleton.h"
 #include "action_effects.h"
 #include "../../party/party_utils.h"
+#include "action_spell_effects.h"
 
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
@@ -38,7 +39,7 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     TextureSet** dword_9ADEE4 = (TextureSet**)(0x9ADEE4);
     TextureSet** dword_9ADEE0 = (TextureSet**)(0x9ADEE0);
 
-    auto modelDataArray = srEvent->battleModelDataArray;
+    auto modelDataArray = srEvent->battleModelState;
     auto scriptCtx = srEvent->scriptContext;
     auto scriptPtr = srEvent->scriptPtr;
     auto actorID = srEvent->actorID;
@@ -256,37 +257,57 @@ OpCodeControlSequence OpCode99(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+OpCodeControlSequence OpCode9B(AnimScriptEvent* srEvent) {
+    u8* byte_BF2370 = (u8*)0xBF2370;
+    *byte_BF2370 = 1;
+    return RUN_NEXT;
+}
+
+
+typedef void(*SRPFNSUB430C9F)(void);
+#define gameSetVolumeLimits        ((SRPFNSUB430C9F)0x430C9F)
+OpCodeControlSequence OpCode9C(AnimScriptEvent* srEvent) {
+    gameSetVolumeLimits();
+    return RUN_NEXT;
+}
+
+/*This opcode dispatches the effects for tifa's limit breaks*/
+OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    auto scriptCtx = srEvent->scriptContext;
+    auto actorID = srEvent->actorID;
+    u16* currentTargetMask = (u16*)0xBFD0F8;
+
+    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, scriptCtx, getBattleModelState(srEvent->actorID));
+    switch (*off_C05FE8) {
+    case 0:
+        srBeatRushSpellEffect(*currentTargetMask, actorID);
+        break;
+    case 1:
+        srBeatSomersaultEffect(*currentTargetMask, actorID);
+        break;
+    case 2:
+        srWaterkickSpellEffect(*currentTargetMask, actorID);
+        break;
+    case 3:
+        srMeteodriveSpellEffect(*currentTargetMask, actorID);
+        break;
+    case 4:
+        srDoplhinBlowSpellEffect(*currentTargetMask, actorID);
+        break;
+    case 5:
+        srMeteorStrikeSpellEffect(*currentTargetMask, actorID);
+        break;
+    case 6:
+        srFinalHeavenSpellEffect(*currentTargetMask, actorID);
+        break;
+    default:
+        return RUN_NEXT;
+    }
+    return RUN_NEXT;
+}
 
 /*
- case 0x99u:
-     byte_BE10B4 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     v18 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     scriptContextPtr->opCodeArgs[4] = v18;
-     v19 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     *newAxisPosition = v19;
-     scriptContextPtr->opCodeArgs[3] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     if (isTargetingAll)
-     {
-         sub_5BFEC9(currentTargetMask, &scriptContextPtr->field_16);
-         setupInterpolatedMove(
-             actor_id,
-             scriptContextPtr->scriptPtr,
-             scriptContextPtr->opCodeArgs[4],
-             (int)sub_426A26,
-             scriptContextPtr->opCodeArgs[3],
-             &scriptContextPtr->field_16);
-     }
-     else
-     {
-         setupInterpolatedMove(
-             actor_id,
-             scriptContextPtr->scriptPtr,
-             scriptContextPtr->opCodeArgs[4],
-             (int)sub_426A26,
-             scriptContextPtr->opCodeArgs[3],
-             &gBigAnimBlock[byte_BFB198].restingPosition.xCoordinate);
-     }
-     goto LABEL_20;
  case 0x9Au:
  case 0xFBu:
      v13 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
@@ -307,12 +328,6 @@ OpCodeControlSequence OpCode99(AnimScriptEvent* srEvent) {
          * (unsigned int)calculateZDelta(*(signed __int16*)&scriptContextPtr->field_8)) >> 12)
          + v16;
      gBigAnimBlock[actor_id].restingPosition.yCoordinate = scriptContextPtr->opCodeArgs[1];
-     goto LABEL_20;
- case 0x9Bu:
-     byte_BF2370 = 1;
-     goto LABEL_20;
- case 0x9Cu:
-     sub_430C9F();
      goto LABEL_20;
  case 0x9Du:                           // Tifa ability additional Effects
      *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];

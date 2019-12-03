@@ -9,4 +9,6 @@ SISTERRAY_API BattleModelStateSmall* getBattleModelState74(u8 actorID);
 
 
 SISTERRAY_API ModelRotationData* getBattleModelRotationData(u8 actorID);
+SISTERRAY_API void setModelVanish(u8 actorID);
+SISTERRAY_API void setModelAppaer(u8 actorID);
 #endif // !BATTLE_MODEL_STATE_INTERFACE_H

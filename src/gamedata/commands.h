@@ -39,6 +39,7 @@ SISTERRAY_API void initCommands(SrKernelStream* stream);
 u16 getDefaultCmdAnimScript(u16 idx);
 u8 getDefaultCmdDamage(u16 commandIdx);
 u16 getDefaultCmdFlags(u16 commandIdx);
+u16 getDefaultHasActions(u16 commandIdx);
 void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand);
 void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand);
 

@@ -116,6 +116,9 @@ SISTERRAY_API const void* srLoadFunction(const char* name);
 SISTERRAY_API const void* srRegisterFunction(const char* name, const void* func);
 SISTERRAY_API const char* srGetGamePath(const char* suffix);
 
+// In-Game internal debugging
+void gameLogWrite(const char* str);
+
 /*For testing redirection of animation scripts*/
 typedef void (PFNRUNANIMSCRIPT)(u16, u32, u32, u32);
 SISTERRAY_GLOBAL PFNRUNANIMSCRIPT* oldRunAnimationScript;

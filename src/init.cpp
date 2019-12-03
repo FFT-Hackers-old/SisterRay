@@ -162,6 +162,7 @@ static void Init(void) {
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
+    mogReplaceFunction(PRINT_DEBUG_STRING, &gameLogWrite);
     initializeBattleMenu();
     srLogWrite("initialization complete");
     LoadMods();

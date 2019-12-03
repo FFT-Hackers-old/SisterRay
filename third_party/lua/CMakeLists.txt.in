@@ -18,9 +18,6 @@ set(
     lualib.h
 )
 
-list(TRANSFORM SOURCES PREPEND "${CMAKE_SOURCE_DIR}/src/")
-list(TRANSFORM HEADERS PREPEND "${CMAKE_SOURCE_DIR}/src/")
-
 add_library(lua53 SHARED ${SOURCES})
 target_compile_definitions(
     lua53

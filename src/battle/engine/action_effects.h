@@ -27,4 +27,12 @@ EffectContext* getEffectContext60(u16 effectIndex);
 EffectContext* getEffectContext100(u16 effectIndex);
 EffectContext* getEffectContext10(u16 effectIndex);
 
+typedef enum {
+    EFFECT60,
+    EFFECT100,
+    EFFECT10
+} GameEffectType;
+
+EffectContext* srCreateEffect(PFNSREFFECTCALLBACK callback, GameEffectType effectType);
+
 #endif 

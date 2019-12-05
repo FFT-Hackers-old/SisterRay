@@ -173,10 +173,7 @@ typedef void(*SRPFNSUB6616CF)(GameRotationMatrix*, Matrix*);
 
 /*This function offsets the animation index that is playing and animations the weapon*/
 void playCorrectWeaponAnimation(u32 actorIdx) {
-    int v5; 
-    int v6; 
     LocalWeaponStruct localWeaponStruct;
-    int v14;
     u32* dword_90C9F0 = (u32*)(0x90C9F0);
     u8* byte_BE0E30 = (u8*)(0xBE0E30);
 
@@ -220,7 +217,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         if (isUltimaWeapon) {
             if (modelState.field_3F & 8) {
                 v6 = 0;
-                void * ffContext = GetContext();  // This is a graphics/game context object, it is large so I don't want to define so it's a void* for now
+                void * ffContext = GetContext(); 
                 sub_660C9A(ffContext);
             }
             else {
@@ -237,15 +234,9 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         modelData->unk2 = 0;
 
         std::string& modelName = gContext.party.get_element(getPartyKey(actorIdx)).modelName;
-        u16 weaponOffset = 0;
-        if (modelState.setForLimitBreaks) {
-            weaponOffset = 8;
-        }
-        else {
-            weaponOffset = gContext.battleAnimations.get_element(modelName).modelAnimationCount;
-        }
+        u16 weaponOffset = gContext.battleAnimations.get_element(modelName).modelAnimationCount;
         playWeaponAnimation(modelState.setForLimitBreaks, modelState.tableRelativeModelAnimIdx + weaponOffset, modelState.currentPlayingFrame, weaponModelID, modelData);
-        Matrix* matrix = getMatrix(0, weaponDataPtr->bonesArray->polygons->boneRSDPtr->polygonSet->matrixSet);
+        Matrix* matrix = getMatrix(0, weaponDataPtr->bonesArray->parts->part->polygonSet->matrixSet);
         extractR3AndTranspose(&(getBattleModelRotationData(actorIdx)->rotationMatrix), matrix);
     }
 }

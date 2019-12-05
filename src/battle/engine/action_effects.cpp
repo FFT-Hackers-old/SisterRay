@@ -32,3 +32,18 @@ EffectContext* getEffectContext100(u16 effectIndex) {
 EffectContext* getEffectContext10(u16 effectIndex) {
     return &(GAME_EFFECT_10_QUEUE[effectIndex]);
 }
+
+EffectContext* srCreateEffect(PFNSREFFECTCALLBACK callback, GameEffectType effectType) {
+    if (effectType == EFFECT60) {
+        auto effectCtxIdx = srPushEffect60(callback);
+        return getEffectContext60(effectCtxIdx);
+    }
+    if (effectType == EFFECT100) {
+        auto effectCtxIdx = srPushEffect100(callback);
+        return getEffectContext100(effectCtxIdx);
+    }
+    if (effectType == EFFECT10) {
+        auto effectCtxIdx = srPushEffect10(callback);
+        return getEffectContext10(effectCtxIdx);
+    }
+}

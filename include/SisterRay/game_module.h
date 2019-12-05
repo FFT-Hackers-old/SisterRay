@@ -220,7 +220,7 @@ typedef void(*SRGFXDRIVER_CLEARALL)(GameContext*);
 typedef void(*SRGFXDRIVER_SETVIEWPORT)(u32, u32, u32, u32, GameContext*);
 typedef void(*SRGFXDRIVER_SETBG)(ColorBGRA *, GameContext*);
 typedef u32(*SRGFXDRIVER_INITPOLYGONSET)(PolygonSet*);
-typedef u32(*SRGFXDRIVER_LOADGROUP)(u32, MatrixSet*, AuxillaryGFX*, PGroup*, PFilePolygonData*, PolygonSet*, GameContext*);
+typedef u32(*SRGFXDRIVER_LOADGROUP)(u32, MatrixSet*, AuxillaryGFX*, PGroup*, PFilePartHeader*, PolygonSet*, GameContext*);
 typedef void(*SRGFXDRIVER_SETMATRIX)(u32, Matrix*, MatrixSet*, GameContext*);
 typedef void(*SRGFXDRIVER_UNLOADTEXTURE)(TextureSet*);
 typedef TextureSet*(SRGFXDRIVER_LOADTEXTURE)(TextureSet*, TextureHeader*, TextureFormat*);

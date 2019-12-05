@@ -117,8 +117,8 @@ typedef struct {
     BoundingBox* boundingboxes;
     u32 *normindextabledata;
     u32 field_78;
-    void* polygonLists; //Reverse engineer later
-} PFilePolygonData;
+    GameList** polygonLists; //Reverse engineer later
+} PFilePartHeader;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
@@ -289,7 +289,7 @@ struct _PolygonSet {
     u32 numgroups;
     GraphicsChain field_14;
     u32 field_2C;
-    PFilePolygonData* pFilePolygons;
+    PFilePartHeader* pFilePolygons;
     AuxillaryGFX* auxillaries;
     u32 hasPerGroupAuxillaies;
     AuxillaryGFX** groupAuxillaries;

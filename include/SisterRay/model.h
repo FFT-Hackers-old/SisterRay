@@ -9,17 +9,31 @@
 
 #pragma pack(push, 1)
 typedef struct {
-    MatrixSet matrixSet;
-    PolygonSet* polygonSet;
-    void* pdData;
-} BoneRSD;
+    u32 field_0;
+    u32 field_4;
+    u32 field_8;
+    u32 textureCount;
+    u32 field_10;
+    u32 field_14;
+    TextureHeader* textureArray;
+    u32 field_1C;
+    PFilePartHeader* pFilePartRSD;
+} PartRSD;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 typedef struct {
-    void* pDataPtr;
-    BoneRSD* boneRSDPtr;
-} BonePolygons;
+    MatrixSet* matrixSet;
+    PolygonSet* polygonSet;
+    PartRSD* partRSD;
+} ModelPart;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u32 unk;
+    ModelPart* part;
+} PartArrayEntry;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
@@ -37,7 +51,7 @@ typedef struct {
     u8* boneParent;
     BoneConnection boneConnection;
     char** rsdNames;
-    BonePolygons* polygons;
+    PartArrayEntry* parts;
 } ModelBone;
 #pragma pack(pop)
 
@@ -87,7 +101,9 @@ typedef struct {
 typedef struct {
     u16 characterID; //BE1170, 0
     u16 animScriptIndex; //BE1172, 2
-    u8 padding1[4]; //BE1174, 4
+    u8 field_4;
+    u8 field_5;
+    u16 field_6;
     u16 AnimationData; //BE1178, 8
     u16 animScriptPtr; //BE117A, 0xA
     u16 field_C;
@@ -179,9 +195,7 @@ typedef struct {
     u8 field_3B;
     u8 field_3C;
     u8 field_3D;
-    u8 field_3E;
-    u8 field_3F;
-    u8 field_40;
+    u16 actionIdx;
     u8 field_41;
     u8 field_42;
     u8 field_43;

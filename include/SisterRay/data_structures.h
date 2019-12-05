@@ -9,7 +9,7 @@ typedef struct {
 } GameListNode;
 
 typedef struct {
-    bool useAssertAlloc;
+    u32 useAssertAlloc;
     u32 field_4;
     u32 nodeCount;
     GameListNode *head;

@@ -8,6 +8,7 @@ typedef struct {
     float v;
 } TextureCoords;
 
+#pragma pack(push, 1)
 typedef struct {
     u32 width;
     u32 height;
@@ -42,7 +43,9 @@ typedef struct {
     u32 blueMax;
     u32 alphaMax;
 } TextureFormat;
+#pragma pack(pop)
 
+#pragma pack(push, 1)
 typedef struct {
     u32 version;
     u32 field_4;
@@ -56,9 +59,9 @@ typedef struct {
     u32 minBitsPerPixel;
     u32 maxBitsPerPixel;
     u32 field_2C;
-    u32 palettes;					
+    u32 paletteCount;					
     u32 paletteEntries;
-    u32 bpp;
+    u32 bitsPerPixel;
     TextureFormat textureFormat;
     u32 usePaletteColorKey;
     u8 *paletteColorKey;
@@ -73,6 +76,7 @@ typedef struct {
     u32 field_E4;
     u32 field_E8;
 } TextureHeader;
+#pragma pack(pop)
 
 #pragma pack(push, 1)
 typedef struct {

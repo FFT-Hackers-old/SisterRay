@@ -4,6 +4,7 @@
 #include "action_effects.h"
 #include "../../party/party_utils.h"
 #include "action_spell_effects.h"
+#include "../../impl.h"
 
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
@@ -307,6 +308,82 @@ OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+#define gameLimitAuraCallback            ((PFNSREFFECTCALLBACK)0x425520)
+OpCodeControlSequence OpCodeE0(AnimScriptEvent* srEvent) {
+    auto effectCtx = srCreateEffect(gameLimitAuraCallback, EFFECT60);
+    effectCtx->handlerIndex = srEvent->actorID;
+    effectCtx->wordArray[0] = 1;
+    effectCtx->wordArray[1] = 36;
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeE1(AnimScriptEvent* srEvent) {
+    setModelAppaer(srEvent->actorID);
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeE2(AnimScriptEvent* srEvent) {
+    setModelVanish(srEvent->actorID);
+    return RUN_NEXT;
+}
+
+
+OpCodeControlSequence OpCodeE8(AnimScriptEvent* srEvent) {
+    auto& modelState = *srEvent->battleModelState;
+    auto& modelState74 = *getBattleModelState74(srEvent->actorID);
+    srLoadActionSpellEffects(srEvent->actorID, modelState.commandID, modelState74.actionIdx);
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeEB(AnimScriptEvent* srEvent) {
+
+    u8* G_EFFECT_LOADING = (u8*)0xBF2A30;
+    auto& modelState = *srEvent->battleModelState;
+    auto& modelState74 = *getBattleModelState74(srEvent->actorID);
+    if (*G_EFFECT_LOADING) {
+        modelState.currentScriptPosition--;
+        srEvent->scriptContext->isScriptActive = 0;
+        return RUN_NEXT;
+    }
+    srLogWrite("Dispatching actions for actor: d, command %d, actionId: %d",
+        srEvent->actorID,
+        modelState.commandID,
+        modelState74.actionIdx
+    );
+    srDispatchActionSpellEffects(srEvent->actorID, modelState.commandID, modelState74.actionIdx);
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeEC(AnimScriptEvent* srEvent) {
+    u8* G_EFFECT_LOADING = (u8*)0xBF2A30;
+    u8* byte_9ADF04 = (u8*)0x9ADF04; // now that I've made dispatch generic this byte is the only differrence between the opcodes EB & EC
+    auto& modelState = *srEvent->battleModelState;
+    auto& modelState74 = *getBattleModelState74(srEvent->actorID);
+    if (*G_EFFECT_LOADING) {
+        modelState.currentScriptPosition--;
+        srEvent->scriptContext->isScriptActive = 0;
+        *byte_9ADF04 = 1;
+        return RUN_NEXT;
+    }
+    srLogWrite("Dispatching actions for actor: d, command %d, actionId: %d",
+        srEvent->actorID,
+        modelState.commandID,
+        modelState74.actionIdx
+    );
+    srDispatchActionSpellEffects(srEvent->actorID, modelState.commandID, modelState74.actionIdx);
+    *byte_9ADF04 = 0;
+    return RUN_NEXT;
+}
+
+#define gameFootDustCallback            ((PFNSREFFECTCALLBACK)0x5BE4E2)
+OpCodeControlSequence OpCodeF0(AnimScriptEvent* srEvent) {
+    auto effectCtx = srCreateEffect(gameFootDustCallback, EFFECT60);
+    effectCtx->handlerIndex = srEvent->actorID;
+    effectCtx->wordArray[7] = srEvent->battleModelState->field_6;
+    effectCtx->wordArray[6] = effectCtx->wordArray[7];
+    return RUN_NEXT;
+}
+
 /*
  case 0x9Au:
  case 0xFBu:
@@ -328,35 +405,6 @@ OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent) {
          * (unsigned int)calculateZDelta(*(signed __int16*)&scriptContextPtr->field_8)) >> 12)
          + v16;
      gBigAnimBlock[actor_id].restingPosition.yCoordinate = scriptContextPtr->opCodeArgs[1];
-     goto LABEL_20;
- case 0x9Du:                           // Tifa ability additional Effects
-     *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     switch (*newAxisPosition)
-     {
-     case 0:
-         pushBeatRushEffect(currentTargetMask, actorID_0);
-         break;
-     case 1:
-         sub_4E163E(currentTargetMask, actorID_0);
-         break;
-     case 2:
-         sub_4E1655(currentTargetMask, actorID_0);
-         break;
-     case 3:
-         sub_4E166C(currentTargetMask, actorID_0);
-         break;
-     case 4:
-         sub_4E1683(currentTargetMask, actorID_0);
-         break;
-     case 5:
-         sub_4E169A(currentTargetMask, actorID_0);
-         break;
-     case 6:
-         sub_4E16B1(currentTargetMask, actorID_0);
-         break;
-     default:
-         goto LABEL_20;
-     }
      goto LABEL_20;
  case 0x9Eu:
      if (actor_id == byte_BFCDE0)
@@ -1081,12 +1129,6 @@ OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent) {
      word_BFC3A2[16 * vinAnimScriptIdx] = 1;
      word_BFC3A4[16 * vinAnimScriptIdx] = 36;
      goto LABEL_20;
- case 0xE1u:
-     gBigAnimBlock[actor_id].modelEffectFlags |= 4u;
-     goto LABEL_20;
- case 0xE2u:
-     gBigAnimBlock[actor_id].modelEffectFlags |= 2u;
-     goto LABEL_20;
  case 0xE3u:
      actorPositionArray[actorID_0].xCoordinate = gBigAnimBlock[actorID_0].restingPosition.xCoordinate;
      actorPositionArray[actorID_0].zCoordinate = gBigAnimBlock[actorID_0].restingPosition.zCoordinate;
@@ -1169,9 +1211,6 @@ OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent) {
          v42 = gBigAnimBlock[actor_id].field_25 | 4;
      gBigAnimBlock[actor_id].field_25 = v42;
      goto LABEL_20;
- case 0xE8u:
-     loadSpellEffect(actor_id);
-     goto LABEL_20;
  case 0xE9u:
      v17 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
      scriptContextPtr->opCodeArgs[4] = v17;
@@ -1192,30 +1231,6 @@ OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent) {
      struct100ContextArray[scriptContextPtr->field_14].framesToWait = v66;
      struct100ContextArray[scriptContextPtr->field_14].field_6 = 0;
      goto LABEL_20;
- case 0xEBu:
-     if (byte_BF2A30)
-     {
-         --gBigAnimBlock[actor_id].currentScriptPosition;
-         scriptContextPtr->isScriptActive = 0;
-     }
-     else
-     {
-         sub_427B4B(actor_id);
-     }
-     goto LABEL_20;
- case 0xECu:
-     if (byte_BF2A30)
-     {
-         --gBigAnimBlock[actor_id].currentScriptPosition;
-         scriptContextPtr->isScriptActive = 0;
-         byte_9ADF04 = 1;
-     }
-     else
-     {
-         dispatchActionEffects(actor_id);
-         byte_9ADF04 = 0;
-     }
-     goto LABEL_20;
  case 0xEDu:                           // opcode hops forward
      *newAxisPosition = gBigAnimBlock[actor_id].field_160;
      gBigAnimBlock[actor_id].restingPosition.xCoordinate -= (signed int)(516
@@ -1232,9 +1247,6 @@ OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent) {
      gBigAnimBlock[actor_id].animScriptIndex = actorIdleAnimScripts[actor_id];
      scriptContextPtr->scriptPtr = (byte*)ptrToScriptTable[gBigAnimBlock[actor_id].animScriptIndex];
      resetScriptState(actor_id);
-     goto LABEL_20;
- case 0xF0u:
-     setFootDustEffect(actor_id);
      goto LABEL_20;
  case 0xF1u:
      smallModelDataArray[actor_id].field_C &= 0xFFFBu;

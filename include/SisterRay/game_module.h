@@ -223,7 +223,7 @@ typedef u32(*SRGFXDRIVER_INITPOLYGONSET)(PolygonSet*);
 typedef u32(*SRGFXDRIVER_LOADGROUP)(u32, MatrixSet*, AuxillaryGFX*, PGroup*, PFilePartHeader*, PolygonSet*, GameContext*);
 typedef void(*SRGFXDRIVER_SETMATRIX)(u32, Matrix*, MatrixSet*, GameContext*);
 typedef void(*SRGFXDRIVER_UNLOADTEXTURE)(TextureSet*);
-typedef TextureSet*(SRGFXDRIVER_LOADTEXTURE)(TextureSet*, TextureHeader*, TextureFormat*);
+typedef TextureSet*(*SRGFXDRIVER_LOADTEXTURE)(TextureSet*, TextureHeader*, TextureFormat*);
 typedef u32(*SRGFXDRIVER_PALETTECHANGED)(u32, u32, u32, Palette*, TextureSet*);
 typedef u32(*SRGFXDRIVER_WRITEPALLETTE)(u32, u32, void*, u32, Palette*, TextureSet*);
 typedef BlendMode*(*SRGFXDRIVER_BLENDMODE)(u32, GameContext*);
@@ -242,6 +242,7 @@ typedef void(*SRGFXDRIVER_SETPOLYRENDER)(PolygonSet*, IndexedVertices*, GameCont
 typedef void(*SRGFXDRIVER_DRAWVERTICES)(PolygonSet*, IndexedVertices*, GameContext*);
 typedef void(*SRGFXDRIVER_FIELDECCB)(GameContext*);
 
+#pragma pack(push, 1)
 struct _GraphicsDriverCallbacks {
     SRGFXDRIVER_CREATE createDriver;
     SRGFXDRIVER_DESTROY destroyDriver;
@@ -265,41 +266,42 @@ struct _GraphicsDriverCallbacks {
     SRGFXDRIVER_WRITEPALLETTE writePalette;
     SRGFXDRIVER_BLENDMODE blendmode;
     SRGFXDRIVER_LIGHTPOLYGONSET lightPolygonSet;
-    SRGFXDRIVER_FIELD64CB *field_64;
+    SRGFXDRIVER_FIELD64CB field_64;
     SRGFXDRIVER_SETRENDERSTATE setRenderState;
     SRGFXDRIVER_SETRENDERSTATE _setRenderState;
     SRGFXDRIVER_SETRENDERSTATE __setRenderState;
-    SRGFXDRIVER_FIELD74CB *field_74;
-    SRGFXDRIVER_FIELD78CB *field_78;
+    SRGFXDRIVER_FIELD74CB field_74;
+    SRGFXDRIVER_FIELD78CB field_78;
     SRGFXDRIVER_DEFERREDDRAW deferredDraw;
-    SRGFXDRIVER_FIELD80CB *field_80;
-    SRGFXDRIVER_FIELD84CB *field_84;
+    SRGFXDRIVER_FIELD80CB field_80;
+    SRGFXDRIVER_FIELD84CB field_84;
     SRGFXDRIVER_BEGINSCENE beginScene;
     SRGFXDRIVER_ENDSCENE endScene;
-    SRGFXDRIVER_FIELD90CB *field_90;
-    SRGFXDRIVER_SETPOLYRENDER *setrenderstate_flat2D;
-    SRGFXDRIVER_SETPOLYRENDER *setrenderstate_smooth2D;
-    SRGFXDRIVER_SETPOLYRENDER *setrenderstate_textured2D;
-    SRGFXDRIVER_SETPOLYRENDER *setrenderstate_paletted2D;
-    SRGFXDRIVER_SETPOLYRENDER *_setrenderstate_paletted2D;
+    SRGFXDRIVER_FIELD90CB field_90;
+    SRGFXDRIVER_SETPOLYRENDER setrenderstate_flat2D;
+    SRGFXDRIVER_SETPOLYRENDER setrenderstate_smooth2D;
+    SRGFXDRIVER_SETPOLYRENDER setrenderstate_textured2D;
+    SRGFXDRIVER_SETPOLYRENDER setrenderstate_paletted2D;
+    SRGFXDRIVER_SETPOLYRENDER _setrenderstate_paletted2D;
     SRGFXDRIVER_DRAWVERTICES drawFlat2D;
     SRGFXDRIVER_DRAWVERTICES drawSmooth2D;
     SRGFXDRIVER_DRAWVERTICES drawTextured2D;
     SRGFXDRIVER_DRAWVERTICES drawPaletted2D;
-    SRGFXDRIVER_SETPOLYRENDER *setRenderState_flat3D;
-    SRGFXDRIVER_SETPOLYRENDER *setRenderState_smooth3D;
-    SRGFXDRIVER_SETPOLYRENDER *setRenderState_textured3D;
-    SRGFXDRIVER_SETPOLYRENDER *setRenderState_paletted3D;
-    SRGFXDRIVER_SETPOLYRENDER *_setRenderState_paletted3D;
+    SRGFXDRIVER_SETPOLYRENDER setRenderState_flat3D;
+    SRGFXDRIVER_SETPOLYRENDER setRenderState_smooth3D;
+    SRGFXDRIVER_SETPOLYRENDER setRenderState_textured3D;
+    SRGFXDRIVER_SETPOLYRENDER setRenderState_paletted3D;
+    SRGFXDRIVER_SETPOLYRENDER _setRenderState_paletted3D;
     SRGFXDRIVER_DRAWVERTICES drawFlat3D;
     SRGFXDRIVER_DRAWVERTICES drawSmooth3D;
     SRGFXDRIVER_DRAWVERTICES drawTextured3D;
     SRGFXDRIVER_DRAWVERTICES drawPaletted3D;
-    SRGFXDRIVER_SETPOLYRENDER *setrenderstate_flatlines;
-    SRGFXDRIVER_SETPOLYRENDER *setrenderstate_smoothlines;
+    SRGFXDRIVER_SETPOLYRENDER setrenderstate_flatlines;
+    SRGFXDRIVER_SETPOLYRENDER setrenderstate_smoothlines;
     SRGFXDRIVER_DRAWVERTICES draw_flatlines;
     SRGFXDRIVER_DRAWVERTICES draw_smoothlines;
-    SRGFXDRIVER_FIELDECCB *field_EC;
+    SRGFXDRIVER_FIELDECCB field_EC;
 };
+#pragma pack(pop)
 
 #endif

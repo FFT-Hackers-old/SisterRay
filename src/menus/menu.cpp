@@ -78,6 +78,9 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     else if (checkInputReceived(64)) {
         gContext.eventBus.dispatch(MENU_INPUT_CANCEL, &event, dispatchContext);
     }
+    else if (checkInputReceived(2)) {
+        gContext.eventBus.dispatch(MENU_INPUT_R2, &event, dispatchContext);
+    }
     else if (checkInputReceived(4)) {
         gContext.eventBus.dispatch(MENU_INPUT_L1, &event, dispatchContext);
     }
@@ -89,6 +92,9 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     }
     else if (checkInputReceived(16)) { 
         gContext.eventBus.dispatch(MENU_INPUT_TRIANGLE, &event, dispatchContext);
+    }
+    else if (checkInputReceived(256)) {
+        gContext.eventBus.dispatch(MENU_INPUT_SELECT, &event, dispatchContext);
     }
     else if (captureDirectionInput(0x2000, 4)) {
         gContext.eventBus.dispatch(MENU_INPUT_RIGHT, &event, dispatchContext);

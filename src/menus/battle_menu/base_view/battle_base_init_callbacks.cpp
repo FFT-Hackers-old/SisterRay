@@ -5,13 +5,12 @@ using namespace BattleMenuWidgetNames;
 
 void initBaseViewWidget(const MenuInitEvent* event) {
     BoxWidget* boxWidget;
-    DrawBoxParams boxParams;
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto baseWidget = createWidget(BATTLE_BASE_WIDGET_NAME);
 
-    boxParams = {
+    DrawBoxParams boxParams = {
         0,
         340,
         640,
@@ -27,7 +26,31 @@ void initBaseViewWidget(const MenuInitEvent* event) {
         auto baseRowWidget = allocateBaseRow(names[idx].c_str(), 28, 32 * idx + 348);
         addChildWidget(baseWidget, (Widget*)baseRowWidget, names[idx]);
     }
+    addChildWidget(baseWidget, allocateDisplayWidget(TOP_STRING_DISPLAY.c_str(), 0, 0), TOP_STRING_DISPLAY);
+    addChildWidget(baseWidget, allocateDisplayWidget(BOTTOM_STRING_DISPLAY.c_str(), 0, 280), BOTTOM_STRING_DISPLAY);
     addChildWidget(mainWidget, baseWidget, BATTLE_BASE_WIDGET_NAME);
+}
+
+Widget* allocateDisplayWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
+    auto actionDisplayTextWidget = createWidget(name);
+    moveWidget(actionDisplayTextWidget, xCoordinate, yCoordinate);
+
+    DrawBoxParams boxParams = {
+        xCoordinate,
+        yCoordinate,
+        640,
+        60,
+        0.4f
+    };
+    auto boxWidget = createBoxWidget(boxParams, "BOX");
+    addChildWidget(actionDisplayTextWidget, (Widget*)boxWidget, "BOX");
+
+    // The following text will need to be recentered based on the length of the displayed string
+    DrawTextParams textParams = { xCoordinate, yCoordinate, nullptr, COLOR_WHITE, 0.4f };
+    auto textWidget = createTextWidget(textParams, "TXT");
+    addChildWidget(actionDisplayTextWidget, (Widget*)textWidget, "TXT");
+
+    return actionDisplayTextWidget;
 }
 
 Widget* allocateBaseRow(const char* name, i32 xCoordinate, i32 yCoordinate) {

@@ -308,12 +308,18 @@ OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
-#define gameLimitAuraCallback            ((PFNSREFFECTCALLBACK)0x425520)
-OpCodeControlSequence OpCodeE0(AnimScriptEvent* srEvent) {
-    auto effectCtx = srCreateEffect(gameLimitAuraCallback, EFFECT60);
-    effectCtx->handlerIndex = srEvent->actorID;
-    effectCtx->wordArray[0] = 1;
-    effectCtx->wordArray[1] = 36;
+#define gamePushSpellAura            ((PFNSREFFECTCALLBACK)0x425520)
+OpCodeControlSequence OpCodeA4(AnimScriptEvent* srEvent) {
+    auto effectCtx = srCreateEffect(gamePushSpellAura, EFFECT60);
+    effectCtx->wordArray[0] = 2;
+    effectCtx->wordArray[1] = 496;
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeA5(AnimScriptEvent* srEvent) {
+    auto effectCtx = srCreateEffect(gamePushSpellAura, EFFECT60);
+    effectCtx->wordArray[0] = 3;
+    effectCtx->wordArray[1] = 489;
     return RUN_NEXT;
 }
 
@@ -324,6 +330,13 @@ OpCodeControlSequence OpCodeE1(AnimScriptEvent* srEvent) {
 
 OpCodeControlSequence OpCodeE2(AnimScriptEvent* srEvent) {
     setModelVanish(srEvent->actorID);
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeE6(AnimScriptEvent* srEvent) {
+    auto effectCtx = srCreateEffect(gamePushSpellAura, EFFECT60);
+    effectCtx->wordArray[0] = 0;
+    effectCtx->wordArray[1] = 13;
     return RUN_NEXT;
 }
 
@@ -480,16 +493,6 @@ OpCodeControlSequence OpCodeF0(AnimScriptEvent* srEvent) {
  case 0xA3u:
      v34 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      sub_740D80(0xA4u, v34, 0, 0, 0, 0);
-     goto LABEL_20;
- case 0xA4u:
-     vinAnimScriptIdx = setCastEffectHandler((int)sub_425520);
-     word_BFC3A2[16 * vinAnimScriptIdx] = 2;
-     word_BFC3A4[16 * vinAnimScriptIdx] = 496;
-     goto LABEL_20;
- case 0xA5u:
-     vinAnimScriptIdx = setCastEffectHandler((int)sub_425520);
-     word_BFC3A2[16 * vinAnimScriptIdx] = 3;
-     word_BFC3A4[16 * vinAnimScriptIdx] = 489;
      goto LABEL_20;
  case 0xA6u:
      gBigAnimBlock[byte_BFCB68].restingPosition.xCoordinate = actorPositionArray[byte_BFCB68].xCoordinate;

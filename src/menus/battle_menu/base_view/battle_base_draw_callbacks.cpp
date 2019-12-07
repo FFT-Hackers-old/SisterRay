@@ -148,3 +148,7 @@ void handleUpdateInputActive(const MenuDrawEvent* event) {
 
     *ACCEPTING_BATTLE_INPUT = (sub_41AB67(128) != 0);
 }
+
+void handleUpdateDisplayingString(const MenuDrawEvent* event) {
+
+}

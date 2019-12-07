@@ -58,9 +58,10 @@ void initDamageContext(ActionContextEvent* actionEvent) {
     for (auto followUpIdx = 0; followUpIdx < 8; ++followUpIdx)// null follow ups
         damageContext->followUpActions[followUpIdx] = -1;
 
-    FormationActorDataArray* formationData = getFormationActorData();
-    if (issuingActorID >= 4)
-        damageContext->enemySceneIndex = formationData->formationDatas[issuingActorID - 4].enemyID;
+    if (issuingActorID >= 4) {
+        FormationActorData* formationData = getInBattleFormationActorData(issuingActorID);
+        damageContext->enemySceneIndex = formationData->enemyID;
+    }
 }
 
 void setEnemyCommandData(ActionContextEvent* actionEvent) {

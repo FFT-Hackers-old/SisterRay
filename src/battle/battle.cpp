@@ -12,10 +12,10 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
     char v4; 
     int enemyIndex;
     void *v16; 
-    FormationEnemies* formationEnemiesPtr = getFormationEnemies();
-    FormationSetup* formationSetupPtr = getFormationSetup();
-    FormationCamera* formationCameraPtr = getFormationCamera();
-    FormationActorDataArray* formationActorDataPtr = getFormationActorData();
+    FormationEnemies* formationEnemiesPtr = getInBattleFormationEnemyModels();
+    FormationSetup* formationSetupPtr = getInBattleFormationSetup();
+    FormationCamera* formationCameraPtr = getInBattleFormationCamera();
+    FormationActorDataArray* formationActorDataPtr = getInBattleFormationActorDataArray();
     EnemyData* enemyDataPtr = (EnemyData*)(0x9A8E9C);
     FormationEnemyIDs* sceneAIDataPtr = (FormationEnemyIDs*)(0x9A9CFC);
     u32* formationAIDataPtr = (u32*)(0x9A9AFC);
@@ -47,7 +47,7 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
 
     LABEL_11:
         auto formationIDstr = std::to_string(formationIndex);
-        auto formation = gContext.formations.get_element(std::string(formationIDstr));
+        auto formation = gContext.formations.get_element(assembleGDataKey(formationIndex));
         *formationSetupPtr = formation.formationSetup;
         *formationCameraPtr = formation.formationCamera;
         *formationActorDataPtr = formation.formationActorDataArray;
@@ -108,7 +108,7 @@ void srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
     scriptAnimDataCpy modelDataCpys[10];
     const u8* scriptPtr = nullptr;
     u8 characterScriptIndex = 0xFF; 
-    FormationActorDataArray* formationActorDataPtr = getFormationActorData();
+    FormationActorDataArray* formationActorDataPtr = getInBattleFormationActorDataArray();
     FormationEnemyIDs* sceneAIDataPtr = (FormationEnemyIDs*)(0x9A9CFC);
     u8* linkedScriptArray = (u8*)(0x8FEE38);
     u16* unknownPtr = (u16*)(0x9AAD14);
@@ -179,8 +179,7 @@ i32 srExecuteFormationScripts() {
     for (scriptType = 0; scriptType < 8; ++scriptType) {
         if ((1 << scriptType) & (i16)(*word_9AAD14)) {
             *word_9AAD14 &= ~(i16)(1 << scriptType);
-            std::string formationID = std::string(std::to_string(formationIndex));
-            auto& formationAI = gContext.formations.get_element(formationID).formationAI;
+            auto& formationAI = getFormation(formationIndex).formationAI;
             scriptPtr = getScriptPtr(formationAI, scriptType);
             if (scriptPtr)
                 result = runAIScript(3, (i32)scriptPtr, -1);

@@ -188,5 +188,79 @@ char* srGetStrFromGlobalBuffer(u16 strBufferIndex) {
 }
 
 void handleBattleStrSubstitions(char* ret, const char* base) {
+    u16 baseStrIdx = 0;
+    u16 retStrIdx = 0;
+    u16 absItemID = 0;
+    auto currentChar = base[baseStrIdx];
+    const char* resourceName;
+    const u16* wordReader = (const u16*)base;
 
+    while (currentChar != 0xFF) {
+        switch (currentChar) {
+        case 0xEB: {
+            absItemID = wordReader[baseStrIdx + 1];
+            auto itemType = gContext.itemTypeData.get_element(assembleGDataKey(absItemID));
+            switch (itemType.item_type) {
+            case 0: {
+                resourceName = nullptr;
+                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
+                break;
+            }
+            case 1: {
+                resourceName = nullptr;
+                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
+                break;
+            }
+            case 2: {
+                resourceName = nullptr;
+                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
+                break;
+            }
+            case 3: {
+                resourceName = nullptr;
+                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
+                break;
+            default: {
+                resourceName = nullptr;
+                break;
+            }
+            }
+            }
+            baseStrIdx += 3;
+            break;
+        case 0xEC: {
+            break;
+        }
+        case 0xED: {
+            break;
+        }
+        case 0xEE: {
+            break;
+        }
+        case 0xEF: {
+            break;
+        }
+        }
+        default: {
+            ret[retStrIdx] = base[baseStrIdx];
+            retStrIdx++;
+            break;
+        }
+        }
+        baseStrIdx++;
+        currentChar = base[baseStrIdx];
+    }
+    ret[retStrIdx] = 0xFF;
+}
+
+// Does not copy the terminating 0xFF character, returns bytes copied
+u16 insertEncodedStr(char* dst, u16 baseStart, const char* toInject) {
+    u16 injectIdx = 0;
+    u16 bytesCopied = 0;
+    while (toInject[injectIdx] != 0xFF) {
+        dst[baseStart] = toInject[injectIdx];
+        injectIdx++;
+        bytesCopied++;
+    }
+    return bytesCopied;
 }

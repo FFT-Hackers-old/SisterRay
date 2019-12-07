@@ -11,3 +11,7 @@ std::unordered_set<u16> SrEnemyRegistry::getUniqueModelIDs() {
     }
     return modelIDs;
 }
+
+std::string assembleEnemyDataKey(std::string uniqueID) {
+    return std::string(BASE_PREFIX) + uniqueID;
+}

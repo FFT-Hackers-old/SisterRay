@@ -1,4 +1,3 @@
-#include "battle.h"
 #include "../impl.h"
 #include "../gzip.h"
 #include "../party/party_utils.h"
@@ -108,7 +107,7 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
         srEnemyData.enemyData = sceneData.enemyDataArray[enemyIndex];
         srEnemyData.modelID = sceneData.formationModelIDs.EnemyIds[enemyIndex];
         auto enemyName = std::string(EncodedString(srEnemyData.enemyData.enemyName).unicode());
-        auto uniqueID = sceneName + enemyName;
+        auto uniqueID = assembleEnemyDataKey(sceneName + enemyName);
         srEnemyIDs.uniqueIDs[enemyIndex] = uniqueID;
 
         BattleAIData enemyAIData = BattleAIData();
@@ -126,14 +125,13 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
         formation.formationSetup = sceneData.formationSetupArray[sceneFormationIndex];
         formation.formationCamera = sceneData.formationCameraArray[sceneFormationIndex];
         formation.formationActorDataArray = sceneData.formationActorDataArrays[sceneFormationIndex];
-        auto formationName = std::to_string(*formationIndex);
         BattleAIData formationAI = BattleAIData();
         initializeBattleAIData(&(sceneData.formationAIData[0]), sceneFormationIndex, formationAI);
         formation.formationAI = formationAI;
-        gContext.formations.add_element(formationName, formation);
+        gContext.formations.add_element(assembleGDataKey(*formationIndex), formation);
         *formationIndex = *formationIndex + 1;
         srLogWrite("Formation:%s added to registry with enemies %s, %s, %s",
-            formationName.c_str(),
+            assembleGDataKey(*formationIndex).c_str(),
             formation.FormationEnemyIDs.uniqueIDs[0].c_str(),
             formation.FormationEnemyIDs.uniqueIDs[1].c_str(),
             formation.FormationEnemyIDs.uniqueIDs[2].c_str()

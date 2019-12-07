@@ -2,6 +2,7 @@
 #define SCENE_LOADER_H
 
 #include <SisterRay/SisterRay.h>
+#include "gdata_utils.h"
 
 void initFormationsRegistries();
 u32 getCompressedFileSizes(const u8* sceneBlock, u16 byteSizes[16]);

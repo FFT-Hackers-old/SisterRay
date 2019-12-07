@@ -2,17 +2,18 @@
 #define SCENE_GLOBALS_H
 
 #include <SisterRay/SisterRay.h>
+#include "../gamedata/enemies.h"
+#include "../gamedata/formations.h"
 
-
-#define FF7_FORMATION_ENEMIES           ((FormationEnemies*)(0x9A8748));
-#define FF7_FORMATION_SETUP             ((FormationSetup*)(0x9A8750));
-#define FF7_FORMATION_CAMERA            ((FormationCamera*)(0x9A8764));
-#define FF7_FORMATION_ACTOR_DATA        ((FormationActorDataArray*)(0x9A8794));
-
-FormationEnemies* getFormationEnemies();
-FormationSetup* getFormationSetup();
-FormationCamera* getFormationCamera();
-FormationActorDataArray* getFormationActorData();
+FormationEnemies* getInBattleFormationEnemyModels();
+FormationSetup* getInBattleFormationSetup();
+FormationCamera* getInBattleFormationCamera();
+FormationActorDataArray* getInBattleFormationActorDataArray();
+FormationActorData* getInBattleFormationActorData(u8 enemyActorIdx);
+EnemyData* getInBattleEnemyData(u8 formationRelativeIndex);
+std::string getUniqueEnemyID(u8 arrayIdx);
+EnemyData* getInBattleActorEnemyData(u8 enemyActorIdx);
+const SrEnemyData& getRegistryActorEnemyData(u8 enemyActorIdx);
 
 
 #endif // !SCENE_GLOBALS_H

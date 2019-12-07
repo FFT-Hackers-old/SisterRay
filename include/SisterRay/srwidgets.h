@@ -75,6 +75,13 @@ typedef color(*PFNSRGETNUMBERCOLORPROC)(Widget*);
 typedef float(*PFNSRGETNUMBERPRIORITY)(Widget*);
 
 
+typedef struct {
+    u32 rgba1;
+    u32 rgba2;
+    u32 rgba3;
+    u32 rgba4;
+} BoxColors;
+
 #pragma pack(push, 1)
 typedef struct {
     i16 drawDistance1;
@@ -82,8 +89,12 @@ typedef struct {
     i16 drawDistance3;
     i16 drawDistance4;
     float boxFloat;
+    u8 isAlphaEnabled;
+    u8 useBoxColors;
+    BoxColors boxColors;
 } DrawBoxParams;
 #pragma pack(pop)
+
 typedef void(*PFNSETBOXPARAMSPROC)(DrawBoxParams*, i16, i16, u16, u16, float);
 
 typedef struct BoxWidget_ BoxWidget;

@@ -149,6 +149,44 @@ void handleUpdateInputActive(const MenuDrawEvent* event) {
     *ACCEPTING_BATTLE_INPUT = (sub_41AB67(128) != 0);
 }
 
-void handleUpdateDisplayingString(const MenuDrawEvent* event) {
+void handleTopDisplayString(const MenuDrawEvent* event) {
+    u8* battleTextActive = (u8*)0xDC38BC;
+    u16* stringBufferIdx = (u16*)0xDC38C0;
+    u8* stringCommandIdx = (u8*)0xDC38EC;
+    u16* stringActionIdx = (u16*)0xDC38F0;
+    u8* actionDisplayActive = (u8*)0xDC38E8;
+    char argSubBuffer[512] = {};
+
+    auto topDisplayWidget = getChild(getChild(event->menu->menuWidget, BATTLE_BASE_WIDGET_NAME), TOP_STRING_DISPLAY);
+    if (*battleTextActive) {
+        enableWidget(topDisplayWidget);
+        if (*stringBufferIdx < 256) {
+            auto baseStr = gContext.gameStrings.battle_texts.get_string(*stringBufferIdx);
+            handleBattleStrSubstitions(&(argSubBuffer[0]), baseStr);
+            updateText(getChild(topDisplayWidget, "TXT"), &(argSubBuffer[0]));
+        }
+        else {
+            u16 gStringBufferIdx = *stringBufferIdx - 256;
+            auto baseStr = srGetStrFromGlobalBuffer(gStringBufferIdx);
+            handleBattleStrSubstitions(&(argSubBuffer[0]), baseStr);
+            updateText(getChild(topDisplayWidget, "TXT"), &(argSubBuffer[0]));
+        }
+    }
+    else if (*actionDisplayActive) {
+        enableWidget(topDisplayWidget);
+        auto textToDraw = gContext.attacks.get_element(assemblekey(*stringCommandIdx, *stringActionIdx)).attackName.unicode();
+        updateText(getChild(topDisplayWidget, "TXT"), textToDraw); // Will need some code to center the text
+        return;
+    }
+    disableWidget(topDisplayWidget);
+}
+
+char* srGetStrFromGlobalBuffer(u16 strBufferIndex) {
+    char* G_DISPLAY_STR_BUFFER = (char*)0x9AD1E0;
+    u16 * G_STRBUFFER_ID_OFFSET_MAP = (u16*)0x9AD9E0;
+    return &(G_DISPLAY_STR_BUFFER[G_STRBUFFER_ID_OFFSET_MAP[strBufferIndex]]);
+}
+
+void handleBattleStrSubstitions(char* ret, const char* base) {
 
 }

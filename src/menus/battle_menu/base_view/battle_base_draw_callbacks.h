@@ -13,4 +13,8 @@
 void drawBaseViewWidget(const MenuDrawEvent* event);
 void handleActorReady(const MenuDrawEvent* event);
 void handleUpdateInputActive(const MenuDrawEvent* event);
+
+
+char* srGetStrFromGlobalBuffer(u16 strBufferIndex);
+void handleBattleStrSubstitions(char* ret, const char* base);
 #endif

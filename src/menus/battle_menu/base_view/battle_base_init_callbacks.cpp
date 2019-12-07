@@ -40,13 +40,17 @@ Widget* allocateDisplayWidget(const char* name, i32 xCoordinate, i32 yCoordinate
         yCoordinate,
         640,
         60,
-        0.4f
+        0.0f,
+        1,
+        0,
+        BoxColors({0, 0, 0, 0})
     };
+
     auto boxWidget = createBoxWidget(boxParams, "BOX");
     addChildWidget(actionDisplayTextWidget, (Widget*)boxWidget, "BOX");
 
     // The following text will need to be recentered based on the length of the displayed string
-    DrawTextParams textParams = { xCoordinate, yCoordinate, nullptr, COLOR_WHITE, 0.4f };
+    DrawTextParams textParams = { xCoordinate, yCoordinate, nullptr, COLOR_WHITE, 0.0f };
     auto textWidget = createTextWidget(textParams, "TXT");
     addChildWidget(actionDisplayTextWidget, (Widget*)textWidget, "TXT");
 

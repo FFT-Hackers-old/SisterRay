@@ -24,4 +24,6 @@ SISTERRAY_API SrMateriaData getMateria(u16 itemID, const char* modName);
 SISTERRAY_API void setMateriaData(SrMateriaData attackData, u16 itemID, const char* modName);
 SISTERRAY_API void addMateria(SrMateriaData attackData, u16 itemID, const char* modName);
 
+SISTERRAY_API void addActionToCommand(const char* commandName, const char* actionName);
+
 #endif

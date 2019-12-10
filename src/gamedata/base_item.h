@@ -47,6 +47,8 @@ protected:
 };
 
 u8 getKernelIconType(u8 itemType, u16 typeRelativeIndex);
+const char* getItemNameFromAbsoluteIdx(u16 absoluteIdx);
+const char* getItemDescFromAbsoluteIdx(u16 absoluteIdx);
 SISTERRAY_API void initItemTypeData();
 
 void populatekernelStatBoosts(const u8* const stats, const u8* const amts, ActorStatBoosts& boosts, u8 count);

@@ -331,7 +331,7 @@ typedef struct {
     u8 bonus_luck;
     u8 active_limit_level;
     u8 limit_bar_progress;
-    u8 character_name[12];
+    char character_name[12];
     u8 equipped_weapon;
     u8 equipped_armor;
     u8 equipped_accessory;
@@ -354,10 +354,10 @@ typedef struct {
     u32 equippedWeaponMateria[8]; //This is primarily written to/from here, so this should be relocated if we are to expand 
     u32 equippedArmorMateria[8];
     u32 exp_to_next_level;
-} characterRecord;
+} CharacterRecord;
 #pragma pack(pop)
 
-#define CHARACTER_RECORD_ARRAY ((characterRecord*)0xDBFD8C)
+#define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
 
 #pragma pack(push, 1)
 typedef struct {

@@ -5,7 +5,8 @@
 #include "command_callbacks.h"
 
 void srSetupAction(CommandSetupEvent setupEvent);
-AttackData initializeLimitContext(DamageCalcStruct* damageContext, const std::string& abilityKey);
+void srLoadAbilityData();
+void initializeLimitContext(DamageCalcStruct* damageContext);
 void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellData, const AttackData& abilityData);
 void setStatusInflictionData(DamageCalcStruct* damageContext, i32 statusInflictionByte, i32 inflictedStatusMask);
 #endif // !COMMAND_CALLBACKS_H

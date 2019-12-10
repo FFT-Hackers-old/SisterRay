@@ -8,39 +8,38 @@
 #include "command_callbacks.h"
 #include "cmd_select_callbacks.h"
 #include "gdata_utils.h"
+#include "attacks.h"
 
 #define KERNEL_COMMAND_COUNT 32
 
 typedef struct {
+    CommandData gameCommand;
     AuxCommandData auxData;
     std::vector<SRPFNCOMMANDSETUP> setupCallbacks;
     std::vector<SRPFNCMDSELECTCALLBACK> selectCallbacks;
-} PAuxCommandData;
+    u16 actionCount;
+    std::vector<u16> commandActions; //vector of indexes into the attacks table. Game engine fetches attack data through this
+} SrCommand;
 
-class SrCommandRegistry : public SrNamedResourceRegistry<CommandData, std::string> {
+class SrCommandRegistry : public SrNamedResourceRegistry<SrCommand, std::string> {
 public:
-    SrCommandRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<CommandData, std::string>(stream) {};
-    SrCommandRegistry() : SrNamedResourceRegistry<CommandData, std::string>() {}
+    SrCommandRegistry(SrKernelStream* stream);
+    SrCommandRegistry() : SrNamedResourceRegistry<SrCommand, std::string>() {}
 };
 
-class SrAuxCommandRegistry : public SrNamedResourceRegistry<PAuxCommandData, std::string> {
-public:
-    SrAuxCommandRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<PAuxCommandData, std::string>(stream) {};
-    SrAuxCommandRegistry() : SrNamedResourceRegistry<PAuxCommandData, std::string>() {}
-};
-
-void initializeAuxCommandRegistry();
-void initializeNonPlayerCommands();
 SISTERRAY_API void runSetupCallbacks(const char* name);
 void runSetupCallbacks(u16 commandIdx);
-void dispatchSelectCallbacks(const char* name, Menu* menu, EnabledCommandStruct& command);
 void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu);
-SISTERRAY_API void initCommands(SrKernelStream* stream);
+void initCommands(SrKernelStream* stream);
 u16 getDefaultCmdAnimScript(u16 idx);
 u8 getDefaultCmdDamage(u16 commandIdx);
 u16 getDefaultCmdFlags(u16 commandIdx);
 u16 getDefaultHasActions(u16 commandIdx);
-void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand);
-void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand);
+void registerDefaultCallbacks(u16 commandIdx, SrCommand& auxCommand);
+void registerSelectCallbacks(u16 commandIdx, SrCommand& auxCommand);
+
+const SrCommand& getCommand(u8 commandIdx);
+const SrAttack& getCommandAction(u8 commandIdx, u16 actionIdx);
+void addCommandAction(const std::string commandKey, const std::string actionKey);
 
 #endif

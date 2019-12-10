@@ -5,8 +5,7 @@
 void equipGearHandler(const MenuInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 0)->context;
     auto gearChoice = getStateCursor(event->menu, 1)->context;
-    characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
-    auto characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    CharacterRecord& characterRecord = *getPartyActorCharacterRecord(*EQUIP_MENU_PARTY_INDEX);
     u8 equippedGearItemType;
 
     if (event->menuState != 1)
@@ -18,17 +17,17 @@ void equipGearHandler(const MenuInputEvent* event) {
     switch (slotChoice.relativeRowIndex) { //
         case 0: { //equip WEAPON
             equippedGearItemType = 1;
-            handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
+            handleEquipGear(characterRecord, equippedGearItemType, equippedGearRelativeIndex);
             break;
         }
         case 1: { //equip ARMOR
             equippedGearItemType = 2;
-            handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
+            handleEquipGear(characterRecord, equippedGearItemType, equippedGearRelativeIndex);
             break;
         }
         case 2: { //equip Accessory
             equippedGearItemType = 3;
-            handleEquipGear(characterRecordArray, characterRecordArrayIndex, equippedGearItemType, equippedGearRelativeIndex);
+            handleEquipGear(characterRecord, equippedGearItemType, equippedGearRelativeIndex);
             break;
         }
         default: {
@@ -119,50 +118,49 @@ void changeToMateriaMenu(const MenuInputEvent* event) {
 }
 
 void handleUnequipAcc(const MenuInputEvent* event) {
-    characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
-    auto characterRecordArrayIndex = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
+    CharacterRecord& characterRecord = *getPartyActorCharacterRecord(*EQUIP_MENU_PARTY_INDEX);
     if (!(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2) {
         playMenuSound(4);
-        if (characterRecordArray[characterRecordArrayIndex].equipped_accessory != 0xFF) {
-            auto removedGearRelativeIndex = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
+        if (characterRecord.equipped_accessory != 0xFF) {
+            auto removedGearRelativeIndex = characterRecord.equipped_accessory;
             auto removedGearAbsoluteIndex = gContext.itemTypeData.get_absolute_id(3, removedGearRelativeIndex);
             gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteIndex, 1); //can only unequip
         }
 
-        characterRecordArray[characterRecordArrayIndex].equipped_accessory = 0xFF;
+        characterRecord.equipped_accessory = 0xFF;
         recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
         recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
         updateMiscPartyStats();
     }
 }
 
-void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex) {
+void handleEquipGear(CharacterRecord& characterRecord, u8 gearType, u8 equippedGearRelativeIndex) {
     u8 removedGearRelativeID;
     u16 removedGearAbsoluteID;
     u16 equippedGearAbsoluteID;
 
     switch (gearType) {
         case 1: {
-            removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_weapon;
+            removedGearRelativeID = characterRecord.equipped_weapon;
             removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
             equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-            characterRecordArray[characterRecordArrayIndex].equipped_weapon = equippedGearRelativeIndex;
-            handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
+            characterRecord.equipped_weapon = equippedGearRelativeIndex;
+            handleMateriaUpdate(characterRecord, gearType, equippedGearRelativeIndex);
             break;
         }
         case 2: {
-            removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_armor;
+            removedGearRelativeID = characterRecord.equipped_armor;
             removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
             equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-            characterRecordArray[characterRecordArrayIndex].equipped_armor = equippedGearRelativeIndex;
-            handleMateriaUpdate(characterRecordArray[characterRecordArrayIndex], gearType, equippedGearRelativeIndex);
+            characterRecord.equipped_armor = equippedGearRelativeIndex;
+            handleMateriaUpdate(characterRecord, gearType, equippedGearRelativeIndex);
             break;
         }
         case 3: {
-            removedGearRelativeID = characterRecordArray[characterRecordArrayIndex].equipped_accessory;
+            removedGearRelativeID = characterRecord.equipped_accessory;
             removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
             equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
-            characterRecordArray[characterRecordArrayIndex].equipped_accessory = equippedGearRelativeIndex;
+            characterRecord.equipped_accessory = equippedGearRelativeIndex;
             break;
         }
         default: {
@@ -175,7 +173,7 @@ void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordA
 }
 
 //Update Materia after new items are equipped
-void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
+void handleMateriaUpdate(CharacterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
     WeaponData newWeaponData;
     ArmorData newArmorData;
     MateriaInventoryEntry& equippedMateriaData = MateriaInventoryEntry();

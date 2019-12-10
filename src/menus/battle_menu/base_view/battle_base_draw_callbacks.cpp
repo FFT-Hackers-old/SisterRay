@@ -1,4 +1,5 @@
 #include "battle_base_draw_callbacks.h"
+#include "../../../battle/scene_globals.h"
 #include "../../../impl.h"
 
 using namespace BattleMenuWidgetNames;
@@ -174,7 +175,7 @@ void handleTopDisplayString(const MenuDrawEvent* event) {
     }
     else if (*actionDisplayActive) {
         enableWidget(topDisplayWidget);
-        auto textToDraw = gContext.attacks.get_element(assemblekey(*stringCommandIdx, *stringActionIdx)).attackName.unicode();
+        auto textToDraw = getCommandAction(*stringCommandIdx, *stringActionIdx).attackName.str();
         updateText(getChild(topDisplayWidget, "TXT"), textToDraw); // Will need some code to center the text
         return;
     }
@@ -190,7 +191,7 @@ char* srGetStrFromGlobalBuffer(u16 strBufferIndex) {
 void handleBattleStrSubstitions(char* ret, const char* base) {
     u16 baseStrIdx = 0;
     u16 retStrIdx = 0;
-    u16 absItemID = 0;
+    u16 wordArg = 0;
     auto currentChar = base[baseStrIdx];
     const char* resourceName;
     const u16* wordReader = (const u16*)base;
@@ -198,40 +199,25 @@ void handleBattleStrSubstitions(char* ret, const char* base) {
     while (currentChar != 0xFF) {
         switch (currentChar) {
         case 0xEB: {
-            absItemID = wordReader[baseStrIdx + 1];
-            auto itemType = gContext.itemTypeData.get_element(assembleGDataKey(absItemID));
-            switch (itemType.item_type) {
-            case 0: {
-                resourceName = nullptr;
-                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
-                break;
-            }
-            case 1: {
-                resourceName = nullptr;
-                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
-                break;
-            }
-            case 2: {
-                resourceName = nullptr;
-                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
-                break;
-            }
-            case 3: {
-                resourceName = nullptr;
-                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
-                break;
-            default: {
-                resourceName = nullptr;
-                break;
-            }
-            }
-            }
+            wordArg = wordReader[baseStrIdx + 1];
+            resourceName = getItemNameFromAbsoluteIdx(wordArg);
+            retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
             baseStrIdx += 3;
             break;
         case 0xEC: {
             break;
         }
         case 0xED: {
+            wordArg = wordReader[baseStrIdx + 1]; //Holds the actor, and displays target Name
+            if (wordArg > 4) {
+                resourceName = &(getRegistryActorEnemyData(wordArg - 4).enemyData.enemyName[0]);
+                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
+            }
+            else {
+                resourceName = &(getPartyActorCharacterRecord(wordArg)->character_name[0]);
+                retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
+            }
+            baseStrIdx += 3;
             break;
         }
         case 0xEE: {

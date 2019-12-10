@@ -16,9 +16,9 @@
 #include "party/party_callbacks.h"
 #include "battle/ai_script_engine.h"
 #include "battle/battle.h"
-#include "battle/battle_context.h"
 #include "files/lgp_loader.h"
 #include "battle/sr_battle_engine.h"
+#include "gamedata/command_sr_callbacks.h"
 
 
 SrContext gContext;

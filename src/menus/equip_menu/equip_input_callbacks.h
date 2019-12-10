@@ -16,8 +16,8 @@ void changeCharLeft(const MenuInputEvent* event);
 void changeCharRight(const MenuInputEvent* event);
 void changeToMateriaMenu(const MenuInputEvent* event);
 void handleUnequipAcc(const MenuInputEvent* event);
-void handleMateriaUpdate(characterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex);
-void handleEquipGear(characterRecord* characterRecordArray, u32 characterRecordArrayIndex, u8 gearType, u8 equippedGearRelativeIndex);
+void handleMateriaUpdate(CharacterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex);
+void handleEquipGear(CharacterRecord& characterRecordArray, u8 gearType, u8 equippedGearRelativeIndex);
 u16 setupGearMenu(u8 itemType);
 
 #endif

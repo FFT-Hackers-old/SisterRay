@@ -5,14 +5,17 @@
 #define KERNEL_SUMMON_CUTOFF 72
 #define KERNEL_ESKILL_CUTOFF 96
 
-SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAttackData, std::string>() {
+SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAttack, std::string>() {
     size_t read_size;
-    SrAttackData attack;
+    SrAttack attack;
     AttackData baseAttack;
     std::string srAttackID;
+    SrAttack attack96;
+    SrAttack attack97;
 
     auto idx = 0;
     while (1) {
+        auto cmdIdx = 0;
         read_size = srKernelStreamRead(stream, &baseAttack, sizeof(baseAttack));
         if (read_size != sizeof(baseAttack))
             break;
@@ -20,18 +23,23 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         attack.attackName = gContext.gameStrings.magic_names.get_resource(idx);
         attack.attackDescription = gContext.gameStrings.magic_descriptions.get_resource(idx);
         if (idx == 96 || idx == 97) {
-            attack.attackID = idx - 80;
-            srAttackID = assemblekey(CMD_SUMMON, attack.attackID);
+            attack.attackID = idx;
+            cmdIdx = CMD_SUMMON;
             attack.attackID = 0xFFFF;
             attack.animationType = SUMMON;
             attack.attackType = SUMMON;
             attack.animScriptIndex = 0xFFFF;
             attack.useOverride = 0;
             attack.useMulti = 0;
+            if (idx == 96)
+                attack96 = attack;
+            if (idx == 97)
+                attack97 = attack;
+            continue;
         }
         else if (idx < KERNEL_MAGIC_CUTOFF) {
             attack.attackID = idx;
-            srAttackID = assemblekey(CMD_MAGIC, attack.attackID);;
+            cmdIdx = CMD_MAGIC;
             attack.animationType = MAGIC;
             attack.attackType = MAGIC;
             attack.animScriptIndex = 0xFFFF;
@@ -40,8 +48,9 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.multiEffect = getDefaultMagicMultiEffects(idx);
         }
         else if (idx < KERNEL_SUMMON_CUTOFF) {
-            attack.attackID = idx - 56;
-            srAttackID = assemblekey(CMD_SUMMON, attack.attackID);
+            attack.attackName = gContext.gameStrings.summon_attack_names.get_resource(idx);
+            attack.attackID = idx;
+            cmdIdx = CMD_SUMMON;
             attack.animationType = SUMMON;
             attack.attackType = SUMMON;
             attack.animScriptIndex = 0xFFFF;
@@ -49,8 +58,8 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.useMulti = 0;
         }
         else if (idx < KERNEL_ESKILL_CUTOFF) {
-            attack.attackID = idx - 72;
-            srAttackID = assemblekey(CMD_ENEMY_SKILL, attack.attackID);;
+            attack.attackID = idx;
+            cmdIdx = CMD_ENEMY_SKILL;
             attack.animationType = ENEMY_SKILL;
             attack.attackType = ENEMY_SKILL;
             attack.animScriptIndex = 0xFFFF;
@@ -58,54 +67,26 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.useMulti = 0;
         }
         else {
-            attack.attackID  = idx; //Limit indexes are always absolute, and the index is used to dispatch the animation script, so it will not change
-            srAttackID = assemblekey(CMD_LIMIT, attack.attackID);;
+            attack.attackID = idx;
+            cmdIdx = CMD_LIMIT;
             attack.animationType = LIMIT;
             attack.attackType = LIMIT;
             attack.animScriptIndex = idx;
             attack.useOverride = 0;
             attack.useMulti = 0;
         }
-        add_element(srAttackID, attack);
+        add_element(assembleGDataKey(attack.attackID), attack);
+        addCommandAction(assembleGDataKey(cmdIdx), assembleGDataKey(attack.attackID));
         ++idx;
     }
+    // Init gunge lance and fat chocobo
+    add_element(assembleGDataKey(attack96.attackID), attack96);
+    addCommandAction(assembleGDataKey(CMD_SUMMON), assembleGDataKey(attack96.attackID));
+    add_element(assembleGDataKey(attack97.attackID), attack96);
+    addCommandAction(assembleGDataKey(CMD_SUMMON), assembleGDataKey(attack97.attackID));
 }
 
-std::string assemblekey(u8 commandIndex, u16 relativeAttackIndex) {
-    std::string prefix;
-    switch (commandIndex) {
-        case 2:
-        case 21: {
-            prefix = std::string("MAG");
-            break;
-        }
-        case 20: {
-            prefix = std::string("LIM");
-        }
-        case 13: {
-            prefix = std::string("ESK");
-            break;
-        }
-        case 3:
-        case 22: {
-            prefix = std::string("SUM");
-            break;
-        }
-        case 8: {
-            prefix = std::string("THW");
-            break;
-        }
-        case 32:
-            prefix = std::string("ETK");
-            break;
-        default: {
-        }
-    }
-    auto abilityKey = prefix + std::to_string(relativeAttackIndex);
-    return abilityKey;
-}
-
-SISTERRAY_API void initAttacks(SrKernelStream* stream) {
+void initAttacks(SrKernelStream* stream) {
     gContext.attacks = SrAttackRegistry(stream);
     srLogWrite("kernel.bin: Loaded %lu attacks", (unsigned long)gContext.attacks.resource_count());
 }

@@ -110,9 +110,9 @@ void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
         if (commandIdx == CMD_SUMMON)
             *byte_9ADEFC = 1;
 
-        auto command = gContext.auxCommands.get_element(assembleGDataKey(commandIdx));
+        auto command = getCommand(commandIdx);
         if (command.auxData.hasActions) {
-            auto action = gContext.attacks.get_element(assemblekey(commandIdx, actionIdx));
+            auto action = getCommandAction(commandIdx, actionIdx);
             if (action.useOverride) {
                 auto overrrideLoader = action.overrideEffect.loadCallback;
                 srLoadAnimationEffect(overrrideLoader);
@@ -216,9 +216,9 @@ void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     SpellEffect multiCallback;
     u8 animEffectID;
 
-    auto command = gContext.auxCommands.get_element(assembleGDataKey(commandIdx));
+    auto command = getCommand(commandIdx);
     if (command.auxData.hasActions) {
-        auto action = gContext.attacks.get_element(assemblekey(commandIdx, actionIdx));
+        auto action = getCommandAction(commandIdx, actionIdx);
         animEffectID = action.attackData.animationEffectID;
         animationType = action.animationType;
         if (action.useOverride) {

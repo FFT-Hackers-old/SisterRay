@@ -185,10 +185,10 @@ SISTERRAY_API void enableCommand(u8 partyIndex, u8 enabledIndex, u8 commandIndex
         srLogWrite("attempt to enable an invalid command slot");
         return;
     }
-    auto& commandArray = PARTY_STRUCT_ARRAY[partyIndex].enabledCommandArray;
+    auto& commandArray = getActivePartyMember(partyIndex)->enabledCommandArray;
     commandArray[enabledIndex].commandID = commandIndex;
-    commandArray[enabledIndex].cursorCommandType = gContext.commands.get_resource(commandIndex).commandMenuID;
-    commandArray[enabledIndex].targetingData = gContext.commands.get_resource(commandIndex).targetingFlags;
+    commandArray[enabledIndex].cursorCommandType = getCommand(commandIndex).gameCommand.commandMenuID;
+    commandArray[enabledIndex].targetingData = getCommand(commandIndex).gameCommand.targetingFlags;
     commandArray[enabledIndex].commandFlags = 0;
 }
 
@@ -197,7 +197,7 @@ SISTERRAY_API void voidCommand(u8 partyIndex, u8 enabledIndex) {
         srLogWrite("attempt to void an invalid command slot");
         return;
     }
-    auto& command= PARTY_STRUCT_ARRAY[partyIndex].enabledCommandArray[enabledIndex];
+    auto& command= getActivePartyMember(partyIndex)->enabledCommandArray[enabledIndex];
     command.commandID = 0xFF;
     command.cursorCommandType = 0;
     command.targetingData = 0xFF;
@@ -207,7 +207,7 @@ SISTERRAY_API void voidCommand(u8 partyIndex, u8 enabledIndex) {
 }
 
 SISTERRAY_API u8 getEnabledSlotIndex(u8 partyIndex, u8 commandIndex){
-    auto& commandArray = PARTY_STRUCT_ARRAY[partyIndex].enabledCommandArray;
+    auto& commandArray = getActivePartyMember(partyIndex)->enabledCommandArray;
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         if (commandArray[slotIndex].commandID == commandIndex)
             return slotIndex;
@@ -286,8 +286,8 @@ SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRela
     if (enabledIndex < enabledMagics.max_size()) {
         auto& enabledSlot = enabledMagics[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
-        enabledSlot.targetData = gContext.attacks.get_element(assemblekey(CMD_MAGIC, commandlRelativeIndex)).attackData.targetingFlags;
-        enabledSlot.mpCost = gContext.attacks.get_element(assemblekey(CMD_MAGIC, commandlRelativeIndex)).attackData.MPCost;
+        enabledSlot.targetData = getCommandAction(CMD_MAGIC, commandlRelativeIndex).attackData.targetingFlags;
+        enabledSlot.mpCost = getCommandAction(CMD_MAGIC, commandlRelativeIndex).attackData.MPCost;
         return;
     }
     srLogWrite("attempted to enable magic spell at an invalid index");
@@ -309,8 +309,8 @@ SISTERRAY_API void enableSummon(u8 partyIndex, u32 enabledIndex, u32 commandlRel
     if (enabledIndex < enabledSummons.max_size()) {
         auto& enabledSlot = enabledSummons[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
-        enabledSlot.targetData = gContext.attacks.get_element(assemblekey(CMD_SUMMON, commandlRelativeIndex)).attackData.targetingFlags;
-        enabledSlot.mpCost = gContext.attacks.get_element(assemblekey(CMD_SUMMON, commandlRelativeIndex)).attackData.MPCost;
+        enabledSlot.targetData = getCommandAction(CMD_SUMMON, commandlRelativeIndex).attackData.targetingFlags;
+        enabledSlot.mpCost = getCommandAction(CMD_SUMMON, commandlRelativeIndex).attackData.MPCost;
         return;
     }
     srLogWrite("attempted to enable magic spell at an invalid index");
@@ -333,8 +333,8 @@ SISTERRAY_API void enableESkill(u8 partyIndex, u32 enabledIndex, u32 commandlRel
     if (enabledIndex < enabledESkills.max_size()) {
         auto& enabledSlot = enabledESkills[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
-        enabledSlot.targetData = gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, commandlRelativeIndex)).attackData.targetingFlags;
-        enabledSlot.mpCost = gContext.attacks.get_element(assemblekey(CMD_ENEMY_SKILL, commandlRelativeIndex)).attackData.MPCost;
+        enabledSlot.targetData = getCommandAction(CMD_ENEMY_SKILL, commandlRelativeIndex).attackData.targetingFlags;
+        enabledSlot.mpCost = getCommandAction(CMD_ENEMY_SKILL, commandlRelativeIndex).attackData.MPCost;
         return;
     }
     srLogWrite("attempted to enable magic spell at an invalid index");

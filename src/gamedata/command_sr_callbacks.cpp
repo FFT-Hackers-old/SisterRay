@@ -1,44 +1,45 @@
 #include "command_sr_callbacks.h"
+#include "../battle/scene_globals.h"
 #include "../impl.h"
+
+void srLoadAbilityData() {
+    CommandSetupEvent srEvent = { gDamageContextPtr };
+    srSetupAction(srEvent);
+}
+
 
 void srSetupAction(CommandSetupEvent setupEvent) {
     i32 sceneAbilityIndex;
     i32 enemyActionIndex;
     u16 elementMask;
     u8 characterID;
-    i32 deathSentenceFlag;
-    u16 cameraOverrideData;
-    AttackData abilityData;
+
+    auto deathSentenceFlag = 0;
+    u16 cameraOverrideData = 0xFFFF;
+    auto damageContext = setupEvent.damageContext;
+    const SrAttack& action = getCommandAction(damageContext->commandIndex, damageContext->relAttackIndex);
+    const AttackData& abilityData = action.attackData;
     BattleQueueEntry executingAction = (*(BattleQueueEntry*)0x9A9884);
     AttackData* currentSceneAbilities = (AttackData*)(0x9A90C4);
     char* attackNamesPtr = (char*)(0x9A9484);
     u16* currentSceneAbilityIDs = (u16*)(0x9A9444);
-    AttackData* kernelAbilities = (AttackData*)(0xDB9690);
-    EnemyData* enemyData = (EnemyData*)(0x9A8E9C);
-    auto damageContext = setupEvent.damageContext;
 
-    cameraOverrideData = 0xFFFF;
-    deathSentenceFlag = 0;
     damageContext->MPCost = -1;
-    auto abilityKey = assemblekey(damageContext->commandIndexCopy, damageContext->relAttackIndex);
     switch (damageContext->commandIndexCopy) {
         case 20: {
             if (damageContext->attackerID < 3)
-                abilityData = initializeLimitContext(damageContext, abilityKey);
+                initializeLimitContext(damageContext);
             break;
         }
         case 32: {
-            auto enemyAttack = gContext.attacks.get_element(abilityKey);
-            abilityData = enemyAttack.attackData;
-            currentSceneAbilities[0] = enemyAttack.attackData;
-            memcpy((void*)attackNamesPtr, (void*)(enemyAttack.attackName.str()), enemyAttack.attackName.size());
-            *(attackNamesPtr + enemyAttack.attackName.size()) = char(255);
-            *currentSceneAbilityIDs = enemyAttack.attackID;
+            currentSceneAbilities[0] = abilityData;
+            memcpy((void*)attackNamesPtr, (void*)(action.attackName.str()), action.attackName.size());
+            *(attackNamesPtr + action.attackName.size()) = char(255);
+            *currentSceneAbilityIDs = action.attackID;
             damageContext->sceneAbilityIndex = 0;
             break;
         }
         default: {
-            abilityData = gContext.attacks.get_element(abilityKey).attackData;
             break;
         }
     }
@@ -55,7 +56,7 @@ void srSetupAction(CommandSetupEvent setupEvent) {
         damageContext->animationScriptID = 52;
     }
     else if (damageContext->attackerID >= 4) {
-        auto actingEnemyRecord = enemyData[damageContext->enemySceneIndex]; //Finds the "formation data" for the current actor
+        const auto& actingEnemyRecord = *getInBattleActorEnemyData(damageContext->attackerID - 4); //Finds the "formation data" for the current actor
         for (enemyActionIndex = 0; enemyActionIndex < 16; ++enemyActionIndex) {
             if (damageContext->absAttackIndex == actingEnemyRecord.attackSceneIDs[enemyActionIndex]) { //offset into the actual actor IDs
                 damageContext->animationScriptID = actingEnemyRecord.attackAnimScripts[enemyActionIndex]; //offset into the animation script indexes for this model
@@ -114,48 +115,46 @@ void srSetupAction(CommandSetupEvent setupEvent) {
     copyAdditionalEffects(abilityData.additionalEffect, abilityData.additionalEffectModifier);
 }
 
-AttackData initializeLimitContext(DamageCalcStruct* damageContext, const std::string& abilityKey) {
+//Kill this during Limit Break reimplementation
+void initializeLimitContext(DamageCalcStruct* damageContext) {
     u8 characterID;
     u8* activeLimitIDs;
     u8* kernelLimitScriptIndexes = (u8*)(0x7B76A0);
     u8* unkPartyStructPtr = (u8*)(0x9A87F4);
-    AttackData abilityData;
 
     characterID = unkPartyStructPtr[16 * damageContext->attackerID];
-    activeLimitIDs = (u8*)PARTY_STRUCT_ARRAY[damageContext->attackerID].enabledLimitBytes;
+    activeLimitIDs = getActivePartyMember(damageContext->attackerID)->enabledLimitBytes;
     if (damageContext->absAttackIndex >= 96 && damageContext->absAttackIndex <= 128) {
-        abilityData = gContext.attacks.get_element(abilityKey).attackData;
         auto scriptIndex = damageContext->absAttackIndex - 96;
         if (kernelLimitScriptIndexes[scriptIndex] != 255)
             damageContext->animationScriptID = kernelLimitScriptIndexes[scriptIndex];
         damageContext->enabledMagicsIndex = -1;
+        return;
     }
-    else {
-        for (i32 limitIndex = 0; limitIndex < 3; ++limitIndex) {
-            auto relativeLimitIndex = (i8)activeLimitIDs[limitIndex];
-            if (relativeLimitIndex + 128 == damageContext->absAttackIndex) {
-                auto limitAnimationScriptIndex = 0;
-                for (auto charLimitArrayIndex = 0; charLimitArrayIndex < 12; ++charLimitArrayIndex) {
-                    auto fetchedRelativeIndex = getLimitRelativeIndex(characterID, charLimitArrayIndex);
-                    if (fetchedRelativeIndex != 127) {
-                        if (fetchedRelativeIndex == relativeLimitIndex)
-                            break;
-                        ++limitAnimationScriptIndex;
-                    }
+    for (i32 limitIndex = 0; limitIndex < 3; ++limitIndex) {
+        auto relativeLimitIndex = (i8)activeLimitIDs[limitIndex];
+        if (relativeLimitIndex + 128 == damageContext->absAttackIndex) {
+            auto limitAnimationScriptIndex = 0;
+            for (auto charLimitArrayIndex = 0; charLimitArrayIndex < 12; ++charLimitArrayIndex) {
+                auto fetchedRelativeIndex = getLimitRelativeIndex(characterID, charLimitArrayIndex);
+                if (fetchedRelativeIndex != 127) {
+                    if (fetchedRelativeIndex == relativeLimitIndex)
+                        break;
+                    ++limitAnimationScriptIndex;
                 }
-                damageContext->animationScriptID = limitAnimationScriptIndex + 60;
-                abilityData = (PARTY_STRUCT_ARRAY[damageContext->attackerID].enabledLimitData[limitIndex]);
-                break;
             }
+            damageContext->animationScriptID = limitAnimationScriptIndex + 60;
+            break;
         }
     }
-    return abilityData;
 }
 
 void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellData, const AttackData& abilityData) {
     BattleQueueEntry executingAction = (*(BattleQueueEntry*)0x9A9884);
 
     damageContext->MPCost = spellData->mpCost;
+    if ((executingAction.entryPriority >= 5) && !(damageContext->miscActionFlags & 0x400000)) //priority 5 and 6 actions? what are those
+        damageContext->supportMatFlags = spellData->supportEffectsMask;
     srLogWrite("Setting MP Cost for player spell to: %i", damageContext->MPCost);
     if (spellData->quadCount && spellData->quadEnabled) {
         spellData->quadCount = spellData->quadCount - 1;
@@ -188,8 +187,6 @@ void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellD
             damageContext->miscActionFlags |= 0x100000u;
         }
     }
-    if ((executingAction.entryPriority >= 5) && !(damageContext->miscActionFlags & 0x400000)) //priority 5 and 6 actions? what are those
-        damageContext->supportMatFlags = spellData->supportEffectsMask;
 }
 
 void setStatusInflictionData(DamageCalcStruct* damageContext, i32 statusInflictionByte, i32 inflictedStatusMask) {

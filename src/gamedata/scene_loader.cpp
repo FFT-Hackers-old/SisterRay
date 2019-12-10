@@ -21,8 +21,9 @@ void initFormationsRegistries() {
     FILE* scenePtr = fopen(filename, "rb");
     u32 sceneSize = getFileSize(filename);
     u32 sceneBlockIdx = 0;
+    u32 uniqueEnemyIdx = 0;
     while (sceneSize >= BLOCK_SIZE) {
-        readBlock(scenePtr, BLOCK_SIZE, sceneBlock); //We read a scene block into memory, need to determine when last block is reached
+        readBlock(scenePtr, BLOCK_SIZE, sceneBlock);
         u16 byteSizes[16];
         auto sceneCount = getCompressedFileSizes(sceneBlock, byteSizes); //get the number of scenes in the block and their sizes
         srLogWrite("Loading %i total scenes from block %i", sceneCount, sceneBlockIdx);
@@ -33,12 +34,12 @@ void initFormationsRegistries() {
                 break;
             }
             srLogWrite("loading scene %i from block %i", sceneIndex, sceneBlockIdx);
-            u32 compressedSize = byteSizes[sceneIndex]; //We need to seek the actual end of the last scene
+            u32 compressedSize = byteSizes[sceneIndex]; 
             const u8* compressedScenePtr = sceneBlock + (4 * dwordSceneOffset);
             auto readSize = srGzipInflateCpy(compressedScenePtr, compressedSize, (u8*)&currentScene, sizeof(SceneLayout));
             if (readSize != SCENE_SIZE)
                 srLogWrite("ERROR: decompressed scene file is not the right size. Expected size: 7802, actual size %i", readSize);
-            populateRegistries(currentScene, &formationIndex); //this mutates formation index and populates formation, enemy data, and enemy ability registries. 
+            populateRegistries(currentScene, &formationIndex, &uniqueEnemyIdx); 
         }
         sceneSize -= BLOCK_SIZE;
         sceneBlockIdx++;
@@ -96,7 +97,7 @@ void readBlock(FILE* filehandle, u32 blockSize, u8* dst) {
 }
 
 /*Populate Enemy, Formation, and Enemy Attack Registries*/
-void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
+void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* uniqueIdx) {
     auto sceneIndex = (*formationIndex) / 4;
     std::string sceneName = std::to_string(sceneIndex);
     FormationEnemyIDs srEnemyIDs = FormationEnemyIDs();
@@ -106,9 +107,9 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
         SrEnemyData srEnemyData = SrEnemyData();
         srEnemyData.enemyData = sceneData.enemyDataArray[enemyIndex];
         srEnemyData.modelID = sceneData.formationModelIDs.EnemyIds[enemyIndex];
-        auto enemyName = std::string(EncodedString(srEnemyData.enemyData.enemyName).unicode());
-        auto uniqueID = assembleEnemyDataKey(sceneName + enemyName);
+        auto uniqueID = assembleGDataKey(*uniqueIdx);
         srEnemyIDs.uniqueIDs[enemyIndex] = uniqueID;
+        *uniqueIdx++;
 
         BattleAIData enemyAIData = BattleAIData();
         initializeBattleAIData(&(sceneData.enemyAIData[0]), enemyIndex, enemyAIData);
@@ -144,14 +145,14 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
     auto& enemyAttackIDs = sceneData.enemyAttackIDS;
     for (auto relAttackIndex = 0; relAttackIndex < 32; relAttackIndex++) {
         auto attackID = enemyAttackIDs[relAttackIndex];
-        auto stringID = std::string("ETK") + std::to_string(attackID);
+        auto stringID = assembleGDataKey(attackID);
         if (attackID == 0xFFFF)
             continue;
 
         if (!(gContext.attacks.contains(stringID))) { //must implement a method to check if the dictionary contains a key
             auto attackName = EncodedString((const char *)enemyAttackNames[relAttackIndex].name);
             auto attackData = enemyAttacks[relAttackIndex];
-            SrAttackData enemyAttack = { attackData, attackID, attackName, ENEMY_ATTACK, ENEMY_ATTACK, EncodedString::from_unicode("") };
+            SrAttack enemyAttack = { attackData, attackID, attackName, EncodedString::from_unicode(""), ENEMY_ATTACK, ENEMY_ATTACK,  };
             gContext.attacks.add_element(stringID, enemyAttack);
             srLogWrite("Enemy Attack:%s added to registry with name:%s, and ID:%i",
                 stringID.c_str(),
@@ -159,6 +160,7 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
                 enemyAttack.attackID
             );
         }
+        addCommandAction(assembleGDataKey(CMD_ENEMY_ACTION), stringID); //In the event the string ID already exists (kernel action) just ref it
     }
     srLogWrite("scene fully registered!");
 }

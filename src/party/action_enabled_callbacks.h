@@ -2,7 +2,6 @@
 #define ACTION_ENABLED_CALLBACKS_H
 
 #include <SisterRay/SisterRay.h>
-#include "../events/party_events.h"
 
 void enableAblT0S2(const EnableAbilitiesEvent* const event);
 void enableAblT6S1(const EnableAbilitiesEvent* const event);

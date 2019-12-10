@@ -2,7 +2,6 @@
 #define COMMAND_CALLBACKS_H
 
 #include <SisterRay/SisterRay.h>
-#include "../events/battle_events.h"
 
 typedef void(*SRPFNCOMMANDSETUP)(CommandSetupEvent);
 typedef void(*FF7PFNCOMMANDSETUP)();

@@ -5,7 +5,6 @@
 #include <SisterRay/SisterRay.h>
 #include "../menu_utils.h"
 #include "../../widgets/widget.h"
-#include "../../events/menu_events.h"
 #include "materia_widget_names.h"
 
 void ablListH0S2(const DrawMateriaDataEvent* event);

@@ -21,7 +21,7 @@ SrMateriaRegistry::SrMateriaRegistry(SrKernelStream* stream) : SrNamedResourceRe
     }
 }
 
-SISTERRAY_API SrMateriaData getMateria(u16 modMateriaID, const char* modName) {
+SISTERRAY_API SrMateriaData getSrMateria(u16 modMateriaID, const char* modName) {
     SrMateriaData srMateria = SrMateriaData();
     auto name = std::string(modName) + std::to_string(modMateriaID);
     srMateria.baseData = gContext.materias.get_element(name);
@@ -34,7 +34,7 @@ SISTERRAY_API SrMateriaData getMateria(u16 modMateriaID, const char* modName) {
     return srMateria;
 }
 
-SISTERRAY_API void setMateriaData(SrMateriaData data, u16 modMateriaID, const char* modName) {
+SISTERRAY_API void setSrMateriaData(SrMateriaData data, u16 modMateriaID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modMateriaID);
     gContext.materias.update_element(name, data.baseData);
     gContext.auxMaterias.update_element(name, data.auxData);
@@ -44,7 +44,7 @@ SISTERRAY_API void setMateriaData(SrMateriaData data, u16 modMateriaID, const ch
     gContext.gameStrings.materia_descriptions.update_resource(absoluteIndex, EncodedString::from_unicode(data.materiaDesc));
 }
 
-SISTERRAY_API void addMateria(SrMateriaData data, u16 modMateriaID, const char* modName) {
+SISTERRAY_API void addSrMateria(SrMateriaData data, u16 modMateriaID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modMateriaID);
     gContext.materias.add_element(name, data.baseData);
     gContext.auxMaterias.add_element(name, data.auxData);

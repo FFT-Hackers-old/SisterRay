@@ -1,7 +1,6 @@
 #include "menu.h"
 #include <utility>
 #include "../impl.h"
-#include "../events/menu_events.h"
 
 void MenuRegistry::initializeMenu(std::string menuName, const std::string widgetName) {
     auto menu = get_element(menuName);

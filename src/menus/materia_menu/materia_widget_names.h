@@ -1,6 +1,8 @@
 #ifndef MATERIA_WIDGET_NAMES_H
 #define MATERIA_WIDGET_NAMES_H
 
+#include <string>
+
 namespace MateriaWidgetNames {
     const std::string MATERIA_MENU_NAME = "MATERIA_MENU";
     //Names of TOP LEVEL WIDGETS

@@ -2,7 +2,6 @@
 #define ACTION_ENABLED_HANDLERS_H
 
 #include <SisterRay/SisterRay.h>
-#include "../events/party_events.h"
 
 void counterT6S1(const ApplySupportEvent* event);
 void mCounterT9S1(const ApplySupportEvent* event);

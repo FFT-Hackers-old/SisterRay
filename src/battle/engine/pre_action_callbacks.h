@@ -2,7 +2,6 @@
 #define PRE_ACTION_CALLBACKS_H
 
 #include <SisterRay/SisterRay.h>
-#include "../../events/battle_events.h"
 #include "../battle_utils.h"
 
 void runPreActionScripts(ActionContextEvent* actionEvent);

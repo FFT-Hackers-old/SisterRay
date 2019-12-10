@@ -2,7 +2,6 @@
 #define ANIMATION_SCRIPT_OPCODE_H
 
 #include <SisterRay/SisterRay.h>
-#include "../../events/battle_events.h"
 #include "../../sr_named_registry.h"
 
 enum OpCodeControlSequence { RUN_NEXT, PLAY_ANIM, BREAK };

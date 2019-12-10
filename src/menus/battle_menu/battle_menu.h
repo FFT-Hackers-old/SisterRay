@@ -5,7 +5,6 @@
 #include <SisterRay/SisterRay.h>
 #include "../menu_utils.h"
 #include "../../widgets/widget.h"
-#include "../../events/menu_events.h"
 #include "base_view/battle_base_callbacks.h"
 #include "command_view/battle_command_callbacks.h"
 #include "targeting_view/battle_targeting_callbacks.h"

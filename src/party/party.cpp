@@ -1,5 +1,4 @@
 #include "party.h"
-#include "../events/party_events.h"
 #include "../impl.h"
 
 SrPartyDataRegistry::SrPartyDataRegistry() : SrNamedResourceRegistry<SrPartyData, std::string>() {

@@ -3,7 +3,6 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "../../events/menu_events.h"
 #include "../menu.h"
 #include "materia_widget_names.h"
 

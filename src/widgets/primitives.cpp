@@ -220,7 +220,7 @@ SISTERRAY_API float getNumberPriority(Widget* widgetToUpdate) {
 }
 
 void drawBoxWidget(BoxWidget* boxWidget) {
-    u32* dword_DC3CD8 = (u32*)0xdDC3CD8;
+    u32* dword_DC3CD8 = (u32*)0xDC3CD8;
     u32 swap = 0;
     u32* dword_91EFC8 = (u32*)0x91EFC8;
     u32* dword_91EFCC = (u32*)0x91EFCC;

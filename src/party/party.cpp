@@ -281,6 +281,7 @@ SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 partyIndex, u32 enabledSlotIn
 
 /*Public API methods for enabling an action at a specific command index*/
 SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
+    srLogWrite("enabling magic %d and index %d", commandlRelativeIndex, enabledIndex);
     auto& enabledMagics = gContext.party.get_element(getPartyKey(partyIndex)).actorMagics;
     if (enabledIndex < enabledMagics.max_size()) {
         auto& enabledSlot = enabledMagics[enabledIndex];

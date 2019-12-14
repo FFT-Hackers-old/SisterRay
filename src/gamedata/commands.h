@@ -41,5 +41,6 @@ void registerSelectCallbacks(u16 commandIdx, SrCommand& auxCommand);
 const SrCommand& getCommand(u8 commandIdx);
 const SrAttack& getCommandAction(u8 commandIdx, u16 actionIdx);
 void addCommandAction(const std::string commandKey, const std::string actionKey);
+void setCommandAction(const std::string commandKey, const std::string actionKey, u32 actionIndex);
 
 #endif

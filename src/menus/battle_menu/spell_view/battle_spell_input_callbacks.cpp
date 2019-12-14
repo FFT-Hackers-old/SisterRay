@@ -14,12 +14,13 @@ void handleSelectSpell(const MenuInputEvent* event) {
         return;
 
     auto magicChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
-    auto& enabledSpells = gContext.party.get_element(getPartyKey(event->menuState)).actorMagics;
+    auto& enabledSpells = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorMagics;
     u16* restoreTypeGlobal = (u16*)(0xDC2088);
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (magicChoiceCursor.maxColumnBound * (magicChoiceCursor.relativeRowIndex + magicChoiceCursor.baseRowIndex)) + magicChoiceCursor.relativeColumnIndex;
     if (enabledSpells[flatIndex].propertiesMask & 2 || enabledSpells[flatIndex].magicIndex == 255) {
+        srLogWrite("Trying to dispatch spell at flatindex %d action %d", flatIndex, enabledSpells[flatIndex].magicIndex);
         playMenuSound(3);
         return;
     }

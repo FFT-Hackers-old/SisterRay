@@ -32,9 +32,9 @@ EnemyData* getInBattleEnemyData(u8 formationRelativeIndex) {
     return &(enemyDataPtr[formationRelativeIndex]);
 }
 
-std::string getUniqueEnemyID(u8 arrayIdx) {
+u32 getUniqueEnemyID(u8 arrayIdx) {
     if (arrayIdx > 3) {
-        return nullptr;
+        return 0xFFFFFFFF;
     }
     FormationEnemyIDs* sceneAIDataPtr = (FormationEnemyIDs*)(0x9A9CFC);
     return sceneAIDataPtr->uniqueIDs[arrayIdx];
@@ -51,5 +51,5 @@ EnemyData* getInBattleActorEnemyData(u8 enemyActorIdx) {
 const SrEnemyData& getRegistryActorEnemyData(u8 enemyActorIdx) {
     auto sceneRelativeID = getInBattleFormationActorData(enemyActorIdx)->enemyID;
     auto uniqueID = getUniqueEnemyID(sceneRelativeID);
-    return gContext.enemies.get_element(uniqueID);
+    return gContext.enemies.get_resource(uniqueID);
 }

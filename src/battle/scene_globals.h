@@ -11,7 +11,7 @@ FormationCamera* getInBattleFormationCamera();
 FormationActorDataArray* getInBattleFormationActorDataArray();
 FormationActorData* getInBattleFormationActorData(u8 enemyActorIdx);
 EnemyData* getInBattleEnemyData(u8 formationRelativeIndex);
-std::string getUniqueEnemyID(u8 arrayIdx);
+u32 getUniqueEnemyID(u8 arrayIdx);
 EnemyData* getInBattleActorEnemyData(u8 enemyActorIdx);
 const SrEnemyData& getRegistryActorEnemyData(u8 enemyActorIdx);
 

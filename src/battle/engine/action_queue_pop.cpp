@@ -71,6 +71,7 @@ void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
     memset((void*)gDamageContextPtr, 0, sizeof(DamageCalcStruct));
 
     ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
+    srLogWrite("HANDLING BATTLE ACTION: actor: %d, command %d", poppedAction->queueAction.attackerActorID, poppedAction->queueAction.actionCommandIndex);
     gContext.eventBus.dispatch(ACTION_PRE_COMMAND, &actionEvent);
 
     //Display Lucky 7's text
@@ -82,11 +83,11 @@ void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
         }
     }
     //Display caught by surprise string
-    if (gActorTimerBlock[issuingActorID].unkActorFlags & 4) {
+    /*if (gActorTimerBlock[issuingActorID].unkActorFlags & 4) {
         u32 strArgs = issuingActorID;
         pushDisplayString(issuingActorID, 122, 1, &strArgs);
         gActorTimerBlock[issuingActorID].unkActorFlags &= 0xFBu;
-    }
+    }*/
 }
 
 typedef void(*PFNSUBSR436CF2)();

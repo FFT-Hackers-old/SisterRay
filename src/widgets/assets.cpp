@@ -532,7 +532,6 @@ void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
         resourceBarWidget->seg2end,
         resourceBarWidget->colorMask
     };
-    srLogWrite("DRAWING RESOURCE BAR WITH PRIORITY: %f", resourceBarWidget->priority);
     gameDrawResourceBar((void*)&params, resourceBarWidget->priority);
 }
 
@@ -548,7 +547,6 @@ ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::st
     widget->seg2end = params.seg2end;
     widget->colorMask = params.colorMask;
     widget->priority = params.priority;
-    srLogWrite("Resource bar created with z position/priority: %f", widget->priority);
     return widget;
 }
 

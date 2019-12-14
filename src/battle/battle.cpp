@@ -28,6 +28,7 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
     u32* dword_9ACB68 = (u32*)(0x9ACB68);
     u8* battleTypeArray = (u8*)(0x7B76F0);
     // this code coordinates, along with a2, additional setup for "next battle"
+    srLogWrite("CALLING SR LOAD FORMATION");
     if (*dword_C069BC) {
         if (*dword_C069BC != 1) {
             if (*dword_C069BC != 2) {
@@ -46,15 +47,14 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
         *dword_C069BC = 2;
 
     LABEL_11:
-        auto formationIDstr = std::to_string(formationIndex);
-        auto formation = gContext.formations.get_element(assembleGDataKey(formationIndex));
+        auto formation = gContext.formations.get_resource(formationIndex);
         *formationSetupPtr = formation.formationSetup;
         *formationCameraPtr = formation.formationCamera;
         *formationActorDataPtr = formation.formationActorDataArray;
 
         auto& uniqueEnemyIds = formation.FormationEnemyIDs;
         for (auto enemyIndex = 0; enemyIndex < 3; enemyIndex++) {
-            auto currentEnemyData = gContext.enemies.get_element(uniqueEnemyIds.uniqueIDs[enemyIndex]);
+            auto currentEnemyData = gContext.enemies.get_resource(uniqueEnemyIds.uniqueIDs[enemyIndex]);
             formationEnemiesPtr->EnemyIds[enemyIndex] = currentEnemyData.modelID;
             enemyDataPtr[enemyIndex] = currentEnemyData.enemyData;
             /*While the original game copies AI data here, we parse AI scripts and store them with our registries
@@ -137,7 +137,7 @@ void srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
         case 9: {
             auto formationEnemyID = formationActorDataPtr->formationDatas[actorIndex - 4].enemyID; //fetch the formation relative ID, it's modified from the absolute ID
             auto uniqueID = sceneAIDataPtr->uniqueIDs[formationEnemyID];
-            auto& enemyAIData = gContext.enemies.get_element(uniqueID).enemyAI;
+            auto& enemyAIData = gContext.enemies.get_resource(uniqueID).enemyAI;
             scriptPtr = getScriptPtr(enemyAIData, scriptType);
             break;
         }

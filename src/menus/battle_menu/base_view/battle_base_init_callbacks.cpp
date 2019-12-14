@@ -26,8 +26,8 @@ void initBaseViewWidget(const MenuInitEvent* event) {
         auto baseRowWidget = allocateBaseRow(names[idx].c_str(), 28, 32 * idx + 348);
         addChildWidget(baseWidget, (Widget*)baseRowWidget, names[idx]);
     }
-    addChildWidget(baseWidget, allocateDisplayWidget(TOP_STRING_DISPLAY.c_str(), 0, 0), TOP_STRING_DISPLAY);
-    addChildWidget(baseWidget, allocateDisplayWidget(BOTTOM_STRING_DISPLAY.c_str(), 0, 280), BOTTOM_STRING_DISPLAY);
+    addChildWidget(baseWidget, allocateDisplayWidget(TOP_STRING_DISPLAY.c_str(), 60, 20), TOP_STRING_DISPLAY);
+    addChildWidget(baseWidget, allocateDisplayWidget(BOTTOM_STRING_DISPLAY.c_str(), 60, 280), BOTTOM_STRING_DISPLAY);
     addChildWidget(mainWidget, baseWidget, BATTLE_BASE_WIDGET_NAME);
 }
 
@@ -38,8 +38,8 @@ Widget* allocateDisplayWidget(const char* name, i32 xCoordinate, i32 yCoordinate
     DrawBoxParams boxParams = {
         xCoordinate,
         yCoordinate,
-        640,
-        60,
+        520,
+        50,
         0.0f,
         1,
         0,

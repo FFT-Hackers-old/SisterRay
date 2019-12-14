@@ -74,14 +74,14 @@ void enableAblT9S1(const EnableAbilitiesEvent* const event) {
 
 /*Enabler handlers for each type of materia*/
 void enableAblT10S0(const EnableAbilitiesEvent* const event) {
-    for (auto spellIdx = 0; spellIdx < MAGIC_COUNT; spellIdx++) {
+    for (auto spellIdx = 0; spellIdx < getCommand(CMD_MAGIC).actionCount; spellIdx++) {
         enableMagic(event->partyIndex, spellIdx, spellIdx);
     }
 }
 
 
 void enableAblT12S0(const EnableAbilitiesEvent* const event) {
-    for (auto spellIdx = 0; spellIdx < SUMMON_COUNT; spellIdx++) {
+    for (auto spellIdx = 0; spellIdx < getCommand(CMD_SUMMON).actionCount; spellIdx++) {
         enableSummon(event->partyIndex, spellIdx, spellIdx);
     }
 }

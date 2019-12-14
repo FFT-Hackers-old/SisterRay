@@ -51,7 +51,7 @@ void ablListH9S1(const DrawMateriaDataEvent* event){
         }
         enableWidget(widget);
         auto magicIndex = data[idx];
-        auto& abilityName = gContext.attacks.get_element(std::string("MAG") + std::to_string(magicIndex)).attackName;
+        auto& abilityName = getCommandAction(CMD_MAGIC, magicIndex).attackName;
         updateText(getChild(widget, std::string("TXT")), abilityName.str());
         if (idx <= event->materiaLevel - 1) {
             updateTextColor(getChild(widget, std::string("TXT")), COLOR_WHITE);
@@ -77,7 +77,7 @@ void ablListH11S3(const DrawMateriaDataEvent* event) {
                 }
                 enableWidget(widget);
                 auto summonIndex = data[0];
-                auto& abilityName = gContext.attacks.get_element(std::string("SUM") + std::to_string(summonIndex)).attackName;
+                auto& abilityName = getCommandAction(CMD_SUMMON, summonIndex).attackName;
                 updateText(getChild(widget, std::string("TXT")), abilityName.str());
                 updateTextColor(widget, COLOR_WHITE);
                 continue;

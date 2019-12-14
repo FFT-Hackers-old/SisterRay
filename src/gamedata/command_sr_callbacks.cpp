@@ -33,10 +33,8 @@ void srSetupAction(CommandSetupEvent setupEvent) {
         }
         case 32: {
             currentSceneAbilities[0] = abilityData;
-            memcpy((void*)attackNamesPtr, (void*)(action.attackName.str()), action.attackName.size());
-            *(attackNamesPtr + action.attackName.size()) = char(255);
             *currentSceneAbilityIDs = action.attackID;
-            damageContext->sceneAbilityIndex = 0;
+            damageContext->sceneAbilityIndex = action.attackID;
             break;
         }
         default: {

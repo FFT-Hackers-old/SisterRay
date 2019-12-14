@@ -146,7 +146,7 @@ typedef struct {
     u32 field_6C;
     u32 field_70;
     u32 field_74;
-    u8 padding3[0xE9];       //0x75
+    u8 padding3[0xE6];       //0x78
     u16 field_15E;
     u16 field_160;
     u16 field_162;

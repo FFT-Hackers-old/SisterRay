@@ -153,7 +153,6 @@ static void Init(void) {
     mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
-    mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);
     mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);
     mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
@@ -162,7 +161,7 @@ static void Init(void) {
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
-    mogReplaceFunction(PRINT_DEBUG_STRING, &gameLogWrite);
+    //mogReplaceFunction(PRINT_DEBUG_STRING, &gameLogWrite);
     initializeBattleMenu();
     srLogWrite("initialization complete");
     LoadMods();

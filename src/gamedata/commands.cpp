@@ -9,7 +9,6 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
     /*Here we read from the KernelStream */
     auto commandIdx = 0;
     for (;;) {
-
         SrCommand srCommand = SrCommand();
         read_size = srKernelStreamRead(stream, &object, sizeof(object));
         if (read_size != sizeof(object))
@@ -19,11 +18,10 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
         srCommand.auxData.damageCalculationByte = getDefaultCmdDamage(commandIdx);
         srCommand.auxData.miscCommandFlags = getDefaultCmdFlags(commandIdx);
         srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
-        srLogWrite("Registering execution callbacks for command %i", commandIdx);
         registerDefaultCallbacks(commandIdx, srCommand);
         registerSelectCallbacks(commandIdx, srCommand);
+        add_element(assembleGDataKey(commandIdx), srCommand);
         commandIdx++;
-        gContext.commands.add_element(assembleGDataKey(commandIdx), srCommand);
     }
 
     //Initialize enemy/game commands not loaded via kernel
@@ -36,10 +34,9 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
         srCommand.auxData.damageCalculationByte = getDefaultCmdDamage(commandIdx);
         srCommand.auxData.miscCommandFlags = getDefaultCmdFlags(commandIdx);
         srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
-        srLogWrite("Registering execution callbacks for command %i", commandIdx);
         registerDefaultCallbacks(commandIdx, srCommand);
-        registerDefaultCallbacks(commandIdx, srCommand);
-        gContext.commands.add_element(assembleGDataKey(commandIdx), srCommand);
+        registerSelectCallbacks(commandIdx, srCommand);
+        add_element(assembleGDataKey(commandIdx), srCommand);
     }
 }
 
@@ -49,17 +46,21 @@ void initCommands(SrKernelStream* stream) {
 }
 
 const SrCommand& getCommand(u8 commandIdx) {
-    return gContext.commands.get_resource(commandIdx);
+    auto& ret = gContext.commands.get_resource(commandIdx);
+    srLogWrite("Fetching get command for command index, %d", commandIdx);
+    return ret;
 }
 
 const SrAttack& getCommandAction(u8 commandIdx, u16 actionIdx) {
     auto actionTableIdx = 0;
     auto& srCommand = getCommand(commandIdx);
-    if (actionIdx < srCommand.actionCount) {
-        srLogWrite("Error, action %d is not registered for command %d", actionIdx, commandIdx);
+    srLogWrite("requesting command: %d action %d", commandIdx, actionIdx);
+    if (actionIdx > srCommand.actionCount) {
         return gContext.attacks.get_resource(actionTableIdx);
     }
     actionTableIdx = srCommand.commandActions[actionIdx];
+    srLogWrite("getting attack with true index %d", actionTableIdx);
+    srLogWrite("fetched action name %s", gContext.attacks.get_resource(actionTableIdx).attackName.str());
     return gContext.attacks.get_resource(actionTableIdx);
 }
 
@@ -70,7 +71,19 @@ SISTERRAY_API void addActionToCommand(const char* commandName, const char* actio
 
 void addCommandAction(const std::string commandKey, const std::string actionKey) {
     auto& srCommand = gContext.commands.get_element(commandKey);
-    srCommand.commandActions.push_back(gContext.attacks.get_resource_index(actionKey));
+    srLogWrite("fetching index for actionKey %s", actionKey.c_str());
+    auto trueAtkIdx = gContext.attacks.get_resource_index(actionKey);
+    srLogWrite("adding true idx %d to command %s", trueAtkIdx, commandKey.c_str());
+    srCommand.commandActions.push_back(trueAtkIdx);
+}
+
+void setCommandAction(const std::string commandKey, const std::string actionKey, u32 actionIndex) {
+    auto& srCommand = gContext.commands.get_element(commandKey);
+    auto attackIdx = gContext.attacks.get_resource_index(actionKey);
+    if (actionIndex >= srCommand.commandActions.size()) {
+        srCommand.commandActions.resize(actionIndex + 1);
+    }
+    srCommand.commandActions[actionIndex] = attackIdx;
 }
 
 
@@ -81,21 +94,17 @@ SISTERRAY_API void runSetupCallbacks(const char* name) {
 }
 
 void runSetupCallbacks(u16 commandIdx) {
-    srLogWrite("running command callbacks for command idx: %i", commandIdx);
     CommandSetupEvent setupEvent = { gDamageContextPtr };
-    auto& callbacks = gContext.commands.get_resource(commandIdx).setupCallbacks;
+    auto& callbacks = getCommand(commandIdx).setupCallbacks;
     for (auto callback : callbacks) {
-        srLogWrite("Running command callback");
         callback(setupEvent);
     }
 }
 
 void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu) {
-    srLogWrite("running command select callbacks for command idx: %i", command.commandID);
     SelectCommandEvent setupEvent = { menu, &command };
     auto& callbacks = getCommand(command.commandID).selectCallbacks;
     for (auto callback : callbacks) {
-        srLogWrite("Running command select callback");
         callback(&setupEvent);
     }
 }

@@ -1,8 +1,8 @@
 #include "battle_targeting_input_callbacks.h"
 #include "../../menu.h"
-#include "../../../impl.h"
 #include "../battle_menu_utils.h"
 #include "../../../battle/engine/battle_engine_interface.h"
+#include "../../../impl.h"
 
 using namespace BattleMenuWidgetNames;
 
@@ -50,6 +50,7 @@ void handleSelectTargets(const MenuInputEvent* event) {
         playMenuSound(1);
         *ACCEPTING_BATTLE_INPUT = 1;
         setMenuState(event->menu, BATTLE_INACTIVE);
+        srLogWrite("Dispatching Chosen Command from targeting!");
         dispatchChosenBattleAction();
     }
 }

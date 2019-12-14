@@ -128,7 +128,6 @@ SISTERRAY_API Cursor* getStateCursor(Menu* menu, u32 menuState, u32 cursorIdx) {
     if (menuState < menu->stateCount) {
         auto it = menu->cursors[menuState].find(cursorIdx);
         if (it != menu->cursors[menuState].end()) {
-            srLogWrite("returning cursor at %p", &(it->second));
             return &(it->second);
         }
     }

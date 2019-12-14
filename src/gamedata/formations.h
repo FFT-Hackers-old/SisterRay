@@ -5,7 +5,7 @@
 #include "../battle/ai_scripts.h"
 
 typedef struct {
-    std::string uniqueIDs[3];
+    u32 uniqueIDs[3];
 } FormationEnemyIDs;
 
 typedef struct {

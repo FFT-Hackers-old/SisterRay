@@ -76,7 +76,9 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.useMulti = 0;
         }
         add_element(assembleGDataKey(attack.attackID), attack);
-        addCommandAction(assembleGDataKey(cmdIdx), assembleGDataKey(attack.attackID));
+        auto& cmd = gContext.commands.get_resource(cmdIdx);
+        cmd.actionCount++;
+        cmd.commandActions.push_back(get_resource_index(assembleGDataKey(attack.attackID)));
         ++idx;
     }
     // Init gunge lance and fat chocobo

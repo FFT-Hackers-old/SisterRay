@@ -268,7 +268,7 @@ typedef struct {
     u8 field_25;
     u8 field_26;
     u8 field_27;
-    u8 field_28;
+    u8 reflectCount;
     u8 unkActorFlags;           //0x29
     u8 field_2A;                //0x2A
     u8 field_2B;                //0x2B

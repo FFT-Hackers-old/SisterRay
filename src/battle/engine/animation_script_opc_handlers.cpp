@@ -6,6 +6,7 @@
 #include "action_spell_effects.h"
 #include "../../impl.h"
 #include "animation_player.h"
+#include "damage_events.h"
 
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
@@ -590,6 +591,129 @@ OpCodeControlSequence OpCodeB1(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+
+OpCodeControlSequence OpCodeB4(AnimScriptEvent* srEvent) {
+    auto& battleModelState = *getBattleModelState(srEvent->actorID);
+    u8* G_BATTLE_TYPE = (u8*)0xBFD0E0;
+    if (*G_BATTLE_TYPE == 2) {
+        battleModelState.initialYRotation = 2048;
+    }
+    else if (*G_BATTLE_TYPE == 4) {
+        battleModelState.initialYRotation = 0;
+    }
+    battleModelState.restingYRotation = battleModelState.initialYRotation;
+    return RUN_NEXT;
+}
+
+typedef i16(*SRPFNSUB425890)(u16, u8);
+#define gamePushDeathEffects  ((SRPFNSUB425890)0x425890)
+OpCodeControlSequence OpCodeB7(AnimScriptEvent* srEvent) {
+    gamePushDeathEffects(srEvent->actorID, 1);
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeB8(AnimScriptEvent* srEvent) {
+    auto& battleModelState = *getBattleModelState(srEvent->actorID);
+    battleModelState.field_25 &= 0x7Fu;
+    battleModelState.field_25 |= 4u;
+    return RUN_NEXT;
+}
+
+typedef void(*SRPFNSUB430AA7)();
+#define setupAnimationCameraData ((SRPFNSUB430AA7)0x430AA7)
+OpCodeControlSequence OpCodeB9(AnimScriptEvent* srEvent) {
+    u8* byte_BF211C = (u8*)0xBF211C;
+    *byte_BF211C = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);;
+    getAnimationEventTop()->cameraData = -2;
+    setupAnimationCameraData();
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeBA(AnimScriptEvent* srEvent) {
+    auto& battleModelState = *getBattleModelState(srEvent->actorID);
+    u8* G_BATTLE_TYPE = (u8*)0xBFD0E0;
+    battleModelState.restingYRotation = battleModelState.initialYRotation;
+    battleModelState.restingYRotation += readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    if (*G_BATTLE_TYPE == 2) {
+        battleModelState.initialYRotation = 2048;
+    }
+    else if (*G_BATTLE_TYPE == 4) {
+        battleModelState.initialYRotation = 0;
+    }
+    battleModelState.restingYRotation = battleModelState.initialYRotation;
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeBC(AnimScriptEvent* srEvent) {
+    u8* G_IDLE_CAMERA_INDEX = (u8*)0xBFCB28;
+    *G_IDLE_CAMERA_INDEX = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    return RUN_NEXT;
+}
+
+typedef void(*SRPFNSUB424FF1)(u8, u8, u16, u16);
+#define gameRotateToTarget  ((SRPFNSUB424FF1)0x424FF1)
+OpCodeControlSequence OpCodeBD(AnimScriptEvent* srEvent) {
+    u8* byte_BF2370 = (u8*)0xBF2370;
+    u8* G_TARGET_IDX = (u8*)0xBFB198;
+    auto& scriptCtx = *srEvent->scriptContext;
+
+    *byte_BF2370 = 1;
+    scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    scriptCtx.opCodeArgs[1] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    gameRotateToTarget(srEvent->actorID, *G_TARGET_IDX, scriptCtx.opCodeArgs[4], scriptCtx.opCodeArgs[1]);
+    return RUN_NEXT;
+}
+
+
+OpCodeControlSequence OpCodeBF(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C05FEC = (u32*)0xC05FEC;
+    u8* byte_BFCDF0 = (u8*)0xBFCDF0;
+    u16* word_BF2E08 = (u16*)0xBF2E08;
+
+    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C05FEC = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    byte_BFCDF0[*off_C05FE8] = *(u8*)off_C05FEC;
+    if (byte_BFCDF0[0])
+        *word_BF2E08 |= 1u;
+    else
+        *word_BF2E08 &= 0xFFFEu;
+    return RUN_NEXT;
+}
+
+// Jump to first C9
+OpCodeControlSequence OpCodeC1(AnimScriptEvent* srEvent) {
+    auto& ownerModelState = *srEvent->battleModelState;
+    u8 position = 0;
+    ownerModelState.currentScriptPosition = 0;
+    do {
+        position = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    } while (position != 0xC9);
+
+    return RUN_NEXT;
+}
+
+typedef void(*PFNSRSUB425D25)();
+#define gamePushDisplayDamage ((PFNSRSUB425D25)0x425D25)
+
+OpCodeControlSequence OpCodeC2(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C05FEC = (u32*)0xC05FEC;
+    u8* byte_BFCDE0 = (u8*)0xBFCDE0;
+
+    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C05FEC = srPushEffect100(gamePushDisplayDamage);
+    auto& effectCtx = *getEffectContext100(*off_C05FEC);
+    effectCtx.wordArray[3] = *byte_BFCDE0;
+    auto& displayEvent = *getFirstTargetDisplayEvent(*byte_BFCDE0);
+    effectCtx.wordArray[4] = displayEvent.dealtDamage;
+    effectCtx.wordArray[6] = displayEvent.actionFlags;
+    effectCtx.wordArray[2] = displayEvent.impactEventQueueIdx;
+    effectCtx.byteArray[23] = displayEvent.damageEventQueueIdx;
+    effectCtx.wordArray[1] = *(u16*)off_C05FE8;
+    return RUN_NEXT;
+}
+
 OpCodeControlSequence OpCodeE1(AnimScriptEvent* srEvent) {
     setModelAppaer(srEvent->actorID);
     return RUN_NEXT;
@@ -780,35 +904,6 @@ OpCodeControlSequence OpCodeF0(AnimScriptEvent* srEvent) {
          }
      }
      scriptContextPtr->isScriptActive = 0;
-     goto LABEL_20;
- case 0xB7u:
-     sub_425890(actor_id, 1);
-     goto LABEL_20;
- case 0xB8u:
-     gBigAnimBlock[actor_id].field_25 &= 0x7Fu;
-     gBigAnimBlock[actor_id].field_25 |= 4u;
-     goto LABEL_20;
- case 0xB9u:
-     byte_BF211C = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     AbilityCameraData[6 * byte_BF2A38] = -2;
-     setupAnimationCameraData();
-     goto LABEL_20;
- case 0xBAu:
-     gBigAnimBlock[actor_id].field_160 = gBigAnimBlock[actor_id].field_18;
-     gBigAnimBlock[actor_id].field_160 += readWordArg(actor_id, scriptContextPtr->scriptPtr);
- LABEL_47:
-     if (byte_BFD0E0 == 2)
-     {
-         gBigAnimBlock[actor_id].field_18 = 2048;
-     }
-     else if (byte_BFD0E0 == 4)
-     {
-         gBigAnimBlock[actor_id].field_18 = 0;
-     }
-     gBigAnimBlock[actor_id].field_160 = gBigAnimBlock[actor_id].field_18;
-     goto LABEL_20;
- case 0xBCu:
-     byte_BFCB28 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      goto LABEL_20;
  case 0xBDu:
      byte_BF2370 = 1;

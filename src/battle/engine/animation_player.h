@@ -10,6 +10,9 @@
 void srPlayModelAnimation(u16 actorID);
 void srHandleAnimateModel(u16 actorID);
 
+AnimationEvent* getAnimationEvent(u8 queueIndex);
+AnimationEvent* getAnimationEventTop();
+
 i64 srCalculateXVectorComponent(i32 distance);
 i64 srCalculateZVectorComponent(i32 distance);
 

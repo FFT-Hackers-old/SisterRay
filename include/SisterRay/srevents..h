@@ -187,4 +187,54 @@ typedef struct {
 typedef void(*SRPFNCMDSELECTCALLBACK)(SelectCommandEvent*);
 typedef void(*SRPFNCOMMANDSETUP)(CommandSetupEvent);
 
+#pragma pack(push, 1)
+typedef struct {
+    u8 attackerID;
+    u8 activeAllies;
+    u8 spellEffectID;
+    u8 commandIndex;
+    u8 field_4;
+    u8 animationScriptID;
+    u16 actionIndex;
+    u16 cameraData;
+    u16 damageEventQueueIdx;
+} AnimationEvent;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 targetID;
+    u8 attackerID;
+    u8 damagedAnimScriptIdx;
+    u8 impactEventQueueIdx;
+    u16 field_4;
+    u8 field_6;
+    u8 field_7;
+    u32 targetStatusMask;
+} DamageEvent;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 targetID;
+    u16 dealtDamage;
+    u16 actionFlags;
+    u16 currentTargetHP;
+    u16 currentTargetMP;
+    u16 impactSoundID;
+    u16 impactEffectID;
+} ImpactEvent;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 dealtDamage;
+    u16 actionFlags;
+    u16 impactSoundID;
+    u16 impactEffectID;
+    u16 impactEventQueueIdx;
+    u16 damageEventQueueIdx;
+} DamageDisplayEvent;
+#pragma pack(pop)
+
 #endif // !SR_EVENTS_H

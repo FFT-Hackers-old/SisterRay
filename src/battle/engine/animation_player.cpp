@@ -105,6 +105,17 @@ void srPlayModelAnimation(u16 actorID) {
     srLogWrite("CRITICAL: Feteched nullptr for actor %d when executing animation!", actorID);
 }
 
+#define ANIMATION_EVENT_QUEUE ((AnimationEvent*)0x9AAD70)
+AnimationEvent* getAnimationEvent(u8 queueIndex) {
+    if (queueIndex > 64)
+        return nullptr;
+    return &(ANIMATION_EVENT_QUEUE[queueIndex]);
+}
+
+#define ANIMATION_EVENT_QUEUE_INDEX (u8*)0xBF2A38
+AnimationEvent* getAnimationEventTop() {
+    return getAnimationEvent(*ANIMATION_EVENT_QUEUE_INDEX);
+}
 
 typedef i64(*SRPFNCALCULATEVECTORCOPMONENTS)(i32);
 #define gameCalculateXComponent         ((SRPFNCALCULATEVECTORCOPMONENTS)0x662538)

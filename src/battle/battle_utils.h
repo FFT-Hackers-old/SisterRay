@@ -4,5 +4,7 @@
 #include <SisterRay/SisterRay.h>
 
 u8 countTargets(u16 targetMask);
+u8 getBattleType();
+u8 getTargetAllActive();
 
 #endif

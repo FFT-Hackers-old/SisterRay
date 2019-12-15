@@ -21,6 +21,7 @@ OpCodeControlSequence OpCode9C(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCode9E(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCode9F(AnimScriptEvent* srEvent);
+
 OpCodeControlSequence OpCodeA0(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeA1(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeA4(AnimScriptEvent* srEvent);
@@ -35,6 +36,7 @@ OpCodeControlSequence OpCodeAC(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeAD(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeAE(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeAF(AnimScriptEvent* srEvent);
+
 OpCodeControlSequence OpCodeB0(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeB1(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeB4(AnimScriptEvent* srEvent);
@@ -45,7 +47,16 @@ OpCodeControlSequence OpCodeBA(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeBC(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeBD(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeBF(AnimScriptEvent* srEvent);
+
 OpCodeControlSequence OpCodeC1(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeC2(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeC3(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeC4(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeC5(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeC6(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeC7(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeC8(AnimScriptEvent* srEvent);
+
 OpCodeControlSequence OpCodeE1(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeE2(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeE6(AnimScriptEvent* srEvent);
@@ -53,6 +64,7 @@ OpCodeControlSequence OpCodeE8(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeEB(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeEC(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeEE(AnimScriptEvent* srEvent);
+
 OpCodeControlSequence OpCodeF0(AnimScriptEvent* srEvent);
 
 #endif 

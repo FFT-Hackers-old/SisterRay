@@ -7,6 +7,7 @@
 #include "../../impl.h"
 #include "animation_player.h"
 #include "damage_events.h"
+#include "../battle_utils.h"
 
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
@@ -594,11 +595,11 @@ OpCodeControlSequence OpCodeB1(AnimScriptEvent* srEvent) {
 
 OpCodeControlSequence OpCodeB4(AnimScriptEvent* srEvent) {
     auto& battleModelState = *getBattleModelState(srEvent->actorID);
-    u8* G_BATTLE_TYPE = (u8*)0xBFD0E0;
-    if (*G_BATTLE_TYPE == 2) {
+    auto battleType = getBattleType();
+    if (battleType == 2) {
         battleModelState.initialYRotation = 2048;
     }
-    else if (*G_BATTLE_TYPE == 4) {
+    else if (battleType == 4) {
         battleModelState.initialYRotation = 0;
     }
     battleModelState.restingYRotation = battleModelState.initialYRotation;
@@ -631,13 +632,13 @@ OpCodeControlSequence OpCodeB9(AnimScriptEvent* srEvent) {
 
 OpCodeControlSequence OpCodeBA(AnimScriptEvent* srEvent) {
     auto& battleModelState = *getBattleModelState(srEvent->actorID);
-    u8* G_BATTLE_TYPE = (u8*)0xBFD0E0;
+    auto battleType = getBattleType();
     battleModelState.restingYRotation = battleModelState.initialYRotation;
     battleModelState.restingYRotation += readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    if (*G_BATTLE_TYPE == 2) {
+    if (battleType == 2) {
         battleModelState.initialYRotation = 2048;
     }
-    else if (*G_BATTLE_TYPE == 4) {
+    else if (battleType == 4) {
         battleModelState.initialYRotation = 0;
     }
     battleModelState.restingYRotation = battleModelState.initialYRotation;
@@ -711,6 +712,150 @@ OpCodeControlSequence OpCodeC2(AnimScriptEvent* srEvent) {
     effectCtx.wordArray[2] = displayEvent.impactEventQueueIdx;
     effectCtx.byteArray[23] = displayEvent.damageEventQueueIdx;
     effectCtx.wordArray[1] = *(u16*)off_C05FE8;
+    return RUN_NEXT;
+}
+
+#define sub_5BBF31       ((PFNSREFFECTCALLBACK)0x5BBF31)
+OpCodeControlSequence OpCodeC3(AnimScriptEvent* srEvent) {
+    auto& scriptCtx = *srEvent->scriptContext;
+    auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
+    srEvent->battleModelState->field_26 = 1;
+    ownerModelState74.field_3C = GAME_ANGLE_MAX;
+    ownerModelState74.field_3A = GAME_ANGLE_MAX;
+    ownerModelState74.field_38 = GAME_ANGLE_MAX;
+    ownerModelState74.field_C |= 0x20u;
+    scriptCtx.field_14 = srPushEffect10(sub_5BBF31);
+    auto& effectCtx = *getEffectContext10(scriptCtx.field_14);
+    effectCtx.wordArray[3] = srEvent->actorID;
+    effectCtx.wordArray[4] = 0;
+    effectCtx.wordArray[2] = 1;
+    return RUN_NEXT;
+}
+
+
+#define sub_426941       ((PFNSREFFECTCALLBACK)0x426941)
+typedef void(*PFNSRSUB430D32)(u16, u16, u8);
+#define sub_430D32      ((PFNSRSUB430D32)0x430D32)
+OpCodeControlSequence OpCodeC4(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C05FF0 = (u32*)0xC05FF0;
+    u32* off_C05FF4 = (u32*)0xC05FF4;
+    u32* off_C05FF8 = (u32*)0xC05FF8;
+    u8* byte_9ADF08 = (u8*)0x9ADF08;
+    u16* word_9A88BC = (u16*)0x9A88BC;
+
+    if (!*byte_9ADF08) {
+        sub_430D32(0x185u, -1, 64); //dunno what this does
+        *byte_9ADF08 = 1;
+    }
+    *off_C05FEC = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C05FF0 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C05FF4 = srPushEffect10(sub_426941);
+    auto& effectCtx = *getEffectContext10(*off_C05FF4);
+    effectCtx.wordArray[3] = srEvent->actorID;
+    effectCtx.wordArray[4] = 0;
+    effectCtx.wordArray[1] = *(u16*)off_C05FF0;
+    switch (getBattleType()) {
+    case 0:
+    case 1:
+    case 8:
+        *off_C05FF8 = *off_C05FEC;
+        break;
+    case 2:
+        *off_C05FF8 = -*off_C05FEC;
+        break;
+    case 3:
+    case 5:
+    case 6:
+    case 7:
+        if (srEvent->battleModelState->initialYRotation)
+            *off_C05FF8 = -*off_C05FEC;
+        else
+            *off_C05FF8 = *off_C05FEC;
+        break;
+    case 4:
+        if (*word_9A88BC){
+            srEvent->battleModelState->restingYRotation = 0;
+            *off_C05FF8 = *off_C05FEC;
+        }
+        else {
+            srEvent->battleModelState->restingYRotation = 2048;
+            *off_C05FF8 = -*off_C05FEC;
+        }
+        break;
+    default:
+        break;
+    }
+    effectCtx.wordArray[5] = *(u16*)off_C05FF8; 
+    return RUN_NEXT;
+}
+
+
+OpCodeControlSequence OpCodeC5(AnimScriptEvent* srEvent) {
+    u8* G_SCRIPT_WAIT_FRAMES = (u8*)0xBFD0F0;
+    srEvent->battleModelState->waitFrames = *G_SCRIPT_WAIT_FRAMES;
+    return RUN_NEXT;
+}
+
+
+OpCodeControlSequence OpCodeC6(AnimScriptEvent* srEvent) {
+    u8* G_SCRIPT_WAIT_FRAMES = (u8*)0xBFD0F0;
+    *G_SCRIPT_WAIT_FRAMES = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeC7(AnimScriptEvent* srEvent) {
+    u8* byte_BFD0DC = (u8*)0xBFD0DC;
+    auto& scriptCtx = *srEvent->scriptContext;
+    scriptCtx.opCodeArgs[2] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState) + srEvent->actorID;
+    scriptCtx.opCodeArgs[3] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    auto& relActorModelState = *getBattleModelState(scriptCtx.opCodeArgs[2]);
+    auto& relActorModelState74 = *getBattleModelState74(scriptCtx.opCodeArgs[2]);
+
+    if (scriptCtx.opCodeArgs[2] < 10 && scriptCtx.opCodeArgs[2] >= 4) { // If relative index is an enemy one
+        if ((relActorModelState74.field_C & 4) && (relActorModelState74.field_C & 8)) {
+            if (getTargetAllActive()){
+                if (*byte_BFD0DC == srEvent->actorID && relActorModelState.field_25 & 0x80){
+                    relActorModelState.animScriptIndex = scriptCtx.opCodeArgs[3];
+                    relActorModelState.modelEffectFlags |= 1u;
+                    relActorModelState.field_26 = 0;
+                    relActorModelState74.field_C |= 4u;
+                }
+            }
+            else if (relActorModelState.field_25 & 0x80) {
+                relActorModelState.animScriptIndex = scriptCtx.opCodeArgs[3];
+                relActorModelState.modelEffectFlags |= 1u;
+                relActorModelState.field_26 = 0;
+                relActorModelState74.field_C |= 4u;
+            }
+        }
+        else if (relActorModelState.field_25 & 0x80) {
+            relActorModelState.initialYRotation = srEvent->battleModelState->initialYRotation;
+            relActorModelState.restingYRotation = relActorModelState.initialYRotation;
+            relActorModelState.animScriptIndex = scriptCtx.opCodeArgs[3];
+            relActorModelState.modelEffectFlags |= 1u;
+            relActorModelState.field_26 = 0;
+            relActorModelState74.field_C |= 4u;
+        }
+    }
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeC8(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C05FF0 = (u32*)0xC05FF0;
+    u32* off_C05FF4 = (u32*)0xC05FF4;
+    *off_C05FE8 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C05FEC = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C05FF0 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);;
+    *off_C05FF4 = srPushEffect10(sub_426941);
+    auto& effectCtx = *getEffectContext10(*off_C05FF4);
+    effectCtx.wordArray[3] = srEvent->actorID;
+    effectCtx.wordArray[4] = *(u16*)off_C05FE8;
+    effectCtx.wordArray[5] = *(u16*)off_C05FEC;
+    effectCtx.wordArray[1] = *(u16*)off_C05FF0;
     return RUN_NEXT;
 }
 

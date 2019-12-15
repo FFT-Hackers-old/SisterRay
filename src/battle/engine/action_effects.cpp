@@ -27,6 +27,11 @@ EffectContext* getEffectContext100(u16 effectIndex) {
     return &(GAME_EFFECT_100_QUEUE[effectIndex]);
 }
 
+u16 getEffect100QueueSize() {
+    auto EFFECT100_QUEUE_SIZE = (u16*)0xC05EBC;
+    return *EFFECT100_QUEUE_SIZE;
+}
+
 
 #define GAME_EFFECT_10_QUEUE     ((EffectContext*)0xBF2E70)
 EffectContext* getEffectContext10(u16 effectIndex) {

@@ -366,8 +366,7 @@ typedef struct {
     u8 field_2;
     u8 field_3;
     u8* scriptPtr;
-    u8 field_8;
-    u8 field_9;
+    u16 field_8;
     u16 opCodeArgs[5];
     u8 field_14;
     u8 field_15;

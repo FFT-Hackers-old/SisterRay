@@ -152,6 +152,7 @@ typedef struct {
     AnimScriptContext* scriptContext;
     u8 currentScriptIdx;
     BattleModelState* battleModelState;
+    u8** animationScriptTable;
 } AnimScriptEvent;
 
 typedef struct {

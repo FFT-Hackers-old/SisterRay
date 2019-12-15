@@ -4,8 +4,7 @@
 
 #define CHUNK 4096
 
-SISTERRAY_API void srKernelStreamOpen(SrKernelStream* stream, FILE* file)
-{
+SISTERRAY_API void srKernelStreamOpen(SrKernelStream* stream, FILE* file) {
     memset(stream, 0, sizeof(*stream));
     stream->inBuffer = (char*)malloc(CHUNK);
     stream->outBuffer = (char*)malloc(CHUNK);
@@ -28,20 +27,17 @@ SISTERRAY_API void srKernelStreamOpen(SrKernelStream* stream, FILE* file)
     inflateInit2(&stream->zstream, 31);
 }
 
-SISTERRAY_API void srKernelStreamClose(SrKernelStream* stream)
-{
+SISTERRAY_API void srKernelStreamClose(SrKernelStream* stream) {
     inflateEnd(&stream->zstream);
     free(stream->inBuffer);
     free(stream->outBuffer);
 }
 
-SISTERRAY_API void srKernelStreamSkip(SrKernelStream* stream)
-{
+SISTERRAY_API void srKernelStreamSkip(SrKernelStream* stream) {
     fseek(stream->file, stream->deflatedSize - stream->cursor, SEEK_CUR);
 }
 
-SISTERRAY_API size_t srKernelStreamRead(SrKernelStream* stream, void* dst, size_t readSize)
-{
+SISTERRAY_API size_t srKernelStreamRead(SrKernelStream* stream, void* dst, size_t readSize) {
     char* buf;
     size_t readLength;
     size_t avail;
@@ -93,9 +89,7 @@ SISTERRAY_API size_t srKernelStreamRead(SrKernelStream* stream, void* dst, size_
             stream->zstream.next_in = (Bytef*)stream->inBuffer;
             stream->cursor += avail;
         }
-
         inflate(&stream->zstream, Z_NO_FLUSH);
     }
-
     return readLength;
 }

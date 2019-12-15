@@ -3,10 +3,8 @@
 
 #include <SisterRay/SisterRay.h>
 #include "animation_script_opcode.h"
-
+#include "animation_player.h"
 
 void runAnimationScript(u16 actorID, u8** ptrToScriptTable);
-void srPlayModelAnimation(u16 actorID);
-void srHandleAnimateModel(u16 actorID);
 
 #endif // !ANIMATION_SCRIPT_PARSER_H

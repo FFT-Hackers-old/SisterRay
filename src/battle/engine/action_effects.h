@@ -26,6 +26,7 @@ u16 srPushEffect10(PFNSREFFECTCALLBACK callback);
 EffectContext* getEffectContext60(u16 effectIndex);
 EffectContext* getEffectContext100(u16 effectIndex);
 EffectContext* getEffectContext10(u16 effectIndex);
+u16 getEffect100QueueSize();
 
 typedef enum {
     EFFECT60,

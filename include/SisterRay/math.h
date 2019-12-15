@@ -13,6 +13,14 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
+    u16 x;
+    u16 y;
+    u16 z;
+} R3PointWord;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
     float elements[4][4];
 } Matrix;
 #pragma pack(pop)

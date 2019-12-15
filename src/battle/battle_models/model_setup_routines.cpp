@@ -33,12 +33,12 @@ void translateEnemyABData() {
         actorPositionArray[enemyActorIdx].xPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.xPosition;
         actorPositionArray[enemyActorIdx].yPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.yPosition;
         actorPositionArray[enemyActorIdx].zPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.zPosition;
-        actorModelState->field_162 = 0;
-        actorModelState->field_15E = 0;
+        actorModelState->restingZRotation = 0;
+        actorModelState->restingXRotation = 0;
         switch (*battleType) {
             case 1: {
-                actorModelState->field_18 = 2048;
-                actorModelState->field_160 = 0;
+                actorModelState->initialYRotation = 2048;
+                actorModelState->restingYRotation = 0;
                 break;
             }
             case 3:
@@ -46,23 +46,23 @@ void translateEnemyABData() {
             case 6:
             case 7: {
                 if (actorPositionArray[enemyActorIdx].zPosition >= 0) {
-                    actorModelState->field_160 = 2048;
-                    actorModelState->field_18 = 2048;
+                    actorModelState->restingYRotation = 2048;
+                    actorModelState->initialYRotation = 2048;
                 }
                 else {
-                    actorModelState->field_160 = 0;
-                    actorModelState->field_18 = 0;
+                    actorModelState->restingYRotation = 0;
+                    actorModelState->initialYRotation = 0;
                 }
                 break;
             }
             default: {
                 if (actorPositionArray[enemyActorIdx].zPosition >= 0) {
-                    actorModelState->field_160 = 0;
-                    actorModelState->field_18 = 0;
+                    actorModelState->restingYRotation = 2048;
+                    actorModelState->initialYRotation = 2048;
                 }
                 else {
-                    actorModelState->field_160 = 2048;
-                    actorModelState->field_18 = 2048;
+                    actorModelState->restingYRotation = 0;
+                    actorModelState->initialYRotation = 0;
                 }
                 break;
             }
@@ -116,13 +116,13 @@ void translatePlayerABData() {
                     actorPositionArray[partyIdx].zPosition = twoPartyPositionArray[*battleType].enemyPosition[relIndex].zPosition;
 
 
-                    getBattleModelState(partyIdx)->field_18 = twoPartyAngles[*battleType].angles[relIndex];
+                    getBattleModelState(partyIdx)->initialYRotation = twoPartyAngles[*battleType].angles[relIndex];
                     if (*battleType == 2)
-                        getBattleModelState(partyIdx)->field_160 = 0;
+                        getBattleModelState(partyIdx)->restingYRotation = 0;
                     else
-                        getBattleModelState(partyIdx)->field_160 = twoPartyAngles[*battleType].angles[relIndex];
-                    getBattleModelState(partyIdx)->field_162 = 0;
-                    getBattleModelState(partyIdx)->field_15E = 0;
+                        getBattleModelState(partyIdx)->restingYRotation = twoPartyAngles[*battleType].angles[relIndex];
+                    getBattleModelState(partyIdx)->restingZRotation = 0;
+                    getBattleModelState(partyIdx)->restingXRotation = 0;
                     ++relIndex;
                 }
             }

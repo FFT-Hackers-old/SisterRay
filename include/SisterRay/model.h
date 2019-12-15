@@ -111,9 +111,9 @@ typedef struct {
     u16 field_10;
     u16 field_12;
     u16 field_14;
-    u16 field_16;
-    u16 field_18;
-    u16 field_1A;
+    u16 initialXRotation;
+    u16 initialYRotation;
+    u16 initialZRotation;
     u16 field_1C;
     u16 field_1E;
     u16 field_20;
@@ -147,19 +147,24 @@ typedef struct {
     u32 field_70;
     u32 field_74;
     u8 padding3[0xE6];       //0x78
-    u16 field_15E;
-    u16 field_160;
-    u16 field_162;
+    u16 restingXRotation; 
+    u16 restingYRotation; //0x160
+    u16 restingZRotation;
     u16 field_164;
     ModelPosition restingPosition; //0x166
-    u8 padding5[0xA30];
+    u32 field_16C;
+    u32* field_170;
+    u32 field_174;
+    u8 padding5[0xA24];
     u32 playedAnimFrames;
     u32 currentPlayingFrame;
     u32 tableRelativeModelAnimIdx;
     BattleModel* modelDataPtr;
     u8 padding4[0xF17];
     u32 setForLimitBreaks;
-    u8 padd5[37];
+    u8 padd5[29];
+    u32 field_1AE4;
+    u32 field_1AE8;
 } BattleModelState;
 #pragma pack(pop)
 

@@ -24,7 +24,7 @@ void translateEnemyABData() {
     ModelPositionStruct* actorPositionArray = (ModelPositionStruct*)(0xBFD0A0);
     EnemyPositionStruct* enemyInitialPositionArray = (EnemyPositionStruct*)(0xBF2056);
 
-    for (u16 enemyActorIdx = 4; enemyActorIdx < (*enemyCountGlobal) + 4; ++enemyActorIdx) {
+    for (u8 enemyActorIdx = 4; enemyActorIdx < (*enemyCountGlobal) + 4; ++enemyActorIdx) {
         auto actorModelState = getBattleModelState(enemyActorIdx);
         auto actorModel74State = getBattleModelState74(enemyActorIdx);
         actorModel74State->modelDataIndex = 0;

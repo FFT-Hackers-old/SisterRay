@@ -142,7 +142,7 @@ typedef struct {
 typedef struct {
     DamageCalcStruct* damageContext;
     BattleQueueEntry* poppedAction;
-    u16 issuingActorID;
+    u8 issuingActorID;
     AIBattleContext* battleAIContext;
 } ActionContextEvent;
 

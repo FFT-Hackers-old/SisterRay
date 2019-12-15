@@ -102,10 +102,10 @@ void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     if (*dword_7C10D8) {
         *byte_9ADF00 = actorID;
         *byte_9ADEFC = 0;
-        u16 animationType = CMD_ENEMY_ACTION;
+        u8 animationType = CMD_ENEMY_ACTION;
         bool useMulti = false;
-        u8 animEffectID;
-        SpellEffect multiCallback;
+        u8 animEffectID = 0xFF;
+        SpellEffect multiCallback = { nullptr, nullptr };
 
         if (commandIdx == CMD_SUMMON)
             *byte_9ADEFC = 1;
@@ -132,6 +132,7 @@ void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
             useMulti = (command.auxData.useMulti != 0) ? true : false;
             auto multiCallback = command.auxData.useMulti;
         }
+
         if (animationType == 0xFF || animEffectID == 0xFF) {
             srLogWrite("Animation type or animEffectID are 0xFF, and no override was specified, skipping animation load");
             return;
@@ -211,10 +212,10 @@ void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     }
 
     *byte_BF23BC = 0;
-    u16 animationType = CMD_ENEMY_ACTION;
+    u8 animationType = CMD_ENEMY_ACTION;
     bool useMulti = false;
-    SpellEffect multiCallback;
-    u8 animEffectID;
+    SpellEffect multiCallback = { nullptr, nullptr };
+    u8 animEffectID = 0xFF;
 
     auto command = getCommand(commandIdx);
     if (command.auxData.hasActions) {

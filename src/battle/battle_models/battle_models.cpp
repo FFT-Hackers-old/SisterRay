@@ -7,7 +7,6 @@ typedef void(*PFNSRSUB674659)(u32, FileContext*);
 BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *aaHeader, UnkModelLoadStruct *loadStruct, FileContext *fileContext, char * filename) {
     BattleModel *modelData;
     char FF7Directory[204];
-    u32 bytesRead;
     u32 animationsCount;
 
     if (readTypeFlag)

@@ -442,7 +442,7 @@ OpCodeControlSequence OpCodeA9(AnimScriptEvent* srEvent) {
     actorRotationData.field_0 = 0;
     *byte_C05F80 += 3; //Unsure why this code is needed, may modify
     *off_C05FE8 = *byte_C05F80 & 0xF;
-    for (auto frame = 0; frame < *off_C05FE8; ++frame){
+    for (u32 frame = 0; frame < *off_C05FE8; ++frame){
         ++actorModelState74.field_36;
         srPlayModelAnimation(srEvent->actorID);
     }
@@ -477,9 +477,9 @@ OpCodeControlSequence OpCodeAB(AnimScriptEvent* srEvent) {
     scriptCtx.field_8 = GAME_ANGLE_MAX - (getBattleModelState(*G_CURRENT_ACTION_ACTOR)->restingYRotation + 2048);
     scriptCtx.opCodeArgs[0] = (actorBattleState.field_6 * actorBattleState.field_12 >> 12) + (attackerModelState.field_6 * scriptCtx.opCodeArgs[4] >> 12);
 
-    auto xDelta = (scriptCtx.opCodeArgs[0]*(srCalculateXVectorComponent((i16)scriptCtx.field_8))) / GAME_ANGLE_MAX;
+    i64 xDelta = (scriptCtx.opCodeArgs[0]*(srCalculateXVectorComponent((i16)scriptCtx.field_8))) / GAME_ANGLE_MAX;
     attackerModelState.restingPosition.xCoordinate = actorBattleState.restingPosition.xCoordinate - xDelta;
-    auto zDelta = (scriptCtx.opCodeArgs[0]*(srCalculateZVectorComponent((i16)scriptCtx.field_8))) / GAME_ANGLE_MAX;
+    i64 zDelta = (scriptCtx.opCodeArgs[0]*(srCalculateZVectorComponent((i16)scriptCtx.field_8))) / GAME_ANGLE_MAX;
     attackerModelState.restingPosition.zCoordinate = zDelta + actorBattleState.restingPosition.zCoordinate;
     attackerModelState.restingPosition.yCoordinate = scriptCtx.opCodeArgs[1];
     return RUN_NEXT;
@@ -738,7 +738,7 @@ typedef void(*PFNSRSUB430D32)(u16, u16, u8);
 #define sub_430D32      ((PFNSRSUB430D32)0x430D32)
 OpCodeControlSequence OpCodeC4(AnimScriptEvent* srEvent) {
     u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    i32* off_C05FEC = (i32*)0xC05FEC;
     u32* off_C05FF0 = (u32*)0xC05FF0;
     u32* off_C05FF4 = (u32*)0xC05FF4;
     u32* off_C05FF8 = (u32*)0xC05FF8;

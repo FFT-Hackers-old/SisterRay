@@ -287,7 +287,7 @@ SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRela
         auto& enabledSlot = enabledMagics[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
         enabledSlot.targetData = getCommandAction(CMD_MAGIC, commandlRelativeIndex).attackData.targetingFlags;
-        enabledSlot.mpCost = getCommandAction(CMD_MAGIC, commandlRelativeIndex).attackData.MPCost;
+        enabledSlot.mpCost = getCommandAction(CMD_MAGIC, commandlRelativeIndex).attackData.MPCost & 0xFF; //Narrowing conversion due to game structs
         return;
     }
     srLogWrite("attempted to enable magic spell at an invalid index");

@@ -9,7 +9,6 @@ void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename) {
 /*Used when loading b file for summons and other models that do not need to be SR'd yet*/
 void* srGameLoadABFile(LGPContext* context, char* baseFileName) {
     i32 bytesRead = 0;
-    void *abFile;
     char abFileNameBuffer[204];
 
     createABFilename(baseFileName, &(abFileNameBuffer[0]));
@@ -23,7 +22,6 @@ void srGameInitAnimations(u32 lgpIndex, u32 unkint, void** srAnimsTable, LGPCont
 
 LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer) {
     i32 bytesRead = 0;
-    void* daArchiveFile;
     char daFileNameBuffer[204];
     char mangledName[32];
     u32 archiveIndex = 0;
@@ -38,7 +36,6 @@ LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void*
 
 LGPArchiveFile srOpenABFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer) {
     i32 bytesRead = 0;
-    void *abFile;
     char abFileNameBuffer[204];
     char mangledName[32];
 

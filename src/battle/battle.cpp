@@ -9,9 +9,7 @@
 #include "../EncodedString.h"
 
 void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
-    char v4; 
     int enemyIndex;
-    void *v16; 
     FormationEnemies* formationEnemiesPtr = getInBattleFormationEnemyModels();
     FormationSetup* formationSetupPtr = getInBattleFormationSetup();
     FormationCamera* formationCameraPtr = getInBattleFormationCamera();
@@ -189,8 +187,10 @@ i32 srExecuteFormationScripts() {
     return result;
 }
 
+typedef i32(*pfnsub43258A)(BattleQueueEntry*);
+#define enqueueBattleAction      ((pfnsub43258A)0x43258A)
 /*Rewrite this function to expect an ABSOLUTE instead of relative id when executing enemy attacks*/
-i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex) {
+i32 enqueueScriptAction(u8 actorID, u8 commandIndex, u16 relAttackIndex) {
     u32* dword_C3F338 = (u32*)(0xC3F338);
     u16* word_9AB0AE = (u16*)(0x9AB0AE);
 
@@ -207,12 +207,10 @@ i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex) {
         default:{
         }
     }
-
-    srLogWrite("enqueueing entry with for actor %i, command_id %i, attack_id %i from AI script", actorID, commandIndex, relAttackIndex);
     gAiActorVariables[actorID].lastTargets = *word_9AB0AE;
     BattleQueueEntry queueEntry = { *(u8*)dword_C3F338, 0, actorID, commandIndex, relAttackIndex, *word_9AB0AE };
     
-    auto var = enqueueBattleAction((u8 *)&queueEntry);
+    auto var = enqueueBattleAction(&queueEntry);
     return var;
 }
 
@@ -231,7 +229,7 @@ i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex) {
     return (void*)gDamageContextPtr;
 }*/
 
-void dispatchAutoActions(i32 partyIndex, i32 actionType) {
+void dispatchAutoActions(u8 partyIndex, i32 actionType) {
     AutoActionType dispatchType;
     switch (actionType) {
         case 0: {
@@ -261,7 +259,7 @@ void dispatchAutoActions(i32 partyIndex, i32 actionType) {
             //Add counter chance based code here
             auto finalAction = getActionToDispatch(action);
             auto targetMask = setTargetMask(partyIndex, action);
-            auto priority = 1;
+            u8 priority = 1;
             if (action.dispatchType == FINAL_ATTACK)
                 priority = 0;
             enqueueAction(partyIndex, priority, action.commandIndex, finalAction, targetMask);
@@ -274,6 +272,8 @@ void dispatchAutoActions(i32 partyIndex, i32 actionType) {
 u16 getActionToDispatch(const SrAutoAction& action) {
     if (action.actionIndex != 0xFFFF) //else return a random action based on the command type
         return action.actionIndex;
+
+    return 0;
 }
 
 u16 setTargetMask(u8 partyIndex, const SrAutoAction& action) {

@@ -219,6 +219,9 @@ SISTERRAY_API float getNumberPriority(Widget* widgetToUpdate) {
     }
 }
 
+
+typedef void(*pfnsub6E7D20)(DrawBoxParams*, float);
+#define gameDrawBox                      ((pfnsub6E7D20)0x6E7D20)
 void drawBoxWidget(BoxWidget* boxWidget) {
     u32* dword_DC3CD8 = (u32*)0xDC3CD8;
     u32 swap = 0;
@@ -245,7 +248,7 @@ void drawBoxWidget(BoxWidget* boxWidget) {
         *dword_91EFD0 = boxWidget->boxColors.rgba3;
         *dword_91EFD4 = boxWidget->boxColors.rgba4;
     }
-    gameDrawBox((i16*)&params, boxWidget->priority);
+    gameDrawBox(&params, boxWidget->priority);
     if (boxWidget->useBoxColors) {
         *dword_91EFC8 = swapColors.rgba1;
         *dword_91EFCC = swapColors.rgba2;
@@ -318,7 +321,7 @@ SISTERRAY_API void updateBoxPriority(Widget* widgetToUpdate, float priority) {
     }
 }
 
-SISTERRAY_API i16 getBoxDrawDistance(Widget* widgetToUpdate, i32 dimension) {
+SISTERRAY_API u16 getBoxDrawDistance(Widget* widgetToUpdate, i32 dimension) {
     if (isBoxWidget(widgetToUpdate)) {
         auto typedPtr = (BoxWidget*)widgetToUpdate;
         switch (dimension) {
@@ -331,14 +334,14 @@ SISTERRAY_API i16 getBoxDrawDistance(Widget* widgetToUpdate, i32 dimension) {
             case 3:
                 return typedPtr->drawDistanceYb;
             default:{
-
                 srLogWrite("attempting to fetch an invalid box dimension");
+                return 0xFFFF;
             }
         }
     }
     else {
         srLogWrite("attempting to fetch a Box widget draw distance property of not a Box Widget");
-        return 0;
+        return 0xFFFF;
     }
 }
 

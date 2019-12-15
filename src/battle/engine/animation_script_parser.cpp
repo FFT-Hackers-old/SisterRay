@@ -2,12 +2,12 @@
 #include "../battle_models/battle_model_state_interface.h"
 #include "../../impl.h"
 
-void runAnimationScript(u16 actorID, u8** ptrToScriptTable) {
+void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
     AnimScriptContext* ptrToScriptContext = (AnimScriptContext*)0x8FE2AC;
     auto& scriptOwnerModelState = *getBattleModelState(actorID);
     auto& scriptOwner74State = *getBattleModelState74(actorID);
     auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);
-    u8* byte_9ADEF8 = (u8*)byte_9ADEF8;
+    u8* byte_9ADEF8 = (u8*)0x9ADEF8;
 
     if (!*BATTLE_PAUSED_GLOBAL) {
         auto& scriptContext = *ptrToScriptContext;

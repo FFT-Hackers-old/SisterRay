@@ -40,10 +40,10 @@ public:
 
 //This will be deprecated soon
 typedef struct {
-    i16 drawDistance1;
-    i16 drawDistance2;
-    i16 drawDistance3;
-    i16 drawDistance4;
+    u16 drawDistance1;
+    u16 drawDistance2;
+    u16 drawDistance3;
+    u16 drawDistance4;
 } oldDrawBoxParams;
 
 #define menuWindowConfig ((oldDrawBoxParams*)0x921C78)

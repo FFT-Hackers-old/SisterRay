@@ -90,9 +90,9 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u16 xCoordinate;
-    u16 yCoordinate;
-    u16 zCoordinate;
+    i16 xCoordinate;
+    i16 yCoordinate;
+    i16 zCoordinate;
 } ModelPosition;
 #pragma pack(pop)
 

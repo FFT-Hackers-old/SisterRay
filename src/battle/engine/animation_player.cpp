@@ -2,7 +2,7 @@
 #include "../battle_models/battle_model_state_interface.h"
 #include "../../impl.h"
 
-void srHandleAnimateModel(u16 actorID) {
+void srHandleAnimateModel(u8 actorID) {
     u8* byte_9ADEF8 = (u8*)0x9ADEF8;
     u8* byte_BFD0E4 = (u8*)0xBFD0E4;
     u8* actorIdleAnimScripts = (u8*)0xBF2DF8;
@@ -43,7 +43,7 @@ void srHandleAnimateModel(u16 actorID) {
     }
 }
 
-void srPlayModelAnimation(u16 actorID) {
+void srPlayModelAnimation(u8 actorID) {
     auto& actorModelState = *getBattleModelState(actorID);
     auto battleModel = actorModelState.modelDataPtr;
     u8* byte_9ADEF8 = (u8*)0x9ADEF8;

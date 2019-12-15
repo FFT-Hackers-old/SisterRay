@@ -172,10 +172,7 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u8 field_0;
-    u8 field_1;
-    u8 field_2;
-    u8 field_3;
+    u32 field_0;
     u16 bData68[4];
     u16 field_C;
     u16 bData76[6];

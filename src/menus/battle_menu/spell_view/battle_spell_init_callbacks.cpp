@@ -4,7 +4,6 @@
 using namespace BattleMenuWidgetNames;
 
 void initBattleMagicViewWidget(const MenuInitEvent* event) {
-    drawGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
@@ -25,7 +24,7 @@ void initBattleMagicViewWidget(const MenuInitEvent* event) {
     addChildWidget(battleSpellView, (Widget*)boxWidget, SPELL_GRID_BOX);
 
     std::vector<std::string> names = { PARTY_1_SPELL_GRID, PARTY_2_SPELL_GRID, PARTY_3_SPELL_GRID };
-    for (auto idx = 0; idx < names.size(); idx++) {
+    for (u32 idx = 0; idx < names.size(); idx++) {
         auto magicItemChoice = getStateCursor(event->menu, idx);
         drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_MAGIC_STATE, &battleSpellNameViewUpdater, 42, 360, allocateSpellRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);

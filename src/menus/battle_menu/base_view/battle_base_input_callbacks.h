@@ -5,7 +5,6 @@
 #include <SisterRay/SisterRay.h>
 #include "../../menu_utils.h"
 #include "../../../widgets/widget.h"
-#include "../../../events/menu_events.h"
 #include "../battle_menu_widget_names.h"
 
 void handlePauseBattle(const MenuInputEvent* event);

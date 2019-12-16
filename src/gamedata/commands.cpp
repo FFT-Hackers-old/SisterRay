@@ -1,81 +1,113 @@
 #include "commands.h"
 #include "../impl.h"
 
-SISTERRAY_API void initCommands(SrKernelStream* stream) {
+/*No patched offsets are needed here, so let's unify this*/
+SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceRegistry<SrCommand, std::string>() {
+    size_t read_size;
+    CommandData object;
+
+    /*Here we read from the KernelStream */
+    auto commandIdx = 0;
+    for (;;) {
+        SrCommand srCommand = SrCommand();
+        read_size = srKernelStreamRead(stream, &object, sizeof(object));
+        if (read_size != sizeof(object))
+            break;
+        srCommand.gameCommand = object;
+        srCommand.auxData.animationScriptIndex = getDefaultCmdAnimScript(commandIdx);
+        srCommand.auxData.damageCalculationByte = getDefaultCmdDamage(commandIdx);
+        srCommand.auxData.miscCommandFlags = getDefaultCmdFlags(commandIdx);
+        srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
+        registerDefaultCallbacks(commandIdx, srCommand);
+        registerSelectCallbacks(commandIdx, srCommand);
+        add_element(assembleGDataKey(commandIdx), srCommand);
+        commandIdx++;
+    }
+
+    //Initialize enemy/game commands not loaded via kernel
+    std::vector<u16> auxCommandIDs = { CMD_ENEMY_ACTION, 33, 34, CMD_POISONTICK };
+    for (auto commandIdx : auxCommandIDs) {
+        SrCommand srCommand = SrCommand();
+        auto playerCommand = CommandData();
+        srCommand.gameCommand = playerCommand;
+        srCommand.auxData.animationScriptIndex = getDefaultCmdAnimScript(commandIdx);
+        srCommand.auxData.damageCalculationByte = getDefaultCmdDamage(commandIdx);
+        srCommand.auxData.miscCommandFlags = getDefaultCmdFlags(commandIdx);
+        srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
+        registerDefaultCallbacks(commandIdx, srCommand);
+        registerSelectCallbacks(commandIdx, srCommand);
+        add_element(assembleGDataKey(commandIdx), srCommand);
+    }
+}
+
+void initCommands(SrKernelStream* stream) {
     gContext.commands = SrCommandRegistry(stream);
-    gContext.auxCommands = SrAuxCommandRegistry();
-    initializeAuxCommandRegistry();
-    initializeNonPlayerCommands();
     srLogWrite("kernel.bin: Loaded %lu commands", (unsigned long)gContext.commands.resource_count());
 }
 
-void initializeAuxCommandRegistry() {
-    for (auto commandIdx = 0; commandIdx < KERNEL_COMMAND_COUNT; ++commandIdx) {
-        auto name = assembleGDataKey(commandIdx);
-        auto& kernelCommand = gContext.commands.get_element(name);
-
-        auto animScriptIdx = getDefaultCmdAnimScript(commandIdx);
-        auto damageByte = getDefaultCmdDamage(commandIdx);
-        auto commandFlags = getDefaultCmdFlags(commandIdx);
-        PAuxCommandData auxCommand = { animScriptIdx, damageByte, commandFlags };
-        srLogWrite("Registering execution callbacks for command %i", commandIdx);
-        registerDefaultCallbacks(commandIdx, auxCommand);
-        registerSelectCallbacks(commandIdx, auxCommand);
-        gContext.auxCommands.add_element(name, auxCommand);
-    }
+const SrCommand& getCommand(u8 commandIdx) {
+    auto& ret = gContext.commands.get_resource(commandIdx);
+    srLogWrite("Fetching get command for command index, %d", commandIdx);
+    return ret;
 }
 
-void initializeNonPlayerCommands() {
-    std::vector<u16> auxCommandIDs = { CMD_ENEMY_ACTION, 33, 34, CMD_POISONTICK };
-    for (auto commandIdx : auxCommandIDs) {
-        auto name = assembleGDataKey(commandIdx);
-        auto& playerCommand = CommandData();
-        gContext.commands.add_element(name, playerCommand);
-        auto& kernelCommand = gContext.commands.get_element(name);
-
-        auto animScriptIdx = getDefaultCmdAnimScript(commandIdx);
-        auto damageByte = getDefaultCmdDamage(commandIdx);
-        auto commandFlags = getDefaultCmdFlags(commandIdx);
-        PAuxCommandData auxCommand = { animScriptIdx, damageByte, commandFlags };
-        srLogWrite("Registering execution callbacks for command %i", commandIdx);
-        registerDefaultCallbacks(commandIdx, auxCommand);
-        gContext.auxCommands.add_element(name, auxCommand);
+const SrAttack& getCommandAction(u8 commandIdx, u16 actionIdx) {
+    auto actionTableIdx = 0;
+    auto& srCommand = getCommand(commandIdx);
+    srLogWrite("requesting command: %d action %d", commandIdx, actionIdx);
+    if (actionIdx > srCommand.actionCount) {
+        return gContext.attacks.get_resource(actionTableIdx);
     }
-
+    actionTableIdx = srCommand.commandActions[actionIdx];
+    srLogWrite("getting attack with true index %d", actionTableIdx);
+    srLogWrite("fetched action name %s", gContext.attacks.get_resource(actionTableIdx).attackName.str());
+    return gContext.attacks.get_resource(actionTableIdx);
 }
+
+
+SISTERRAY_API void addActionToCommand(const char* commandName, const char* actionName) {
+    addCommandAction(std::string(commandName), std::string(actionName));
+}
+
+void addCommandAction(const std::string commandKey, const std::string actionKey) {
+    auto& srCommand = gContext.commands.get_element(commandKey);
+    srLogWrite("fetching index for actionKey %s", actionKey.c_str());
+    auto trueAtkIdx = gContext.attacks.get_resource_index(actionKey);
+    srLogWrite("adding true idx %d to command %s", trueAtkIdx, commandKey.c_str());
+    srCommand.commandActions.push_back(trueAtkIdx);
+}
+
+void setCommandAction(const std::string commandKey, const std::string actionKey, u32 actionIndex) {
+    auto& srCommand = gContext.commands.get_element(commandKey);
+    auto attackIdx = gContext.attacks.get_resource_index(actionKey);
+    if (actionIndex >= srCommand.commandActions.size()) {
+        srCommand.commandActions.resize(actionIndex + 1);
+    }
+    srCommand.commandActions[actionIndex] = attackIdx;
+}
+
 
 /*run every initializer callback in order*/
 SISTERRAY_API void runSetupCallbacks(const char* name) {
-    auto idx = gContext.auxCommands.get_resource_index(std::string(name));
+    auto idx = gContext.commands.get_resource_index(std::string(name));
     runSetupCallbacks(idx);
 }
 
 void runSetupCallbacks(u16 commandIdx) {
-    srLogWrite("running command callbacks for command idx: %i", commandIdx);
     CommandSetupEvent setupEvent = { gDamageContextPtr };
-    auto& callbacks = gContext.auxCommands.get_resource(commandIdx).setupCallbacks;
+    auto& callbacks = getCommand(commandIdx).setupCallbacks;
     for (auto callback : callbacks) {
-        srLogWrite("Running command callback");
         callback(setupEvent);
     }
 }
 
-/*run every select callback in order*/
-void dispatchSelectCallbacks(const char* name, Menu* menu, EnabledCommandStruct& command) {
-    auto idx = gContext.auxCommands.get_resource_index(std::string(name));
-    runSelectCallbacks(command, menu);
-}
-
 void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu) {
-    srLogWrite("running command select callbacks for command idx: %i", command.commandID);
     SelectCommandEvent setupEvent = { menu, &command };
-    auto& callbacks = gContext.auxCommands.get_resource(command.commandID).selectCallbacks;
+    auto& callbacks = getCommand(command.commandID).selectCallbacks;
     for (auto callback : callbacks) {
-        srLogWrite("Running command select callback");
         callback(&setupEvent);
     }
 }
-
 
 /*One off functions used to initialize data in the registries*/
 u16 getDefaultCmdAnimScript(u16 commandIdx) {
@@ -269,7 +301,7 @@ u16 getDefaultCmdFlags(u16 commandIdx) {
     }
 }
 
-void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
+void registerDefaultCallbacks(u16 commandIdx, SrCommand& auxCommand) {
     switch (commandIdx) {
         case 0:
         case 1: {
@@ -408,7 +440,7 @@ void registerDefaultCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
     }
 }
 
-void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
+void registerSelectCallbacks(u16 commandIdx, SrCommand& auxCommand) {
     switch (commandIdx) {
         case 0:
         case 1: {
@@ -442,5 +474,27 @@ void registerSelectCallbacks(u16 commandIdx, PAuxCommandData& auxCommand) {
         default: {
             break;
         }
+    }
+}
+
+u16 getDefaultHasActions(u16 commandIdx) {
+    switch (commandIdx) {
+    case 2:
+    case 21:
+    case 3:
+    case 22: 
+    case 4: 
+    case 23:
+    case 20:
+    case 7:
+    case 8:
+    case 32: {
+        return 1;
+        break;
+    }
+    default: {
+        return 0;
+        break;
+    }
     }
 }

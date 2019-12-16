@@ -6,36 +6,30 @@
 #include "../sr_named_registry.h"
 #include "game_data_interface.h"
 #include "../EncodedString.h"
-
-
-typedef enum {
-    MAGIC,
-    SUMMON,
-    ENEMY_SKILL,
-    LIMIT,
-    ENEMY_ATTACK
-} srAttackType;
+#include "../battle/engine/action_spell_effects.h"
 
 typedef struct {
     AttackData attackData;
     u16 attackID;
     EncodedString attackName;
-    srAttackType attackType; //Either Magic, Summon, Enemy Skill, Limit, Enemy Attack
-    srAttackType animationType;
     EncodedString attackDescription;
-} SrAttackData;
+    SrAttackType attackType; //Either Magic, Summon, Enemy Skill, Limit, Enemy Attack
+    SrAttackType animationType;
+    u16 animScriptIndex; //Overrides the command ID if set, -1 treated as null
+    u8 useOverride;
+    SpellEffect overrideEffect;
+    u8 useMulti;
+    SpellEffect multiEffect;
+} SrAttack;
 
-/*Due to the structure/access patterns for player spells, they need to be contiguous
-  Ergo, unlike enemy attacks, we employee a separate registry for additional data, and
-  maintain attack typed lookups*/
-class SrAttackRegistry : public SrNamedResourceRegistry<SrAttackData, std::string> {
+class SrAttackRegistry : public SrNamedResourceRegistry<SrAttack, std::string> {
 public:
     SrAttackRegistry(SrKernelStream* stream);
-    SrAttackRegistry() : SrNamedResourceRegistry<SrAttackData, std::string>() {}
+    SrAttackRegistry() : SrNamedResourceRegistry<SrAttack, std::string>() {}
 };
 
-
-std::string assemblekey(u8 commandIndex, u16 relativeAttackIndex);
-SISTERRAY_API void initAttacks(SrKernelStream* stream);
+void initAttacks(SrKernelStream* stream);
+u16 getDefaultMagicUseMulti(u16 actionID);
+SpellEffect getDefaultMagicMultiEffects(u16 actionID);
 
 #endif

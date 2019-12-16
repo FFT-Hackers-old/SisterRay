@@ -268,7 +268,7 @@ typedef struct {
     u8 field_25;
     u8 field_26;
     u8 field_27;
-    u8 field_28;
+    u8 reflectCount;
     u8 unkActorFlags;           //0x29
     u8 field_2A;                //0x2A
     u8 field_2B;                //0x2B
@@ -296,90 +296,6 @@ typedef struct {
 #pragma pack(pop)
 
 #define gUnkActorArray  ((UnkActorState*)(0x09A8DB8))
-
-#pragma pack(push, 1)
-typedef struct {
-    u16 xCoordinate;
-    u16 yCoordinate;
-    u16 zCoordinate;
-} ModelPosition;
-#pragma pack(pop)
-
-/*Should  have size 0x1AEC*/
-#pragma pack(push, 1)
-typedef struct {
-	u16 characterID; //BE1170, 0
-    u16 animScriptIndex; //BE1172, 2
-	u8 padding1[4]; //BE1174, 4
-	u16 AnimationData; //BE1178, 8
-	u16 animScriptPtr; //BE117A, 0xA
-    u16 field_C;
-    u16 runningAnimIdx; //0xE
-    u16 field_10;
-    u16 field_12;
-    u16 field_14;
-    u16 field_16;
-    u16 field_18;
-    u16 field_1A;
-    u16 field_1C;
-    u16 field_1E;
-    u16 field_20;
-	u8 animationEffect; //BE119A, 0x22
-	u8 commandID; //BE119B, 0x23
-    u8 field_24;
-    u8 field_25;
-    u8 field_26;
-    u8 field_27;
-    u8 field_28;
-    u8 unkActorFlags;
-    u8 field_2A;
-    u8 bData0x12[16]; //0x2B
-    u8 isScriptExecuting; //0x3B
-    u8 currentScriptPosition; //0x3C
-    u8 waitFrames;            //0x3D
-    u8 modelEffectFlags;      //0x3E
-    u8 padding3[0x11F];       //0x3F
-    u16 field_15E;
-    u16 field_160;
-    u16 field_162;
-    u16 field_164;
-    ModelPosition restingPosition; //0x166
-    u8 padding5[0xA30];
-    u32 playedAnimFrames;
-    u32 currentPlayingFrame;
-    u32 tableRelativeModelAnimIdx;
-    void* modelDataPtr;
-	u8 padding4[0xF17];
-    u32 setForLimitBreaks;
-    u8 padd5[37];
-} BattleModelState;
-#pragma pack(pop)
-
-#define gBigAnimBlock       ((BattleModelState*)0xBE1178)
-
-#pragma pack(push, 1)
-typedef struct {
-    u8 field_0;
-    u8 field_1;
-    u8 field_2;
-    u8 field_3;
-    u16 bData68[4];
-    u16 field_C;
-    u16 bData76[6];
-    u16 bData88[6];
-    u16 field_26;
-    u16 field_28;
-    u16 field_2A;
-    u8 field_2C;
-    u8 field_2D;
-    u16 field_2E;
-    u16 field_30;
-    u8 modelDataIndex; //0x032
-    u8 unkValues[0x41]; //0x33]
-} BattleModelStateSmall;
-#pragma pack(pop)
-
-#define MODEL_DATA_74_ARRAY ((BattleModelStateSmall*)0xBF23C0)
 
 #pragma pack(push, 1)
 typedef struct {
@@ -415,7 +331,7 @@ typedef struct {
     u8 bonus_luck;
     u8 active_limit_level;
     u8 limit_bar_progress;
-    u8 character_name[12];
+    char character_name[12];
     u8 equipped_weapon;
     u8 equipped_armor;
     u8 equipped_accessory;
@@ -438,8 +354,27 @@ typedef struct {
     u32 equippedWeaponMateria[8]; //This is primarily written to/from here, so this should be relocated if we are to expand 
     u32 equippedArmorMateria[8];
     u32 exp_to_next_level;
-} characterRecord;
+} CharacterRecord;
 #pragma pack(pop)
 
-#define CHARACTER_RECORD_ARRAY ((characterRecord*)0xDBFD8C)
+#define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 isScriptActive;
+    u8 currentOpCode;
+    u8 field_2;
+    u8 field_3;
+    u8* scriptPtr;
+    u16 field_8;
+    u16 opCodeArgs[5];
+    u8 field_14;
+    u8 field_15;
+    u16 field_16;
+    u16 field_18;
+    u16 field_1A;
+    u8 field_1C;
+} AnimScriptContext;
+#pragma pack(pop)
+
 #endif

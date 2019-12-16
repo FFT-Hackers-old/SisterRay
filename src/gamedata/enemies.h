@@ -2,7 +2,7 @@
 #define ENEMIES_H
 
 #include "../sr_named_registry.h"
-#include "ai_scripts.h"
+#include "../battle/ai_scripts.h"
 #include "../EncodedString.h"
 #include <unordered_set>
 
@@ -30,5 +30,6 @@ public:
     SrEnemyAttackRegistry() : SrNamedResourceRegistry<EnemyAttack, std::string>() {}
 };
 
+std::string assembleEnemyDataKey(std::string uniqueID);
 
 #endif

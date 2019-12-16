@@ -46,15 +46,15 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
         }
     }
     if (size > (context.viewRowBound * context.viewColumnBound)) {
-        auto idx = size - 1;
+        u16 idx = size - 1;
         while (idx > (context.viewRowBound * context.viewColumnBound)) {
             auto excessWidget = getChild((Widget*)cursorGrid, idx);
             disableWidget(excessWidget);
             idx--;
         }
     }
-    for (auto rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
-        for (auto columnIndex = 0; columnIndex < context.viewColumnBound; ++columnIndex) {
+    for (u32 rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
+        for (u32 columnIndex = 0; columnIndex < context.viewColumnBound; ++columnIndex) {
             u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex);
             auto child = getChild((Widget*)cursorGrid, flatIndex);
             if (child) {
@@ -85,13 +85,9 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
 
     /*If a primitive childtype or allocator is specified, type allocate the results*/
     if (childType || params.allocator) {
-        srLogWrite("initializing menu with name: %s", widget->cursorName);
-        srLogWrite("initializing widget for menu state: %i", widget->menuState);
-        srLogWrite("initializing widget for cursorIdx: %i", widget->cursorIdx);
         auto context = gContext.menuWidgets.get_element(widget->cursorName)->cursors[widget->menuState][widget->cursorIdx].context;
         auto slotCount = (context.viewRowBound) * (context.viewColumnBound);
 
-        srLogWrite("initializing widget with %d slots", slotCount);
         for (u32 slot = 0; slot < slotCount; slot++) {
             auto name = std::to_string(slot);
             auto child = typeAllocate(childType, name, widget->allocator);
@@ -112,7 +108,7 @@ const WidgetClass* StaticGridWidgetClass() {
 }
 
 void drawStaticGridWidget(StaticGridWidget* staticGrid) {
-    auto size = staticGrid->widget.widget.children.size();
+    u32 size = staticGrid->widget.widget.children.size();
     if (size < (staticGrid->rowCount * staticGrid->columnCount)) { //Try to expand the size using an allocator or the type information
         auto idx = size - 1;
         while (size < (staticGrid->rowCount * staticGrid->columnCount)) {
@@ -154,7 +150,7 @@ StaticGridWidget* createStaticGridWidget(DrawStaticGridParams params, std::strin
     widget->columnSpacing = params.columnSpacing;
     /*If a primitive childtype is specified, type allocate the results, otherwise add them to the collection manually*/
     if (childType || params.allocator) {
-        auto slotCount = widget->columnCount * widget->rowCount;
+        u32 slotCount = widget->columnCount * widget->rowCount;
         for (u32 slot = 0; slot < slotCount; slot++) {
             auto name = std::to_string(slot);
             auto child = typeAllocate(childType, name, widget->allocator);

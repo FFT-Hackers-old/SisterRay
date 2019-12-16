@@ -1,7 +1,7 @@
 #include "items.h"
 #include "../impl.h"
 
-SISTERRAY_API SrConsumableData getItem(u16 modItemID, const char* modName) {
+SISTERRAY_API SrConsumableData getSrItem(u16 modItemID, const char* modName) {
     SrConsumableData srItem = SrConsumableData();
     auto name = std::string(modName) + std::to_string(modItemID);
     srItem.baseData = gContext.items.get_element(name);
@@ -15,7 +15,7 @@ SISTERRAY_API SrConsumableData getItem(u16 modItemID, const char* modName) {
     return srItem;
 }
 
-SISTERRAY_API void setItemData(SrConsumableData data, u16 modItemID, const char* modName) {
+SISTERRAY_API void setSrItemData(SrConsumableData data, u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
     gContext.items.update_element(name, data.baseData);
     gContext.itemOnUseData.update_element(name, data.useData);
@@ -26,7 +26,7 @@ SISTERRAY_API void setItemData(SrConsumableData data, u16 modItemID, const char*
     gContext.gameStrings.item_descriptions.update_resource(relativeIndex, EncodedString::from_unicode(data.itemDesc));
 }
 
-SISTERRAY_API void addItem(SrConsumableData data, u16 modItemID, const char* modName) {
+SISTERRAY_API void addSrItem(SrConsumableData data, u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
     gContext.items.add_element(name, data.baseData);
     gContext.itemOnUseData.add_element(name, data.useData);
@@ -34,24 +34,6 @@ SISTERRAY_API void addItem(SrConsumableData data, u16 modItemID, const char* mod
 
     gContext.gameStrings.item_names.add_resource(EncodedString::from_unicode(data.itemName));
     gContext.gameStrings.item_descriptions.add_resource(EncodedString::from_unicode(data.itemDesc));
-}
-
-static const u32 kPatchStructBase[] = {
-    0x005c9b7b, 0x007ba080
-};
-
-static const u32 kPatchRestrictMask[] = {
-    0x004332db, 0x005d15b6, 0x006c50f1,
-};
-
-static const u32 kPatchTargetFlags[] = {
-    0x004332c8, 0x005d15cb
-};
-
-static void patchItems(void) {
-    srPatchAddresses((void**)kPatchStructBase, ARRAY_SIZE(kPatchStructBase), ITEM_DATA_PTR, gContext.items.get_data(), offsetof(ItemData, unknown));;
-    srPatchAddresses((void**)kPatchRestrictMask, ARRAY_SIZE(kPatchRestrictMask), ITEM_DATA_PTR, gContext.items.get_data(), offsetof(ItemData, restriction_mask));
-    srPatchAddresses((void**)kPatchTargetFlags, ARRAY_SIZE(kPatchTargetFlags), ITEM_DATA_PTR, gContext.items.get_data(), offsetof(ItemData, target_flags));
 }
 
 /*initialize on use data to match the vanilla game*/
@@ -111,7 +93,6 @@ void createOnUseItemData(u16 hp_heal_amount, u16 mp_heal_amount,
 SISTERRAY_API void initItems(SrKernelStream* stream) {
     gContext.items = SrItemRegistry(stream);
     gContext.itemTypeData.initialize_augmented_data((u8)0, gContext.items.resource_count());
-    patchItems();
     srLogWrite("kernel.bin: Loaded %lu items", (unsigned long)gContext.items.resource_count());
 }
 

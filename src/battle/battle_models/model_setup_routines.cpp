@@ -1,6 +1,7 @@
 #include "model_setup_routines.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
+#include "battle_model_state_interface.h"
 
 typedef void(*PFNSRSUB42B4AF)();
 #define sub_42B4AF  ((PFNSRSUB42B4AF)0x42B4AF)
@@ -23,19 +24,21 @@ void translateEnemyABData() {
     ModelPositionStruct* actorPositionArray = (ModelPositionStruct*)(0xBFD0A0);
     EnemyPositionStruct* enemyInitialPositionArray = (EnemyPositionStruct*)(0xBF2056);
 
-    for (u16 enemyActorIdx = 4; enemyActorIdx < (*enemyCountGlobal) + 4; ++enemyActorIdx) {
-        MODEL_DATA_74_ARRAY[enemyActorIdx].modelDataIndex = 0;
+    for (u8 enemyActorIdx = 4; enemyActorIdx < (*enemyCountGlobal) + 4; ++enemyActorIdx) {
+        auto actorModelState = getBattleModelState(enemyActorIdx);
+        auto actorModel74State = getBattleModelState74(enemyActorIdx);
+        actorModel74State->modelDataIndex = 0;
         initEnemyModelsFromAB(enemyActorIdx);
         byte_BF2DF8[enemyActorIdx] = UNK_ACTOR_STRUCT_ARRAY[enemyActorIdx].field_1;
         actorPositionArray[enemyActorIdx].xPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.xPosition;
         actorPositionArray[enemyActorIdx].yPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.yPosition;
         actorPositionArray[enemyActorIdx].zPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.zPosition;
-        gBigAnimBlock[enemyActorIdx].field_162 = 0;
-        gBigAnimBlock[enemyActorIdx].field_15E = 0;
+        actorModelState->restingZRotation = 0;
+        actorModelState->restingXRotation = 0;
         switch (*battleType) {
             case 1: {
-                gBigAnimBlock[enemyActorIdx].field_18 = 2048;
-                gBigAnimBlock[enemyActorIdx].field_160 = 0;
+                actorModelState->initialYRotation = 2048;
+                actorModelState->restingYRotation = 0;
                 break;
             }
             case 3:
@@ -43,23 +46,23 @@ void translateEnemyABData() {
             case 6:
             case 7: {
                 if (actorPositionArray[enemyActorIdx].zPosition >= 0) {
-                    gBigAnimBlock[enemyActorIdx].field_160 = 2048;
-                    gBigAnimBlock[enemyActorIdx].field_18 = 2048;
+                    actorModelState->restingYRotation = 2048;
+                    actorModelState->initialYRotation = 2048;
                 }
                 else {
-                    gBigAnimBlock[enemyActorIdx].field_160 = 0;
-                    gBigAnimBlock[enemyActorIdx].field_18 = 0;
+                    actorModelState->restingYRotation = 0;
+                    actorModelState->initialYRotation = 0;
                 }
                 break;
             }
             default: {
                 if (actorPositionArray[enemyActorIdx].zPosition >= 0) {
-                    gBigAnimBlock[enemyActorIdx].field_160 = 0;
-                    gBigAnimBlock[enemyActorIdx].field_18 = 0;
+                    actorModelState->restingYRotation = 2048;
+                    actorModelState->initialYRotation = 2048;
                 }
                 else {
-                    gBigAnimBlock[enemyActorIdx].field_160 = 2048;
-                    gBigAnimBlock[enemyActorIdx].field_18 = 2048;
+                    actorModelState->restingYRotation = 0;
+                    actorModelState->initialYRotation = 0;
                 }
                 break;
             }
@@ -78,7 +81,8 @@ void translatePlayerABData() {
 
     *gCharacterModelCount = 0;
     for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
-        MODEL_DATA_74_ARRAY[partyIdx].modelDataIndex = partyIdx; //The other model data struct, which I do not yet understand
+        auto actorModel74State = getBattleModelState74(partyIdx);
+        actorModel74State->modelDataIndex = partyIdx; //The other model data struct, which I do not yet understand
         if (UNK_ACTOR_STRUCT_ARRAY[partyIdx].characterID != 0xFF) {
             copyDataFromBFile(partyIdx);
             *gCharacterModelCount = *gCharacterModelCount + 1;
@@ -112,13 +116,13 @@ void translatePlayerABData() {
                     actorPositionArray[partyIdx].zPosition = twoPartyPositionArray[*battleType].enemyPosition[relIndex].zPosition;
 
 
-                    gBigAnimBlock[partyIdx].field_18 = twoPartyAngles[*battleType].angles[relIndex];
+                    getBattleModelState(partyIdx)->initialYRotation = twoPartyAngles[*battleType].angles[relIndex];
                     if (*battleType == 2)
-                        gBigAnimBlock[partyIdx].field_160 = 0;
+                        getBattleModelState(partyIdx)->restingYRotation = 0;
                     else
-                        gBigAnimBlock[partyIdx].field_160 = twoPartyAngles[*battleType].angles[relIndex];
-                    gBigAnimBlock[partyIdx].field_162 = 0;
-                    gBigAnimBlock[partyIdx].field_15E = 0;
+                        getBattleModelState(partyIdx)->restingYRotation = twoPartyAngles[*battleType].angles[relIndex];
+                    getBattleModelState(partyIdx)->restingZRotation = 0;
+                    getBattleModelState(partyIdx)->restingXRotation = 0;
                     ++relIndex;
                 }
             }
@@ -136,10 +140,10 @@ void translatePlayerABData() {
 
     for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
         byte_BF2DF8[partyIdx] = UNK_ACTOR_STRUCT_ARRAY[partyIdx].field_1;
-        u8* byteViewAnimBlock = (u8*)&(gBigAnimBlock[partyIdx].characterID);
-        gBigAnimBlock[partyIdx].restingPosition.xCoordinate = actorPositionArray[partyIdx].xPosition;
-        gBigAnimBlock[partyIdx].restingPosition.yCoordinate = actorPositionArray[partyIdx].yPosition;
-        gBigAnimBlock[partyIdx].restingPosition.zCoordinate = actorPositionArray[partyIdx].zPosition;
+        u8* byteViewAnimBlock = (u8*)&(getBattleModelState(partyIdx)->characterID);
+        getBattleModelState(partyIdx)->restingPosition.xCoordinate = actorPositionArray[partyIdx].xPosition;
+        getBattleModelState(partyIdx)->restingPosition.yCoordinate = actorPositionArray[partyIdx].yPosition;
+        getBattleModelState(partyIdx)->restingPosition.zCoordinate = actorPositionArray[partyIdx].zPosition;
     }
 }
 
@@ -161,25 +165,22 @@ typedef void(*SRPFNSUB684F73)(LocalWeaponStruct*, void*);
 typedef void(*SRPFNSUB5E0DDE)(u16, u16, u16, u16, BattleModel*);
 #define playWeaponAnimation   ((SRPFNSUB5E0DDE)0x5E0DDE)
 
-typedef float*(*SRPFNSUB67C9BE)(u32, MatrixStruct*);
+typedef Matrix*(*SRPFNSUB67C9BE)(u32, MatrixSet*);
 #define getMatrix     ((SRPFNSUB67C9BE)0x67C9BE)
 
-typedef void(*SRPFNSUB6616CF)(void*, float*);
-#define sub_6616CF    ((SRPFNSUB6616CF)0x6616CF)
+typedef void(*SRPFNSUB6616CF)(GameRotationMatrix*, Matrix*);
+#define extractR3AndTranspose    ((SRPFNSUB6616CF)0x6616CF)
 
 /*This function offsets the animation index that is playing and animations the weapon*/
 void playCorrectWeaponAnimation(u32 actorIdx) {
-    int v5; 
-    int v6; 
     LocalWeaponStruct localWeaponStruct;
-    int v14;
     u32* dword_90C9F0 = (u32*)(0x90C9F0);
     u8* byte_BE0E30 = (u8*)(0xBE0E30);
 
     if (!(*dword_90C9F0))
         return;
 
-    auto& modelState = gBigAnimBlock[actorIdx];
+    auto& modelState = *getBattleModelState(actorIdx);
     if (!(modelState.field_25 & 4)) {
         sub_66335F(modelState.field_28, modelState.unkActorFlags, modelState.field_2A);
         
@@ -216,7 +217,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         if (isUltimaWeapon) {
             if (modelState.field_3F & 8) {
                 v6 = 0;
-                void * ffContext = GetContext();  // This is a graphics/game context object, it is large so I don't want to define so it's a void* for now
+                void * ffContext = GetContext(); 
                 sub_660C9A(ffContext);
             }
             else {
@@ -233,15 +234,9 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         modelData->unk2 = 0;
 
         std::string& modelName = gContext.party.get_element(getPartyKey(actorIdx)).modelName;
-        u16 weaponOffset = 0;
-        if (modelState.setForLimitBreaks) {
-            weaponOffset = 8;
-        }
-        else {
-            weaponOffset = gContext.battleAnimations.get_element(modelName).modelAnimationCount;
-        }
+        u16 weaponOffset = gContext.battleAnimations.get_element(modelName).modelAnimationCount;
         playWeaponAnimation(modelState.setForLimitBreaks, modelState.tableRelativeModelAnimIdx + weaponOffset, modelState.currentPlayingFrame, weaponModelID, modelData);
-        float* matrix = getMatrix(0, weaponDataPtr->bonesArray->polygonData->texDataPtr->texMatrices->matrixStructPtr);
-        sub_6616CF(&(byte_BE0E30[64 * actorIdx]), matrix);
+        Matrix* matrix = getMatrix(0, weaponDataPtr->bonesArray->parts->part->polygonSet->matrixSet);
+        extractR3AndTranspose(&(getBattleModelRotationData(actorIdx)->rotationMatrix), matrix);
     }
 }

@@ -40,8 +40,14 @@ ActivePartyMemberStruct* getActivePartyMember(u8 actorIdx) {
     return &(PARTY_STRUCT_ARRAY[actorIdx]);
 }
 
+CharacterRecord* getPartyActorCharacterRecord(u8 partyIdx) {
+    CharacterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
+    auto characterIdx = getCharacterRecordIndex(partyIdx);
+    return &(characterRecordArray[characterIdx]);
+}
+
 u16 getEquippedGear(u8 characterID, u8 gearType) {
-    characterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
+    CharacterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u16 kernelObjectID;
 
     switch (gearType) { //probably refactor this into a utility
@@ -66,7 +72,7 @@ u16 getEquippedGear(u8 characterID, u8 gearType) {
 
 bool characterCanEquipItem(u8 characterID, u16 item_id){
     auto characterMask = getCharacterRestrictionMask(item_id);
-    bool characterCanUse = (bool)(characterMask & (1 << characterID));
+    u32 characterCanUse = (u32)(characterMask & (1 << characterID));
 
     return characterCanUse;
 }

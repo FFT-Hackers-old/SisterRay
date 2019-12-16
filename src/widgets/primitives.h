@@ -26,6 +26,9 @@ struct BoxWidget_ {
     u16 drawDistanceYa;
     u16 drawDistanceYb;
     float priority;
+    u8 isAlphaEnabled;
+    u8 useBoxColors;
+    BoxColors boxColors;
 };
 
 void drawTextWidget(TextWidget* textWidget);

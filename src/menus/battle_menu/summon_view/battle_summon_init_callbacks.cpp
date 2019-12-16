@@ -22,7 +22,7 @@ void initBattleSummonViewWidget(const MenuInitEvent* event) {
     addChildWidget(battleSummonView, (Widget*)boxWidget, SUMMON_GRID_BOX);
 
     std::vector<std::string> names = { PARTY_1_SUMMON_GRID, PARTY_2_SUMMON_GRID, PARTY_3_SUMMON_GRID };
-    for (auto idx = 0; idx < names.size(); idx++) {
+    for (u32 idx = 0; idx < names.size(); idx++) {
         auto summonChoice = getStateCursor(event->menu, BATTLE_SUMMON_STATE, idx);
         drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_SUMMON_STATE, &battleSummonNameViewUpdater, 42, 360, allocateSummonRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);

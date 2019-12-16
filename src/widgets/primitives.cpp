@@ -219,14 +219,46 @@ SISTERRAY_API float getNumberPriority(Widget* widgetToUpdate) {
     }
 }
 
+
+typedef void(*pfnsub6E7D20)(DrawBoxParams*, float);
+#define gameDrawBox                      ((pfnsub6E7D20)0x6E7D20)
 void drawBoxWidget(BoxWidget* boxWidget) {
+    u32* dword_DC3CD8 = (u32*)0xDC3CD8;
+    u32 swap = 0;
+    u32* dword_91EFC8 = (u32*)0x91EFC8;
+    u32* dword_91EFCC = (u32*)0x91EFCC;
+    u32* dword_91EFD0 = (u32*)0x91EFD0;
+    u32* dword_91EFD4 = (u32*)0x91EFD4;
+    BoxColors swapColors;
+
     DrawBoxParams params = {
         boxWidget->drawDistanceXa,
         boxWidget->drawDistanceXb,
         boxWidget->drawDistanceYa,
         boxWidget->drawDistanceYb
     };
-    gameDrawBox((i16*)&params, boxWidget->priority);
+    if (boxWidget->isAlphaEnabled) {
+        swap = *dword_DC3CD8;
+        *dword_DC3CD8 = 1;
+    }
+    if (boxWidget->useBoxColors) {
+        swapColors = { *dword_91EFC8, *dword_91EFCC, *dword_91EFD0, *dword_91EFD4 };
+        *dword_91EFC8 = boxWidget->boxColors.rgba1;
+        *dword_91EFCC = boxWidget->boxColors.rgba2;
+        *dword_91EFD0 = boxWidget->boxColors.rgba3;
+        *dword_91EFD4 = boxWidget->boxColors.rgba4;
+    }
+    gameDrawBox(&params, boxWidget->priority);
+    if (boxWidget->useBoxColors) {
+        *dword_91EFC8 = swapColors.rgba1;
+        *dword_91EFCC = swapColors.rgba2;
+        *dword_91EFD0 = swapColors.rgba3;
+        *dword_91EFD4 = swapColors.rgba4;
+    }
+    if (boxWidget->isAlphaEnabled) {
+        *dword_DC3CD8 = swap;
+    }
+    
 }
 
 SISTERRAY_API void srNewBoxWidget(Widget* parent, DrawBoxParams params, char* name) {
@@ -242,16 +274,20 @@ BoxWidget* createBoxWidget(DrawBoxParams params, std::string name) {
     widget->drawDistanceYa = params.drawDistance3;
     widget->drawDistanceYb = params.drawDistance4;
     widget->priority = params.boxFloat;
+    widget->isAlphaEnabled = params.isAlphaEnabled;
+    widget->useBoxColors = params.useBoxColors;
+    widget->boxColors = params.boxColors;
     return widget;
 }
 
 
-SISTERRAY_API void setBoxParams(DrawBoxParams* params, i16 drawDistance1, i16 drawDistance2, u16 drawDistance3, u16 drawDistance4, float priority) {
-    params->drawDistance1 = drawDistance1;
-    params->drawDistance2 = drawDistance2;
-    params->drawDistance3 = drawDistance3;
-    params->drawDistance4 = drawDistance4;
+SISTERRAY_API void setBoxParams(DrawBoxParams* params, i16 xPosition, i16 yPosition, u16 width, u16 height, float priority, u8 isAlphaEnabled, u8 useBoxColors, BoxColors boxColors) {
+    params->drawDistance1 = xPosition;
+    params->drawDistance2 = yPosition;
+    params->drawDistance3 = width;
+    params->drawDistance4 = height;
     params->boxFloat = priority;
+    params->isAlphaEnabled = isAlphaEnabled;
 }
 
 bool isBoxWidget(Widget* widget) {
@@ -285,7 +321,7 @@ SISTERRAY_API void updateBoxPriority(Widget* widgetToUpdate, float priority) {
     }
 }
 
-SISTERRAY_API i16 getBoxDrawDistance(Widget* widgetToUpdate, i32 dimension) {
+SISTERRAY_API u16 getBoxDrawDistance(Widget* widgetToUpdate, i32 dimension) {
     if (isBoxWidget(widgetToUpdate)) {
         auto typedPtr = (BoxWidget*)widgetToUpdate;
         switch (dimension) {
@@ -298,14 +334,14 @@ SISTERRAY_API i16 getBoxDrawDistance(Widget* widgetToUpdate, i32 dimension) {
             case 3:
                 return typedPtr->drawDistanceYb;
             default:{
-
                 srLogWrite("attempting to fetch an invalid box dimension");
+                return 0xFFFF;
             }
         }
     }
     else {
         srLogWrite("attempting to fetch a Box widget draw distance property of not a Box Widget");
-        return 0;
+        return 0xFFFF;
     }
 }
 

@@ -21,6 +21,9 @@ namespace BattleMenuWidgetNames {
     const std::string PARTY_2_STATE_NAME = "2_PARTY";
     const std::string PARTY_3_STATE_NAME = "3_PARTY";
 
+    const std::string TOP_STRING_DISPLAY = "TOP_DISPLAY";
+    const std::string BOTTOM_STRING_DISPLAY = "STRING_DISPLAY";
+
     //BASE PARTY DATA NAMES
     const std::string PARTY_DATA_NAME = "NAME";
     const std::string PARTY_DATA_ATB =  "ATB";

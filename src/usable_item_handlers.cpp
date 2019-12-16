@@ -3,15 +3,15 @@
 #include "impl.h"
 
 srOnUseCallbackRegistry::srOnUseCallbackRegistry(): SrIndexedCallbackRegistry<onUseCallback>() {
-    add_function("heal_party_member", heal_handler);
-    add_function("increment_stat", permanently_boost_stat);
-    add_function("teach_limit", teach_limit_breaks);
-    add_function("no_function", default_item_use);
+    add_function("heal_party_member", handleHeal);
+    add_function("increment_stat", handleBoostStat);
+    add_function("teach_limit", handleTeachLimits);
+    add_function("no_function", defaultUseItem);
 }
 
 srNoTargetCallbackRegistry::srNoTargetCallbackRegistry() : SrIndexedCallbackRegistry<noTargetCallback>() {
-    add_function("save_crystal_handler", save_crystal_on_use);
-    add_function("no_function", default_no_target_use);
+    add_function("save_crystal_handler", useSaveCrystal);
+    add_function("no_function", defaultUseNoTarget);
 }
 
 void initOnUseCallbackRegistry() {
@@ -47,11 +47,11 @@ void initNoTargetCallbackRegistry() {
 
 
 // un-targetd handlers
-bool default_no_target_use() {
+bool defaultUseNoTarget() {
     return false;
 }
 
-bool save_crystal_on_use() {
+bool useSaveCrystal() {
     playMenuSound(263);
     *byte_DC0C3C |= 1u;  //Save Crystal used?
     set_some_transition_data(5, 0);
@@ -62,80 +62,80 @@ bool save_crystal_on_use() {
 
 
 //targeted handlers
-bool default_item_use(u16 party_member_index, u16 item_id, u16 inventory_index) {
+bool defaultUseItem(u8 partyIdx, u16 itemID, u16 inventoryIdx) {
     return false;
 }
 
 /*On use callback for performing HP healing on the menu */
-bool heal_handler(u16 party_member_index, u16 item_id, u16 inventory_index) {
+bool handleHeal(u8 partyIdx, u16 itemID, u16 inventoryIdx) {
     bool use_successful = false;
     bool temp_bool;
-    auto target_all = gContext.itemOnUseData.get_resource(item_id).target_all;
+    auto target_all = gContext.itemOnUseData.get_resource(itemID).target_all;
 
     if (target_all) {
-        for (u16 member_to_heal = 0; member_to_heal < 3; ++member_to_heal) {
-            temp_bool = heal_single_party_member(member_to_heal, item_id);
+        for (u8 member_to_heal = 0; member_to_heal < 3; ++member_to_heal) {
+            temp_bool = healPartyMember(member_to_heal, itemID);
             if (!use_successful) {
                 use_successful = temp_bool;
             }
         }
     }
     else {
-        use_successful = heal_single_party_member(party_member_index, item_id);
+        use_successful = healPartyMember(partyIdx, itemID);
     }
-    play_success_or_failure_sound(use_successful, 263, 3);
+    playUseSound(use_successful, 263, 3);
 
     return use_successful;
 }
 
-bool heal_single_party_member(u16 party_member_index, u16 item_id) {
+bool healPartyMember(u8 partyIdx, u16 itemID) {
     bool heal_was_performed = false;
-    auto is_hp_healable = check_target_hp_healable(party_member_index, item_id);
-    auto is_mp_healable = check_target_mp_healable(party_member_index, item_id);
-    auto item_heals_hp = (gContext.itemOnUseData.get_resource(item_id).hp_heal_amount || gContext.itemOnUseData.get_resource(item_id).hp_heal_percent);
-    auto item_heals_mp = (gContext.itemOnUseData.get_resource(item_id).mp_heal_amount || gContext.itemOnUseData.get_resource(item_id).mp_heal_percent);
+    auto is_hp_healable = checkIsHPHealable(partyIdx, itemID);
+    auto is_mp_healable = checkIsMPHealable(partyIdx, itemID);
+    auto item_heals_hp = (gContext.itemOnUseData.get_resource(itemID).hp_heal_amount || gContext.itemOnUseData.get_resource(itemID).hp_heal_percent);
+    auto item_heals_mp = (gContext.itemOnUseData.get_resource(itemID).mp_heal_amount || gContext.itemOnUseData.get_resource(itemID).mp_heal_percent);
 
     if (item_heals_hp) {
         if (is_hp_healable) {
-            u16 heal_amount = calculate_hp_heal_amount(party_member_index, item_id);
-            heal_character_at_index(party_member_index, heal_amount);
+            u16 heal_amount = calculateHPHealAmount(partyIdx, itemID);
+            heal_character_at_index(partyIdx, heal_amount);
             heal_was_performed = true;
         }
     }
     if (item_heals_mp) {
         if (is_mp_healable) {
-            u16 heal_amount = calculate_mp_heal_amount(party_member_index, item_id);
-            restore_party_member_mp(party_member_index, heal_amount);
+            u16 heal_amount = calculateMPHealAmount(partyIdx, itemID);
+            restore_party_member_mp(partyIdx, heal_amount);
             heal_was_performed = true;
         }
     }
     return heal_was_performed;
 }
 
-u16 calculate_hp_heal_amount(u16 party_member_index, u16 item_id) {
+u16 calculateHPHealAmount(u8 partyIdx, u16 item_id) {
     if (gContext.itemOnUseData.get_resource(item_id).hp_heal_amount) {
         return gContext.itemOnUseData.get_resource(item_id).hp_heal_amount;
     }
     else if (gContext.itemOnUseData.get_resource(item_id).hp_heal_percent){
         u8 heal_divisor = gContext.itemOnUseData.get_resource(item_id).hp_heal_percent;
-        return (((PARTY_STRUCT_ARRAY)[party_member_index].maxHP / heal_divisor) * 100);
+        return (((PARTY_STRUCT_ARRAY)[partyIdx].maxHP / heal_divisor) * 100);
     }
     return 0;
 }
 
-u16 calculate_mp_heal_amount(u16 party_member_index, u16 item_id) {
+u16 calculateMPHealAmount(u8 partyIdx, u16 item_id) {
     if (gContext.itemOnUseData.get_resource(item_id).mp_heal_amount) {
         return gContext.itemOnUseData.get_resource(item_id).mp_heal_amount;
     }
     else if (gContext.itemOnUseData.get_resource(item_id).mp_heal_percent) {
         u8 heal_divisor = gContext.itemOnUseData.get_resource(item_id).mp_heal_percent;
-        return (((PARTY_STRUCT_ARRAY)[party_member_index].maxMP / heal_divisor) * 100);
+        return (((PARTY_STRUCT_ARRAY)[partyIdx].maxMP / heal_divisor) * 100);
     }
     return 0;
 }
 
-bool check_target_hp_healable(u16 target, u16 item_id) {
-    bool is_healable = check_character_hp_full(target);
+bool checkIsHPHealable(u8 target, u16 item_id) {
+    bool is_healable = checkActorHPFull(target);
 
     if (gContext.itemOnUseData.get_resource(item_id).can_revive) {
         return is_healable;
@@ -145,8 +145,8 @@ bool check_target_hp_healable(u16 target, u16 item_id) {
     return (is_healable && is_alive);
 }
 
-bool check_target_mp_healable(u16 target, u16 item_id) {
-    bool is_healable = check_character_mp_full(target);
+bool checkIsMPHealable(u8 target, u16 item_id) {
+    bool is_healable = checkActorMPFull(target);
 
     if (gContext.itemOnUseData.get_resource(item_id).can_revive) {
         return is_healable;
@@ -156,19 +156,19 @@ bool check_target_mp_healable(u16 target, u16 item_id) {
     return (is_healable && is_alive);
 }
 
-bool check_character_hp_full(u16 party_member_index) {
+bool checkActorHPFull(u8 party_member_index) {
      return (!check_member_HP_full(party_member_index));
 }
 
-bool check_character_mp_full(u16 party_member_index) {
+bool checkActorMPFull(u8 party_member_index) {
     return (!check_member_MP_full(party_member_index));
 }
 
-bool check_character_dead(u16 party_member_index) {
+bool check_character_dead(u8 party_member_index) {
     return (bool)PARTY_STRUCT_ARRAY[party_member_index].currentHP;
 }
 
-void play_success_or_failure_sound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id) {
+void playUseSound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id) {
     if (did_succeed) {
         playMenuSound(success_sound_id);
     }
@@ -178,9 +178,9 @@ void play_success_or_failure_sound(bool did_succeed, i32 success_sound_id, i32 f
 }
 
 /*Perhaps redesign to make it possible to boost multiple stats, lower stats, or boost by variable amounts*/
-bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
-    u8 stat_to_boost = gContext.itemOnUseData.get_resource(item_id).stat_to_boost;
+bool handleBoostStat(u8 partyIdx, u16 itemID, u16 inventoryIdx) {
+    u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[partyIdx];
+    u16 stat_to_boost = gContext.itemOnUseData.get_resource(itemID).stat_to_boost;
     bool stat_boosted = false;
     switch (stat_to_boost) {
         case 0: {
@@ -228,8 +228,8 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
     }
     if (stat_boosted) {
         playMenuSound(263);
-        recalculateBaseStats(party_member_index); //This should be rewritten to allow stat penalties
-        recalculateDerivedStats(party_member_index);
+        recalculateBaseStats(partyIdx); //This should be rewritten to allow stat penalties
+        recalculateDerivedStats(partyIdx);
     }
     else {
         playMenuSound(3);
@@ -242,35 +242,35 @@ bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_i
   Limit Breaks will be the first test, their usable flags will be checked.
   Performing the same checks during battle will allow some "consumables" to have
   per character restrictions*/
-bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index) {
-    u8 character_ID = (u8)(CURRENT_PARTY_MEMBER_ARRAY)[party_member_index];
-    bool item_usable = canCharacterUseItem(character_ID, item_id); //If the character can't use the item, give the old "nothing to do with me message"
-    bool limit_taught = false;
-    auto registry = gContext.gameStrings.character_specific_strings[character_ID];
-    if (item_usable) {
-        if (knows_all_prereq_limits(character_ID)) { //Check if requisite limits are learned
+bool handleTeachLimits(u8 partyIdx, u16 item_id, u16 inventory_index) {
+    u8 characterID = getActivePartyMember(partyIdx)->characterID;
+    bool isItemUsable = canCharacterUseItem(characterID, item_id); //If the character can't use the item, give the old "nothing to do with me message"
+    bool limitTaught = false;
+    auto registry = gContext.gameStrings.character_specific_strings[characterID];
+    if (isItemUsable) {
+        if (knows_all_prereq_limits(characterID)) { //Check if requisite limits are learned
             playMenuSound(384);
-            CHARACTER_RECORD_ARRAY[character_ID].learned_limits = (CHARACTER_RECORD_ARRAY[character_ID].learned_limits | 0x0200);
-            auto limit_learned_string = gContext.gameStrings.character_specific_strings[character_ID].get_string(0); //String 0 is a characters "limit learned" string
+            CHARACTER_RECORD_ARRAY[characterID].learned_limits = (CHARACTER_RECORD_ARRAY[characterID].learned_limits | 0x0200);
+            auto limit_learned_string = gContext.gameStrings.character_specific_strings[characterID].get_string(0); //String 0 is a characters "limit learned" string
             displayNewBoxString(limit_learned_string); //Get limit learned text, need to build out custom string storage
             sub_6C497C((int)byte_DD18C8, 7); //The game does this casting of a pointer as an arg... is ugly
-            limit_taught = true;
+            limitTaught = true;
         }
         else
         {
-            auto not_ready_string = gContext.gameStrings.character_specific_strings[character_ID].get_string(1);
+            auto not_ready_string = gContext.gameStrings.character_specific_strings[characterID].get_string(1);
             displayNewBoxString(not_ready_string); //get can't learn limit yet text. Can fetch from our own managed text array
             sub_6C497C((int)byte_DD18C8, 7);
             playMenuSound(3);
         }
     }
     else {
-        auto cannot_learn_string = gContext.gameStrings.character_specific_strings[character_ID].get_string(2);
+        auto cannot_learn_string = gContext.gameStrings.character_specific_strings[characterID].get_string(2);
         displayNewBoxString(cannot_learn_string); //get can't learn limit text
         sub_6C497C((int)byte_DD18C8, 7);
         playMenuSound(3);
     }
-    return limit_taught;
+    return limitTaught;
 }
 
     /* switch (item_ID) {

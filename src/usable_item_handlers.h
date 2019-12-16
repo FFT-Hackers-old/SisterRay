@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <string>
 
-typedef bool(*onUseCallback)(u16, u16, u16);
+typedef bool(*onUseCallback)(u8, u16, u16);
 typedef bool(*noTargetCallback)();
 
 /*Hold the names of functions along with function ptrs*/
@@ -26,22 +26,22 @@ public:
 };
 
 // these are actual callbacks
-bool default_no_target_use();
-bool save_crystal_on_use();
-bool default_item_use(u16 party_member_index, u16 item_id, u16 inventory_index);
-bool heal_handler(u16 party_member_index, u16 item_id, u16 inventory_index);
-bool permanently_boost_stat(u16 party_member_index, u16 item_id, u16 inventory_index);
-bool teach_limit_breaks(u16 party_member_index, u16 item_id, u16 inventory_index);
+bool defaultUseNoTarget();
+bool useSaveCrystal();
+bool defaultUseItem(u8 partyIdx, u16 item_id, u16 inventory_index);
+bool handleHeal(u8 partyIdx, u16 item_id, u16 inventory_index);
+bool handleBoostStat(u8 partyIdx, u16 item_id, u16 inventory_index);
+bool handleTeachLimits(u8 partyIdx, u16 item_id, u16 inventory_index);
 
 
 // These are functions which should be moved to different files later on
-bool heal_single_party_member(u16 party_member_index, u16 item_id);
-u16 calculate_hp_heal_amount(u16 party_member_index, u16 item_id);
-u16 calculate_mp_heal_amount(u16 party_member_index, u16 item_id);
-void play_success_or_failure_sound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id);
-bool check_target_hp_healable(u16 target, u16 item_id);
-bool check_target_mp_healable(u16 target, u16 item_id);
-bool check_character_hp_full(u16 party_member_index);
-bool check_character_mp_full(u16 party_member_index);
+bool healPartyMember(u8 partyIdx, u16 item_id);
+u16 calculateHPHealAmount(u8 partyIdx, u16 item_id);
+u16 calculateMPHealAmount(u8 partyIdx, u16 item_id);
+void playUseSound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id);
+bool checkIsHPHealable(u8 target, u16 item_id);
+bool checkIsMPHealable(u8 target, u16 item_id);
+bool checkActorHPFull(u8 partyIdx);
+bool checkActorMPFull(u8 partyIdx);
 
 #endif

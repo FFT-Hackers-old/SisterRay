@@ -11,15 +11,12 @@
 using namespace InventoryWidgetNames;
 
 void initViewChoiceWidget(const MenuInitEvent* event) {
-    const char * menuText;
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
-    TextWidget* textWidget;
     DrawTextParams textParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
-    PortraitWidget* portraitWidget;
 
     auto viewChoiceWidget = createWidget(VIEW_CHOICE_WIDGET_NAME);
 
@@ -46,12 +43,9 @@ void initViewChoiceWidget(const MenuInitEvent* event) {
 }
 
 void initCharViewWidget(const MenuInitEvent* event) {
-    const char * menuText;
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
-    TextWidget* textWidget;
-    DrawTextParams textParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
     PortraitWidget* portraitWidget;
@@ -72,7 +66,7 @@ void initCharViewWidget(const MenuInitEvent* event) {
 
     std::vector<std::string> portraitNames = { PORTRAIT_1_NAME, PORTRAIT_2_NAME, PORTRAIT_3_NAME };
     std::vector<std::string> HPBarNames = { HPBAR_1_NAME, HPBAR_2_NAME, HPBAR_3_NAME };
-    for (int currentPartyMember = 0; currentPartyMember < 3; ++currentPartyMember) {
+    for (u8 currentPartyMember = 0; currentPartyMember < 3; ++currentPartyMember) {
         if ((CURRENT_PARTY_MEMBER_ARRAY)[currentPartyMember] != 0xFF) {  
             drawPortraitParams portraitParams = { 37, 120*currentPartyMember + 116, currentPartyMember, 0.1f };
             portraitWidget = createPortraitWidget(portraitParams, portraitNames[currentPartyMember]);
@@ -251,7 +245,6 @@ void arrangeTypeWidget(const MenuInitEvent* event) {
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
-    TextWidget* textWidget;
     DrawTextParams textParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
@@ -270,7 +263,7 @@ void arrangeTypeWidget(const MenuInitEvent* event) {
 
     //Probably a good case to be made here for a new static Grid with no updater here
     std::vector<std::string> listNames = { SORT_TYPE_1, SORT_TYPE_2, SORT_TYPE_3, SORT_TYPE_4, SORT_TYPE_5, SORT_TYPE_6, SORT_TYPE_7, SORT_TYPE_8 };
-    for (int sortType = 0; sortType < listNames.size(); ++sortType) {
+    for (u32 sortType = 0; sortType < listNames.size(); ++sortType) {
         const char* fetchedDescription = gContext.gameStrings.inventory_menu_texts.get_string(sortType + 3);
         setTextParams(&textParams, boxParams.drawDistance1 + 13, boxParams.drawDistance2 + 26 * sortType + 13, fetchedDescription, COLOR_WHITE, 0.001f);
         auto textChild = createTextWidget(textParams, listNames[sortType]);

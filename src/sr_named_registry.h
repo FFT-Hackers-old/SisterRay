@@ -53,7 +53,10 @@ public:
     }
 
     u32 get_resource_index(const std::string& name) {
-        return named_registry[name];
+        if (contains(name)) {
+            return named_registry[name];
+        }
+        return 0;
     }
 
     bool contains(const std::string& name) {

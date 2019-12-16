@@ -1,6 +1,8 @@
 #ifndef EQUIP_WIDGET_NAMES_H
 #define EQUIP_WIDGET_NAMES_H
 
+#include <string>
+
 namespace EquipWidgetNames {
     const std::string EQUIP_MENU_NAME = "EQUIP_MENU";
     //Names of TOP LEVEL WIDGETS

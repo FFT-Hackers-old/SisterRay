@@ -5,7 +5,6 @@
 #include <SisterRay/SisterRay.h>
 #include "../../menu_utils.h"
 #include "../../../widgets/widget.h"
-#include "../../../events/menu_events.h"
 #include "../../menu.h"
 #include "../battle_menu_widget_names.h"
 
@@ -16,6 +15,7 @@ Widget* allocateBarWidget(const char* name, i32 xCoordinate, i32 yCoordinate);
 Widget* allocateHPResourceWidget(const char* name, i32 xCoordinate, i32 yCoordinate);
 Widget* allocateMPResourceWidget(const char* name, i32 xCoordinate, i32 yCoordinate);
 Widget* allocateBarriersWidget(const char* name, i32 xCoordinate, i32 yCoordinate);
+Widget* allocateDisplayWidget(const char* name, i32 xCoordinate, i32 yCoordinate);
 
 
 #endif

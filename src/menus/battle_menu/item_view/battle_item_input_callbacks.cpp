@@ -24,7 +24,7 @@ void handleSelectItem(const MenuInputEvent* event) {
     auto flatIndex = (itemCursorChoice.maxColumnBound * (itemCursorChoice.relativeRowIndex + itemCursorChoice.baseRowIndex)) + itemCursorChoice.relativeColumnIndex;
     auto itemID = gContext.battleInventory->get_resource(flatIndex).item_id;
     bool didSucceed = didItemUseSucceed(itemID);
-    srLogWrite("ITEM USE SUCCEED BOOL: %d", didSucceed);
+    srLogWrite("ITEM USE SUCCEED bool: %d", didSucceed);
     if (didSucceed) {
         playMenuSound(1);
         setChosenActionID(itemID);

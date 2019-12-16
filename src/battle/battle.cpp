@@ -9,13 +9,11 @@
 #include "../EncodedString.h"
 
 void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
-    char v4; 
     int enemyIndex;
-    void *v16; 
-    FormationEnemies* formationEnemiesPtr = getFormationEnemies();
-    FormationSetup* formationSetupPtr = getFormationSetup();
-    FormationCamera* formationCameraPtr = getFormationCamera();
-    FormationActorDataArray* formationActorDataPtr = getFormationActorData();
+    FormationEnemies* formationEnemiesPtr = getInBattleFormationEnemyModels();
+    FormationSetup* formationSetupPtr = getInBattleFormationSetup();
+    FormationCamera* formationCameraPtr = getInBattleFormationCamera();
+    FormationActorDataArray* formationActorDataPtr = getInBattleFormationActorDataArray();
     EnemyData* enemyDataPtr = (EnemyData*)(0x9A8E9C);
     FormationEnemyIDs* sceneAIDataPtr = (FormationEnemyIDs*)(0x9A9CFC);
     u32* formationAIDataPtr = (u32*)(0x9A9AFC);
@@ -28,6 +26,7 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
     u32* dword_9ACB68 = (u32*)(0x9ACB68);
     u8* battleTypeArray = (u8*)(0x7B76F0);
     // this code coordinates, along with a2, additional setup for "next battle"
+    srLogWrite("CALLING SR LOAD FORMATION");
     if (*dword_C069BC) {
         if (*dword_C069BC != 1) {
             if (*dword_C069BC != 2) {
@@ -46,15 +45,14 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
         *dword_C069BC = 2;
 
     LABEL_11:
-        auto formationIDstr = std::to_string(formationIndex);
-        auto formation = gContext.formations.get_element(std::string(formationIDstr));
+        auto formation = gContext.formations.get_resource(formationIndex);
         *formationSetupPtr = formation.formationSetup;
         *formationCameraPtr = formation.formationCamera;
         *formationActorDataPtr = formation.formationActorDataArray;
 
         auto& uniqueEnemyIds = formation.FormationEnemyIDs;
         for (auto enemyIndex = 0; enemyIndex < 3; enemyIndex++) {
-            auto currentEnemyData = gContext.enemies.get_element(uniqueEnemyIds.uniqueIDs[enemyIndex]);
+            auto currentEnemyData = gContext.enemies.get_resource(uniqueEnemyIds.uniqueIDs[enemyIndex]);
             formationEnemiesPtr->EnemyIds[enemyIndex] = currentEnemyData.modelID;
             enemyDataPtr[enemyIndex] = currentEnemyData.enemyData;
             /*While the original game copies AI data here, we parse AI scripts and store them with our registries
@@ -108,7 +106,7 @@ void srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
     scriptAnimDataCpy modelDataCpys[10];
     const u8* scriptPtr = nullptr;
     u8 characterScriptIndex = 0xFF; 
-    FormationActorDataArray* formationActorDataPtr = getFormationActorData();
+    FormationActorDataArray* formationActorDataPtr = getInBattleFormationActorDataArray();
     FormationEnemyIDs* sceneAIDataPtr = (FormationEnemyIDs*)(0x9A9CFC);
     u8* linkedScriptArray = (u8*)(0x8FEE38);
     u16* unknownPtr = (u16*)(0x9AAD14);
@@ -137,7 +135,7 @@ void srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
         case 9: {
             auto formationEnemyID = formationActorDataPtr->formationDatas[actorIndex - 4].enemyID; //fetch the formation relative ID, it's modified from the absolute ID
             auto uniqueID = sceneAIDataPtr->uniqueIDs[formationEnemyID];
-            auto& enemyAIData = gContext.enemies.get_element(uniqueID).enemyAI;
+            auto& enemyAIData = gContext.enemies.get_resource(uniqueID).enemyAI;
             scriptPtr = getScriptPtr(enemyAIData, scriptType);
             break;
         }
@@ -179,8 +177,7 @@ i32 srExecuteFormationScripts() {
     for (scriptType = 0; scriptType < 8; ++scriptType) {
         if ((1 << scriptType) & (i16)(*word_9AAD14)) {
             *word_9AAD14 &= ~(i16)(1 << scriptType);
-            std::string formationID = std::string(std::to_string(formationIndex));
-            auto& formationAI = gContext.formations.get_element(formationID).formationAI;
+            auto& formationAI = getFormation(formationIndex).formationAI;
             scriptPtr = getScriptPtr(formationAI, scriptType);
             if (scriptPtr)
                 result = runAIScript(3, (i32)scriptPtr, -1);
@@ -190,8 +187,10 @@ i32 srExecuteFormationScripts() {
     return result;
 }
 
+typedef i32(*pfnsub43258A)(BattleQueueEntry*);
+#define enqueueBattleAction      ((pfnsub43258A)0x43258A)
 /*Rewrite this function to expect an ABSOLUTE instead of relative id when executing enemy attacks*/
-i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex) {
+i32 enqueueScriptAction(u8 actorID, u8 commandIndex, u16 relAttackIndex) {
     u32* dword_C3F338 = (u32*)(0xC3F338);
     u16* word_9AB0AE = (u16*)(0x9AB0AE);
 
@@ -208,12 +207,10 @@ i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex) {
         default:{
         }
     }
-
-    srLogWrite("enqueueing entry with for actor %i, command_id %i, attack_id %i from AI script", actorID, commandIndex, relAttackIndex);
     gAiActorVariables[actorID].lastTargets = *word_9AB0AE;
     BattleQueueEntry queueEntry = { *(u8*)dword_C3F338, 0, actorID, commandIndex, relAttackIndex, *word_9AB0AE };
     
-    auto var = enqueueBattleAction((u8 *)&queueEntry);
+    auto var = enqueueBattleAction(&queueEntry);
     return var;
 }
 
@@ -232,7 +229,7 @@ i32 enqueueScriptAction(i16 actorID, i16 commandIndex, i16 relAttackIndex) {
     return (void*)gDamageContextPtr;
 }*/
 
-void dispatchAutoActions(i32 partyIndex, i32 actionType) {
+void dispatchAutoActions(u8 partyIndex, i32 actionType) {
     AutoActionType dispatchType;
     switch (actionType) {
         case 0: {
@@ -262,7 +259,7 @@ void dispatchAutoActions(i32 partyIndex, i32 actionType) {
             //Add counter chance based code here
             auto finalAction = getActionToDispatch(action);
             auto targetMask = setTargetMask(partyIndex, action);
-            auto priority = 1;
+            u8 priority = 1;
             if (action.dispatchType == FINAL_ATTACK)
                 priority = 0;
             enqueueAction(partyIndex, priority, action.commandIndex, finalAction, targetMask);
@@ -275,6 +272,8 @@ void dispatchAutoActions(i32 partyIndex, i32 actionType) {
 u16 getActionToDispatch(const SrAutoAction& action) {
     if (action.actionIndex != 0xFFFF) //else return a random action based on the command type
         return action.actionIndex;
+
+    return 0;
 }
 
 u16 setTargetMask(u8 partyIndex, const SrAutoAction& action) {

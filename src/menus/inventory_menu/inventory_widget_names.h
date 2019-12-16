@@ -1,6 +1,8 @@
 #ifndef INVENTORY_WIDGET_NAMES_H
 #define INVENTORY_WIDGET_NAMES_H
 
+#include <string>
+
 namespace InventoryWidgetNames {
     const std::string INVENTORY_MENU_NAME = "INVENTORY_MENU";
     //Names of TOP LEVEL WIDGETS

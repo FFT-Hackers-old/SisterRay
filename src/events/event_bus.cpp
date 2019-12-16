@@ -114,13 +114,13 @@ void EventBus::removeListener(SrEventListener listener) {
         return;
 
     std::vector<size_t>& eventListeners = _listenerRegistry[eventType];
-    std::remove(eventListeners.begin(), eventListeners.end(), listenerID);
+    eventListeners.erase(std::remove(eventListeners.begin(), eventListeners.end(), listenerID));
     _listenerTypes[listenerID] = NO_TYPE;
     _listenerCallbacks[listenerID] = nullptr;
 
     const auto& modName = _listenerModNames[listenerID];
     std::vector<size_t>& modListeners = _modListeners[modName];
-    std::remove(modListeners.begin(), modListeners.end(), listenerID);
+    modListeners.erase(std::remove(modListeners.begin(), modListeners.end(), listenerID));
     _listenerModNames[listenerID] = std::string("FREE");
 
     _listenerContexts[listenerID].empty();

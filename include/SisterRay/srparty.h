@@ -17,29 +17,6 @@ typedef struct {
 
 #define G_MIME_ACTIONS ((MimeAction*)(0x9A9ADD))
 
-/*This is the structure of attack data*/
-typedef struct {
-    u8 abilityHitRate; //0x00
-    u8 impactEffectID; //0x01
-    u8 targetReactionID; //0x02
-    u8 unkbyte;          //0x03
-    u16 MPCost;          //0x04
-    u16 impactSoundID;   //0x06
-    u16 cameraMovementSingle;   //0x08
-    u16 cameraMovementMultiple;  //0x0A
-    u8 targetingFlags;           //0x0C
-    u8 animationEffectID;        //0x0D
-    u8 damageFormula;            //0x0E
-    u8 attackPower;              //0x0F
-    u8 restoreTypes;             //0x10
-    u8 statusInflictType;         //0x11
-    u8 additionalEffect;         //0x12
-    u8 additionalEffectModifier;  //0x13
-    u32 statusMask;               //0x14
-    u16 elementMask;              //0x18
-    u16 specialAttackFlags;       //0x1A
-} AttackData;
-
 #pragma pack(push, 1)
 typedef struct {
     u8 commandID;
@@ -149,7 +126,7 @@ typedef struct {
     u8 field_4;
     u8 field_5;
     u16 field_6;
-    u32 lgpTableIdx;
+    u32 field_8;
     u32 field_C;
 }UnkBattleStruct;
 #pragma pack(pop)

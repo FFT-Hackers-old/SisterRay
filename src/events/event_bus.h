@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include "non_copyable.h"
 #include "event.h"
-#include <unordered_map>
 
 class EventBus : private NonCopyable
 {

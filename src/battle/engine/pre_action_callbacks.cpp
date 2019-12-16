@@ -34,9 +34,9 @@ void initDamageContext(ActionContextEvent* actionEvent) {
     damageContext->attackerLevel = actorAIStates[issuingActorID].level;
     damageContext->attackerStatusMask = actorAIStates[issuingActorID].statusMask;
     damageContext->activeAllies = 1;
-    damageContext->animationScriptID = gContext.auxCommands.get_resource(damageContext->commandIndex).auxData.animationScriptIndex;
-    damageContext->damageFormulaID = gContext.auxCommands.get_resource(damageContext->commandIndex).auxData.damageCalculationByte;
-    damageContext->miscActionFlags = gContext.auxCommands.get_resource(damageContext->commandIndex).auxData.miscCommandFlags;
+    damageContext->animationScriptID = getCommand(damageContext->commandIndex).auxData.animationScriptIndex;
+    damageContext->damageFormulaID = getCommand(damageContext->commandIndex).auxData.damageCalculationByte;
+    damageContext->miscActionFlags = getCommand(damageContext->commandIndex).auxData.miscCommandFlags;
     damageContext->enabledMagicsIndex = -1;
     damageContext->impactSound = -1;
     damageContext->critAtkSound = -1;
@@ -58,9 +58,10 @@ void initDamageContext(ActionContextEvent* actionEvent) {
     for (auto followUpIdx = 0; followUpIdx < 8; ++followUpIdx)// null follow ups
         damageContext->followUpActions[followUpIdx] = -1;
 
-    FormationActorDataArray* formationData = getFormationActorData();
-    if (issuingActorID >= 4)
-        damageContext->enemySceneIndex = formationData->formationDatas[issuingActorID - 4].enemyID;
+    if (issuingActorID >= 4) {
+        FormationActorData* formationData = getInBattleFormationActorData(issuingActorID);
+        damageContext->enemySceneIndex = formationData->enemyID;
+    }
 }
 
 void setEnemyCommandData(ActionContextEvent* actionEvent) {
@@ -82,9 +83,9 @@ void setPlayerCommandData(ActionContextEvent* actionEvent) {
         return;
 
     if (damageContext->commandIndex != CMD_ENEMY_ACTION) {
-        damageContext->abilityTargetingFlags = gContext.commands.get_resource(damageContext->commandIndex).targetingFlags;
-        damageContext->cameraDataSingle = gContext.commands.get_resource(damageContext->commandIndex).singleCameraID;
-        damageContext->cameraDataMultiple = gContext.commands.get_resource(damageContext->commandIndex).multipleCameraID;
+        damageContext->abilityTargetingFlags = getCommand(damageContext->commandIndex).gameCommand.targetingFlags;
+        damageContext->cameraDataSingle = getCommand(damageContext->commandIndex).gameCommand.singleCameraID;
+        damageContext->cameraDataMultiple = getCommand(damageContext->commandIndex).gameCommand.multipleCameraID;
     }
 
     //Set the CommandIndexCopy correctly for W-Spells

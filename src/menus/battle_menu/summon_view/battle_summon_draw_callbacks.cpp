@@ -12,7 +12,7 @@ void drawBattleSummonViewWidget(const MenuDrawEvent* event) {
 
     enableWidget(getChild(menuWidget, BATTLE_SUMMON_WIDGET_NAME));
     std::vector<std::string> names = { PARTY_1_SUMMON_GRID, PARTY_2_SUMMON_GRID, PARTY_3_SUMMON_GRID };
-    for (i32 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
+    for (u32 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
         if (partyIdx == *BATTLE_ACTIVE_ACTOR_ID) {
             enableWidget(getChild(getChild(menuWidget, BATTLE_SUMMON_WIDGET_NAME), names[partyIdx]));
             setActiveCursorIndex(event->menu, BATTLE_SUMMON_STATE, *BATTLE_ACTIVE_ACTOR_ID);

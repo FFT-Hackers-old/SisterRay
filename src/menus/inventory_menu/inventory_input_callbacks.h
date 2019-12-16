@@ -5,7 +5,6 @@
 #include <SisterRay/SisterRay.h>
 #include "../menu_utils.h"
 #include "../../widgets/widget.h"
-#include "../../events/menu_events.h"
 #include "inventory_widget_names.h"
 
 void chooseViewHandler(const MenuInputEvent* event);

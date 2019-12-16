@@ -2,6 +2,7 @@
 #define SISTER_RAY_ROUTINES_H
 
 #include <SisterRay/types.h>
+#include "game_module.h"
 
 #define FORMULA_TABLE_LOCATION          ((void*)0x8FF1F8)
 #define PHYSICAL_DAMAGE_FORMULA         ((void*)0x5DE5DF)
@@ -47,7 +48,7 @@
 #define PRINT_DEBUG_STRING              ((void*)0x664E30)
 
 typedef void(*pfnnullmasks)();
-typedef void(*pfnenqueueaction)(u16, u16, u8, u8, u16);
+typedef void(*pfnenqueueaction)(u8, u8, u8, u16, u16);
 typedef i32(*pfnsadnessmodifier)(i32);
 typedef i32(*pfnsplitdamagequadramagic)(i32, u32);
 typedef i32(*pfnbarriersmodifier)(i32);
@@ -97,26 +98,16 @@ typedef i32(*pfnsub7150A0)(u16);
 typedef i32(*pfnsub6F7270)(i32, float);
 #define renderSideScroller                      ((pfnsub6F7270)0x6F7270)
 
-typedef i16(*pfnsub6C62A2)(i32, i32, i32, i32);
-#define renderHPAndStatus        ((pfnsub6C62A2)0x6C62A2)
-
 /*This function sets some structs of size 0x70 based on the party member ID, not sure what they are yet*/
-typedef u8*(*pfnsub6E6C5B)(i32, i32, i32, i32);
-#define displayPortrait                      ((pfnsub6E6C5B)0x6E6C5B)
 
 typedef u16*(*pfnsub6E7BA1)(u16*, i16, i16, i16, i16);
 #define initialize_menu_window_struct          ((pfnsub6E7BA1)0x6E7BA1)
-
-typedef i32(*pfnsub6E7D20)(i16*, float);
-#define gameDrawBox                      ((pfnsub6E7D20)0x6E7D20)
 
 /*This function sets a variable based on the icon type neede in the menu and then calls a function to display it*/
 typedef i32(*pfnsub717691)(i32, i32, i32, i32, i32);
 #define displayVisibleItemIcon           ((pfnsub717691)0x717691)
 
 /*Not sure what this function does*/
-typedef u8(*pfnsub6F5C0C)(i32, i32, i8, i8, i32);
-#define gameDrawAsset                   ((pfnsub6F5C0C)0x6F5C0C)
 
 typedef i32(*pfnsub6F9739)(i32, i32, u32, u8, u8, float);
 #define gameDrawNumbers                 ((pfnsub6F9739)0x6F9739)
@@ -239,9 +230,6 @@ typedef u8(*pfnsub5C8BA1)(void);
 typedef i32(*pfnsub5D9550)(i32, i32, i32);
 #define sub_5D9550               ((pfnsub5D9550)0x5D9550)
 
-typedef i32(*pfnsub43258A)(u8*);
-#define enqueueBattleAction      ((pfnsub43258A)0x43258A)
-
 typedef u8*(*pfnsub436E15)(u8, u8, u8, i16);
 #define createAnimationEvent     ((pfnsub436E15)0x436E15)
 
@@ -262,7 +250,7 @@ typedef void(*pfnsub6D1B5C)(void*, i16);
 #define gameDrawTargetingCursors     ((pfnsub6D1B5C)0x6D1B5C)
 
 
-typedef void*(*pfnsub676578)(void);
+typedef GameContext*(*pfnsub676578)(void);
 #define getGraphicsCtx             ((pfnsub676578)0x676578)
 
 typedef void(*pfnsub41A21E)(void*);

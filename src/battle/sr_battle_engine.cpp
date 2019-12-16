@@ -5,6 +5,7 @@
 #define FF7_ANIMATE_WEAPON        ((void*)0x4303CC)
 #define FF7_DISPATCH_AUTO_ACTIONS ((void*)0x5C8CFA)
 #define FF7_ACTION_QUEUE_POP      ((void*)0x435D81)
+#define FF7_DISPLAY_BATTLE_STRING ((void*)0x6D7245)
 
 
 PFNSETPLAYERDATA* oldSetPlayerModel;
@@ -17,6 +18,7 @@ void initializeSrBattleEngine() {
     mogReplaceFunction(FF7_ANIMATE_WEAPON, &playCorrectWeaponAnimation);
     mogReplaceFunction(FF7_DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(FF7_ACTION_QUEUE_POP, &srHandlePoppedAction);
+    mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);
+    mogReplaceFunction(FF7_DISPLAY_BATTLE_STRING, &nopBattleString);
     registerActionPopCallbacks();
-    //oldRunAnimationScript = (PFNRUNANIMSCRIPT*)mogRedirectFunction(RUN_ANIMATION_SCRIPT, &animationScriptTrampoline);
 }

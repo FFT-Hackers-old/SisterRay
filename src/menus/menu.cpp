@@ -1,7 +1,6 @@
 #include "menu.h"
 #include <utility>
 #include "../impl.h"
-#include "../events/menu_events.h"
 
 void MenuRegistry::initializeMenu(std::string menuName, const std::string widgetName) {
     auto menu = get_element(menuName);
@@ -78,6 +77,9 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     else if (checkInputReceived(64)) {
         gContext.eventBus.dispatch(MENU_INPUT_CANCEL, &event, dispatchContext);
     }
+    else if (checkInputReceived(2)) {
+        gContext.eventBus.dispatch(MENU_INPUT_R2, &event, dispatchContext);
+    }
     else if (checkInputReceived(4)) {
         gContext.eventBus.dispatch(MENU_INPUT_L1, &event, dispatchContext);
     }
@@ -89,6 +91,9 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     }
     else if (checkInputReceived(16)) { 
         gContext.eventBus.dispatch(MENU_INPUT_TRIANGLE, &event, dispatchContext);
+    }
+    else if (checkInputReceived(256)) {
+        gContext.eventBus.dispatch(MENU_INPUT_SELECT, &event, dispatchContext);
     }
     else if (captureDirectionInput(0x2000, 4)) {
         gContext.eventBus.dispatch(MENU_INPUT_RIGHT, &event, dispatchContext);
@@ -123,7 +128,6 @@ SISTERRAY_API Cursor* getStateCursor(Menu* menu, u32 menuState, u32 cursorIdx) {
     if (menuState < menu->stateCount) {
         auto it = menu->cursors[menuState].find(cursorIdx);
         if (it != menu->cursors[menuState].end()) {
-            srLogWrite("returning cursor at %p", &(it->second));
             return &(it->second);
         }
     }

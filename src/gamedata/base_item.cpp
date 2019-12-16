@@ -6,8 +6,62 @@ SISTERRAY_API void initItemTypeData() {
     gContext.itemTypeData = SrItemTypeRegistry();
 }
 
+const char* getItemNameFromAbsoluteIdx(u16 absoluteIdx) {
+    auto typeData = gContext.itemTypeData.get_resource(absoluteIdx);
+    auto type = typeData.item_type;
+    auto relativeIdx = typeData.type_relative_id;
+    switch (type) {
+    case 0: {
+        return gContext.gameStrings.item_names.get_string(relativeIdx);
+        break;
+    }
+    case 1: {
+        return gContext.gameStrings.weapon_names.get_string(relativeIdx);
+        break;
+    }
+    case 2: {
+        return gContext.gameStrings.armor_names.get_string(relativeIdx);
+        break;
+    }
+    case 3: {
+        return gContext.gameStrings.accessory_names.get_string(relativeIdx);
+        break;
+    }
+    default: {
+        return nullptr;
+    }
+    }
+}
+
+const char* getItemDescFromAbsoluteIdx(u16 absoluteIdx) {
+    auto typeData = gContext.itemTypeData.get_resource(absoluteIdx);
+    auto type = typeData.item_type;
+    auto relativeIdx = typeData.type_relative_id;
+    switch (type) {
+    case 0: {
+        return gContext.gameStrings.item_descriptions.get_string(relativeIdx);
+        break;
+    }
+    case 1: {
+        return gContext.gameStrings.weapon_descriptions.get_string(relativeIdx);
+        break;
+    }
+    case 2: {
+        return gContext.gameStrings.armor_descriptions.get_string(relativeIdx);
+        break;
+    }
+    case 3: {
+        return gContext.gameStrings.accessory_descriptions.get_string(relativeIdx);
+        break;
+    }
+    default: {
+        return nullptr;
+    }
+    }
+}
+
 /*Called to initialize from kernel data the base types of items*/
-void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInitialize) {
+void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u32 numberToInitialize) {
     u16 absoluteBase = resource_count();
     u16 absoluteIndex;
     for (u16 relativeIndex = 0; relativeIndex < numberToInitialize; relativeIndex++) {

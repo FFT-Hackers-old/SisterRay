@@ -48,6 +48,8 @@ SISTERRAY_API void setPortraitParams(drawPortraitParams* params, i32 xCoordinate
     params->priority = priority;
 }
 
+typedef u8* (*pfnsub6E6C5B)(i32, i32, i32, float);
+#define displayPortrait                      ((pfnsub6E6C5B)0x6E6C5B)
 void drawPortraitWidget(PortraitWidget* portraitWidget) {
     displayPortrait(
         portraitWidget->widget.xCoordinate,
@@ -96,6 +98,8 @@ SISTERRAY_API void setHPBarParams(drawHPBarParams* params, i32 xCoordinate, i32 
     params->priority = priority;
 }
 
+typedef i16(*pfnsub6C62A2)(i32, i32, i32, float);
+#define renderHPAndStatus        ((pfnsub6C62A2)0x6C62A2)
 void drawHPBarWidget(HPBarWidget* hpBarWidget) {
     renderHPAndStatus(
         hpBarWidget->widget.xCoordinate,
@@ -226,6 +230,8 @@ SISTERRAY_API void setSimpleAssetParams(DrawSimpleAssetParams* params, i32 xCoor
     params->arrowPriority = priority;
 }
 
+typedef u8(*pfnsub6F5C0C)(i32, i32, i8, i8, float);
+#define gameDrawAsset                   ((pfnsub6F5C0C)0x6F5C0C)
 void drawSimpleAssetWidget(SimpleAssetWidget* simpleAssetWidget) {
     gameDrawAsset(
         simpleAssetWidget->widget.xCoordinate,
@@ -532,7 +538,6 @@ void drawResourceBarWidget(ResourceBarWidget* resourceBarWidget) {
         resourceBarWidget->seg2end,
         resourceBarWidget->colorMask
     };
-    srLogWrite("DRAWING RESOURCE BAR WITH PRIORITY: %f", resourceBarWidget->priority);
     gameDrawResourceBar((void*)&params, resourceBarWidget->priority);
 }
 
@@ -548,7 +553,6 @@ ResourceBarWidget* createResourceBarWidget(DrawResourceBarParams params, std::st
     widget->seg2end = params.seg2end;
     widget->colorMask = params.colorMask;
     widget->priority = params.priority;
-    srLogWrite("Resource bar created with z position/priority: %f", widget->priority);
     return widget;
 }
 

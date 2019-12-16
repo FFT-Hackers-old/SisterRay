@@ -2,10 +2,10 @@
 #define FORMATIONS_H
 
 #include "../sr_named_registry.h"
-#include "ai_scripts.h"
+#include "../battle/ai_scripts.h"
 
 typedef struct {
-    std::string uniqueIDs[3];
+    u32 uniqueIDs[3];
 } FormationEnemyIDs;
 
 typedef struct {
@@ -22,4 +22,7 @@ public:
     SrFormationRegistry() : SrNamedResourceRegistry<FormationData, std::string>() {}
 };
 
+FormationData& getFormation(u16 modFormationID);
+FormationActorData& getFormationActorData(u16 modFormationID, u16 enemyActorIdx);
+SISTERRAY_API FormationActorData getFormationActorData(u8 enemyActorIdx);
 #endif

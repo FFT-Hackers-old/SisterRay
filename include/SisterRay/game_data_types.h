@@ -3,6 +3,14 @@
 
 #include <SisterRay/types.h>
 
+typedef void(*SRPFNSPELLEFFECTCALLBACK)(u32, u32);
+typedef void(*SRPFNSPELLLOADERCALLBACK)();
+
+typedef struct {
+    SRPFNSPELLLOADERCALLBACK loadCallback;
+    SRPFNSPELLEFFECTCALLBACK dispatchCallback;
+} SpellEffect;
+
 typedef enum {
     SR_GEAR_WEAPON,
     SR_GEAR_ARMOR
@@ -42,6 +50,13 @@ typedef struct {
     u16 animationScriptIndex;
     u8 damageCalculationByte; //We can probably modularize this
     u16 miscCommandFlags;
+    u8 hasActions;
+    u8 animationType;
+    u8 animationEffectID;
+    u8 useOverride;
+    SpellEffect override;
+    u8 useMulti;
+    SpellEffect spellEffectMulti;
 } AuxCommandData;
 #pragma pack(pop)
 
@@ -51,6 +66,36 @@ typedef struct {
     const char* commandName;
     const char* commandDesc;
 } SrCommandData;
+
+typedef enum {
+    MAGIC,
+    SUMMON,
+    ENEMY_SKILL,
+    LIMIT,
+    ENEMY_ATTACK,
+} SrAttackType;
+
+typedef struct {
+    u8 abilityHitRate; //0x00
+    u8 impactEffectID; //0x01
+    u8 targetReactionID; //0x02
+    u8 unkbyte;          //0x03
+    u16 MPCost;          //0x04
+    u16 impactSoundID;   //0x06
+    u16 cameraMovementSingle;   //0x08
+    u16 cameraMovementMultiple;  //0x0A
+    u8 targetingFlags;           //0x0C
+    u8 animationEffectID;        //0x0D
+    u8 damageFormula;            //0x0E
+    u8 attackPower;              //0x0F
+    u8 restoreTypes;             //0x10
+    u8 statusInflictType;         //0x11
+    u8 additionalEffect;         //0x12
+    u8 additionalEffectModifier;  //0x13
+    u32 statusMask;               //0x14
+    u16 elementMask;              //0x18
+    u16 specialAttackFlags;       //0x1A
+} AttackData;
 
 #pragma pack(push, 1)
 typedef struct {

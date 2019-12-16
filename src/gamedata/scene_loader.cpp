@@ -1,4 +1,3 @@
-#include "battle.h"
 #include "../impl.h"
 #include "../gzip.h"
 #include "../party/party_utils.h"
@@ -22,29 +21,32 @@ void initFormationsRegistries() {
     FILE* scenePtr = fopen(filename, "rb");
     u32 sceneSize = getFileSize(filename);
     u32 sceneBlockIdx = 0;
+    u32 uniqueEnemyIdx = 0;
     while (sceneSize >= BLOCK_SIZE) {
-        readBlock(scenePtr, BLOCK_SIZE, sceneBlock); //We read a scene block into memory, need to determine when last block is reached
+        readBlock(scenePtr, BLOCK_SIZE, sceneBlock);
         u16 byteSizes[16];
-        auto sceneCount = getCompressedFileSizes(sceneBlock, byteSizes); //get the number of scenes in the block and their sizes
+        auto sceneCount = getCompressedFileSizes(sceneBlock, byteSizes);
         srLogWrite("Loading %i total scenes from block %i", sceneCount, sceneBlockIdx);
         for (auto sceneIndex = 0; sceneIndex < sceneCount; sceneIndex++) {
             auto dwordSceneOffset = (*((u32*)(sceneBlock + 4 * sceneIndex)));
             if (dwordSceneOffset == 0xFFFFFFFF) {
-                srLogWrite("end of block reached");
                 break;
             }
             srLogWrite("loading scene %i from block %i", sceneIndex, sceneBlockIdx);
-            u32 compressedSize = byteSizes[sceneIndex]; //We need to seek the actual end of the last scene
+            u32 compressedSize = byteSizes[sceneIndex]; 
             const u8* compressedScenePtr = sceneBlock + (4 * dwordSceneOffset);
             auto readSize = srGzipInflateCpy(compressedScenePtr, compressedSize, (u8*)&currentScene, sizeof(SceneLayout));
             if (readSize != SCENE_SIZE)
                 srLogWrite("ERROR: decompressed scene file is not the right size. Expected size: 7802, actual size %i", readSize);
-            populateRegistries(currentScene, &formationIndex); //this mutates formation index and populates formation, enemy data, and enemy ability registries. 
+            populateRegistries(currentScene, &formationIndex, &uniqueEnemyIdx); 
         }
         sceneSize -= BLOCK_SIZE;
         sceneBlockIdx++;
     }
     free(sceneBlock);
+    auto& command = gContext.commands.get_element(assembleGDataKey(CMD_ENEMY_ACTION));
+    command.actionCount = command.commandActions.size();
+    srLogWrite("FINISHED REGISTERING ENEMY ACTIONS: registered %d enemy attacks", getCommand(CMD_ENEMY_ACTION).actionCount);
 }
 
 /*Returns an array of compressed file sizes*/
@@ -97,46 +99,45 @@ void readBlock(FILE* filehandle, u32 blockSize, u8* dst) {
 }
 
 /*Populate Enemy, Formation, and Enemy Attack Registries*/
-void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
+void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* uniqueIdx) {
     auto sceneIndex = (*formationIndex) / 4;
     std::string sceneName = std::to_string(sceneIndex);
     FormationEnemyIDs srEnemyIDs = FormationEnemyIDs();
 
     /*Insert the enemies into an enemy registry. They are hashed given a unique ID: Scene Index: Name*/
-    for (auto enemyIndex = 0; enemyIndex < 3; enemyIndex++) {
+    for (auto formationRelativeEnemyIdx = 0; formationRelativeEnemyIdx < 3; formationRelativeEnemyIdx++) {
         SrEnemyData srEnemyData = SrEnemyData();
-        srEnemyData.enemyData = sceneData.enemyDataArray[enemyIndex];
-        srEnemyData.modelID = sceneData.formationModelIDs.EnemyIds[enemyIndex];
-        auto enemyName = std::string(EncodedString(srEnemyData.enemyData.enemyName).unicode());
-        auto uniqueID = sceneName + enemyName;
-        srEnemyIDs.uniqueIDs[enemyIndex] = uniqueID;
+        srEnemyData.enemyData = sceneData.enemyDataArray[formationRelativeEnemyIdx];
+        srEnemyData.modelID = sceneData.formationModelIDs.EnemyIds[formationRelativeEnemyIdx];
+        auto registryName = assembleGDataKey(*uniqueIdx);
+        srEnemyIDs.uniqueIDs[formationRelativeEnemyIdx] = *uniqueIdx;
+        *uniqueIdx += 1;
 
         BattleAIData enemyAIData = BattleAIData();
-        initializeBattleAIData(&(sceneData.enemyAIData[0]), enemyIndex, enemyAIData);
+        initializeBattleAIData(&(sceneData.enemyAIData[0]), formationRelativeEnemyIdx, enemyAIData);
         srEnemyData.enemyAI = enemyAIData;
         /*Add enemies to the enemy registry*/
-        gContext.enemies.add_element(uniqueID, srEnemyData);
-        srLogWrite("Enemy:%s added to registry", uniqueID.c_str());
+        gContext.enemies.add_element(registryName, srEnemyData);
+        srLogWrite("Enemy:%s added to registry with unique idx %d", registryName.c_str(), *uniqueIdx);
     }
 
     /*Create a formation referencing the unique enemy IDs*/
     for (auto sceneFormationIndex = 0; sceneFormationIndex < 4; sceneFormationIndex++) {
         FormationData formation = FormationData();
-        formation.FormationEnemyIDs = srEnemyIDs; //Probably want to remove this, reconstructing it from the SR unique IDs when a battle is loaded
+        formation.FormationEnemyIDs = srEnemyIDs; 
         formation.formationSetup = sceneData.formationSetupArray[sceneFormationIndex];
         formation.formationCamera = sceneData.formationCameraArray[sceneFormationIndex];
         formation.formationActorDataArray = sceneData.formationActorDataArrays[sceneFormationIndex];
-        auto formationName = std::to_string(*formationIndex);
         BattleAIData formationAI = BattleAIData();
         initializeBattleAIData(&(sceneData.formationAIData[0]), sceneFormationIndex, formationAI);
         formation.formationAI = formationAI;
-        gContext.formations.add_element(formationName, formation);
+        gContext.formations.add_element(assembleGDataKey(*formationIndex), formation);
         *formationIndex = *formationIndex + 1;
-        srLogWrite("Formation:%s added to registry with enemies %s, %s, %s",
-            formationName.c_str(),
-            formation.FormationEnemyIDs.uniqueIDs[0].c_str(),
-            formation.FormationEnemyIDs.uniqueIDs[1].c_str(),
-            formation.FormationEnemyIDs.uniqueIDs[2].c_str()
+        srLogWrite("Formation:%s added to registry with enemies %d, %d, %d",
+            assembleGDataKey(*formationIndex).c_str(),
+            formation.FormationEnemyIDs.uniqueIDs[0],
+            formation.FormationEnemyIDs.uniqueIDs[1],
+            formation.FormationEnemyIDs.uniqueIDs[2]
         );
     }
 
@@ -146,21 +147,25 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex) {
     auto& enemyAttackIDs = sceneData.enemyAttackIDS;
     for (auto relAttackIndex = 0; relAttackIndex < 32; relAttackIndex++) {
         auto attackID = enemyAttackIDs[relAttackIndex];
-        auto stringID = std::string("ETK") + std::to_string(attackID);
+        auto stringID = assembleGDataKey(attackID);
         if (attackID == 0xFFFF)
             continue;
 
         if (!(gContext.attacks.contains(stringID))) { //must implement a method to check if the dictionary contains a key
             auto attackName = EncodedString((const char *)enemyAttackNames[relAttackIndex].name);
             auto attackData = enemyAttacks[relAttackIndex];
-            SrAttackData enemyAttack = { attackData, attackID, attackName, ENEMY_ATTACK, ENEMY_ATTACK, EncodedString::from_unicode("") };
+            SrAttack enemyAttack = { attackData, attackID, attackName, EncodedString::from_unicode(""), ENEMY_ATTACK, ENEMY_ATTACK,  };
             gContext.attacks.add_element(stringID, enemyAttack);
-            srLogWrite("Enemy Attack:%s added to registry with name:%s, and ID:%i",
+            /*srLogWrite("Enemy Attack:%s added to registry with name:%s, and ID:%i",
                 stringID.c_str(),
                 enemyAttack.attackName.unicode(),
-                enemyAttack.attackID
-            );
+                enemyAttack.attackID,
+            );*/
+            srLogWrite("setting attack %s to be enemy action %d", stringID.c_str(), attackID);
+            setCommandAction(assembleGDataKey(CMD_ENEMY_ACTION), stringID, attackID);
         }
+        // For this to work we need to actually be able to set a specific index, not just append
+        //In the event the string ID already exists (kernel action) just ref it
     }
     srLogWrite("scene fully registered!");
 }

@@ -7,9 +7,8 @@ typedef void(*PFNSRSUB674659)(u32, FileContext*);
 BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *aaHeader, UnkModelLoadStruct *loadStruct, FileContext *fileContext, char * filename) {
     BattleModel *modelData;
     char FF7Directory[204];
-    u32 bytesRead;
     u32 animationsCount;
-    srLogWrite("calling sr Create Model");
+
     if (readTypeFlag)
         noLGPgetDirectory(&fileContext->lgpContext, FF7Directory);
     else
@@ -28,10 +27,6 @@ BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *a
         if (modelData) {
             if (aaHeader->loadBFileFlag) {
                 if (gContext.battleAnimationScripts.contains(filename)) {
-                    //char abFileNameBuffer[204];
-                    //int bytesRead;
-                    //createABFilename(filename, &(abFileNameBuffer[0]));
-                    //modelData->animScriptStruct = ff7LoadModelFile(&fileContext->lgpContext, &bytesRead, &(abFileNameBuffer[0]));
                     modelData->animScriptStruct = srInitializeAnimScriptsData(filename, aaHeader);
                 }
                 else {
@@ -95,8 +90,8 @@ BattleModel* srSetPlayerModel(i32 a1, i32 a2, u8 actorIndex, char *filename) {
         freeOldModel(BATTLE_MODEL_PTRS[actorIndex]);
         BATTLE_MODEL_PTRS[actorIndex] = nullptr;
         for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
-            if (BATTLE_MODEL_PTRS[actorIndex] == gBigAnimBlock[partyIdx].modelDataPtr)
-                gBigAnimBlock[partyIdx].modelDataPtr = nullptr;
+            if (BATTLE_MODEL_PTRS[actorIndex] == BATTLE_MODEL_STATE_BIG_ARRAY[partyIdx].modelDataPtr)
+                BATTLE_MODEL_STATE_BIG_ARRAY[partyIdx].modelDataPtr = nullptr;
         }
     }
     //The following code sets the 7 models that are active for the battle

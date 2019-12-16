@@ -63,7 +63,7 @@ void handleCounters(ActionContextEvent* actionEvent) {
 
 void setMimeData(ActionContextEvent* actionEvent) {
     auto damageContext = actionEvent->damageContext;
-    auto issuingActorID = actionEvent->issuingActorID;
+    u8 issuingActorID = actionEvent->issuingActorID;
     auto poppedAction = actionEvent->poppedAction;
 
     if (issuingActorID < 3 && damageContext->commandIndex != CMD_MIME && damageContext->commandIndex != CMD_ENEMY_ACTION) {

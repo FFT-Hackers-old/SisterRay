@@ -35,7 +35,7 @@ typedef struct {
 class SrItemTypeRegistry : public SrNamedResourceRegistry<ItemTypeData, std::string> {
 public:
     SrItemTypeRegistry() : SrNamedResourceRegistry<ItemTypeData, std::string>() {}
-    void initialize_augmented_data(u8 itemType, u16 numberToInitialize);
+    void initialize_augmented_data(u8 itemType, u32 numberToInitialize);
     u16 get_absolute_id(u8 itemType, u8 relativeIndex);
     void append_item(const std::string& name, u8 itemType, u8 iconType); //add element is not virtual
 
@@ -47,6 +47,8 @@ protected:
 };
 
 u8 getKernelIconType(u8 itemType, u16 typeRelativeIndex);
+const char* getItemNameFromAbsoluteIdx(u16 absoluteIdx);
+const char* getItemDescFromAbsoluteIdx(u16 absoluteIdx);
 SISTERRAY_API void initItemTypeData();
 
 void populatekernelStatBoosts(const u8* const stats, const u8* const amts, ActorStatBoosts& boosts, u8 count);

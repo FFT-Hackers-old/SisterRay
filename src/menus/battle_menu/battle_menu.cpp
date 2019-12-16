@@ -6,6 +6,7 @@ using namespace BattleMenuWidgetNames;
 void battleMenuUpdateHandler(i32 updateStateMask) {
     Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
     i32* menuStateMask = (i32*)(0xDC35B4);
+    srLogWrite("BATTLE MENU UPDATE LOOP DISPATCHING: STATE %d", getMenuState(menu));
     runMenu(menu, *menuStateMask);
     drawCursor(getStateCursor(menu, menu->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
 }

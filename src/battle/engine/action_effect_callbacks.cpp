@@ -5,10 +5,10 @@ void srDisplayActionStringEffect() {
     displayActionStringEffect();
 }
 
-typedef void(*SRPFNSUB42519A)(u16, u8*, u16, PFNSREFFECTCALLBACK, u16, ModelPosition*);
+typedef void(*SRPFNSUB42519A)(u16, u8*, u16, PFNSREFFECTCALLBACK, u16, R3PointWord*);
 #define gameDispatchActorMoveEffects    ((SRPFNSUB42519A)0x42519A)
 
-void srDispatchMoveEffects(u16 actorID, u8* scriptPtr, u16 moveAmt, PFNSREFFECTCALLBACK moveCallback, u16 frameCount, ModelPosition* moveRelativeBase) {
+void srDispatchMoveEffects(u16 actorID, u8* scriptPtr, u16 moveAmt, PFNSREFFECTCALLBACK moveCallback, u16 frameCount, R3PointWord* moveRelativeBase) {
     gameDispatchActorMoveEffects(actorID, scriptPtr, moveAmt, moveCallback, frameCount, moveRelativeBase);
 }
 

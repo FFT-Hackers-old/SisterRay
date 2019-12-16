@@ -6,5 +6,7 @@
 u8 countTargets(u16 targetMask);
 u8 getBattleType();
 u8 getTargetAllActive();
+u16 getAnimatingActionTargetMask();
+u8 getAnimatingActionTargetIdx();
 
 #endif

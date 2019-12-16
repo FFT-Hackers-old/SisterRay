@@ -16,6 +16,11 @@ void srLoadAnimationEffect(SRPFNSPELLLOADERCALLBACK loader) {
     gameLoadAnimationEffect(loader);
 }
 
+u8 isEffectLoading() {
+    u8* G_EFFECT_LOADING = (u8*)0xBF2A30;
+    return *G_EFFECT_LOADING;
+}
+
 void srBeatRushSpellEffect(u32 currentTargetMask, u32 actorID) {
     gameBeatRushEffect(currentTargetMask, actorID);
 }

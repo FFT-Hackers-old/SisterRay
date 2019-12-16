@@ -151,7 +151,7 @@ typedef struct {
     u16 restingYRotation; //0x160
     u16 restingZRotation;
     u16 field_164;
-    ModelPosition restingPosition; //0x166
+    R3PointWord restingPosition; //0x166
     u32 field_16C;
     u32* field_170;
     u32 field_174;

@@ -56,6 +56,10 @@ OpCodeControlSequence OpCodeC5(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeC6(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeC7(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeC8(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeCA(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeCC(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeCE(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeCF(AnimScriptEvent* srEvent);
 
 OpCodeControlSequence OpCodeE1(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeE2(AnimScriptEvent* srEvent);

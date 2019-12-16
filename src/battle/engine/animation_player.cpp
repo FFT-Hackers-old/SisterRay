@@ -129,3 +129,10 @@ i64 srCalculateZVectorComponent(i32 distance) {
     return gameCalculateZComponent(distance);
 }
 
+
+typedef void(*SRPFN_COMPUTEENEMYCENTER)(u16, R3PointWord*);
+#define gameComputeEnemyPartyCenter     ((SRPFN_COMPUTEENEMYCENTER)0x5BFEC9)
+void srComputeEnemyPartyCenter(u16 targetMask, R3PointWord* ret) {
+    gameComputeEnemyPartyCenter(targetMask, ret);
+}
+

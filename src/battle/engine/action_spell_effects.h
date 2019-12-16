@@ -12,6 +12,7 @@ void srMeteorStrikeSpellEffect(u32 currentTargetMask, u32 actorID);
 void srFinalHeavenSpellEffect(u32 currentTargetMask, u32 actorID);
 
 
+u8 isEffectLoading();
 void srLoadAnimationEffect(SRPFNSPELLLOADERCALLBACK loader);
 SRPFNSPELLLOADERCALLBACK srGetLoaderCallback(u8 dispatchCommandIdx, u8 relativeSpellEffectID);
 void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx);

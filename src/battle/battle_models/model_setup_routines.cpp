@@ -141,9 +141,9 @@ void translatePlayerABData() {
     for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
         byte_BF2DF8[partyIdx] = UNK_ACTOR_STRUCT_ARRAY[partyIdx].field_1;
         u8* byteViewAnimBlock = (u8*)&(getBattleModelState(partyIdx)->characterID);
-        getBattleModelState(partyIdx)->restingPosition.xCoordinate = actorPositionArray[partyIdx].xPosition;
-        getBattleModelState(partyIdx)->restingPosition.yCoordinate = actorPositionArray[partyIdx].yPosition;
-        getBattleModelState(partyIdx)->restingPosition.zCoordinate = actorPositionArray[partyIdx].zPosition;
+        getBattleModelState(partyIdx)->restingPosition.x = actorPositionArray[partyIdx].xPosition;
+        getBattleModelState(partyIdx)->restingPosition.y = actorPositionArray[partyIdx].yPosition;
+        getBattleModelState(partyIdx)->restingPosition.z = actorPositionArray[partyIdx].zPosition;
     }
 }
 

@@ -28,19 +28,19 @@ public:
 // these are actual callbacks
 bool defaultUseNoTarget();
 bool useSaveCrystal();
-bool defaultUseItem(u8 partyIdx, u16 item_id, u16 inventory_index);
-bool handleHeal(u8 partyIdx, u16 item_id, u16 inventory_index);
-bool handleBoostStat(u8 partyIdx, u16 item_id, u16 inventory_index);
-bool handleTeachLimits(u8 partyIdx, u16 item_id, u16 inventory_index);
+bool defaultUseItem(u8 partyIdx, u16 itemID, u16 inventoryIdx);
+bool handleHeal(u8 partyIdx, u16 itemID, u16 inventoryIdx);
+bool handleBoostStat(u8 partyIdx, u16 itemID, u16 inventoryIdx);
+bool handleTeachLimits(u8 partyIdx, u16 itemID, u16 inventoryIdx);
 
 
 // These are functions which should be moved to different files later on
-bool healPartyMember(u8 partyIdx, u16 item_id);
-u16 calculateHPHealAmount(u8 partyIdx, u16 item_id);
-u16 calculateMPHealAmount(u8 partyIdx, u16 item_id);
+bool healPartyMember(u8 partyIdx, u16 itemID);
+u16 calculateHPHealAmount(u8 partyIdx, u16 itemID);
+u16 calculateMPHealAmount(u8 partyIdx, u16 itemID);
 void playUseSound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id);
-bool checkIsHPHealable(u8 target, u16 item_id);
-bool checkIsMPHealable(u8 target, u16 item_id);
+bool checkIsHPHealable(u8 target, u16 itemID);
+bool checkIsMPHealable(u8 target, u16 itemID);
 bool checkActorHPFull(u8 partyIdx);
 bool checkActorMPFull(u8 partyIdx);
 

@@ -191,12 +191,9 @@ typedef struct {
     u8 field_35;
     u8 field_36;
     u8 field_37;
-    u8 field_38;
-    u8 field_39;
-    u8 field_3A;
-    u8 field_3B;
-    u8 field_3C;
-    u8 field_3D;
+    u16 field_38;
+    u16 field_3A;
+    u16 field_3C;
     u16 actionIdx;
     u8 field_41;
     u8 field_42;

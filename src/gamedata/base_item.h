@@ -35,7 +35,7 @@ typedef struct {
 class SrItemTypeRegistry : public SrNamedResourceRegistry<ItemTypeData, std::string> {
 public:
     SrItemTypeRegistry() : SrNamedResourceRegistry<ItemTypeData, std::string>() {}
-    void initialize_augmented_data(u8 itemType, u16 numberToInitialize);
+    void initialize_augmented_data(u8 itemType, u32 numberToInitialize);
     u16 get_absolute_id(u8 itemType, u8 relativeIndex);
     void append_item(const std::string& name, u8 itemType, u8 iconType); //add element is not virtual
 

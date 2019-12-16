@@ -31,7 +31,7 @@ SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::stri
 
     SrModelAnimations modelAnims = SrModelAnimations();
     modelAnims.type = modelType;
-    for (auto animationIdx = 0; animationIdx < totalAnims; animationIdx++) {
+    for (u32 animationIdx = 0; animationIdx < totalAnims; animationIdx++) {
         auto animHeader = (DaAnimHeader*)animDataStartPtr;
         u8* frameDataPtr = (u8*)(animDataStartPtr + 3);
         auto currentAnimation = createAnimationFromDABuffer(1, animHeader->bonesCount, animHeader->framesCount, (u32*)frameDataPtr);

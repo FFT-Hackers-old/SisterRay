@@ -61,7 +61,7 @@ const char* getItemDescFromAbsoluteIdx(u16 absoluteIdx) {
 }
 
 /*Called to initialize from kernel data the base types of items*/
-void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u16 numberToInitialize) {
+void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u32 numberToInitialize) {
     u16 absoluteBase = resource_count();
     u16 absoluteIndex;
     for (u16 relativeIndex = 0; relativeIndex < numberToInitialize; relativeIndex++) {

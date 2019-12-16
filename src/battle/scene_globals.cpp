@@ -32,7 +32,7 @@ EnemyData* getInBattleEnemyData(u8 formationRelativeIndex) {
     return &(enemyDataPtr[formationRelativeIndex]);
 }
 
-u32 getUniqueEnemyID(u8 arrayIdx) {
+u32 getUniqueEnemyID(u16 arrayIdx) {
     if (arrayIdx > 3) {
         return 0xFFFFFFFF;
     }

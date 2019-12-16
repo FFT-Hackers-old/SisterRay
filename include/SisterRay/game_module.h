@@ -29,6 +29,7 @@ typedef struct{
 
 typedef struct _GameContext GameContext;
 typedef struct _GraphicsDriverCallbacks GraphicsDriverCallbacks;
+typedef struct _GraphicsObjectExternals GraphicsObjectExternals;
 
 #pragma pack(push, 1)
 struct _GameContext {
@@ -202,7 +203,7 @@ struct _GameContext {
     u32 field_A80;
     u32 field_A84;
     void* createGFXDriver;
-    void* externals;
+    GraphicsObjectExternals* externals;
     u32 nvidiaFix;
     u32 tntFix;
     u32 noRivaFix;
@@ -301,6 +302,110 @@ struct _GraphicsDriverCallbacks {
     SRGFXDRIVER_DRAWVERTICES draw_flatlines;
     SRGFXDRIVER_DRAWVERTICES draw_smoothlines;
     SRGFXDRIVER_FIELDECCB field_EC;
+};
+#pragma pack(pop)
+
+typedef enum {
+    V_WIREFRAME,			// 0x1
+
+    V_TEXTURE,				// 0x2
+
+    V_LINEARFILTER,			// 0x4
+
+    V_PERSPECTIVE,			// 0x8
+
+    V_TMAPBLEND,			// 0x10
+
+    V_WRAP_U,				// 0x20
+
+    V_WRAP_V,				// 0x40
+
+    V_UNKNOWN80,			// 0x80
+
+    V_COLORKEY,				// 0x100
+
+    V_DITHER,				// 0x200
+
+    V_ALPHABLEND,			// 0x400
+
+    V_ALPHATEST,			// 0x800
+
+    V_ANTIALIAS,			// 0x1000
+
+    V_CULLFACE,				// 0x2000
+
+    V_NOCULL,				// 0x4000
+
+    V_DEPTHTEST,			// 0x8000
+
+    V_DEPTHMASK,			// 0x10000
+
+    V_SHADEMODE,			// 0x20000
+
+    V_SPECULAR,				// 0x40000
+    V_LIGHTSTATE,			// 0x80000
+    V_FOG,					// 0x100000
+    V_TEXADDR,				// 0x200000
+    V_UNKNOWN400000,        // 0x400000
+    V_UNKNOWN800000,        // 0x800000
+    V_ALPHAFUNC,            // 0x1000000
+    V_ALPHAREF,             // 0x2000000
+} GFX_EFFECTS;
+
+
+typedef void(*SRPFN_GAMEFREE)(void*, const char*, u32);
+typedef void*(*SRPFN_GAMEMALLOC)(u32, const char*, u32);
+typedef void*(*SRPFN_GAMEMALLOCARRAY)(u32, u32, const char*, u32);
+typedef void(*SRPFN_DESTROYGFXDRIVER)(GraphicsDriverCallbacks*);
+typedef GraphicsDriverCallbacks*(*SRPFN_CREATEGFXDRIVER)();
+typedef TextureFormat*(*SRPFN_CREATETEXTUREFORMAT)();
+typedef void(*SRPFN_LISTADDTEXTUREFORMAT)(TextureFormat*, GameContext*);
+typedef GameContext* (*SRPFN_GETGAMECTX)();
+typedef Palette*(*SRPFN_CREATETEXTUREPALETTE)(u32, TextureHeader*, TextureSet*);
+typedef TextureSet*(*SRPFN_CREATETEXTURESET)();
+typedef void(*SRPFN_DESTROYTEXTURESETPALETTE)(TextureSet*);
+typedef void(*SRPFN_DESTROYPALETTE)(Palette*);
+typedef Palette*(*SRPFN_CREATEPALETTE)(u32, u32, u32, u32, u32);
+typedef void(*SRPFN_CONVERTOPIXELS)(u32, u32, u32, u32, u32, TextureFormat*);
+
+#pragma pack(push, 1)
+struct _GraphicsObjectExternals{
+    SRPFN_GAMEFREE gameFree;
+    SRPFN_GAMEMALLOC gameMalloc;
+    SRPFN_GAMEMALLOCARRAY gameMallocArray;
+    SRPFN_CREATETEXTUREFORMAT createTextureFormat;
+    SRPFN_LISTADDTEXTUREFORMAT listAddTextureFormat;
+    SRPFN_GETGAMECTX getGameContext;
+    SRPFN_DESTROYGFXDRIVER destroyDriver;
+    SRPFN_CREATEGFXDRIVER createGFXDriver;
+    SRPFN_CONVERTOPIXELS makePixelFormat;
+    void* gltexformat2texformat;
+    void* sub_686143;
+    void* sub_6861EC;
+    void* sub_68631E;
+    void* sub_686351;
+    void* palPixelToBGRA;
+    void* palPixel2BGRA8bit;
+    SRPFN_DESTROYTEXTURESETPALETTE destroyTextureSetPAL;
+    SRPFN_CREATETEXTUREPALETTE createTexturePalette;
+    void* convertTexture;
+    void* textureSetDecref;
+    SRPFN_CREATETEXTURESET createTextureSet;
+    void* copyPaletteColor;
+    void* rgba2d3dCol;
+    void* sub_6A5FEB;
+    void* sub_6A604A;
+    SRPFN_DESTROYPALETTE destroyPalette;
+    SRPFN_CREATEPALETTE createPalette;
+    void* writePalette;
+    void* paletteChanged;
+    void* sub_6A5A70;
+    void* sub_6A5BA0;
+    void* sub_6A5C3B;
+    void* sub_6A5CE2;
+    void* sub_6A2865;
+    SRGFXDRIVER_LOADGROUP genericLoadGroup;
+    SRGFXDRIVER_LIGHTPOLYGONSET genericLightPolygonSet;
 };
 #pragma pack(pop)
 

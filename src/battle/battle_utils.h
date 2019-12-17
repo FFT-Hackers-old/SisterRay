@@ -8,5 +8,7 @@ u8 getBattleType();
 u8 getTargetAllActive();
 u16 getAnimatingActionTargetMask();
 u8 getAnimatingActionTargetIdx();
+u8 getActionActorIdx();
+u8 getActorIdleAnimScript(u8 actorID);
 
 #endif

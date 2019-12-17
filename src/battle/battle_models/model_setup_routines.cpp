@@ -10,7 +10,7 @@ typedef void(*PFNSRSUB42B579)();
 #define sub_42B579  ((PFNSRSUB42B579)0x42B579)
 
 typedef void(*PFNSRSUB42BC15)(u8);
-#define initEnemyModelsFromAB   ((PFNSRSUB42BC15)0x42BC15)
+#define gameInitEnemiesFromAB   ((PFNSRSUB42BC15)0x42BC15)
 
 typedef void(*PFNSRSUB42B66A)(u8);
 #define copyDataFromBFile  ((PFNSRSUB42B66A)0x42B66A)
@@ -22,13 +22,13 @@ void translateEnemyABData() {
     u8* byte_BF2DF8 = (u8*)0xBF2DF8;
     u8* enemyCountGlobal = (u8*)0xBF2050;
     ModelPositionStruct* actorPositionArray = (ModelPositionStruct*)(0xBFD0A0);
-    EnemyPositionStruct* enemyInitialPositionArray = (EnemyPositionStruct*)(0xBF2056);
+    EnemyPosition* enemyInitialPositionArray = (EnemyPosition*)(0xBF2054);
 
     for (u8 enemyActorIdx = 4; enemyActorIdx < (*enemyCountGlobal) + 4; ++enemyActorIdx) {
         auto actorModelState = getBattleModelState(enemyActorIdx);
         auto actorModel74State = getBattleModelState74(enemyActorIdx);
         actorModel74State->modelDataIndex = 0;
-        initEnemyModelsFromAB(enemyActorIdx);
+        gameInitEnemiesFromAB(enemyActorIdx);
         byte_BF2DF8[enemyActorIdx] = UNK_ACTOR_STRUCT_ARRAY[enemyActorIdx].field_1;
         actorPositionArray[enemyActorIdx].xPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.xPosition;
         actorPositionArray[enemyActorIdx].yPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.yPosition;

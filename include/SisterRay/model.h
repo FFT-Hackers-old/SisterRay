@@ -180,8 +180,7 @@ typedef struct {
     u16 field_26;
     u16 field_28;
     u16 field_2A;
-    u8 field_2C;
-    u8 field_2D;
+    u16 field_2C;
     u16 field_2E;
     u16 field_30;
     u8 modelDataIndex; //0x032

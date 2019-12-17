@@ -8,6 +8,7 @@
 #include "animation_player.h"
 #include "damage_events.h"
 #include "../battle_utils.h"
+#include "../battle_models/model_setup_routines.h"
 
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
@@ -258,6 +259,25 @@ OpCodeControlSequence OpCode99(AnimScriptEvent* srEvent) {
             scriptCtx->opCodeArgs[3],
             (R3PointWord*)&(getBattleModelState(targetID))->restingPosition);
     }
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCode9A(AnimScriptEvent* srEvent) {
+    auto& scriptCtx = *srEvent->scriptContext;
+    auto& ownerModelState = *srEvent->battleModelState;
+    auto& targetModelState = *getBattleModelState(getAnimatingActionTargetIdx());
+    auto& targetModelState74 = *getBattleModelState74(getAnimatingActionTargetIdx());
+
+    scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    scriptCtx.opCodeArgs[1] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    scriptCtx.field_8 = GAME_ANGLE_MAX - (targetModelState74.field_2C + 2048);
+    scriptCtx.opCodeArgs[0] = (targetModelState.field_6 * targetModelState.field_12 / GAME_ANGLE_MAX);
+
+    i16 xDecrement = (i16)((scriptCtx.opCodeArgs[0] * srCalculateXVectorComponent(scriptCtx.field_8)) / GAME_ANGLE_MAX);
+    ownerModelState.restingPosition.x = targetModelState.restingPosition.x - xDecrement;
+    i16 zDecrement = (i16)((scriptCtx.opCodeArgs[0] * srCalculateZVectorComponent(scriptCtx.field_8)) / GAME_ANGLE_MAX);
+    ownerModelState.restingPosition.z = targetModelState.restingPosition.z - zDecrement;
+    ownerModelState.restingPosition.y = scriptCtx.opCodeArgs[1];
     return RUN_NEXT;
 }
 
@@ -606,7 +626,7 @@ OpCodeControlSequence OpCodeB4(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
-typedef i16(*SRPFNSUB425890)(u16, u8);
+typedef i16(*SRPFNSUB425890)(u8, u8);
 #define gamePushDeathEffects  ((SRPFNSUB425890)0x425890)
 OpCodeControlSequence OpCodeB7(AnimScriptEvent* srEvent) {
     gamePushDeathEffects(srEvent->actorID, 1);
@@ -1066,7 +1086,6 @@ OpCodeControlSequence OpCodeD7(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
-
 #define pushPlaySoundEffect   ((PFNSREFFECTCALLBACK)0x427737)
 OpCodeControlSequence OpCodeD8(AnimScriptEvent* srEvent) {
     u32* off_C05FE8 = (u32*)0xC05FE8;
@@ -1102,7 +1121,6 @@ OpCodeControlSequence OpCodeDB(AnimScriptEvent* srEvent) {
     effectCtx.wordArray[4] = scriptCtx.opCodeArgs[1];
     return RUN_NEXT;
 }
-
 
 OpCodeControlSequence OpCodeDC(AnimScriptEvent* srEvent) {
     auto& scriptCtx = *srEvent->scriptContext;
@@ -1179,6 +1197,13 @@ OpCodeControlSequence OpCodeDF(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+OpCodeControlSequence OpCodeE0(AnimScriptEvent* srEvent) {
+    auto effectCtx = srCreateEffect(gamePushSpellAura, EFFECT60);
+    effectCtx->wordArray[0] = 1;
+    effectCtx->wordArray[1] = 36;
+    return RUN_NEXT;
+}
+
 OpCodeControlSequence OpCodeE1(AnimScriptEvent* srEvent) {
     setModelAppaer(srEvent->actorID);
     return RUN_NEXT;
@@ -1186,6 +1211,24 @@ OpCodeControlSequence OpCodeE1(AnimScriptEvent* srEvent) {
 
 OpCodeControlSequence OpCodeE2(AnimScriptEvent* srEvent) {
     setModelVanish(srEvent->actorID);
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeE3(AnimScriptEvent* srEvent) {
+    auto& actorModelState = *getBattleModelState(getActionActorIdx());
+    R3PointWord* actorPositionArray = (R3PointWord*)(0xBFD0A0);
+    actorPositionArray[getActionActorIdx()].x = actorModelState.restingPosition.x;
+    actorPositionArray[getActionActorIdx()].z = actorModelState.restingPosition.z;
+    return RUN_NEXT;
+}
+
+
+OpCodeControlSequence OpCodeE4(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    auto& ownerModelState = *getBattleModelState(srEvent->actorID);
+    *off_C05FE8 = ownerModelState.restingYRotation + 2048;
+    ownerModelState.restingPosition.x -= (516 * srCalculateXVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
+    ownerModelState.restingPosition.z -= (516* srCalculateZVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
     return RUN_NEXT;
 }
 
@@ -1197,10 +1240,54 @@ OpCodeControlSequence OpCodeE6(AnimScriptEvent* srEvent) {
 }
 
 
+OpCodeControlSequence OpCodeE7(AnimScriptEvent* srEvent) {
+    u32* off_C05FF0 = (u32*)0xC05FF0;
+    auto& modelState = *srEvent->battleModelState;
+    auto& scriptCtx = *srEvent->scriptContext;
+
+    *off_C05FF0 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    u8 flagsLocal = modelState.field_25 | 4;
+    if (*off_C05FF0)
+        flagsLocal = modelState.field_25 & 0xFB;
+    modelState.field_25 = flagsLocal;
+    return RUN_NEXT;
+}
+
 OpCodeControlSequence OpCodeE8(AnimScriptEvent* srEvent) {
     auto& modelState = *srEvent->battleModelState;
     auto& modelState74 = *getBattleModelState74(srEvent->actorID);
     srLoadActionSpellEffects(srEvent->actorID, modelState.commandID, modelState74.actionIdx);
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeE9(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    auto& ownerModelState = *srEvent->battleModelState;
+    auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
+    auto& scriptCtx = *srEvent->scriptContext;
+
+    scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    scriptCtx.opCodeArgs[3] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C05FE8 = ownerModelState74.field_28;
+    srDispatchMoveEffects(
+        srEvent->actorID,
+        srEvent->scriptPtr,
+        scriptCtx.opCodeArgs[4],
+        targetRelativeXYPlaneMoveEffect,
+        scriptCtx.opCodeArgs[3],
+        (R3PointWord*)&(getBattleModelState(getAnimatingActionTargetIdx())->restingPosition.x)
+    );
+    return RUN_NEXT;
+}
+
+
+OpCodeControlSequence OpCodeEA(AnimScriptEvent* srEvent) {
+    u8* byte_DC0E11 = (u8*)0xDC0E11;
+    auto& scriptCtx = *srEvent->scriptContext;
+    scriptCtx.field_14 = srPushEffect100((PFNSREFFECTCALLBACK)srDisplayActionStringEffect);
+    auto& effectCtx = *getEffectContext100(scriptCtx.field_14);
+    effectCtx.wordArray[1] = (*byte_DC0E11 >> 2) + 4;
+    effectCtx.wordArray[2] = 0;
     return RUN_NEXT;
 }
 
@@ -1243,6 +1330,16 @@ OpCodeControlSequence OpCodeEC(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+OpCodeControlSequence OpCodeED(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    auto& ownerModelState = *getBattleModelState(srEvent->actorID);
+    *off_C05FE8 = ownerModelState.restingYRotation;
+    ownerModelState.restingPosition.x -= (516 * srCalculateXVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
+    ownerModelState.restingPosition.z -= (516 * srCalculateZVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
+    return RUN_NEXT;
+}
+
+//0xFF is the same
 OpCodeControlSequence OpCodeEE(AnimScriptEvent* srEvent) {
     u8* G_ACTOR_IDLE_SCRIPTS = (u8*)0xBF2DF8;
     auto& scriptCtx = *srEvent->scriptContext;
@@ -1268,28 +1365,148 @@ OpCodeControlSequence OpCodeF0(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+OpCodeControlSequence OpCodeF1(AnimScriptEvent* srEvent) {
+    auto& ownerModelState = *srEvent->battleModelState;
+    auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
+    ownerModelState74.field_C &= 0xFFFBu;
+    ownerModelState.field_26 = 1;
+    ownerModelState74.field_C &= 0xF7;
+    --ownerModelState.currentScriptPosition;
+    return BREAK;
+}
+
+OpCodeControlSequence OpCodeF3(AnimScriptEvent* srEvent) {
+    auto& ownerModelState = *srEvent->battleModelState;
+    if (!ownerModelState.waitFrames) {
+        return RUN_NEXT;
+    }
+    --ownerModelState.waitFrames;
+    --ownerModelState.currentScriptPosition;
+    srEvent->scriptContext->isScriptActive = 0;
+    return BREAK;
+}
+
+OpCodeControlSequence OpCodeF4(AnimScriptEvent* srEvent) {
+    auto& ownerModelState = *srEvent->battleModelState;
+    ownerModelState.waitFrames = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    return RUN_NEXT;
+}
+
+
+OpCodeControlSequence OpCodeF5(AnimScriptEvent* srEvent) {
+    u32* off_C05FF4 = (u32*)0xC05FF4;
+    EnemyPosition* enemyPositionArray = (EnemyPosition*)0xBF2054;
+    *off_C05FF4 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    enemyPositionArray[(srEvent->actorID - 4)].modelArrayIdx = (*(u16*)off_C05FF4) + 3;
+    gameInitEnemiesFromAB(srEvent->actorID);
+    srEvent->battleModelState->modelEffectFlags |= 1u;
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeF6(AnimScriptEvent* srEvent) {
+    auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
+    u8* canDieDuringEffect = (u8*)0xBFC398; //controls whether the actor can die during the effect or not
+    u16* killedActorsMask = (u16*)0xBFCB20; //mask of actors killed by the last consumed damage event
+    if (*canDieDuringEffect) {
+        if (ownerModelState74.field_C & 0x10) {
+            gamePushDeathEffects(srEvent->actorID, 1); //dispatches 
+        }
+    }
+    else if ((1 << srEvent->actorID) & *killedActorsMask){
+        gamePushDeathEffects(srEvent->actorID, 1);
+    }
+    return RUN_NEXT;
+}
+
+
+typedef void(*SRPFNSUB5BE9F0)(u16, u16, u16);
+#define pushDelayedDamageDisplayEffect    ((SRPFNSUB5BE9F0)0x5BE9F0)
+OpCodeControlSequence OpCodeF7(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u8* byte_BF23BC = (u8*)0xBF23BC;
+    *byte_BF23BC = 0;
+    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    pushDelayedDamageDisplayEffect(getAnimatingActionTargetMask(), *(u16*)off_C05FE8, 1);
+    return RUN_NEXT;
+}
+
+#define sub_425AAD      ((PFNSREFFECTCALLBACK)0x425AAD)
+OpCodeControlSequence OpCodeF8(AnimScriptEvent* srEvent) {
+    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C05FF0 = (u32*)0xC05FF0;
+    auto& scriptCtx = *srEvent->scriptContext;
+    EnemyPosition* enemyPositionArray = (EnemyPosition*)0xBF2054;
+
+    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    scriptCtx.opCodeArgs[0] = srPushEffect60(sub_425AAD);
+    if (srEvent->actorID >= 4)
+        *off_C05FF0 = enemyPositionArray[srEvent->actorID - 4].modelArrayIdx;
+    else
+        *off_C05FF0 = srEvent->actorID;
+
+    u32* battleModelABHeader = (u32*)getActiveModelFromArray(*off_C05FF0)->animScriptStruct;
+    auto& effectCtx = *getEffectContext60(scriptCtx.opCodeArgs[0]);
+    *(u32*)&effectCtx.wordArray[7] = battleModelABHeader[*off_C05FE8 + 9]; //Should have a dword view
+    effectCtx.wordArray[2] = srEvent->actorID;
+    effectCtx.byteArray[22] = 0;
+    effectCtx.wordArray[1] = 0;
+    effectCtx.wordArray[0] = ++(getBattleModelState74(srEvent->actorID)->field_34);
+    return RUN_NEXT;
+}
+
+//resets actor orientation
+OpCodeControlSequence OpCodeF9(AnimScriptEvent* srEvent) {
+    srEvent->battleModelState->restingYRotation = srEvent->battleModelState->initialYRotation;
+    return RUN_NEXT;
+}
+
+//return actor to default position
+OpCodeControlSequence OpCodeFA(AnimScriptEvent* srEvent) {
+    R3PointWord* actorPositionArray = (R3PointWord*)(0xBFD0A0);
+    auto& ownerModelState = *srEvent->battleModelState;
+
+    ownerModelState.restingPosition.x = actorPositionArray[srEvent->actorID].x;
+    ownerModelState.restingPosition.y = actorPositionArray[srEvent->actorID].y;
+    ownerModelState.restingPosition.z = actorPositionArray[srEvent->actorID].z;
+    return RUN_NEXT;
+}
+
+//move actor to position specified in arguments
+OpCodeControlSequence OpCodeFD(AnimScriptEvent* srEvent) {
+    R3PointWord* actorPositionArray = (R3PointWord*)(0xBFD0A0);
+    auto& ownerModelState = *srEvent->battleModelState;
+
+    ownerModelState.restingPosition.x = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    ownerModelState.restingPosition.y = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    ownerModelState.restingPosition.z = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeFE(AnimScriptEvent* srEvent) {
+    auto& ownerModelState = *srEvent->battleModelState;
+    auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
+    auto& ownerRotationData = *getBattleModelRotationData(srEvent->actorID);
+    auto& scriptCtx = *srEvent->scriptContext;
+    if (!ownerModelState.waitFrames) {
+        scriptCtx.currentOpCode = srEvent->scriptPtr[ownerModelState.currentScriptPosition];
+        if (scriptCtx.currentOpCode == char(0xC0)) {
+            ownerModelState.currentScriptPosition = 0;
+            ownerModelState.field_74 = 0;
+            ownerModelState74.field_36 = 0;
+            ownerRotationData.field_0 = 0;
+            ownerModelState.waitFrames = 0;
+            ownerModelState.runningAnimIdx = *scriptCtx.scriptPtr;
+            ownerModelState.animScriptIndex = getActorIdleAnimScript(srEvent->actorID);
+            scriptCtx.scriptPtr = srEvent->animationScriptTable[ownerModelState.animScriptIndex];
+            ownerModelState.isScriptExecuting = 1;
+            ownerModelState.currentScriptPosition = 0;
+            ownerModelState.waitFrames = 0;
+        }
+    }
+    return RUN_NEXT;
+}
+
 /*
- case 0x9Au:
- case 0xFBu:
-     v13 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     scriptContextPtr->opCodeArgs[4] = v13;
-     v14 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     scriptContextPtr->opCodeArgs[1] = v14;
-     *(_WORD*)&scriptContextPtr->field_8 = 4096 - (*(_WORD*)&smallModelDataArray[byte_BFB198].field_2C + 2048);
-     scriptContextPtr->opCodeArgs[0] = (*(signed __int16*)&gBigAnimBlock[byte_BFB198].field_6
-         * gBigAnimBlock[byte_BFB198].field_12 >> 12)
-         + (*(signed __int16*)&gBigAnimBlock[actor_id].field_6
-             * scriptContextPtr->opCodeArgs[4] >> 12);
-     v15 = gBigAnimBlock[byte_BFB198].restingPosition.xCoordinate;
-     gBigAnimBlock[actor_id].restingPosition.xCoordinate = v15
-         - ((signed int)(scriptContextPtr->opCodeArgs[0]
-             * (unsigned int)calculateXDelta(*(signed __int16*)&scriptContextPtr->field_8)) >> 12);
-     v16 = gBigAnimBlock[byte_BFB198].restingPosition.zCoordinate;
-     gBigAnimBlock[actor_id].restingPosition.zCoordinate = ((signed int)(scriptContextPtr->opCodeArgs[0]
-         * (unsigned int)calculateZDelta(*(signed __int16*)&scriptContextPtr->field_8)) >> 12)
-         + v16;
-     gBigAnimBlock[actor_id].restingPosition.yCoordinate = scriptContextPtr->opCodeArgs[1];
-     goto LABEL_20;
  case 0xA2u:
      scriptContextPtr->opCodeArgs[2] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      if (vincentTransformationIndex < 4)
@@ -1383,63 +1600,10 @@ OpCodeControlSequence OpCodeF0(AnimScriptEvent* srEvent) {
      else
          sub_5BF388(actor_id, *newAxisPosition, *off_C05FEC, *off_C05FFC, *off_C05FF4, *off_C05FF8);
      goto LABEL_20;
- case 0xD6u:
-     scriptContextPtr->opCodeArgs[0] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     v62 = setCastEffectHandler((int)sub_4277B1);
-     scriptContextPtr->opCodeArgs[1] = v62;
-     word_BFC3A6[16 * scriptContextPtr->opCodeArgs[1]] = actor_id;
-     word_BFC3A4[16 * scriptContextPtr->opCodeArgs[1]] = scriptContextPtr->opCodeArgs[0];
-     goto LABEL_20;
- case 0xD7u:
-     *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     *off_C05FEC = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     v48 = setCastEffectHandler((int)sub_4276B6);
-     scriptContextPtr->opCodeArgs[0] = v48;
-     word_BFC3A4[16 * scriptContextPtr->opCodeArgs[0]] = *(_WORD*)newAxisPosition;
-     word_BFC3A6[16 * scriptContextPtr->opCodeArgs[0]] = *(_WORD*)off_C05FEC;
-     word_BFC3A8[16 * scriptContextPtr->opCodeArgs[0]] = actor_id;
-     goto LABEL_20;
- case 0xD8u:                           // play Sound
-     *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     v49 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     *off_C05FEC = v49;
-     v50 = setCastEffectHandler((int)sub_427737);
-     scriptContextPtr->opCodeArgs[0] = v50;
-     word_BFC3A4[16 * scriptContextPtr->opCodeArgs[0]] = *(_WORD*)newAxisPosition;
-     word_BFC3A6[16 * scriptContextPtr->opCodeArgs[0]] = *(_WORD*)off_C05FEC;
-     goto LABEL_20;
+
  case 0xDAu:
      gBigAnimBlock[actor_id].additionalEffect = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      gBigAnimBlock[actor_id].commandID = 2;
-     goto LABEL_20;
- case 0xDBu:
-     v55 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     scriptContextPtr->opCodeArgs[2] = v55;
-     scriptContextPtr->opCodeArgs[0] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     scriptContextPtr->opCodeArgs[1] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     sub_43930D(
-         byte_BFCDE0,
-         actor_id,
-         -1,
-         scriptContextPtr->opCodeArgs[2],
-         scriptContextPtr->opCodeArgs[0],
-         scriptContextPtr->opCodeArgs[1]);
-     goto LABEL_20;
- case 0xE0u:                           // limit charge effect
-     vinAnimScriptIdx = setCastEffectHandler((int)sub_425520);
-     word_BFC3A2[16 * vinAnimScriptIdx] = 1;
-     word_BFC3A4[16 * vinAnimScriptIdx] = 36;
-     goto LABEL_20;
- case 0xE3u:
-     actorPositionArray[actorID_0].xCoordinate = gBigAnimBlock[actorID_0].restingPosition.xCoordinate;
-     actorPositionArray[actorID_0].zCoordinate = gBigAnimBlock[actorID_0].restingPosition.zCoordinate;
-     goto LABEL_20;
- case 0xE4u:                           // called when Change is issued, changes resting model position
-     *newAxisPosition = gBigAnimBlock[actor_id].field_160 + 2048;
-     gBigAnimBlock[actor_id].restingPosition.xCoordinate -= (signed int)(516
-         * (unsigned __int64)calculateXDelta(*newAxisPosition)) >> 12;
-     gBigAnimBlock[actor_id].restingPosition.zCoordinate -= (signed int)(516
-         * (unsigned __int64)calculateZDelta(*newAxisPosition)) >> 12;
      goto LABEL_20;
  case 0xE5u:
      switch (byte_BFD0E0)
@@ -1498,103 +1662,7 @@ OpCodeControlSequence OpCodeF0(AnimScriptEvent* srEvent) {
          break;
      }
      gBigAnimBlock[actor_id].field_160 = gBigAnimBlock[actor_id].field_18;
-     goto LABEL_20;
- case 0xE7u:
-     *off_C05FF0 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     if (*off_C05FF0)
-         v42 = gBigAnimBlock[actor_id].field_25 & 0xFB;
-     else
-         v42 = gBigAnimBlock[actor_id].field_25 | 4;
-     gBigAnimBlock[actor_id].field_25 = v42;
-     goto LABEL_20;
- case 0xE9u:
-     v17 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     scriptContextPtr->opCodeArgs[4] = v17;
-     scriptContextPtr->opCodeArgs[3] = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     *newAxisPosition = smallModelDataArray[actor_id].field_28;
-     setupInterpolatedMove(
-         actor_id,
-         scriptContextPtr->scriptPtr,
-         scriptContextPtr->opCodeArgs[4],
-         (int)sub_426A26,
-         scriptContextPtr->opCodeArgs[3],
-         &gBigAnimBlock[byte_BFB198].restingPosition.xCoordinate);
-     goto LABEL_20;
- case 0xEAu:                           // displayActionName
-     v65 = pushEffect100Handler(functionAddr);
-     scriptContextPtr->field_14 = v65;
-     v66 = sub_5BE475();
-     struct100ContextArray[scriptContextPtr->field_14].framesToWait = v66;
-     struct100ContextArray[scriptContextPtr->field_14].field_6 = 0;
-     goto LABEL_20;
- case 0xEDu:                           // opcode hops forward
-     *newAxisPosition = gBigAnimBlock[actor_id].field_160;
-     gBigAnimBlock[actor_id].restingPosition.xCoordinate -= (signed int)(516
-         * (unsigned __int64)calculateXDelta(*newAxisPosition)) >> 12;
-     gBigAnimBlock[actor_id].restingPosition.zCoordinate -= (signed int)(516
-         * (unsigned __int64)calculateZDelta(*newAxisPosition)) >> 12;
-     goto LABEL_20;
- case 0xF1u:
-     smallModelDataArray[actor_id].field_C &= 0xFFFBu;
-     gBigAnimBlock[actor_id].field_26 = 1;
-     v51 = smallModelDataArray[actor_id].field_C;
-     LOBYTE(v51) = v51 & 0xF7;
-     smallModelDataArray[actor_id].field_C = v51;
-     --gBigAnimBlock[actor_id].currentScriptPosition;
-     return;
- case 0xF3u:                           // decrement wait timer
-     if (!gBigAnimBlock[actor_id].waitFrames)
-         goto LABEL_20;
-     --gBigAnimBlock[actor_id].waitFrames;
-     --gBigAnimBlock[actor_id].currentScriptPosition;
-     scriptContextPtr->isScriptActive = 0;
-     return;
- case 0xF4u:
-     gBigAnimBlock[actor_id].waitFrames = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     break;
- case 0xF5u:
-     *off_C05FF4 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     EnemyAnimScriptIndex[6 * (actor_id - 4)] = *(_WORD*)off_C05FF4 + 3;
-     initEnemyModelState(actor_id);
-     gBigAnimBlock[actor_id].modelEffectFlags |= 1u;
-     break;
- case 0xF6u:
-     if (byte_BFC398)
-     {
-         if (smallModelDataArray[actor_id].field_C & 0x10)
-             sub_425890(actor_id, 1);
-     }
-     else if ((1 << actor_id) & word_BFCB20)
-     {
-         sub_425890(actor_id, 1);
-     }
-     break;
- case 0xF7u:                           // display damage in arg frame
-     byte_BF23BC = 0;
-     *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     delayedEffectHandlerPush100(currentTargetMask, *newAxisPosition, 1);
-     break;
- case 0xF8u:
-     *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     v3 = setCastEffectHandler((int)sub_425AAD);
-     scriptContextPtr->opCodeArgs[0] = v3;
-     if (actor_id >= 4)
-         *off_C05FF0 = EnemyAnimScriptIndex[6 * (actor_id - 4)];
-     else
-         *off_C05FF0 = actor_id;
-     v84 = BATTLE_MODEL_PTRS[*off_C05FF0]->animationScriptsStruct;
-     dword_BFC3B0[8 * scriptContextPtr->opCodeArgs[0]] = v84[*newAxisPosition + 9];
-     word_BFC3A6[16 * scriptContextPtr->opCodeArgs[0]] = actor_id;
-     byte_BFC3B8[32 * scriptContextPtr->opCodeArgs[0]] = 0;
-     word_BFC3A4[16 * scriptContextPtr->opCodeArgs[0]] = 0;
-     word_BFC3A2[16 * scriptContextPtr->opCodeArgs[0]] = (unsigned __int8)++smallModelDataArray[actor_id].field_34;
-     break;
- case 0xF9u:
-     gBigAnimBlock[actor_id].field_160 = gBigAnimBlock[actor_id].field_18;
-     break;
- case 0xFAu:
-     sub_425119(actor_id);
-     break;
+     goto LABEL_20; 
  case 0xFCu:
      if (isTargetingAll)
      {
@@ -1638,26 +1706,4 @@ OpCodeControlSequence OpCodeF0(AnimScriptEvent* srEvent) {
              - (signed int)gBigAnimBlock[actor_id].restingPosition.xCoordinate);
      }
      break;
- case 0xFDu:
-     gBigAnimBlock[actor_id].restingPosition.xCoordinate = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     gBigAnimBlock[actor_id].restingPosition.yCoordinate = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     gBigAnimBlock[actor_id].restingPosition.zCoordinate = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     break;
- case 0xFEu:
-     if (!gBigAnimBlock[actor_id].waitFrames)
-     {
-         scriptContextPtr->currentOpCode = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition];
-         if (scriptContextPtr->currentOpCode == 192)
-         {
-             gBigAnimBlock[actor_id].currentScriptPosition = 0;
-             dword_BE0E28[16 * actor_id] = 0;
-             smallModelDataArray[actor_id].field_36 = 0;
-             *(_DWORD*)&gBigAnimBlock[actor_id].field_74 = 0;
-             gBigAnimBlock[actor_id].waitFrames = 0;
-             gBigAnimBlock[actor_id].executingAnimation = *scriptContextPtr->scriptPtr;
-             gBigAnimBlock[actor_id].animScriptIndex = actorIdleAnimScripts[actor_id];
-             scriptContextPtr->scriptPtr = (byte*)ptrToScriptTable[gBigAnimBlock[actor_id].animScriptIndex];
-             resetScriptState(actor_id);
-         }
-     }
-     break;*/
+*/

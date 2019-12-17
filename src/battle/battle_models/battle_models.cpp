@@ -4,6 +4,11 @@
 typedef void(*PFNSRSUB674659)(u32, FileContext*);
 #define setSomeFileContext  ((PFNSRSUB674659)0x674659)
 
+
+SISTERRAY_API BattleModel* getActiveModelFromArray(u8 arrayIdx) {
+    return BATTLE_MODEL_PTRS[arrayIdx];
+}
+
 BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *aaHeader, UnkModelLoadStruct *loadStruct, FileContext *fileContext, char * filename) {
     BattleModel *modelData;
     char FF7Directory[204];

@@ -1,5 +1,6 @@
 #include "action_spell_effects.h"
 #include "../../impl.h"
+#include "../battle_utils.h"
 
 #define gameBeatRushEffect ((SRPFNSPELLEFFECTCALLBACK)0x4E1627)
 #define gameSomersaultEffect ((SRPFNSPELLEFFECTCALLBACK)0x4E163E)
@@ -103,7 +104,6 @@ void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     u8* byte_9ADEFC = (u8*)0x9ADEFC;
     u8* byte_9ADF00 = (u8*)0x9ADF00;
     u32* dword_7C10D8 = (u32*)0x7C10D8;
-    u8* G_TARGETING_ALL = (u8*)0xBF2E1C;
     if (*dword_7C10D8) {
         *byte_9ADF00 = actorID;
         *byte_9ADEFC = 0;
@@ -143,7 +143,7 @@ void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
             return;
         }
 
-        if (useMulti && *G_TARGETING_ALL) {
+        if (useMulti && getTargetAllActive()) {
             auto loadCallback = multiCallback.loadCallback;
             srLoadAnimationEffect(loadCallback);
             return;
@@ -209,8 +209,6 @@ typedef void(*PFNSRSUB429322)();
 void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     u8* byte_9ADEFC = (u8*)0x9ADEFC;
     u8* byte_BF23BC = (u8*)0xBF23BC;
-    u8* G_TARGETING_ALL = (u8*)0xBF2E1C;
-    u16* targetMask = (u16*)0xBFD0F8;
     u32* dword_7C10D8 = (u32*)0x7C10D8;
     if (!*dword_7C10D8) {
         sub_429322();
@@ -228,9 +226,9 @@ void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
         animEffectID = action.attackData.animationEffectID;
         animationType = action.animationType;
         if (action.useOverride) {
-            AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, *targetMask };
+            AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, getAnimatingActionTargetMask() };
             gContext.eventBus.dispatch(ON_DISPATCH_ANIMAMTION_EFFECT, (void*)&srEvent);
-            action.overrideEffect.dispatchCallback(*targetMask, actorID);
+            action.overrideEffect.dispatchCallback(getAnimatingActionTargetMask(), actorID);
         }
         useMulti = (action.useMulti != 0) ? true : false;
         auto multiCallback = action.multiEffect;
@@ -239,9 +237,9 @@ void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
         if (command.auxData.useOverride) {
             animEffectID = command.auxData.animationEffectID;
             animationType = command.auxData.animationType;
-            AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, *targetMask };
+            AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, getAnimatingActionTargetMask() };
             gContext.eventBus.dispatch(ON_DISPATCH_ANIMAMTION_EFFECT, (void*)&srEvent);
-            command.auxData.override.dispatchCallback(*targetMask, actorID);
+            command.auxData.override.dispatchCallback(getAnimatingActionTargetMask(), actorID);
         }
         useMulti = (command.auxData.useMulti != 0) ? true : false;
         auto multiCallback = command.auxData.spellEffectMulti;
@@ -251,14 +249,14 @@ void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
         return;
     }
 
-    if (useMulti && *G_TARGETING_ALL) {
-        AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, *targetMask };
+    if (useMulti && getTargetAllActive()) {
+        AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, getAnimatingActionTargetMask() };
         gContext.eventBus.dispatch(ON_DISPATCH_ANIMAMTION_EFFECT, (void*)&srEvent);
-        multiCallback.dispatchCallback(*targetMask, actorID);
+        multiCallback.dispatchCallback(getAnimatingActionTargetMask(), actorID);
         return;
     }
-    AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, *targetMask };
+    AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, getAnimatingActionTargetMask() };
     gContext.eventBus.dispatch(ON_DISPATCH_ANIMAMTION_EFFECT, (void*)&srEvent);
     auto effectCallback = srGetDispatchCallback(animationType, animEffectID);
-    effectCallback(*targetMask, actorID);
+    effectCallback(getAnimatingActionTargetMask(), actorID);
 }

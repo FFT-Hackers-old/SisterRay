@@ -20,5 +20,6 @@ void initializeSrBattleEngine() {
     mogReplaceFunction(FF7_ACTION_QUEUE_POP, &srHandlePoppedAction);
     mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);
     mogReplaceFunction(FF7_DISPLAY_BATTLE_STRING, &nopBattleString);
+    mogReplaceFunction(RUN_ANIMATION_SCRIPT, &runAnimationScript);
     registerActionPopCallbacks();
 }

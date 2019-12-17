@@ -30,3 +30,13 @@ u8 getAnimatingActionTargetIdx() {
     u8* G_TARGET_IDX = (u8*)0xBFB198;
     return *G_TARGET_IDX;
 }
+
+u8 getActionActorIdx() {
+    u8* G_ACTIVE_ACTOR = (u8*)0xBE1170;
+    return *G_ACTIVE_ACTOR;
+}
+
+u8 getActorIdleAnimScript(u8 actorID) {
+    u8* G_ACTOR_IDLE_SCRIPTS = (u8*)0xBF2DF8;
+    return G_ACTOR_IDLE_SCRIPTS[actorID];
+}

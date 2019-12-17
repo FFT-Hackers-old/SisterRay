@@ -8,7 +8,9 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
     auto& scriptOwner74State = *getBattleModelState74(actorID);
     auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);
     u8* byte_9ADEF8 = (u8*)0x9ADEF8;
-
+    if (ownerModelState.animScriptIndex != 0) {
+        srLogWrite("running animation script with idx: %d for actor %d", ownerModelState.animScriptIndex, actorID);
+    }
     if (!*BATTLE_PAUSED_GLOBAL) {
         auto& scriptCtx = *ptrToScriptContext;
         *byte_9ADEF8 = 0;
@@ -74,6 +76,9 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
             while (scriptCtx.isScriptActive) {
                 scriptCtx.currentOpCode = scriptCtx.scriptPtr[ownerModelState.currentScriptPosition++];
                 if (scriptCtx.currentOpCode < 0x8E) {
+                    if (ownerModelState.animScriptIndex != 0) {
+                        srLogWrite("CURRENTLY EXECUTION ANIMATION %d for actor %d", ownerModelState.runningAnimIdx, actorID);
+                    }
                     ownerModelState.runningAnimIdx = scriptCtx.currentOpCode;
                     ownerModelState.field_74 = 0;
                     scriptOwner74State.field_36 = 0;
@@ -86,6 +91,10 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
                     continue;
 
                 auto opcode = gContext.animScriptOpcodes.get_element(assembleOpCodeKey(scriptCtx.currentOpCode));
+
+                if (ownerModelState.animScriptIndex != 0) {
+                    srLogWrite("executing opcode %x", scriptCtx.currentOpCode);
+                }
                 auto control = opcode(&animScriptEvent);
                 switch (control) {
                 case RUN_NEXT: {
@@ -97,16 +106,27 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
                     break;
                 }
                 case PLAY_ANIM: {
+                    if (ownerModelState.animScriptIndex != 0) {
+                        srLogWrite("playing model animation from control sequence %d", ownerModelState.runningAnimIdx);
+                    }
+                    srHandleAnimateModel(actorID);
+                    return;
+                    break;
+                }
+                default: {
                     ownerModelState.runningAnimIdx = scriptCtx.currentOpCode;
                     ownerModelState.field_74 = 0;
                     scriptOwner74State.field_36 = 0;
                     scriptOwnerRotationData.field_0 = 0;
                     scriptCtx.isScriptActive = 0;
-                    srHandleAnimateModel(actorID);
                     break;
                 }
                 }
             }
         }
+        if (ownerModelState.animScriptIndex != 0) {
+            srLogWrite("playing model animation %d", ownerModelState.runningAnimIdx);
+        }
+        srHandleAnimateModel(actorID);
     }
 }

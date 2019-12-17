@@ -36,8 +36,8 @@ typedef void(*SRPFNSUB68924B)(u32, u32, u8*, u32, TextureSet*);
 #define sub_68924B    ((SRPFNSUB68924B)0x68924B)
 
 OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
-    u32* off_C05FEC = (u32*)0xC05FEC;
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C0600C = (u32*)0xC0600C;
+    u32* off_C06008 = (u32*)0xC06008;
     u32* dword_9ADEF0 = (u32*)0x9ADEF0;
     u32* dword_9ADEF4 = (u32*)0x9ADEF4;
     u32* dword_9ADEE8 = (u32*)0x9ADEE8;
@@ -51,23 +51,23 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     scriptCtx->field_15 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
     switch (actorID) {
     case 6: {
-        *off_C05FE8 = 0;
-        *off_C05FEC = scriptCtx->field_15;
+        *off_C06008 = 0;
+        *off_C0600C = scriptCtx->field_15;
         break;
     }
     case 7: {
-        *off_C05FE8 = 0;
-        *off_C05FEC = scriptCtx->field_15 + 8;
+        *off_C06008 = 0;
+        *off_C0600C = scriptCtx->field_15 + 8;
         break;
     }
     case 8: {
-        *off_C05FE8 = 1;
-        *off_C05FEC = scriptCtx->field_15;
+        *off_C06008 = 1;
+        *off_C0600C = scriptCtx->field_15;
         break;
     }
     case 9: {
-        *off_C05FE8 = 1;
-        *off_C05FEC = scriptCtx->field_15 + 8;
+        *off_C06008 = 1;
+        *off_C0600C = scriptCtx->field_15 + 8;
         break;
     }
     default:
@@ -81,7 +81,7 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
     u8 v70 = (wordArg & 0x7C00) >> 7;
     u8* v76 = &v70;
     auto v73 = -1;
-    auto unkPaletteSwapArg = *off_C05FEC;
+    auto unkPaletteSwapArg = *off_C0600C;
     auto v77 = 0;
     *dword_9ADEE8 = 0;
     *dword_9ADEE0 = 0;
@@ -103,14 +103,14 @@ OpCodeControlSequence OpCode90(AnimScriptEvent* srEvent) {
 
 #define opCode91EffectHead       ((PFNSREFFECTCALLBACK)0x4255B7)
 OpCodeControlSequence OpCode91(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto scriptCtx = srEvent->scriptContext;
     auto scriptPtr = srEvent->scriptPtr;
     auto actorID = srEvent->actorID;
-    *off_C05FE8 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    *off_C06008 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
     scriptCtx->field_14 = srPushEffect60(opCode91EffectHead);
     auto& effectCtx = *getEffectContext60(scriptCtx->field_14);
-    effectCtx.wordArray[1] = *(u16*)off_C05FE8;
+    effectCtx.wordArray[1] = *(u16*)off_C06008;
     return RUN_NEXT;
 }
 
@@ -128,24 +128,24 @@ OpCodeControlSequence OpCode93(AnimScriptEvent* srEvent) {
 
 #define opCode94EffectHead       ((PFNSREFFECTCALLBACK)0x426899) //rotates model arg1-arg2 in arg3 step-sizes
 OpCodeControlSequence OpCode94(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
-    u32* off_C05FF0 = (u32*)0xC05FF0;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
+    u32* off_C06010  = (u32*)0xC06010 ;
     auto scriptCtx = srEvent->scriptContext;
     auto scriptPtr = srEvent->scriptPtr;
     auto actorID = srEvent->actorID;
 
-    *off_C05FE8 = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
-    *off_C05FEC = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
-    *off_C05FF0 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));;
+    *off_C06008 = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    *off_C0600C = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    *off_C06010  = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));;
 
     scriptCtx->field_14 = srPushEffect10(opCode94EffectHead);
     auto& effectCtx = *getEffectContext60(scriptCtx->field_14);
     effectCtx.wordArray[3] = actorID;
-    effectCtx.wordArray[4] = *(u16*)off_C05FE8;
-    effectCtx.wordArray[5] = *(u16*)off_C05FEC;
-    effectCtx.wordArray[6] = (*off_C05FEC - *off_C05FE8) / *off_C05FF0;
-    effectCtx.wordArray[1] = *(u16*)off_C05FF0;
+    effectCtx.wordArray[4] = *(u16*)off_C06008;
+    effectCtx.wordArray[5] = *(u16*)off_C0600C;
+    effectCtx.wordArray[6] = (*off_C0600C - *off_C06008) / *off_C06010 ;
+    effectCtx.wordArray[1] = *(u16*)off_C06010 ;
     return RUN_NEXT;
 }
 
@@ -194,39 +194,39 @@ OpCodeControlSequence OpCode96(AnimScriptEvent* srEvent) {
 typedef void(*SRPFNSUB42567E)(u16, u8, u8);
 #define sub_42567E         ((SRPFNSUB42567E)0x42567E)
 OpCodeControlSequence OpCode97(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
     auto scriptCtx = srEvent->scriptContext;
     auto scriptPtr = srEvent->scriptPtr;
     auto actorID = srEvent->actorID;
 
-    *off_C05FE8 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
-    *off_C05FEC = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
-    sub_42567E(actorID, *(u8*)off_C05FE8, *(u8*)off_C05FEC);
+    *off_C06008 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    *off_C0600C = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    sub_42567E(actorID, *(u8*)off_C06008, *(u8*)off_C0600C);
     return RUN_NEXT;
 }
 
 //Displays strings with a delay
 OpCodeControlSequence OpCode98(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
     u8* byte_DC0E11 = (u8*)0xDC0E11;
     auto scriptCtx = srEvent->scriptContext;
     auto scriptPtr = srEvent->scriptPtr;
     auto actorID = srEvent->actorID;
 
-    *off_C05FE8 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID)); //number of frames to wait
+    *off_C06008 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID)); //number of frames to wait
     scriptCtx->field_14 = srPushEffect100((PFNSREFFECTCALLBACK)srDisplayActionStringEffect);;
     auto& effectCtx = *getEffectContext100(scriptCtx->field_14);
     effectCtx.wordArray[1] = ((u16)(*byte_DC0E11 >> 2)) + 4; //number of frames to display string
-    effectCtx.wordArray[2] = *(u16*)off_C05FE8; //delay before display begins
+    effectCtx.wordArray[2] = *(u16*)off_C06008; //delay before display begins
     return RUN_NEXT;
 }
 
 #define moveCallback426A26  ((PFNSREFFECTCALLBACK)0x426A26)
 OpCodeControlSequence OpCode99(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
     u8* byte_BE10B4 = (u8*)0xBE10B4;
     u8* isTargetingAll = (u8*)0xBF2E1C;
     u16* currentTargetMask = (u16*)0xBFD0F8;
@@ -236,7 +236,7 @@ OpCodeControlSequence OpCode99(AnimScriptEvent* srEvent) {
 
     *byte_BE10B4 = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
     scriptCtx->opCodeArgs[4] = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
-    *off_C05FE8 = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
+    *off_C06008 = readOpCodeArg16(scriptPtr, scriptCtx, getBattleModelState(actorID));
     scriptCtx->opCodeArgs[3] = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
     if (*isTargetingAll) {
         srComputeEnemyPartyCenter(*currentTargetMask, (R3PointWord*)&scriptCtx->field_16);
@@ -297,13 +297,13 @@ OpCodeControlSequence OpCode9C(AnimScriptEvent* srEvent) {
 
 /*This opcode dispatches the effects for tifa's limit breaks*/
 OpCodeControlSequence OpCode9D(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto scriptCtx = srEvent->scriptContext;
     auto actorID = srEvent->actorID;
     u16* currentTargetMask = (u16*)0xBFD0F8;
 
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, scriptCtx, getBattleModelState(srEvent->actorID));
-    switch (*off_C05FE8) {
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, scriptCtx, getBattleModelState(srEvent->actorID));
+    switch (*off_C06008) {
     case 0:
         srBeatRushSpellEffect(*currentTargetMask, actorID);
         break;
@@ -361,12 +361,12 @@ OpCodeControlSequence OpCode9F(AnimScriptEvent* srEvent) {
 
 OpCodeControlSequence OpCodeA0(AnimScriptEvent* srEvent) {
     u8* G_TARGET_INDEX = (u8*)0xBFB198;
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& targetModelState74 = *getBattleModelState74(*G_TARGET_INDEX);
     auto& targetModelState = *getBattleModelState(*G_TARGET_INDEX);
     targetModelState74.field_C |= 1;
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    targetModelState.field_170 = (&(srEvent->battleModelState->field_174) + 52 * (*off_C05FE8)); // this is some kind of array
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    targetModelState.field_170 = (&(srEvent->battleModelState->field_174) + 52 * (*off_C06008)); // this is some kind of array
     targetModelState.restingYRotation = 0;
     targetModelState.restingXRotation = 0;
     targetModelState.restingPosition.z = 0;
@@ -375,7 +375,7 @@ OpCodeControlSequence OpCodeA0(AnimScriptEvent* srEvent) {
     targetModelState.restingZRotation = 2048;
     targetModelState.field_25 |= 0x10u;
     targetModelState.field_1AE4 = srEvent->actorID;
-    targetModelState.field_1AE8 = *off_C05FE8;
+    targetModelState.field_1AE8 = *off_C06008;
     return RUN_NEXT;
 }
 
@@ -383,12 +383,12 @@ typedef void(*PFNSRSUB5BEB27)(u16, u16);
 #define gamePushPeriodicDamage    ((PFNSRSUB5BEB27)0x5BEB27)
 OpCodeControlSequence OpCodeA1(AnimScriptEvent* srEvent) {
     u8* byte_BF23BC = (u8*)0xBF23BC;
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
     *byte_BF23BC = 0;
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FEC = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState); //period
-    gamePushPeriodicDamage(*off_C05FE8, *off_C05FEC);
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C0600C = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState); //period
+    gamePushPeriodicDamage(*off_C06008, *off_C0600C);
     return RUN_NEXT;
 }
 
@@ -440,34 +440,35 @@ OpCodeControlSequence OpCodeA7(AnimScriptEvent* srEvent) {
 typedef void(*PFNSRSUB426C9B)(u16, u16, u8);
 #define gameMoveActorToRestingPosition    ((PFNSRSUB426C9B)0x426C9B)
 OpCodeControlSequence OpCodeA8(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FEC = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    gameMoveActorToRestingPosition(srEvent->actorID, *off_C05FEC, *off_C05FE8);
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C0600C = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    gameMoveActorToRestingPosition(srEvent->actorID, *off_C0600C, *off_C06008);
     return RUN_NEXT;
 }
 
 OpCodeControlSequence OpCodeA9(AnimScriptEvent* srEvent) {
     u8* byte_C05F80 = (u8*)0xC05F80;
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& scriptCtx = *(srEvent->scriptContext);
     auto& actorModelState = *(srEvent->battleModelState);
     auto& actorModelState74 = *getBattleModelState74(srEvent->actorID);
     auto& actorRotationData = *getBattleModelRotationData(srEvent->actorID);
-    actorModelState.runningAnimIdx = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     actorModelState.currentScriptPosition++;
+    actorModelState.runningAnimIdx = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    actorModelState.currentScriptPosition--;
     actorModelState.field_74 = 0;
     actorModelState74.field_36 = 0;
     actorRotationData.field_0 = 0;
     *byte_C05F80 += 3; //Unsure why this code is needed, may modify
-    *off_C05FE8 = *byte_C05F80 & 0xF;
-    for (u32 frame = 0; frame < *off_C05FE8; ++frame){
+    *off_C06008 = *byte_C05F80 & 0xF;
+    for (u32 frame = 0; frame < *off_C06008; ++frame){
         ++actorModelState74.field_36;
         srPlayModelAnimation(srEvent->actorID);
     }
     scriptCtx.isScriptActive = 0;
-    return RUN_NEXT;
+    return PLAY_ANIM;
 }
 
 OpCodeControlSequence OpCodeAA(AnimScriptEvent* srEvent) {
@@ -478,8 +479,8 @@ OpCodeControlSequence OpCodeAA(AnimScriptEvent* srEvent) {
 
 //Moves the actor during cover to the position of the attacker
 OpCodeControlSequence OpCodeAB(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
     u8* G_ATTACKER_IDX = (u8*)0xBFCB68;
     u8* G_CURRENT_ACTION_ACTOR = (u8*)0xBE1170;
     R3PointWord* actorPositionArray = (R3PointWord*)(0xBFD0A0);
@@ -487,12 +488,12 @@ OpCodeControlSequence OpCodeAB(AnimScriptEvent* srEvent) {
     auto& attackerModelState = *getBattleModelState(*G_ATTACKER_IDX);
     auto& scriptCtx = *(srEvent->scriptContext);
 
-    *off_C05FE8 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06008 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     actorBattleState.restingPosition.x = actorPositionArray[*G_ATTACKER_IDX].x;
     actorBattleState.restingPosition.y = actorPositionArray[*G_ATTACKER_IDX].y;
     actorBattleState.restingPosition.z = actorPositionArray[*G_ATTACKER_IDX].z;
     actorBattleState.restingYRotation = attackerModelState.initialYRotation;
-    scriptCtx.opCodeArgs[4] = *(u16*)off_C05FE8;
+    scriptCtx.opCodeArgs[4] = *(u16*)off_C06008;
     scriptCtx.opCodeArgs[1] = 0;
     scriptCtx.field_8 = GAME_ANGLE_MAX - (getBattleModelState(*G_CURRENT_ACTION_ACTOR)->restingYRotation + 2048);
     scriptCtx.opCodeArgs[0] = (actorBattleState.field_6 * actorBattleState.field_12 >> 12) + (attackerModelState.field_6 * scriptCtx.opCodeArgs[4] >> 12);
@@ -576,12 +577,12 @@ OpCodeControlSequence OpCodeAE(AnimScriptEvent* srEvent) {
 //Used by Carry Armor
 OpCodeControlSequence OpCodeAF(AnimScriptEvent* srEvent) {
     u8* G_TARGET_INDEX = (u8*)0xBFB198;
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& targetModelState74 = *getBattleModelState74(*G_TARGET_INDEX);
     auto& targetModelState = *getBattleModelState(*G_TARGET_INDEX);
     targetModelState74.field_C |= 1;
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    targetModelState.field_170 = (&(srEvent->battleModelState->field_174) + 52 * (*off_C05FE8)); // this is some kind of array
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    targetModelState.field_170 = (&(srEvent->battleModelState->field_174) + 52 * (*off_C06008)); // this is some kind of array
     targetModelState.restingYRotation = 0;
     targetModelState.restingXRotation = 0;
     targetModelState.restingZRotation = 0;
@@ -590,25 +591,25 @@ OpCodeControlSequence OpCodeAF(AnimScriptEvent* srEvent) {
     targetModelState.restingPosition.x = 0;
     targetModelState.field_25 |= 0x10u;
     targetModelState.field_1AE4 = srEvent->actorID;
-    targetModelState.field_1AE8 = *off_C05FE8;
+    targetModelState.field_1AE8 = *off_C06008;
     return RUN_NEXT;
 }
 
 OpCodeControlSequence OpCodeB0(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& battleModelState = *getBattleModelState(srEvent->actorID);
-    *off_C05FE8 = battleModelState.restingYRotation + 2048;
-    battleModelState.restingPosition.x -= (258 * srCalculateXVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
-    battleModelState.restingPosition.z -= (258 * srCalculateZVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
+    *off_C06008 = battleModelState.restingYRotation + 2048;
+    battleModelState.restingPosition.x -= (258 * srCalculateXVectorComponent(*off_C06008)) / GAME_ANGLE_MAX;
+    battleModelState.restingPosition.z -= (258 * srCalculateZVectorComponent(*off_C06008)) / GAME_ANGLE_MAX;
     return RUN_NEXT;
 }
 
 OpCodeControlSequence OpCodeB1(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& battleModelState = *getBattleModelState(srEvent->actorID);
-    *off_C05FE8 = battleModelState.restingYRotation;
-    battleModelState.restingPosition.x -= (258 * srCalculateXVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
-    battleModelState.restingPosition.z -= (258 * srCalculateZVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
+    *off_C06008 = battleModelState.restingYRotation;
+    battleModelState.restingPosition.x -= (258 * srCalculateXVectorComponent(*off_C06008)) / GAME_ANGLE_MAX;
+    battleModelState.restingPosition.z -= (258 * srCalculateZVectorComponent(*off_C06008)) / GAME_ANGLE_MAX;
     return RUN_NEXT;
 }
 
@@ -687,14 +688,14 @@ OpCodeControlSequence OpCodeBD(AnimScriptEvent* srEvent) {
 
 
 OpCodeControlSequence OpCodeBF(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
     u8* byte_BFCDF0 = (u8*)0xBFCDF0;
     u16* word_BF2E08 = (u16*)0xBF2E08;
 
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FEC = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    byte_BFCDF0[*off_C05FE8] = *(u8*)off_C05FEC;
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C0600C = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    byte_BFCDF0[*off_C06008] = *(u8*)off_C0600C;
     if (byte_BFCDF0[0])
         *word_BF2E08 |= 1u;
     else
@@ -709,29 +710,28 @@ OpCodeControlSequence OpCodeC1(AnimScriptEvent* srEvent) {
     ownerModelState.currentScriptPosition = 0;
     do {
         position = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    } while (position != 0xC9);
-
+    } while (position != (u8)0xC9);
     return RUN_NEXT;
 }
 
 typedef void(*PFNSRSUB425D25)();
-#define gamePushDisplayDamage ((PFNSRSUB425D25)0x425D25)
+#define gamePushDisplayDamage ((PFNSRSUB425D25)0x425D29)
 
 OpCodeControlSequence OpCodeC2(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
     u8* byte_BFCDE0 = (u8*)0xBFCDE0;
 
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FEC = srPushEffect100(gamePushDisplayDamage);
-    auto& effectCtx = *getEffectContext100(*off_C05FEC);
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C0600C = srPushEffect100(gamePushDisplayDamage);
+    auto& effectCtx = *getEffectContext100(*off_C0600C);
     effectCtx.wordArray[3] = *byte_BFCDE0;
     auto& displayEvent = *getFirstTargetDisplayEvent(*byte_BFCDE0);
     effectCtx.wordArray[4] = displayEvent.dealtDamage;
     effectCtx.wordArray[6] = displayEvent.actionFlags;
     effectCtx.wordArray[2] = displayEvent.impactEventQueueIdx;
     effectCtx.byteArray[23] = displayEvent.damageEventQueueIdx;
-    effectCtx.wordArray[1] = *(u16*)off_C05FE8;
+    effectCtx.wordArray[1] = *(u16*)off_C06008;
     return RUN_NEXT;
 }
 
@@ -757,11 +757,11 @@ OpCodeControlSequence OpCodeC3(AnimScriptEvent* srEvent) {
 typedef void(*PFNSRSUB430D32)(u16, u16, u8);
 #define sub_430D32      ((PFNSRSUB430D32)0x430D32)
 OpCodeControlSequence OpCodeC4(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    i32* off_C05FEC = (i32*)0xC05FEC;
-    u32* off_C05FF0 = (u32*)0xC05FF0;
-    u32* off_C05FF4 = (u32*)0xC05FF4;
-    u32* off_C05FF8 = (u32*)0xC05FF8;
+    u32* off_C06008 = (u32*)0xC06008;
+    i32* off_C0600C = (i32*)0xC0600C;
+    u32* off_C06010  = (u32*)0xC06010 ;
+    u32* off_C06014  = (u32*)0xC06014 ;
+    u32* off_C06018 = (u32*)0xC06018;
     u8* byte_9ADF08 = (u8*)0x9ADF08;
     u16* word_9A88BC = (u16*)0x9A88BC;
 
@@ -769,45 +769,45 @@ OpCodeControlSequence OpCodeC4(AnimScriptEvent* srEvent) {
         sub_430D32(0x185u, -1, 64); //dunno what this does
         *byte_9ADF08 = 1;
     }
-    *off_C05FEC = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FF0 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FF4 = srPushEffect10(sub_426941);
-    auto& effectCtx = *getEffectContext10(*off_C05FF4);
+    *off_C0600C = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06010  = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06014  = srPushEffect10(sub_426941);
+    auto& effectCtx = *getEffectContext10(*off_C06014 );
     effectCtx.wordArray[3] = srEvent->actorID;
     effectCtx.wordArray[4] = 0;
-    effectCtx.wordArray[1] = *(u16*)off_C05FF0;
+    effectCtx.wordArray[1] = *(u16*)off_C06010 ;
     switch (getBattleType()) {
     case 0:
     case 1:
     case 8:
-        *off_C05FF8 = *off_C05FEC;
+        *off_C06018 = *off_C0600C;
         break;
     case 2:
-        *off_C05FF8 = -*off_C05FEC;
+        *off_C06018 = -*off_C0600C;
         break;
     case 3:
     case 5:
     case 6:
     case 7:
         if (srEvent->battleModelState->initialYRotation)
-            *off_C05FF8 = -*off_C05FEC;
+            *off_C06018 = -*off_C0600C;
         else
-            *off_C05FF8 = *off_C05FEC;
+            *off_C06018 = *off_C0600C;
         break;
     case 4:
         if (*word_9A88BC){
             srEvent->battleModelState->restingYRotation = 0;
-            *off_C05FF8 = *off_C05FEC;
+            *off_C06018 = *off_C0600C;
         }
         else {
             srEvent->battleModelState->restingYRotation = 2048;
-            *off_C05FF8 = -*off_C05FEC;
+            *off_C06018 = -*off_C0600C;
         }
         break;
     default:
         break;
     }
-    effectCtx.wordArray[5] = *(u16*)off_C05FF8; 
+    effectCtx.wordArray[5] = *(u16*)off_C06018; 
     return RUN_NEXT;
 }
 
@@ -863,19 +863,19 @@ OpCodeControlSequence OpCodeC7(AnimScriptEvent* srEvent) {
 }
 
 OpCodeControlSequence OpCodeC8(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
-    u32* off_C05FF0 = (u32*)0xC05FF0;
-    u32* off_C05FF4 = (u32*)0xC05FF4;
-    *off_C05FE8 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FEC = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FF0 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FF4 = srPushEffect10(sub_426941);
-    auto& effectCtx = *getEffectContext10(*off_C05FF4);
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
+    u32* off_C06010  = (u32*)0xC06010 ;
+    u32* off_C06014  = (u32*)0xC06014 ;
+    *off_C06008 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C0600C = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06010  = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06014  = srPushEffect10(sub_426941);
+    auto& effectCtx = *getEffectContext10(*off_C06014 );
     effectCtx.wordArray[3] = srEvent->actorID;
-    effectCtx.wordArray[4] = *(u16*)off_C05FE8;
-    effectCtx.wordArray[5] = *(u16*)off_C05FEC;
-    effectCtx.wordArray[1] = *(u16*)off_C05FF0;
+    effectCtx.wordArray[4] = *(u16*)off_C06008;
+    effectCtx.wordArray[5] = *(u16*)off_C0600C;
+    effectCtx.wordArray[1] = *(u16*)off_C06010 ;
     return RUN_NEXT;
 }
 
@@ -892,10 +892,10 @@ OpCodeControlSequence OpCodeCA(AnimScriptEvent* srEvent) {
 
 #define targetRelativeXYPlaneMoveEffect ((PFNSREFFECTCALLBACK)0x426A26)
 OpCodeControlSequence OpCodeCC(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& scriptCtx = *srEvent->scriptContext;
     scriptCtx.opCodeArgs[4] = 0;
-    *off_C05FE8 = 0;
+    *off_C06008 = 0;
     scriptCtx.opCodeArgs[3] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     srComputeEnemyPartyCenter(getAnimatingActionTargetMask(), (R3PointWord*)&scriptCtx.field_16);
     scriptCtx.field_16 *= 2;
@@ -923,18 +923,18 @@ OpCodeControlSequence OpCodeCE(AnimScriptEvent* srEvent) {
 
 #define targetRelative3DMoveEffect    ((PFNSREFFECTCALLBACK)0x42739D)
 OpCodeControlSequence OpCodeCF(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
-    u32* off_C05FF0 = (u32*)0xC05FF0;
-    u32* off_C05FF4 = (u32*)0xC05FF4;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
+    u32* off_C06010  = (u32*)0xC06010 ;
+    u32* off_C06014  = (u32*)0xC06014 ;
     auto& scriptCtx = *srEvent->scriptContext;
 
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FEC = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FE8 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FF0 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FF4 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    scriptCtx.opCodeArgs[3] = *(u16*)off_C05FF4;
+    *off_C0600C = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06008 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06010  = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06014  = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    scriptCtx.opCodeArgs[3] = *(u16*)off_C06014 ;
     srDispatchMoveEffects(
         srEvent->actorID,
         srEvent->scriptPtr,
@@ -949,12 +949,12 @@ OpCodeControlSequence OpCodeCF(AnimScriptEvent* srEvent) {
 
 #define targetRelativeMoveEffect    ((PFNSREFFECTCALLBACK)0x426F58)
 OpCodeControlSequence OpCodeD0(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
 
     auto& scriptCtx = *srEvent->scriptContext;
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    switch (*off_C05FE8) {
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    switch (*off_C06008) {
     case 0:
     case 1:
     case 2:
@@ -990,11 +990,11 @@ OpCodeControlSequence OpCodeD0(AnimScriptEvent* srEvent) {
 }
 
 OpCodeControlSequence OpCodeD1(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& scriptCtx = *srEvent->scriptContext;
 
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FE8 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06008 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[3] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     R3PointWord* moveBasePoint = nullptr;
     if (getTargetAllActive()) {
@@ -1002,7 +1002,7 @@ OpCodeControlSequence OpCodeD1(AnimScriptEvent* srEvent) {
         moveBasePoint = (R3PointWord*)&(scriptCtx.field_16);
     }
     else {
-        moveBasePoint = (R3PointWord*)(getBattleModelState(getAnimatingActionTargetIdx())->restingPosition.x);
+        moveBasePoint = (R3PointWord*)&(getBattleModelState(getAnimatingActionTargetIdx())->restingPosition.x);
     }
     srDispatchMoveEffects(
         srEvent->actorID,
@@ -1018,15 +1018,15 @@ OpCodeControlSequence OpCodeD1(AnimScriptEvent* srEvent) {
 
 #define selfRelativeYPlaneMoveEffect   ((PFNSREFFECTCALLBACK)0x4267F1)
 OpCodeControlSequence OpCodeD4(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& scriptCtx = *srEvent->scriptContext;
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[3] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);;
-    *off_C05FE8 = scriptCtx.opCodeArgs[4] / scriptCtx.opCodeArgs[3];
+    *off_C06008 = scriptCtx.opCodeArgs[4] / scriptCtx.opCodeArgs[3];
     scriptCtx.field_14 = srPushEffect10(selfRelativeYPlaneMoveEffect);
     auto& effectCtx = *getEffectContext10(scriptCtx.field_14);
     effectCtx.wordArray[3] = srEvent->actorID;
-    effectCtx.wordArray[4] = *(u16*)off_C05FE8;
+    effectCtx.wordArray[4] = *(u16*)off_C06008;
     effectCtx.wordArray[1] = scriptCtx.opCodeArgs[3];
     return RUN_NEXT;
 }
@@ -1034,18 +1034,18 @@ OpCodeControlSequence OpCodeD4(AnimScriptEvent* srEvent) {
 
 #define selfRelative3DMoveEffect   ((PFNSREFFECTCALLBACK)0x4270DE)
 OpCodeControlSequence OpCodeD5(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
-    u32* off_C05FF0 = (u32*)0xC05FF0;
-    u32* off_C05FF4 = (u32*)0xC05FF4;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
+    u32* off_C06010  = (u32*)0xC06010 ;
+    u32* off_C06014  = (u32*)0xC06014 ;
     auto& scriptCtx = *srEvent->scriptContext;
 
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FEC = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FE8 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FF0 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FF4 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    scriptCtx.opCodeArgs[3] = *(u16*)off_C05FF4;
+    *off_C0600C = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06008 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06010  = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06014  = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    scriptCtx.opCodeArgs[3] = *(u16*)off_C06014 ;
     srDispatchMoveEffects(
         srEvent->actorID,
         srEvent->scriptPtr,
@@ -1072,32 +1072,32 @@ OpCodeControlSequence OpCodeD6(AnimScriptEvent* srEvent) {
 
 #define sub_4276B6   ((PFNSREFFECTCALLBACK)0x4276B6)
 OpCodeControlSequence OpCodeD7(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
     auto& scriptCtx = *srEvent->scriptContext;
 
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FEC = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C0600C = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[0] = srPushEffect60(sub_4276B6);
     auto& effectCtx = *getEffectContext60(scriptCtx.opCodeArgs[0]);
-    effectCtx.wordArray[1] = *(u16*)off_C05FE8;
-    effectCtx.wordArray[2] = *(u16*)off_C05FEC;
+    effectCtx.wordArray[1] = *(u16*)off_C06008;
+    effectCtx.wordArray[2] = *(u16*)off_C0600C;
     effectCtx.wordArray[3] = srEvent->actorID;
     return RUN_NEXT;
 }
 
 #define pushPlaySoundEffect   ((PFNSREFFECTCALLBACK)0x427737)
 OpCodeControlSequence OpCodeD8(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FEC = (u32*)0xC05FEC;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C0600C = (u32*)0xC0600C;
     auto& scriptCtx = *srEvent->scriptContext;
 
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FEC = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C0600C = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[0] = srPushEffect60(pushPlaySoundEffect);
     auto& effectCtx = *getEffectContext60(scriptCtx.opCodeArgs[0]);
-    effectCtx.wordArray[1] = *(u16*)off_C05FE8;
-    effectCtx.wordArray[2] = *(u16*)off_C05FEC;
+    effectCtx.wordArray[1] = *(u16*)off_C06008;
+    effectCtx.wordArray[2] = *(u16*)off_C0600C;
     return RUN_NEXT;
 }
 
@@ -1224,11 +1224,11 @@ OpCodeControlSequence OpCodeE3(AnimScriptEvent* srEvent) {
 
 
 OpCodeControlSequence OpCodeE4(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& ownerModelState = *getBattleModelState(srEvent->actorID);
-    *off_C05FE8 = ownerModelState.restingYRotation + 2048;
-    ownerModelState.restingPosition.x -= (516 * srCalculateXVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
-    ownerModelState.restingPosition.z -= (516* srCalculateZVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
+    *off_C06008 = ownerModelState.restingYRotation + 2048;
+    ownerModelState.restingPosition.x -= (516 * srCalculateXVectorComponent(*off_C06008)) / GAME_ANGLE_MAX;
+    ownerModelState.restingPosition.z -= (516* srCalculateZVectorComponent(*off_C06008)) / GAME_ANGLE_MAX;
     return RUN_NEXT;
 }
 
@@ -1241,13 +1241,13 @@ OpCodeControlSequence OpCodeE6(AnimScriptEvent* srEvent) {
 
 
 OpCodeControlSequence OpCodeE7(AnimScriptEvent* srEvent) {
-    u32* off_C05FF0 = (u32*)0xC05FF0;
+    u32* off_C06010  = (u32*)0xC06010 ;
     auto& modelState = *srEvent->battleModelState;
     auto& scriptCtx = *srEvent->scriptContext;
 
-    *off_C05FF0 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06010  = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     u8 flagsLocal = modelState.field_25 | 4;
-    if (*off_C05FF0)
+    if (*off_C06010 )
         flagsLocal = modelState.field_25 & 0xFB;
     modelState.field_25 = flagsLocal;
     return RUN_NEXT;
@@ -1261,14 +1261,14 @@ OpCodeControlSequence OpCodeE8(AnimScriptEvent* srEvent) {
 }
 
 OpCodeControlSequence OpCodeE9(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& ownerModelState = *srEvent->battleModelState;
     auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
     auto& scriptCtx = *srEvent->scriptContext;
 
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[3] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    *off_C05FE8 = ownerModelState74.field_28;
+    *off_C06008 = ownerModelState74.field_28;
     srDispatchMoveEffects(
         srEvent->actorID,
         srEvent->scriptPtr,
@@ -1331,11 +1331,11 @@ OpCodeControlSequence OpCodeEC(AnimScriptEvent* srEvent) {
 }
 
 OpCodeControlSequence OpCodeED(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     auto& ownerModelState = *getBattleModelState(srEvent->actorID);
-    *off_C05FE8 = ownerModelState.restingYRotation;
-    ownerModelState.restingPosition.x -= (516 * srCalculateXVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
-    ownerModelState.restingPosition.z -= (516 * srCalculateZVectorComponent(*off_C05FE8)) / GAME_ANGLE_MAX;
+    *off_C06008 = ownerModelState.restingYRotation;
+    ownerModelState.restingPosition.x -= (516 * srCalculateXVectorComponent(*off_C06008)) / GAME_ANGLE_MAX;
+    ownerModelState.restingPosition.z -= (516 * srCalculateZVectorComponent(*off_C06008)) / GAME_ANGLE_MAX;
     return RUN_NEXT;
 }
 
@@ -1394,10 +1394,10 @@ OpCodeControlSequence OpCodeF4(AnimScriptEvent* srEvent) {
 
 
 OpCodeControlSequence OpCodeF5(AnimScriptEvent* srEvent) {
-    u32* off_C05FF4 = (u32*)0xC05FF4;
+    u32* off_C06014  = (u32*)0xC06014 ;
     EnemyPosition* enemyPositionArray = (EnemyPosition*)0xBF2054;
-    *off_C05FF4 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    enemyPositionArray[(srEvent->actorID - 4)].modelArrayIdx = (*(u16*)off_C05FF4) + 3;
+    *off_C06014  = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    enemyPositionArray[(srEvent->actorID - 4)].modelArrayIdx = (*(u16*)off_C06014 ) + 3;
     gameInitEnemiesFromAB(srEvent->actorID);
     srEvent->battleModelState->modelEffectFlags |= 1u;
     return RUN_NEXT;
@@ -1422,31 +1422,31 @@ OpCodeControlSequence OpCodeF6(AnimScriptEvent* srEvent) {
 typedef void(*SRPFNSUB5BE9F0)(u16, u16, u16);
 #define pushDelayedDamageDisplayEffect    ((SRPFNSUB5BE9F0)0x5BE9F0)
 OpCodeControlSequence OpCodeF7(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
+    u32* off_C06008 = (u32*)0xC06008;
     u8* byte_BF23BC = (u8*)0xBF23BC;
     *byte_BF23BC = 0;
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    pushDelayedDamageDisplayEffect(getAnimatingActionTargetMask(), *(u16*)off_C05FE8, 1);
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    pushDelayedDamageDisplayEffect(getAnimatingActionTargetMask(), *(u16*)off_C06008, 1);
     return RUN_NEXT;
 }
 
 #define sub_425AAD      ((PFNSREFFECTCALLBACK)0x425AAD)
 OpCodeControlSequence OpCodeF8(AnimScriptEvent* srEvent) {
-    u32* off_C05FE8 = (u32*)0xC05FE8;
-    u32* off_C05FF0 = (u32*)0xC05FF0;
+    u32* off_C06008 = (u32*)0xC06008;
+    u32* off_C06010  = (u32*)0xC06010 ;
     auto& scriptCtx = *srEvent->scriptContext;
     EnemyPosition* enemyPositionArray = (EnemyPosition*)0xBF2054;
 
-    *off_C05FE8 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[0] = srPushEffect60(sub_425AAD);
     if (srEvent->actorID >= 4)
-        *off_C05FF0 = enemyPositionArray[srEvent->actorID - 4].modelArrayIdx;
+        *off_C06010  = enemyPositionArray[srEvent->actorID - 4].modelArrayIdx;
     else
-        *off_C05FF0 = srEvent->actorID;
+        *off_C06010  = srEvent->actorID;
 
-    u32* battleModelABHeader = (u32*)getActiveModelFromArray(*off_C05FF0)->animScriptStruct;
+    u32* battleModelABHeader = (u32*)getActiveModelFromArray(*off_C06010 )->animScriptStruct;
     auto& effectCtx = *getEffectContext60(scriptCtx.opCodeArgs[0]);
-    *(u32*)&effectCtx.wordArray[7] = battleModelABHeader[*off_C05FE8 + 9]; //Should have a dword view
+    *(u32*)&effectCtx.wordArray[7] = battleModelABHeader[*off_C06008 + 9]; //Should have a dword view
     effectCtx.wordArray[2] = srEvent->actorID;
     effectCtx.byteArray[22] = 0;
     effectCtx.wordArray[1] = 0;
@@ -1489,7 +1489,7 @@ OpCodeControlSequence OpCodeFE(AnimScriptEvent* srEvent) {
     auto& scriptCtx = *srEvent->scriptContext;
     if (!ownerModelState.waitFrames) {
         scriptCtx.currentOpCode = srEvent->scriptPtr[ownerModelState.currentScriptPosition];
-        if (scriptCtx.currentOpCode == char(0xC0)) {
+        if (scriptCtx.currentOpCode == (u8)0xC0) {
             ownerModelState.currentScriptPosition = 0;
             ownerModelState.field_74 = 0;
             ownerModelState74.field_36 = 0;
@@ -1588,17 +1588,17 @@ OpCodeControlSequence OpCodeFE(AnimScriptEvent* srEvent) {
  case 0xCBu:
      *newAxisPosition = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      v35 = readWordArg(actor_id, scriptContextPtr->scriptPtr);
-     *off_C05FEC = v35;
-     *off_C05FF0 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
+     *off_C0600C = v35;
+     *off_C06010  = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      *off_C06000 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
      *off_C06004 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     *off_C05FF4 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     *off_C05FF8 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
-     *off_C05FFC = *off_C06004 & 0xFF | 32 * (*off_C06000 & 0xFF) | ((*off_C05FF0 & 0xFF) << 10);
+     *off_C06014  = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
+     *off_C06018 = scriptContextPtr->scriptPtr[gBigAnimBlock[actor_id].currentScriptPosition++];
+     *off_C0601C = *off_C06004 & 0xFF | 32 * (*off_C06000 & 0xFF) | ((*off_C06010  & 0xFF) << 10);
      if (*newAxisPosition == 255)
-         sub_5BF388(actor_id, 0, *off_C05FEC, *off_C05FFC, *off_C05FF4, *off_C05FF8);
+         sub_5BF388(actor_id, 0, *off_C0600C, *off_C0601C, *off_C06014 , *off_C06018);
      else
-         sub_5BF388(actor_id, *newAxisPosition, *off_C05FEC, *off_C05FFC, *off_C05FF4, *off_C05FF8);
+         sub_5BF388(actor_id, *newAxisPosition, *off_C0600C, *off_C0601C, *off_C06014 , *off_C06018);
      goto LABEL_20;
 
  case 0xDAu:

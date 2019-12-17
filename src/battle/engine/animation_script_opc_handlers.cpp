@@ -150,9 +150,8 @@ OpCodeControlSequence OpCode94(AnimScriptEvent* srEvent) {
 }
 
 OpCodeControlSequence OpCode95(AnimScriptEvent* srEvent) {
-    u8* byte_BFD0E0 = (u8*)(0xBFD0E0);
     auto& actorModelState = *getBattleModelState(srEvent->actorID);
-    if (*byte_BFD0E0 != 1 && *byte_BFD0E0 == 2 && srEvent->actorID < 4) {
+    if (getBattleType() != 1 && getBattleType() == 2 && srEvent->actorID < 4) {
         actorModelState.initialYRotation = 2048;
     }
     actorModelState.restingYRotation = actorModelState.initialYRotation;
@@ -686,6 +685,22 @@ OpCodeControlSequence OpCodeBD(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+
+typedef void(*SRPFNSUB5BE9F0)(u16, u16, u16);
+#define pushDelayedDamageDisplayEffect    ((SRPFNSUB5BE9F0)0x5BE9F0)
+OpCodeControlSequence OpCodeBE(AnimScriptEvent* srEvent) {
+    u32* off_C06008 = (u32*)0xC06008;
+    u8* byte_BF23BC = (u8*)0xBF23BC;
+    u8* byte_BFCDE0 = (u8*)0xBFCDE0;
+    *byte_BF23BC = 1;                    // multi-hit damage queue
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);;
+    if (UNK_ACTOR_STRUCT_ARRAY[getActionActorIdx()].characterID != ACT_IDX_TIFA
+        || *off_C06008 != 8
+        || !(UNK_ACTOR_STRUCT_ARRAY[*byte_BFCDE0].field_8 & 0x800)) {
+        pushDelayedDamageDisplayEffect(getAnimatingActionTargetMask(), *off_C06008, 1);
+    }
+    return RUN_NEXT;
+}
 
 OpCodeControlSequence OpCodeBF(AnimScriptEvent* srEvent) {
     u32* off_C06008 = (u32*)0xC06008;
@@ -1418,15 +1433,12 @@ OpCodeControlSequence OpCodeF6(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
-
-typedef void(*SRPFNSUB5BE9F0)(u16, u16, u16);
-#define pushDelayedDamageDisplayEffect    ((SRPFNSUB5BE9F0)0x5BE9F0)
 OpCodeControlSequence OpCodeF7(AnimScriptEvent* srEvent) {
     u32* off_C06008 = (u32*)0xC06008;
     u8* byte_BF23BC = (u8*)0xBF23BC;
     *byte_BF23BC = 0;
     *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    pushDelayedDamageDisplayEffect(getAnimatingActionTargetMask(), *(u16*)off_C06008, 1);
+    pushDelayedDamageDisplayEffect(getAnimatingActionTargetMask(), *off_C06008, 1);
     return RUN_NEXT;
 }
 

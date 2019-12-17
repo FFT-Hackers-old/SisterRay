@@ -10,7 +10,6 @@ void drawBattleCommandViewWidget(const MenuDrawEvent* event) {
         disableWidget(getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME));
         return;
     }
-    srLogWrite("BATTLE STATE COMMAND ACTIVE!");
     updateCommandsActive(*BATTLE_ACTIVE_ACTOR_ID, 0);
 
     enableWidget(getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME));

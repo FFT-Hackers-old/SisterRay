@@ -61,7 +61,7 @@ SISTERRAY_API void updateTextColor(Widget* widgetToUpdate, color textColor) {
         typedPtr->textColor = textColor;
     }
     else {
-        srLogWrite("attempting to update TextWidget color property of an invalid Widget type");
+        //srLogWrite("attempting to update TextWidget color property of an invalid Widget type");
     }
 }
 
@@ -307,7 +307,7 @@ SISTERRAY_API void resizeBox(Widget* widgetToUpdate, i16 drawDistance1, i16 draw
         typedPtr->drawDistanceYb = drawdistance4;
     }
     else {
-        srLogWrite("attempting to resize a box widget which is not a Box Widget");
+        //srLogWrite("attempting to resize a box widget which is not a Box Widget");
     }
 }
 

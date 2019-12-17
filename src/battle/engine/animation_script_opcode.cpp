@@ -48,6 +48,7 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     add_element(assembleOpCodeKey(0xBA), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBA);
     add_element(assembleOpCodeKey(0xBC), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBC);
     add_element(assembleOpCodeKey(0xBD), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBD);
+    add_element(assembleOpCodeKey(0xBE), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBE);
     add_element(assembleOpCodeKey(0xBF), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBF);
 
     add_element(assembleOpCodeKey(0xC1), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeC1);

@@ -47,6 +47,7 @@ OpCodeControlSequence OpCodeB9(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeBA(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeBC(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeBD(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeBE(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeBF(AnimScriptEvent* srEvent);
 
 OpCodeControlSequence OpCodeC1(AnimScriptEvent* srEvent);

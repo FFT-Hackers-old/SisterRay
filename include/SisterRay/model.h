@@ -184,7 +184,6 @@ typedef struct {
     u16 field_2E;
     u16 field_30;
     u8 modelDataIndex; //0x032
-    u8 field_32;
     u8 field_33;
     u8 field_34;
     u8 field_35;
@@ -194,6 +193,7 @@ typedef struct {
     u16 field_3A;
     u16 field_3C;
     u16 actionIdx;
+    u8 field_40;
     u8 field_41;
     u8 field_42;
     u8 field_43;

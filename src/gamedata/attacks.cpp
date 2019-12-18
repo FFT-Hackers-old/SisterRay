@@ -20,14 +20,13 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         if (read_size != sizeof(baseAttack))
             break;
         attack.attackData = baseAttack;
-        attack.attackName = gContext.gameStrings.magic_names.get_resource(idx);
-        attack.attackDescription = gContext.gameStrings.magic_descriptions.get_resource(idx);
+        attack.attackName = gContext.gameStrings.magic_names.getResource(idx);
+        attack.attackDescription = gContext.gameStrings.magic_descriptions.getResource(idx);
         if (idx == 96 || idx == 97) {
             attack.attackID = idx;
             cmdIdx = CMD_SUMMON;
             attack.attackID = 0xFFFF;
             attack.animationType = SUMMON;
-            attack.attackType = SUMMON;
             attack.animScriptIndex = 0xFFFF;
             attack.useOverride = 0;
             attack.useMulti = 0;
@@ -41,18 +40,16 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.attackID = idx;
             cmdIdx = CMD_MAGIC;
             attack.animationType = MAGIC;
-            attack.attackType = MAGIC;
             attack.animScriptIndex = 0xFFFF;
             attack.useOverride = 0;
             attack.useMulti = getDefaultMagicUseMulti(idx);
             attack.multiEffect = getDefaultMagicMultiEffects(idx);
         }
         else if (idx < KERNEL_SUMMON_CUTOFF) {
-            attack.attackName = gContext.gameStrings.summon_attack_names.get_resource(idx);
+            attack.attackName = gContext.gameStrings.summon_attack_names.getResource(idx);
             attack.attackID = idx;
             cmdIdx = CMD_SUMMON;
             attack.animationType = SUMMON;
-            attack.attackType = SUMMON;
             attack.animScriptIndex = 0xFFFF;
             attack.useOverride = 0;
             attack.useMulti = 0;
@@ -61,7 +58,6 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.attackID = idx;
             cmdIdx = CMD_ENEMY_SKILL;
             attack.animationType = ENEMY_SKILL;
-            attack.attackType = ENEMY_SKILL;
             attack.animScriptIndex = 0xFFFF;
             attack.useOverride = 0;
             attack.useMulti = 0;
@@ -70,27 +66,26 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.attackID = idx;
             cmdIdx = CMD_LIMIT;
             attack.animationType = LIMIT;
-            attack.attackType = LIMIT;
             attack.animScriptIndex = idx;
             attack.useOverride = 0;
             attack.useMulti = 0;
         }
-        add_element(assembleGDataKey(attack.attackID), attack);
-        auto& cmd = gContext.commands.get_resource(cmdIdx);
+        addElement(assembleGDataKey(attack.attackID), attack);
+        auto& cmd = gContext.commands.getResource(cmdIdx);
         cmd.actionCount++;
-        cmd.commandActions.push_back(get_resource_index(assembleGDataKey(attack.attackID)));
+        cmd.commandActions.push_back(getResourceIndex(assembleGDataKey(attack.attackID)));
         ++idx;
     }
     // Init gunge lance and fat chocobo
-    add_element(assembleGDataKey(attack96.attackID), attack96);
+    addElement(assembleGDataKey(attack96.attackID), attack96);
     addCommandAction(assembleGDataKey(CMD_SUMMON), assembleGDataKey(attack96.attackID));
-    add_element(assembleGDataKey(attack97.attackID), attack96);
+    addElement(assembleGDataKey(attack97.attackID), attack96);
     addCommandAction(assembleGDataKey(CMD_SUMMON), assembleGDataKey(attack97.attackID));
 }
 
 void initAttacks(SrKernelStream* stream) {
     gContext.attacks = SrAttackRegistry(stream);
-    srLogWrite("kernel.bin: Loaded %lu attacks", (unsigned long)gContext.attacks.resource_count());
+    srLogWrite("kernel.bin: Loaded %lu attacks", (unsigned long)gContext.attacks.resourceCount());
 }
 
  u16 getDefaultMagicUseMulti(u16 actionID) {

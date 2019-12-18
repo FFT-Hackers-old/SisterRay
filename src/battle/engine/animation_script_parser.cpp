@@ -22,6 +22,7 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
         switch (ownerModelState.runningAnimIdx) {
         case 46:
             scriptCtx.scriptPtr = (u8*)0x7C10E0; //script that displays poisons action
+            srLogWrite("attemping to trigger poison event for actor %d", actorID);
             break;
         case 47:
             scriptCtx.scriptPtr = (u8*)0x7C10F0;
@@ -90,7 +91,7 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
                 if (!gContext.animScriptOpcodes.contains(assembleOpCodeKey(scriptCtx.currentOpCode)))
                     continue;
 
-                auto opcode = gContext.animScriptOpcodes.get_element(assembleOpCodeKey(scriptCtx.currentOpCode));
+                auto opcode = gContext.animScriptOpcodes.getElement(assembleOpCodeKey(scriptCtx.currentOpCode));
 
                 if (ownerModelState.animScriptIndex != 0) {
                     srLogWrite("executing opcode %x", scriptCtx.currentOpCode);

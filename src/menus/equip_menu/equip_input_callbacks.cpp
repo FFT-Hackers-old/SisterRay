@@ -13,7 +13,7 @@ void equipGearHandler(const MenuInputEvent* event) {
 
     playMenuSound(447);
     setMenuState(event->menu, 0);
-    u16 equippedGearRelativeIndex = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
+    u16 equippedGearRelativeIndex = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
     switch (slotChoice.relativeRowIndex) { //
         case 0: { //equip WEAPON
             equippedGearItemType = 1;
@@ -123,7 +123,7 @@ void handleUnequipAcc(const MenuInputEvent* event) {
         playMenuSound(4);
         if (characterRecord.equipped_accessory != 0xFF) {
             auto removedGearRelativeIndex = characterRecord.equipped_accessory;
-            auto removedGearAbsoluteIndex = gContext.itemTypeData.get_absolute_id(3, removedGearRelativeIndex);
+            auto removedGearAbsoluteIndex = gContext.itemTypeData.getAbsoluteID(3, removedGearRelativeIndex);
             gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteIndex, 1); //can only unequip
         }
 
@@ -142,24 +142,24 @@ void handleEquipGear(CharacterRecord& characterRecord, u8 gearType, u8 equippedG
     switch (gearType) {
         case 1: {
             removedGearRelativeID = characterRecord.equipped_weapon;
-            removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-            equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
+            removedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, removedGearRelativeID);
+            equippedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, equippedGearRelativeIndex);
             characterRecord.equipped_weapon = equippedGearRelativeIndex;
             handleMateriaUpdate(characterRecord, gearType, equippedGearRelativeIndex);
             break;
         }
         case 2: {
             removedGearRelativeID = characterRecord.equipped_armor;
-            removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-            equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
+            removedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, removedGearRelativeID);
+            equippedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, equippedGearRelativeIndex);
             characterRecord.equipped_armor = equippedGearRelativeIndex;
             handleMateriaUpdate(characterRecord, gearType, equippedGearRelativeIndex);
             break;
         }
         case 3: {
             removedGearRelativeID = characterRecord.equipped_accessory;
-            removedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, removedGearRelativeID);
-            equippedGearAbsoluteID = gContext.itemTypeData.get_absolute_id(gearType, equippedGearRelativeIndex);
+            removedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, removedGearRelativeID);
+            equippedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, equippedGearRelativeIndex);
             characterRecord.equipped_accessory = equippedGearRelativeIndex;
             break;
         }
@@ -184,15 +184,15 @@ void handleMateriaUpdate(CharacterRecord& activeCharacterRecord, u8 gearType, u1
     for (i32 materiaSlotIndex = 0; materiaSlotIndex < 8; ++materiaSlotIndex) {
         switch (gearType) {
             case 1: {
-                newWeaponData = gContext.weapons.get_resource(gearRelativeIndex);
+                newWeaponData = gContext.weapons.getResource(gearRelativeIndex);
                 materiaSlots = &(newWeaponData.materia_slots[0]);
-                equippedMateriaData = gContext.characters.get_element(getCharacterName(characterID)).wpnMaterias[materiaSlotIndex];
+                equippedMateriaData = gContext.characters.getElement(getCharacterName(characterID)).wpnMaterias[materiaSlotIndex];
                 break;
             }
             case 2: {
-                newArmorData = gContext.armors.get_resource(gearRelativeIndex);
+                newArmorData = gContext.armors.getResource(gearRelativeIndex);
                 materiaSlots = &(newArmorData.materia_slots[0]);
-                equippedMateriaData = gContext.characters.get_element(getCharacterName(characterID)).armMaterias[materiaSlotIndex];
+                equippedMateriaData = gContext.characters.getElement(getCharacterName(characterID)).armMaterias[materiaSlotIndex];
                 break;
             }
             default: {
@@ -216,15 +216,15 @@ u16 setupGearMenu(u8 itemType) {
     u8 characterID = (CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX];
     u16 equippableGearCount = 0;
     gContext.gearViewData = SrGearViewData();
-    for (i32 inventoryIdx = 0; inventoryIdx < gContext.inventory->current_capacity(); inventoryIdx++) {
-        auto inventoryEntry = gContext.inventory->get_resource(inventoryIdx).item_id;
-        if (gContext.itemTypeData.get_resource(inventoryEntry).item_type != itemType) {
+    for (i32 inventoryIdx = 0; inventoryIdx < gContext.inventory->currentCapacity(); inventoryIdx++) {
+        auto inventoryEntry = gContext.inventory->getResource(inventoryIdx).item_id;
+        if (gContext.itemTypeData.getResource(inventoryEntry).itemType != itemType) {
             continue;
         }
         if (characterCanEquipItem(characterID, inventoryEntry)) {
-            GearViewData data = { gContext.itemTypeData.get_resource(inventoryEntry).type_relative_id };
+            GearViewData data = { gContext.itemTypeData.getResource(inventoryEntry).typeRelativeID };
             srLogWrite("initialized gear view data with id: %i", data.relative_item_id);
-            gContext.gearViewData.add_resource(data);
+            gContext.gearViewData.addResource(data);
             equippableGearCount++;
         }
     }

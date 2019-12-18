@@ -80,22 +80,22 @@ SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> e
         auto name = assembleEnemyModelKey(modelID);
         srLogWrite("Loading model animation scripts from SR registry for model %s constructed from modelID: %i", name.c_str(), modelID);
         SrModelScripts srModelScripts = createSrModelScripts(MODEL_TYPE_ENEMY, name, battleLGPBuffer);
-        add_element(name, srModelScripts);
+        addElement(name, srModelScripts);
     }
     for (auto name : characterModelNames) {
         srLogWrite("Loading model animation scripts from SR registry for model %s", name.c_str());
         SrModelScripts srModelScripts = createSrModelScripts(MODEL_TYPE_PLAYER, name, battleLGPBuffer);
-        add_element(name, srModelScripts);
+        addElement(name, srModelScripts);
     }
     for (auto name : specialModelNames) {
         srLogWrite("Loading model animation scripts from SR registry for model %s", name.c_str());
         SrModelScripts srModelScripts = createSrModelScripts(MODEL_TYPE_PLAYER, name, battleLGPBuffer);
-        add_element(name, srModelScripts);
+        addElement(name, srModelScripts);
     }
 }
 
 u32 SrBattleAnimScriptRegistry::getMemoryBufferSize(const std::string& name){
-    auto scriptData = get_element(name);
+    auto scriptData = getElement(name);
     auto scriptCount = 0;
     auto scriptLength = 0;
     for (auto element : scriptData.modelAnimScripts) {
@@ -127,7 +127,7 @@ void initAnimationScripts(void* battleLGPBuffer) {
 
 
 void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader) {
-    auto animScriptsData = gContext.battleAnimationScripts.get_element(std::string(filename));
+    auto animScriptsData = gContext.battleAnimationScripts.getElement(std::string(filename));
     auto bufferSize = gContext.battleAnimationScripts.getMemoryBufferSize(std::string(filename));
     u8* animScriptBuffer = (u8*)ff7allocateMemory(1, bufferSize, nullptr, 0);
     u8** tableBufferPtr = (u8**)(animScriptBuffer + (AB_PTR_TABLE_OFFSET)); //advance this ptr to the start of the animation data table
@@ -152,7 +152,7 @@ SISTERRAY_API void addAnimationScript(const char* modelName, u8* script, u16 scr
     u16 trueAnimScriptLength = 0;
     auto animationScript = animScriptFromBuffer(script, scriptLength, &trueAnimScriptLength);
     SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
-    auto& modelScripts = gContext.battleAnimationScripts.get_element(modelName);
+    auto& modelScripts = gContext.battleAnimationScripts.getElement(modelName);
     modelScripts.modelAnimScripts[assembleAnimScriptKey(modelScripts.scriptCount)] = srAnimScript;
     modelScripts.scriptCount++;
 }

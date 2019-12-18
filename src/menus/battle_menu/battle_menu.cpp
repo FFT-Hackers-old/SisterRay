@@ -4,7 +4,7 @@
 using namespace BattleMenuWidgetNames;
 
 void battleMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    Menu* menu = gContext.menuWidgets.getElement(BATTLE_MENU_NAME);
     i32* menuStateMask = (i32*)(0xDC35B4);
     runMenu(menu, *menuStateMask);
     drawCursor(getStateCursor(menu, menu->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
@@ -63,7 +63,7 @@ void resetBattleMenu() {
     *byte_DC38F8 = *LIMIT_ACTIVE_MASK;
     *word_DC38D4 = 1;
 
-    Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    Menu* menu = gContext.menuWidgets.getElement(BATTLE_MENU_NAME);
     setMenuState(menu, BATTLE_INACTIVE);
 
     if (*word_DC38D4)
@@ -121,7 +121,7 @@ void initializeBattleMenu() {
     mogReplaceFunction(DISPATCH_BATTLE_UPDATES, &dispatchBattleUpdates);
     mogReplaceFunction(INIT_BATTLE_DATA, &resetBattleMenu);
     auto battleMenu = createMenu(INIT_BATTLE_MENU, DRAW_BATTLE_MENU, BATTLE_MENU, 64);
-    gContext.menuWidgets.add_element(BATTLE_MENU_NAME, battleMenu);
+    gContext.menuWidgets.addElement(BATTLE_MENU_NAME, battleMenu);
     TransitionData baseTransition = { 0x14C, 0x280, 0x70, 0, 0, 0x280, 0x70, 14, 1 };
     setTransitionData(battleMenu, BATTLE_INACTIVE, baseTransition);
     registerBaseViewListeners();

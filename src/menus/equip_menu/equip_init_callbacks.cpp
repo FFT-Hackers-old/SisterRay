@@ -235,7 +235,7 @@ void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
 
     auto typedPtr = (CursorGridWidget*)self;
     auto gearType = gContext.gearViewData.getItemType();
-    auto relativeItemID = gContext.gearViewData.get_resource(flatIndex).relative_item_id;
+    auto relativeItemID = gContext.gearViewData.getResource(flatIndex).relative_item_id;
     srLogWrite("updating gear view widget with item ID: %i at relative index %i", relativeItemID, flatIndex);
     const char* name = getNameFromRelativeID(relativeItemID, gearType);
     srLogWrite("updating gear view widget with name: %s", name);

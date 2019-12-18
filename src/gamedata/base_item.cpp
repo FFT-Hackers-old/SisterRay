@@ -7,9 +7,9 @@ SISTERRAY_API void initItemTypeData() {
 }
 
 const char* getItemNameFromAbsoluteIdx(u16 absoluteIdx) {
-    auto typeData = gContext.itemTypeData.get_resource(absoluteIdx);
-    auto type = typeData.item_type;
-    auto relativeIdx = typeData.type_relative_id;
+    auto typeData = gContext.itemTypeData.getResource(absoluteIdx);
+    auto type = typeData.itemType;
+    auto relativeIdx = typeData.typeRelativeID;
     switch (type) {
     case 0: {
         return gContext.gameStrings.item_names.get_string(relativeIdx);
@@ -34,9 +34,9 @@ const char* getItemNameFromAbsoluteIdx(u16 absoluteIdx) {
 }
 
 const char* getItemDescFromAbsoluteIdx(u16 absoluteIdx) {
-    auto typeData = gContext.itemTypeData.get_resource(absoluteIdx);
-    auto type = typeData.item_type;
-    auto relativeIdx = typeData.type_relative_id;
+    auto typeData = gContext.itemTypeData.getResource(absoluteIdx);
+    auto type = typeData.itemType;
+    auto relativeIdx = typeData.typeRelativeID;
     switch (type) {
     case 0: {
         return gContext.gameStrings.item_descriptions.get_string(relativeIdx);
@@ -61,8 +61,8 @@ const char* getItemDescFromAbsoluteIdx(u16 absoluteIdx) {
 }
 
 /*Called to initialize from kernel data the base types of items*/
-void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u32 numberToInitialize) {
-    u16 absoluteBase = resource_count();
+void SrItemTypeRegistry::initializeAugmentedData(u8 itemType, u32 numberToInitialize) {
+    u16 absoluteBase = resourceCount();
     u16 absoluteIndex;
     for (u16 relativeIndex = 0; relativeIndex < numberToInitialize; relativeIndex++) {
         auto iconType = getKernelIconType(itemType, relativeIndex);
@@ -70,7 +70,7 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u32 numberToInit
         absoluteIndex = absoluteBase + relativeIndex;
 
         auto name = std::string(BASE_PREFIX) + std::to_string(absoluteIndex);
-        gContext.itemTypeData.append_item(name, itemType, iconType);
+        gContext.itemTypeData.appendItem(name, itemType, iconType);
 
         switch (itemType) {
             case 0: {
@@ -96,7 +96,7 @@ void SrItemTypeRegistry::initialize_augmented_data(u8 itemType, u32 numberToInit
     }
 }
 
-void SrItemTypeRegistry::append_item(const std::string& name, u8 itemType, u8 iconType) {
+void SrItemTypeRegistry::appendItem(const std::string& name, u8 itemType, u8 iconType) {
     if (contains(name))
         return;
 
@@ -124,7 +124,7 @@ void SrItemTypeRegistry::append_item(const std::string& name, u8 itemType, u8 ic
     }
     auto relative_item_id = reverseRegistry.size();
     ItemTypeData baseData = { itemType, relative_item_id, iconType };
-    add_element(name, baseData);
+    addElement(name, baseData);
 }
 
 /*Only used when loading from kernel to initialize the augmented data from kernel*/
@@ -161,7 +161,7 @@ u8 getKernelIconType(u8 itemType, u16 typeRelativeIndex) {
     }
 }
 
-u16 SrItemTypeRegistry::get_absolute_id(u8 itemType, u8 relativeIndex) {
+u16 SrItemTypeRegistry::getAbsoluteID(u8 itemType, u8 relativeIndex) {
     switch (itemType) {
         case 0:
             return reverseItemRegistry.at(relativeIndex);

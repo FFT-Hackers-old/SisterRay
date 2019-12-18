@@ -36,7 +36,7 @@ void handleUpdateEquipDescription(const MenuDrawEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 0)->context;
     if (event->menuState == 1) {
         auto gearChoice = getStateCursor(event->menu, 1)->context;
-        kernelObjectID = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
+        kernelObjectID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
     }
     else {
         kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice.relativeRowIndex + 1);
@@ -61,7 +61,7 @@ void handleUpdateGearSlotsWidget(const MenuDrawEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 0)->context;
     if (event->menuState == 1) {
         auto gearChoice = getStateCursor(event->menu, 1)->context;
-        kernelObjectID = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
+        kernelObjectID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
     }
     else {
         kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice.relativeRowIndex + 1);
@@ -69,13 +69,13 @@ void handleUpdateGearSlotsWidget(const MenuDrawEvent* event) {
 
     switch (slotChoice.relativeRowIndex) {
         case 0: {
-            materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
-            materiaGrowth = gContext.weapons.get_resource(kernelObjectID).materia_growth;
+            materiaSlots = &(gContext.weapons.getResource(kernelObjectID).materia_slots[0]);
+            materiaGrowth = gContext.weapons.getResource(kernelObjectID).materia_growth;
             break;
         }
         case 1: {
-            materiaSlots = &(gContext.armors.get_resource(kernelObjectID).materia_slots[0]);
-            materiaGrowth = gContext.armors.get_resource(kernelObjectID).materia_growth;
+            materiaSlots = &(gContext.armors.getResource(kernelObjectID).materia_slots[0]);
+            materiaGrowth = gContext.armors.getResource(kernelObjectID).materia_growth;
             break;
         }
         default: {
@@ -107,9 +107,9 @@ void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
         auto gearChoice = getStateCursor(event->menu, 1)->context;
         switch (slotChoice.relativeRowIndex) {
             case 0: {
-                auto toEquipWeaponID = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
-                statsToDisplay[0] = gContext.weapons.get_resource(toEquipWeaponID).weapon_strength;
-                statsToDisplay[1] = gContext.weapons.get_resource(toEquipWeaponID).weapon_hit_rate;
+                auto toEquipWeaponID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
+                statsToDisplay[0] = gContext.weapons.getResource(toEquipWeaponID).weapon_strength;
+                statsToDisplay[1] = gContext.weapons.getResource(toEquipWeaponID).weapon_hit_rate;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
                 std::vector<std::string> currentGearNames = { STAT_VALUE_1, STAT_VALUE_2 };
                 for (u32 row = 0; row < listNames.size(); row++) {
@@ -120,12 +120,12 @@ void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
                 break;
             }
             case 1: {
-                auto toEquipArmorID = gContext.gearViewData.get_resource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
-                statsToDisplay[2] = gContext.armors.get_resource(toEquipArmorID).defense;
-                statsToDisplay[3] = gContext.armors.get_resource(toEquipArmorID).evade;
+                auto toEquipArmorID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
+                statsToDisplay[2] = gContext.armors.getResource(toEquipArmorID).defense;
+                statsToDisplay[3] = gContext.armors.getResource(toEquipArmorID).evade;
                 statsToDisplay[4] = 0;
-                statsToDisplay[5] = gContext.armors.get_resource(toEquipArmorID).magic_defense;
-                statsToDisplay[6] = gContext.armors.get_resource(toEquipArmorID).magic_evade;
+                statsToDisplay[5] = gContext.armors.getResource(toEquipArmorID).magic_defense;
+                statsToDisplay[6] = gContext.armors.getResource(toEquipArmorID).magic_evade;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
                 std::vector<std::string> currentGearNames = { STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
                 for (u32 row = 0; row < listNames.size(); row++) {
@@ -147,13 +147,13 @@ void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
 
     std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
     std::vector<std::string> baseNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
-    statsToDisplay[0] = gContext.weapons.get_resource(equippedWeaponID).weapon_strength;
-    statsToDisplay[1] = gContext.weapons.get_resource(equippedWeaponID).weapon_hit_rate;
-    statsToDisplay[2] = gContext.armors.get_resource(equippedArmorID).defense;
-    statsToDisplay[3] = gContext.armors.get_resource(equippedArmorID).evade;
+    statsToDisplay[0] = gContext.weapons.getResource(equippedWeaponID).weapon_strength;
+    statsToDisplay[1] = gContext.weapons.getResource(equippedWeaponID).weapon_hit_rate;
+    statsToDisplay[2] = gContext.armors.getResource(equippedArmorID).defense;
+    statsToDisplay[3] = gContext.armors.getResource(equippedArmorID).evade;
     statsToDisplay[4] = 0;
-    statsToDisplay[5] = gContext.armors.get_resource(equippedArmorID).magic_defense;
-    statsToDisplay[6] = gContext.armors.get_resource(equippedArmorID).magic_evade;
+    statsToDisplay[5] = gContext.armors.getResource(equippedArmorID).magic_defense;
+    statsToDisplay[6] = gContext.armors.getResource(equippedArmorID).magic_evade;
     for (u32 row = 0; row < listNames.size(); row++) {
         updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
         updateNumber(getChild(statDiffWidget, baseNames[row]), statsToDisplay[row]);

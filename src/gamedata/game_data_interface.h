@@ -16,9 +16,9 @@ SISTERRAY_API SrAccessoryData getSrAccessory(u16 itemID, const char* modName);
 SISTERRAY_API void setSrAccessoryData(SrAccessoryData attackData, u16 itemID, const char* modName);
 SISTERRAY_API void addSrAccessory(SrAccessoryData attackData, u16 itemID, const char* modName);
 
-SISTERRAY_API SrConsumableData getSrItem(u16 itemID, const char* modName);
-SISTERRAY_API void setSrItemData(SrConsumableData attackData, u16 itemID, const char* modName);
-SISTERRAY_API void addSrItem(SrConsumableData attackData, u16 itemID, const char* modName);
+SISTERRAY_API SrConsumable getSrItem(u16 itemID, const char* modName);
+SISTERRAY_API void setSrItemData(SrConsumable attackData, u16 itemID, const char* modName);
+SISTERRAY_API void addSrItem(SrConsumable attackData, u16 itemID, const char* modName);
 
 SISTERRAY_API SrMateriaData getSrMateria(u16 itemID, const char* modName);
 SISTERRAY_API void setSrMateriaData(SrMateriaData attackData, u16 itemID, const char* modName);

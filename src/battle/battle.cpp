@@ -45,14 +45,14 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
         *dword_C069BC = 2;
 
     LABEL_11:
-        auto formation = gContext.formations.get_resource(formationIndex);
+        auto formation = gContext.formations.getResource(formationIndex);
         *formationSetupPtr = formation.formationSetup;
         *formationCameraPtr = formation.formationCamera;
         *formationActorDataPtr = formation.formationActorDataArray;
 
         auto& uniqueEnemyIds = formation.FormationEnemyIDs;
         for (auto enemyIndex = 0; enemyIndex < 3; enemyIndex++) {
-            auto currentEnemyData = gContext.enemies.get_resource(uniqueEnemyIds.uniqueIDs[enemyIndex]);
+            auto currentEnemyData = gContext.enemies.getResource(uniqueEnemyIds.uniqueIDs[enemyIndex]);
             formationEnemiesPtr->EnemyIds[enemyIndex] = currentEnemyData.modelID;
             enemyDataPtr[enemyIndex] = currentEnemyData.enemyData;
             /*While the original game copies AI data here, we parse AI scripts and store them with our registries
@@ -120,7 +120,7 @@ void srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
             characterScriptIndex = gUnkPartyDataArray[actorIndex].characterID;
             if (characterScriptIndex != -0xFF && linkedScriptArray[characterScriptIndex] != 0xFF) //this handles script links
                 characterScriptIndex = linkedScriptArray[characterScriptIndex];
-            auto& charAIData = gContext.characters.get_element(getCharacterName(characterScriptIndex)).characterAI;
+            auto& charAIData = gContext.characters.getElement(getCharacterName(characterScriptIndex)).characterAI;
             scriptPtr = getScriptPtr(charAIData, scriptType);
             break;
         }
@@ -135,7 +135,7 @@ void srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
         case 9: {
             auto formationEnemyID = formationActorDataPtr->formationDatas[actorIndex - 4].enemyID; //fetch the formation relative ID, it's modified from the absolute ID
             auto uniqueID = sceneAIDataPtr->uniqueIDs[formationEnemyID];
-            auto& enemyAIData = gContext.enemies.get_resource(uniqueID).enemyAI;
+            auto& enemyAIData = gContext.enemies.getResource(uniqueID).enemyAI;
             scriptPtr = getScriptPtr(enemyAIData, scriptType);
             break;
         }
@@ -249,7 +249,7 @@ void dispatchAutoActions(u8 partyIndex, i32 actionType) {
             dispatchType = COUNTER_ACTION;
         }
     }
-    auto& autoActions = gContext.party.get_element(getPartyKey(partyIndex)).actorAutoActions;
+    auto& autoActions = gContext.party.getElement(getPartyKey(partyIndex)).actorAutoActions;
     for (auto& action : autoActions) {
         if (action.dispatchType == AUTOACT_NO_ACTION)
             continue;

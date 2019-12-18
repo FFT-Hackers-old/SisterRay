@@ -25,34 +25,34 @@ public:
             if (read_size != sizeof(object))
                 break;
             auto name = assembleGDataKey(idx);
-            add_element(name, object);
+            addElement(name, object);
             idx++;
         }
     }
 
-    void add_element(const std::string& name, const T& element) {
+    void addElement(const std::string& name, const T& element) {
         if (contains(name))
             return;
-        add_resource(element);
-        u32 index = resource_count() - 1;
+        addResource(element);
+        u32 index = resourceCount() - 1;
         named_registry[name] = index;
     }
 
-    void update_element(const std::string& name, const T& element) {
+    void updateElement(const std::string& name, const T& element) {
         if (!contains(name))
             return;
-        update_resource(named_registry[name], element);
+        updateResource(named_registry[name], element);
     }
 
-    const T& get_element(const std::string& name) const {
-        return get_resource(named_registry[name]);
+    const T& getElement(const std::string& name) const {
+        return getResource(named_registry[name]);
     }
 
-    T& get_element(const std::string& name) {
-        return get_resource(named_registry[name]);
+    T& getElement(const std::string& name) {
+        return getResource(named_registry[name]);
     }
 
-    u32 get_resource_index(const std::string& name) {
+    u32 getResourceIndex(const std::string& name) {
         if (contains(name)) {
             return named_registry[name];
         }

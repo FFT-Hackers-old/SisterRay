@@ -70,15 +70,15 @@ SrBattleAnimationRegistry::SrBattleAnimationRegistry(std::unordered_set<u16> ene
     for (auto modelID : enemyModelIDs) {
         auto name = assembleEnemyModelKey(modelID);
         SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_ENEMY, name, false, (u8*)battleLGPBuffer);
-        add_element(name, modelAnims);
+        addElement(name, modelAnims);
     }
     for (auto name : characterModelNames) {
         SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, true, (u8*)battleLGPBuffer);
-        add_element(name, modelAnims);
+        addElement(name, modelAnims);
     }
     for (auto name : specialModelNames) {
         SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, false, (u8*)battleLGPBuffer);
-        add_element(name, modelAnims);
+        addElement(name, modelAnims);
     }
 }
 
@@ -86,12 +86,12 @@ SrBattleAnimationRegistry::SrBattleAnimationRegistry(std::unordered_set<u16> ene
 void initAnimations(void* battleLGPBuffer) {
     auto enemyModelIDs = gContext.enemies.getUniqueModelIDs();
     gContext.battleAnimations = SrBattleAnimationRegistry(enemyModelIDs, battleLGPBuffer);
-    srLogWrite("Loaded model animation packs for %lu unique models", (unsigned long)gContext.battleAnimations.resource_count());
+    srLogWrite("Loaded model animation packs for %lu unique models", (unsigned long)gContext.battleAnimations.resourceCount());
 }
 
 
 void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const char* filename, ModelAAHeader* aaHeader) {
-    auto animationData = gContext.battleAnimations.get_element(std::string(filename));
+    auto animationData = gContext.battleAnimations.getElement(std::string(filename));
     auto totalAnims = animationData.totalAnimationCount;
     auto weaponsAnimsCount = animationData.weaponsAnimationCount;
     auto modelAnimsCount = animationData.modelAnimationCount;
@@ -133,14 +133,14 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
 
 
 SISTERRAY_API void addModelAnimation(const char* modelName, const SrAnimation animation) {
-    auto& modelAnimations = gContext.battleAnimations.get_element(modelName);
+    auto& modelAnimations = gContext.battleAnimations.getElement(modelName);
     modelAnimations.modelAnimations[assembleAnimKey(modelAnimations.totalAnimationCount)] = animation;
     modelAnimations.totalAnimationCount++;
 }
 
 
 SISTERRAY_API void addPlayerModelAnimation(const char* modelName, const SrAnimation animation, const SrAnimation weaponAnimation) {
-    auto& modelAnimations = gContext.battleAnimations.get_element(modelName);
+    auto& modelAnimations = gContext.battleAnimations.getElement(modelName);
     modelAnimations.modelAnimations[assembleAnimKey(modelAnimations.totalAnimationCount)] = animation;
     modelAnimations.totalAnimationCount++;
 }

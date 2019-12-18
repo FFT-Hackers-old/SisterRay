@@ -22,14 +22,14 @@ void handleChangeMateriaCharacter(const MenuDrawEvent* event) {
         updateText(getChild(topWidget, listNames[row]), fetchedName);
     }
 
-    auto slotsPtr = &(gContext.weapons.get_resource(getEquippedGear(characterRecordArrayIndex, 1)).materia_slots[0]);
+    auto slotsPtr = &(gContext.weapons.getResource(getEquippedGear(characterRecordArrayIndex, 1)).materia_slots[0]);
     updateMateriaSlots(getChild(topWidget, GEAR_1_SLOTS), slotsPtr);
-    auto materiaPtr = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias.data();
+    auto materiaPtr = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).wpnMaterias.data();
     updateMateriaData(getChild(topWidget, GEAR_1_SLOTS), materiaPtr);
 
-    slotsPtr = &(gContext.armors.get_resource(getEquippedGear(characterRecordArrayIndex, 2)).materia_slots[0]);
+    slotsPtr = &(gContext.armors.getResource(getEquippedGear(characterRecordArrayIndex, 2)).materia_slots[0]);
     updateMateriaSlots(getChild(topWidget, GEAR_2_SLOTS), slotsPtr);
-    materiaPtr = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias.data();
+    materiaPtr = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).armMaterias.data();
     updateMateriaData(getChild(topWidget, GEAR_2_SLOTS), materiaPtr);
 }
 
@@ -50,15 +50,15 @@ void handleUpdateMateriaDescription(const MenuDrawEvent* event) {
 
     if (event->menuState == 2) {
         auto materiaChoice = getStateCursor(event->menu, 2)->context;
-        materiaID = gContext.materiaInventory->get_resource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex).item_id;
+        materiaID = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex).item_id;
     }
     else if (event->menuState == 1) {
         switch (slotChoice.relativeRowIndex) {
             case 0:
-                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeColumnIndex].item_id;
+                materiaID = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeColumnIndex].item_id;
                 break;
             case 1:
-                materiaID = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeColumnIndex].item_id;
+                materiaID = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeColumnIndex].item_id;
                 break;
             default: {
                 break;
@@ -102,15 +102,15 @@ void handleUpdateMateriaData(const MenuDrawEvent* event) {
 
     if (event->menuState == 2) {
         auto materiaChoice = getStateCursor(event->menu, 2)->context;
-        materia = gContext.materiaInventory->get_resource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
+        materia = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
     }
     else if (event->menuState == 1) {
         switch (slotChoice.relativeRowIndex) {
             case 0:
-                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeColumnIndex];
+                materia = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeColumnIndex];
                 break;
             case 1:
-                materia = gContext.characters.get_element(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeColumnIndex];
+                materia = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeColumnIndex];
                 break;
             default: {
                 break;
@@ -130,7 +130,7 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
     auto materiaName = gContext.gameStrings.materia_names.get_string(materia.item_id);
     updateText(getChild(displayWidget, MATERIA_NAME), materiaName);
     /*last byte of status effect is element index; this is temporary until we have fully moved materia into sister ray*/
-    auto elementIndex = gContext.materias.get_resource(materia.item_id).elementType;
+    auto elementIndex = gContext.materias.getResource(materia.item_id).elementType;
     auto elementName = gContext.gameStrings.elementNames.get_string(elementIndex);
     updateText(getChild(displayWidget, MATERIA_ELEMENT), elementName);
 
@@ -145,7 +145,7 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
         enableWidget(getChild(displayWidget, CURRENT_AP));
         disableWidget(getChild(displayWidget, MASTERED));
         updateNumber(getChild(displayWidget, CURRENT_AP), materia.materia_ap);
-        updateNumber(getChild(displayWidget, TO_LEVEL_AP), gContext.materias.get_resource(materia.item_id).apLevel[materiaLevel - 1] * 100 - materia.materia_ap);
+        updateNumber(getChild(displayWidget, TO_LEVEL_AP), gContext.materias.getResource(materia.item_id).apLevel[materiaLevel - 1] * 100 - materia.materia_ap);
     }
     else {
         disableWidget(getChild(displayWidget, CURRENT_AP));

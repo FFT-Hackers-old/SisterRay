@@ -15,7 +15,7 @@ void handleSelectSummon(const MenuInputEvent* event) {
         return;
 
     auto summonChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
-    auto& enabledSummons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
+    auto& enabledSummons = gContext.party.getElement(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (summonChoiceCursor.maxColumnBound * (summonChoiceCursor.relativeRowIndex + summonChoiceCursor.baseRowIndex)) + summonChoiceCursor.relativeColumnIndex;

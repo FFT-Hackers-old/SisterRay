@@ -34,7 +34,7 @@ const WidgetClass* getChildTypeFromID(u16 widgetTypeID) {
 /*Grid widgets positions are automatically updated and track the position of the cursor they are initialized with*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
 
-    auto cursor = gContext.menuWidgets.get_element(cursorGrid->cursorName)->cursors[cursorGrid->menuState][cursorGrid->cursorIdx];
+    auto cursor = gContext.menuWidgets.getElement(cursorGrid->cursorName)->cursors[cursorGrid->menuState][cursorGrid->cursorIdx];
     auto context = cursor.context;
     auto size = cursorGrid->widget.widget.children.size();
     if (size < (context.viewRowBound * context.viewColumnBound)) {
@@ -85,7 +85,7 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
 
     /*If a primitive childtype or allocator is specified, type allocate the results*/
     if (childType || params.allocator) {
-        auto context = gContext.menuWidgets.get_element(widget->cursorName)->cursors[widget->menuState][widget->cursorIdx].context;
+        auto context = gContext.menuWidgets.getElement(widget->cursorName)->cursors[widget->menuState][widget->cursorIdx].context;
         auto slotCount = (context.viewRowBound) * (context.viewColumnBound);
 
         for (u32 slot = 0; slot < slotCount; slot++) {

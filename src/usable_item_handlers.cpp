@@ -25,11 +25,11 @@ void initOnUseCallbackRegistry() {
         case 5:
         case 6:
         case 7: {
-            gContext.onUseHandlers.add_resource("heal_party_member");
+            gContext.onUseHandlers.addResource("heal_party_member");
             break;
         }
         default:
-            gContext.onUseHandlers.add_resource("no_function");
+            gContext.onUseHandlers.addResource("no_function");
         }
     }
 }
@@ -38,9 +38,9 @@ void initNoTargetCallbackRegistry() {
     for (u16 item_id = 0; item_id < 320; item_id++) {
         switch (item_id) {
         case 98:
-            gContext.onUseHandlers.add_resource("save_crystal_handler");
+            gContext.onUseHandlers.addResource("save_crystal_handler");
         default:
-            gContext.onUseHandlers.add_resource("no_function");
+            gContext.onUseHandlers.addResource("no_function");
         }
     }
 }
@@ -68,32 +68,32 @@ bool defaultUseItem(u8 partyIdx, u16 itemID, u16 inventoryIdx) {
 
 /*On use callback for performing HP healing on the menu */
 bool handleHeal(u8 partyIdx, u16 itemID, u16 inventoryIdx) {
-    bool use_successful = false;
-    bool temp_bool;
-    auto target_all = gContext.itemOnUseData.get_resource(itemID).target_all;
+    bool isUseSuccessful = false;
+    bool tempBool;
+    auto isTargetingAll = gContext.items.getResource(itemID).auxData.target_all;
 
-    if (target_all) {
+    if (isTargetingAll) {
         for (u8 member_to_heal = 0; member_to_heal < 3; ++member_to_heal) {
-            temp_bool = healPartyMember(member_to_heal, itemID);
-            if (!use_successful) {
-                use_successful = temp_bool;
+            tempBool = healPartyMember(member_to_heal, itemID);
+            if (!isUseSuccessful) {
+                isUseSuccessful = tempBool;
             }
         }
     }
     else {
-        use_successful = healPartyMember(partyIdx, itemID);
+        isUseSuccessful = healPartyMember(partyIdx, itemID);
     }
-    playUseSound(use_successful, 263, 3);
+    playUseSound(isUseSuccessful, 263, 3);
 
-    return use_successful;
+    return isUseSuccessful;
 }
 
 bool healPartyMember(u8 partyIdx, u16 itemID) {
     bool heal_was_performed = false;
     auto is_hp_healable = checkIsHPHealable(partyIdx, itemID);
     auto is_mp_healable = checkIsMPHealable(partyIdx, itemID);
-    auto item_heals_hp = (gContext.itemOnUseData.get_resource(itemID).hp_heal_amount || gContext.itemOnUseData.get_resource(itemID).hp_heal_percent);
-    auto item_heals_mp = (gContext.itemOnUseData.get_resource(itemID).mp_heal_amount || gContext.itemOnUseData.get_resource(itemID).mp_heal_percent);
+    auto item_heals_hp = (gContext.items.getResource(itemID).auxData.hp_heal_amount || gContext.items.getResource(itemID).auxData.hp_heal_percent);
+    auto item_heals_mp = (gContext.items.getResource(itemID).auxData.mp_heal_amount || gContext.items.getResource(itemID).auxData.mp_heal_percent);
 
     if (item_heals_hp) {
         if (is_hp_healable) {
@@ -112,48 +112,48 @@ bool healPartyMember(u8 partyIdx, u16 itemID) {
     return heal_was_performed;
 }
 
-u16 calculateHPHealAmount(u8 partyIdx, u16 item_id) {
-    if (gContext.itemOnUseData.get_resource(item_id).hp_heal_amount) {
-        return gContext.itemOnUseData.get_resource(item_id).hp_heal_amount;
+u16 calculateHPHealAmount(u8 partyIdx, u16 itemID) {
+    if (gContext.items.getResource(itemID).auxData.hp_heal_amount) {
+        return gContext.items.getResource(itemID).auxData.hp_heal_amount;
     }
-    else if (gContext.itemOnUseData.get_resource(item_id).hp_heal_percent){
-        u8 heal_divisor = gContext.itemOnUseData.get_resource(item_id).hp_heal_percent;
-        return (((PARTY_STRUCT_ARRAY)[partyIdx].maxHP / heal_divisor) * 100);
-    }
-    return 0;
-}
-
-u16 calculateMPHealAmount(u8 partyIdx, u16 item_id) {
-    if (gContext.itemOnUseData.get_resource(item_id).mp_heal_amount) {
-        return gContext.itemOnUseData.get_resource(item_id).mp_heal_amount;
-    }
-    else if (gContext.itemOnUseData.get_resource(item_id).mp_heal_percent) {
-        u8 heal_divisor = gContext.itemOnUseData.get_resource(item_id).mp_heal_percent;
-        return (((PARTY_STRUCT_ARRAY)[partyIdx].maxMP / heal_divisor) * 100);
+    else if (gContext.items.getResource(itemID).auxData.hp_heal_percent){
+        u8 healDivisor = gContext.items.getResource(itemID).auxData.hp_heal_percent;
+        return ((getActivePartyMember(partyIdx)->maxHP / healDivisor) * 100);
     }
     return 0;
 }
 
-bool checkIsHPHealable(u8 target, u16 item_id) {
-    bool is_healable = checkActorHPFull(target);
-
-    if (gContext.itemOnUseData.get_resource(item_id).can_revive) {
-        return is_healable;
+u16 calculateMPHealAmount(u8 partyIdx, u16 itemID) {
+    if (gContext.items.getResource(itemID).auxData.mp_heal_amount) {
+        return gContext.items.getResource(itemID).auxData.mp_heal_amount;
     }
-
-    bool is_alive = ((bool)((PARTY_STRUCT_ARRAY)[target].currentHP));
-    return (is_healable && is_alive);
+    else if (gContext.items.getResource(itemID).auxData.mp_heal_percent) {
+        u8 healDivisor = gContext.items.getResource(itemID).auxData.mp_heal_percent;
+        return ((getActivePartyMember(partyIdx)->maxMP / healDivisor) * 100);
+    }
+    return 0;
 }
 
-bool checkIsMPHealable(u8 target, u16 item_id) {
-    bool is_healable = checkActorMPFull(target);
+bool checkIsHPHealable(u8 target, u16 itemID) {
+    bool isHealable = checkActorHPFull(target);
 
-    if (gContext.itemOnUseData.get_resource(item_id).can_revive) {
-        return is_healable;
+    if (gContext.items.getResource(itemID).auxData.can_revive) {
+        return isHealable;
     }
 
-    bool is_alive = ((bool)((PARTY_STRUCT_ARRAY)[target].currentHP));
-    return (is_healable && is_alive);
+    bool isAlive = ((bool)(getActivePartyMember(target)->currentHP));
+    return (isHealable && isAlive);
+}
+
+bool checkIsMPHealable(u8 target, u16 itemID) {
+    bool isHealable = checkActorMPFull(target);
+
+    if (gContext.items.getResource(itemID).auxData.can_revive) {
+        return isHealable;
+    }
+
+    bool isAlive = ((bool)(getActivePartyMember(target)->currentHP));
+    return (isHealable && isAlive);
 }
 
 bool checkActorHPFull(u8 party_member_index) {
@@ -164,8 +164,8 @@ bool checkActorMPFull(u8 party_member_index) {
     return (!check_member_MP_full(party_member_index));
 }
 
-bool check_character_dead(u8 party_member_index) {
-    return (bool)PARTY_STRUCT_ARRAY[party_member_index].currentHP;
+bool check_character_dead(u8 partyIdx) {
+    return (bool)getActivePartyMember(partyIdx)->currentHP;
 }
 
 void playUseSound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id) {
@@ -179,54 +179,54 @@ void playUseSound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id) 
 
 /*Perhaps redesign to make it possible to boost multiple stats, lower stats, or boost by variable amounts*/
 bool handleBoostStat(u8 partyIdx, u16 itemID, u16 inventoryIdx) {
-    u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[partyIdx];
-    u16 stat_to_boost = gContext.itemOnUseData.get_resource(itemID).stat_to_boost;
-    bool stat_boosted = false;
-    switch (stat_to_boost) {
+    u16 statToBoost = gContext.items.getResource(itemID).auxData.stat_to_boost;
+    auto& characterRecord = *getPartyActorCharacterRecord(partyIdx);
+    bool statBoosted = false;
+    switch (statToBoost) {
         case 0: {
-            if (CHARACTER_RECORD_ARRAY[character_ID].strength < 255) {
-                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_strength;
-                stat_boosted = true;
+            if (characterRecord.strength < 255) {
+                ++characterRecord.bonus_strength;
+                statBoosted = true;
             }
             break;
         }
         case 1: {
-            if (CHARACTER_RECORD_ARRAY[character_ID].vitality < 255) {
-                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_vitality;
-                stat_boosted = true;
+            if (characterRecord.vitality < 255) {
+                ++characterRecord.bonus_vitality;
+                statBoosted = true;
             }
             break;
         }
         case 2: {
-            if (CHARACTER_RECORD_ARRAY[character_ID].magic < 255) {
-                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_magic;
-                stat_boosted = true;
+            if (characterRecord.magic < 255) {
+                ++characterRecord.bonus_magic;
+                statBoosted = true;
             }
             break;
         }
         case 3: {
-            if (CHARACTER_RECORD_ARRAY[character_ID].spirit < 255) {
-                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_spirit;
-                stat_boosted = true;
+            if (characterRecord.spirit < 255) {
+                ++characterRecord.bonus_spirit;
+                statBoosted = true;
             }
             break;
         }
         case 4: {
-            if (CHARACTER_RECORD_ARRAY[character_ID].dexterity < 255) {
-                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_dexterity;
-                stat_boosted = true;
+            if (characterRecord.dexterity < 255) {
+                ++characterRecord.bonus_dexterity;
+                statBoosted = true;
             }
             break;
         }
         case 5: {
-            if (CHARACTER_RECORD_ARRAY[character_ID].luck < 255) {
-                ++CHARACTER_RECORD_ARRAY[character_ID].bonus_luck;
-                stat_boosted = true;
+            if (characterRecord.luck < 255) {
+                ++characterRecord.bonus_luck;
+                statBoosted = true;
             }
             break;
         }
     }
-    if (stat_boosted) {
+    if (statBoosted) {
         playMenuSound(263);
         recalculateBaseStats(partyIdx); //This should be rewritten to allow stat penalties
         recalculateDerivedStats(partyIdx);
@@ -235,7 +235,7 @@ bool handleBoostStat(u8 partyIdx, u16 itemID, u16 inventoryIdx) {
         playMenuSound(3);
     }
 
-    return stat_boosted;
+    return statBoosted;
 }
 
 /*Introduce item restriction masks making items usable by some characters

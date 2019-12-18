@@ -4,5 +4,5 @@
 #include <SisterRay/SisterRay.h>
 #include <string>
 
-std::string assembleGDataKey(u16 resourceIdx);
+const std::string assembleGDataKey(u16 resourceIdx);
 #endif // !GDATA_UTILS_H

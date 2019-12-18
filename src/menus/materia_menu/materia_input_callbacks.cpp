@@ -61,10 +61,10 @@ void enterMateriaViewHandler(const MenuInputEvent* event) {
 
     switch (gearType) {
         case 0: {
-            slotsPtr = &(gContext.weapons.get_resource(getEquippedGear(characterID, 1)).materia_slots[0]);
+            slotsPtr = &(gContext.weapons.getResource(getEquippedGear(characterID, 1)).materia_slots[0]);
         }
         case 1: {
-            slotsPtr = &(gContext.armors.get_resource(getEquippedGear(characterID, 2)).materia_slots[0]);
+            slotsPtr = &(gContext.armors.getResource(getEquippedGear(characterID, 2)).materia_slots[0]);
         }
         default: {
             break;
@@ -94,17 +94,17 @@ void equipMateriaHandler(const MenuInputEvent* event) {
     auto gearType = slotChoice.relativeRowIndex;
     switch (gearType) {
         case 0: {
-            equippedMateria = gContext.characters.get_element(charName).wpnMaterias[activeSlot];
-            toEquipMateria = gContext.materiaInventory->get_resource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
-            gContext.materiaInventory->update_resource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex, equippedMateria);
-            gContext.characters.get_element(charName).wpnMaterias[activeSlot] = toEquipMateria;
+            equippedMateria = gContext.characters.getElement(charName).wpnMaterias[activeSlot];
+            toEquipMateria = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
+            gContext.materiaInventory->updateResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex, equippedMateria);
+            gContext.characters.getElement(charName).wpnMaterias[activeSlot] = toEquipMateria;
             break;
         }
         case 1: {
-            equippedMateria = gContext.characters.get_element(charName).armMaterias[activeSlot];
-            toEquipMateria = gContext.materiaInventory->get_resource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
-            gContext.materiaInventory->update_resource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex, equippedMateria);
-            gContext.characters.get_element(charName).armMaterias[activeSlot] = toEquipMateria;
+            equippedMateria = gContext.characters.getElement(charName).armMaterias[activeSlot];
+            toEquipMateria = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
+            gContext.materiaInventory->updateResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex, equippedMateria);
+            gContext.characters.getElement(charName).armMaterias[activeSlot] = toEquipMateria;
             break;
         }
         default: {
@@ -160,16 +160,16 @@ void arrangeChoiceHandler(const MenuInputEvent* event) {
                 return;
             }
             for (auto slotIdx = 0; slotIdx < 8; ++slotIdx) { //probably factor out into a "remove all materia" method
-                auto equippedWpnMateria = gContext.characters.get_element(charName).wpnMaterias[slotIdx];
-                auto equippedArmMateria = gContext.characters.get_element(charName).armMaterias[slotIdx];
+                auto equippedWpnMateria = gContext.characters.getElement(charName).wpnMaterias[slotIdx];
+                auto equippedArmMateria = gContext.characters.getElement(charName).armMaterias[slotIdx];
                 if (equippedWpnMateria.item_id != 0xFFFF && !(gContext.materiaInventory->isFull())) {
-                    gContext.characters.get_element(charName).wpnMaterias[slotIdx].item_id = -1;
-                    gContext.characters.get_element(charName).wpnMaterias[slotIdx].materia_ap = 0;
+                    gContext.characters.getElement(charName).wpnMaterias[slotIdx].item_id = -1;
+                    gContext.characters.getElement(charName).wpnMaterias[slotIdx].materia_ap = 0;
                     gContext.materiaInventory->insertIntoMateriaInventory(equippedWpnMateria);
                 }
                 if (equippedArmMateria.item_id != 0xFF && !(gContext.materiaInventory->isFull())) {
-                    gContext.characters.get_element(charName).armMaterias[slotIdx].item_id = -1;
-                    gContext.characters.get_element(charName).armMaterias[slotIdx].materia_ap = 0;
+                    gContext.characters.getElement(charName).armMaterias[slotIdx].item_id = -1;
+                    gContext.characters.getElement(charName).armMaterias[slotIdx].materia_ap = 0;
                     gContext.materiaInventory->insertIntoMateriaInventory(equippedArmMateria);
                 }
             }
@@ -193,7 +193,7 @@ void trashMateriaHandler(const MenuInputEvent* event) {
     auto materiaChoice = getStateCursor(event->menu, 8)->context;
     auto rowPosition = materiaChoice.relativeRowIndex;
 
-    if (gContext.materiaInventory->get_resource(rowPosition).item_id == -1) {
+    if (gContext.materiaInventory->getResource(rowPosition).item_id == -1) {
         playMenuSound(3);
     }
     else {
@@ -299,23 +299,23 @@ void removeMateriaHandler(const MenuInputEvent* event) {
 
     switch (gearType) {
         case 0: {
-            equippedMateria = gContext.characters.get_element(charName).wpnMaterias[activeSlot];
+            equippedMateria = gContext.characters.getElement(charName).wpnMaterias[activeSlot];
             if (equippedMateria.item_id = 0xFFFF) {
                 playMenuSound(3);
                 return;
             }
-            gContext.characters.get_element(charName).wpnMaterias[activeSlot].item_id = -1;
-            gContext.characters.get_element(charName).wpnMaterias[activeSlot].materia_ap = 0;
+            gContext.characters.getElement(charName).wpnMaterias[activeSlot].item_id = -1;
+            gContext.characters.getElement(charName).wpnMaterias[activeSlot].materia_ap = 0;
             break;
         }
         case 1: {
-            equippedMateria = gContext.characters.get_element(charName).armMaterias[activeSlot];
+            equippedMateria = gContext.characters.getElement(charName).armMaterias[activeSlot];
             if (equippedMateria.item_id = 0xFFFF) {
                 playMenuSound(3);
                 return;
             }
-            gContext.characters.get_element(charName).armMaterias[activeSlot].item_id = -1;
-            gContext.characters.get_element(charName).armMaterias[activeSlot].materia_ap = 0;
+            gContext.characters.getElement(charName).armMaterias[activeSlot].item_id = -1;
+            gContext.characters.getElement(charName).armMaterias[activeSlot].materia_ap = 0;
             break;
         }
         default: {

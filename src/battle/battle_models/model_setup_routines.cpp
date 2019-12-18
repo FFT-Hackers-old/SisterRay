@@ -233,8 +233,8 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         modelData->unk1 = 0;
         modelData->unk2 = 0;
 
-        std::string& modelName = gContext.party.get_element(getPartyKey(actorIdx)).modelName;
-        u16 weaponOffset = gContext.battleAnimations.get_element(modelName).modelAnimationCount;
+        std::string& modelName = gContext.party.getElement(getPartyKey(actorIdx)).modelName;
+        u16 weaponOffset = gContext.battleAnimations.getElement(modelName).modelAnimationCount;
         playWeaponAnimation(modelState.setForLimitBreaks, modelState.tableRelativeModelAnimIdx + weaponOffset, modelState.currentPlayingFrame, weaponModelID, modelData);
         Matrix* matrix = getMatrix(0, weaponDataPtr->bonesArray->parts->part->polygonSet->matrixSet);
         extractR3AndTranspose(&(getBattleModelRotationData(actorIdx)->rotationMatrix), matrix);

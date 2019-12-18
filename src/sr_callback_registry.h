@@ -19,12 +19,12 @@ public:
     }
 
     const T& get_handler(u16 item_id) const {
-        auto& name = get_resource(item_id);
+        auto& name = getResource(item_id);
         return handler_names[name];
     }
 
     T& get_handler(u16 item_id) {
-        auto& name = get_resource(item_id);
+        auto& name = getResource(item_id);
         return handler_names[name];
     }
 };

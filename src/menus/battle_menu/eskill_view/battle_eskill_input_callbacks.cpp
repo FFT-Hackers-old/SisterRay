@@ -14,7 +14,7 @@ void handleSelectESkill(const MenuInputEvent* event) {
         return;
 
     auto eSkillChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
-    auto& enabledESkills = gContext.party.get_element(getPartyKey(event->menuState)).actorEnemySkills;
+    auto& enabledESkills = gContext.party.getElement(getPartyKey(event->menuState)).actorEnemySkills;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (eSkillChoiceCursor.maxColumnBound * (eSkillChoiceCursor.relativeRowIndex + eSkillChoiceCursor.baseRowIndex)) + eSkillChoiceCursor.relativeColumnIndex;
@@ -25,7 +25,7 @@ void handleSelectESkill(const MenuInputEvent* event) {
     playMenuSound(1);
     setChosenActionID(enabledESkills[flatIndex].magicIndex);
     setChosenActionMenuIndex(flatIndex);
-    setTargetingFromFlags(gContext.battleInventory->get_resource(flatIndex).targetFlags, false);
+    setTargetingFromFlags(gContext.battleInventory->getResource(flatIndex).targetFlags, false);
     setMenuState(event->menu, BATTLE_TARGETING_STATE);
     *PREVIOUS_BATTLE_MENU_STATE = 4;
 }

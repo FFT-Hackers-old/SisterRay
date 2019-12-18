@@ -24,10 +24,10 @@ SrMateriaRegistry::SrMateriaRegistry(SrKernelStream* stream) : SrNamedResourceRe
 SISTERRAY_API SrMateriaData getSrMateria(u16 modMateriaID, const char* modName) {
     SrMateriaData srMateria = SrMateriaData();
     auto name = std::string(modName) + std::to_string(modMateriaID);
-    srMateria.baseData = gContext.materias.get_element(name);
-    srMateria.auxData = gContext.auxMaterias.get_element(name);
+    srMateria.baseData = gContext.materias.getElement(name);
+    srMateria.auxData = gContext.auxMaterias.getElement(name);
 
-    auto absoluteIndex = gContext.materias.get_resource_index(name);
+    auto absoluteIndex = gContext.materias.getResourceIndex(name);
     srMateria.materiaName = gContext.gameStrings.materia_names.get_string(absoluteIndex);
     srMateria.materiaDesc = gContext.gameStrings.materia_descriptions.get_string(absoluteIndex);
 
@@ -36,21 +36,21 @@ SISTERRAY_API SrMateriaData getSrMateria(u16 modMateriaID, const char* modName) 
 
 SISTERRAY_API void setSrMateriaData(SrMateriaData data, u16 modMateriaID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modMateriaID);
-    gContext.materias.update_element(name, data.baseData);
-    gContext.auxMaterias.update_element(name, data.auxData);
+    gContext.materias.updateElement(name, data.baseData);
+    gContext.auxMaterias.updateElement(name, data.auxData);
 
-    auto absoluteIndex = gContext.materias.get_resource_index(name);
-    gContext.gameStrings.materia_names.update_resource(absoluteIndex, EncodedString::from_unicode(data.materiaName));
-    gContext.gameStrings.materia_descriptions.update_resource(absoluteIndex, EncodedString::from_unicode(data.materiaDesc));
+    auto absoluteIndex = gContext.materias.getResourceIndex(name);
+    gContext.gameStrings.materia_names.updateResource(absoluteIndex, EncodedString::from_unicode(data.materiaName));
+    gContext.gameStrings.materia_descriptions.updateResource(absoluteIndex, EncodedString::from_unicode(data.materiaDesc));
 }
 
 SISTERRAY_API void addSrMateria(SrMateriaData data, u16 modMateriaID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modMateriaID);
-    gContext.materias.add_element(name, data.baseData);
-    gContext.auxMaterias.add_element(name, data.auxData);
+    gContext.materias.addElement(name, data.baseData);
+    gContext.auxMaterias.addElement(name, data.auxData);
 
-    gContext.gameStrings.materia_names.add_resource(EncodedString::from_unicode(data.materiaName));
-    gContext.gameStrings.materia_descriptions.add_resource(EncodedString::from_unicode(data.materiaDesc));
+    gContext.gameStrings.materia_names.addResource(EncodedString::from_unicode(data.materiaName));
+    gContext.gameStrings.materia_descriptions.addResource(EncodedString::from_unicode(data.materiaDesc));
 }
 
 
@@ -116,26 +116,26 @@ static const u32 kPatchData1[] = {
 
 static void patch_materia(void)
 {
-    srPatchAddresses((void**)kPatchApLevel, ARRAY_SIZE(kPatchApLevel), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, apLevel));
-    srPatchAddresses((void**)kPatchEquipEffect, ARRAY_SIZE(kPatchEquipEffect), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, equipEffect));
-    srPatchAddresses((void**)kPatchStatusEffect, ARRAY_SIZE(kPatchStatusEffect), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffects));
-    srPatchAddresses((void**)kPatchStatusEffect1, ARRAY_SIZE(kPatchStatusEffect1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffects) + 1);
-    srPatchAddresses((void**)kPatchStatusEffect2, ARRAY_SIZE(kPatchStatusEffect2), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, statusEffects) + 2);
-    srPatchAddresses((void**)kPatchStatusEffect3, ARRAY_SIZE(kPatchStatusEffect3), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, elementType));
-    srPatchAddresses((void**)kPatchType, ARRAY_SIZE(kPatchType), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, type));
-    srPatchAddresses((void**)kPatchData, ARRAY_SIZE(kPatchData), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, data));
-    srPatchAddresses((void**)kPatchData1, ARRAY_SIZE(kPatchData1), (void*)0x00dbdf60, gContext.materias.get_data(), offsetof(MateriaData, data) + 1);
+    srPatchAddresses((void**)kPatchApLevel, ARRAY_SIZE(kPatchApLevel), (void*)0x00dbdf60, gContext.materias.getData(), offsetof(MateriaData, apLevel));
+    srPatchAddresses((void**)kPatchEquipEffect, ARRAY_SIZE(kPatchEquipEffect), (void*)0x00dbdf60, gContext.materias.getData(), offsetof(MateriaData, equipEffect));
+    srPatchAddresses((void**)kPatchStatusEffect, ARRAY_SIZE(kPatchStatusEffect), (void*)0x00dbdf60, gContext.materias.getData(), offsetof(MateriaData, statusEffects));
+    srPatchAddresses((void**)kPatchStatusEffect1, ARRAY_SIZE(kPatchStatusEffect1), (void*)0x00dbdf60, gContext.materias.getData(), offsetof(MateriaData, statusEffects) + 1);
+    srPatchAddresses((void**)kPatchStatusEffect2, ARRAY_SIZE(kPatchStatusEffect2), (void*)0x00dbdf60, gContext.materias.getData(), offsetof(MateriaData, statusEffects) + 2);
+    srPatchAddresses((void**)kPatchStatusEffect3, ARRAY_SIZE(kPatchStatusEffect3), (void*)0x00dbdf60, gContext.materias.getData(), offsetof(MateriaData, elementType));
+    srPatchAddresses((void**)kPatchType, ARRAY_SIZE(kPatchType), (void*)0x00dbdf60, gContext.materias.getData(), offsetof(MateriaData, type));
+    srPatchAddresses((void**)kPatchData, ARRAY_SIZE(kPatchData), (void*)0x00dbdf60, gContext.materias.getData(), offsetof(MateriaData, data));
+    srPatchAddresses((void**)kPatchData1, ARRAY_SIZE(kPatchData1), (void*)0x00dbdf60, gContext.materias.getData(), offsetof(MateriaData, data) + 1);
 }
 
 void initializeAuxMateriaRegistry() {
     for (auto materiaIdx = 0; materiaIdx < KERNEL_MATERIA_COUNT; ++materiaIdx) {
         auto name = std::string(BASE_PREFIX) + std::to_string(materiaIdx);
-        auto& kernelMateria = gContext.materias.get_element(name);
+        auto& kernelMateria = gContext.materias.getElement(name);
 
         ActorStatBoosts boosts = ActorStatBoosts();
         populateEquipEffects(kernelMateria, boosts);
         AuxMateriaData auxWeapon = { boosts };
-        gContext.auxMaterias.add_element(name, auxWeapon);
+        gContext.auxMaterias.addElement(name, auxWeapon);
     }
 }
 
@@ -192,22 +192,22 @@ SISTERRAY_API void init_materia(SrKernelStream* stream) {
     gContext.materias = SrMateriaRegistry(stream);
     gContext.auxMaterias = SrAuxMateriaRegistry();
     void initializeAuxMateriaRegistry();
-    srLogWrite("kernel.bin: Loaded %lu Materias", (unsigned long)gContext.materias.resource_count());
+    srLogWrite("kernel.bin: Loaded %lu Materias", (unsigned long)gContext.materias.resourceCount());
     patch_materia();
 }
 
 u8 getMateriaTopType(u16 materiaID) {
-    return gContext.materias.get_resource(materiaID).type & 0x0F;
+    return gContext.materias.getResource(materiaID).type & 0x0F;
 }
 
 u8 getMateriaSubType(u16 materiaID) {
-    return (gContext.materias.get_resource(materiaID).type & 0xF0) >> 4;
+    return (gContext.materias.getResource(materiaID).type & 0xF0) >> 4;
 }
 
 u32 getMateriaColorType(u16 materiaID) {
     u8* greaterTypeArray = (u8*)(0x91ABF8);
     u8* materiaAssetType = (u8*)(0x91ABF0);
-    auto materiaType = materiaAssetType[greaterTypeArray[gContext.materias.get_resource(materiaID).type & 0xF]];
+    auto materiaType = materiaAssetType[greaterTypeArray[gContext.materias.getResource(materiaID).type & 0xF]];
     return materiaType;
 }
 
@@ -216,7 +216,7 @@ u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr) {
         *maxLevelPtr = 0;
         return 0;
     }
-    auto levels = gContext.materias.get_resource(materia.item_id).apLevel;
+    auto levels = gContext.materias.getResource(materia.item_id).apLevel;
 
     u8 level = 1;
     u8 maxLevel = 1;

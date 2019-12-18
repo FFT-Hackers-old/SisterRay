@@ -9,14 +9,14 @@ SrMateriaInventory::SrMateriaInventory(i16 allocation_size) : SrResourceRegistry
                 i,
                 17350
             };
-            add_resource(entry);
+            addResource(entry);
         }
         else {
             MateriaInventoryEntry entry = {
                 0xFFFF,
                 0
             };
-            add_resource(entry);
+            addResource(entry);
         }
     }
 }
@@ -27,7 +27,7 @@ void SrMateriaInventory::insertIntoMateriaInventory(const MateriaInventoryEntry&
     for (auto it = begin(_resource_registry); it != end(_resource_registry); ++it) {
         if ((*it).item_id == 0xFFFF) {
             inventoryIndex = distance(_resource_registry.begin(), it);
-            update_resource(inventoryIndex, entry);
+            updateResource(inventoryIndex, entry);
 
             if (getMateriaColorType(entry.item_id) == 0xA) // if Summon Materia
                 *enabledSpellTypeMask = *enabledSpellTypeMask | 1u; //enable summons on magic menu
@@ -53,5 +53,5 @@ void SrMateriaInventory::sortInventory() {
 
 SISTERRAY_API void initMateriaInventory() {
     gContext.materiaInventory = std::make_unique<SrMateriaInventory>(MATERIA_INVENTORY_SIZE);
-    srLogWrite("sister ray: inventory initialized with capacity: %lu", (unsigned long)gContext.inventory->current_capacity());
+    srLogWrite("sister ray: inventory initialized with capacity: %lu", (unsigned long)gContext.inventory->currentCapacity());
 }

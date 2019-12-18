@@ -85,7 +85,7 @@ static void srLoadKernel2Bin(void) {
         memcpy((char*)&offsetTable, buffer + segStart, 2 * entry.count);
         for (int i = 0; i < entry.count; ++i) {
             srLogWrite("loading kernel2 string: %s", EncodedString(buffer + segStart + offsetTable[i]).str());
-            entry.registry->add_resource(EncodedString(buffer + segStart + offsetTable[i]));
+            entry.registry->addResource(EncodedString(buffer + segStart + offsetTable[i]));
         }
         segBase = segStart + segLen;
     }
@@ -118,7 +118,7 @@ PFNRUNANIMSCRIPT* oldRunAnimationScript;
 static void Init(void) {
     MessageBoxA(NULL, "Sister Ray drawing power...", "SisterRay", 0);
     initLog();
-    srInitLua();
+    //srInitLua();
     initFunctionRegistry();
     initInventory();
     initBattleInventory();
@@ -126,7 +126,6 @@ static void Init(void) {
     initGameStrings();
     srLoadKernel2Bin();
     srLoadKernelBin();
-    initOnUseItemDataRegistry();
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();
     testFillInventory();
@@ -171,7 +170,7 @@ static void Init(void) {
     srand((unsigned int)time(nullptr));
 
     /* Launch the lua console */
-    srInitLuaConsole();
+    //srInitLuaConsole();
 }
 
 SISTERRAY_API __declspec(dllexport) void rayInit() {

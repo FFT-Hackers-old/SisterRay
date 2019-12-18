@@ -3,7 +3,7 @@
 #include "../impl.h"
 
 SISTERRAY_API u8 setupBattleInventory() {
-    i32 inventorySize = gContext.inventory->current_capacity();
+    i32 inventorySize = gContext.inventory->currentCapacity();
     u16 itemID;
     u8 quantity;
     u8 targetFlags;
@@ -11,10 +11,10 @@ SISTERRAY_API u8 setupBattleInventory() {
 
     u16 totalItemsCount = 0;
     for (i32 inventory_index = 0; inventory_index < inventorySize; inventory_index++) {
-        itemID = gContext.inventory->get_resource(inventory_index).item_id;
-        quantity = gContext.inventory->get_resource(inventory_index).quantity;
-        targetFlags = get_target_flags(itemID);
-        restrictionMask = get_restriction_mask(itemID);
+        itemID = gContext.inventory->getResource(inventory_index).item_id;
+        quantity = gContext.inventory->getResource(inventory_index).quantity;
+        targetFlags = getTargetFlags(itemID);
+        restrictionMask = getRestrictionMask(itemID);
 
         if (itemID != 0xFFFF) {
             BattleInventoryEntry entry = {
@@ -24,7 +24,7 @@ SISTERRAY_API u8 setupBattleInventory() {
                 (u8)restrictionMask,
                 0
             };
-            gContext.battleInventory->update_resource(inventory_index, entry);
+            gContext.battleInventory->updateResource(inventory_index, entry);
             totalItemsCount++;
         }
     }

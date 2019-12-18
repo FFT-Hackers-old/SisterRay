@@ -4,8 +4,8 @@
 
 /*Return True if the character is usable by the character attempting to use it*/
 bool isUsableInBattle(u16 itemID) {
-    auto restrictionMask = get_restriction_mask(itemID);
-    auto characterMask = gContext.itemOnUseData.get_resource(itemID).characterRestrictionMask;
+    auto restrictionMask = getRestrictionMask(itemID);
+    auto characterMask = gContext.items.getResource(itemID).auxData.characterRestrictionMask;
     bool itemIsUsuable = (bool)(!(restrictionMask & 2));
 
     auto party_member_index = (*BATTLE_ACTIVE_ACTOR_ID);
@@ -18,8 +18,8 @@ bool isUsableInBattle(u16 itemID) {
 }
 
 bool isThrowable(u16 itemID) {
-    auto restrictionMask = get_restriction_mask(itemID);
-    auto characterMask = gContext.itemOnUseData.get_resource(itemID).characterRestrictionMask;
+    auto restrictionMask = getRestrictionMask(itemID);
+    auto characterMask = gContext.items.getResource(itemID).auxData.characterRestrictionMask;
     bool itemIsThrowable = (bool)(!(restrictionMask & 8)); // Use new throwable variable
 
     auto party_member_index = (*BATTLE_ACTIVE_ACTOR_ID);
@@ -48,11 +48,11 @@ bool didItemUseSucceed(u16 itemID) {
 
 //Set the restore type global used by executing healing actions
 u16 getRestoreTypeGlobal(i16 itemID) {
-    auto itemType = gContext.itemTypeData.get_resource(itemID).item_type;
+    auto itemType = gContext.itemTypeData.getResource(itemID).itemType;
     if (itemType != 0) {
         return 0xFFFF;
     }
-    return gContext.items.get_resource(itemID).resource_conditions;
+    return gContext.items.getResource(itemID).gameItem.restoreTypes;
 }
 
 // states should always be 0 (inactive) 1 (prepare on next update) 2 (active) or 3 (executing)

@@ -14,7 +14,7 @@ SrBattleInventory::SrBattleInventory(i16 allocation_size) : SrInventory<BattleIn
             0,
             0
         };
-        add_resource(entry);
+        addResource(entry);
     }
 }
 
@@ -24,5 +24,5 @@ void SrBattleInventory::setSlotsInUse(u16 slotsInUse) {
 
 SISTERRAY_API void initBattleInventory() {
     gContext.battleInventory = std::make_unique<SrBattleInventory>(BATTLE_INVENTORY_SIZE);
-    srLogWrite("sister ray: in_battle inventory initialized with capacity: %lu", (unsigned long)gContext.battleInventory->current_capacity());
+    srLogWrite("sister ray: in_battle inventory initialized with capacity: %lu", (unsigned long)gContext.battleInventory->currentCapacity());
 }

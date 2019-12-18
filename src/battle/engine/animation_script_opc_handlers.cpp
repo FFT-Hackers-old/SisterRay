@@ -693,10 +693,9 @@ OpCodeControlSequence OpCodeBE(AnimScriptEvent* srEvent) {
     u8* byte_BF23BC = (u8*)0xBF23BC;
     u8* byte_BFCDE0 = (u8*)0xBFCDE0;
     *byte_BF23BC = 1;                    // multi-hit damage queue
-    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);;
-    if (UNK_ACTOR_STRUCT_ARRAY[getActionActorIdx()].characterID != ACT_IDX_TIFA
-        || *off_C06008 != 8
-        || !(UNK_ACTOR_STRUCT_ARRAY[*byte_BFCDE0].field_8 & 0x800)) {
+    *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    bool isNotTifa = UNK_ACTOR_STRUCT_ARRAY[getActionActorIdx()].characterID != ACT_IDX_TIFA;
+    if (isNotTifa || *off_C06008 != 8 || !(UNK_ACTOR_STRUCT_ARRAY[*byte_BFCDE0].field_8 & 0x800)) {
         pushDelayedDamageDisplayEffect(getAnimatingActionTargetMask(), *off_C06008, 1);
     }
     return RUN_NEXT;
@@ -1315,7 +1314,7 @@ OpCodeControlSequence OpCodeEB(AnimScriptEvent* srEvent) {
         srEvent->scriptContext->isScriptActive = 0;
         return RUN_NEXT;
     }
-    srLogWrite("Dispatching actions for actor: d, command %d, actionId: %d",
+    srLogWrite("IN OPCODE EB: Dispatching actions for actor: %d, command %d, actionId: %d",
         srEvent->actorID,
         modelState.commandID,
         modelState74.actionIdx
@@ -1335,7 +1334,7 @@ OpCodeControlSequence OpCodeEC(AnimScriptEvent* srEvent) {
         *byte_9ADF04 = 1;
         return RUN_NEXT;
     }
-    srLogWrite("Dispatching actions for actor: d, command %d, actionId: %d",
+    srLogWrite("IN OPCODE EC: Dispatching actions for actor: %d, command %d, actionId: %d",
         srEvent->actorID,
         modelState.commandID,
         modelState74.actionIdx

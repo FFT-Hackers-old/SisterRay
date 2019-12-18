@@ -13,8 +13,7 @@ typedef struct {
     u16 attackID;
     EncodedString attackName;
     EncodedString attackDescription;
-    SrAttackType attackType; //Either Magic, Summon, Enemy Skill, Limit, Enemy Attack
-    SrAttackType animationType;
+    SrAnimationType animationType;
     u16 animScriptIndex; //Overrides the command ID if set, -1 treated as null
     u8 useOverride;
     SpellEffect overrideEffect;

@@ -22,17 +22,17 @@ void handleSelectItem(const MenuInputEvent* event) {
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (itemCursorChoice.maxColumnBound * (itemCursorChoice.relativeRowIndex + itemCursorChoice.baseRowIndex)) + itemCursorChoice.relativeColumnIndex;
-    auto itemID = gContext.battleInventory->get_resource(flatIndex).item_id;
+    auto itemID = gContext.battleInventory->getResource(flatIndex).item_id;
     bool didSucceed = didItemUseSucceed(itemID);
     srLogWrite("ITEM USE SUCCEED bool: %d", didSucceed);
     if (didSucceed) {
         playMenuSound(1);
         setChosenActionID(itemID);
         setChosenActionMenuIndex(flatIndex);
-        setTargetingFromFlags(gContext.battleInventory->get_resource(flatIndex).targetFlags, false);
+        setTargetingFromFlags(gContext.battleInventory->getResource(flatIndex).targetFlags, false);
         setMenuState(event->menu, BATTLE_TARGETING_STATE);
         *PREVIOUS_BATTLE_MENU_STATE = BATTLE_ITEM_STATE;
-        auto restoreType = gContext.items.get_resource(itemID).resource_conditions;
+        auto restoreType = gContext.items.getResource(itemID).gameItem.restoreTypes;
         /*restoreTypeGlobal = restoreType;
         if (*restoreTypeGlobal != 0xFFFF)
             initHandlerCursorState(-1, -1, 21);*/
@@ -53,7 +53,7 @@ void handleExitItem(const MenuInputEvent* event) {
         return;
 
     if (*W_COMMAND_ENABLED == 2 && (*ISSUED_COMMAND_ID == CMD_W_ITEM)) {
-        const BattleInventoryEntry& inventoryEntry = gContext.battleInventory->get_resource(*W_FIRST_ACTION_INDEX);
+        const BattleInventoryEntry& inventoryEntry = gContext.battleInventory->getResource(*W_FIRST_ACTION_INDEX);
         if (inventoryEntry.item_id == 0xFFFF) {
             gContext.battleInventory->addResourceAtIndex(*W_FIRST_ACTION_INDEX, *W_FIRST_ACTION_USED);
         }

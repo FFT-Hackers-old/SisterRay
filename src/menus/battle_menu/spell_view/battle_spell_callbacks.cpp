@@ -9,7 +9,7 @@ using namespace BattleMenuWidgetNames;
 void initializeBattleSpellMenu() {
     CursorContext spellSelection = { 0, 0, 3, 3, 0, 0, 3, MAGIC_COUNT / 3, 0, 0, 0, 0, 0, 1 };
     Cursor spellChoiceCursor = { spellSelection, 8, 364, 32, 156 };
-    auto battleMenu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    auto battleMenu = gContext.menuWidgets.getElement(BATTLE_MENU_NAME);
     setStateCursor(battleMenu, BATTLE_MAGIC_STATE, spellChoiceCursor, 0);
     setStateCursor(battleMenu, BATTLE_MAGIC_STATE, spellChoiceCursor, 1);
     setStateCursor(battleMenu, BATTLE_MAGIC_STATE, spellChoiceCursor, 2);

@@ -14,7 +14,7 @@ void handleSelectSpell(const MenuInputEvent* event) {
         return;
 
     auto magicChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
-    auto& enabledSpells = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorMagics;
+    auto& enabledSpells = gContext.party.getElement(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorMagics;
     u16* restoreTypeGlobal = (u16*)(0xDC2088);
 
     *ACCEPTING_BATTLE_INPUT = 1;
@@ -30,7 +30,7 @@ void handleSelectSpell(const MenuInputEvent* event) {
     setTargetingFromFlags(enabledSpells[flatIndex].targetData, false);
     setMenuState(event->menu, BATTLE_TARGETING_STATE);
     *PREVIOUS_BATTLE_MENU_STATE = BATTLE_MAGIC_STATE;
-    //auto restoreType = gContext.attacks.get_element(assemblekey(2, enabledSpells[flatIndex].magicIndex)).attackData.restoreTypes;
+    //auto restoreType = gContext.attacks.getElement(assemblekey(2, enabledSpells[flatIndex].magicIndex)).attackData.restoreTypes;
     //*restoreTypeGlobal = restoreType;
     // if (*restoreTypeGlobal != 0xFFFF)
     //    initHandlerCursorState(-1, -1, 21); //Open up the "restore view" if it's defined

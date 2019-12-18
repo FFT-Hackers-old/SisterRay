@@ -86,10 +86,10 @@ u16 getMateriaID(u8 characterID, u8 slot, u8 gearType) {
     auto name = getCharacterName(characterID);
     switch (gearType) {
         case 0:
-            materiaID = gContext.characters.get_element(name).wpnMaterias[slot].item_id;
+            materiaID = gContext.characters.getElement(name).wpnMaterias[slot].item_id;
             break;
         case 1:
-            materiaID = gContext.characters.get_element(name).wpnMaterias[slot].item_id;
+            materiaID = gContext.characters.getElement(name).wpnMaterias[slot].item_id;
             break;
         default: {
             break;

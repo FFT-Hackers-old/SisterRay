@@ -10,7 +10,7 @@ void initializeBattleESkillMenu() {
     CursorContext eSkillContext = { 0, 0, 2, 3, 0, 0, 2, ESKILL_COUNT/2, 0, 0, 0, 0, 0, 1 };
     Cursor eSkillChoiceCursor = { eSkillContext, 8, 364, 32, 156 };
 
-    auto battleMenu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    auto battleMenu = gContext.menuWidgets.getElement(BATTLE_MENU_NAME);
     setStateCursor(battleMenu, BATTLE_ESKILL_STATE, eSkillChoiceCursor, 0);
     setStateCursor(battleMenu, BATTLE_ESKILL_STATE, eSkillChoiceCursor, 1);
     setStateCursor(battleMenu, BATTLE_ESKILL_STATE, eSkillChoiceCursor, 2);

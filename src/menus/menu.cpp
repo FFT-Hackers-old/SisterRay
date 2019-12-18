@@ -3,7 +3,7 @@
 #include "../impl.h"
 
 void MenuRegistry::initializeMenu(std::string menuName, const std::string widgetName) {
-    auto menu = get_element(menuName);
+    auto menu = getElement(menuName);
     auto menuWidget = createWidget(widgetName);
     menu->menuWidget = menuWidget;
     MenuInitEvent event = { menu };
@@ -18,7 +18,7 @@ MenuRegistry::~MenuRegistry() {
 }
 
 SISTERRAY_API Menu* getMenu(char* menuName) {
-return gContext.menuWidgets.get_element(std::string(menuName));
+return gContext.menuWidgets.getElement(std::string(menuName));
 }
 
 /* create menu with default cursors */

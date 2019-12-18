@@ -151,7 +151,7 @@ typedef struct {
     u16 restingYRotation; //0x160
     u16 restingZRotation;
     u16 field_164;
-    ModelPosition restingPosition; //0x166
+    R3PointWord restingPosition; //0x166
     u32 field_16C;
     u32* field_170;
     u32 field_174;
@@ -180,12 +180,10 @@ typedef struct {
     u16 field_26;
     u16 field_28;
     u16 field_2A;
-    u8 field_2C;
-    u8 field_2D;
+    u16 field_2C;
     u16 field_2E;
     u16 field_30;
     u8 modelDataIndex; //0x032
-    u8 field_32;
     u8 field_33;
     u8 field_34;
     u8 field_35;
@@ -195,6 +193,7 @@ typedef struct {
     u16 field_3A;
     u16 field_3C;
     u16 actionIdx;
+    u8 field_40;
     u8 field_41;
     u8 field_42;
     u8 field_43;

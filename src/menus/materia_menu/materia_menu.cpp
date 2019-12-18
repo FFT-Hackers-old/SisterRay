@@ -6,7 +6,7 @@
 using namespace MateriaWidgetNames;
 
 SISTERRAY_API void materiaMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menu = gContext.menuWidgets.get_element(MATERIA_MENU_NAME);
+    Menu* menu = gContext.menuWidgets.getElement(MATERIA_MENU_NAME);
     runMenu(menu, updateStateMask);
     displayMateriaCursorStates(menu, getMenuState(menu), updateStateMask);
 }

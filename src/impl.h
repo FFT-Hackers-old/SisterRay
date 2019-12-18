@@ -56,7 +56,6 @@ typedef struct {
 
     SrItemTypeRegistry                  itemTypeData;
     SrItemRegistry                      items;
-    SrOnUseItemDataRegistry             itemOnUseData;
     srOnUseCallbackRegistry             onUseHandlers; /*Registry of function pointers for using items*/
     srNoTargetCallbackRegistry          untargeted_handlers;
 

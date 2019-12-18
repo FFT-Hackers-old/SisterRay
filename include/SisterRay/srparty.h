@@ -123,7 +123,7 @@ typedef struct {
     u8 field_1;
     u8 field_2;
     u8 field_3;
-    u8 field_4;
+    u8 deathType;
     u8 field_5;
     u16 field_6;
     u32 field_8;

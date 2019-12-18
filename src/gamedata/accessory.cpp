@@ -10,11 +10,11 @@
 SISTERRAY_API SrAccessoryData getSrAccessory(u16 modItemID, const char* modName) {
     SrAccessoryData srAccessory = SrAccessoryData();
     auto name = std::string(modName) + std::to_string(modItemID);
-    srAccessory.baseData = gContext.accessories.get_element(name);
-    srAccessory.auxData = gContext.auxAccessories.get_element(name);
+    srAccessory.baseData = gContext.accessories.getElement(name);
+    srAccessory.auxData = gContext.auxAccessories.getElement(name);
 
-    ItemTypeData typeData = gContext.itemTypeData.get_element(name);
-    auto relativeIndex = typeData.type_relative_id;
+    ItemTypeData typeData = gContext.itemTypeData.getElement(name);
+    auto relativeIndex = typeData.typeRelativeID;
     srAccessory.accessoryName = gContext.gameStrings.accessory_names.get_string(relativeIndex);
     srAccessory.accessoryDesc = gContext.gameStrings.accessory_descriptions.get_string(relativeIndex);
 
@@ -23,36 +23,36 @@ SISTERRAY_API SrAccessoryData getSrAccessory(u16 modItemID, const char* modName)
 
 SISTERRAY_API void setSrAccessoryData(SrAccessoryData data, u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
-    gContext.accessories.update_element(name, data.baseData);
-    gContext.auxAccessories.update_element(name, data.auxData);
+    gContext.accessories.updateElement(name, data.baseData);
+    gContext.auxAccessories.updateElement(name, data.auxData);
 
-    ItemTypeData typeData = gContext.itemTypeData.get_element(name);
-    auto relativeIndex = typeData.type_relative_id;
-    gContext.gameStrings.accessory_names.update_resource(relativeIndex, EncodedString::from_unicode(data.accessoryName));
-    gContext.gameStrings.accessory_descriptions.update_resource(relativeIndex, EncodedString::from_unicode(data.accessoryDesc));
+    ItemTypeData typeData = gContext.itemTypeData.getElement(name);
+    auto relativeIndex = typeData.typeRelativeID;
+    gContext.gameStrings.accessory_names.updateResource(relativeIndex, EncodedString::from_unicode(data.accessoryName));
+    gContext.gameStrings.accessory_descriptions.updateResource(relativeIndex, EncodedString::from_unicode(data.accessoryDesc));
 }
 
 SISTERRAY_API void addSrAccessory(SrAccessoryData data, u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
-    gContext.accessories.add_element(name, data.baseData);
-    gContext.auxAccessories.add_element(name, data.auxData);
-    gContext.itemTypeData.append_item(name, ITYPE_ACC, ICONTYPE_ACC);
+    gContext.accessories.addElement(name, data.baseData);
+    gContext.auxAccessories.addElement(name, data.auxData);
+    gContext.itemTypeData.appendItem(name, ITYPE_ACC, ICONTYPE_ACC);
 
-    gContext.gameStrings.accessory_names.add_resource(EncodedString::from_unicode(data.accessoryName));
-    gContext.gameStrings.accessory_descriptions.add_resource(EncodedString::from_unicode(data.accessoryDesc));
+    gContext.gameStrings.accessory_names.addResource(EncodedString::from_unicode(data.accessoryName));
+    gContext.gameStrings.accessory_descriptions.addResource(EncodedString::from_unicode(data.accessoryDesc));
 }
 
 void initializeAuxAccessoryRegistry() {
     for (auto i = 0; i < KERNEL_ACCESSORY_COUNT; ++i) {
         auto name = std::string(BASE_PREFIX) + std::to_string(i);
-        auto& kernelAccessory = gContext.accessories.get_element(name);
+        auto& kernelAccessory = gContext.accessories.getElement(name);
 
         ActorStatBoosts boosts = ActorStatBoosts();
         auto& stats = kernelAccessory.stats_to_boost;
         auto& amts = kernelAccessory.stat_boost_amounts;
         populatekernelStatBoosts(stats, amts, boosts, 2);
         AuxAccessoryData auxAccessory = { boosts };
-        gContext.auxAccessories.add_element(name, auxAccessory);
+        gContext.auxAccessories.addElement(name, auxAccessory);
     }
 }
 
@@ -60,6 +60,6 @@ SISTERRAY_API void init_accessory(SrKernelStream* stream) {
     gContext.accessories = SrAccessoryRegistry(stream);
     gContext.auxAccessories = SrAuxAccessoryRegistry();
     initializeAuxAccessoryRegistry();
-    gContext.itemTypeData.initialize_augmented_data((u8)3, gContext.accessories.resource_count());
-    srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.resource_count());
+    gContext.itemTypeData.initializeAugmentedData((u8)3, gContext.accessories.resourceCount());
+    srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.resourceCount());
 }

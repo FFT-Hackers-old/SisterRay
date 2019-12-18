@@ -28,7 +28,7 @@ void initializeMateriaMenu() {
     /*Arrange cursor*/
     CursorContext arrangeViewContext = { 0, 0, 1, 4, 0, 0, 1, 4, 0, 0, 0, 0, 0, 1 };
     Cursor arrangeViewCursor = { arrangeViewContext, 0x2F, 0xD9, 26, 0 };
-    CursorContext trashViewContext = { 0, 0, 1, 10, 0, 0, 1, gContext.materiaInventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
+    CursorContext trashViewContext = { 0, 0, 1, 10, 0, 0, 1, gContext.materiaInventory->currentCapacity(), 0, 0, 0, 0, 0, 1 };
     Cursor trashViewCursor = { trashViewContext, 362, 214, 26, 0 };
     CursorContext destroyMateriaContext = { 0, 1, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0 };
     Cursor destroyMateriaCursor = { destroyMateriaContext, 0x92 ,0x67, 26, 0 };
@@ -39,7 +39,7 @@ void initializeMateriaMenu() {
         arrangeViewCursor, arrangeViewCursor
     };
     auto materiaMenu = createMenu(INIT_MATERIA_MENU, DRAW_MATERIA_MENU, MATERIA_MENU_CONTEXT, 12, &(cursorArray[0]));
-    gContext.menuWidgets.add_element(MATERIA_MENU_NAME, materiaMenu);
+    gContext.menuWidgets.addElement(MATERIA_MENU_NAME, materiaMenu);
     gContext.menuWidgets.initializeMenu(MATERIA_MENU_NAME, MATERIA_WIDGET_NAME);
 }
 

@@ -300,10 +300,10 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u8 characterID; //0x00
-    u8 unkByte1;    //0x01
-    u8 unkByte2;    //0x02
-    u8 unkByte3;    //0x03
-    u8 unkByte4;    //0x04
+    u8 field_1;    //0x01
+    u8 field_2;    //0x02
+    u8 field_3;    //0x03
+    u8 deathType;    //0x04
     u8 align;       //0x05
     u16 unkWrd1;    //0x06
     u32 unkDWrd1;   //0x08

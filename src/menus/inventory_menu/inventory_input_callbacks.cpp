@@ -38,15 +38,15 @@ void selectItemHandler(const MenuInputEvent* event) {
 
     auto itemChoice = getStateCursor(event->menu, 1)->context;
 
-    if (gContext.inventory->get_resource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).item_id == 0xFFFF) {
+    if (gContext.inventory->getResource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).item_id == 0xFFFF) {
         playMenuSound(3);
     }
     else {
-        auto itemID = gContext.inventory->get_resource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).item_id;
+        auto itemID = gContext.inventory->getResource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).item_id;
         if (usableInInventoryMenu(itemID)) {
             playMenuSound(3);
         }
-        else if (!(gContext.itemOnUseData.get_resource(itemID).requires_target)) {
+        else if (!(gContext.items.getResource(itemID).auxData.requires_target)) {
             gContext.untargeted_handlers.get_handler(itemID)();
             
         }
@@ -67,9 +67,9 @@ void executeSwapHandler(const MenuInputEvent* event) {
         if (*ITEM_TO_SWAP_SELECTED == 1)
         {
             playMenuSound(1);
-            auto temp_entry = gContext.inventory->get_resource(*TEMP_ABSOLUTE_CURSOR_INDEX);
-            gContext.inventory->update_resource(*TEMP_ABSOLUTE_CURSOR_INDEX, gContext.inventory->get_resource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex));
-            gContext.inventory->update_resource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex, temp_entry);
+            auto temp_entry = gContext.inventory->getResource(*TEMP_ABSOLUTE_CURSOR_INDEX);
+            gContext.inventory->updateResource(*TEMP_ABSOLUTE_CURSOR_INDEX, gContext.inventory->getResource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex));
+            gContext.inventory->updateResource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex, temp_entry);
             *ITEM_TO_SWAP_SELECTED = 0;
         }
     }
@@ -87,11 +87,11 @@ void useTargetedItemHandler(const MenuInputEvent* event) {
 
     auto itemChoice = getStateCursor(event->menu, 1)->context;
     u16 inventory_index = itemChoice.baseRowIndex + itemChoice.relativeRowIndex;
-    auto itemID = gContext.inventory->get_resource(inventory_index).item_id;
+    auto itemID = gContext.inventory->getResource(inventory_index).item_id;
     u32 partyMemberIndex = getStateCursor(event->menu, 2)->context.relativeRowIndex;
 
     u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[partyMemberIndex];
-    if (character_ID == 0xFF && !(gContext.itemOnUseData.get_resource(itemID).target_all)) {
+    if (character_ID == 0xFF && !(gContext.items.getResource(itemID).auxData.target_all)) {
         playMenuSound(3);
         return;
     }
@@ -105,7 +105,7 @@ void arrangeItemsHandler(const MenuInputEvent* event) {
     playMenuSound(1);
     auto arrangeChoice = getStateCursor(event->menu, 4)->context;
     if (arrangeChoice.relativeRowIndex) {
-        sort_inventory(arrangeChoice.relativeRowIndex); //Arranging the inventory, this method will have to be rewritten
+        sortInventory(arrangeChoice.relativeRowIndex); //Arranging the inventory, this method will have to be rewritten
         setMenuState(event->menu, 0);
     }
     else {
@@ -175,7 +175,7 @@ void handleUsableItemEffects(u16 item_ID, u16 inventory_index, u32 partyMemberIn
     itemWasUsed = gContext.onUseHandlers.get_handler(item_ID)((u16)partyMemberIndex, item_ID, inventory_index);
     if (itemWasUsed) {
         gContext.inventory->decrementInventoryEntry(inventory_index, 1);
-        if (gContext.inventory->get_resource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
+        if (gContext.inventory->getResource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
             setMenuState(menu, 1);
     }
 }

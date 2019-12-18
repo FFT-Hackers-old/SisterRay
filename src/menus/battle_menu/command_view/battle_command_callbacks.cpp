@@ -9,7 +9,7 @@ using namespace BattleMenuWidgetNames;
 void initializeBattleCommandMenu() {
     CursorContext commandSelection = { 0, 0, 4, 4, 0, 0, 4, 4, 0, 0, 1, 1, 0, 0 };
     Cursor cmdChoiceCursor = { commandSelection, 0x90 - 36, 0x150 + 6, 24, 88 };
-    auto battleMenu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    auto battleMenu = gContext.menuWidgets.getElement(BATTLE_MENU_NAME);
     setStateCursor(battleMenu, BATTLE_CMD_STATE, cmdChoiceCursor, 0);
     setStateCursor(battleMenu, BATTLE_CMD_STATE, cmdChoiceCursor, 1);
     setStateCursor(battleMenu, BATTLE_CMD_STATE, cmdChoiceCursor, 2);

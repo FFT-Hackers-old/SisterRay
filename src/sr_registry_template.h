@@ -19,7 +19,7 @@ public:
             read_size = srKernelStreamRead(stream, &object, sizeof(object));
             if (read_size != sizeof(object))
                 break;
-            add_resource(object);
+            addResource(object);
         }
     }
 
@@ -32,46 +32,46 @@ public:
     SrResourceRegistry() {}
     ~SrResourceRegistry() {}
 
-    const T& get_resource(u32 index) const {
-        if (index >= resource_count()) {
+    const T& getResource(u32 index) const {
+        if (index >= resourceCount()) {
             return _null;
         }
         return _resource_registry[index];
     }
 
-    T& get_resource(u32 index) {
-        if (index >= resource_count()) {
+    T& getResource(u32 index) {
+        if (index >= resourceCount()) {
             return _null;
         }
         return _resource_registry[index];
     }
 
-    void add_resource(const T& resource) {
+    void addResource(const T& resource) {
         _resource_registry.push_back(resource);
     }
 
-    void update_resource(u32 index, const T& resource) {
-        if (index < resource_count()) {
+    void updateResource(u32 index, const T& resource) {
+        if (index < resourceCount()) {
             _resource_registry[index] = resource;
         }
     }
 
-    void set_resource(u32 index, const T& resource) {
+    void setResource(u32 index, const T& resource) {
         if (index > _resource_registry.size()) {
             _resource_registry.resize(index + 1);
         }
         _resource_registry[index] = resource;
     }
 
-    size_t resource_count() {
+    size_t resourceCount() {
         return _resource_registry.size();
     }
 
-    size_t current_capacity() {
+    size_t currentCapacity() {
         return _resource_registry.capacity();
     }
 
-    T* get_data() {
+    T* getData() {
         return _resource_registry.data();
     }
 

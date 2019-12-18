@@ -15,5 +15,6 @@ AnimationEvent* getAnimationEventTop();
 
 i64 srCalculateXVectorComponent(i32 distance);
 i64 srCalculateZVectorComponent(i32 distance);
+void srComputeEnemyPartyCenter(u16 targetMask, R3PointWord* ret);
 
 #endif // !ANIMATION_PLAYER_H

@@ -1,5 +1,6 @@
 #include "action_spell_effects.h"
 #include "../../impl.h"
+#include "../battle_utils.h"
 
 #define gameBeatRushEffect ((SRPFNSPELLEFFECTCALLBACK)0x4E1627)
 #define gameSomersaultEffect ((SRPFNSPELLEFFECTCALLBACK)0x4E163E)
@@ -14,6 +15,11 @@ typedef void(*SRPFNLOADANIMATIONEFFECT)(SRPFNSPELLLOADERCALLBACK);
 
 void srLoadAnimationEffect(SRPFNSPELLLOADERCALLBACK loader) {
     gameLoadAnimationEffect(loader);
+}
+
+u8 isEffectLoading() {
+    u8* G_EFFECT_LOADING = (u8*)0xBF2A30;
+    return *G_EFFECT_LOADING;
 }
 
 void srBeatRushSpellEffect(u32 currentTargetMask, u32 actorID) {
@@ -44,7 +50,7 @@ void srFinalHeavenSpellEffect(u32 currentTargetMask, u32 actorID) {
     gameFinalHeavenEffect(currentTargetMask, actorID);
 }
 
-SRPFNSPELLLOADERCALLBACK srGetLoaderCallback(u8 dispatchCommandIdx, u8 relativeSpellEffectID) {
+SRPFNSPELLLOADERCALLBACK srGetLoaderCallback(SrAnimationType animationType, u8 relativeSpellEffectID) {
     SRPFNSPELLLOADERCALLBACK* gameLoaders = (SRPFNSPELLLOADERCALLBACK*)0x7C1208;
     u16* magicLoaderIdxMap = (u16*)0x7C17A0;
     u16* summonLoaderIdxMap = (u16*)0x7C1840;
@@ -54,36 +60,36 @@ SRPFNSPELLLOADERCALLBACK srGetLoaderCallback(u8 dispatchCommandIdx, u8 relativeS
     u16* enemyAttackLoaderIdxMap = (u16*)0x7C1868;
     u16* throwLoaderIdxMap = (u16*)0x7C1A48;
     u16* coinLoaderIdxMap = (u16*)0x7C157C;
-    switch (dispatchCommandIdx) {
-    case 2: {
+    switch (animationType) {
+    case MAGIC: {
         return gameLoaders[magicLoaderIdxMap[relativeSpellEffectID]];
         break;
     }
-    case 3: {
+    case SUMMON: {
         return gameLoaders[summonLoaderIdxMap[relativeSpellEffectID]];
         break;
     }
-    case 4: {
+    case ITEM: {
         return gameLoaders[itemLoaderIdxMap[relativeSpellEffectID]];
         break;
     }
-    case 7: {
+    case COIN: {
         return gameLoaders[coinLoaderIdxMap[relativeSpellEffectID]];
         break;
     }
-    case 8: {
+    case THROW: {
         return gameLoaders[throwLoaderIdxMap[relativeSpellEffectID]];
         break;
     }
-    case 13: {
+    case ENEMY_SKILL: {
         return gameLoaders[eskillLoaderIdxMap[relativeSpellEffectID]];
         break;
     }
-    case 20: {
+    case LIMIT: {
         return gameLoaders[limitLoaderIdxMap[relativeSpellEffectID]];
         break;
     }
-    case 32: {
+    case ENEMY_ATTACK: {
         return gameLoaders[enemyAttackLoaderIdxMap[relativeSpellEffectID]];
         break;
     }
@@ -98,11 +104,10 @@ void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     u8* byte_9ADEFC = (u8*)0x9ADEFC;
     u8* byte_9ADF00 = (u8*)0x9ADF00;
     u32* dword_7C10D8 = (u32*)0x7C10D8;
-    u8* G_TARGETING_ALL = (u8*)0xBF2E1C;
     if (*dword_7C10D8) {
         *byte_9ADF00 = actorID;
         *byte_9ADEFC = 0;
-        u8 animationType = CMD_ENEMY_ACTION;
+        auto animationType = ENEMY_ATTACK;
         bool useMulti = false;
         u8 animEffectID = 0xFF;
         SpellEffect multiCallback = { nullptr, nullptr };
@@ -133,12 +138,12 @@ void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
             auto multiCallback = command.auxData.useMulti;
         }
 
-        if (animationType == 0xFF || animEffectID == 0xFF) {
+        if (animationType == NO_EFFECT || animEffectID == 0xFF) {
             srLogWrite("Animation type or animEffectID are 0xFF, and no override was specified, skipping animation load");
             return;
         }
 
-        if (useMulti && *G_TARGETING_ALL) {
+        if (useMulti && getTargetAllActive()) {
             auto loadCallback = multiCallback.loadCallback;
             srLoadAnimationEffect(loadCallback);
             return;
@@ -149,7 +154,7 @@ void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     *byte_9ADEFC = 0;
 }
 
-SRPFNSPELLEFFECTCALLBACK srGetDispatchCallback(u8 animationType, u8 animEffectID) {
+SRPFNSPELLEFFECTCALLBACK srGetDispatchCallback(SrAnimationType animationType, u8 animEffectID) {
     SRPFNSPELLEFFECTCALLBACK* magicEffectCallbackTable = (SRPFNSPELLEFFECTCALLBACK*)0x8FE4B0;
     SRPFNSPELLEFFECTCALLBACK* summonLoaderIdxMap = (SRPFNSPELLEFFECTCALLBACK*)0x7C1840;
     SRPFNSPELLEFFECTCALLBACK* itemEffectCallbackTable = (SRPFNSPELLEFFECTCALLBACK*)0x8FE398;
@@ -158,37 +163,38 @@ SRPFNSPELLEFFECTCALLBACK srGetDispatchCallback(u8 animationType, u8 animEffectID
     SRPFNSPELLEFFECTCALLBACK* enemyAtkEffectCallbackTable = (SRPFNSPELLEFFECTCALLBACK*)0x8FE5E8;
     SRPFNSPELLEFFECTCALLBACK* throwEffectCallbackTable = (SRPFNSPELLEFFECTCALLBACK*)0x8FE9A0;
     SRPFNSPELLEFFECTCALLBACK coinLoaderCallback = (SRPFNSPELLEFFECTCALLBACK)0x4CE3BE;
+    srLogWrite("Fetching effect with animation type %d, effect ID: %d", animationType, animEffectID);
     switch (animationType) {
-    case 2: {
+    case MAGIC: {
         return magicEffectCallbackTable[animEffectID];
         break;
     }
-    case 3: {
+    case SUMMON: {
         return summonLoaderIdxMap[animEffectID];
         break;
     }
-    case 4: {
+    case ITEM: {
         return itemEffectCallbackTable[animEffectID];
         break;
     }
-    case 7: {
+    case COIN: {
         return coinLoaderCallback;
         break;
     }
-    case 8: {
+    case THROW: {
         return throwEffectCallbackTable[animEffectID];
         break;
     }
-    case 13: {
+    case ENEMY_SKILL: {
         return eskillEffectCallbackTable[animEffectID];
         break;
 
     }
-    case 20: {
+    case LIMIT: {
         return limitEffectCallbackTable[animEffectID];
         break;
     }
-    case 32: {
+    case ENEMY_ATTACK: {
         return enemyAtkEffectCallbackTable[animEffectID];
         break;
     }
@@ -204,28 +210,26 @@ typedef void(*PFNSRSUB429322)();
 void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     u8* byte_9ADEFC = (u8*)0x9ADEFC;
     u8* byte_BF23BC = (u8*)0xBF23BC;
-    u8* G_TARGETING_ALL = (u8*)0xBF2E1C;
-    u16* targetMask = (u16*)0xBFD0F8;
     u32* dword_7C10D8 = (u32*)0x7C10D8;
     if (!*dword_7C10D8) {
         sub_429322();
     }
 
     *byte_BF23BC = 0;
-    u8 animationType = CMD_ENEMY_ACTION;
+    auto animationType = ENEMY_ATTACK;
     bool useMulti = false;
     SpellEffect multiCallback = { nullptr, nullptr };
     u8 animEffectID = 0xFF;
-
+    srLogWrite("Entering effect dispatch with actor: %d, cmdIdx: %d, actionIdx: %d", actorID, commandIdx, actionIdx);
     auto command = getCommand(commandIdx);
     if (command.auxData.hasActions) {
         auto action = getCommandAction(commandIdx, actionIdx);
         animEffectID = action.attackData.animationEffectID;
         animationType = action.animationType;
         if (action.useOverride) {
-            AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, *targetMask };
+            AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, getAnimatingActionTargetMask() };
             gContext.eventBus.dispatch(ON_DISPATCH_ANIMAMTION_EFFECT, (void*)&srEvent);
-            action.overrideEffect.dispatchCallback(*targetMask, actorID);
+            action.overrideEffect.dispatchCallback(getAnimatingActionTargetMask(), actorID);
         }
         useMulti = (action.useMulti != 0) ? true : false;
         auto multiCallback = action.multiEffect;
@@ -234,26 +238,27 @@ void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
         if (command.auxData.useOverride) {
             animEffectID = command.auxData.animationEffectID;
             animationType = command.auxData.animationType;
-            AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, *targetMask };
+            AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, getAnimatingActionTargetMask() };
             gContext.eventBus.dispatch(ON_DISPATCH_ANIMAMTION_EFFECT, (void*)&srEvent);
-            command.auxData.override.dispatchCallback(*targetMask, actorID);
+            command.auxData.override.dispatchCallback(getAnimatingActionTargetMask(), actorID);
         }
         useMulti = (command.auxData.useMulti != 0) ? true : false;
         auto multiCallback = command.auxData.spellEffectMulti;
     }
-    if (animationType == 0xFF || animEffectID == 0xFF) {
+    if (animationType == NO_EFFECT || animEffectID == 0xFF) {
         srLogWrite("Animation type or animEffectID are 0xFF, and no override was specified, skipping animation load");
         return;
     }
 
-    if (useMulti && *G_TARGETING_ALL) {
-        AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, *targetMask };
+    if (useMulti && getTargetAllActive()) {
+        AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, getAnimatingActionTargetMask() };
         gContext.eventBus.dispatch(ON_DISPATCH_ANIMAMTION_EFFECT, (void*)&srEvent);
-        multiCallback.dispatchCallback(*targetMask, actorID);
+        multiCallback.dispatchCallback(getAnimatingActionTargetMask(), actorID);
         return;
     }
-    AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, *targetMask };
+    srLogWrite("dispatching spell anim effect with type: %d and animID %d", animationType, animEffectID);
+    AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, getAnimatingActionTargetMask() };
     gContext.eventBus.dispatch(ON_DISPATCH_ANIMAMTION_EFFECT, (void*)&srEvent);
     auto effectCallback = srGetDispatchCallback(animationType, animEffectID);
-    effectCallback(*targetMask, actorID);
+    effectCallback(getAnimatingActionTargetMask(), actorID);
 }

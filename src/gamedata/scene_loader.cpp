@@ -44,7 +44,7 @@ void initFormationsRegistries() {
         sceneBlockIdx++;
     }
     free(sceneBlock);
-    auto& command = gContext.commands.get_element(assembleGDataKey(CMD_ENEMY_ACTION));
+    auto& command = gContext.commands.getElement(assembleGDataKey(CMD_ENEMY_ACTION));
     command.actionCount = command.commandActions.size();
     srLogWrite("FINISHED REGISTERING ENEMY ACTIONS: registered %d enemy attacks", getCommand(CMD_ENEMY_ACTION).actionCount);
 }
@@ -117,7 +117,7 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
         initializeBattleAIData(&(sceneData.enemyAIData[0]), formationRelativeEnemyIdx, enemyAIData);
         srEnemyData.enemyAI = enemyAIData;
         /*Add enemies to the enemy registry*/
-        gContext.enemies.add_element(registryName, srEnemyData);
+        gContext.enemies.addElement(registryName, srEnemyData);
         srLogWrite("Enemy:%s added to registry with unique idx %d", registryName.c_str(), *uniqueIdx);
     }
 
@@ -131,7 +131,7 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
         BattleAIData formationAI = BattleAIData();
         initializeBattleAIData(&(sceneData.formationAIData[0]), sceneFormationIndex, formationAI);
         formation.formationAI = formationAI;
-        gContext.formations.add_element(assembleGDataKey(*formationIndex), formation);
+        gContext.formations.addElement(assembleGDataKey(*formationIndex), formation);
         *formationIndex = *formationIndex + 1;
         srLogWrite("Formation:%s added to registry with enemies %d, %d, %d",
             assembleGDataKey(*formationIndex).c_str(),
@@ -154,8 +154,8 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
         if (!(gContext.attacks.contains(stringID))) { //must implement a method to check if the dictionary contains a key
             auto attackName = EncodedString((const char *)enemyAttackNames[relAttackIndex].name);
             auto attackData = enemyAttacks[relAttackIndex];
-            SrAttack enemyAttack = { attackData, attackID, attackName, EncodedString::from_unicode(""), ENEMY_ATTACK, ENEMY_ATTACK,  };
-            gContext.attacks.add_element(stringID, enemyAttack);
+            SrAttack enemyAttack = { attackData, attackID, attackName, EncodedString::from_unicode(""), ENEMY_ATTACK,  };
+            gContext.attacks.addElement(stringID, enemyAttack);
             /*srLogWrite("Enemy Attack:%s added to registry with name:%s, and ID:%i",
                 stringID.c_str(),
                 enemyAttack.attackName.unicode(),

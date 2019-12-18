@@ -141,7 +141,7 @@ void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
     }
 
     auto typedPtr = (CursorGridWidget*)self;
-    auto itemID = gContext.inventory->get_resource(flatIndex).item_id;
+    auto itemID = gContext.inventory->getResource(flatIndex).item_id;
     auto textWidget = getChild(widget, std::string("TXT"));
     auto numberWidget = getChild(widget, std::string("AMT"));
 
@@ -156,7 +156,7 @@ void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
 
         enableWidget(numberWidget);
         auto numberColor = usableInInventoryMenu(itemID) ? COLOR_GRAY : COLOR_WHITE;
-        auto itemQuantity = gContext.inventory->get_resource(flatIndex).quantity;
+        auto itemQuantity = gContext.inventory->getResource(flatIndex).quantity;
         updateNumber(numberWidget, itemQuantity);
         updateNumberColor(numberWidget, numberColor);
     }

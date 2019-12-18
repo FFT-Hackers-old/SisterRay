@@ -51,5 +51,5 @@ EnemyData* getInBattleActorEnemyData(u8 enemyActorIdx) {
 const SrEnemyData& getRegistryActorEnemyData(u8 enemyActorIdx) {
     auto sceneRelativeID = getInBattleFormationActorData(enemyActorIdx)->enemyID;
     auto uniqueID = getUniqueEnemyID(sceneRelativeID);
-    return gContext.enemies.get_resource(uniqueID);
+    return gContext.enemies.getResource(uniqueID);
 }

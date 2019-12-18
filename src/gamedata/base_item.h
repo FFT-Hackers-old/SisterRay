@@ -26,8 +26,8 @@
 
 // indexed by global "item_id"
 typedef struct {
-    u8 item_type; //00 = normal item, 01 = weapon, 02=armor, 03=accessory
-    u16 type_relative_id;
+    u8 itemType; //00 = normal item, 01 = weapon, 02=armor, 03=accessory
+    u16 typeRelativeID;
     u8 itemIconType; //00 = normal item, 01 = sword 02= glove, etc
 } ItemTypeData;
 
@@ -35,9 +35,9 @@ typedef struct {
 class SrItemTypeRegistry : public SrNamedResourceRegistry<ItemTypeData, std::string> {
 public:
     SrItemTypeRegistry() : SrNamedResourceRegistry<ItemTypeData, std::string>() {}
-    void initialize_augmented_data(u8 itemType, u32 numberToInitialize);
-    u16 get_absolute_id(u8 itemType, u8 relativeIndex);
-    void append_item(const std::string& name, u8 itemType, u8 iconType); //add element is not virtual
+    void initializeAugmentedData(u8 itemType, u32 numberToInitialize);
+    u16 getAbsoluteID(u8 itemType, u8 relativeIndex);
+    void appendItem(const std::string& name, u8 itemType, u8 iconType); //add element is not virtual
 
 protected:
     std::vector<i16> reverseItemRegistry;

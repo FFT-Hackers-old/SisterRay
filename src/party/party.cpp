@@ -2,13 +2,13 @@
 #include "../impl.h"
 
 SrPartyDataRegistry::SrPartyDataRegistry() : SrNamedResourceRegistry<SrPartyData, std::string>() {
-    add_element(getPartyKey(0), SrPartyData());
-    add_element(getPartyKey(1), SrPartyData());
-    add_element(getPartyKey(2), SrPartyData());
+    addElement(getPartyKey(0), SrPartyData());
+    addElement(getPartyKey(1), SrPartyData());
+    addElement(getPartyKey(2), SrPartyData());
 }
 
 void SrPartyDataRegistry::addAutoAction(u32 partyIndex, const SrAutoAction& action) {
-    auto& autoActons = get_element(getPartyKey(partyIndex)).actorAutoActions;
+    auto& autoActons = getElement(getPartyKey(partyIndex)).actorAutoActions;
     for (auto& actionSlot : autoActons) {
         if (actionSlot.dispatchType == AUTOACT_NO_ACTION) {
             actionSlot = action;
@@ -18,7 +18,7 @@ void SrPartyDataRegistry::addAutoAction(u32 partyIndex, const SrAutoAction& acti
 
 /* clear all data arrays prior to recalculation based on current equipment configuration*/
 void SrPartyDataRegistry::clearActions(u32 partyIndex) {
-    auto& actor = get_element(getPartyKey(partyIndex));
+    auto& actor = getElement(getPartyKey(partyIndex));
     auto& magicArray = actor.actorMagics;
     auto& summonArray = actor.actorSummons;
     auto& eSkillArray = actor.actorEnemySkills;
@@ -58,7 +58,7 @@ void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::ve
             continue;
         u8 maxLevel = 1;
         auto materiaLevel = getMateriaLevel(materia, &maxLevel);
-        EnableAbilitiesEvent enableActionEvent = { partyIndex, materia, gContext.materias.get_resource(materia.item_id), materiaLevel, &boosts };
+        EnableAbilitiesEvent enableActionEvent = { partyIndex, materia, gContext.materias.getResource(materia.item_id), materiaLevel, &boosts };
         auto topkey = getTopKey(getMateriaTopType(materia.item_id));
         auto subkey = getSubKey(getMateriaSubType(materia.item_id));
         std::vector<SrEventContext> dispatchContexts = { topkey, subkey };
@@ -108,11 +108,11 @@ u8* getMateriaSlots(u8 partyIdx, SrGearType gearType) {
     auto kernelObjectID = getEquippedGear(characterRecordArrayIndex, gearType);
 
     if (gearType == SR_GEAR_WEAPON) {
-        auto materiaSlots = &(gContext.weapons.get_resource(kernelObjectID).materia_slots[0]);
+        auto materiaSlots = &(gContext.weapons.getResource(kernelObjectID).materia_slots[0]);
         return materiaSlots;
     }
     else if (gearType == SR_GEAR_ARMOR) {
-        auto materiaSlots = &(gContext.armors.get_resource(kernelObjectID).materia_slots[0]);
+        auto materiaSlots = &(gContext.armors.getResource(kernelObjectID).materia_slots[0]);
         return materiaSlots;
     }
     return nullptr;
@@ -136,10 +136,10 @@ void dispatchSupportHandlers(u8 partyIndex, const MateriaInventoryEntry& support
         partyIndex,
         supportMateria,
         supportLevel,
-        gContext.materias.get_resource(supportMateria.item_id),
+        gContext.materias.getResource(supportMateria.item_id),
         pairedMateria,
         pairedLevel,
-        gContext.materias.get_resource(pairedMateria.item_id),
+        gContext.materias.getResource(pairedMateria.item_id),
         &boosts
     };
 
@@ -216,7 +216,7 @@ SISTERRAY_API u8 getEnabledSlotIndex(u8 partyIndex, u8 commandIndex){
 
 /*Searches the corresponding array for now, once we have order data loaded we can just seek*/
 SISTERRAY_API EnabledSpell* getSpellSlot(u8 partyIndex, u8 commandIndex, u16 actionIndex) {
-    auto& partyData = gContext.party.get_element(getPartyKey(partyIndex));
+    auto& partyData = gContext.party.getElement(getPartyKey(partyIndex));
     switch (commandIndex) {
         case 2: {
             for (auto& spell : partyData.actorMagics) {
@@ -270,7 +270,7 @@ SISTERRAY_API EnabledCommandStruct* getCommandSlot(u8 partyIndex, u8 commandInde
 
 /*These functions will be acessible through the C API, and so return raw pointers*/
 SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 partyIndex, u32 enabledSlotIndex) {
-    auto& magicArray = gContext.party.get_element(getPartyKey(partyIndex)).actorMagics;
+    auto& magicArray = gContext.party.getElement(getPartyKey(partyIndex)).actorMagics;
     if (enabledSlotIndex < magicArray.max_size()) {
         auto partyPtr = magicArray.data();
         return &(partyPtr[enabledSlotIndex]);
@@ -282,7 +282,7 @@ SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 partyIndex, u32 enabledSlotIn
 /*Public API methods for enabling an action at a specific command index*/
 SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
     srLogWrite("enabling magic %d and index %d", commandlRelativeIndex, enabledIndex);
-    auto& enabledMagics = gContext.party.get_element(getPartyKey(partyIndex)).actorMagics;
+    auto& enabledMagics = gContext.party.getElement(getPartyKey(partyIndex)).actorMagics;
     if (enabledIndex < enabledMagics.max_size()) {
         auto& enabledSlot = enabledMagics[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
@@ -294,7 +294,7 @@ SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRela
 }
 
 SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u8 partyIndex, u32 enabledSlotIndex) {
-    auto& summonArray = gContext.party.get_element(getPartyKey(partyIndex)).actorSummons;
+    auto& summonArray = gContext.party.getElement(getPartyKey(partyIndex)).actorSummons;
     if (enabledSlotIndex < summonArray.max_size()) {
         auto partyPtr = summonArray.data();
         return &(partyPtr[enabledSlotIndex]);
@@ -305,7 +305,7 @@ SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u8 partyIndex, u32 enabledSlotI
 
 
 SISTERRAY_API void enableSummon(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
-    auto& enabledSummons = gContext.party.get_element(getPartyKey(partyIndex)).actorSummons;
+    auto& enabledSummons = gContext.party.getElement(getPartyKey(partyIndex)).actorSummons;
     if (enabledIndex < enabledSummons.max_size()) {
         auto& enabledSlot = enabledSummons[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
@@ -318,7 +318,7 @@ SISTERRAY_API void enableSummon(u8 partyIndex, u32 enabledIndex, u32 commandlRel
 
 
 SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u8 partyIndex, u32 enabledSlotIndex) {
-    auto& ESkillArray = gContext.party.get_element(getPartyKey(partyIndex)).actorEnemySkills;
+    auto& ESkillArray = gContext.party.getElement(getPartyKey(partyIndex)).actorEnemySkills;
     if (enabledSlotIndex < ESkillArray.max_size()) {
         auto partyPtr = ESkillArray.data();
         return &(partyPtr[enabledSlotIndex]);
@@ -329,7 +329,7 @@ SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u8 partyIndex, u32 enabledSlotI
 
 
 SISTERRAY_API void enableESkill(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
-    auto& enabledESkills = gContext.party.get_element(getPartyKey(partyIndex)).actorEnemySkills;
+    auto& enabledESkills = gContext.party.getElement(getPartyKey(partyIndex)).actorEnemySkills;
     if (enabledIndex < enabledESkills.max_size()) {
         auto& enabledSlot = enabledESkills[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
@@ -350,8 +350,8 @@ void srUpdatePartyMember(u32 partyIndex) {
 void srRecalculateDerivedStats(u32 partyIndex) {
     auto characterID = getCharacterRecordIndex(partyIndex);
     auto characterName = getCharacterName(characterID);
-    auto weaponMaterias = gContext.characters.get_element(characterName).wpnMaterias;
-    auto armorMaterias = gContext.characters.get_element(characterName).armMaterias;
+    auto weaponMaterias = gContext.characters.getElement(characterName).wpnMaterias;
+    auto armorMaterias = gContext.characters.getElement(characterName).armMaterias;
 
     std::vector<MateriaInventoryEntry> equippedMaterias = std::vector<MateriaInventoryEntry>();
     equippedMaterias.resize(weaponMaterias.max_size() + armorMaterias.max_size());
@@ -510,7 +510,7 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
 
 bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
     auto actorMP = gActorTimerBlock[partyIndex].currentMP;
-    auto& spellData = gContext.party.get_element(getPartyKey(partyIndex)).actorMagics;
+    auto& spellData = gContext.party.getElement(getPartyKey(partyIndex)).actorMagics;
 
     bool commandEnabled = false;
     for (auto it = begin(spellData); it != end(spellData); ++it) {
@@ -542,7 +542,7 @@ bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
 /*With this we can add a charge mechanic to summons*/
 bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
     auto actorMP = gActorTimerBlock[partyIndex].currentMP;
-    auto& summonData = gContext.party.get_element(getPartyKey(partyIndex)).actorSummons;
+    auto& summonData = gContext.party.getElement(getPartyKey(partyIndex)).actorSummons;
 
     bool commandEnabled = false;
     for (auto it = begin(summonData); it != end(summonData); ++it) {
@@ -560,7 +560,7 @@ bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
 
 bool updateESkillCommand(u8 partyIndex, u32 actorStatusMask) {
     auto actorMP = gActorTimerBlock[partyIndex].currentMP;
-    auto& ESkillData = gContext.party.get_element(getPartyKey(partyIndex)).actorEnemySkills;
+    auto& ESkillData = gContext.party.getElement(getPartyKey(partyIndex)).actorEnemySkills;
 
     bool commandEnabled = false;
     for (auto it = begin(ESkillData); it != end(ESkillData); ++it) {

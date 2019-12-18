@@ -20,7 +20,7 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
         srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
         registerDefaultCallbacks(commandIdx, srCommand);
         registerSelectCallbacks(commandIdx, srCommand);
-        add_element(assembleGDataKey(commandIdx), srCommand);
+        addElement(assembleGDataKey(commandIdx), srCommand);
         commandIdx++;
     }
 
@@ -36,17 +36,17 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
         srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
         registerDefaultCallbacks(commandIdx, srCommand);
         registerSelectCallbacks(commandIdx, srCommand);
-        add_element(assembleGDataKey(commandIdx), srCommand);
+        addElement(assembleGDataKey(commandIdx), srCommand);
     }
 }
 
 void initCommands(SrKernelStream* stream) {
     gContext.commands = SrCommandRegistry(stream);
-    srLogWrite("kernel.bin: Loaded %lu commands", (unsigned long)gContext.commands.resource_count());
+    srLogWrite("kernel.bin: Loaded %lu commands", (unsigned long)gContext.commands.resourceCount());
 }
 
 const SrCommand& getCommand(u8 commandIdx) {
-    auto& ret = gContext.commands.get_resource(commandIdx);
+    auto& ret = gContext.commands.getResource(commandIdx);
     srLogWrite("Fetching get command for command index, %d", commandIdx);
     return ret;
 }
@@ -56,12 +56,12 @@ const SrAttack& getCommandAction(u8 commandIdx, u16 actionIdx) {
     auto& srCommand = getCommand(commandIdx);
     srLogWrite("requesting command: %d action %d", commandIdx, actionIdx);
     if (actionIdx > srCommand.actionCount) {
-        return gContext.attacks.get_resource(actionTableIdx);
+        return gContext.attacks.getResource(actionTableIdx);
     }
     actionTableIdx = srCommand.commandActions[actionIdx];
     srLogWrite("getting attack with true index %d", actionTableIdx);
-    srLogWrite("fetched action name %s", gContext.attacks.get_resource(actionTableIdx).attackName.str());
-    return gContext.attacks.get_resource(actionTableIdx);
+    srLogWrite("fetched action name %s", gContext.attacks.getResource(actionTableIdx).attackName.str());
+    return gContext.attacks.getResource(actionTableIdx);
 }
 
 
@@ -70,16 +70,16 @@ SISTERRAY_API void addActionToCommand(const char* commandName, const char* actio
 }
 
 void addCommandAction(const std::string commandKey, const std::string actionKey) {
-    auto& srCommand = gContext.commands.get_element(commandKey);
+    auto& srCommand = gContext.commands.getElement(commandKey);
     srLogWrite("fetching index for actionKey %s", actionKey.c_str());
-    auto trueAtkIdx = gContext.attacks.get_resource_index(actionKey);
+    auto trueAtkIdx = gContext.attacks.getResourceIndex(actionKey);
     srLogWrite("adding true idx %d to command %s", trueAtkIdx, commandKey.c_str());
     srCommand.commandActions.push_back(trueAtkIdx);
 }
 
 void setCommandAction(const std::string commandKey, const std::string actionKey, u32 actionIndex) {
-    auto& srCommand = gContext.commands.get_element(commandKey);
-    auto attackIdx = gContext.attacks.get_resource_index(actionKey);
+    auto& srCommand = gContext.commands.getElement(commandKey);
+    auto attackIdx = gContext.attacks.getResourceIndex(actionKey);
     if (actionIndex >= srCommand.commandActions.size()) {
         srCommand.commandActions.resize(actionIndex + 1);
     }
@@ -89,7 +89,7 @@ void setCommandAction(const std::string commandKey, const std::string actionKey,
 
 /*run every initializer callback in order*/
 SISTERRAY_API void runSetupCallbacks(const char* name) {
-    auto idx = gContext.commands.get_resource_index(std::string(name));
+    auto idx = gContext.commands.getResourceIndex(std::string(name));
     runSetupCallbacks(idx);
 }
 

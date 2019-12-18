@@ -6,7 +6,7 @@
 using namespace BattleMenuWidgetNames;
 
 void nopBattleString(u32 a1) {
-    Menu* menu = gContext.menuWidgets.get_element(BATTLE_MENU_NAME);
+    Menu* menu = gContext.menuWidgets.getElement(BATTLE_MENU_NAME);
     MenuDrawEvent srEvent = { menu, getMenuState(menu), 0 };
     handleTopDisplayString(&srEvent);
     return;
@@ -113,7 +113,7 @@ void handleBattleStrSubstitions(char* ret, const char* base) {
         case 0xEE: {
             // Get the name of the attack based on an absolute ID. Will need to modify calling code
             wordArg = wordReader[baseStrIdx + 1];
-            resourceName = gContext.attacks.get_resource(wordArg).attackName.str();
+            resourceName = gContext.attacks.getResource(wordArg).attackName.str();
             retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
             baseStrIdx += 3;
             break;

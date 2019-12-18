@@ -8,7 +8,7 @@ void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto magics = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorMagics;
+    auto magics = gContext.party.getElement(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorMagics;
     if (magics[flatIndex].magicIndex == 0xFF) {
         disableWidget(getChild(widget, std::string("ARW")));
         disableWidget(getChild(widget, std::string("TXT")));
@@ -29,7 +29,7 @@ void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto summons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
+    auto summons = gContext.party.getElement(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
     if (summons[flatIndex].magicIndex == 0xFF) {
         disableWidget(getChild(widget, std::string("TXT")));
         return;
@@ -44,7 +44,7 @@ void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto eSkills = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorEnemySkills;
+    auto eSkills = gContext.party.getElement(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorEnemySkills;
     if (eSkills[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
@@ -59,7 +59,7 @@ void battleInventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatI
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto itemID = gContext.battleInventory->get_resource(flatIndex).item_id;
+    auto itemID = gContext.battleInventory->getResource(flatIndex).item_id;
     if (itemID == 0xFFFF) {
         disableWidget(widget);
         return;
@@ -68,7 +68,7 @@ void battleInventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatI
     auto textColor = (isUsableInBattle(itemID)) ? COLOR_WHITE : COLOR_GRAY;
     updateText(getChild(widget, std::string("TXT")), getNameFromItemID(itemID));
     updateTextColor(getChild(widget, std::string("TXT")), textColor);
-    updateNumber(getChild(widget, std::string("AMT")), gContext.battleInventory->get_resource(itemID).quantity);
+    updateNumber(getChild(widget, std::string("AMT")), gContext.battleInventory->getResource(itemID).quantity);
     updateNumberColor(getChild(widget, std::string("AMT")), textColor);
-    updateItemIcon(getChild(widget, std::string("ICN")), gContext.itemTypeData.get_resource(itemID).itemIconType);
+    updateItemIcon(getChild(widget, std::string("ICN")), gContext.itemTypeData.getResource(itemID).itemIconType);
 }

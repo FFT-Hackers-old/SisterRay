@@ -7,7 +7,7 @@
 using namespace EquipWidgetNames;
 
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menu = gContext.menuWidgets.get_element("EQUIP_MENU");
+    Menu* menu = gContext.menuWidgets.getElement("EQUIP_MENU");
 
     sub_6C98A6();
     runMenu(menu, updateStateMask);

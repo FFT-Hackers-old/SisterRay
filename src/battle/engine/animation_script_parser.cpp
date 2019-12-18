@@ -4,85 +4,100 @@
 
 void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
     AnimScriptContext* ptrToScriptContext = (AnimScriptContext*)0x8FE2AC;
-    auto& scriptOwnerModelState = *getBattleModelState(actorID);
+    auto& ownerModelState = *getBattleModelState(actorID);
     auto& scriptOwner74State = *getBattleModelState74(actorID);
     auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);
     u8* byte_9ADEF8 = (u8*)0x9ADEF8;
-
+    if (ownerModelState.animScriptIndex != 0) {
+        srLogWrite("running animation script with idx: %d for actor %d", ownerModelState.animScriptIndex, actorID);
+    }
     if (!*BATTLE_PAUSED_GLOBAL) {
-        auto& scriptContext = *ptrToScriptContext;
+        auto& scriptCtx = *ptrToScriptContext;
         *byte_9ADEF8 = 0;
-        scriptContext.isScriptActive = 1;
-        scriptContext.scriptPtr = ptrToScriptTable[scriptOwnerModelState.animScriptIndex];
-        AnimScriptEvent srEvent = { actorID, scriptContext.scriptPtr, &scriptContext, scriptContext.currentOpCode, getBattleModelState(actorID), ptrToScriptTable };
+        scriptCtx.isScriptActive = 1;
+        scriptCtx.scriptPtr = ptrToScriptTable[ownerModelState.animScriptIndex];
+        AnimScriptEvent srEvent = { actorID, scriptCtx.scriptPtr, &scriptCtx, scriptCtx.currentOpCode, getBattleModelState(actorID), ptrToScriptTable };
         gContext.eventBus.dispatch(ON_RUN_ANIMATION_SCRIPT, (void*)&srEvent);
 
-        /*switch (scriptOwnerModelState->animScriptIndex) {
+        switch (ownerModelState.animScriptIndex) {
         case 46:
-            scriptContextPtr->scriptPtr = unk_7C10E0;
+            scriptCtx.scriptPtr = (u8*)0x7C10E0; //script that displays poisons action
+            srLogWrite("attemping to trigger poison event for actor %d", actorID);
             break;
         case 47:
-            scriptContextPtr->scriptPtr = unk_7C10F0;
+            scriptCtx.scriptPtr = (u8*)0x7C10F0;
             break;
         case 48:
-            scriptContextPtr->scriptPtr = unk_7C10F8;
+            scriptCtx.scriptPtr = (u8*)0x7C10F8;
             break;
         case 49:
-            scriptContextPtr->scriptPtr = unk_7C1120;
+            scriptCtx.scriptPtr = (u8*)0x7C1120;
             break;
         case 50:
-            scriptContextPtr->scriptPtr = unk_7C1130;
+            scriptCtx.scriptPtr = (u8*)0x7C1130;
             break;
         case 52:
-            scriptContextPtr->scriptPtr = unk_7C1118;
+            scriptCtx.scriptPtr = (u8*)0x7C1118;
             break;
         case 53:
-            scriptContextPtr->scriptPtr = unk_7C1170;
+            scriptCtx.scriptPtr = (u8*)0x7C1170;
             break;
         case 54:
-            scriptContextPtr->scriptPtr = unk_7C1160;
+            scriptCtx.scriptPtr = (u8*)0x7C1160;
             break;
         case 55:
-            scriptContextPtr->scriptPtr = unk_7C1150;
+            scriptCtx.scriptPtr = (u8*)0x7C1150;
             break;
         case 56:
-            scriptContextPtr->scriptPtr = unk_7C1140;
+            scriptCtx.scriptPtr = (u8*)0x7C1140;
             break;
         case 57: {
-            getBattleModelState(actorID)->field_25 |= 0x80u;
-            scriptContextPtr->scriptPtr = unk_7C1110;
+            ownerModelState.field_25 |= 0x80u;
+            scriptCtx.scriptPtr = (u8*)0x7C1110;
             break;
         }
         case 58:
-            scriptContextPtr->scriptPtr = unk_7C1108;
+            scriptCtx.scriptPtr = (u8*)0x7C1108;
             break;
         case 59:
-            scriptContextPtr->scriptPtr = unk_7C110C;
+            scriptCtx.scriptPtr = (u8*)0x7C110C;
             break;
         default:
             break;
-        }*/
-
-        if (scriptOwnerModelState.modelEffectFlags & 1) {
-            scriptOwnerModelState.isScriptExecuting = 1;
-            scriptOwnerModelState.currentScriptPosition = 0;
-            scriptOwnerModelState.waitFrames = 0;
-            scriptOwnerModelState.modelEffectFlags &= 0xFEu;
         }
-        if (scriptOwnerModelState.isScriptExecuting) {
-            scriptOwnerModelState.playedAnimFrames = 0;
-            while (scriptContext.isScriptActive) {
-                scriptContext.currentOpCode = scriptContext.scriptPtr[scriptOwnerModelState.currentScriptPosition++];
-                if (scriptContext.currentOpCode < 0x8E) {
-                    scriptOwnerModelState.runningAnimIdx = scriptContext.currentOpCode;
-                    scriptOwnerModelState.field_74 = 0;
+
+        if (ownerModelState.modelEffectFlags & 1) {
+            ownerModelState.isScriptExecuting = 1;
+            ownerModelState.currentScriptPosition = 0;
+            ownerModelState.waitFrames = 0;
+            ownerModelState.modelEffectFlags &= 0xFEu;
+        }
+        if (ownerModelState.isScriptExecuting) {
+            ownerModelState.playedAnimFrames = 0;
+            while (scriptCtx.isScriptActive) {
+                scriptCtx.currentOpCode = scriptCtx.scriptPtr[ownerModelState.currentScriptPosition++];
+                if (scriptCtx.currentOpCode < 0x8E) {
+                    if (ownerModelState.animScriptIndex != 0) {
+                        srLogWrite("CURRENTLY EXECUTING ANIMATION %d for actor %d", ownerModelState.runningAnimIdx, actorID);
+                    }
+                    ownerModelState.runningAnimIdx = scriptCtx.currentOpCode;
+                    ownerModelState.field_74 = 0;
                     scriptOwner74State.field_36 = 0;
                     scriptOwnerRotationData.field_0 = 0;
-                    scriptContext.isScriptActive = 0;
+                    scriptCtx.isScriptActive = 0;
                     srHandleAnimateModel(actorID);
+                    return;
                 }
-                AnimScriptEvent animScriptEvent = { actorID, scriptContext.scriptPtr, &scriptContext, scriptContext.currentOpCode, getBattleModelState(actorID), ptrToScriptTable };
-                auto opcode = gContext.animScriptOpcodes.get_element(assembleOpCodeKey(scriptContext.currentOpCode));
+                AnimScriptEvent animScriptEvent = { actorID, scriptCtx.scriptPtr, &scriptCtx, scriptCtx.currentOpCode, getBattleModelState(actorID), ptrToScriptTable };
+                if (!gContext.animScriptOpcodes.contains(assembleOpCodeKey(scriptCtx.currentOpCode))) {
+                    srLogWrite("ERROR: Trying to execute invalid opcode %x for actor %d", scriptCtx.currentOpCode, actorID);
+                    continue;
+                }
+                auto opcode = gContext.animScriptOpcodes.getElement(assembleOpCodeKey(scriptCtx.currentOpCode));
+
+                if (ownerModelState.animScriptIndex != 0) {
+                    srLogWrite("executing opcode %x", scriptCtx.currentOpCode);
+                }
                 auto control = opcode(&animScriptEvent);
                 switch (control) {
                 case RUN_NEXT: {
@@ -94,16 +109,27 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
                     break;
                 }
                 case PLAY_ANIM: {
-                    scriptOwnerModelState.runningAnimIdx = scriptContext.currentOpCode;
-                    scriptOwnerModelState.field_74 = 0;
+                    if (ownerModelState.animScriptIndex != 0) {
+                        srLogWrite("playing model animation from control sequence %d", ownerModelState.runningAnimIdx);
+                    }
+                    srHandleAnimateModel(actorID);
+                    return;
+                    break;
+                }
+                default: {
+                    ownerModelState.runningAnimIdx = scriptCtx.currentOpCode;
+                    ownerModelState.field_74 = 0;
                     scriptOwner74State.field_36 = 0;
                     scriptOwnerRotationData.field_0 = 0;
-                    scriptContext.isScriptActive = 0;
-                    srHandleAnimateModel(actorID);
+                    scriptCtx.isScriptActive = 0;
                     break;
                 }
                 }
             }
         }
+        if (ownerModelState.animScriptIndex != 0) {
+            srLogWrite("playing model animation %d", ownerModelState.runningAnimIdx);
+        }
+        srHandleAnimateModel(actorID);
     }
 }

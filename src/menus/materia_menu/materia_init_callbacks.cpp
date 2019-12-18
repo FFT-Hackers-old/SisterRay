@@ -147,7 +147,7 @@ void materiaEntryUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
     auto typedPtr = (CursorGridWidget*)self;
     auto textWidget = getChild(widget, std::string("TXT"));
     auto sphereWidget = getChild(widget, std::string("SPH"));
-    auto materiaID = gContext.materiaInventory->get_resource(flatIndex).item_id;
+    auto materiaID = gContext.materiaInventory->getResource(flatIndex).item_id;
     if (materiaID != 0xFFFF) {
         enableWidget(textWidget);
         const char* name = gContext.gameStrings.materia_names.get_string(materiaID);
@@ -356,7 +356,7 @@ void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex)
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto& magics = gContext.party.get_element(getPartyKey(*MAT_MENU_PARTY_INDEX)).actorMagics;
+    auto& magics = gContext.party.getElement(getPartyKey(*MAT_MENU_PARTY_INDEX)).actorMagics;
     if (magics[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
@@ -371,7 +371,7 @@ void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto summons = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
+    auto summons = gContext.party.getElement(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
     if (summons[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
@@ -386,7 +386,7 @@ void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto eSkills = gContext.party.get_element(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorEnemySkills;
+    auto eSkills = gContext.party.getElement(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorEnemySkills;
     if (eSkills[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;

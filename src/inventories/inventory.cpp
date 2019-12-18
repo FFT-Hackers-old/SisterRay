@@ -11,7 +11,7 @@ SrItemInventory::SrItemInventory(i16 allocation_size): SrInventory<InventoryEntr
             0xFFFF,
             0
         };
-        add_resource(entry);
+        addResource(entry);
     }
 }
 
@@ -21,7 +21,7 @@ SrGearViewData::SrGearViewData(i16 allocation_size, u8 type) : SrResourceRegistr
         GearViewData entry = {
             0
         };
-        add_resource(entry);
+        addResource(entry);
     }
     itemType = type;
 
@@ -41,18 +41,18 @@ u8 SrGearViewData::getItemType() {
 
 void initGearViewStorage() {
     gContext.gearViewData = SrGearViewData();
-    srLogWrite("sister ray: initialized equip view with size: %lu", (unsigned long)gContext.gearViewData.current_capacity());
+    srLogWrite("sister ray: initialized equip view with size: %lu", (unsigned long)gContext.gearViewData.currentCapacity());
 }
 
 /*Method to initialize the new inventories with an appropriate size*/
 SISTERRAY_API void initInventory()
 {
     gContext.inventory = std::make_unique<SrItemInventory>(INVENTORY_SIZE);
-    srLogWrite("sister ray: inventory initialized with capacity: %lu", (unsigned long)gContext.inventory->current_capacity());
+    srLogWrite("sister ray: inventory initialized with capacity: %lu", (unsigned long)gContext.inventory->currentCapacity());
 }
 
 
 /*New sorting method, no longer sorts by index ranges, but instead items actually have associated "types"*/
-SISTERRAY_API i16 sort_inventory(i32 sort_type) {
+i16 sortInventory(i32 sortType) {
     return 0;
 }

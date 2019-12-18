@@ -4,6 +4,11 @@
 typedef void(*PFNSRSUB674659)(u32, FileContext*);
 #define setSomeFileContext  ((PFNSRSUB674659)0x674659)
 
+
+SISTERRAY_API BattleModel* getActiveModelFromArray(u8 arrayIdx) {
+    return BATTLE_MODEL_PTRS[arrayIdx];
+}
+
 BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *aaHeader, UnkModelLoadStruct *loadStruct, FileContext *fileContext, char * filename) {
     BattleModel *modelData;
     char FF7Directory[204];
@@ -17,7 +22,7 @@ BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *a
     modelData = nullptr;
     if (aaHeader) {
         if (gContext.battleAnimationScripts.contains(filename)) {
-            animationsCount = gContext.battleAnimations.get_element(std::string(filename)).totalAnimationCount;
+            animationsCount = gContext.battleAnimations.getElement(std::string(filename)).totalAnimationCount;
         }
         else {
             animationsCount = getSrAnimsCount(aaHeader, filename);
@@ -84,7 +89,7 @@ BattleModel* srSetPlayerModel(i32 a1, i32 a2, u8 actorIndex, char *filename) {
     unkStructPtr->field_10 = a1;
     unkStructPtr->field_14 = a2;
 
-    gContext.party.get_element(getPartyKey(actorIndex)).modelName = std::string(filename);
+    gContext.party.getElement(getPartyKey(actorIndex)).modelName = std::string(filename);
     //The following code runs if a model is being swapped
     if (BATTLE_MODEL_PTRS[actorIndex]) {
         freeOldModel(BATTLE_MODEL_PTRS[actorIndex]);

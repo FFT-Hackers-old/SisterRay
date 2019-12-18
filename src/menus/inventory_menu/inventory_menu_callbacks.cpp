@@ -9,7 +9,7 @@ void initializeInventoryMenu() {
     srLogWrite("initializing inventory menu");
     CursorContext topBarContext = { 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0, 0 };
     Cursor topBarCursor = { topBarContext, 13, 26, 0, 93 };
-    CursorContext itemViewContext = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
+    CursorContext itemViewContext = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->currentCapacity(), 0, 0, 0, 0, 0, 1 };
     Cursor itemViewCursor = { itemViewContext, 298, 109, 37, 0 };
     CursorContext charViewContext = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 0, 1, 0, 0 };
     Cursor charViewCursor = { charViewContext, 0, 161, 120, 0 };
@@ -17,12 +17,12 @@ void initializeInventoryMenu() {
     Cursor keyItemsViewCursor = { keyItemsViewContext, 5, 129, 36, 293 };
     CursorContext arrangeViewContext = { 0, 0, 1, 8, 0, 0, 1, 8, 0, 0, 0, 1, 0, 0 };
     Cursor arrangeViewCursor = { arrangeViewContext, 0xBE, 0x2B, 26, 0 };
-    CursorContext customSortContext = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->current_capacity(), 0, 0, 0, 0, 0, 1 };
+    CursorContext customSortContext = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->currentCapacity(), 0, 0, 0, 0, 0, 1 };
     Cursor customSortViewCursor = { customSortContext, 298, 109, 37, 0 };
 
     Cursor cursorArray[6] = { topBarCursor, itemViewCursor, charViewCursor, keyItemsViewCursor, arrangeViewCursor, customSortViewCursor };
     auto inventoryMenu = createMenu(INIT_INVENTORY_MENU, DRAW_INVENTORY_MENU, INVENTORY_MENU_CONTEXT, 6, &(cursorArray[0]));
-    gContext.menuWidgets.add_element(INVENTORY_MENU_NAME, inventoryMenu);
+    gContext.menuWidgets.addElement(INVENTORY_MENU_NAME, inventoryMenu);
     gContext.menuWidgets.initializeMenu(INVENTORY_MENU_NAME, INVENTORY_WIDGET_NAME);
 }
 

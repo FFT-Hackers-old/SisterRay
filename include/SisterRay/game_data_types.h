@@ -12,6 +12,18 @@ typedef struct {
 } SpellEffect;
 
 typedef enum {
+    MAGIC,
+    SUMMON,
+    ENEMY_SKILL,
+    ITEM,
+    THROW,
+    COIN,
+    LIMIT,
+    ENEMY_ATTACK,
+    NO_EFFECT
+} SrAnimationType;
+
+typedef enum {
     SR_GEAR_WEAPON,
     SR_GEAR_ARMOR
 } SrGearType;
@@ -51,7 +63,7 @@ typedef struct {
     u8 damageCalculationByte; //We can probably modularize this
     u16 miscCommandFlags;
     u8 hasActions;
-    u8 animationType;
+    SrAnimationType animationType;
     u8 animationEffectID;
     u8 useOverride;
     SpellEffect override;
@@ -66,14 +78,6 @@ typedef struct {
     const char* commandName;
     const char* commandDesc;
 } SrCommandData;
-
-typedef enum {
-    MAGIC,
-    SUMMON,
-    ENEMY_SKILL,
-    LIMIT,
-    ENEMY_ATTACK,
-} SrAttackType;
 
 typedef struct {
     u8 abilityHitRate; //0x00
@@ -100,19 +104,19 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u8      unknown[8];
-    u16     camera_data;
-    u16     restriction_mask;
-    u8      target_flags;
-    u8      attack_effect_id;
-    u8      damage_forumla;
-    u8      item_power;
-    u8      resource_conditions;
-    u8      status_change_mask;
-    u8      additional_effect_id;
-    u8      additional_effect_modifier;
-    u32     status_mask;
-    u16     attack_element_mask;
-    u16     special_attack_flags;
+    u16     cameraMovement;
+    u16     restrictionMask;
+    u8      targetingFlags;
+    u8      animationEffectID;
+    u8      damageFormula;
+    u8      itemPower;
+    u8      restoreTypes;
+    u8      statusInflictType;
+    u8      additionalEffectID;
+    u8      additionalEffectModifier;
+    u32     statusMask;
+    u16     elementMask;
+    u16     specialAttackFlags;
 } ItemData;
 #pragma pack(pop)
 
@@ -133,7 +137,7 @@ typedef struct {
     ConsumableUseData useData;
     const char* itemName;
     const char* itemDesc;
-} SrConsumableData;
+} SrConsumable;
 
 #pragma pack(push, 1)
 typedef struct {

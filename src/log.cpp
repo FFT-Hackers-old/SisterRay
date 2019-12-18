@@ -26,7 +26,7 @@ SISTERRAY_API void srLogWrite(const char* format, ...)
     va_start(ap, format);
     vsnprintf(buffer, sizeof(buffer), format, ap);
     fwrite(buffer, strlen(buffer), 1, gContext.logFile);
-    if(!strstr(buffer, "\n")) fwrite("\n", 1, 1, gContext.logFile);
+    if(!strstr(buffer, "\n")) fwrite("\n", sizeof(char), 1, gContext.logFile);
     fflush(gContext.logFile);
     va_end(ap);
 }

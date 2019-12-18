@@ -17,7 +17,7 @@ SISTERRAY_API i32 onEnterInventory() {
 }
 
 SISTERRAY_API void inventoryMenuUpdateHandler(i32 updateStateMask) {
-    Menu* menu = gContext.menuWidgets.get_element(INVENTORY_MENU_NAME);
+    Menu* menu = gContext.menuWidgets.getElement(INVENTORY_MENU_NAME);
     runMenu(menu, updateStateMask);
     displayInventoryCursorStates(menu, menu->currentState, updateStateMask);
 }
@@ -47,8 +47,8 @@ void displayInventoryCursorStates(Menu* menu, u16 menuState, u32 updateStateMask
 
             if (!(*use_on_characters_enabled)) {
                 auto characterChoiceCursor = getStateCursor(menu, 2);
-                item_ID = gContext.inventory->get_resource(itemChoiceCursor->context.baseRowIndex + itemChoiceCursor->context.relativeRowIndex).item_id;;
-                if (!(gContext.itemOnUseData.get_resource(item_ID).target_all))
+                item_ID = gContext.inventory->getResource(itemChoiceCursor->context.baseRowIndex + itemChoiceCursor->context.relativeRowIndex).item_id;;
+                if (!(gContext.items.getResource(item_ID).auxData.target_all))
                     drawCursor(characterChoiceCursor, 0.0f);
                 else
                     displayCursor(0, 120 * (updateStateMask % 3) + 161, 0.0);
@@ -110,7 +110,7 @@ void renderMainInventoryView(i32 mainViewContextIndex) {
     u32 relativeRowIndex = cursorContextArray[1].relativeRowIndex;
 
     drawScrollerParams* arguments = (drawScrollerParams*)dword_DD17F0;
-    setSideScrollerArguments(arguments, 10, gContext.inventory->current_capacity(), cursorContextArray[mainViewContextIndex].baseRowIndex, 618, 102, 17, 372);
+    setSideScrollerArguments(arguments, 10, gContext.inventory->currentCapacity(), cursorContextArray[mainViewContextIndex].baseRowIndex, 618, 102, 17, 372);
     renderMenuSideScroller(arguments, 0.2);
 }
 

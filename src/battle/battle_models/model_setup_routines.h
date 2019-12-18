@@ -10,32 +10,25 @@
 typedef void(*PFNSRSUB42BC15)(u8);
 #define gameInitEnemiesFromAB   ((PFNSRSUB42BC15)0x42BC15)
 
-#pragma pack(push, 1)
-typedef struct {
-    u16 xPosition;
-    u16 yPosition;
-    u16 zPosition;
-} ModelPositionStruct;
-#pragma pack(pop)
 
 
 #pragma pack(push, 1)
 typedef struct {
-    ModelPositionStruct enemyPosition[3];
+    R3PointWord enemyPosition[3];
 } FullPartyPositionStruct;
 #pragma pack(pop)
 
 
 #pragma pack(push, 1)
 typedef struct {
-    ModelPositionStruct enemyPosition[2];
+    R3PointWord enemyPosition[2];
 } TwoMemberPositionStruct;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 typedef struct {
     u16 modelArrayIdx;
-    ModelPositionStruct enemyPosition;
+    R3PointWord enemyPosition;
     u16 unk2;
     u16 unk3;
 } EnemyPosition;

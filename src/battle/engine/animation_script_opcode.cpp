@@ -42,6 +42,7 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     addElement(assembleOpCodeKey(0xB1), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB1);
     //addElement(assembleOpCodeKey(0xB2), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB2); This is a NOP
     addElement(assembleOpCodeKey(0xB4), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB4);
+    addElement(assembleOpCodeKey(0xB6), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB6);
     addElement(assembleOpCodeKey(0xB7), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB7);
     addElement(assembleOpCodeKey(0xB8), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB8);
     addElement(assembleOpCodeKey(0xB9), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB9);
@@ -83,7 +84,7 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     addElement(assembleOpCodeKey(0xE2), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeE2);
     addElement(assembleOpCodeKey(0xE3), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeE3);
     addElement(assembleOpCodeKey(0xE4), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeE4);
-    //addElement(assembleOpCodeKey(0xE5), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeE5); 
+    addElement(assembleOpCodeKey(0xE5), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeE5); 
     addElement(assembleOpCodeKey(0xE6), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeE6);
     addElement(assembleOpCodeKey(0xE7), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeE7);
     addElement(assembleOpCodeKey(0xE8), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeE8);
@@ -107,7 +108,7 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     addElement(assembleOpCodeKey(0xF9), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeF9);
     addElement(assembleOpCodeKey(0xFA), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeFA);
     addElement(assembleOpCodeKey(0xFB), (SRPFNANMSCRIPTOPCODEHANDLER)OpCode9A);
-    //addElement(assembleOpCodeKey(0xFC), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeFC);
+    addElement(assembleOpCodeKey(0xFC), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeFC);
     addElement(assembleOpCodeKey(0xFD), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeFD);
     addElement(assembleOpCodeKey(0xFE), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeFE);
     addElement(assembleOpCodeKey(0xFF), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeEE);
@@ -120,8 +121,8 @@ SISTERRAY_API void initAnimScriptOpCodes() {
 
 u8 readOpCodeArg8(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition;
-    auto wordReader = (u8*)argPosition;
-    auto arg = *argPosition;
+    auto byteReader = (u8*)argPosition;
+    auto arg = *byteReader;
     modelState->currentScriptPosition += 1;
     return arg;
 }
@@ -129,7 +130,7 @@ u8 readOpCodeArg8(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* model
 u16 readOpCodeArg16(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition;
     auto wordReader = (u16*)argPosition;
-    auto arg = *argPosition;
+    auto arg = *wordReader;
     modelState->currentScriptPosition += 2;
     return arg;
 }
@@ -137,7 +138,7 @@ u16 readOpCodeArg16(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* mod
 u32 readOpCodeArg32(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition;
     auto wordReader = (u32*)argPosition;
-    auto arg = *argPosition;
+    auto arg = *wordReader;
     modelState->currentScriptPosition += 4;
     return arg;
 }

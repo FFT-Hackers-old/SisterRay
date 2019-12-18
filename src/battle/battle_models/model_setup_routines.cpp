@@ -21,7 +21,7 @@ void translateEnemyABData() {
     u8* battleType = (u8*)0xBFD0E0;
     u8* byte_BF2DF8 = (u8*)0xBF2DF8;
     u8* enemyCountGlobal = (u8*)0xBF2050;
-    ModelPositionStruct* actorPositionArray = (ModelPositionStruct*)(0xBFD0A0);
+    R3PointWord* actorPositionArray = (R3PointWord*)(0xBFD0A0);
     EnemyPosition* enemyInitialPositionArray = (EnemyPosition*)(0xBF2054);
 
     for (u8 enemyActorIdx = 4; enemyActorIdx < (*enemyCountGlobal) + 4; ++enemyActorIdx) {
@@ -30,9 +30,9 @@ void translateEnemyABData() {
         actorModel74State->modelDataIndex = 0;
         gameInitEnemiesFromAB(enemyActorIdx);
         byte_BF2DF8[enemyActorIdx] = UNK_ACTOR_STRUCT_ARRAY[enemyActorIdx].field_1;
-        actorPositionArray[enemyActorIdx].xPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.xPosition;
-        actorPositionArray[enemyActorIdx].yPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.yPosition;
-        actorPositionArray[enemyActorIdx].zPosition = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.zPosition;
+        actorPositionArray[enemyActorIdx].x = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.x;
+        actorPositionArray[enemyActorIdx].y = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.y;
+        actorPositionArray[enemyActorIdx].z = enemyInitialPositionArray[(enemyActorIdx - 4)].enemyPosition.z;
         actorModelState->restingZRotation = 0;
         actorModelState->restingXRotation = 0;
         switch (*battleType) {
@@ -45,7 +45,7 @@ void translateEnemyABData() {
             case 5:
             case 6:
             case 7: {
-                if (actorPositionArray[enemyActorIdx].zPosition >= 0) {
+                if (actorPositionArray[enemyActorIdx].z >= 0) {
                     actorModelState->restingYRotation = 2048;
                     actorModelState->initialYRotation = 2048;
                 }
@@ -56,13 +56,13 @@ void translateEnemyABData() {
                 break;
             }
             default: {
-                if (actorPositionArray[enemyActorIdx].zPosition >= 0) {
-                    actorModelState->restingYRotation = 2048;
-                    actorModelState->initialYRotation = 2048;
-                }
-                else {
+                if (actorPositionArray[enemyActorIdx].z >= 0) {
                     actorModelState->restingYRotation = 0;
                     actorModelState->initialYRotation = 0;
+                }
+                else {
+                    actorModelState->restingYRotation = 2048;
+                    actorModelState->initialYRotation = 2048;
                 }
                 break;
             }
@@ -74,7 +74,7 @@ void translatePlayerABData() {
     u8* gCharacterModelCount = (u8*)(0xBF2E0C);
     u8* battleType = (u8*)0xBFD0E0;
     u8* byte_BF2DF8 = (u8*)0xBF2DF8;
-    ModelPositionStruct* actorPositionArray = (ModelPositionStruct*)(0xBFD0A0);
+    R3PointWord* actorPositionArray = (R3PointWord*)(0xBFD0A0);
     TwoMemberPositionStruct* twoPartyPositionArray = (TwoMemberPositionStruct*)(0x7C23B0);
     FullPartyPositionStruct* fullPartyPositionArray = (FullPartyPositionStruct*)(0x7C2298);
     UnkTwoPartyStruct* twoPartyAngles = (UnkTwoPartyStruct*)(0x7C24B8);
@@ -94,9 +94,9 @@ void translatePlayerABData() {
         case 1: {
             sub_42B4AF();
             for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
-                actorPositionArray[partyIdx].xPosition = 0;
-                actorPositionArray[partyIdx].yPosition = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].yPosition;
-                actorPositionArray[partyIdx].zPosition = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].zPosition;
+                actorPositionArray[partyIdx].x = 0;
+                actorPositionArray[partyIdx].y = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].y;
+                actorPositionArray[partyIdx].z = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].z;
             }
             sub_42B579();
         }
@@ -106,14 +106,14 @@ void translatePlayerABData() {
                 if (UNK_ACTOR_STRUCT_ARRAY[partyIdx].characterID != 0xFF) {
                     if (UNK_ACTOR_STRUCT_ARRAY[partyIdx].field_6 & 1) {
                         if (twoPartyAngles[*battleType].angles[relIndex])
-                            twoPartyPositionArray[*battleType].enemyPosition[relIndex].zPosition -= 516;
+                            twoPartyPositionArray[*battleType].enemyPosition[relIndex].z -= 516;
                         else
-                            twoPartyPositionArray[*battleType].enemyPosition[relIndex].zPosition += 516;
+                            twoPartyPositionArray[*battleType].enemyPosition[relIndex].z += 516;
                     }
 
-                    actorPositionArray[partyIdx].xPosition = twoPartyPositionArray[*battleType].enemyPosition[relIndex].xPosition;
-                    actorPositionArray[partyIdx].yPosition = twoPartyPositionArray[*battleType].enemyPosition[relIndex].yPosition;
-                    actorPositionArray[partyIdx].zPosition = twoPartyPositionArray[*battleType].enemyPosition[relIndex].zPosition;
+                    actorPositionArray[partyIdx].x = twoPartyPositionArray[*battleType].enemyPosition[relIndex].x;
+                    actorPositionArray[partyIdx].y = twoPartyPositionArray[*battleType].enemyPosition[relIndex].y;
+                    actorPositionArray[partyIdx].z = twoPartyPositionArray[*battleType].enemyPosition[relIndex].z;
 
 
                     getBattleModelState(partyIdx)->initialYRotation = twoPartyAngles[*battleType].angles[relIndex];
@@ -130,9 +130,9 @@ void translatePlayerABData() {
         default: {
             sub_42B4AF();
             for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
-                actorPositionArray[partyIdx].xPosition = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].xPosition;
-                actorPositionArray[partyIdx].yPosition = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].yPosition;
-                actorPositionArray[partyIdx].zPosition = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].zPosition;
+                actorPositionArray[partyIdx].x = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].x;
+                actorPositionArray[partyIdx].y = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].y;
+                actorPositionArray[partyIdx].z = fullPartyPositionArray[*battleType].enemyPosition[partyIdx].z;
             }
             sub_42B579();
         }
@@ -141,9 +141,9 @@ void translatePlayerABData() {
     for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
         byte_BF2DF8[partyIdx] = UNK_ACTOR_STRUCT_ARRAY[partyIdx].field_1;
         u8* byteViewAnimBlock = (u8*)&(getBattleModelState(partyIdx)->characterID);
-        getBattleModelState(partyIdx)->restingPosition.x = actorPositionArray[partyIdx].xPosition;
-        getBattleModelState(partyIdx)->restingPosition.y = actorPositionArray[partyIdx].yPosition;
-        getBattleModelState(partyIdx)->restingPosition.z = actorPositionArray[partyIdx].zPosition;
+        getBattleModelState(partyIdx)->restingPosition.x = actorPositionArray[partyIdx].x;
+        getBattleModelState(partyIdx)->restingPosition.y = actorPositionArray[partyIdx].y;
+        getBattleModelState(partyIdx)->restingPosition.z = actorPositionArray[partyIdx].z;
     }
 }
 

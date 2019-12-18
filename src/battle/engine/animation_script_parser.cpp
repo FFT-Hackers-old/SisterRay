@@ -19,7 +19,7 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
         AnimScriptEvent srEvent = { actorID, scriptCtx.scriptPtr, &scriptCtx, scriptCtx.currentOpCode, getBattleModelState(actorID), ptrToScriptTable };
         gContext.eventBus.dispatch(ON_RUN_ANIMATION_SCRIPT, (void*)&srEvent);
 
-        switch (ownerModelState.runningAnimIdx) {
+        switch (ownerModelState.animScriptIndex) {
         case 46:
             scriptCtx.scriptPtr = (u8*)0x7C10E0; //script that displays poisons action
             srLogWrite("attemping to trigger poison event for actor %d", actorID);
@@ -78,7 +78,7 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
                 scriptCtx.currentOpCode = scriptCtx.scriptPtr[ownerModelState.currentScriptPosition++];
                 if (scriptCtx.currentOpCode < 0x8E) {
                     if (ownerModelState.animScriptIndex != 0) {
-                        srLogWrite("CURRENTLY EXECUTION ANIMATION %d for actor %d", ownerModelState.runningAnimIdx, actorID);
+                        srLogWrite("CURRENTLY EXECUTING ANIMATION %d for actor %d", ownerModelState.runningAnimIdx, actorID);
                     }
                     ownerModelState.runningAnimIdx = scriptCtx.currentOpCode;
                     ownerModelState.field_74 = 0;
@@ -86,11 +86,13 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
                     scriptOwnerRotationData.field_0 = 0;
                     scriptCtx.isScriptActive = 0;
                     srHandleAnimateModel(actorID);
+                    return;
                 }
                 AnimScriptEvent animScriptEvent = { actorID, scriptCtx.scriptPtr, &scriptCtx, scriptCtx.currentOpCode, getBattleModelState(actorID), ptrToScriptTable };
-                if (!gContext.animScriptOpcodes.contains(assembleOpCodeKey(scriptCtx.currentOpCode)))
+                if (!gContext.animScriptOpcodes.contains(assembleOpCodeKey(scriptCtx.currentOpCode))) {
+                    srLogWrite("ERROR: Trying to execute invalid opcode %x for actor %d", scriptCtx.currentOpCode, actorID);
                     continue;
-
+                }
                 auto opcode = gContext.animScriptOpcodes.getElement(assembleOpCodeKey(scriptCtx.currentOpCode));
 
                 if (ownerModelState.animScriptIndex != 0) {

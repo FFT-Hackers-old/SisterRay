@@ -3,7 +3,7 @@
 #include "../../impl.h"
 
 void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
-    AnimScriptContext* ptrToScriptContext = (AnimScriptContext*)0x8FE2AC;
+    AnimScriptContext** scriptCtxGlobal = (AnimScriptContext**)0x8FE2AC;
     auto& ownerModelState = *getBattleModelState(actorID);
     auto& scriptOwner74State = *getBattleModelState74(actorID);
     auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);
@@ -12,7 +12,7 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
         srLogWrite("running animation script with idx: %d for actor %d", ownerModelState.animScriptIndex, actorID);
     }
     if (!*BATTLE_PAUSED_GLOBAL) {
-        auto& scriptCtx = *ptrToScriptContext;
+        auto& scriptCtx = *(*scriptCtxGlobal);
         *byte_9ADEF8 = 0;
         scriptCtx.isScriptActive = 1;
         scriptCtx.scriptPtr = ptrToScriptTable[ownerModelState.animScriptIndex];
@@ -22,7 +22,6 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
         switch (ownerModelState.animScriptIndex) {
         case 46:
             scriptCtx.scriptPtr = (u8*)0x7C10E0; //script that displays poisons action
-            srLogWrite("attemping to trigger poison event for actor %d", actorID);
             break;
         case 47:
             scriptCtx.scriptPtr = (u8*)0x7C10F0;

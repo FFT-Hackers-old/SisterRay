@@ -1028,18 +1028,9 @@ OpCodeControlSequence OpCodeD1(AnimScriptEvent* srEvent) {
     u32* off_C06008 = (u32*)0xC06008;
     auto& scriptCtx = *srEvent->scriptContext;
 
-
-    srLogWrite("raw bytes: %x, %x", srEvent->scriptPtr[srEvent->battleModelState->currentScriptPosition], srEvent->scriptPtr[srEvent->battleModelState->currentScriptPosition + 1]);
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    srLogWrite("INTERPOLATED MOVE: read value %x for first arg", scriptCtx.opCodeArgs[4]);
-
-
-    srLogWrite("raw bytes: %x, %x", srEvent->scriptPtr[srEvent->battleModelState->currentScriptPosition], srEvent->scriptPtr[srEvent->battleModelState->currentScriptPosition + 1]);
     *off_C06008 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    srLogWrite("INTERPOLATED MOVE: read value %x for second arg", *off_C06008);
-
     scriptCtx.opCodeArgs[3] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    srLogWrite("INTERPOLATED MOVE: read value %x for frame count", scriptCtx.opCodeArgs[3]);
     R3PointWord* moveBasePoint = nullptr;
     if (getTargetAllActive()) {
         srComputeEnemyPartyCenter(getAnimatingActionTargetMask(), (R3PointWord*)&(scriptCtx.field_16));
@@ -1047,9 +1038,7 @@ OpCodeControlSequence OpCodeD1(AnimScriptEvent* srEvent) {
     }
     else {
         auto pos = getBattleModelState(getAnimatingActionTargetIdx())->restingPosition;
-        srLogWrite("target location: %x, %x, %x", pos.x, pos.y, pos.z);
         moveBasePoint = (R3PointWord*)&(getBattleModelState(getAnimatingActionTargetIdx())->restingPosition.x); 
-        srLogWrite("target location from ptr: %x, %x, %x", moveBasePoint->x, moveBasePoint->y, moveBasePoint->z);
     }
     srDispatchMoveEffects(
         srEvent->actorID,
@@ -1239,7 +1228,7 @@ OpCodeControlSequence OpCodeDF(AnimScriptEvent* srEvent) {
     auto& ownerModelState = *srEvent->battleModelState;
     R3PointWord* basePoint = (R3PointWord*)&scriptCtx.field_16;
     srComputeEnemyPartyCenter(getAnimatingActionTargetMask(), basePoint);
-    auto zDelta = basePoint->z - ownerModelState.restingPosition.z; //appears unused
+    auto zDelta = basePoint->z - ownerModelState.restingPosition.z; 
     ownerModelState.restingYRotation = calculateYAngleComponent(basePoint->x - ownerModelState.restingPosition.x, zDelta) + 2048;
     return RUN_NEXT;
 }
@@ -1360,7 +1349,7 @@ OpCodeControlSequence OpCodeE7(AnimScriptEvent* srEvent) {
 OpCodeControlSequence OpCodeE8(AnimScriptEvent* srEvent) {
     auto& modelState = *srEvent->battleModelState;
     auto& modelState74 = *getBattleModelState74(srEvent->actorID);
-    srLoadActionSpellEffects(srEvent->actorID, modelState.commandID, modelState74.actionIdx);
+    //srLoadActionSpellEffects(srEvent->actorID, modelState.commandID, modelState74.actionIdx);
     return RUN_NEXT;
 }
 

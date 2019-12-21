@@ -7,7 +7,7 @@
 
 SrMateriaRegistry::SrMateriaRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<MateriaData, std::string>(stream) {
     /*Adjust the indexes referenced in kernel.bin to be relative to the action type*/
-    for (auto it = begin(_resource_registry); it != end(_resource_registry); ++it) {
+    for (auto it = std::begin(_resource_registry); it != std::end(_resource_registry); ++it) {
         auto materiaidx = distance(_resource_registry.begin(), it);
         auto& materia = *it;
         auto materiaType = materia.type & 0x0F;

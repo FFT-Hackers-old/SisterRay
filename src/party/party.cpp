@@ -52,7 +52,7 @@ void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::ve
     }
     enableDefaultCommands(partyIndex, magicEnabled, summonEnabled);
 
-    for (auto it = begin(equippedMaterias); it != end(equippedMaterias); ++it) {
+    for (auto it = std::begin(equippedMaterias); it != std::end(equippedMaterias); ++it) {
         auto materia = *it;
         if (materia.item_id == 0xFFFF)
             continue;

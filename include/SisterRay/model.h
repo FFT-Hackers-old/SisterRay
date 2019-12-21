@@ -172,6 +172,36 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
+    u8 isScriptActive;
+    u8 currentOpCode;
+    u8 field_2;
+    u8 field_3;
+    u8* scriptPtr;
+    u16 field_8;
+    u16 opCodeArgs[5];
+    u8 field_14;
+    u8 field_15;
+    u16 field_16;
+    u16 field_18;
+    u16 field_1A;
+    u8 field_1C;
+} AnimScriptContext;
+#pragma pack(pop)
+
+typedef struct {
+    u8 actorID;
+    u8* scriptPtr;
+    AnimScriptContext* scriptContext;
+    u8 currentScriptIdx;
+    BattleModelState* battleModelState;
+    u8** animationScriptTable;
+} AnimScriptEvent;
+
+enum OpCodeControlSequence { RUN_NEXT, PLAY_ANIM, BREAK };
+typedef OpCodeControlSequence(*SRPFNANMSCRIPTOPCODEHANDLER)(AnimScriptEvent*);
+
+#pragma pack(push, 1)
+typedef struct {
     u32 field_0;
     u16 bData68[4];
     u16 field_C;

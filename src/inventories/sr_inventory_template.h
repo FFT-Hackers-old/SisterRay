@@ -39,7 +39,7 @@ public:
     }
 
     u16 findItemInventoryIndex(u16 itemID) {
-        for (auto it = begin(_resource_registry); it != end(_resource_registry); ++it) {
+        for (auto it = std::begin(_resource_registry); it != std::end(_resource_registry); ++it) {
             if ((*it).item_id == itemID) {
                 return distance(_resource_registry.begin(), it);
             }

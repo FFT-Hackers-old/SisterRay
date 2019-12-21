@@ -88,11 +88,12 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
                     return;
                 }
                 AnimScriptEvent animScriptEvent = { actorID, scriptCtx.scriptPtr, &scriptCtx, scriptCtx.currentOpCode, getBattleModelState(actorID), ptrToScriptTable };
-                if (!gContext.animScriptOpcodes.contains(assembleOpCodeKey(scriptCtx.currentOpCode))) {
+                /*if (!gContext.animScriptOpcodes.contains(assembleOpCodeKey(scriptCtx.currentOpCode))) {
                     srLogWrite("ERROR: Trying to execute invalid opcode %x for actor %d", scriptCtx.currentOpCode, actorID);
                     continue;
-                }
-                auto opcode = gContext.animScriptOpcodes.getElement(assembleOpCodeKey(scriptCtx.currentOpCode));
+                }*/
+                //auto opcode = gContext.animScriptOpcodes.getElement(assembleOpCodeKey(scriptCtx.currentOpCode));
+                auto opcode = gContext.animScriptOpcodes.getResource(scriptCtx.currentOpCode - 0x8E);
 
                 if (ownerModelState.animScriptIndex != 0) {
                     srLogWrite("executing opcode %x", scriptCtx.currentOpCode);

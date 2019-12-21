@@ -10,6 +10,11 @@
 #include "../battle_utils.h"
 #include "../battle_models/model_setup_routines.h"
 
+
+OpCodeControlSequence nopCode(AnimScriptEvent* srEvent) {
+    return RUN_NEXT;
+}
+
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
     u8* byte_BF2150 = (u8*)0xBF2150;
@@ -1135,6 +1140,17 @@ OpCodeControlSequence OpCodeD8(AnimScriptEvent* srEvent) {
     effectCtx.wordArray[1] = *(u16*)off_C06008;
     effectCtx.wordArray[2] = *(u16*)off_C0600C;
     return RUN_NEXT;
+}
+
+//This opcode is used to extend the script to run player registered opcodes
+OpCodeControlSequence OpCodeDA(AnimScriptEvent* srEvent) {
+    auto extendedCode = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    if (extendedCode <= 0x71) {
+        srLogWrite("ERROR: Extended opcodes must have indexes greater than 0xFF");
+        return RUN_NEXT;
+    }
+    auto opcode = gContext.animScriptOpcodes.getResource(extendedCode);
+    return opcode(srEvent);
 }
 
 OpCodeControlSequence OpCodeDB(AnimScriptEvent* srEvent) {

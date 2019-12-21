@@ -148,15 +148,6 @@ typedef struct {
 
 typedef struct {
     u8 actorID;
-    u8* scriptPtr;
-    AnimScriptContext* scriptContext;
-    u8 currentScriptIdx;
-    BattleModelState* battleModelState;
-    u8** animationScriptTable;
-} AnimScriptEvent;
-
-typedef struct {
-    u8 actorID;
     u8 animationType;
     u8 animationEffectID;
     u8 commandIdx;

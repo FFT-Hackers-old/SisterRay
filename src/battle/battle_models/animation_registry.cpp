@@ -39,14 +39,14 @@ SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::stri
         SrAnimation srAnim = { animSize, currentAnimation };
         if (hasWeapon) {
             if (animationIdx < BASE_WEAPON_OFFSET) {
-                modelAnims.modelAnimations[assembleAnimKey(animationIdx)] = srAnim;
+                modelAnims.modelAnimations.addElement(assembleAnimKey(animationIdx), srAnim);
             }
             else {
-                modelAnims.weaponAnimations[assembleAnimKey(animationIdx - BASE_WEAPON_OFFSET)] = srAnim;
+                modelAnims.weaponAnimations.addElement(assembleAnimKey(animationIdx - BASE_WEAPON_OFFSET), srAnim);
             }
         }
         else {
-            modelAnims.modelAnimations[assembleAnimKey(animationIdx)] = srAnim;
+            modelAnims.modelAnimations.addElement(assembleAnimKey(animationIdx), srAnim);
         }
         animDataStartPtr = (u32*)&(frameDataPtr[animHeader->compressedSize]);
     }
@@ -100,8 +100,7 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
 
     u32 tableIdx = 0;
     /*Copy every model animation, in order, into the buffer*/
-    for (auto animationElement : animations) {
-        auto srAnim = animationElement.second;
+    for (auto srAnim : animations) {
         u32 rawBufferSize = srAnim.rawBufferSize;
         void* newAnimBuffer = srCreateBattleAnimation(srAnim.animationData->frameCount, srAnim.animationData->BonesCount, srAnim.animationData->unkDword);
         BattleAnimation* headerView = (BattleAnimation*)newAnimBuffer;
@@ -114,8 +113,7 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
         }
     }
     if (aaHeader->weaponCount) {
-        for (auto animationElement : weaponAnimations) {
-            auto srAnim = animationElement.second;
+        for (auto srAnim : weaponAnimations) {
             u32 rawBufferSize = srAnim.rawBufferSize;
             void* newAnimBuffer = srCreateBattleAnimation(srAnim.animationData->frameCount, srAnim.animationData->BonesCount, srAnim.animationData->unkDword);
             BattleAnimation* headerView = (BattleAnimation*)newAnimBuffer;
@@ -132,15 +130,18 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
 }
 
 
-SISTERRAY_API void addModelAnimation(const char* modelName, const SrAnimation animation) {
+SISTERRAY_API void addModelAnimation(const char* modName, u16 modIdx, const char* modelName, const SrAnimation animation) {
     auto& modelAnimations = gContext.battleAnimations.getElement(modelName);
-    modelAnimations.modelAnimations[assembleAnimKey(modelAnimations.totalAnimationCount)] = animation;
+    auto name = std::string(modName) + std::to_string(modIdx);
+    modelAnimations.modelAnimations.addElement(name, animation);
     modelAnimations.totalAnimationCount++;
 }
 
 
-SISTERRAY_API void addPlayerModelAnimation(const char* modelName, const SrAnimation animation, const SrAnimation weaponAnimation) {
+SISTERRAY_API void addPlayerModelAnimation(const char* modName, u16 modIdx, const char* modelName, const SrAnimation animation, const SrAnimation weaponAnimation) {
     auto& modelAnimations = gContext.battleAnimations.getElement(modelName);
-    modelAnimations.modelAnimations[assembleAnimKey(modelAnimations.totalAnimationCount)] = animation;
+    auto name = std::string(modName) + std::to_string(modIdx);
+    modelAnimations.modelAnimations.addElement(name, animation);
+    modelAnimations.weaponAnimations.addElement(name, weaponAnimation);
     modelAnimations.totalAnimationCount++;
 }

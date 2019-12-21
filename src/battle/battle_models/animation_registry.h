@@ -59,10 +59,6 @@ static const std::vector <std::string> summonModelnames = {
 };
 
 /*Raw buffer size is used for memcpying the relevant information when a model attempts to seek it*/
-typedef struct {
-    u32 rawBufferSize; //This is used when memcopying to the buffers actually used in battle
-    BattleAnimation* animationData;
-} SrAnimation;
 
 /*This data lives in a registry, and is copied into the right place when the game is allocating models for a given battle
   This is necessary to avoid the game attempting to */
@@ -71,8 +67,8 @@ typedef struct SrModelAnimations {
     u16 modelAnimationCount;
     u16 weaponsAnimationCount;
     u16 totalAnimationCount;
-    std::map<std::string, SrAnimation> modelAnimations;
-    std::map<std::string, SrAnimation> weaponAnimations;
+    SrNamedResourceRegistry<SrAnimation, std::string> modelAnimations;
+    SrNamedResourceRegistry<SrAnimation, std::string> weaponAnimations;
 } SrModelAnimations;
 
 SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon, void* battleLGPBuffer);

@@ -359,22 +359,4 @@ typedef struct {
 
 #define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
 
-#pragma pack(push, 1)
-typedef struct {
-    u8 isScriptActive;
-    u8 currentOpCode;
-    u8 field_2;
-    u8 field_3;
-    u8* scriptPtr;
-    u16 field_8;
-    u16 opCodeArgs[5];
-    u8 field_14;
-    u8 field_15;
-    u16 field_16;
-    u16 field_18;
-    u16 field_1A;
-    u8 field_1C;
-} AnimScriptContext;
-#pragma pack(pop)
-
 #endif

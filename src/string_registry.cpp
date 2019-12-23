@@ -107,16 +107,16 @@ const char* getNameFromRelativeID(u16 relativeID, u8 itemType) {
         return gContext.items.getResource(relativeID).itemName.str();
         break;
     case 1:
-        return gContext.gameStrings.weapon_names.get_string(relativeID);
+        return gContext.weapons.getResource(relativeID).weaponName.str();
         break;
     case 2:
-        return gContext.gameStrings.armor_names.get_string(relativeID);
+        return gContext.armors.getResource(relativeID).armorName.str();
         break;
     case 3:
-        return gContext.gameStrings.accessory_names.get_string(relativeID);
+        return gContext.accessories.getResource(relativeID).accessoryName.str();
         break;
     default:
-        return gContext.gameStrings.item_names.get_string(relativeID);
+        return gContext.items.getResource(relativeID).itemName.str();;
     }
 }
 
@@ -126,16 +126,16 @@ const char* getDescriptionFromRelativeID(u16 relativeID, u8 itemType) {
         return gContext.items.getResource(relativeID).itemDescription.str();
         break;
     case 1:
-        return gContext.gameStrings.weapon_descriptions.get_string(relativeID);
+        return gContext.weapons.getResource(relativeID).weaponDescription.str();
         break;
     case 2:
-        return gContext.gameStrings.armor_descriptions.get_string(relativeID);
+        return gContext.armors.getResource(relativeID).armorDescription.str();
         break;
     case 3:
-        return gContext.gameStrings.accessory_descriptions.get_string(relativeID);
+        return gContext.accessories.getResource(relativeID).accessoryDescription.str();
         break;
     default:
-        return gContext.gameStrings.item_descriptions.get_string(relativeID);
+        return gContext.items.getResource(relativeID).itemDescription.str();;
     }
 }
 

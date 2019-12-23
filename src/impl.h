@@ -60,13 +60,9 @@ typedef struct {
     srNoTargetCallbackRegistry          untargeted_handlers;
 
     SrWeaponRegistry                    weapons;
-    SrAuxWeaponRegistry                 auxWeapons;
     SrArmorRegistry                     armors;
-    SrAuxArmorRegistry                  auxArmors;
     SrAccessoryRegistry                 accessories;
-    SrAuxAccessoryRegistry              auxAccessories;
     SrMateriaRegistry                   materias;
-    SrAuxMateriaRegistry                auxMaterias;
 
     SrBattleAnimationRegistry           battleAnimations;
     SrBattleAnimScriptRegistry          battleAnimationScripts;
@@ -97,11 +93,11 @@ SISTERRAY_API void srInitLua(void);
 SISTERRAY_API void srInitLuaConsole(void);
 
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
-SISTERRAY_API void init_materia(SrKernelStream* stream);
-SISTERRAY_API void init_armor(SrKernelStream* stream);
-SISTERRAY_API void init_accessory(SrKernelStream* stream);
+SISTERRAY_API void initMateria(SrKernelStream* stream);
+SISTERRAY_API void initArmor(SrKernelStream* stream);
+SISTERRAY_API void initAccessories(SrKernelStream* stream);
 SISTERRAY_API void initItems(SrKernelStream* stream);
-SISTERRAY_API void init_weapon(SrKernelStream* stream);
+SISTERRAY_API void initWeapons(SrKernelStream* stream);
 
 SISTERRAY_API void initLog(void);
 SISTERRAY_API void srLogWrite(const char* format, ...);

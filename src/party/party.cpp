@@ -1,10 +1,26 @@
 #include "party.h"
 #include "../impl.h"
 
+#define CHARACTER_COUNT 0xA
+
 SrPartyDataRegistry::SrPartyDataRegistry() : SrNamedResourceRegistry<SrPartyData, std::string>() {
-    addElement(getPartyKey(0), SrPartyData());
-    addElement(getPartyKey(1), SrPartyData());
-    addElement(getPartyKey(2), SrPartyData());
+    for (u8 i = 0; i < CHARACTER_COUNT; i++) {
+        auto partyData = SrPartyData();
+        auto& stats = partyData.playerStats;
+        SrActorStat str = { 1, 255, EncodedString("Strength") };
+        stats["STR"] = str;
+        SrActorStat vit = { 1, 255, EncodedString("Vitality") };
+        stats["VIT"] = vit;
+        SrActorStat mag = { 1, 255, EncodedString("Magic") };
+        stats["MAG"] = mag;
+        SrActorStat spr = { 1, 255, EncodedString("Spirit") };
+        stats["SPR"] = spr;
+        SrActorStat dex = { 1, 255, EncodedString("Dexterity") };
+        stats["DEX"] = dex;
+        SrActorStat luck = { 1, 255, EncodedString("Luck") };
+        stats["LCK"] = luck;
+        addElement(getPartyKey(i), partyData);
+    }
 }
 
 void SrPartyDataRegistry::addAutoAction(u32 partyIndex, const SrAutoAction& action) {
@@ -35,7 +51,7 @@ const std::string getPartyKey(u8 partyIndex) {
 }
 
 /*This method enables actions*/
-void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, ActorStatBoosts& boosts) {
+void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias) {
     if (partyIndex > 3)
         return;
 
@@ -58,7 +74,7 @@ void SrPartyDataRegistry::handleMateriaActorUpdates(u8 partyIndex, const std::ve
             continue;
         u8 maxLevel = 1;
         auto materiaLevel = getMateriaLevel(materia, &maxLevel);
-        EnableAbilitiesEvent enableActionEvent = { partyIndex, materia, gContext.materias.getResource(materia.item_id), materiaLevel, &boosts };
+        EnableAbilitiesEvent enableActionEvent = { partyIndex, materia, gContext.materias.getResource(materia.item_id).gameMateria, materiaLevel };
         auto topkey = getTopKey(getMateriaTopType(materia.item_id));
         auto subkey = getSubKey(getMateriaSubType(materia.item_id));
         std::vector<SrEventContext> dispatchContexts = { topkey, subkey };
@@ -81,7 +97,7 @@ u8 getCommandRows(u8 partyIndex) {
 }
 
 /*Applys modifiers when support materia are paired with others*/
-void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType, ActorStatBoosts& boosts) {
+void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType) {
     for (auto pairIndex = 0; pairIndex < 8; pairIndex += 2) {
         auto slots = getMateriaSlots(partyIndex, gearType);
         auto leftSlot = slots[pairIndex];
@@ -94,10 +110,10 @@ void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInvento
         auto& leftMateria = equippedMaterias[pairIndex];
         auto& rightMateria = equippedMaterias[pairIndex + 1];
         if (getMateriaTopType(leftMateria.item_id) == 5) {
-            dispatchSupportHandlers(partyIndex, leftMateria, rightMateria, gearType, boosts);
+            dispatchSupportHandlers(partyIndex, leftMateria, rightMateria, gearType);
         }
         if (getMateriaTopType(rightMateria.item_id) == 5) {
-            dispatchSupportHandlers(partyIndex, rightMateria, leftMateria, gearType, boosts);
+            dispatchSupportHandlers(partyIndex, rightMateria, leftMateria, gearType);
         }
     }
 }
@@ -108,11 +124,11 @@ u8* getMateriaSlots(u8 partyIdx, SrGearType gearType) {
     auto kernelObjectID = getEquippedGear(characterRecordArrayIndex, gearType);
 
     if (gearType == SR_GEAR_WEAPON) {
-        auto materiaSlots = &(gContext.weapons.getResource(kernelObjectID).materia_slots[0]);
+        auto materiaSlots = &(gContext.weapons.getResource(kernelObjectID).gameWeapon.materia_slots[0]);
         return materiaSlots;
     }
     else if (gearType == SR_GEAR_ARMOR) {
-        auto materiaSlots = &(gContext.armors.getResource(kernelObjectID).materia_slots[0]);
+        auto materiaSlots = &(gContext.armors.getResource(kernelObjectID).gameArmor.materia_slots[0]);
         return materiaSlots;
     }
     return nullptr;
@@ -127,7 +143,7 @@ bool slotsAreLinked(u8 leftSlot, u8 rightSlot) {
 }
 
 /*Dispatch support materia handlers, keyed on contexts corresponding to the type and subtype of the paired materia*/
-void dispatchSupportHandlers(u8 partyIndex, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGearType gearType, ActorStatBoosts& boosts) {
+void dispatchSupportHandlers(u8 partyIndex, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGearType gearType) {
     u8 supportMax;
     u8 pairedMax;
     auto supportLevel = getMateriaLevel(supportMateria, &supportMax);
@@ -136,11 +152,11 @@ void dispatchSupportHandlers(u8 partyIndex, const MateriaInventoryEntry& support
         partyIndex,
         supportMateria,
         supportLevel,
-        gContext.materias.getResource(supportMateria.item_id),
+        gContext.materias.getResource(supportMateria.item_id).gameMateria,
         pairedMateria,
         pairedLevel,
-        gContext.materias.getResource(pairedMateria.item_id),
-        &boosts
+        gContext.materias.getResource(pairedMateria.item_id).gameMateria,
+        gearType
     };
 
     auto topkey = getTopKey(getMateriaTopType(pairedMateria.item_id));
@@ -367,10 +383,9 @@ void srRecalculateDerivedStats(u32 partyIndex) {
     std::copy(begin(armorMaterias), end(armorMaterias), begin(armVector));
 
     gContext.party.clearActions(partyIndex);
-    ActorStatBoosts statBoosts = createActorStatBoosts();
-    gContext.party.handleMateriaActorUpdates(partyIndex, equippedMaterias, statBoosts); //Enable spells, counters, commands, and fill out stat boosts based on materia stuff
-    applyLinkedMateriaModifiers(partyIndex, wpnVector, SR_GEAR_WEAPON, statBoosts);
-    applyLinkedMateriaModifiers(partyIndex, armVector, SR_GEAR_ARMOR, statBoosts);
+    gContext.party.handleMateriaActorUpdates(partyIndex, equippedMaterias); //Enable spells, counters, commands, and fill out stat boosts based on materia stuff
+    applyLinkedMateriaModifiers(partyIndex, wpnVector, SR_GEAR_WEAPON);
+    applyLinkedMateriaModifiers(partyIndex, armVector, SR_GEAR_ARMOR);
 }
 
 /*determine whether or not commands are enabled from resizeable SR arrays*/

@@ -184,13 +184,13 @@ void handleMateriaUpdate(CharacterRecord& activeCharacterRecord, u8 gearType, u1
     for (i32 materiaSlotIndex = 0; materiaSlotIndex < 8; ++materiaSlotIndex) {
         switch (gearType) {
             case 1: {
-                newWeaponData = gContext.weapons.getResource(gearRelativeIndex);
+                newWeaponData = gContext.weapons.getResource(gearRelativeIndex).gameWeapon;
                 materiaSlots = &(newWeaponData.materia_slots[0]);
                 equippedMateriaData = gContext.characters.getElement(getCharacterName(characterID)).wpnMaterias[materiaSlotIndex];
                 break;
             }
             case 2: {
-                newArmorData = gContext.armors.getResource(gearRelativeIndex);
+                newArmorData = gContext.armors.getResource(gearRelativeIndex).gameArmor;
                 materiaSlots = &(newArmorData.materia_slots[0]);
                 equippedMateriaData = gContext.characters.getElement(getCharacterName(characterID)).armMaterias[materiaSlotIndex];
                 break;

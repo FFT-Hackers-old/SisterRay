@@ -7,19 +7,21 @@
 #include "base_item.h"
 
 #define KERNEL_WEAPON_COUNT 128
+
+typedef struct {
+    WeaponData gameWeapon;
+    AuxWeaponData auxData;
+    EncodedString weaponName;
+    EncodedString weaponDescription;
+    EquipmentStatBoosts equipEffects;
+} SrWeapon;
  
-class SrWeaponRegistry : public SrNamedResourceRegistry<WeaponData, std::string> {
+class SrWeaponRegistry : public SrNamedResourceRegistry<SrWeapon, std::string> {
 public:
-    SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<WeaponData, std::string>(stream) {}
-    SrWeaponRegistry() : SrNamedResourceRegistry<WeaponData, std::string>() {}
+    SrWeaponRegistry(SrKernelStream* stream);
+    SrWeaponRegistry() : SrNamedResourceRegistry<SrWeapon, std::string>() {}
 };
 
-class SrAuxWeaponRegistry : public SrNamedResourceRegistry<AuxWeaponData, std::string> {
-public:
-    SrAuxWeaponRegistry() : SrNamedResourceRegistry<AuxWeaponData, std::string>() {}
-};
-
-void initializeAuxWeaponRegistry();
 u8 getWeaponIcon(u8 characterID);
 
 #endif

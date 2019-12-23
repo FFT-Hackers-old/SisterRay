@@ -25,27 +25,9 @@ typedef enum {
 
 typedef enum {
     SR_GEAR_WEAPON,
-    SR_GEAR_ARMOR
+    SR_GEAR_ARMOR,
+    SR_GEAR_ACCESSORY
 } SrGearType;
-
-typedef struct {
-    u32 sign;
-    u16 statIndex;
-    u16 amount;
-    u16 percentAmount;
-} StatBoost;
-
-typedef struct {
-    StatBoost strBoost;
-    StatBoost vitBoost;
-    StatBoost magBoost;
-    StatBoost magDefBoost;
-    StatBoost dexBoost;
-    StatBoost luckBoost;
-    StatBoost maxHPBoost;
-    StatBoost maxMPBoost;
-    StatBoost coverChance;
-} ActorStatBoosts;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -170,7 +152,7 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    ActorStatBoosts boosts;
+    u16 stagger;
 } AuxWeaponData;
 
 typedef struct {
@@ -203,7 +185,7 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    ActorStatBoosts boosts;
+    u16 staggerRes;
 } AuxArmorData;
 
 typedef struct {
@@ -227,7 +209,8 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    ActorStatBoosts boosts;
+    u16 stagger;
+    u16 staggerRes;
 } AuxAccessoryData;
 
 typedef struct {
@@ -249,7 +232,7 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    ActorStatBoosts equipEffects;
+    u8 canLink;
 } AuxMateriaData;
 
 typedef struct {

@@ -29,10 +29,10 @@ static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     initCharacterData,
     NULL,
     initItems,
-    init_weapon,
-    init_armor,
-    init_accessory,
-    init_materia,
+    initWeapons,
+    initArmor,
+    initAccessories,
+    initMateria,
 };
 
 struct Kernel2Entry {

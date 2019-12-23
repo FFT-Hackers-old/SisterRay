@@ -13,7 +13,9 @@
 #define AUTO_ACTION_COUNT 10
 
 /*These are relocated from the games base locations to make them extensible*/
+/*Unluke the base game one will always be calculated for each character*/
 typedef struct {
+    std::unordered_map<std::string, SrActorStat> playerStats;
     std::array<EnabledSpell, MAGIC_COUNT> actorMagics;
     std::array<EnabledSpell, SUMMON_COUNT> actorSummons;
     std::array<EnabledSpell, ESKILL_COUNT> actorEnemySkills;
@@ -25,9 +27,10 @@ typedef struct {
   Will extend to hold data for all party members later to facilitate character swapping*/
 class SrPartyDataRegistry : public SrNamedResourceRegistry<SrPartyData, std::string> {
 public:
+    std::array<u8, 3> activeParty;
     SrPartyDataRegistry();
     void addAutoAction(u32 partyIndex, const SrAutoAction& action);
-    void handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, ActorStatBoosts& boosts);
+    void handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias);
     void clearActions(u32 partyIndex);
 };
 
@@ -52,8 +55,8 @@ const std::string getPartyKey(u8 partyIndex);
 void srUpdatePartyMember(u32 partyIndex);
 void clearCommandArray(u8 partyIndex);
 void enableDefaultCommands(u8 partyIndex, bool magicEnabled, bool summonEnabled);
-void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType, ActorStatBoosts& boosts);
-void dispatchSupportHandlers(u8 partyIndex, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGearType gearType, ActorStatBoosts& boosts);
+void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType);
+void dispatchSupportHandlers(u8 partyIndex, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGearType gearType);
 
 SISTERRAY_API void addAutoAction(u8 partyIndex, AutoActionType type, u8 commandIndex, u16 actionID, u8 activationChance, u8 counterCount);
 

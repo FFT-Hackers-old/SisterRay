@@ -6,19 +6,20 @@
 #include "game_data_interface.h"
 #include "base_item.h"
 
+typedef struct {
+    AccessoryData gameAccessory;
+    AuxAccessoryData auxData;
+    EncodedString accessoryName;
+    EncodedString accessoryDescription;
+    EquipmentStatBoosts equipEffects;
+} SrAccessory;
+
 #define KERNEL_ACCESSORY_COUNT 32
 
-class SrAccessoryRegistry : public SrNamedResourceRegistry<AccessoryData, std::string> {
+class SrAccessoryRegistry : public SrNamedResourceRegistry<SrAccessory, std::string> {
 public:
-    SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<AccessoryData, std::string>(stream) {}
-    SrAccessoryRegistry() : SrNamedResourceRegistry<AccessoryData, std::string>() {}
+    SrAccessoryRegistry(SrKernelStream* stream);
+    SrAccessoryRegistry() : SrNamedResourceRegistry<SrAccessory, std::string>() {}
 };
-
-class SrAuxAccessoryRegistry : public SrNamedResourceRegistry<AuxAccessoryData, std::string> {
-public:
-    SrAuxAccessoryRegistry() : SrNamedResourceRegistry<AuxAccessoryData, std::string>() {}
-};
-
-void initializeAuxAccessoryRegistry();
 
 #endif

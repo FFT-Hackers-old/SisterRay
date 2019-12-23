@@ -5,13 +5,13 @@
 using namespace MateriaWidgetNames;
 
 void updateEquipEffect(Widget* equipEffectWidget, MateriaInventoryEntry materia) {
-    auto equipEffect = gContext.materias.getResource(materia.item_id).equipEffect;
+    auto equipEffect = gContext.materias.getResource(materia.item_id).gameMateria.equipEffect;
     return;
 }
 
 void ablListH0S2(const DrawMateriaDataEvent* event) {
     auto abilityListWidget = getChild(event->displayWidget, ABILITIES_LIST);
-    auto& data = gContext.materias.getResource(event->materia.item_id).data;
+    auto& data = gContext.materias.getResource(event->materia.item_id).gameMateria.data;
     enableWidget(abilityListWidget);
     EncodedString statName;
     if (data[0] <= 10)
@@ -40,7 +40,7 @@ void ablListH0S2(const DrawMateriaDataEvent* event) {
 
 void ablListH9S1(const DrawMateriaDataEvent* event){
     auto abilityListWidget = getChild(event->displayWidget, ABILITIES_LIST);
-    auto& data = gContext.materias.getResource(event->materia.item_id).data;
+    auto& data = gContext.materias.getResource(event->materia.item_id).gameMateria.data;
     enableWidget(abilityListWidget);
     for (auto idx = 0; idx < 5; ++idx) {
         auto widget = getChild(abilityListWidget, idx);
@@ -64,7 +64,7 @@ void ablListH9S1(const DrawMateriaDataEvent* event){
 
 void ablListH11S3(const DrawMateriaDataEvent* event) {
     auto abilityListWidget = getChild(event->displayWidget, ABILITIES_LIST);
-    auto& data = gContext.materias.getResource(event->materia.item_id).data;
+    auto& data = gContext.materias.getResource(event->materia.item_id).gameMateria.data;
     enableWidget(abilityListWidget);
     for (auto idx = 0; idx < 5; ++idx) {
         for (auto idx = 0; idx < 5; ++idx) {

@@ -174,12 +174,62 @@ u16 SrItemTypeRegistry::getAbsoluteID(u8 itemType, u8 relativeIndex) {
     }
 }
 
-void populatekernelStatBoosts(const u8* const stats, const u8* const amts, ActorStatBoosts& boosts, u8 count) {
+std::string assembleGearStatBoostKey(u16 absoluteItemID, SrGearType itemType) {
+    std::string statKey = std::to_string(itemType) + std::to_string(absoluteItemID) + std::string("GEAR");
+    return statKey;
+}
+
+void populatekernelStatBoosts(EquipmentStatBoosts& statBoosts, const u8* const stats, const u8* const amts, u8 count, u16 relativeGearIdx, SrGearType gearType) {
     for (u16 idx = 0; idx < count; idx++) {
         auto statType = stats[idx];
         if (statType == 0xFF)
             continue;
-        auto& boost = getStatBoostFromID(boosts, statType);
-        boost.amount = amts[idx];
+
+        auto statBoost = StatBoost();
+        statBoost.amount = amts[idx];
+        statBoost.tags.insert("GEAR");
+        statBoost.tags.insert(assembleGDataKey(relativeGearIdx));
+        u8 gearType = gearType;
+        switch (gearType) {
+        case SR_GEAR_WEAPON: {
+            statBoost.tags.insert("WEAPON");
+            break;
+        }
+        case SR_GEAR_ARMOR: {
+            statBoost.tags.insert("ARMOR");
+            break;
+        }
+        case SR_GEAR_ACCESSORY: {
+            statBoost.tags.insert("ACCESSORY");
+            break;
+        }
+        }
+
+        switch (statType) {
+        case 0: {
+            statBoosts["STR"].push_back(statBoost);
+            break;
+        }
+        case 1: {
+            statBoosts["VIT"].push_back(statBoost);
+            break;
+        }
+        case 2: {
+            statBoosts["MAG"].push_back(statBoost);
+            break;
+        }
+        case 3: {
+            statBoosts["SPR"].push_back(statBoost);
+            break;
+        }
+        case 4: {
+            statBoosts["DEX"].push_back(statBoost);
+            break;
+        }
+        case 5: {
+            statBoosts["LCK"].push_back(statBoost);
+            break;
+        }
+        }
     }
 }

@@ -2,22 +2,37 @@
 #define STAT_BOOSTS_H
 
 #include <SisterRay/SisterRay.h>
+#include "../EncodedString.h"
+#include <vector>
+#include <unordered_set>
 
-SISTERRAY_API ActorStatBoosts createActorStatBoosts();
+typedef struct {
+    u32 sign;
+    u16 amount;
+    u16 isPercent;
+    std::unordered_set<std::string> tags;
+} StatBoost;
 
-StatBoost addStatBoosts(StatBoost& a, StatBoost& b);
-void addActorBoosts(ActorStatBoosts& accum, ActorStatBoosts& added);
+typedef struct {
+    StatBoost statBoost;
+    u16 currentDuration;
+    u16 totalDuration;
+} StatModifier;
 
-StatBoost& getStatBoostFromID(ActorStatBoosts& boosts, u8 statID);
-StatBoost& getStatPenaltyFromID(ActorStatBoosts& boosts, u8 statID);
+//Stats are modular
+typedef struct {
+    u16 statValue;
+    u16 maxValue;
+    EncodedString displayName;
+    std::vector<StatBoost> boosts; //consumed once on stat calculation, modifies stat value
+} SrActorStat;
 
-SISTERRAY_API void setStrBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
-SISTERRAY_API void setVitBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
-SISTERRAY_API void setMagBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
-SISTERRAY_API void setSprBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
-SISTERRAY_API void setDexBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
-SISTERRAY_API void setLuckBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
-SISTERRAY_API void setHPBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
-SISTERRAY_API void setMPBoost(ActorStatBoosts* boost, u16 amount, u16 pcntAmount, u8 sign);
+typedef struct {
+    u16 activeValue;
+    u16 statValue;
+    u16 maxValue;
+    std::vector<StatModifier> modifiers; //consumed and decremented on V-Timer in battle, modifies active value
+} SrBattleStat;
+
 
 #endif

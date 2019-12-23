@@ -36,15 +36,15 @@ u16 getCharacterRestrictionMask(u16 absoluteItemID) {
         break;
     }
     case 1: {
-        restriction_mask = gContext.weapons.getResource(relativeItemID).equip_mask;
+        restriction_mask = gContext.weapons.getResource(relativeItemID).gameWeapon.equip_mask;
         break;
     }
     case 2: {
-        restriction_mask = gContext.armors.getResource(relativeItemID).equip_mask;
+        restriction_mask = gContext.armors.getResource(relativeItemID).gameArmor.equip_mask;
         break;
     }
     case 3: {
-        restriction_mask = gContext.accessories.getResource(relativeItemID).equip_mask;
+        restriction_mask = gContext.accessories.getResource(relativeItemID).gameAccessory.equip_mask;
         break;
     }
     default:
@@ -63,15 +63,15 @@ u16 getRestrictionMask(u16 absoluteID) {
         break;
     }
     case 1: {
-        restrictionMask = gContext.weapons.getResource(relativeID).restriction_mask;
+        restrictionMask = gContext.weapons.getResource(relativeID).gameWeapon.restriction_mask;
         break;
     }
     case 2: {
-        restrictionMask = gContext.armors.getResource(relativeID).restriction_mask;
+        restrictionMask = gContext.armors.getResource(relativeID).gameArmor.restriction_mask;
         break;
     }
     case 3: {
-        restrictionMask = gContext.accessories.getResource(relativeID).restriction_mask;
+        restrictionMask = gContext.accessories.getResource(relativeID).gameAccessory.restriction_mask;
         break;
     }
     default:
@@ -90,7 +90,7 @@ u8 getTargetFlags(u16 absoluteItemID) {
         break;
     }
     case 1: {
-        targetingFlags = gContext.weapons.getResource(relativeID).target_flags;
+        targetingFlags = gContext.weapons.getResource(relativeID).gameWeapon.target_flags;
         break;
     }
     case 2: {

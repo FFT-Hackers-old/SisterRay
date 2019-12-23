@@ -61,10 +61,10 @@ void enterMateriaViewHandler(const MenuInputEvent* event) {
 
     switch (gearType) {
         case 0: {
-            slotsPtr = &(gContext.weapons.getResource(getEquippedGear(characterID, 1)).materia_slots[0]);
+            slotsPtr = &(gContext.weapons.getResource(getEquippedGear(characterID, 1)).gameWeapon.materia_slots[0]);
         }
         case 1: {
-            slotsPtr = &(gContext.armors.getResource(getEquippedGear(characterID, 2)).materia_slots[0]);
+            slotsPtr = &(gContext.armors.getResource(getEquippedGear(characterID, 2)).gameArmor.materia_slots[0]);
         }
         default: {
             break;

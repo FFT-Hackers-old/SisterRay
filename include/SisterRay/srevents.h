@@ -160,7 +160,6 @@ typedef struct {
     const MateriaInventoryEntry materia;
     const MateriaData materiaData;
     const u8 materiaLevel;
-    ActorStatBoosts* statBoosts;
 } EnableAbilitiesEvent;
 
 typedef struct {
@@ -171,7 +170,6 @@ typedef struct {
     const MateriaInventoryEntry pairedMateria;
     const u8 pairedMateriaLevel;
     const MateriaData pairedData;
-    ActorStatBoosts* statBoosts;
     SrGearType gearType;
 } ApplySupportEvent;
 

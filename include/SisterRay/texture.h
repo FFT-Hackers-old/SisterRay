@@ -52,14 +52,27 @@ typedef struct {
     u32 colorKey;
     u32 field_C;
     u32 field_10;
-    u32 minBitsPerColor;
-    u32 maxBitsPerColor;
-    u32 minAlphaBits;
-    u32 maxAlphaBits;
+    union {
+        struct
+        {
+            u32 minBitsPerColor;
+            u32 maxBitsPerColor;
+            u32 minAlphaBits;
+            u32 maxAlphaBits;
+        } v1_1;
+
+        struct
+        {
+            u32 x;
+            u32 y;
+            u32 w;
+            u32 h;
+        } fb_tex;
+    };
     u32 minBitsPerPixel;
     u32 maxBitsPerPixel;
     u32 field_2C;
-    u32 paletteCount;					
+    u32 paletteCount;
     u32 paletteEntries;
     u32 bitsPerPixel;
     TextureFormat textureFormat;

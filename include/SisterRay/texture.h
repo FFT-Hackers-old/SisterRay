@@ -69,8 +69,19 @@ typedef struct {
             u32 h;
         } fb_tex;
     };
-    u32 minBitsPerPixel;
-    u32 maxBitsPerPixel;
+    union {
+        struct
+        {
+            u32 minBitsPerPixel;
+            u32 maxBitsPerPixel;
+        } v1_2;
+
+        struct
+        {
+            char *psx_name;
+            char *pc_name;
+        } file;
+    };
     u32 field_2C;
     u32 paletteCount;
     u32 paletteEntries;

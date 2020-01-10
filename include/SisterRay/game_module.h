@@ -353,7 +353,7 @@ typedef enum {
 } GFX_EFFECTS;
 
 
-typedef void(*SRPFN_GAMEFREE)(void*, const char*, u32);
+typedef void*(*SRPFN_GAMEFREE)(void*, const char*, u32);
 typedef void*(*SRPFN_GAMEMALLOC)(u32, const char*, u32);
 typedef void*(*SRPFN_GAMEMALLOCARRAY)(u32, u32, const char*, u32);
 typedef void(*SRPFN_DESTROYGFXDRIVER)(GraphicsDriverCallbacks*);

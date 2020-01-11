@@ -343,6 +343,27 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
+    u8 targetFlags; //0x00
+    u8 attackEffectID;    //0x01
+    u8 damageCalculation;    //0x02
+    u8 weaponHitRat;    //0x03
+    u8 impactEffectID;    //0x04
+    u8 criticalRat;       //0x05
+    u16 padding;
+    u16 normalSoundID;
+    u16 critSoundID;
+    u16 missSoundID;
+    u16 attackElementMask;
+    u16 cameraMask;
+    u16 specialAttackFlags;
+    u32 attackStatusMask;
+} BattleWeaponCtx;
+#pragma pack(pop)
+
+#define G_BATTLE_WEAPON_ARRAY ((BattleWeaponCtx*)0x9A8E54)
+
+#pragma pack(push, 1)
+typedef struct {
     u8 characterID;
     u8 level;
     u8 strength;

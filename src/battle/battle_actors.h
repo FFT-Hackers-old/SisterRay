@@ -22,6 +22,7 @@ typedef struct {
     SrBattleActor battleActor;
     BattleParty34 party34;
     BattleParty10 party10;
+    BattleWeaponCtx weaponCtx;
 } SrPartyBattleActor;
 
 typedef struct {
@@ -34,6 +35,7 @@ typedef struct {
     std::map<std::string, SrBattleStat>* battleStats;
     BattleParty34* party34; //null for enemy actors
     BattleParty10* party10; //null for enemy actors
+    BattleWeaponCtx* weaponCtx;
 } ActorBattleState;
 
 
@@ -57,5 +59,7 @@ void setActorBattleStat(u8 actorID, std::string statName, u32 value);
 
 ActorBattleVars* getActorBattleVars(u8 actorIdx);
 ActorTimerData* getActorTimerBlock(u8 actorIdx);
+
+void initializePartyActor(PartyMemberState& srPartyMember, ActorBattleState& partyActor, CharacterRecord& characterRecord);
 
 #endif

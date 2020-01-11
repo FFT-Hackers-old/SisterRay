@@ -14,6 +14,9 @@ typedef struct {
     BattleAIData characterAI;
     std::array<MateriaInventoryEntry, 8> wpnMaterias;
     std::array<MateriaInventoryEntry, 8> armMaterias;
+    u16 equippedWeapon;
+    u16 equippedArmor;
+    u16 equippedAccessory;
 } SrCharacterData;
 
 /*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/

@@ -22,12 +22,13 @@ typedef struct {
     u16 totalDuration;
 } StatModifier;
 
-//Stats are modular
+//Stats are modular. 
 typedef struct {
-    u32 statValue;
+    u32 statValue; //The value of the stat factoring in active modifiers
     u32 baseValue; //The value of this stat without any modifiers from gear, materia, etc
     u32 maxValue;
     EncodedString displayName;
+    std::vector<StatBoost> boosts; //Always active boosts, like from equipment
 } SrActorStat;
 
 typedef struct {

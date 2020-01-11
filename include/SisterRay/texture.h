@@ -93,7 +93,7 @@ typedef struct {
     void* rgbaPalette;
     void* paletteEntry;
     u32 ddPalette;
-    u32 field_34;
+    u32 statusImmuneMask;
     u32 field_38;
     u32 field_3C;
 } Palette;
@@ -113,7 +113,7 @@ typedef struct {
     u32 field_28;
     u32 field_2C;
     u32 field_30;
-    u32 field_34;
+    u32 statusImmuneMask;
     u32 field_38;
     u32 field_3C;
     u32 field_40;

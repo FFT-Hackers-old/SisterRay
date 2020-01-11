@@ -418,6 +418,7 @@ void registerDefaultCallbacks(u16 commandIdx, SrCommand& auxCommand) {
             break;
         }
         case 33: {
+            auxCommand.setupCallbacks.push_back(&createStringEvent);
             break;
         }
         case 34: {

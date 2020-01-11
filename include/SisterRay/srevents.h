@@ -136,7 +136,7 @@ typedef struct {
 
 typedef struct {
     Menu*  menuObect;
-    EnabledCommandStruct* command;
+    EnabledCommand* command;
 } SelectCommandEvent;
 
 typedef struct {

@@ -26,7 +26,6 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
     u32* dword_9ACB68 = (u32*)(0x9ACB68);
     u8* battleTypeArray = (u8*)(0x7B76F0);
     // this code coordinates, along with a2, additional setup for "next battle"
-    srLogWrite("CALLING SR LOAD FORMATION");
     if (*dword_C069BC) {
         if (*dword_C069BC != 1) {
             if (*dword_C069BC != 2) {
@@ -117,7 +116,7 @@ void srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
         case 0:
         case 1:
         case 2: {
-            characterScriptIndex = gUnkPartyDataArray[actorIndex].characterID;
+            characterScriptIndex = G_BATTLE_PARTY10_ARRAY[actorIndex].characterID;
             if (characterScriptIndex != -0xFF && linkedScriptArray[characterScriptIndex] != 0xFF) //this handles script links
                 characterScriptIndex = linkedScriptArray[characterScriptIndex];
             auto& charAIData = gContext.characters.getElement(getCharacterName(characterScriptIndex)).characterAI;
@@ -187,33 +186,6 @@ i32 srExecuteFormationScripts() {
     return result;
 }
 
-typedef i32(*pfnsub43258A)(BattleQueueEntry*);
-#define enqueueBattleAction      ((pfnsub43258A)0x43258A)
-/*Rewrite this function to expect an ABSOLUTE instead of relative id when executing enemy attacks*/
-i32 enqueueScriptAction(u8 actorID, u8 commandIndex, u16 relAttackIndex) {
-    u32* dword_C3F338 = (u32*)(0xC3F338);
-    u16* word_9AB0AE = (u16*)(0x9AB0AE);
-
-    /*Temporarily make the index type relative*/
-    switch (commandIndex) { //convert to a relative/absolute ID offset in the player spells table
-        case 3: {
-            relAttackIndex -= 56;
-            break;
-        }
-        case 13: {
-            relAttackIndex -= 72;
-            break;
-        }
-        default:{
-        }
-    }
-    gAiActorVariables[actorID].lastTargets = *word_9AB0AE;
-    BattleQueueEntry queueEntry = { *(u8*)dword_C3F338, 0, actorID, commandIndex, relAttackIndex, *word_9AB0AE };
-    
-    auto var = enqueueBattleAction(&queueEntry);
-    return var;
-}
-
 /*void* transformEnemyCommand() {
     gDamageContextPtr->absAttackIndex = gDamageContextPtr->relAttackIndex;
     if (gDamageContextPtr->commandIndex == CMD_ENEMY_ACTION) {
@@ -238,7 +210,7 @@ void dispatchAutoActions(u8 partyIndex, i32 actionType) {
         }
         case 1: {
             dispatchType = SNEAK_ATTACK;
-            gActorTimerBlock[partyIndex].unkActorFlags |= 4;
+            G_ACTOR_TIMER_ARRAY[partyIndex].unkActorFlags |= 4;
             break;
         }
         case 2: {
@@ -249,7 +221,7 @@ void dispatchAutoActions(u8 partyIndex, i32 actionType) {
             dispatchType = COUNTER_ACTION;
         }
     }
-    auto& autoActions = gContext.party.getElement(getPartyKey(partyIndex)).actorAutoActions;
+    auto& autoActions = getSrPartyMember(partyIndex).actorAutoActions;
     for (auto& action : autoActions) {
         if (action.dispatchType == AUTOACT_NO_ACTION)
             continue;

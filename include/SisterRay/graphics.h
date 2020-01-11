@@ -80,7 +80,7 @@ typedef struct {
     u32 v_offset;
     u32 paletteIndex;
     AuxillaryGFX* auxillaryData;
-    u8 field_34[16];
+    u8 statusImmuneMask[16];
 } PaletteAuxillary;
 #pragma pack(pop)
 
@@ -357,7 +357,7 @@ struct _GraphicsObject {
     float vOffset;
     void *dx_sfx_2C;
     void *graphicsInstance;
-    u32 field_34;
+    u32 statusImmuneMask;
     u32 verticesPerShape;
     u32 indicesPerShape;
     u32 vertexOffset;

@@ -153,7 +153,7 @@ GameAssetWidget* createGameAssetWidget(DrawGameAssetParams params, std::string n
 bool isGameAssetWidget(Widget* widget);
 SISTERRAY_API void setGameAssetParams(DrawGameAssetParams* params, i32 xCoordinate, i32 yCoordinate, i32 arg3, i32 arg4, i32 arg5, i32 arg6, i32 arg7, i32 arg8, i32 arg9, float priority);
 SISTERRAY_API void updateAssetType(Widget* widgetToUpdate, i32 type);
-SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1, i32 type2, i32 type3, i32 type4);
+SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1Array, i32 type2Array, i32 type3, i32 type4);
 //The following are a set of helper methods for fetching parameters that trigger load a specific game asset
 DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority);
 DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority, bool shaded);

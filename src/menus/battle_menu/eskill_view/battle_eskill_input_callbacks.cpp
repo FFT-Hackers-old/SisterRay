@@ -14,7 +14,7 @@ void handleSelectESkill(const MenuInputEvent* event) {
         return;
 
     auto eSkillChoiceCursor = getStateCursor(event->menu, event->menuState)->context;
-    auto& enabledESkills = gContext.party.getElement(getPartyKey(event->menuState)).actorEnemySkills;
+    auto& enabledESkills = getSrPartyMember(*BATTLE_ACTIVE_ACTOR_ID).srPartyMember->actorEnemySkills;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (eSkillChoiceCursor.maxColumnBound * (eSkillChoiceCursor.relativeRowIndex + eSkillChoiceCursor.baseRowIndex)) + eSkillChoiceCursor.relativeColumnIndex;

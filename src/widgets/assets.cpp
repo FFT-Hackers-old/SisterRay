@@ -343,11 +343,11 @@ SISTERRAY_API void updateAssetType(Widget* widgetToUpdate, i32 type) {
     }
 }
 
-SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1, i32 type2, i32 type3, i32 type4) {
+SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1Array, i32 type2Array, i32 type3, i32 type4) {
     if (isGameAssetWidget(widgetToUpdate)) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;
-        typedPtr->unk1 = type1;
-        typedPtr->unk2 = type2;
+        typedPtr->unk1 = type1Array;
+        typedPtr->unk2 = type2Array;
         typedPtr->unk3 = type3;
         typedPtr->unk4 = type4;
     }

@@ -197,8 +197,56 @@ typedef struct {
     u8** animationScriptTable;
 } AnimScriptEvent;
 
+#pragma pack(push, 1)
+typedef struct {
+    u32 type1;
+    u32 type2;
+} AIScriptTypes;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 type1;
+    u16 type2;
+} AIScriptMasks;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    i32 type1Array[10];
+    i32 type2Array[10];
+} AIScriptValues;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u32 actorID;
+    u32 currentScriptIdx;
+    u32 stackPosition;
+    u32 currentOpCode;
+    u32 opCodeLow;
+    u32 opCodeHigh;
+    AIScriptTypes highTypes;
+    AIScriptTypes lowTypes;
+    AIScriptMasks popMasks;
+    AIScriptValues arguments;
+    u8 scriptStack[512];
+} AIScriptContext;
+#pragma pack(pop)
+
+#define G_AI_SCRIPT_CTX   ((AIScriptContext*)0x99E308)
+
+typedef struct {
+    u8 actorID;
+    const u8* const scriptPtr;
+    AIScriptContext* scriptContext;
+    u8 currentScriptIdx;
+    u8 charID;
+} AIScriptEvent;
+
 enum OpCodeControlSequence { RUN_NEXT, PLAY_ANIM, BREAK };
 typedef OpCodeControlSequence(*SRPFNANMSCRIPTOPCODEHANDLER)(AnimScriptEvent*);
+typedef OpCodeControlSequence(*SRPFNAISCRIPTOPCODEHANDLER)(AIScriptEvent*);
 
 #pragma pack(push, 1)
 typedef struct {
@@ -215,7 +263,7 @@ typedef struct {
     u16 field_30;
     u8 modelDataIndex; //0x032
     u8 field_33;
-    u8 field_34;
+    u8 statusImmuneMask;
     u8 field_35;
     u8 field_36;
     u8 field_37;
@@ -291,7 +339,7 @@ typedef struct {
     u16 field_2E;
     u16 field_30;
     u16 field_32;
-    u32 field_34;
+    u32 statusImmuneMask;
     u32 field_38;
     u32 field_3C;
 } ModelRotationData;

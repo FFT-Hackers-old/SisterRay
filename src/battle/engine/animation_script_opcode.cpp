@@ -126,7 +126,6 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     addElement(assembleOpCodeKey(0xFD), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeFD);
     addElement(assembleOpCodeKey(0xFE), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeFE);
     addElement(assembleOpCodeKey(0xFF), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeEE);
-
 }
 
 SISTERRAY_API void initAnimScriptOpCodes() {

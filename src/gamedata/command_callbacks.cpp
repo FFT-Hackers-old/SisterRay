@@ -113,3 +113,9 @@ void setupEnemyAttack(CommandSetupEvent setupEvent) {
     auto damageContext = setupEvent.damageContext;
     damageContext->absAttackIndex = damageContext->relAttackIndex;
 }
+
+
+#define gameCreateStringEvent     ((FF7PFNCOMMANDSETUP)0x5C948B)
+void createStringEvent(CommandSetupEvent setupEvent) {
+    gameCreateStringEvent();
+}

@@ -44,6 +44,7 @@ extern "C" {
 #include "battle/battle_models/animation_registry.h"
 #include "battle/battle_models/animation_scripts.h"
 #include "battle/battle_models/battle_models.h"
+#include "battle/battle_actors.h"
 #include <map>
 #include <memory>
 
@@ -67,10 +68,13 @@ typedef struct {
     SrBattleAnimationRegistry           battleAnimations;
     SrBattleAnimScriptRegistry          battleAnimationScripts;
     SrAnimOpCodeRegistry                animScriptOpcodes;
+    SrAIScriptOpCodeRegistry            AIScriptOpcodes;
+
     SrCommandRegistry                   commands;
     SrAttackRegistry                    attacks;
     SrCharacterRegistry                 characters;
-    SrPartyDataRegistry                 party;
+    SrPartyMembers                      party;
+    SrBattleActors                      battleActors;
 
     SrFormationRegistry                 formations;
     SrEnemyRegistry                     enemies;

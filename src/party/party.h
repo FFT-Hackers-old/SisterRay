@@ -3,7 +3,6 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "../sr_named_registry.h"
 #include "stat_boosts.h"
 #include <array>
 
@@ -21,63 +20,41 @@ typedef struct {
     std::array<EnabledSpell, ESKILL_COUNT> actorEnemySkills;
     std::array<SrAutoAction, AUTO_ACTION_COUNT> actorAutoActions;
     std::string modelName;
+    PartyMember swapPartyMember; //Mutating this will do nothing, this just stores data that needs to be written during switch
 } SrPartyData;
+
+typedef struct {
+    PartyMember* gamePartyMember;
+    SrPartyData* srPartyMember;
+} PartyMemberState;
 
 /*Holds extensible Enabled command arrays for active party members
   Will extend to hold data for all party members later to facilitate character swapping*/
-class SrPartyDataRegistry : public SrNamedResourceRegistry<SrPartyData, std::string> {
+class SrPartyMembers {
 public:
-    std::array<u8, 3> activeParty;
-    SrPartyDataRegistry();
+    SrPartyMembers();
+    PartyMemberState getActivePartyMember(u8 actorIdx);
     void addAutoAction(u32 partyIndex, const SrAutoAction& action);
     void handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias);
     void clearActions(u32 partyIndex);
+protected:
+    std::array<u8, 3> activeParty;
+    std::array<SrPartyData, 10> partyMembers;
+
 };
 
-template<size_t N>
-void clearActionArray(std::array<EnabledSpell, N>& spellArray) {
-    const EnabledSpell nullSpell = { 0xFF, 0, 0, 0, 0, 0, 0, 0 };
-    for (auto it = begin(spellArray); it != end(spellArray); ++it) {
-        *it = nullSpell;
-    }
-}
+PartyMemberState getSrPartyMember(u8 partyIdx);
 
-template<size_t N>
-void clearAutoActionArray(std::array<SrAutoAction, N>& spellArray) {
-    const SrAutoAction nullAction = {AUTOACT_NO_ACTION, 0xFF, 0xFF, 0, 0};
-    for (auto it = begin(spellArray); it != end(spellArray); ++it) {
-        *it = nullAction;
-    }
-}
-
-void srRecalculateDerivedStats(u32 partyIndex);
-const std::string getPartyKey(u8 partyIndex);
-void srUpdatePartyMember(u32 partyIndex);
+void srRecalculateDerivedStats(u8 partyIndex);
+void srUpdatePartyMember(u8 partyIndex);
 void clearCommandArray(u8 partyIndex);
 void enableDefaultCommands(u8 partyIndex, bool magicEnabled, bool summonEnabled);
 void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType);
 void dispatchSupportHandlers(u8 partyIndex, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGearType gearType);
 
-SISTERRAY_API void addAutoAction(u8 partyIndex, AutoActionType type, u8 commandIndex, u16 actionID, u8 activationChance, u8 counterCount);
-
-/*Public API for getting and enabling stuff in your own enabling handlers*/
-SISTERRAY_API void enableCommand(u8 partyIndex, u8 enabledIndex, u8 commandIndex);
-SISTERRAY_API void voidCommand(u8 partyIndex, u8 enabledIndex);
-SISTERRAY_API u8 getEnabledSlotIndex(u8 partyIndex, u8 commandIndex);
-SISTERRAY_API void  insertEnabledCommand(u8 partyIndex, u8 commandIndex);
-SISTERRAY_API EnabledCommandStruct* getCommandSlot(u8 partyIndex, u8 commandIndex);
-
-SISTERRAY_API EnabledSpell* getSpellSlot(u8 partyIndex, u8 commandIndex, u16 actionIndex);
-SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 partyIndex, u32 enabledSlotIndex);
-SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
-SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u8 partyIndex, u32 enabledSlotIndex);
-SISTERRAY_API void enableSummon(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
-SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u8 partyIndex, u32 enabledSlotIndex);
-SISTERRAY_API void enableESkill(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex);
-
 u8* getMateriaSlots(u8 partyIndex, SrGearType gearType);
 bool slotsAreLinked(u8 leftSlot, u8 rightSlot);
-void updateCommandsActive(i32 partyIndex, i32 commandType);
+void updateCommandsActive(u8 partyIndex, i32 commandType);
 bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask);
 bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask);
 bool updateESkillCommand(u8 partyIndex, u32 actorStatusMask);

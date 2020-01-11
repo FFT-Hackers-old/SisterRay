@@ -1556,7 +1556,7 @@ OpCodeControlSequence OpCodeF8(AnimScriptEvent* srEvent) {
     effectCtx.wordArray[2] = srEvent->actorID;
     effectCtx.byteArray[22] = 0;
     effectCtx.wordArray[1] = 0;
-    effectCtx.wordArray[0] = ++(getBattleModelState74(srEvent->actorID)->field_34);
+    effectCtx.wordArray[0] = ++(getBattleModelState74(srEvent->actorID)->statusImmuneMask);
     return RUN_NEXT;
 }
 

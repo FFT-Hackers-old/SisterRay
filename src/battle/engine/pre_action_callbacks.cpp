@@ -194,9 +194,9 @@ void prepareMimedAction(ActionContextEvent* actionEvent) {
         return;
 
     for (auto mimeCmdIdx = 0; mimeCmdIdx < 2; ++mimeCmdIdx) {
-        if (gUnkActorArray[issuingActorID].previousSupportMasks[mimeCmdIdx] != 0xFFFF) {
-            prevActionSupportFlags = gUnkActorArray[issuingActorID].previousSupportMasks[mimeCmdIdx];
-            gUnkActorArray[issuingActorID].previousSupportMasks[mimeCmdIdx] = -1;
+        if (G_BATTLE_PARTY34_ARRAY[issuingActorID].previousSupportMasks[mimeCmdIdx] != 0xFFFF) {
+            prevActionSupportFlags = G_BATTLE_PARTY34_ARRAY[issuingActorID].previousSupportMasks[mimeCmdIdx];
+            G_BATTLE_PARTY34_ARRAY[issuingActorID].previousSupportMasks[mimeCmdIdx] = -1;
             break;
         }
     }

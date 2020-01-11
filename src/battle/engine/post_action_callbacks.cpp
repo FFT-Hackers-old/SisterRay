@@ -68,7 +68,7 @@ void setMimeData(ActionContextEvent* actionEvent) {
 
     if (issuingActorID < 3 && damageContext->commandIndex != CMD_MIME && damageContext->commandIndex != CMD_ENEMY_ACTION) {
         u16* mimeSupportFlags = (u16*)(0x9AAD32);
-        auto someByte = gActorTimerBlock[issuingActorID].field_2A;
+        auto someByte = G_ACTOR_TIMER_ARRAY[issuingActorID].field_2A;
         for (auto mimeActionIdx = 0; mimeActionIdx < 2; ++mimeActionIdx) {
             if (poppedAction->entryPriority != 3 && (G_MIME_ACTIONS[mimeActionIdx].attackerID != issuingActorID || G_MIME_ACTIONS[mimeActionIdx].field_0 != someByte || damageContext->commandIndex < 21)) {
                 G_MIME_ACTIONS[mimeActionIdx].attackerID = issuingActorID;

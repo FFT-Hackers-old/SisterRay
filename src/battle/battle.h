@@ -14,7 +14,6 @@ typedef struct {
 void  srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void));
 void srExecuteAIScript(i32 actorIndex, i32 scriptID, i32 unkInt);
 i32 srExecuteFormationScripts();
-i32  enqueueScriptAction(u8 characterID, u8 commandIndex, u16 relAttackIndex);
 
 void dispatchAutoActions(u8 partyIndex, i32 actionType);
 u16 getActionToDispatch(const SrAutoAction& action);

@@ -356,7 +356,7 @@ void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex)
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto& magics = gContext.party.getElement(getPartyKey(*MAT_MENU_PARTY_INDEX)).actorMagics;
+    auto& magics = getSrPartyMember(*MAT_MENU_PARTY_INDEX).srPartyMember->actorMagics;
     if (magics[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
@@ -371,7 +371,7 @@ void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto summons = gContext.party.getElement(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorSummons;
+    auto summons = getSrPartyMember(*MAT_MENU_PARTY_INDEX).srPartyMember->actorSummons;
     if (summons[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;
@@ -386,7 +386,7 @@ void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto eSkills = gContext.party.getElement(getPartyKey(*BATTLE_ACTIVE_ACTOR_ID)).actorEnemySkills;
+    auto eSkills = getSrPartyMember(*MAT_MENU_PARTY_INDEX).srPartyMember->actorEnemySkills;
     if (eSkills[flatIndex].magicIndex == 0xFF) {
         disableWidget(widget);
         return;

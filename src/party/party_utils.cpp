@@ -32,7 +32,7 @@ std::string getCharacterName (u8 characterID) {
     }
 }
 
-ActivePartyMemberStruct* getActivePartyMember(u8 actorIdx) {
+PartyMember* getActivePartyMember(u8 actorIdx) {
     u8* partyCharacterIndexArray = (u8*)(0xDC0230);
     if (partyCharacterIndexArray[actorIdx] == 0xFF) {
         return nullptr;

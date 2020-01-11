@@ -212,7 +212,8 @@ typedef struct {
     u16 unkBattleFlags;      //160
     u16 specialAttackFlags;  //170
     u16 unkLimitDivisor;     //180
-    u32 unkDword;            //190
+    u16 unkDword;            //190
+    u16 stringArgs;
     u16 somethingEmerald;    //1A0
     u32 partyGil;            //1C0
     ActorBattleVars actorAIStates[10];
@@ -241,7 +242,8 @@ typedef struct {
     u16 field_6;               //0x06
     u16 field_8;
     u16 CTimerIncrement;       //0xA
-    u16 field_C;
+    u8 field_C;
+    u8 field_D;
     u8 activeCommandsMask;     //0x0D
     u8 field_F;                //0x0F
     u8 field_10;               //0x10
@@ -274,7 +276,7 @@ typedef struct {
     u8 field_2B;                //0x2B
     u32 field_2C;               //0x2C
     u32 field_30;               //0x30
-    u32 field_34;               //0x34
+    u32 statusImmuneMask;       //0x34
     u32 field_38;               //0x38
     u16 currentHP;              //0x3C
     u16 currentMP;              //0x3E
@@ -285,17 +287,43 @@ typedef struct {
 } ActorTimerData;
 #pragma pack(pop)
 
-#define gActorTimerBlock ((ActorTimerData*)(0x9A8B10))
+#define G_ACTOR_TIMER_ARRAY ((ActorTimerData*)(0x9A8B10))
 
 #pragma pack(push, 1)
 typedef struct {
-    u8 field_0[0x18];
+    CharacterRecord* characterRecord;
+    u8 field_4;
+    u8 field_5;
+    u8 field_6;
+    u8 field_7;
+    u16 limitBreakBar;
+    u8 field_A;
+    u8 field_B;
+    u8 field_C;
+    u16 field_E;
+    u16 maxMP;
+    u16 maxHP;
+    u16 field_14; //Seems to be HP/MP switch HP
+    u16 field_16; //Seems to be HP/MP switch MP
     u16 previousSupportMasks[2];
-    u8 field_1C[24];
-}UnkActorState;
+    u8 field_1C;
+    u8 field_1D;
+    u8 field_1E;
+    u8 field_1F;
+    u32 field_20;
+    u32 learnedEnemySkills;
+    u32 knownEnemySkills;
+    u8 field_2C;
+    u8 field_2D;
+    u8 field_2F;
+    u8 field_30;
+    u8 field_31;
+    u8 field_32;
+    u8 field_33;
+}BattleParty34;
 #pragma pack(pop)
 
-#define gUnkActorArray  ((UnkActorState*)(0x09A8DB8))
+#define G_BATTLE_PARTY34_ARRAY  ((BattleParty34*)(0x09A8DB8))
 
 #pragma pack(push, 1)
 typedef struct {
@@ -304,18 +332,18 @@ typedef struct {
     u8 field_2;    //0x02
     u8 field_3;    //0x03
     u8 deathType;    //0x04
-    u8 align;       //0x05
-    u16 unkWrd1;    //0x06
-    u32 unkDWrd1;   //0x08
-    u32 unkDwrd2;   //0x0C
-} UnkPartyStruct;
+    u8 field_5;       //0x05
+    u16 field_6;    //0x06
+    u32 field_8;   //0x08
+    u32 field_C;   //0x0C
+} BattleParty10;
 #pragma pack(pop)
 
-#define gUnkPartyDataArray ((UnkPartyStruct*)0x9A87F4)
+#define G_BATTLE_PARTY10_ARRAY ((BattleParty10*)0x9A87F4)
 
 #pragma pack(push, 1)
 typedef struct {
-    u8 character_id;
+    u8 characterID;
     u8 level;
     u8 strength;
     u8 vitality;

@@ -4,6 +4,7 @@
 #include <SisterRay/SisterRay.h>
 #include "../EncodedString.h"
 #include <vector>
+#include <map>
 #include <unordered_set>
 
 typedef struct {
@@ -13,6 +14,8 @@ typedef struct {
     std::unordered_set<std::string> tags;
 } StatBoost;
 
+typedef std::map<std::string, std::vector<StatBoost>> StatBoostModifiers;
+
 typedef struct {
     StatBoost statBoost;
     u16 currentDuration;
@@ -21,18 +24,20 @@ typedef struct {
 
 //Stats are modular
 typedef struct {
-    u16 statValue;
-    u16 maxValue;
+    u32 statValue;
+    u32 baseValue; //The value of this stat without any modifiers from gear, materia, etc
+    u32 maxValue;
     EncodedString displayName;
-    std::vector<StatBoost> boosts; //consumed once on stat calculation, modifies stat value
 } SrActorStat;
 
 typedef struct {
-    u16 activeValue;
-    u16 statValue;
-    u16 maxValue;
+    u32 activeValue;
+    u32 statValue;
+    u32 maxValue;
     std::vector<StatModifier> modifiers; //consumed and decremented on V-Timer in battle, modifies active value
 } SrBattleStat;
+
+void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& charRecord, const StatBoostModifiers& statModifiers);
 
 
 #endif

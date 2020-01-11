@@ -28,27 +28,6 @@ void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
     runSetupCallbacks(gDamageContextPtr->commandIndex);
     *dword_9AEA84 = 2;
 
-    /*while (1) {
-        callbackIdx = commandTypeExecutionArray[handlerToRunIdx++];
-        if (callbackIdx == 31)
-            break;
-        if (callbackIdx == 20) {
-            dword_9AEA78 = 0;
-            commandTypeHandlers[20]();
-            if (!dword_9AEA78)
-            {
-                *dword_9AEA60 = 1;
-                break;
-            }
-            *dword_9AEA60 = 0;
-            *dword_9AEA84 = 2;
-        }
-        else {
-            commandTypeHandlers[callbackIdx]();
-            dword_9AEA84 = 2;
-        }
-    }*/
-
     if (!(*dword_9AEA60)) {
         postActionHandles(poppedAction, issuingActorID);
         *dword_9AEA84 = 0;
@@ -75,9 +54,9 @@ void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
     gContext.eventBus.dispatch(ACTION_PRE_COMMAND, &actionEvent);
 
     //Display Lucky 7's text
-    if (gActorTimerBlock[issuingActorID].unkActorFlags & 0x80) {
-        gActorTimerBlock[issuingActorID].unkActorFlags &= 0x7Fu;
-        if (gActorTimerBlock[issuingActorID].currentHP == 7777) {
+    if (G_ACTOR_TIMER_ARRAY[issuingActorID].unkActorFlags & 0x80) {
+        G_ACTOR_TIMER_ARRAY[issuingActorID].unkActorFlags &= 0x7Fu;
+        if (G_ACTOR_TIMER_ARRAY[issuingActorID].currentHP == 7777) {
             *gDisplayTextIdx = 81;
             *word_9AAD18 = 47;
         }
@@ -105,7 +84,7 @@ void postActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
         --(*dword_9AD1B4);
     }
     else if (poppedAction->entryPriority <= 2) {
-        ++gActorTimerBlock[issuingActorID].field_2A;
+        ++G_ACTOR_TIMER_ARRAY[issuingActorID].field_2A;
     }
 }
 

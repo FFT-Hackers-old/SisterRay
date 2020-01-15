@@ -212,7 +212,7 @@ void srRunAIScript(u8 actorID, u8* scriptPtr, u8 charID) {
     }
 }
 
-u16 readAIScript16(const u8* const scriptPtr, const AIScriptContext& scriptCtx) {
+u16 readAIScript16(const u8* const scriptPtr, AIScriptContext& scriptCtx) {
     auto wordReader = &(scriptPtr[scriptCtx.currentScriptIdx]);
     u16 value = *wordReader;
     scriptCtx.currentScriptIdx += 2;
@@ -220,29 +220,29 @@ u16 readAIScript16(const u8* const scriptPtr, const AIScriptContext& scriptCtx) 
 }
 
 //Using this, we can modularize reads/writes to AI state variables
-u16 getAIScriptBaseAddress(u8 actorID, u16 addressArg, u32* ret) {
+u16 getAIScriptBaseAddress(u8 actorID, u16 addressArg, u32** ret) {
     u32 relativeAddress; // [esp+0h] [ebp-4h]
 
     relativeAddress = addressArg;
     if (addressArg >= 0x2000) {
         if (addressArg >= 0x4000) {
-            *ret = (&AI_BATTLE_CONTEXT->actorAIStates[actorID]);
+            *ret = (u32*)(&AI_BATTLE_CONTEXT->actorAIStates[actorID]);
             relativeAddress = addressArg - 0x4000;
         }
         else {
-            *ret = AI_BATTLE_CONTEXT;
+            *ret = (u32*)AI_BATTLE_CONTEXT;
             relativeAddress = addressArg - 0x2000;
         }
     }
     else {
-        *ret = gContext.battleActors.getActorRandomVarBuffer(actorID); //now points to extended SR RAM space
+        *ret = (u32*)gContext.battleActors.getActorRandomVarBuffer(actorID); //now points to extended SR RAM space
     }
     return relativeAddress;
 }
 
 u32 srReadValue(u8 actorID, u8 readType, u16 addressArg) {
     u32* baseAddress = nullptr;
-    u32* relativeAddress = getAIScriptBaseAddress(actorID, addressArg, &baseAddress);
+    u16 relativeAddress = getAIScriptBaseAddress(actorID, addressArg, &baseAddress);
     u32 readValue = 0;
     //Address overrides for modularized battle stats
     switch (addressArg) {
@@ -297,46 +297,49 @@ void srWriteValue(u8 actorID, u8 writeType, u16 addressArg, u32 valueArg) {
 
     switch (addressArg) {
     case 0x4180: {
-        getMutableSrBattleStat(actorID, "HP").statValue = setActorBattleStat(actorID, "HP", valueArg);
+        setActorBattleStat(actorID, "HP", valueArg);
         return;
     }
     case 0x4150: {
-        getMutableSrBattleStat(actorID, "MP").statValue = setActorBattleStat(actorID, "MP", valueArg);
+        setActorBattleStat(actorID, "MP", valueArg);
         return;
     }
     case 0x4068: {
-        getMutableSrBattleStat(actorID, "STR").statValue = setActorBattleStat(actorID, "STR", valueArg);
+        setActorBattleStat(actorID, "STR", valueArg);
         return;
     }
     case 0x4070: {
-        getMutableSrBattleStat(actorID, "MAG").statValue = setActorBattleStat(actorID, "MAG", valueArg);
+        setActorBattleStat(actorID, "MAG", valueArg);
         return;
     }
     case 0x4100: {
-        getMutableSrBattleStat(actorID, "VIT").statValue = setActorBattleStat(actorID, "VIT", valueArg);
+        setActorBattleStat(actorID, "VIT", valueArg);
         return;
     }
     case 0x4110: {
-        getMutableSrBattleStat(actorID, "SPR").statValue = setActorBattleStat(actorID, "SPR", valueArg);
+        setActorBattleStat(actorID, "SPR", valueArg);
         return;
     }
     case 0x40A0: {
-        getMutableSrBattleStat(actorID, "DEX").statValue = setActorBattleStat(actorID, "DEX", valueArg);
+        setActorBattleStat(actorID, "DEX", valueArg);
         return;
     }
     case 0x40A8: {
-        getMutableSrBattleStat(actorID, "LCK").statValue = setActorBattleStat(actorID, "LCK", valueArg);
+        setActorBattleStat(actorID, "LCK", valueArg);
         return;
     }
     }
 
     relativeAddress = getAIScriptBaseAddress(actorID, addressArg, &baseAddress);
+
+    u16* wordWriter = (u16*)(baseAddress + 2 * (relativeAddress / 16));
+    u32* dwordWriter = (u32*)(baseAddress + 4 * (relativeAddress / 32));
     switch (writeType) {
     case 0: {
         u8* writeAddr = (u8*)((relativeAddress >> 3) + baseAddress);
-        *writeAddr &= ~(u8*)(1 << (relativeAddress & 7));
+        (*writeAddr) &= ~(1 << (relativeAddress & 7));
         if (valueArg)
-            *writeAddr |= 1 << (relativeAddress & 7);
+            (*writeAddr) |= 1 << (relativeAddress & 7);
         break;
     }
     case 1: {
@@ -345,12 +348,10 @@ void srWriteValue(u8 actorID, u8 writeType, u16 addressArg, u32 valueArg) {
         break;
     }
     case 2: {
-        u16* wordWriter = (u16*)(baseAddress + 2 * (relativeAddress / 16));
         *wordWriter = valueArg;
         break;
     }
     case 3:
-        u32* dwordWriter = (u32*)(baseAddress + 4 * (relativeAddress / 32));
         *dwordWriter = valueArg;
         break;
     default:
@@ -358,14 +359,14 @@ void srWriteValue(u8 actorID, u8 writeType, u16 addressArg, u32 valueArg) {
     }
 }
 
-typedef void(SRPFN_GAMESTACKPUSH)(u8);
+typedef void(*SRPFN_GAMESTACKPUSH)(u8);
 #define gameStackPush  ((SRPFN_GAMESTACKPUSH)0x5D8ECF)
 void srStackPush(u8 argType) {
     gameStackPush(argType);
 }
 
 
-typedef u8(SRPFN_GAMESTACKPOP)(u8);
+typedef u8(*SRPFN_GAMESTACKPOP)(u8);
 #define gameStackPop  ((SRPFN_GAMESTACKPOP)0x5D9099)
 u8 srStackPop(u8 popType) {
     return gameStackPop(popType);

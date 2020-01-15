@@ -1,11 +1,11 @@
-#ifndef STAT_BOOSTS_H
-#define STAT_BOOSTS_H
+#ifndef BATTLE_STATS_H
+#define BATTLE_STATS_H
 
 #include <SisterRay/SisterRay.h>
-#include "../EncodedString.h"
-#include <vector>
 #include <map>
+#include <vector>
 #include <unordered_set>
+#include "../EncodedString.h"
 
 typedef struct {
     u32 sign;
@@ -38,7 +38,4 @@ typedef struct {
     std::vector<StatModifier> modifiers; //consumed and decremented on V-Timer in battle, modifies active value
 } SrBattleStat;
 
-void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& charRecord, const StatBoostModifiers& statModifiers);
-
-
-#endif
+#endif // !BATTLE_STATS_H

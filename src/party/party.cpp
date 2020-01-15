@@ -68,8 +68,8 @@ PartyMemberState SrPartyMembers::getSrPartyMember(u8 partyIdx) {
 }
 
 /*This method enables actions*/
-void SrPartyMembers::handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias) {
-    if (partyIndex > 3)
+void SrPartyMembers::handleMateriaActorUpdates(u8 partyIdx, const std::vector<MateriaInventoryEntry>& equippedMaterias) {
+    if (partyIdx > 3)
         return;
 
     bool magicEnabled = false;
@@ -83,7 +83,7 @@ void SrPartyMembers::handleMateriaActorUpdates(u8 partyIndex, const std::vector<
             summonEnabled = true;
         }
     }
-    enableDefaultCommands(partyIndex, magicEnabled, summonEnabled);
+    enableDefaultCommands(partyIdx, magicEnabled, summonEnabled);
 
     for (auto it = std::begin(equippedMaterias); it != std::end(equippedMaterias); ++it) {
         auto materia = *it;
@@ -91,13 +91,13 @@ void SrPartyMembers::handleMateriaActorUpdates(u8 partyIndex, const std::vector<
             continue;
         u8 maxLevel = 1;
         auto materiaLevel = getMateriaLevel(materia, &maxLevel);
-        EnableAbilitiesEvent enableActionEvent = { partyIndex, materia, gContext.materias.getResource(materia.item_id).gameMateria, materiaLevel };
+        EnableAbilitiesEvent enableActionEvent = { partyIdx, materia, gContext.materias.getResource(materia.item_id).gameMateria, materiaLevel };
         auto topkey = getTopKey(getMateriaTopType(materia.item_id));
         auto subkey = getSubKey(getMateriaSubType(materia.item_id));
         std::vector<SrEventContext> dispatchContexts = { topkey, subkey };
         gContext.eventBus.dispatch(ENABLE_ACTIONS, &enableActionEvent, dispatchContexts);
     }
-    PARTY_STRUCT_ARRAY[partyIndex].commandColumns = getCommandRows(partyIndex);
+    gamePartyMembers[activeParty[partyIdx]].commandColumns = getCommandRows(partyIdx);
 }
 
 void SrPartyMembers::battleActivatePartyMember(u8 partyIdx) {
@@ -163,6 +163,63 @@ void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& 
         }
         enabledCommand.targetingData = finalTargetingData;
     }
+    battleActivatePartyMember(partyIdx);
+}
+
+void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
+    auto characterID = getActivePartyMember(partyIdx).gamePartyMember.characterID;
+    activeParty[partyIdx] = characterID;
+    auto characterName = getCharacterName(characterID);
+    auto weaponMaterias = gContext.characters.getElement(characterName).wpnMaterias;
+    auto armorMaterias = gContext.characters.getElement(characterName).armMaterias;
+
+    std::vector<MateriaInventoryEntry> equippedMaterias = std::vector<MateriaInventoryEntry>();
+    equippedMaterias.resize(weaponMaterias.max_size() + armorMaterias.max_size());
+
+    std::vector<MateriaInventoryEntry> wpnVector = std::vector<MateriaInventoryEntry>();
+    wpnVector.resize(weaponMaterias.max_size());
+    std::vector<MateriaInventoryEntry> armVector = std::vector<MateriaInventoryEntry>();
+    armVector.resize(armorMaterias.max_size());
+
+    std::copy(begin(weaponMaterias), end(weaponMaterias), begin(equippedMaterias));
+    std::copy(begin(armorMaterias), end(armorMaterias), begin(equippedMaterias) + weaponMaterias.size());
+    std::copy(begin(weaponMaterias), end(weaponMaterias), begin(wpnVector));
+    std::copy(begin(armorMaterias), end(armorMaterias), begin(armVector));
+
+    clearActions(partyIdx);
+    handleMateriaActorUpdates(partyIdx, equippedMaterias); //Enable spells, counters, commands, and fill out stat boosts based on materia stuff
+    applyLinkedMateriaModifiers(partyIdx, wpnVector, SR_GEAR_WEAPON);
+    applyLinkedMateriaModifiers(partyIdx, armVector, SR_GEAR_ARMOR);
+
+    StatBoostModifiers statModifiers = StatBoostModifiers();
+    //Add all stat modifiers from weapons to the modification object, for determining the base value of that stat
+    const auto& weapon = gContext.weapons.getResource(getPartyActorCharacterRecord(partyIdx)->equipped_weapon);
+    addStatBoosts(statModifiers, weapon.equipEffects);
+    const auto& armor = gContext.armors.getResource(getPartyActorCharacterRecord(partyIdx)->equipped_armor);
+    addStatBoosts(statModifiers, armor.equipEffects);
+    const auto& accessory = gContext.accessories.getResource(getPartyActorCharacterRecord(partyIdx)->equipped_accessory);
+    addStatBoosts(statModifiers, accessory.equipEffects);
+    for (auto equippedMateria : equippedMaterias) {
+        const auto& materia = gContext.materias.getResource(equippedMateria.item_id);
+        addStatBoosts(statModifiers, materia.equipEffects);
+    }
+
+    auto srPartyMember = getSrPartyMember(partyIdx);
+    calculateActorStats(*srPartyMember.srPartyMember, *getPartyActorCharacterRecord(partyIdx), statModifiers);
+    auto& gamePartyMember = srPartyMember.gamePartyMember;
+    //TODO after all references are removed kill these copies
+    gamePartyMember.maxHP = srPartyMember.playerStats["HP"].statValue;
+    gamePartyMember.maxMP = srPartyMember.playerStats["MP"].statValue;
+    gamePartyMember.physAttack = srPartyMember.playerStats["STR"].statValue;
+    gamePartyMember.physDefense = srPartyMember.playerStats["VIT"]statValue;
+    gamePartyMember.magAttack = srPartyMember.playerStats["MAG"].statValue;
+    gamePartyMember.magDefense = srPartyMember.playerStats["SPR"]statValue;
+    gamePartyMember.strength = srPartyMember.playerStats["STR"].statValue;
+    gamePartyMember.vitality = srPartyMember.playerStats["VIT"]statValue;
+    gamePartyMember.magic = srPartyMember.playerStats["MAG"].statValue;
+    gamePartyMember.spirit = srPartyMember.playerStats["SPR"]statValue;
+    gamePartyMember.speed = srPartyMember.playerStats["DEX"].statValue;
+    gamePartyMember.luck = srPartyMember.playerStats["LCK"]statValue;
     battleActivatePartyMember(partyIdx);
 }
 
@@ -302,7 +359,7 @@ void srRecalculateDerivedStats(u8 partyIdx) {
         addStatBoosts(statModifiers, materia.equipEffects);
     }
     calculateActorStats(*getSrPartyMember(partyIdx).srPartyMember, *getPartyActorCharacterRecord(partyIdx), statModifiers);
-    auto& gamePartyMember = *getSrPartyMember(partyIdx).gamePartyMember;
+    auto& gamePartyMember = *getActivePartyMember(partyIdx).gamePartyMember;
     auto& srPartyMember = *getSrPartyMember(partyIdx).srPartyMember;
     gamePartyMember.maxHP = srPartyMember.playerStats["HP"].statValue;
     gamePartyMember.maxMP = srPartyMember.playerStats["MP"].statValue;

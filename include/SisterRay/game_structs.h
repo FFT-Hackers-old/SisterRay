@@ -2,6 +2,7 @@
 #define SISTER_RAY_GAME_STRUCTS_H
 
 #include <SisterRay/types.h>
+#include <SisterRay/scene_data.h>
 
 
 #pragma pack(push, 1)
@@ -220,8 +221,53 @@ typedef struct {
 } AIBattleContext;
 #pragma pack(pop)
 
-
 #define AI_BATTLE_CONTEXT   ((AIBattleContext*)0x9AB0A0)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 characterID;
+    u8 level;
+    u8 strength;
+    u8 vitality;
+    u8 magic;
+    u8 spirit;
+    u8 dexterity;
+    u8 luck;
+    u8 bonus_strength;
+    u8 bonus_vitality;
+    u8 bonus_magic;
+    u8 bonus_spirit;
+    u8 bonus_dexterity;
+    u8 bonus_luck;
+    u8 activeLimitLevel;
+    u8 limit_bar_progress;
+    char character_name[12];
+    u8 equipped_weapon;
+    u8 equipped_armor;
+    u8 equipped_accessory;
+    u8 outOfBattleStatus;
+    u8 character_row;
+    u8 level_progress;
+    u16 learned_limits;
+    u16 character_kills;
+    u16 limit_1A_uses;
+    u16 limit_2A_uses;
+    u16 limit_3A_uses;
+    u16 current_HP;
+    u16 base_HP;
+    u16 current_MP;
+    u16 base_MP;
+    u8 unknown[4];
+    u16 max_HP;
+    u16 max_MP;
+    u32 current_EXP;
+    u32 equippedWeaponMateria[8]; //This is primarily written to/from here, so this should be relocated if we are to expand 
+    u32 equippedArmorMateria[8];
+    u32 exp_to_next_level;
+} CharacterRecord;
+#pragma pack(pop)
+
+#define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
 
 #pragma pack(push)
 typedef struct {
@@ -346,7 +392,7 @@ typedef struct {
     u8 targetFlags; //0x00
     u8 attackEffectID;    //0x01
     u8 damageCalculation;    //0x02
-    u8 weaponHitRat;    //0x03
+    u8 weaponHitRate;    //0x03
     u8 impactEffectID;    //0x04
     u8 criticalRat;       //0x05
     u16 padding;
@@ -364,52 +410,6 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u8 characterID;
-    u8 level;
-    u8 strength;
-    u8 vitality;
-    u8 magic;
-    u8 spirit;
-    u8 dexterity;
-    u8 luck;
-    u8 bonus_strength;
-    u8 bonus_vitality;
-    u8 bonus_magic;
-    u8 bonus_spirit;
-    u8 bonus_dexterity;
-    u8 bonus_luck;
-    u8 activeLimitLevel;
-    u8 limit_bar_progress;
-    char character_name[12];
-    u8 equipped_weapon;
-    u8 equipped_armor;
-    u8 equipped_accessory;
-    u8 outOfBattleStatus;
-    u8 character_row;
-    u8 level_progress;
-    u16 learned_limits;
-    u16 character_kills;
-    u16 limit_1A_uses;
-    u16 limit_2A_uses;
-    u16 limit_3A_uses;
-    u16 current_HP;
-    u16 base_HP;
-    u16 current_MP;
-    u16 base_MP;
-    u8 unknown[4];
-    u16 max_HP;
-    u16 max_MP;
-    u32 current_EXP;
-    u32 equippedWeaponMateria[8]; //This is primarily written to/from here, so this should be relocated if we are to expand 
-    u32 equippedArmorMateria[8];
-    u32 exp_to_next_level;
-} CharacterRecord;
-#pragma pack(pop)
-
-#define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
-
-#pragma pack(push, 1)
-typedef struct {
     u8 strCurve;
     u8 vitCurve;
     u8 magCurve;
@@ -421,7 +421,7 @@ typedef struct {
     u8 expCurve;
     u8 pad;
     u8 startingLevel;
-    u8 pad;
+    u8 pad2;
     u8 limit1_1;
     u8 limit1_2;
     u8 limit1_3;

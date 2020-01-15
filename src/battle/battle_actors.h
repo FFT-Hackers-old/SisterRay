@@ -2,7 +2,7 @@
 #define BATTLE_ACTORS_H
 
 #include <SisterRay/SisterRay.h>
-#include "../party/stat_boosts.h"
+#include "../party/battle_stats.h"
 #include "../sr_named_registry.h"
 #include <map>
 #include <array>
@@ -53,7 +53,7 @@ protected:
     void activatePartyActor(u8 partyIdx);
     void activateEnemyActor(u8 enemyIdx);
     void savePartyActor(u8 partyIdx);
-    void saveEnemyActor(u8 enemyIdx)
+    void saveEnemyActor(u8 enemyIdx);
 private:
     std::array<u8, 3> activeParty;
     std::array<SrPartyBattleActor, 10> partyActors;
@@ -65,6 +65,8 @@ private:
 const SrBattleStat& getSrBattleStat(u8 actorID, std::string statName);
 SrBattleStat& getMutableSrBattleStat(u8 actorID, std::string statName);
 void setActorBattleStat(u8 actorID, std::string statName, u32 value);
+void setPartyStats(u8 partyIdx, ActorBattleState& partyActor);
+void setWeaponData(u8 partyIdx, ActorBattleState& partyActor);
 
 ActorBattleVars* getActorBattleVars(u8 actorIdx);
 ActorTimerData* getActorTimerBlock(u8 actorIdx);

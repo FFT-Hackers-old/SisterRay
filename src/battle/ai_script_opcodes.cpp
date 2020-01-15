@@ -219,7 +219,7 @@ OpCodeControlSequence OpCode51(AIScriptEvent* srEvent) {
 OpCodeControlSequence OpCode52(AIScriptEvent* srEvent) {
     auto& scriptCtx = *srEvent->scriptContext;
     srStackPop(0);
-    criptCtx.arguments.type1Array[0] = (gameCheckArgsExist(0) == 0);
+    scriptCtx.arguments.type1Array[0] = (gameCheckArgsExist(0) == 0);
     srStackPush(0);
     return RUN_NEXT;
 }
@@ -246,21 +246,21 @@ void handlePushConstants(AIScriptEvent* srEvent) {
     scriptCtx.arguments.type1Array[0] = 0;
     switch (scriptCtx.opCodeLow) {
     case 0: {
-        u8* byteReader = &(scriptPtr[scriptCtx.currentScriptIdx]);
+        const u8* byteReader = &(scriptPtr[scriptCtx.currentScriptIdx]);
         scriptCtx.arguments.type1Array[0] = *byteReader;
         scriptCtx.currentScriptIdx++;
         srStackPush(1);
         break;
     }
     case 1: {
-        u16* wordReader = &(scriptPtr[scriptCtx.currentScriptIdx]);
+        const u16* wordReader = &(scriptPtr[scriptCtx.currentScriptIdx]);
         scriptCtx.arguments.type1Array[0] = *wordReader;
         scriptCtx.currentScriptIdx += 2;
         srStackPush(2);
         break;
     }
     case 2: {
-        u32* dwordReader = &(scriptPtr[scriptCtx.currentScriptIdx]);
+        const u32* dwordReader = &(scriptPtr[scriptCtx.currentScriptIdx]);
         scriptCtx.arguments.type1Array[0] = *dwordReader & 0x00FFFFFF;
         scriptCtx.currentScriptIdx += 3;
         srStackPush(3);
@@ -297,7 +297,7 @@ OpCodeControlSequence OpCode75(AIScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
-typedef void(*SRPFN_SUB5D7F16)(u32);
+typedef i32(*SRPFN_SUB5D7F16)(u32);
 #define setSomeContextFromPop ((SRPFN_SUB5D7F16)0x5D7F16)
 
 typedef void(*SRPFN_SUB5C8B65)(u32, u8);
@@ -355,7 +355,7 @@ OpCodeControlSequence OpCode80(AIScriptEvent* srEvent) {
     if (scriptCtx.highTypes.type1 != 1) {
         auto pushType = srStackPop(0);
         srStackPop(1);
-        scriptCtx.popMasks.type1 &= (u16)scriptCtx.arguments.type2Array[0]);
+        scriptCtx.popMasks.type1 &= (u16)scriptCtx.arguments.type2Array[0];
         srStackPush(pushType);
     }
     return RUN_NEXT;
@@ -382,8 +382,8 @@ OpCodeControlSequence OpCode82(AIScriptEvent* srEvent) {
 }
 
 
-typedef u16(*SRPFN_GETRANDOMWORD)(u16);
-#define gameCountTargets  ((SRPFN_GETRANDOMWORD)0x5D1960)
+typedef u16(*SRPFN_GAMECOUNTTARGETS)(u16);
+#define gameCountTargets  ((SRPFN_GAMECOUNTTARGETS)0x5D1960)
 OpCodeControlSequence OpCode83(AIScriptEvent* srEvent) {
     auto& scriptCtx = *srEvent->scriptContext;
     auto pushType = 1;

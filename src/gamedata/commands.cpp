@@ -101,7 +101,7 @@ void runSetupCallbacks(u16 commandIdx) {
     }
 }
 
-void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu) {
+void runSelectCallbacks(EnabledCommand& command, Menu* menu) {
     SelectCommandEvent setupEvent = { menu, &command };
     auto& callbacks = getCommand(command.commandID).selectCallbacks;
     for (auto callback : callbacks) {

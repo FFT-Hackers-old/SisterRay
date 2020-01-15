@@ -29,7 +29,7 @@ public:
 
 SISTERRAY_API void runSetupCallbacks(const char* name);
 void runSetupCallbacks(u16 commandIdx);
-void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu);
+void runSelectCallbacks(EnabledCommand& command, Menu* menu);
 void initCommands(SrKernelStream* stream);
 u16 getDefaultCmdAnimScript(u16 idx);
 u8 getDefaultCmdDamage(u16 commandIdx);

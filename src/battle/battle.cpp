@@ -221,7 +221,7 @@ void dispatchAutoActions(u8 partyIndex, i32 actionType) {
             dispatchType = COUNTER_ACTION;
         }
     }
-    auto& autoActions = getSrPartyMember(partyIndex).actorAutoActions;
+    auto& autoActions = getSrPartyMember(partyIndex).srPartyMember->actorAutoActions;
     for (auto& action : autoActions) {
         if (action.dispatchType == AUTOACT_NO_ACTION)
             continue;

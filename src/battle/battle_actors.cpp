@@ -6,7 +6,7 @@
 #define ENEMY_ACTOR_COUNT 6
 #define CHARACTER_COUNT 10
 
-SrBattleActors::SrBattleActors() : SrNamedResourceRegistry<SrBattleActor, std::string>() {
+SrBattleActors::SrBattleActors() {
     for (u8 actorIdx = 0; actorIdx < CHARACTER_COUNT; actorIdx++) {
         partyActors[actorIdx] = SrPartyBattleActor();
     }
@@ -35,8 +35,8 @@ void SrBattleActors::activateEnemyActor(u8 enemyIdx) {
     auto& gameActor = getActiveBattleActor(enemyIdx + 4);
     auto& srActor = getSrBattleActor(enemyIdx + 4);
 
-    *gameActor.actorBattleVars = srActor.actorBattleVars;
-    *gameActor.actorTimers = srActor.actorTimers;
+    *gameActor.actorBattleVars = *srActor.actorBattleVars;
+    *gameActor.actorTimers = *srActor.actorTimers;
 }
 
 void SrBattleActors::savePartyActor(u8 partyIdx) {
@@ -57,14 +57,14 @@ void SrBattleActors::saveEnemyActor(u8 enemyIdx) {
     auto& gameActor = getActiveBattleActor(enemyIdx + 4);
     auto& srActor = getSrBattleActor(enemyIdx + 4);
 
-    *srActor.actorBattleVars = gameActor.actorBattleVars;
-    *srActor.actorTimers = gameActor.actorTimers;
+    *srActor.actorBattleVars = *gameActor.actorBattleVars;
+    *srActor.actorTimers = *gameActor.actorTimers;
 }
 
 void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     u16* word_9A889E = (u16*)0x9A889E;
     auto partyActor = getSrBattleActor(partyIdx);
-    const auto& srPartyMember = gContext.party.getActivePartyMember(partyIdx);
+    const auto& srPartyMember = gContext.party.getSrPartyMember(partyIdx);
     auto characterRecord = getCharacterRecordWithID(characterID);
     if (characterRecord == nullptr) {
         continue;
@@ -76,7 +76,7 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     auto actorBattleVars = partyActor.actorBattleVars;
     auto party34 = partyActor.party34;
     auto party10 = partyActor.party10;
-    const auto& partyMember = srPartyMember.srPartyMember->partyMember;
+    const auto& partyMember = srPartyMember.gamePartyMember;
     auto partyWeaponCtx = partyActor.weaponCtx;
 
     party10->characterID = -1;
@@ -94,12 +94,12 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     party34->characterRecord = characterRecord;
     if (!(characterRecord->character_row & 1))
         actorBattleVars->stateFlags |= 0x40u;
-    setPartyStats(srPartyMember, partyActor);
+    setPartyStats(partyIdx, partyActor);
     actorBattleVars->backDamageMult = 16;
     actorBattleVars->statusMask = characterRecord->outOfBattleStatus & 0x30;
     actorBattleVars->initalStatusMasks = 0;
     actorTimers->statusImmuneMask = partyMember.immuneStatusesMask;
-    setWeaponData(srPartyMember, partyActor);
+    setWeaponData(partyIdx, partyActor);
     // handleAccessorySpecialEffect(partyActorID, characterRecordPtr->equipped_accessory);
     actorBattleVars->gilStolen = 0;
     actorBattleVars->itemStolen = -1;
@@ -110,11 +110,11 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     if (!(partyWeaponCtx->targetFlags & 0x20))
         actorTimers->unkActorFlags |= 2u;
 
-    actorTimers->CharATBGauge = 0;
+    actorTimers->charATBValue = 0;
 
     party34->limitLevelIdx = 0xFF;
     if (characterID < 9) {
-        auto limitLevel = characterRecord->activeLimitLevel;
+        u8 limitLevel = characterRecord->activeLimitLevel;
         if (limitLevel >= 1 && limitLevel <= 4) {
             party34->limitBar = characterRecord->limit_bar_progress;
             party34->limitBarCopy = party34->limitBar;
@@ -283,7 +283,7 @@ void SrBattleActors::swapPartyActors(u8 partyIdx, u8 newCharacterID) {
 ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
     ActorBattleState actorState = ActorBattleState();
     if (actorIdx < 3) {
-        const auto& partyActor = partyActors[activeParty[actorIdx]];
+        auto& partyActor = partyActors[activeParty[actorIdx]];
         actorState.actorBattleVars = &(partyActor.battleActor.gameAIState);
         actorState.actorTimers = &(partyActor.battleActor.gameTimerState);
         actorState.battleStats = &(partyActor.battleActor.battleStats);
@@ -321,7 +321,7 @@ ActorBattleState SrBattleActors::getActiveBattleActor(u8 actorIdx) {
 
 
 u8* SrBattleActors::getActorRandomVarBuffer(u8 actorIdx) {
-    return &(actorScriptVariables[actorIdx].buffer);
+    return &(actorScriptVariables[actorIdx].buffer[0]);
 }
 
 ActorTimerData* getActorTimerBlock(u8 actorIdx) {
@@ -402,7 +402,8 @@ void initializeEnemyActors() {
     }
 }
 
-void setPartyStats(const PartyMemberState& srPartyMember, ActorBattleState& partyActor) {
+void setPartyStats(u8 partyIdx, ActorBattleState& partyActor) {
+    const auto& srPartyMember = gContext.party.getSrPartyMember(partyIdx);
     auto& actorBattleVars = partyActor.actorBattleVars;
     auto& stats = srPartyMember.srPartyMember->playerStats;
     actorBattleVars->currentHP = srPartyMember.gamePartyMember->currentHP;
@@ -424,19 +425,20 @@ void setPartyStats(const PartyMemberState& srPartyMember, ActorBattleState& part
     partyActor.party34->maxMP = actorBattleVars->maxMP;
 
     if (srPartyMember.gamePartyMember->actorFlags & 8) {
-        party34->field_16 = 999;
-        party34->field_14 = 9999;
+        partyActor.party34->field_16 = 999;
+        partyActor.party34->field_14 = 9999;
     }
     else {
-        party34->field_16 = 9999;
-        party34->field_14 = 999;
+        partyActor.party34->field_16 = 9999;
+        partyActor.party34->field_14 = 999;
     }
     actorBattleVars->pEvade = stats["PEV"].statValue;
     actorBattleVars->mEvade = stats["MEV"].statValue;
 }
 
-void setWeaponData(const PartyMemberState& srPartyMember, ActorBattleState& partyActor) {
-    auto& partyMember = srPartyMember.srPartyMember->partyMember;
+void setWeaponData(u8 partyIdx, ActorBattleState& partyActor) {
+    const auto& srPartyMember = gContext.party.getSrPartyMember(partyIdx);
+    auto& partyMember = srPartyMember.gamePartyMember;
     auto& partyWeaponCtx = *partyActor.weaponCtx;
 
     partyWeaponCtx.targetFlags = partyMember.weaponData.targetFlags;

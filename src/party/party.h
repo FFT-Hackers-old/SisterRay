@@ -3,29 +3,9 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
-#include "stat_boosts.h"
-#include <array>
-
-#define MAGIC_COUNT 66
-#define SUMMON_COUNT 16
-#define ESKILL_COUNT 24
-#define AUTO_ACTION_COUNT 10
-
-/*These are relocated from the games base locations to make them extensible*/
-/*Unluke the base game one will always be calculated for each character*/
-typedef struct {
-    std::unordered_map<std::string, SrActorStat> playerStats;
-    std::array<EnabledSpell, MAGIC_COUNT> actorMagics;
-    std::array<EnabledSpell, SUMMON_COUNT> actorSummons;
-    std::array<EnabledSpell, ESKILL_COUNT> actorEnemySkills;
-    std::array<SrAutoAction, AUTO_ACTION_COUNT> actorAutoActions;
-    std::string modelName;
-} SrPartyData;
-
-typedef struct {
-    PartyMember* gamePartyMember;
-    SrPartyData* srPartyMember;
-} PartyMemberState;
+#include "party_member.h"
+#include "battle_stats.h"
+#include "../battle/battle_actors.h"
 
 /*Holds extensible Enabled command arrays for active party members
   Will extend to hold data for all party members later to facilitate character swapping*/
@@ -38,6 +18,7 @@ public:
     void handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias);
     void clearActions(u32 partyIndex);
     void initPartyBattleFields(u8 partyIdx, const ActorBattleState& actorState);
+    void recalculatePartyMember(u8 partyIdx);
     void swapPartyMembers(u8 partyIdx, u8 newCharacterID);
 protected:
     void battleActivatePartyMember(u8 partyIdx);
@@ -46,7 +27,6 @@ private:
     std::array<u8, 3> activeParty;
     std::array<SrPartyData, 10> partyMembers;
     std::array<PartyMember, 10> gamePartyMembers;
-
 };
 
 PartyMemberState getSrPartyMember(u8 partyIdx);

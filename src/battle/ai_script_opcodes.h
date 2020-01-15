@@ -3,6 +3,13 @@
 
 #include <SisterRay/SisterRay.h>
 
+void pushScriptValues(AIScriptEvent* srEvent);
+void pushScriptAddresses(AIScriptEvent* srEvent);
+void handleMathOperations(AIScriptEvent* srEvent);
+void handleCompareOperations(AIScriptEvent* srEvent);
+void handlePushConstants(AIScriptEvent* srEvent);
+void handleJumps(AIScriptEvent* srEvent);
+
 OpCodeControlSequence nopCode(AIScriptEvent* srEvent);
 OpCodeControlSequence OpCode00(AIScriptEvent* srEvent);
 OpCodeControlSequence OpCode01(AIScriptEvent* srEvent);

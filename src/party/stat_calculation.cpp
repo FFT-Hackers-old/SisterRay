@@ -52,8 +52,10 @@ u8 getGameBaseStat(std::string statName, const CharacterRecord& record) {
         return record.spirit + record.bonus_spirit;
     if (statName == "DEX")
         return record.dexterity + record.bonus_dexterity;
-    if (statName == "LCK")
-        return record.luck + record.bonus_luck;
+    if (statName == "PEV")
+        return 0;
+    if (statName == "MEV")
+        return 0;
 }
 
 void addStatBoosts(StatBoostModifiers& acc, const EquipmentStatBoosts& boosts) {

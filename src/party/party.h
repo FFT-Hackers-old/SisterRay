@@ -20,7 +20,6 @@ typedef struct {
     std::array<EnabledSpell, ESKILL_COUNT> actorEnemySkills;
     std::array<SrAutoAction, AUTO_ACTION_COUNT> actorAutoActions;
     std::string modelName;
-    PartyMember swapPartyMember; //Mutating this will do nothing, this just stores data that needs to be written during switch
 } SrPartyData;
 
 typedef struct {
@@ -34,16 +33,24 @@ class SrPartyMembers {
 public:
     SrPartyMembers();
     PartyMemberState getActivePartyMember(u8 actorIdx);
+    PartyMemberState getSrPartyMember(u8 actorIdx);
     void addAutoAction(u32 partyIndex, const SrAutoAction& action);
     void handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias);
     void clearActions(u32 partyIndex);
+    void initPartyBattleFields(u8 partyIdx, const ActorBattleState& actorState);
+    void swapPartyMembers(u8 partyIdx, u8 newCharacterID);
 protected:
+    void battleActivatePartyMember(u8 partyIdx);
+    void battleSavePartyMember(u8 partyIdx);
+private:
     std::array<u8, 3> activeParty;
     std::array<SrPartyData, 10> partyMembers;
+    std::array<PartyMember, 10> gamePartyMembers;
 
 };
 
 PartyMemberState getSrPartyMember(u8 partyIdx);
+PartyMemberState getActivePartyMember(u8 partyIdx);
 
 void srRecalculateDerivedStats(u8 partyIndex);
 void srUpdatePartyMember(u8 partyIndex);

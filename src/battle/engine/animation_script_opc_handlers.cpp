@@ -178,7 +178,7 @@ OpCodeControlSequence OpCode96(AnimScriptEvent* srEvent) {
 
     scriptCtx->opCodeArgs[0] = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
     scriptCtx->opCodeArgs[1] = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
-    auto actorData = getActivePartyMember(actorID);
+    auto actorData = getGamePartyMember(actorID);
     if (actorData) {
         u16 weaponModelIdx = actorData->weaponData.weapon_model & 0xF;
         scriptCtx->opCodeArgs[2] = someBarretWeaponData[weaponModelIdx];
@@ -521,7 +521,7 @@ OpCodeControlSequence OpCodeAC(AnimScriptEvent* srEvent) {
     scriptCtx.opCodeArgs[0] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     u8 modelIdx = 4;
     if (scriptCtx.opCodeArgs[0] == 10) {
-        const auto& vincentData = getActivePartyMember(srEvent->actorID);
+        const auto& vincentData = getGamePartyMember(srEvent->actorID);
         u8 vincentModel = vincentData->weaponData.weapon_model & 0xF0;
         if (vincentModel == 0x10) {
             modelIdx = 5;

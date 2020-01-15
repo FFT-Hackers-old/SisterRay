@@ -23,6 +23,10 @@ SrPartyMembers::SrPartyMembers() {
         stats["DEX"] = dex;
         SrActorStat luck = { 1, 255, EncodedString("Luck") };
         stats["LCK"] = luck;
+        SrActorStat pev = { 1, 255, EncodedString("Evade") };
+        stats["PEV"] = pev;
+        SrActorStat mev = { 1, 255, EncodedString("MEvade") };
+        stats["MEV"] = mev;
         partyMembers[i] = partyData;
     }
 }
@@ -53,7 +57,13 @@ void SrPartyMembers::clearActions(u32 partyIndex) {
 
 PartyMemberState SrPartyMembers::getActivePartyMember(u8 partyIdx) {
     auto characterID = activeParty[partyIdx];
-    PartyMemberState ret = { getActivePartyMember(partyIdx), &(partyMembers[characterID]) };
+    PartyMemberState ret = { getGamePartyMember(partyIdx), &(partyMembers[characterID]) };
+    return ret;
+}
+
+PartyMemberState SrPartyMembers::getSrPartyMember(u8 partyIdx) {
+    auto characterID = activeParty[partyIdx];
+    PartyMemberState ret = { &(gamePartyMembers[characterID]), &(partyMembers[characterID]) };
     return ret;
 }
 
@@ -90,13 +100,83 @@ void SrPartyMembers::handleMateriaActorUpdates(u8 partyIndex, const std::vector<
     PARTY_STRUCT_ARRAY[partyIndex].commandColumns = getCommandRows(partyIndex);
 }
 
+void SrPartyMembers::battleActivatePartyMember(u8 partyIdx) {
+    auto& srMember = getSrPartyMember(partyIdx);
+    auto& activeMember = getActivePartyMember(partyIdx);
+
+    *activeMember.gamePartyMember = *srMember.gamePartyMember;
+}
+
+void SrPartyMembers::battleSavePartyMember(u8 partyIdx) {
+    auto& srMember = getSrPartyMember(partyIdx);
+    auto& activeMember = getActivePartyMember(partyIdx);
+
+    *srMember.gamePartyMember = *activeMember.gamePartyMember;
+}
+
+
+void SrPartyMembers::swapPartyMembers(u8 partyIdx, u8 newCharacterID) {
+    battleSavePartyMember(partyIdx);
+    activeParty[partyIdx] = newCharacterID;
+    battleActivatePartyMember(partyIdx);
+}
+
+void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& actorState) {
+    auto& partyMember = getSrPartyMember(partyIdx).srPartyMember->partyMember;
+    partyMember.unknownDivisor = 0;
+    partyMember.atbTimer = 0;
+    partyMember.barrierGauge = 0;
+    partyMember.mBarrierGauge = 0;
+    partyMember.limitGuage = 0;
+    partyMember.activeLimitLevel = 1;
+
+    partyMember.limitGuage = actorState.party34->limitBar << 8;
+    partyMember.activeLimitLevel = characterRecord->active_limit_level;
+
+    partyMember.commandColumns = 1;
+
+    for (u8 commandSlotIdx = 0; commandSlotIdx < 16; ++commandSlotIdx) {
+        u8 finalTargetingData = 0xFF;
+        u8 commandID = partyMember.enabledCommandArray[commandSlotIdx].commandID;
+        auto& enabledCommand = partyMember.enabledCommandArray[commandSlotIdx];
+        if (commandID != 0xFF) {
+            finalTargetingData = getCommand(commandID).gameCommand.targetingFlags;
+            if (finalTargetingData == 0xFF)
+                finalTargetingData = actorState.weaponCtx->targetFlags;
+
+            if (commandID >= 0x18u && commandID <= 0x1Bu)
+                enabledCommand.allCount = -1;
+
+            if (enabledCommand.cursorCommandType == 7) {
+                if (actorState.actorTimers->unkActorFlags & 2)
+                    enabledCommand.cursorCommandType = 0;
+                if (enabledCommand.allCount && enabledCommand.commandID != 25) {
+                    finalTargetingData |= 0xC;
+                }
+                if (commandID == 5 || commandID == 17) {
+                    finalTargetingData |= 0x10;
+                    if (enabledCommand.allCount)
+                        enabledCommand.cursorCommandType = 0;
+                }
+            }
+            partyMember.commandColumns = commandSlotIdx / 4 + 1;
+        }
+        enabledCommand.targetingData = finalTargetingData;
+    }
+    battleActivatePartyMember(partyIdx);
+}
+
 
 PartyMemberState getSrPartyMember(u8 partyIdx) {
+    return gContext.party.getSrPartyMember(partyIdx);
+}
+
+PartyMemberState getActivePartyMember(u8 partyIdx) {
     return gContext.party.getActivePartyMember(partyIdx);
 }
 
-u8 getCommandRows(u8 partyIndex) {
-    auto commands = PARTY_STRUCT_ARRAY[partyIndex].enabledCommandArray;
+u8 getCommandRows(u8 partyIdx) {
+    const auto& commands = getGamePartyMember(partyIdx).enabledCommandArray;
     u8 count = 0;
     for (auto idx = 0; idx < 16; idx++) {
         if (commands[idx].commandID != 0xFF) {

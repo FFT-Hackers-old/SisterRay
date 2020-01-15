@@ -184,7 +184,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
     if (!(modelState.field_25 & 4)) {
         sub_66335F(modelState.field_28, modelState.unkActorFlags, modelState.field_2A);
         
-        auto actorDataPtr = getActivePartyMember(actorIdx);
+        auto actorDataPtr = getGamePartyMember(actorIdx);
         if (!actorDataPtr)
             return;
 

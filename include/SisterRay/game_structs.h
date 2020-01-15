@@ -277,7 +277,7 @@ typedef struct {
     u32 field_2C;               //0x2C
     u32 field_30;               //0x30
     u32 statusImmuneMask;       //0x34
-    u32 field_38;               //0x38
+    EnemyData* battleEnemyData;               //0x38
     u16 currentHP;              //0x3C
     u16 currentMP;              //0x3E
     u8 field_40;                //0x40
@@ -293,11 +293,11 @@ typedef struct {
 typedef struct {
     CharacterRecord* characterRecord;
     u8 field_4;
-    u8 field_5;
+    u8 limitLevelIdx;
     u8 field_6;
     u8 field_7;
-    u16 limitBreakBar;
-    u8 field_A;
+    u16 limitBar;
+    u8 limitBarCopy;
     u8 field_B;
     u8 field_C;
     u16 field_E;
@@ -306,7 +306,7 @@ typedef struct {
     u16 field_14; //Seems to be HP/MP switch HP
     u16 field_16; //Seems to be HP/MP switch MP
     u16 previousSupportMasks[2];
-    u8 field_1C;
+    u8 limitLevelDivisor;
     u8 field_1D;
     u8 field_1E;
     u8 field_1F;
@@ -378,13 +378,13 @@ typedef struct {
     u8 bonus_spirit;
     u8 bonus_dexterity;
     u8 bonus_luck;
-    u8 active_limit_level;
+    u8 activeLimitLevel;
     u8 limit_bar_progress;
     char character_name[12];
     u8 equipped_weapon;
     u8 equipped_armor;
     u8 equipped_accessory;
-    u8 out_of_battle_status;
+    u8 outOfBattleStatus;
     u8 character_row;
     u8 level_progress;
     u16 learned_limits;
@@ -407,5 +407,46 @@ typedef struct {
 #pragma pack(pop)
 
 #define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 strCurve;
+    u8 vitCurve;
+    u8 magCurve;
+    u8 sprCurve;
+    u8 dexCurve;
+    u8 lckCurve;
+    u8 hpCurve;
+    u8 mpCurve;
+    u8 expCurve;
+    u8 pad;
+    u8 startingLevel;
+    u8 pad;
+    u8 limit1_1;
+    u8 limit1_2;
+    u8 limit1_3;
+    u8 limit2_1;
+    u8 limit2_2;
+    u8 limit2_3;
+    u8 limit3_1;
+    u8 limit3_2;
+    u8 limit3_3;
+    u8 limit4_1;
+    u8 limit4_2;
+    u8 limit4_3;
+    u16 level2ReqKills;
+    u16 level3ReqKills;
+    u16 limit1_2ReqUses;
+    u16 limit1_3ReqUses;
+    u16 limit2_2ReqUses;
+    u16 limit2_3ReqUses;
+    u16 limit3_2ReqUses;
+    u16 limit3_3ReqUses;
+    u32 level1Divisor;
+    u32 level2Divisor;
+    u32 level3Divisor;
+    u32 level4Divisor;
+} KernelCharacterGrowth;
+#pragma pack(pop)
 
 #endif

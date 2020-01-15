@@ -12,6 +12,7 @@
 /*Holds character AI, as well as currently equipped materias*/
 typedef struct {
     BattleAIData characterAI;
+    KernelCharacterGrowth characterGrowth;
     std::array<MateriaInventoryEntry, 8> wpnMaterias;
     std::array<MateriaInventoryEntry, 8> armMaterias;
     u16 equippedWeapon;

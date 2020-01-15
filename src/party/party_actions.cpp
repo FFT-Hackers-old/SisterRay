@@ -2,7 +2,7 @@
 #include "party.h"
 
 void clearCommandArray(u8 partyIndex) {
-    auto& commandArray = *getActivePartyMember(partyIndex)->enabledCommandArray;
+    auto& commandArray = *getGamePartyMember(partyIndex)->enabledCommandArray;
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         voidCommand(partyIndex, slotIndex);
     }
@@ -36,7 +36,7 @@ SISTERRAY_API void enableCommand(u8 partyIndex, u8 enabledIndex, u8 commandIndex
         srLogWrite("attempt to enable an invalid command slot");
         return;
     }
-    auto& commandArray = getActivePartyMember(partyIndex)->enabledCommandArray;
+    auto& commandArray = getGamePartyMember(partyIndex)->enabledCommandArray;
     commandArray[enabledIndex].commandID = commandIndex;
     commandArray[enabledIndex].cursorCommandType = getCommand(commandIndex).gameCommand.commandMenuID;
     commandArray[enabledIndex].targetingData = getCommand(commandIndex).gameCommand.targetingFlags;
@@ -48,7 +48,7 @@ SISTERRAY_API void voidCommand(u8 partyIndex, u8 enabledIndex) {
         srLogWrite("attempt to void an invalid command slot");
         return;
     }
-    auto& command = getActivePartyMember(partyIndex)->enabledCommandArray[enabledIndex];
+    auto& command = getGamePartyMember(partyIndex)->enabledCommandArray[enabledIndex];
     command.commandID = 0xFF;
     command.cursorCommandType = 0;
     command.targetingData = 0xFF;
@@ -58,7 +58,7 @@ SISTERRAY_API void voidCommand(u8 partyIndex, u8 enabledIndex) {
 }
 
 SISTERRAY_API u8 getEnabledSlotIndex(u8 partyIndex, u8 commandIndex) {
-    auto& commandArray = getActivePartyMember(partyIndex)->enabledCommandArray;
+    auto& commandArray = getGamePartyMember(partyIndex)->enabledCommandArray;
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         if (commandArray[slotIndex].commandID == commandIndex)
             return slotIndex;

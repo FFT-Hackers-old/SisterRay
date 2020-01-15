@@ -42,15 +42,24 @@ typedef struct {
 class SrBattleActors {
 public:
     SrBattleActors();
+    ActorBattleState getSrBattleActor(u8 actorIdx);
     ActorBattleState getActiveBattleActor(u8 actorIdx);
-    void setPartyMemberActive(u8 partyIdx, u8 characterID);
-    u8* getActorRandomVarBuffer(u8 actorIdx);
+    void initializePartyActor(u8 partyIdx, u8 characterID);
+    void initializeEnemyActor(u8 actorIdx);
     void swapPartyActors(u8 partyIdx, u8 newCharacterID);
+    u8* getActorRandomVarBuffer(u8 actorIdx);
 protected:
+    void setActivePartyActor(u8 partyIdx, u8 characterID);
+    void activatePartyActor(u8 partyIdx);
+    void activateEnemyActor(u8 enemyIdx);
+    void savePartyActor(u8 partyIdx);
+    void saveEnemyActor(u8 enemyIdx)
+private:
     std::array<u8, 3> activeParty;
     std::array<SrPartyBattleActor, 10> partyActors;
     std::array<SrEnemyBattleActor, 6> enemyActors;
     std::array<ActorScriptVariables, 10> actorScriptVariables;
+
 };
 
 const SrBattleStat& getSrBattleStat(u8 actorID, std::string statName);
@@ -60,6 +69,8 @@ void setActorBattleStat(u8 actorID, std::string statName, u32 value);
 ActorBattleVars* getActorBattleVars(u8 actorIdx);
 ActorTimerData* getActorTimerBlock(u8 actorIdx);
 
-void initializePartyActor(PartyMemberState& srPartyMember, ActorBattleState& partyActor, CharacterRecord& characterRecord);
+void initializePlayerActors();
+void initializeEnemyActors();
+
 
 #endif

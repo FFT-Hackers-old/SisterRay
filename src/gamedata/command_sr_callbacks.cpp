@@ -121,7 +121,7 @@ void initializeLimitContext(DamageCalcStruct* damageContext) {
     u8* unkPartyStructPtr = (u8*)(0x9A87F4);
 
     characterID = unkPartyStructPtr[16 * damageContext->attackerID];
-    activeLimitIDs = getActivePartyMember(damageContext->attackerID)->enabledLimitBytes;
+    activeLimitIDs = getGamePartyMember(damageContext->attackerID)->enabledLimitBytes;
     if (damageContext->absAttackIndex >= 96 && damageContext->absAttackIndex <= 128) {
         auto scriptIndex = damageContext->absAttackIndex - 96;
         if (kernelLimitScriptIndexes[scriptIndex] != 255)

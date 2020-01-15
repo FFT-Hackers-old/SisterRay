@@ -87,7 +87,7 @@ typedef struct {
     u16 limitGuage;
     u16 barrierGauge; //0x1C
     u16 mBarrierGauge; //0x1E
-    u8 unkbyte; //0x20
+    u8 activeLimitLevel; //0x20
     u8 commandColumns; //0x21
     u8 unknownDiviosr; //0x22
     u8 actorFlags; //0x23

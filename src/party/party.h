@@ -22,6 +22,7 @@ public:
     void recalculatePartyMember(u8 partyIdx);
     void swapPartyMembers(u8 partyIdx, u8 newCharacterID);
 protected:
+    void setPartyMemberActive(u8 partyIdx, u8 newCharacterID);
     void battleActivatePartyMember(u8 partyIdx);
     void battleSavePartyMember(u8 partyIdx);
 private:

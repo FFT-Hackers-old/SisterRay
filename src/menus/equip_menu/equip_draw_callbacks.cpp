@@ -109,7 +109,7 @@ void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
             case 0: {
                 auto toEquipWeaponID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
                 statsToDisplay[0] = gContext.weapons.getResource(toEquipWeaponID).gameWeapon.weapon_strength;
-                statsToDisplay[1] = gContext.weapons.getResource(toEquipWeaponID).gameWeapon.weapon_hit_rate;
+                statsToDisplay[1] = gContext.weapons.getResource(toEquipWeaponID).gameWeapon.weaponHitRate;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
                 std::vector<std::string> currentGearNames = { STAT_VALUE_1, STAT_VALUE_2 };
                 for (u32 row = 0; row < listNames.size(); row++) {
@@ -148,7 +148,7 @@ void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
     std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
     std::vector<std::string> baseNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
     statsToDisplay[0] = gContext.weapons.getResource(equippedWeaponID).gameWeapon.weapon_strength;
-    statsToDisplay[1] = gContext.weapons.getResource(equippedWeaponID).gameWeapon.weapon_hit_rate;
+    statsToDisplay[1] = gContext.weapons.getResource(equippedWeaponID).gameWeapon.weaponHitRate;
     statsToDisplay[2] = gContext.armors.getResource(equippedArmorID).gameArmor.defense;
     statsToDisplay[3] = gContext.armors.getResource(equippedArmorID).gameArmor.evade;
     statsToDisplay[4] = 0;

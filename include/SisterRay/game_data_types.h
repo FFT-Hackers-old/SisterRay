@@ -123,7 +123,7 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u8      target_flags;
+    u8      targetFlags;
     u8      attackEffectID;
     u8      damageCalculation;
     u8      unused_byte;

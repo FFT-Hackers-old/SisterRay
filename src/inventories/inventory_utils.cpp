@@ -90,7 +90,7 @@ u8 getTargetFlags(u16 absoluteItemID) {
         break;
     }
     case 1: {
-        targetingFlags = gContext.weapons.getResource(relativeID).gameWeapon.target_flags;
+        targetingFlags = gContext.weapons.getResource(relativeID).gameWeapon.targetFlags;
         break;
     }
     case 2: {

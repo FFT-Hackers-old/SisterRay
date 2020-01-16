@@ -61,6 +61,8 @@ void SrBattleActors::saveEnemyActor(u8 enemyIdx) {
     *srActor.actorTimers = *gameActor.actorTimers;
 }
 
+typedef void(*SRPFN_SUB5C7DB0)(u8);
+#define sub_5C7DB0  (SRPFN_SUB5C7DB0(0x5C7DB0))
 void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     u16* word_9A889E = (u16*)0x9A889E;
     auto partyActor = getSrBattleActor(partyIdx);
@@ -165,6 +167,7 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
 
 void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
     u8* byte_9AAD2C = (u8*)0x9AAD2C;
+    u8* byte_9A9AAC = (u8*)0x9A9AAC;
     auto enemyActor = getSrBattleActor(enemyIdx + 4);
     auto actorTimers = enemyActor.actorTimers;
     auto actorBattleVars = enemyActor.actorBattleVars;
@@ -360,10 +363,12 @@ void setActorBattleStat(u8 actorID, std::string statName, u32 value) {
 }
 
 CharacterRecord* getCharacterRecordWithID(u8 characterID) {
+    u8* byte_9ACAD4 = (u8*)0x9ACAD4;
+    u16* G_BATTLE_FLAGS = (u16*)0x9A88A6;
     for (u8 characterRecordIdx = 0; characterRecordIdx < 9; ++characterRecordIdx) {
         auto characterRecord = &(CHARACTER_RECORD_ARRAY[characterRecordIdx]);
-        if (battleFlags & 0x40)
-            qmemcpy(&byte_9ACAD4, &charDataArray[characterRecordIdx], 0x84u);
+        if (*G_BATTLE_FLAGS & 0x40)
+            memcpy(&byte_9ACAD4, &(CHARACTER_RECORD_ARRAY[characterRecordIdx]), sizeof(CharacterRecord));
 
         if (characterRecord->characterID == characterID)
             return characterRecord;
@@ -379,7 +384,7 @@ void initializePlayerActors() {
     auto& aiBattleContext = *AI_BATTLE_CONTEXT;
     aiBattleContext.actorPartyMask = 0;
     for (u8 partyIdx = 0; partyIdx < 3; partyIdx++) {
-        u8 characterID = G_SAVEMAP_PARTY[partyIdx];
+        u8 characterID = G_SAVE_MAP->activeParty[partyIdx];
         aiBattleContext.actorPartyMask |= 1 << partyIdx;
         gContext.battleActors.initializePartyActor(partyIdx, characterID);
     }
@@ -436,7 +441,7 @@ void setPartyStats(u8 partyIdx, ActorBattleState& partyActor) {
 
 void setWeaponData(u8 partyIdx, ActorBattleState& partyActor) {
     const auto& srPartyMember = gContext.party.getSrPartyMember(partyIdx);
-    auto& partyMember = srPartyMember.gamePartyMember;
+    auto& partyMember = *srPartyMember.gamePartyMember;
     auto& partyWeaponCtx = *partyActor.weaponCtx;
 
     partyWeaponCtx.targetFlags = partyMember.weaponData.targetFlags;

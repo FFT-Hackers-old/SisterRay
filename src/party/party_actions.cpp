@@ -1,5 +1,7 @@
 #include "party_actions.h"
 #include "party.h"
+#include "party_utils.h"
+#include "../impl.h"
 
 void clearCommandArray(u8 partyIndex) {
     auto& commandArray = *getGamePartyMember(partyIndex)->enabledCommandArray;
@@ -71,19 +73,19 @@ SISTERRAY_API EnabledSpell* getSpellSlot(u8 partyIndex, u8 commandIndex, u16 act
     auto& partyData = getSrPartyMember(partyIndex);
     switch (commandIndex) {
     case 2: {
-        for (auto& spell : partyData.actorMagics) {
+        for (auto& spell : partyData.srPartyMember->actorMagics) {
             if (spell.magicIndex == actionIndex)
                 return &spell;
         }
     }
     case 3: {
-        for (auto& spell : partyData.actorSummons) {
+        for (auto& spell : partyData.srPartyMember->actorSummons) {
             if (spell.magicIndex == actionIndex)
                 return &spell;
         }
     }
     case 14: {
-        for (auto& spell : partyData.actorEnemySkills) {
+        for (auto& spell : partyData.srPartyMember->actorEnemySkills) {
             if (spell.magicIndex == actionIndex)
                 return &spell;
         }
@@ -111,8 +113,8 @@ SISTERRAY_API void  insertEnabledCommand(u8 partyIndex, u8 commandIndex) {
         enableCommand(partyIndex, freeIndex, commandIndex);
 }
 
-SISTERRAY_API EnabledCommand* getCommandSlot(u8 partyIndex, u8 commandIndex) {
-    auto& commandArray = PARTY_STRUCT_ARRAY[partyIndex].enabledCommandArray;
+SISTERRAY_API EnabledCommand* getCommandSlot(u8 partyIdx, u8 commandIndex) {
+    auto& commandArray = getSrPartyMember(partyIdx).gamePartyMember->enabledCommandArray;
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         if (commandArray[slotIndex].commandID == commandIndex)
             return &(commandArray[slotIndex]);

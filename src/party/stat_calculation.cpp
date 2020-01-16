@@ -1,4 +1,4 @@
-#include "stat_boosts.h"
+#include "stat_calculation.h"
 #include "../impl.h"
 
 void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& charRecord, const StatBoostModifiers& statModifiers) {
@@ -6,7 +6,7 @@ void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& char
         const auto& statName = statElement.first;
         auto& stat = statElement.second;
         stat.baseValue = getGameBaseStat(statName, charRecord);
-        const auto& modifiers = statModifiers[statName];
+        const auto& modifiers = statModifiers.at(statName);
         i32 netBoostAmt = 0;
         i32 netPercentAmt = 0;
         for (auto modifier : modifiers) {
@@ -24,7 +24,7 @@ void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& char
             }
         }
 
-        i32 statValue = (stat.baseValue * (1.0f + ((netPercentAmt) / 100)) + netBoostAmt; //only apply percent to base value
+        i32 statValue = (stat.baseValue * (1.0f + ((netPercentAmt) / 100)) + netBoostAmt); //only apply percent to base value
         if (statValue > stat.maxValue) {
             stat.statValue = stat.maxValue;
             return;

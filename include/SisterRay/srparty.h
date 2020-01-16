@@ -89,7 +89,7 @@ typedef struct {
     u16 mBarrierGauge; //0x1E
     u8 activeLimitLevel; //0x20
     u8 commandColumns; //0x21
-    u8 unknownDiviosr; //0x22
+    u8 unknownDivisor; //0x22
     u8 actorFlags; //0x23
     u8 unknown24bitInts[24]; //0x24
     u16 attackElementsMask; //0x3C

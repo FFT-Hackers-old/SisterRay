@@ -8,7 +8,7 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
     gContext.characters = SrCharacterRegistry();
     u8* sectionBuffer = (u8*)malloc(CHARACTER_BLOCK_SIZE);
     srKernelStreamRead(stream, (void*)sectionBuffer, CHARACTER_BLOCK_SIZE);
-    KernelCharacterGrowth* growthDataPtr = sectionBuffer;
+    KernelCharacterGrowth* growthDataPtr = (KernelCharacterGrowth*)sectionBuffer;
     auto characterAIPtr = sectionBuffer + 0x61C;
 
     for (auto characterIndex = 0; characterIndex < 12; characterIndex++) {
@@ -19,6 +19,7 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
         characterData.characterAI = characterAIData;
         if (characterIndex < 9) {
             characterData.characterGrowth = growthDataPtr[characterIndex];
+            characterData.gameCharacter = &(CHARACTER_RECORD_ARRAY[characterIndex]);
         }
         auto charName = getCharacterName(characterIndex);
 
@@ -27,6 +28,7 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
         defaultMat.materia_ap = 0;
         characterData.wpnMaterias.fill(defaultMat);
         characterData.armMaterias.fill(defaultMat);
+        characterData.gameCharacter = nullptr;
 
         gContext.characters.addElement(charName, characterData);
     }

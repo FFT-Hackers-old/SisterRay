@@ -1,38 +1,39 @@
 #include "party.h"
 #include "../impl.h"
+#include "stat_calculation.h"
 
 #define CHARACTER_COUNT 0xA
 #define PARTY_COUNT 3
 SrPartyMembers::SrPartyMembers() {
-    for (u8 i = 0; i < CHARACTER_COUNT i++) {
+    for (u8 i = 0; i < CHARACTER_COUNT; i++) {
         auto partyData = SrPartyData();
         auto& stats = partyData.playerStats;
-        SrActorStat HP = { 1, 9999, EncodedString("HP") };
+        SrActorStat HP = { 1, 1, 9999, EncodedString("HP") };
         stats["HP"] = HP;
-        SrActorStat MP = { 1, 999, EncodedString("MP") };
+        SrActorStat MP = { 1, 1, 999, EncodedString("MP") };
         stats["MP"] = MP;
-        SrActorStat str = { 1, 255, EncodedString("Strength") };
+        SrActorStat str = { 1, 1, 255, EncodedString("Strength") };
         stats["STR"] = str;
-        SrActorStat vit = { 1, 255, EncodedString("Vitality") };
+        SrActorStat vit = { 1, 1, 255, EncodedString("Vitality") };
         stats["VIT"] = vit;
-        SrActorStat mag = { 1, 255, EncodedString("Magic") };
+        SrActorStat mag = { 1, 1, 255, EncodedString("Magic") };
         stats["MAG"] = mag;
-        SrActorStat spr = { 1, 255, EncodedString("Spirit") };
+        SrActorStat spr = { 1, 1, 255, EncodedString("Spirit") };
         stats["SPR"] = spr;
-        SrActorStat dex = { 1, 255, EncodedString("Dexterity") };
+        SrActorStat dex = { 1, 1, 255, EncodedString("Dexterity") };
         stats["DEX"] = dex;
-        SrActorStat luck = { 1, 255, EncodedString("Luck") };
+        SrActorStat luck = { 1, 1, 255, EncodedString("Luck") };
         stats["LCK"] = luck;
-        SrActorStat pev = { 1, 255, EncodedString("Evade") };
+        SrActorStat pev = { 1, 1, 255, EncodedString("Evade") };
         stats["PEV"] = pev;
-        SrActorStat mev = { 1, 255, EncodedString("MEvade") };
+        SrActorStat mev = { 1, 1, 255, EncodedString("MEvade") };
         stats["MEV"] = mev;
         partyMembers[i] = partyData;
     }
 }
 
 void SrPartyMembers::addAutoAction(u32 partyIndex, const SrAutoAction& action) {
-    auto& autoActons = getSrPartyMember(partyIndex).actorAutoActions;
+    auto& autoActons = getSrPartyMember(partyIndex).srPartyMember->actorAutoActions;
     for (auto& actionSlot : autoActons) {
         if (actionSlot.dispatchType == AUTOACT_NO_ACTION) {
             actionSlot = action;
@@ -115,6 +116,13 @@ void SrPartyMembers::battleSavePartyMember(u8 partyIdx) {
 }
 
 
+void SrPartyMembers::setPartyMemberActive(u8 partyIdx, u8 newCharacterID) {
+    if (partyIdx < 3) {
+        activeParty[partyIdx] = newCharacterID;
+    }
+}
+
+
 void SrPartyMembers::swapPartyMembers(u8 partyIdx, u8 newCharacterID) {
     battleSavePartyMember(partyIdx);
     activeParty[partyIdx] = newCharacterID;
@@ -122,7 +130,7 @@ void SrPartyMembers::swapPartyMembers(u8 partyIdx, u8 newCharacterID) {
 }
 
 void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& actorState) {
-    auto& partyMember = getSrPartyMember(partyIdx).srPartyMember->partyMember;
+    auto& partyMember = *getSrPartyMember(partyIdx).gamePartyMember;
     partyMember.unknownDivisor = 0;
     partyMember.atbTimer = 0;
     partyMember.barrierGauge = 0;
@@ -131,7 +139,8 @@ void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& 
     partyMember.activeLimitLevel = 1;
 
     partyMember.limitGuage = actorState.party34->limitBar << 8;
-    partyMember.activeLimitLevel = characterRecord->active_limit_level;
+    const auto& characterRecord = gContext.characters.getResource(activeParty[partyIdx]);
+    partyMember.activeLimitLevel = characterRecord.gameCharacter->activeLimitLevel;
 
     partyMember.commandColumns = 1;
 
@@ -167,8 +176,8 @@ void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& 
 }
 
 void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
-    auto characterID = getActivePartyMember(partyIdx).gamePartyMember.characterID;
-    activeParty[partyIdx] = characterID;
+    auto characterID = G_SAVE_MAP->activeParty[partyIdx];
+    setPartyMemberActive(partyIdx, characterID);
     auto characterName = getCharacterName(characterID);
     auto weaponMaterias = gContext.characters.getElement(characterName).wpnMaterias;
     auto armorMaterias = gContext.characters.getElement(characterName).armMaterias;
@@ -204,22 +213,23 @@ void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
         addStatBoosts(statModifiers, materia.equipEffects);
     }
 
-    auto srPartyMember = getSrPartyMember(partyIdx);
-    calculateActorStats(*srPartyMember.srPartyMember, *getPartyActorCharacterRecord(partyIdx), statModifiers);
-    auto& gamePartyMember = srPartyMember.gamePartyMember;
+    auto partyMember = getSrPartyMember(partyIdx);
+    calculateActorStats(*partyMember.srPartyMember, *getPartyActorCharacterRecord(partyIdx), statModifiers);
+    auto& gamePartyMember = *partyMember.gamePartyMember;
+    auto& srPartyMember = *partyMember.srPartyMember;
     //TODO after all references are removed kill these copies
     gamePartyMember.maxHP = srPartyMember.playerStats["HP"].statValue;
     gamePartyMember.maxMP = srPartyMember.playerStats["MP"].statValue;
     gamePartyMember.physAttack = srPartyMember.playerStats["STR"].statValue;
-    gamePartyMember.physDefense = srPartyMember.playerStats["VIT"]statValue;
+    gamePartyMember.physDefense = srPartyMember.playerStats["VIT"].statValue;
     gamePartyMember.magAttack = srPartyMember.playerStats["MAG"].statValue;
-    gamePartyMember.magDefense = srPartyMember.playerStats["SPR"]statValue;
+    gamePartyMember.magDefense = srPartyMember.playerStats["SPR"].statValue;
     gamePartyMember.strength = srPartyMember.playerStats["STR"].statValue;
-    gamePartyMember.vitality = srPartyMember.playerStats["VIT"]statValue;
+    gamePartyMember.vitality = srPartyMember.playerStats["VIT"].statValue;
     gamePartyMember.magic = srPartyMember.playerStats["MAG"].statValue;
-    gamePartyMember.spirit = srPartyMember.playerStats["SPR"]statValue;
+    gamePartyMember.spirit = srPartyMember.playerStats["SPR"].statValue;
     gamePartyMember.speed = srPartyMember.playerStats["DEX"].statValue;
-    gamePartyMember.luck = srPartyMember.playerStats["LCK"]statValue;
+    gamePartyMember.luck = srPartyMember.playerStats["LCK"].statValue;
     battleActivatePartyMember(partyIdx);
 }
 
@@ -233,7 +243,7 @@ PartyMemberState getActivePartyMember(u8 partyIdx) {
 }
 
 u8 getCommandRows(u8 partyIdx) {
-    const auto& commands = getGamePartyMember(partyIdx).enabledCommandArray;
+    const auto commands = getSrPartyMember(partyIdx).gamePartyMember->enabledCommandArray;
     u8 count = 0;
     for (auto idx = 0; idx < 16; idx++) {
         if (commands[idx].commandID != 0xFF) {
@@ -322,58 +332,7 @@ void srUpdatePartyMember(u8 partyIndex) {
 
 /*Handler handle updating active commands*/
 void srRecalculateDerivedStats(u8 partyIdx) {
-    auto characterID = getActivePartyMember(partyIdx)->characterID;
-    gContext.party.activeParty[partyIdx] = characterID;
-    auto characterName = getCharacterName(characterID);
-    auto weaponMaterias = gContext.characters.getElement(characterName).wpnMaterias;
-    auto armorMaterias = gContext.characters.getElement(characterName).armMaterias;
-
-    std::vector<MateriaInventoryEntry> equippedMaterias = std::vector<MateriaInventoryEntry>();
-    equippedMaterias.resize(weaponMaterias.max_size() + armorMaterias.max_size());
-
-    std::vector<MateriaInventoryEntry> wpnVector = std::vector<MateriaInventoryEntry>();
-    wpnVector.resize(weaponMaterias.max_size());
-    std::vector<MateriaInventoryEntry> armVector = std::vector<MateriaInventoryEntry>();
-    armVector.resize(armorMaterias.max_size());
-
-    std::copy(begin(weaponMaterias), end(weaponMaterias), begin(equippedMaterias));
-    std::copy(begin(armorMaterias), end(armorMaterias), begin(equippedMaterias) + weaponMaterias.size());
-    std::copy(begin(weaponMaterias), end(weaponMaterias), begin(wpnVector));
-    std::copy(begin(armorMaterias), end(armorMaterias), begin(armVector));
-
-    gContext.party.clearActions(partyIdx);
-    gContext.party.handleMateriaActorUpdates(partyIdx, equippedMaterias); //Enable spells, counters, commands, and fill out stat boosts based on materia stuff
-    applyLinkedMateriaModifiers(partyIdx, wpnVector, SR_GEAR_WEAPON);
-    applyLinkedMateriaModifiers(partyIdx, armVector, SR_GEAR_ARMOR);
-
-    StatBoostModifiers statModifiers = StatBoostModifiers();
-    //Add all stat modifiers from weapons to the modification object, for determining the base value of that stat
-    const auto& weapon = gContext.weapons.getResource(getPartyActorCharacterRecord(partyIdx)->equipped_weapon);
-    addStatBoosts(statModifiers, weapon.equipEffects);
-    const auto& armor = gContext.armors.getResource(getPartyActorCharacterRecord(partyIdx)->equipped_armor);
-    addStatBoosts(statModifiers, armor.equipEffects);
-    const auto& accessory = gContext.accessories.getResource(getPartyActorCharacterRecord(partyIdx)->equipped_accessory);
-    addStatBoosts(statModifiers, accessory.equipEffects);
-    for (auto equippedMateria : equippedMaterias) {
-        const auto& materia = gContext.materias.getResource(equippedMateria.item_id);
-        addStatBoosts(statModifiers, materia.equipEffects);
-    }
-    calculateActorStats(*getSrPartyMember(partyIdx).srPartyMember, *getPartyActorCharacterRecord(partyIdx), statModifiers);
-    auto& gamePartyMember = *getActivePartyMember(partyIdx).gamePartyMember;
-    auto& srPartyMember = *getSrPartyMember(partyIdx).srPartyMember;
-    gamePartyMember.maxHP = srPartyMember.playerStats["HP"].statValue;
-    gamePartyMember.maxMP = srPartyMember.playerStats["MP"].statValue;
-    gamePartyMember.physAttack = srPartyMember.playerStats["STR"].statValue;
-    gamePartyMember.physDefense = srPartyMember.playerStats["VIT"]statValue;
-    gamePartyMember.magAttack = srPartyMember.playerStats["MAG"].statValue;
-    gamePartyMember.magDefense = srPartyMember.playerStats["SPR"]statValue;
-    gamePartyMember.strength = srPartyMember.playerStats["STR"].statValue;
-    gamePartyMember.vitality = srPartyMember.playerStats["VIT"]statValue;
-    gamePartyMember.magic = srPartyMember.playerStats["MAG"].statValue;
-    gamePartyMember.spirit = srPartyMember.playerStats["SPR"]statValue;
-    gamePartyMember.speed = srPartyMember.playerStats["DEX"].statValue;
-    gamePartyMember.luck = srPartyMember.playerStats["LCK"]statValue;
-    getSrPartyMember(partyIdx).swapPartyMember = *gamePartyMember;
+    gContext.party.recalculatePartyMember(partyIdx);
 }
 
 /*determine whether or not commands are enabled from resizeable SR arrays*/
@@ -414,7 +373,7 @@ void updateCommandsActive(u8 partyIndex, i32 commandType) {
 /*Probably a good place to allow callbacks to hook into*/
 void updateCommands(i32 partyIndex, i16 statusMask) {
     i32 result; // eax
-    auto& enabledCommands = *getActivePartyMember(partyIndex)->enabledCommandArray;
+    auto enabledCommands = getSrPartyMember(partyIndex).gamePartyMember->enabledCommandArray;
     u8* byte_DC3BA0 = (u8*)(0xDC3BA0);
     enabledCommands[0].commandFlags = 0;
     /*Deals with enabling limit commands. Instead we will change how limit breaks work

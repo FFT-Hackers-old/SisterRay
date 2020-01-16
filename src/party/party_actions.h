@@ -2,6 +2,7 @@
 #define PARTY_ACTIONS_H
 
 #include <SisterRay/SisterRay.h>
+#include <array>
 
 template<size_t N>
 void clearActionArray(std::array<EnabledSpell, N>& spellArray) {

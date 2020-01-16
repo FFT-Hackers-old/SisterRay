@@ -10,8 +10,8 @@ SrBattleActors::SrBattleActors() {
     for (u8 actorIdx = 0; actorIdx < CHARACTER_COUNT; actorIdx++) {
         partyActors[actorIdx] = SrPartyBattleActor();
     }
-    for (u8 enemyActorIdx = 0; enemyActorIdx < ENEMY_ACTOR_COUNT; enemyActorIdx++) {
-        enemyActors[enemyActorIdx] = SrBattleActor();
+    for (u8 enemyIdx = 0; enemyIdx < ENEMY_ACTOR_COUNT; enemyIdx++) {
+        enemyActors[enemyIdx] = SrEnemyBattleActor();
     }
 }
 
@@ -67,7 +67,7 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     const auto& srPartyMember = gContext.party.getSrPartyMember(partyIdx);
     auto characterRecord = getCharacterRecordWithID(characterID);
     if (characterRecord == nullptr) {
-        continue;
+        return;
     }
 
     setActivePartyActor(partyIdx, characterID);
@@ -98,7 +98,7 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     actorBattleVars->backDamageMult = 16;
     actorBattleVars->statusMask = characterRecord->outOfBattleStatus & 0x30;
     actorBattleVars->initalStatusMasks = 0;
-    actorTimers->statusImmuneMask = partyMember.immuneStatusesMask;
+    actorTimers->statusImmuneMask = partyMember->immuneStatusesMask;
     setWeaponData(partyIdx, partyActor);
     // handleAccessorySpecialEffect(partyActorID, characterRecordPtr->equipped_accessory);
     actorBattleVars->gilStolen = 0;
@@ -118,7 +118,7 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
         if (limitLevel >= 1 && limitLevel <= 4) {
             party34->limitBar = characterRecord->limit_bar_progress;
             party34->limitBarCopy = party34->limitBar;
-            party34->limitLevelIdx = limitLevelIdx;
+            party34->limitLevelIdx = limitLevel - 1;
             const auto& charGrowth = gContext.characters.getResource(characterID).characterGrowth;
             switch (limitLevel) {
             case 1:
@@ -134,23 +134,21 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
                 party34->limitLevelDivisor = charGrowth.level4Divisor;
                 break;
             }
-            partyMember.limitGuage = party34.limitBreakBar << 8;
-            partyMember.activeLimitLevel = characterRecord->activeLimitLevel;
             // setLearnedLimits(characterID, characterRecord->learnedLimits, partyMember->enabledLimitBytes);
         }
     }
 
-    actorBattleVars->actorFlags |= 8u;
+    actorBattleVars->stateFlags |= 8u;
     if (!actorBattleVars->currentHP) {
-        actorBattleVars->statusMasks |= 1;
+        actorBattleVars->statusMask |= 1;
     }
 
     //sub_437370(partyIdx); Routine sets up attack data for switching to limit. Won't be needed
     if (party34->limitBar == 255) {
-        if (party34->limitIdx != 255) {
+        if (party34->limitLevelIdx != 255) {
             *word_9A889E |= 1 << partyIdx;
             actorTimers->field_8 |= 1;
-            actorTimers->enabledCommandsMask |= 1u;
+            actorTimers->activeCommandsMask |= 1u;
         }
         actorTimers->field_8 &= 0xFFFEu;
     }
@@ -178,7 +176,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
     actorBattleVars->statusMask = 0;
     actorBattleVars->cameraData = -1;
 
-    byte_9A9AAC[8 * enemyActorIdx] = -1;
+    byte_9A9AAC[8 * enemyIdx] = -1;
     for (u8 l = 0; l < 16; ++l)
         *(&actorTimers->field_10 + l) = 0;
     for (u8 m = 0; m < 8; ++m)
@@ -204,24 +202,24 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         actorBattleVars->physAtk = sceneEnemyDataPtr->enemyStrength;
         actorBattleVars->magAtk = sceneEnemyDataPtr->enemyMagic;
         actorBattleVars->defense = 2 * sceneEnemyDataPtr->enemyDefense;
-        actorBattleVars->mdefense = 2 * sceneEnemyDataPtr->enemyMDefense;
+        actorBattleVars->mDefense = 2 * sceneEnemyDataPtr->enemyMDefense;
         actorBattleVars->pEvade = sceneEnemyDataPtr->enemyEvade;
         actorBattleVars->dexterity = sceneEnemyDataPtr->enemyDex;
         actorBattleVars->luck = sceneEnemyDataPtr->enemyLuck;
         actorBattleVars->level = sceneEnemyDataPtr->enemyLevel;
-        actorBattleVars->backDamageMultiplier = sceneEnemyDataPtr->backDamageMultiplier;
-        actorBattleVars->GilValue = sceneEnemyDataPtr->gilAward;
-        actorBattleVars->ExpValue = sceneEnemyDataPtr->expAward;
-        actorBattleVars->damagedAnim = 1;
+        actorBattleVars->backDamageMult = sceneEnemyDataPtr->backDamageMultipler;
+        actorBattleVars->gilValue = sceneEnemyDataPtr->gilAward;
+        actorBattleVars->expValue = sceneEnemyDataPtr->expAward;
+        actorBattleVars->damageAnimID = 1;
         actorBattleVars->unknown6 = 1;
         actorBattleVars->apValue = 2;
-        actorBattleVars->idleAnim = 0;
-        actorBattleVars->statusMasks = 0;
-        actorBattleVars->initStatusMasks = 0;
+        actorBattleVars->idleAnimID = 0;
+        actorBattleVars->statusMask = 0;
+        actorBattleVars->initalStatusMasks = 0;
         actorBattleVars->gilStolen = 0;
         actorBattleVars->itemStolen = -1;
-        actorBattleVars->actorFlags = formationActorFlags[4 * enemyActorIdx] & 0x1F;
-        actorBattleVars->actorRow = formationActorRow[16 * enemyActorIdx];
+        actorBattleVars->stateFlags = actorFormation.initialStateFlags & 0x1F;
+        actorBattleVars->actorRow = actorFormation.actorRow;
         actorTimers->battleEnemyData = sceneEnemyDataPtr;
         actorTimers->field_D = -1;
         actorTimers->field_C = -1;
@@ -229,7 +227,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         actorTimers->statusImmuneMask = ~sceneEnemyDataPtr->statusImmunityMask;
 
         // Initialize the formation relative ID for enemies
-        actorBattleVars->charID = 0;
+        actorBattleVars->characterID = 0;
         for (auto idx = 0; idx < enemyIdx; ++idx) {
             if (enemyActors[idx + 4].battleActor.gameAIState.formationID == actorBattleVars->formationID)
                 ++actorBattleVars->characterID;
@@ -292,8 +290,8 @@ ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
         actorState.weaponCtx = &(partyActor.weaponCtx);
         return actorState;
     }
-    actorState.actorBattleVars = enemyActors[actorIdx - 4].battleActor.gameAIState;
-    actorState.actorTimers = enemyActors[actorIdx - 4].battleActor.gameTimerState;
+    actorState.actorBattleVars = &enemyActors[actorIdx - 4].battleActor.gameAIState;
+    actorState.actorTimers = &enemyActors[actorIdx - 4].battleActor.gameTimerState;
     actorState.battleStats = &(enemyActors[actorIdx - 4].battleActor.battleStats);
     actorState.party10 = nullptr;
     actorState.party34 = nullptr;
@@ -342,7 +340,7 @@ BattleParty10* getBattleParty10(u8 actorIdx) {
 }
 
 BattleWeaponCtx* getBattleWeaponCtx(u8 actorIdx) {
-    return &(G_BATTLE_PARTY10_ARRAY[actorIdx]);
+    return &(G_BATTLE_WEAPON_ARRAY[actorIdx]);
 }
 
 const SrBattleStat& getSrBattleStat(u8 actorID, std::string statName) {
@@ -417,7 +415,7 @@ void setPartyStats(u8 partyIdx, ActorBattleState& partyActor) {
     actorBattleVars->physAtk = stats["STR"].statValue;
     actorBattleVars->magAtk = stats["MAG"].statValue;
     actorBattleVars->defense = stats["VIT"].statValue;
-    actorBattleVars->mdefense = stats["SPR"].statValue;
+    actorBattleVars->mDefense = stats["SPR"].statValue;
     if (!actorBattleVars->physAtk)
         actorBattleVars->physAtk = 1;
 
@@ -452,10 +450,9 @@ void setWeaponData(u8 partyIdx, ActorBattleState& partyActor) {
     partyWeaponCtx.specialAttackFlags = partyMember.weaponData.specialAttackFlags;
     partyWeaponCtx.attackStatusMask = partyMember.attackStatusesMask;
 
-    u16 soundId = partyMember.weaponData.normalSoundID;
     u8 accessMaskCheck = 1;
 
-    auto soundID = partyMember.weaponData.normalSoundID;
+    u16 soundID = partyMember.weaponData.normalSoundID;
     if (accessMaskCheck & partyMember.weaponData.soundAccessMask)
         soundID |= 0x100u;
     partyWeaponCtx.normalSoundID = soundID;

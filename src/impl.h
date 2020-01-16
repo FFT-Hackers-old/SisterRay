@@ -44,6 +44,7 @@ extern "C" {
 #include "battle/battle_models/animation_registry.h"
 #include "battle/battle_models/animation_scripts.h"
 #include "battle/battle_models/battle_models.h"
+#include "battle/ai_script_engine.h"
 #include "battle/battle_actors.h"
 #include <map>
 #include <memory>

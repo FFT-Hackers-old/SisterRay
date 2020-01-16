@@ -3,6 +3,7 @@
 
 #include <SisterRay/SisterRay.h>
 #include "../sr_named_registry.h"
+#include "ai_script_opcodes.h"
 
 i32 getMPCost(i32 attackID);
 const AttackData& getAttackDataPtr(i32 attackID);

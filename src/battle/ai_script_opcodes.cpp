@@ -27,22 +27,22 @@ OpCodeControlSequence OpCode03(AIScriptEvent* srEvent) {
 }
 
 OpCodeControlSequence OpCode10(AIScriptEvent* srEvent) {
-    pushScriptAddresses(AIScriptEvent * srEvent);
+    pushScriptAddresses(srEvent);
     return RUN_NEXT;
 }
 
 OpCodeControlSequence OpCode11(AIScriptEvent* srEvent) {
-    pushScriptAddresses(AIScriptEvent * srEvent);
+    pushScriptAddresses(srEvent);
     return RUN_NEXT;
 }
 
 OpCodeControlSequence OpCode12(AIScriptEvent* srEvent) {
-    pushScriptAddresses(AIScriptEvent * srEvent);
+    pushScriptAddresses(srEvent);
     return RUN_NEXT;
 }
 
 OpCodeControlSequence OpCode13(AIScriptEvent* srEvent) {
-    pushScriptAddresses(AIScriptEvent * srEvent);
+    pushScriptAddresses(srEvent);
     return RUN_NEXT;
 }
 
@@ -253,14 +253,14 @@ void handlePushConstants(AIScriptEvent* srEvent) {
         break;
     }
     case 1: {
-        const u16* wordReader = &(scriptPtr[scriptCtx.currentScriptIdx]);
+        const u16* wordReader = (u16*)&(scriptPtr[scriptCtx.currentScriptIdx]);
         scriptCtx.arguments.type1Array[0] = *wordReader;
         scriptCtx.currentScriptIdx += 2;
         srStackPush(2);
         break;
     }
     case 2: {
-        const u32* dwordReader = &(scriptPtr[scriptCtx.currentScriptIdx]);
+        const u32* dwordReader = (u32*)&(scriptPtr[scriptCtx.currentScriptIdx]);
         scriptCtx.arguments.type1Array[0] = *dwordReader & 0x00FFFFFF;
         scriptCtx.currentScriptIdx += 3;
         srStackPush(3);
@@ -460,7 +460,7 @@ OpCodeControlSequence OpCode90(AIScriptEvent* srEvent) {
     setSomeContextFromPop(0);
     srStackPop(1);
     u8 writeType = scriptCtx.lowTypes.type2;
-    if (scriptCtx.arguments.type2[0] < 0x4000u) {
+    if (scriptCtx.arguments.type2Array[0] < 0x4000u) {
         srWriteValue(scriptCtx.actorID, writeType, scriptCtx.arguments.type2Array[0], scriptCtx.arguments.type1Array[0]);
     }
     else {
@@ -503,16 +503,15 @@ void enqueueScriptAction(u8 actorID, u8 commandIndex, u16 relAttackIndex) {
     gAiActorVariables[actorID].lastTargets = *word_9AB0AE;
     BattleQueueEntry queueEntry = { *(u8*)dword_C3F338, 0, actorID, commandIndex, relAttackIndex, *word_9AB0AE };
 
-    auto var = enqueueBattleAction(&queueEntry);
-    return var;
+    enqueueBattleAction(&queueEntry);
 }
 
 
-typedef u16(*PFNSR_SETSTRINGARGS)(char*, u16*);
+typedef u16(*PFNSR_SETSTRINGARGS)(const char*, u16*);
 #define setStrArgs ((PFNSR_SETSTRINGARGS)0x41D20A)
 OpCodeControlSequence OpCode93(AIScriptEvent* srEvent) {
     auto& scriptCtx = *srEvent->scriptContext;
-    char* stringPtr = srEvent->scriptPtr[scriptCtx.currentScriptIdx];
+    const char* stringPtr = (const char*)srEvent->scriptPtr[scriptCtx.currentScriptIdx];
     u16 strIndex = setStrArgs(stringPtr, &(AI_BATTLE_CONTEXT->stringArgs));
     enqueueScriptAction(scriptCtx.actorID, 33, strIndex + 256);
     while (1) {
@@ -556,8 +555,8 @@ OpCodeControlSequence OpCode95(AIScriptEvent* srEvent) {
 }
 
 
-typedef u8(*PFNSR_SUB4337F3)(u32, u32, 32);
-#define gameSetElementalData    ((PFNSR_SUB5D9799)0x4337F3)
+typedef u8(*PFNSR_SUB4337F3)(u32, u32, u32);
+#define gameSetElementalData    ((PFNSR_SUB4337F3)0x4337F3)
 OpCodeControlSequence OpCode96(AIScriptEvent* srEvent) {
     auto& scriptCtx = *srEvent->scriptContext;
     srStackPop(1);

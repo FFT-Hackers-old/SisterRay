@@ -6,6 +6,7 @@
 #include "party_member.h"
 #include "battle_stats.h"
 #include "../battle/battle_actors.h"
+#include "party_actions.h"
 
 /*Holds extensible Enabled command arrays for active party members
   Will extend to hold data for all party members later to facilitate character swapping*/

@@ -74,5 +74,13 @@ ActorTimerData* getActorTimerBlock(u8 actorIdx);
 void initializePlayerActors();
 void initializeEnemyActors();
 
+ActorBattleVars* getActorBattleVars(u8 actorIdx);
+BattleParty34* getBattleParty34(u8 actorIdx);
+BattleParty10* getBattleParty10(u8 actorIdx);
+BattleWeaponCtx* getBattleWeaponCtx(u8 actorIdx);
+const SrBattleStat& getSrBattleStat(u8 actorID, std::string statName);
+SrBattleStat& getMutableSrBattleStat(u8 actorID, std::string statName);
+CharacterRecord* getCharacterRecordWithID(u8 characterID);
+
 
 #endif

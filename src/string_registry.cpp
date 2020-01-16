@@ -31,7 +31,7 @@ void initGameStrings(){
     gContext.gameStrings.equipMenuTexts.addResource(EncodedString::from_unicode("Acc"));
     gContext.gameStrings.equipMenuTexts.addResource(EncodedString::from_unicode("Attack"));
     gContext.gameStrings.equipMenuTexts.addResource(EncodedString::from_unicode("Hit"));
-    gContext.gameStrings.equipMenuTexts.addResource(EncodedString::from_unicode("Defense"));
+    gContext.gameStrings.equipMenuTexts.addResource(EncodedString::from_unicode("defense"));
     gContext.gameStrings.equipMenuTexts.addResource(EncodedString::from_unicode("Evade"));
     gContext.gameStrings.equipMenuTexts.addResource(EncodedString::from_unicode("M.Atk"));
     gContext.gameStrings.equipMenuTexts.addResource(EncodedString::from_unicode("M.Defense"));

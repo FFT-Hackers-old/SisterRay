@@ -9,6 +9,7 @@ void handleMathOperations(AIScriptEvent* srEvent);
 void handleCompareOperations(AIScriptEvent* srEvent);
 void handlePushConstants(AIScriptEvent* srEvent);
 void handleJumps(AIScriptEvent* srEvent);
+void enqueueScriptAction(u8 actorID, u8 commandIndex, u16 relAttackIndex);
 
 OpCodeControlSequence nopCode(AIScriptEvent* srEvent);
 OpCodeControlSequence OpCode00(AIScriptEvent* srEvent);

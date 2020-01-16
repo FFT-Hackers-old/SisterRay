@@ -144,8 +144,8 @@ typedef struct {
     u16     prevAttackerMask;  //0x1A
     u16     prevPhysAttackerMask; //0x1C
     u16     prevMagAttackerMask;  //0x1E
-    u16     Defense;           //0x20
-    u16     MDefense;
+    u16     defense;           //0x20
+    u16     mDefense;
     u16     formationID;
     u16     absorbedElementsMask;
     u16     currentMP;
@@ -343,10 +343,9 @@ typedef struct {
     u8 field_6;
     u8 field_7;
     u16 limitBar;
-    u8 limitBarCopy;
-    u8 field_B;
-    u8 field_C;
-    u16 field_E;
+    u16 limitBarCopy;
+    u16 currentMP;
+    u16 currentHP;
     u16 maxMP;
     u16 maxHP;
     u16 field_14; //Seems to be HP/MP switch HP
@@ -394,13 +393,13 @@ typedef struct {
     u8 damageCalculation;    //0x02
     u8 weaponHitRate;    //0x03
     u8 impactEffectID;    //0x04
-    u8 criticalRat;       //0x05
+    u8 criticalRate;       //0x05
     u16 padding;
     u16 normalSoundID;
     u16 critSoundID;
     u16 missSoundID;
     u16 attackElementMask;
-    u16 cameraMask;
+    u16 cameraMovement;
     u16 specialAttackFlags;
     u32 attackStatusMask;
 } BattleWeaponCtx;

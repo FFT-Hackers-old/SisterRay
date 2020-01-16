@@ -1,7 +1,7 @@
 #include "battle.h"
 #include "../impl.h"
 #include "../gzip.h"
-#include "../party/party_utils.h"
+#include "../party/party_actions.h"
 #include <string>
 #include <zlib.h>
 #include <cstdio>

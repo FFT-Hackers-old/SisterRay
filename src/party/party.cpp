@@ -1,35 +1,61 @@
 #include "party.h"
 #include "../impl.h"
 #include "stat_calculation.h"
+#include "stat_names.h"
 
 #define CHARACTER_COUNT 0xA
 #define PARTY_COUNT 3
+
 SrPartyMembers::SrPartyMembers() {
     for (u8 i = 0; i < CHARACTER_COUNT; i++) {
         auto partyData = SrPartyData();
         auto& stats = partyData.playerStats;
-        SrActorStat HP = { 1, 1, 9999, EncodedString("HP") };
-        stats["HP"] = HP;
-        SrActorStat MP = { 1, 1, 999, EncodedString("MP") };
-        stats["MP"] = MP;
-        SrActorStat str = { 1, 1, 255, EncodedString("Strength") };
-        stats["STR"] = str;
-        SrActorStat vit = { 1, 1, 255, EncodedString("Vitality") };
-        stats["VIT"] = vit;
-        SrActorStat mag = { 1, 1, 255, EncodedString("Magic") };
-        stats["MAG"] = mag;
-        SrActorStat spr = { 1, 1, 255, EncodedString("Spirit") };
-        stats["SPR"] = spr;
-        SrActorStat dex = { 1, 1, 255, EncodedString("Dexterity") };
-        stats["DEX"] = dex;
-        SrActorStat luck = { 1, 1, 255, EncodedString("Luck") };
-        stats["LCK"] = luck;
-        SrActorStat pev = { 1, 1, 255, EncodedString("Evade") };
-        stats["PEV"] = pev;
-        SrActorStat mev = { 1, 1, 255, EncodedString("MEvade") };
-        stats["MEV"] = mev;
+        SrActorStat HP = { 1, 1 };
+        stats[StatNames::HP] = HP;
+        SrActorStat MP = { 1, 1 };
+        stats[StatNames::MP] = MP;
+        SrActorStat stat = { 1, 1 };
+        stats[StatNames::STRENGTH] = stat;
+        stats[StatNames::VITALITY] = stat;
+        stats[StatNames::MAGIC] = stat;
+        stats[StatNames::SPIRIT] = stat;
+        stats[StatNames::DEXTERITY] = stat;
+        stats[StatNames::LUCK] = stat;
+        stats[StatNames::EVADE] = stat;
+        stats[StatNames::MEVADE] = stat;
+
+        stats[StatNames::FIRE_RES] = stat;
+        stats[StatNames::ICE_RES] = stat;
+        stats[StatNames::LIGHT_RES] = stat;
+        stats[StatNames::WATER_RES] = stat;
+        stats[StatNames::EARTH_RES] = stat;
+        stats[StatNames::WIND_RES] = stat;
+        stats[StatNames::POISON_RES] = stat;
+        stats[StatNames::GRAVITY_RES] = stat;
+        stats[StatNames::HOLY_RES] = stat;
+        stats[StatNames::SHADOW_RES] = stat;
+
+        stats[StatNames::FIRE_AFF] = stat;
+        stats[StatNames::ICE_AFF] = stat;
+        stats[StatNames::LIGHT_AFF] = stat;
+        stats[StatNames::WATER_AFF] = stat;
+        stats[StatNames::EARTH_AFF] = stat;
+        stats[StatNames::WATER_AFF] = stat;
+        stats[StatNames::WIND_AFF] = stat;
+        stats[StatNames::GRAVITY_AFF] = stat;
+        stats[StatNames::HOLY_AFF] = stat;
+        stats[StatNames::SHADOW_AFF] = stat;
+
         partyMembers[i] = partyData;
     }
+}
+
+
+SrCharacterData& SrPartyMembers::getActivePartyCharacter(u8 partyIdx) {
+    if (partyIdx < 3) {
+        return gContext.characters.getResource(activeParty[partyIdx]);
+    }
+    return gContext.characters.getResource(0);
 }
 
 void SrPartyMembers::addAutoAction(u32 partyIndex, const SrAutoAction& action) {

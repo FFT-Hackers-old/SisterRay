@@ -356,10 +356,11 @@ SrBattleStat& getMutableSrBattleStat(u8 actorID, std::string statName) {
     return statMap[statName];
 }
 
-void setActorBattleStat(u8 actorID, std::string statName, u32 value) {
+void setActorBattleStat(u8 actorID, std::string statName, i32 value) {
     auto& statMap = *gContext.battleActors.getActiveBattleActor(actorID).battleStats;
     auto& stat = statMap[statName];
-    stat.statValue = (value <= stat.maxValue) ? value : stat.maxValue;
+    auto& statData = gContext.stats.getElement(statName);
+    stat.statValue = (value <= statData.maxValue) ? value : statData.maxValue;
 }
 
 CharacterRecord* getCharacterRecordWithID(u8 characterID) {

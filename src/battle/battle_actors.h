@@ -64,7 +64,7 @@ private:
 
 const SrBattleStat& getSrBattleStat(u8 actorID, std::string statName);
 SrBattleStat& getMutableSrBattleStat(u8 actorID, std::string statName);
-void setActorBattleStat(u8 actorID, std::string statName, u32 value);
+void setActorBattleStat(u8 actorID, std::string statName, i32 value);
 void setPartyStats(u8 partyIdx, ActorBattleState& partyActor);
 void setWeaponData(u8 partyIdx, ActorBattleState& partyActor);
 

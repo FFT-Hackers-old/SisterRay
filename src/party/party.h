@@ -6,6 +6,7 @@
 #include "party_member.h"
 #include "battle_stats.h"
 #include "../battle/battle_actors.h"
+#include "characters.h"
 #include "party_actions.h"
 
 /*Holds extensible Enabled command arrays for active party members
@@ -15,6 +16,7 @@ public:
     SrPartyMembers();
     PartyMemberState getActivePartyMember(u8 actorIdx);
     PartyMemberState getSrPartyMember(u8 actorIdx);
+    SrCharacterData& getActivePartyCharacter(u8 partyIdx);
     void addAutoAction(u32 partyIndex, const SrAutoAction& action);
     void handleMateriaActorUpdates(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias);
     void clearActions(u32 partyIndex);

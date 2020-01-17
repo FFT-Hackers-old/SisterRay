@@ -1,10 +1,12 @@
 #include "stat_calculation.h"
 #include "../impl.h"
+#include "stat_names.h"
 
 void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& charRecord, const StatBoostModifiers& statModifiers) {
     for (auto statElement : srPartyMember.playerStats) {
         const auto& statName = statElement.first;
         auto& stat = statElement.second;
+        auto& statData = gContext.stats.getElement(statName);
         stat.baseValue = getGameBaseStat(statName, charRecord);
         const auto& modifiers = statModifiers.at(statName);
         i32 netBoostAmt = 0;
@@ -25,11 +27,11 @@ void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& char
         }
 
         i32 statValue = (stat.baseValue * (1.0f + ((netPercentAmt) / 100)) + netBoostAmt); //only apply percent to base value
-        if (statValue > stat.maxValue) {
-            stat.statValue = stat.maxValue;
+        if (statValue > statData.maxValue) {
+            stat.statValue = statData.maxValue;
             return;
         }
-        if (statValue < 0) {
+        if (!statData.canBeNegative && statValue < 0) {
             stat.statValue = 0;
             return;
         }
@@ -38,24 +40,23 @@ void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& char
 }
 
 u8 getGameBaseStat(std::string statName, const CharacterRecord& record) {
-    if (statName == "HP")
+    if (statName == StatNames::HP)
         return record.base_HP;
-    if (statName == "MP")
+    if (statName == StatNames::MP)
         return record.base_MP;
-    if (statName == "STR")
+    if (statName == StatNames::STRENGTH)
         return record.strength + record.bonus_strength;
-    if (statName == "VIT")
+    if (statName == StatNames::VITALITY)
         return record.vitality + record.bonus_vitality;
-    if (statName == "MAG")
+    if (statName == StatNames::MAGIC)
         return record.magic + record.bonus_magic;
-    if (statName == "SPR")
+    if (statName == StatNames::SPIRIT)
         return record.spirit + record.bonus_spirit;
-    if (statName == "DEX")
+    if (statName == StatNames::DEXTERITY)
         return record.dexterity + record.bonus_dexterity;
-    if (statName == "PEV")
-        return 0;
-    if (statName == "MEV")
-        return 0;
+    if (statName == StatNames::LUCK)
+        return record.luck + record.luck;
+    return 0;
 }
 
 void addStatBoosts(StatBoostModifiers& acc, const EquipmentStatBoosts& boosts) {

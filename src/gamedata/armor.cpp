@@ -2,6 +2,7 @@
 #include <string.h>
 #include "../impl.h"
 #include "armor.h"
+#include "../party/stat_names.h"
 
 SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrArmor, std::string>(stream) {
     size_t read_size;
@@ -16,6 +17,10 @@ SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegist
             break;
         armor.armorName = gContext.gameStrings.armor_names.get_string(idx);
         armor.armorDescription = gContext.gameStrings.armor_descriptions.get_string(idx);
+        armor.equipEffects[StatNames::EVADE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.evade, false));
+        armor.equipEffects[StatNames::MEVADE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.magic_evade, false));
+        armor.equipEffects[StatNames::ARMOR_DEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.defense, false));
+        armor.equipEffects[StatNames::ARMOR_MDEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.magic_defense, false));
         populatekernelStatBoosts(armor.equipEffects, armor.gameArmor.stats_to_boost, armor.gameArmor.stat_boost_amounts, 4, idx, SR_GEAR_ARMOR);
         addElement(assembleGDataKey(idx), armor);
         ++idx;

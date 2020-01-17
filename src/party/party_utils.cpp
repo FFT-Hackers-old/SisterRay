@@ -43,24 +43,25 @@ PartyMember* getGamePartyMember(u8 actorIdx) {
 CharacterRecord* getPartyActorCharacterRecord(u8 partyIdx) {
     CharacterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     auto characterIdx = getCharacterRecordIndex(partyIdx);
-    return &(characterRecordArray[characterIdx]);
+    return gContext.characters.getResource(characterIdx).gameCharacter;
 }
 
 u16 getEquippedGear(u8 characterID, u8 gearType) {
+    auto& characterRecord = gContext.characters.getResource(characterID);
     CharacterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u16 kernelObjectID;
 
     switch (gearType) { //probably refactor this into a utility
     case 1: {
-        kernelObjectID = characterRecordArray[characterID].equipped_weapon;
+        kernelObjectID = characterRecord.equippedWeapon;
         break;
     }
     case 2: {
-        kernelObjectID = characterRecordArray[characterID].equipped_armor;
+        kernelObjectID = characterRecord.equippedArmor;
         break;
     }
     case 3: {
-        kernelObjectID = characterRecordArray[characterID].equipped_accessory;
+        kernelObjectID = characterRecord.equippedAccessory;
         break;
     }
     default: {

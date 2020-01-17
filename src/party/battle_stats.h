@@ -6,6 +6,19 @@
 #include <vector>
 #include <unordered_set>
 #include "../EncodedString.h"
+#include "../sr_named_registry.h"
+
+typedef struct {
+    EncodedString displayName;
+    u32 maxValue;
+    bool canBeNegative;
+}SrStat;
+
+/*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/
+class SrStatRegistry : public SrNamedResourceRegistry<SrStat, std::string> {
+public:
+    SrStatRegistry();
+};
 
 typedef struct {
     u32 sign;
@@ -24,17 +37,14 @@ typedef struct {
 
 //Stats are modular. 
 typedef struct {
-    u32 statValue; //The value of the stat factoring in active modifiers
-    u32 baseValue; //The value of this stat without any modifiers from gear, materia, etc
-    u32 maxValue;
-    EncodedString displayName;
+    i32 statValue; //The value of the stat factoring in active modifiers
+    i32 baseValue; //The value of this stat without any modifiers from gear, materia, etc
     std::vector<StatBoost> boosts; //Always active boosts, like from equipment
 } SrActorStat;
 
 typedef struct {
-    u32 activeValue;
-    u32 statValue;
-    u32 maxValue;
+    i32 activeValue;
+    i32 statValue;
     std::vector<StatModifier> modifiers; //consumed and decremented on V-Timer in battle, modifies active value
 } SrBattleStat;
 

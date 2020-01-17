@@ -5,7 +5,7 @@
 void equipGearHandler(const MenuInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 0)->context;
     auto gearChoice = getStateCursor(event->menu, 1)->context;
-    CharacterRecord& characterRecord = *getPartyActorCharacterRecord(*EQUIP_MENU_PARTY_INDEX);
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX);
     u8 equippedGearItemType;
 
     if (event->menuState != 1)
@@ -134,33 +134,33 @@ void handleUnequipAcc(const MenuInputEvent* event) {
     }
 }
 
-void handleEquipGear(CharacterRecord& characterRecord, u8 gearType, u8 equippedGearRelativeIndex) {
+void handleEquipGear(SrCharacterData& characterRecord, u8 gearType, u8 equippedGearRelativeIndex) {
     u8 removedGearRelativeID;
     u16 removedGearAbsoluteID;
     u16 equippedGearAbsoluteID;
 
     switch (gearType) {
         case 1: {
-            removedGearRelativeID = characterRecord.equipped_weapon;
+            removedGearRelativeID = characterRecord.equippedWeapon;
             removedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, removedGearRelativeID);
             equippedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, equippedGearRelativeIndex);
-            characterRecord.equipped_weapon = equippedGearRelativeIndex;
+            characterRecord.equippedWeapon = equippedGearRelativeIndex;
             handleMateriaUpdate(characterRecord, gearType, equippedGearRelativeIndex);
             break;
         }
         case 2: {
-            removedGearRelativeID = characterRecord.equipped_armor;
+            removedGearRelativeID = characterRecord.equippedArmor;
             removedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, removedGearRelativeID);
             equippedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, equippedGearRelativeIndex);
-            characterRecord.equipped_armor = equippedGearRelativeIndex;
+            characterRecord.equippedArmor = equippedGearRelativeIndex;
             handleMateriaUpdate(characterRecord, gearType, equippedGearRelativeIndex);
             break;
         }
         case 3: {
-            removedGearRelativeID = characterRecord.equipped_accessory;
+            removedGearRelativeID = characterRecord.equippedAccessory;
             removedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, removedGearRelativeID);
             equippedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, equippedGearRelativeIndex);
-            characterRecord.equipped_accessory = equippedGearRelativeIndex;
+            characterRecord.equippedAccessory = equippedGearRelativeIndex;
             break;
         }
         default: {
@@ -173,7 +173,7 @@ void handleEquipGear(CharacterRecord& characterRecord, u8 gearType, u8 equippedG
 }
 
 //Update Materia after new items are equipped
-void handleMateriaUpdate(CharacterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
+void handleMateriaUpdate(SrCharacterData& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
     WeaponData newWeaponData;
     ArmorData newArmorData;
     MateriaInventoryEntry& equippedMateriaData = MateriaInventoryEntry();
@@ -186,13 +186,13 @@ void handleMateriaUpdate(CharacterRecord& activeCharacterRecord, u8 gearType, u1
             case 1: {
                 newWeaponData = gContext.weapons.getResource(gearRelativeIndex).gameWeapon;
                 materiaSlots = &(newWeaponData.materia_slots[0]);
-                equippedMateriaData = gContext.characters.getElement(getCharacterName(characterID)).wpnMaterias[materiaSlotIndex];
+                equippedMateriaData = activeCharacterRecord.wpnMaterias[materiaSlotIndex];
                 break;
             }
             case 2: {
                 newArmorData = gContext.armors.getResource(gearRelativeIndex).gameArmor;
                 materiaSlots = &(newArmorData.materia_slots[0]);
-                equippedMateriaData = gContext.characters.getElement(getCharacterName(characterID)).armMaterias[materiaSlotIndex];
+                equippedMateriaData = activeCharacterRecord.armMaterias[materiaSlotIndex];
                 break;
             }
             default: {
@@ -213,7 +213,7 @@ void handleMateriaUpdate(CharacterRecord& activeCharacterRecord, u8 gearType, u1
 /*There are originally 32 slots for the equipment view, this interfaces with a new global. We construct
   We do this by just constructing a new object and binding it to the gContext, since this is an emphemeral struct*/
 u16 setupGearMenu(u8 itemType) {
-    u8 characterID = (CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX];
+    u8 characterID = G_SAVE_MAP->activeParty[*EQUIP_MENU_PARTY_INDEX];
     u16 equippableGearCount = 0;
     gContext.gearViewData = SrGearViewData();
     for (i32 inventoryIdx = 0; inventoryIdx < gContext.inventory->currentCapacity(); inventoryIdx++) {

@@ -76,6 +76,7 @@ typedef struct {
     SrCharacterRegistry                 characters;
     SrPartyMembers                      party;
     SrBattleActors                      battleActors;
+    SrStatRegistry                      stats;
 
     SrFormationRegistry                 formations;
     SrEnemyRegistry                     enemies;

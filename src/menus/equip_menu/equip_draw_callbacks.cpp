@@ -1,6 +1,7 @@
 #include "equip_draw_callbacks.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
+#include "../../party/stat_names.h"
 
 using namespace EquipWidgetNames;
 
@@ -98,7 +99,7 @@ void handleUpdateGearSlotsWidget(const MenuDrawEvent* event) {
 
 void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX);
     u8 statsToDisplay[7];
     auto statDiffWidget = getChild(menuWidget, STAT_DIFF_WIDGET_NAME);
 
@@ -108,8 +109,8 @@ void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
         switch (slotChoice.relativeRowIndex) {
             case 0: {
                 auto toEquipWeaponID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
-                statsToDisplay[0] = gContext.weapons.getResource(toEquipWeaponID).gameWeapon.weapon_strength;
-                statsToDisplay[1] = gContext.weapons.getResource(toEquipWeaponID).gameWeapon.weaponHitRate;
+                statsToDisplay[0] = gContext.weapons.getResource(toEquipWeaponID).equipEffects[StatNames::WEAPON_ATTACK][0].amount;
+                statsToDisplay[1] = gContext.weapons.getResource(toEquipWeaponID).equipEffects[StatNames::WEAPON_ACCURACY][0].amount;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
                 std::vector<std::string> currentGearNames = { STAT_VALUE_1, STAT_VALUE_2 };
                 for (u32 row = 0; row < listNames.size(); row++) {
@@ -121,11 +122,11 @@ void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
             }
             case 1: {
                 auto toEquipArmorID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
-                statsToDisplay[2] = gContext.armors.getResource(toEquipArmorID).gameArmor.defense;
-                statsToDisplay[3] = gContext.armors.getResource(toEquipArmorID).gameArmor.evade;
+                statsToDisplay[2] = gContext.armors.getResource(toEquipArmorID).equipEffects[StatNames::ARMOR_DEFENSE][0].amount;
+                statsToDisplay[3] = gContext.armors.getResource(toEquipArmorID).equipEffects[StatNames::EVADE][0].amount;
                 statsToDisplay[4] = 0;
-                statsToDisplay[5] = gContext.armors.getResource(toEquipArmorID).gameArmor.magic_defense;
-                statsToDisplay[6] = gContext.armors.getResource(toEquipArmorID).gameArmor.magic_evade;
+                statsToDisplay[5] = gContext.armors.getResource(toEquipArmorID).equipEffects[StatNames::ARMOR_MDEFENSE][0].amount;
+                statsToDisplay[6] = gContext.armors.getResource(toEquipArmorID).equipEffects[StatNames::MEVADE][0].amount;
                 std::vector<std::string> listNames = { NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
                 std::vector<std::string> currentGearNames = { STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
                 for (u32 row = 0; row < listNames.size(); row++) {
@@ -142,18 +143,18 @@ void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
         return;
     }
 
-    u16 equippedArmorID = (CHARACTER_RECORD_ARRAY)[characterRecordArrayIndex].equipped_armor;
-    u16 equippedWeaponID = (CHARACTER_RECORD_ARRAY)[characterRecordArrayIndex].equipped_weapon;
+    u16 equippedArmorID = characterRecord.equippedArmor;
+    u16 equippedWeaponID = characterRecord.equippedWeapon;
 
     std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
     std::vector<std::string> baseNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
-    statsToDisplay[0] = gContext.weapons.getResource(equippedWeaponID).gameWeapon.weapon_strength;
-    statsToDisplay[1] = gContext.weapons.getResource(equippedWeaponID).gameWeapon.weaponHitRate;
-    statsToDisplay[2] = gContext.armors.getResource(equippedArmorID).gameArmor.defense;
-    statsToDisplay[3] = gContext.armors.getResource(equippedArmorID).gameArmor.evade;
+    statsToDisplay[0] = gContext.weapons.getResource(equippedWeaponID).equipEffects[StatNames::WEAPON_ATTACK][0].amount;
+    statsToDisplay[1] = gContext.weapons.getResource(equippedWeaponID).equipEffects[StatNames::WEAPON_ACCURACY][0].amount;
+    statsToDisplay[2] = gContext.armors.getResource(equippedArmorID).equipEffects[StatNames::ARMOR_DEFENSE][0].amount;
+    statsToDisplay[3] = gContext.armors.getResource(equippedArmorID).equipEffects[StatNames::EVADE][0].amount;
     statsToDisplay[4] = 0;
-    statsToDisplay[5] = gContext.armors.getResource(equippedArmorID).gameArmor.magic_defense;
-    statsToDisplay[6] = gContext.armors.getResource(equippedArmorID).gameArmor.magic_evade;
+    statsToDisplay[5] = gContext.armors.getResource(equippedArmorID).equipEffects[StatNames::ARMOR_MDEFENSE][0].amount;;
+    statsToDisplay[6] = gContext.armors.getResource(equippedArmorID).equipEffects[StatNames::MEVADE][0].amount;;
     for (u32 row = 0; row < listNames.size(); row++) {
         updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
         updateNumber(getChild(statDiffWidget, baseNames[row]), statsToDisplay[row]);

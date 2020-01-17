@@ -179,6 +179,27 @@ std::string assembleGearStatBoostKey(u16 absoluteItemID, SrGearType itemType) {
     return statKey;
 }
 
+StatBoost createGearBoost(SrGearType gearType, u16 relativeGearIdx, bool isPercent, u16 amount, bool isNegative) {
+    StatBoost statBoost = { isNegative, amount, isPercent };
+    statBoost.tags.insert("GEAR");
+    statBoost.tags.insert(assembleGDataKey(relativeGearIdx));
+    switch (gearType) {
+    case SR_GEAR_WEAPON: {
+        statBoost.tags.insert("WEAPON");
+        break;
+    }
+    case SR_GEAR_ARMOR: {
+        statBoost.tags.insert("ARMOR");
+        break;
+    }
+    case SR_GEAR_ACCESSORY: {
+        statBoost.tags.insert("ACCESSORY");
+        break;
+    }
+    }
+    return statBoost;
+}
+
 void populatekernelStatBoosts(EquipmentStatBoosts& statBoosts, const u8* const stats, const u8* const amts, u8 count, u16 relativeGearIdx, SrGearType gearType) {
     for (u16 idx = 0; idx < count; idx++) {
         auto statType = stats[idx];

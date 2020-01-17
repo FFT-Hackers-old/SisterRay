@@ -52,6 +52,7 @@ protected:
 u8 getKernelIconType(u8 itemType, u16 typeRelativeIndex);
 const char* getItemNameFromAbsoluteIdx(u16 absoluteIdx);
 const char* getItemDescFromAbsoluteIdx(u16 absoluteIdx);
+StatBoost createGearBoost(SrGearType gearType, u16 relativeGearIdx, bool isPercent, u16 amount, bool isNegative);
 SISTERRAY_API void initItemTypeData();
 
 

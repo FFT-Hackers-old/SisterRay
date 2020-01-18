@@ -4,9 +4,8 @@
 #include "armor.h"
 #include "../party/stat_names.h"
 
-SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrArmor, std::string>(stream) {
+SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrArmor, std::string>() {
     size_t read_size;
-    SrArmor armor;
     ArmorData baseArmor;
 
     auto idx = 0;
@@ -15,8 +14,10 @@ SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegist
         read_size = srKernelStreamRead(stream, &baseArmor, sizeof(baseArmor));
         if (read_size != sizeof(baseArmor))
             break;
+        SrArmor armor;
         armor.armorName = gContext.gameStrings.armor_names.get_string(idx);
         armor.armorDescription = gContext.gameStrings.armor_descriptions.get_string(idx);
+        armor.gameArmor = baseArmor;
         armor.equipEffects[StatNames::EVADE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.evade, false));
         armor.equipEffects[StatNames::MEVADE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.magic_evade, false));
         armor.equipEffects[StatNames::ARMOR_DEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.defense, false));

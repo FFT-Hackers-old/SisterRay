@@ -56,20 +56,23 @@ void enterMateriaViewHandler(const MenuInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 1)->context;
     auto activeSlot = slotChoice.relativeColumnIndex;
     auto gearType = slotChoice.relativeRowIndex;
-    u8 characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
+    u8 characterID = G_SAVE_MAP->activeParty[*EQUIP_MENU_PARTY_INDEX];
     u8* slotsPtr = nullptr;
-
     switch (gearType) {
         case 0: {
             slotsPtr = &(gContext.weapons.getResource(getEquippedGear(characterID, 1)).gameWeapon.materia_slots[0]);
+            break;
         }
         case 1: {
             slotsPtr = &(gContext.armors.getResource(getEquippedGear(characterID, 2)).gameArmor.materia_slots[0]);
+            break;
         }
         default: {
             break;
         }
     }
+    srLogWrite("Weapon Slots: %d, %d, %d, %d", slotsPtr[0], slotsPtr[1], slotsPtr[2], slotsPtr[3]);
+    srLogWrite("CHECKING VALIDITY OF SLOT TYPE: %d", slotsPtr[activeSlot]);
     if (!(slotsPtr[activeSlot]) || *byte_DC0B4B) {
         playMenuSound(3);
         /*Insert special sephiroth stuff here for flash back*/

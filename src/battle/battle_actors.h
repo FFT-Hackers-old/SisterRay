@@ -67,6 +67,7 @@ SrBattleStat& getMutableSrBattleStat(u8 actorID, std::string statName);
 void setActorBattleStat(u8 actorID, std::string statName, i32 value);
 void setPartyStats(u8 partyIdx, ActorBattleState& partyActor);
 void setWeaponData(u8 partyIdx, ActorBattleState& partyActor);
+void setEnemyStats(u8 enemyIndex, ActorBattleState& partyActor);
 
 ActorBattleVars* getActorBattleVars(u8 actorIdx);
 ActorTimerData* getActorTimerBlock(u8 actorIdx);

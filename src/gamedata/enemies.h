@@ -4,12 +4,15 @@
 #include "../sr_named_registry.h"
 #include "../battle/ai_scripts.h"
 #include "../EncodedString.h"
+#include "../party/battle_stats.h"
+#include "../party/stat_names.h"
 #include <unordered_set>
 
 typedef struct {
     EnemyData enemyData;
     u16 modelID;
     BattleAIData enemyAI;
+    std::unordered_map<std::string, SrActorStat> enemyStats;
 } SrEnemyData;
 
 typedef struct {

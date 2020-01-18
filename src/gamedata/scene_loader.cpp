@@ -116,6 +116,7 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
         BattleAIData enemyAIData = BattleAIData();
         initializeBattleAIData(&(sceneData.enemyAIData[0]), formationRelativeEnemyIdx, enemyAIData);
         srEnemyData.enemyAI = enemyAIData;
+        calculateEnemyStats(srEnemyData);
         /*Add enemies to the enemy registry*/
         gContext.enemies.addElement(registryName, srEnemyData);
         srLogWrite("Enemy:%s added to registry with unique idx %d", registryName.c_str(), *uniqueIdx);
@@ -168,4 +169,92 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
         //In the event the string ID already exists (kernel action) just ref it
     }
     srLogWrite("scene fully registered!");
+}
+
+void calculateEnemyStats(SrEnemyData& enemy) {
+    const auto& gameEnemy = enemy.enemyData;
+    auto& stats = enemy.enemyStats;
+    SrActorStat stat = { 1, 1 };
+    for (const auto& element : gContext.stats.named_registry) {
+        stats[element.first] = stat;
+    }
+    stats[StatNames::HP].baseValue = gameEnemy.maxHP;
+    stats[StatNames::MP].baseValue = gameEnemy.maxMP;
+    stats[StatNames::STRENGTH].baseValue = gameEnemy.strength;
+    stats[StatNames::VITALITY].baseValue = gameEnemy.defense;
+    stats[StatNames::MAGIC].baseValue = gameEnemy.magic;
+    stats[StatNames::SPIRIT].baseValue = gameEnemy.mDefense;
+    stats[StatNames::DEXTERITY].baseValue = gameEnemy.dexterity;
+    stats[StatNames::LUCK].baseValue = gameEnemy.luck;
+    stats[StatNames::EVADE].baseValue = gameEnemy.enemyEvade;
+    stats[StatNames::MEVADE].baseValue = gameEnemy.enemyEvade;
+
+    auto elements = &(gameEnemy.elementTypes[0]);
+    auto elementModifiers = &(gameEnemy.elementModifiers[0]);
+    for (auto idx = 0; idx < 8; idx++) {
+        auto element = elements[idx];
+        auto resistance = getResistanceFromElementalModifier(elementModifiers[idx]);
+        switch (element) {
+        case ELM_FIRE: {
+            stats[StatNames::FIRE_RES].baseValue = resistance;
+            break;
+        }
+        case ELM_ICE: {
+            stats[StatNames::ICE_RES].baseValue = resistance;
+            break;
+        }
+        case ELM_THUNDER: {
+            stats[StatNames::LIGHT_RES].baseValue = resistance;
+            break;
+        }
+        case ELM_EARTH: {
+            stats[StatNames::EARTH_RES].baseValue = resistance;
+            break;
+        }
+        case ELM_WIND: {
+            stats[StatNames::WIND_RES].baseValue = resistance;
+            break;
+        }
+        case ELM_WATER: {
+            stats[StatNames::WATER_RES].baseValue = resistance;
+            break;
+        }
+        case ELM_POISON: {
+            stats[StatNames::POISON_RES].baseValue = resistance;
+            break;
+        }
+        case ELM_GRAVITY: {
+            stats[StatNames::GRAVITY_RES].baseValue = resistance;
+            break;
+        }
+        }
+    }
+    calculateFinalStats(enemy);
+}
+
+
+void calculateFinalStats(SrEnemyData& enemy) {
+    for (const auto& element : gContext.stats.named_registry) {
+        enemy.enemyStats[element.first].statValue = enemy.enemyStats[element.first].baseValue;
+    }
+}
+
+i32 getResistanceFromElementalModifier(u8 modifier) {
+    switch (modifier) {
+    case 2: {
+        return -50;
+    }
+    case 4: {
+        return 50;
+    }
+    case 5: {
+        return 100;
+    }
+    case 6: {
+        return 150;
+    }
+    default: {
+        return 0;
+    }
+    }
 }

@@ -3,15 +3,22 @@
 #include "stat_names.h"
 
 void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& charRecord, const StatBoostModifiers& statModifiers) {
-    for (auto statElement : srPartyMember.playerStats) {
+    for (auto& statElement : srPartyMember.playerStats) {
         const auto& statName = statElement.first;
+        srLogWrite("Calculating stat %s", statName.c_str());
         auto& stat = statElement.second;
         auto& statData = gContext.stats.getElement(statName);
         stat.baseValue = getGameBaseStat(statName, charRecord);
+        if (statModifiers.find(statName) == statModifiers.end()) {
+            stat.statValue = stat.baseValue;
+            srLogWrite("Defaulting stat %s to base value %d", statName.c_str(), stat.baseValue);
+            continue;
+        }
         const auto& modifiers = statModifiers.at(statName);
+        stat.boosts = modifiers;
         i32 netBoostAmt = 0;
         i32 netPercentAmt = 0;
-        for (auto modifier : modifiers) {
+        for (const auto& modifier : modifiers) {
             if (modifier.sign) {
                 if (modifier.isPercent)
                     netPercentAmt -= modifier.amount;
@@ -25,8 +32,8 @@ void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& char
                     netBoostAmt += modifier.amount;
             }
         }
-
-        i32 statValue = (stat.baseValue * (1.0f + ((netPercentAmt) / 100)) + netBoostAmt); //only apply percent to base value
+        //srLogWrite("Performing stat calculation: base: %d, percent: %d, boost:%d, max: %d", stat.baseValue, netPercentAmt, netBoostAmt, statData.maxValue);
+        i32 statValue = (stat.baseValue * (1.0f + ((netPercentAmt) / 100.0f)) + netBoostAmt); //only apply percent to base value
         if (statValue > statData.maxValue) {
             stat.statValue = statData.maxValue;
             return;
@@ -35,11 +42,12 @@ void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& char
             stat.statValue = 0;
             return;
         }
+        //srLogWrite("Calculated stat value: %d for stat %s", statValue, statName.c_str());
         stat.statValue = statValue;
     }
 }
 
-u8 getGameBaseStat(std::string statName, const CharacterRecord& record) {
+u32 getGameBaseStat(std::string statName, const CharacterRecord& record) {
     if (statName == StatNames::HP)
         return record.base_HP;
     if (statName == StatNames::MP)

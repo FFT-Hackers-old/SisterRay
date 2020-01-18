@@ -11,9 +11,13 @@
 
 /*Holds extensible Enabled command arrays for active party members
   Will extend to hold data for all party members later to facilitate character swapping*/
+
+void initParty();
+
 class SrPartyMembers {
 public:
-    SrPartyMembers();
+    SrPartyMembers() {}
+    SrPartyMembers(u8 characterCount);
     PartyMemberState getActivePartyMember(u8 actorIdx);
     PartyMemberState getSrPartyMember(u8 actorIdx);
     SrCharacterData& getActivePartyCharacter(u8 partyIdx);

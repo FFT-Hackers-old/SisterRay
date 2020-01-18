@@ -1,6 +1,7 @@
 #include "battle_actors.h"
 #include "scene_globals.h"
 #include "../impl.h"
+#include "../party/stat_names.h"
 
 #define ACTOR_COUNT 10
 #define ENEMY_ACTOR_COUNT 6
@@ -65,14 +66,13 @@ typedef void(*SRPFN_SUB5C7DB0)(u8);
 #define sub_5C7DB0  (SRPFN_SUB5C7DB0(0x5C7DB0))
 void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     u16* word_9A889E = (u16*)0x9A889E;
+    setActivePartyActor(partyIdx, characterID);
     auto partyActor = getSrBattleActor(partyIdx);
     const auto& srPartyMember = gContext.party.getSrPartyMember(partyIdx);
     auto characterRecord = getCharacterRecordWithID(characterID);
     if (characterRecord == nullptr) {
         return;
     }
-
-    setActivePartyActor(partyIdx, characterID);
 
     auto actorTimers = partyActor.actorTimers;
     auto actorBattleVars = partyActor.actorBattleVars;
@@ -198,17 +198,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         auto sceneEnemyDataPtr = getInBattleActorEnemyData(sceneRelativeID);
         actorFormation.enemyID = sceneRelativeID;
         actorBattleVars->index = sceneRelativeID;
-        actorBattleVars->maxHP = sceneEnemyDataPtr->enemyHP;
-        actorBattleVars->currentHP = actorBattleVars->maxHP;
-        actorBattleVars->maxMP = sceneEnemyDataPtr->enemyMP;
-        actorBattleVars->currentMP = actorBattleVars->maxMP;
-        actorBattleVars->physAtk = sceneEnemyDataPtr->enemyStrength;
-        actorBattleVars->magAtk = sceneEnemyDataPtr->enemyMagic;
-        actorBattleVars->defense = 2 * sceneEnemyDataPtr->enemyDefense;
-        actorBattleVars->mDefense = 2 * sceneEnemyDataPtr->enemyMDefense;
-        actorBattleVars->pEvade = sceneEnemyDataPtr->enemyEvade;
-        actorBattleVars->dexterity = sceneEnemyDataPtr->enemyDex;
-        actorBattleVars->luck = sceneEnemyDataPtr->enemyLuck;
+        setEnemyStats(enemyIdx, enemyActor);
         actorBattleVars->level = sceneEnemyDataPtr->enemyLevel;
         actorBattleVars->backDamageMult = sceneEnemyDataPtr->backDamageMultipler;
         actorBattleVars->gilValue = sceneEnemyDataPtr->gilAward;
@@ -307,13 +297,13 @@ ActorBattleState SrBattleActors::getActiveBattleActor(u8 actorIdx) {
     actorState.actorBattleVars = getActorBattleVars(actorIdx);
     actorState.actorTimers = getActorTimerBlock(actorIdx);
     if (actorIdx < 3) {
-        actorState.battleStats = &(enemyActors[actorIdx - 4].battleActor.battleStats);
+        actorState.battleStats = &(partyActors[activeParty[actorIdx]].battleActor.battleStats);
         actorState.party10 = getBattleParty10(actorIdx);
         actorState.party34 = getBattleParty34(actorIdx);
         actorState.weaponCtx = getBattleWeaponCtx(actorIdx);
         return actorState;
     }
-    actorState.battleStats = &(enemyActors[actorIdx].battleActor.battleStats);
+    actorState.battleStats = &(enemyActors[actorIdx - 4].battleActor.battleStats);
     actorState.party10 = nullptr;
     actorState.party34 = nullptr;
     actorState.weaponCtx = nullptr;
@@ -377,8 +367,9 @@ CharacterRecord* getCharacterRecordWithID(u8 characterID) {
     return nullptr;
 }
 
-#define DEX_NORMALIZATION 75
+#define DEX_NORMALIZATION (u16)75
 void initializePlayerActors() {
+    DebugBreak();
     u16* G_DEX_NORMALIZATION = (u16*)0x9AAD00;
     auto partyDex = 0;
     auto partyCount = 0;
@@ -389,8 +380,7 @@ void initializePlayerActors() {
         aiBattleContext.actorPartyMask |= 1 << partyIdx;
         gContext.battleActors.initializePartyActor(partyIdx, characterID);
     }
-    if (partyCount)
-        *G_DEX_NORMALIZATION = DEX_NORMALIZATION;
+    *G_DEX_NORMALIZATION = DEX_NORMALIZATION;
 }
 
 void initializeEnemyActors() {
@@ -410,18 +400,25 @@ void setPartyStats(u8 partyIdx, ActorBattleState& partyActor) {
     const auto& srPartyMember = gContext.party.getSrPartyMember(partyIdx);
     auto& actorBattleVars = partyActor.actorBattleVars;
     auto& stats = srPartyMember.srPartyMember->playerStats;
-    actorBattleVars->currentHP = srPartyMember.gamePartyMember->currentHP;
-    actorBattleVars->currentMP = srPartyMember.gamePartyMember->currentMP;
+    auto& battleStats = *partyActor.battleStats;
+    for (const auto& statElement : gContext.stats.named_registry) {
+        battleStats[statElement.first].statValue = stats[statElement.first].statValue;
+    }
+    //Setup old acto battle vars for now
+    actorBattleVars->maxHP = battleStats[StatNames::HP].statValue;
+    actorBattleVars->currentHP = battleStats[StatNames::HP].statValue;
+    actorBattleVars->maxMP = battleStats[StatNames::MP].statValue;
+    actorBattleVars->currentMP = battleStats[StatNames::MP].statValue;
+    actorBattleVars->physAtk = battleStats[StatNames::STRENGTH].statValue;
+    actorBattleVars->magAtk = battleStats[StatNames::MAGIC].statValue;
+    actorBattleVars->defense = 2 * battleStats[StatNames::VITALITY].statValue;
+    actorBattleVars->mDefense = 2 * battleStats[StatNames::SPIRIT].statValue;
+    actorBattleVars->dexterity = battleStats[StatNames::DEXTERITY].statValue;
+    actorBattleVars->luck = battleStats[StatNames::LUCK].statValue;
+    actorBattleVars->pEvade = battleStats[StatNames::EVADE].statValue;
+    actorBattleVars->mEvade = battleStats[StatNames::MEVADE].statValue;
     partyActor.party34->currentHP = actorBattleVars->currentHP;
     partyActor.party34->currentMP = actorBattleVars->currentMP;
-    actorBattleVars->dexterity = stats["DEX"].statValue;
-    actorBattleVars->luck = stats["LCK"].statValue;
-    actorBattleVars->maxHP = stats["HP"].statValue;
-    actorBattleVars->maxMP = stats["MP"].statValue;
-    actorBattleVars->physAtk = stats["STR"].statValue;
-    actorBattleVars->magAtk = stats["MAG"].statValue;
-    actorBattleVars->defense = stats["VIT"].statValue;
-    actorBattleVars->mDefense = stats["SPR"].statValue;
     if (!actorBattleVars->physAtk)
         actorBattleVars->physAtk = 1;
 
@@ -475,4 +472,32 @@ void setWeaponData(u8 partyIdx, ActorBattleState& partyActor) {
         soundID |= 0x100u;
     partyWeaponCtx.missSoundID = soundID;
     accessMaskCheck *= 2;
+}
+
+//Fetch Enemy Battle Stats from Enemy Registry
+void setEnemyStats(u8 enemyIndex, ActorBattleState& partyActor) {
+    const auto& formationEnemy = *getInBattleFormationActorData(enemyIndex);
+    const auto& srEnemy = gContext.enemies.getResource(getUniqueEnemyID(formationEnemy.enemyID));
+    auto& actorBattleVars = partyActor.actorBattleVars;
+    auto& stats = srEnemy.enemyStats;
+    auto& battleStats = *partyActor.battleStats;
+    for (const auto& statElement : gContext.stats.named_registry) {
+        battleStats[statElement.first].statValue = stats.at(statElement.first).statValue;
+    }
+    if (!actorBattleVars->physAtk)
+        actorBattleVars->physAtk = 1;
+
+    //Initialize the old memory temporarily
+    actorBattleVars->maxHP = battleStats[StatNames::HP].statValue;
+    actorBattleVars->currentHP = battleStats[StatNames::HP].statValue;
+    actorBattleVars->maxMP = battleStats[StatNames::MP].statValue;
+    actorBattleVars->currentMP = battleStats[StatNames::MP].statValue;
+    actorBattleVars->physAtk = battleStats[StatNames::STRENGTH].statValue;
+    actorBattleVars->magAtk = battleStats[StatNames::MAGIC].statValue;
+    actorBattleVars->defense = 2 * battleStats[StatNames::VITALITY].statValue;
+    actorBattleVars->mDefense = 2 * battleStats[StatNames::SPIRIT].statValue;
+    actorBattleVars->dexterity = battleStats[StatNames::DEXTERITY].statValue;
+    actorBattleVars->luck = battleStats[StatNames::LUCK].statValue;
+    actorBattleVars->pEvade = battleStats[StatNames::EVADE].statValue;
+    actorBattleVars->mEvade = battleStats[StatNames::MEVADE].statValue;
 }

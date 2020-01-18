@@ -3,9 +3,8 @@
 #include "../impl.h"
 #include "accessory.h"
 
-SrAccessoryRegistry::SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAccessory, std::string>(stream) {
+SrAccessoryRegistry::SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAccessory, std::string>() {
     size_t read_size;
-    SrAccessory accessory;
     AccessoryData baseAccessory;
 
     auto idx = 0;
@@ -14,8 +13,10 @@ SrAccessoryRegistry::SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResour
         read_size = srKernelStreamRead(stream, &baseAccessory, sizeof(baseAccessory));
         if (read_size != sizeof(baseAccessory))
             break;
+        SrAccessory accessory;
         accessory.accessoryName = gContext.gameStrings.accessory_names.get_string(idx);
         accessory.accessoryDescription = gContext.gameStrings.accessory_descriptions.get_string(idx);
+        accessory.gameAccessory = baseAccessory;
         populatekernelStatBoosts(accessory.equipEffects, accessory.gameAccessory.stats_to_boost, accessory.gameAccessory.stat_boost_amounts, 2, idx, SR_GEAR_ACCESSORY);
         addElement(assembleGDataKey(idx), accessory);
         ++idx;

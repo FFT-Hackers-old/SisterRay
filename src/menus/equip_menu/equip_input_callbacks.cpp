@@ -48,6 +48,7 @@ void selectGearHandler(const MenuInputEvent* event) {
         return;
 
     equippableGearCount = setupGearMenu(slotChoice.relativeRowIndex + 1);
+    srLogWrite("%d equippable items for actor %d", equippableGearCount, *EQUIP_MENU_PARTY_INDEX);
     if (equippableGearCount && !(*byte_DC0B4B & 1)) {
         playMenuSound(1);
         setMenuState(event->menu, 1);
@@ -216,7 +217,8 @@ u16 setupGearMenu(u8 itemType) {
     u8 characterID = G_SAVE_MAP->activeParty[*EQUIP_MENU_PARTY_INDEX];
     u16 equippableGearCount = 0;
     gContext.gearViewData = SrGearViewData();
-    for (i32 inventoryIdx = 0; inventoryIdx < gContext.inventory->currentCapacity(); inventoryIdx++) {
+    srLogWrite("Checking usable gear for character %d", characterID);
+    for (u16 inventoryIdx = 0; inventoryIdx < gContext.inventory->currentCapacity(); inventoryIdx++) {
         auto inventoryEntry = gContext.inventory->getResource(inventoryIdx).item_id;
         if (gContext.itemTypeData.getResource(inventoryEntry).itemType != itemType) {
             continue;

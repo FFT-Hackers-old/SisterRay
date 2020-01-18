@@ -3,9 +3,8 @@
 #include "../party/stat_names.h"
 
 
-SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrWeapon, std::string>(stream) {
+SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrWeapon, std::string>() {
     size_t read_size;
-    SrWeapon weapon;
     WeaponData baseWeapon;
 
     auto idx = 0;
@@ -14,11 +13,12 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         read_size = srKernelStreamRead(stream, &baseWeapon, sizeof(baseWeapon));
         if (read_size != sizeof(baseWeapon))
             break;
-
+        SrWeapon weapon;
         weapon.equipEffects[StatNames::WEAPON_ATTACK].push_back(createGearBoost(SR_GEAR_WEAPON, idx, false, baseWeapon.weapon_strength, false));
         weapon.equipEffects[StatNames::WEAPON_ACCURACY].push_back(createGearBoost(SR_GEAR_WEAPON, idx, false, baseWeapon.weaponHitRate, false));
         weapon.weaponName = gContext.gameStrings.weapon_names.get_string(idx);
         weapon.weaponDescription = gContext.gameStrings.weapon_descriptions.get_string(idx);
+        weapon.gameWeapon = baseWeapon;
         populatekernelStatBoosts(weapon.equipEffects, weapon.gameWeapon.stats_to_boost, weapon.gameWeapon.stat_boost_amounts, 4, idx, SR_GEAR_WEAPON);
         addElement(assembleGDataKey(idx), weapon);
         ++idx;

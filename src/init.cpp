@@ -124,6 +124,8 @@ static void Init(void) {
     initBattleInventory();
     initMateriaInventory();
     initGameStrings();
+    initStats(true);
+    initParty();
     srLoadKernel2Bin();
     srLoadKernelBin();
     initOnUseCallbackRegistry();

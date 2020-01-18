@@ -10,14 +10,15 @@
 
 typedef struct {
     EncodedString displayName;
-    u32 maxValue;
+    i32 maxValue;
     bool canBeNegative;
 }SrStat;
 
 /*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/
 class SrStatRegistry : public SrNamedResourceRegistry<SrStat, std::string> {
 public:
-    SrStatRegistry();
+    SrStatRegistry(bool initResistances);
+    SrStatRegistry(): SrNamedResourceRegistry<SrStat, std::string>(){}
 };
 
 typedef struct {
@@ -48,4 +49,6 @@ typedef struct {
     std::vector<StatModifier> modifiers; //consumed and decremented on V-Timer in battle, modifies active value
 } SrBattleStat;
 
+
+void initStats(bool initResistances);
 #endif // !BATTLE_STATS_H

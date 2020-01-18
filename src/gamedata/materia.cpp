@@ -8,7 +8,6 @@
 
 SrMateriaRegistry::SrMateriaRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrMateria, std::string>() {
     size_t read_size;
-    SrMateria materia;
     MateriaData baseMateria;
     std::string srAttackID;
 
@@ -18,6 +17,7 @@ SrMateriaRegistry::SrMateriaRegistry(SrKernelStream* stream) : SrNamedResourceRe
         read_size = srKernelStreamRead(stream, &baseMateria, sizeof(baseMateria));
         if (read_size != sizeof(baseMateria))
             break;
+        SrMateria materia;
         materia.gameMateria = baseMateria;
         auto materiaType = materia.gameMateria.type & 0x0F;
         /*Update the references based on materia type to the proper index in the new type specific registries used within sister ray*/

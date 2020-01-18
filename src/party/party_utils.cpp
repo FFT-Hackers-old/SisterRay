@@ -33,8 +33,7 @@ std::string getCharacterName (u8 characterID) {
 }
 
 PartyMember* getGamePartyMember(u8 actorIdx) {
-    u8* partyCharacterIndexArray = (u8*)(0xDC0230);
-    if (partyCharacterIndexArray[actorIdx] == 0xFF) {
+    if (G_SAVE_MAP->activeParty[actorIdx] == 0xFF) {
         return nullptr;
     }
     return &(PARTY_STRUCT_ARRAY[actorIdx]);
@@ -48,7 +47,6 @@ CharacterRecord* getPartyActorCharacterRecord(u8 partyIdx) {
 
 u16 getEquippedGear(u8 characterID, u8 gearType) {
     auto& characterRecord = gContext.characters.getResource(characterID);
-    CharacterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     u16 kernelObjectID;
 
     switch (gearType) { //probably refactor this into a utility
@@ -71,9 +69,9 @@ u16 getEquippedGear(u8 characterID, u8 gearType) {
     return kernelObjectID;
 }
 
-bool characterCanEquipItem(u8 characterID, u16 item_id){
-    auto characterMask = getCharacterRestrictionMask(item_id);
-    u32 characterCanUse = (u32)(characterMask & (1 << characterID));
+bool characterCanEquipItem(u8 characterID, u16 itemID){
+    auto characterMask = getCharacterRestrictionMask(itemID);
+    bool characterCanUse = (bool)(characterMask & (1 << characterID));
 
     return characterCanUse;
 }

@@ -210,7 +210,6 @@ void populatekernelStatBoosts(EquipmentStatBoosts& statBoosts, const u8* const s
         statBoost.amount = amts[idx];
         statBoost.tags.insert("GEAR");
         statBoost.tags.insert(assembleGDataKey(relativeGearIdx));
-        u8 gearType = gearType;
         switch (gearType) {
         case SR_GEAR_WEAPON: {
             statBoost.tags.insert("WEAPON");

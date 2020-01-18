@@ -16,6 +16,7 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
         auto characterData = SrCharacterData();
         BattleAIData characterAIData = BattleAIData();
         initializeBattleAIData(characterAIPtr, characterIndex, characterAIData);
+        characterData.gameCharacter = nullptr;
         characterData.characterAI = characterAIData;
         if (characterIndex < 9) {
             characterData.characterGrowth = growthDataPtr[characterIndex];
@@ -28,7 +29,6 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
         defaultMat.materia_ap = 0;
         characterData.wpnMaterias.fill(defaultMat);
         characterData.armMaterias.fill(defaultMat);
-        characterData.gameCharacter = nullptr;
 
         gContext.characters.addElement(charName, characterData);
     }

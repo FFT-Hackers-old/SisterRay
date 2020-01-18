@@ -71,11 +71,11 @@ void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) 
             formationSetupPtr->initCameraID = (getRandomNumber() & 3) + 96;
             formationSetupPtr->escapeCounter = 1;
             for (enemyIndex = 0; enemyIndex < 3; ++enemyIndex) { // boost all stats for battle arena, need to cap at 255
-                enemyDataPtr[enemyIndex].enemyHP = enemyDataPtr[enemyIndex].enemyHP * 2;
-                enemyDataPtr[enemyIndex].enemyStrength = (enemyDataPtr[enemyIndex].enemyStrength * 3) / 2;                
-                enemyDataPtr[enemyIndex].enemyMagic = (enemyDataPtr[enemyIndex].enemyMagic * 3) / 2;
-                enemyDataPtr[enemyIndex].enemyDefense = (enemyDataPtr[enemyIndex].enemyDefense * 3) / 2;
-                enemyDataPtr[enemyIndex].enemyMDefense = (enemyDataPtr[enemyIndex].enemyMDefense * 3) / 2;
+                enemyDataPtr[enemyIndex].maxHP = enemyDataPtr[enemyIndex].maxHP * 2;
+                enemyDataPtr[enemyIndex].strength = (enemyDataPtr[enemyIndex].strength * 3) / 2;                
+                enemyDataPtr[enemyIndex].magic = (enemyDataPtr[enemyIndex].magic * 3) / 2;
+                enemyDataPtr[enemyIndex].defense = (enemyDataPtr[enemyIndex].defense * 3) / 2;
+                enemyDataPtr[enemyIndex].mDefense = (enemyDataPtr[enemyIndex].mDefense * 3) / 2;
             }
         }
         else if (*battleFlags & 8) {

@@ -186,6 +186,7 @@ void initStatDiffWidget(const MenuInitEvent* event) {
     };
     for (u8 displayStatIdx = 0; displayStatIdx < 7; ++displayStatIdx) {
         menuText = gContext.stats.getElement(displayStatNames[displayStatIdx]).displayName.str();
+        srLogWrite("CREATING EQUIP MENU WIDGET WITH STAT NAME: %s", gContext.stats.getElement(displayStatNames[displayStatIdx]).displayName.unicode());
         setTextParams(&textParams, 53, windowTop + 26 * displayStatIdx - 6, menuText, COLOR_TEAL, 0.2f);
         textWidget = createTextWidget(textParams, statNames[displayStatIdx]);
         addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[displayStatIdx]);
@@ -204,7 +205,6 @@ void initStatDiffWidget(const MenuInitEvent* event) {
     }
     addChildWidget(mainWidget, statDiffWidget, STAT_DIFF_WIDGET_NAME);
 }
-
 
 //Initialize the gear list with just a box and a series of disabled widgets.
 void initGearListWidget(const MenuInitEvent* event) {

@@ -6,47 +6,21 @@
 #define CHARACTER_COUNT 0xA
 #define PARTY_COUNT 3
 
-SrPartyMembers::SrPartyMembers() {
-    for (u8 i = 0; i < CHARACTER_COUNT; i++) {
-        auto partyData = SrPartyData();
+void initParty() {
+    gContext.party = SrPartyMembers(CHARACTER_COUNT);
+}
+
+SrPartyMembers::SrPartyMembers(u8 characterCount) {
+    srLogWrite("initializing Sister Ray Party for %lu characters", characterCount);
+    for (u8 partyIdx = 0; partyIdx < characterCount; partyIdx++) {
+        SrPartyData partyData = {};
         auto& stats = partyData.playerStats;
-        SrActorStat HP = { 1, 1 };
-        stats[StatNames::HP] = HP;
-        SrActorStat MP = { 1, 1 };
-        stats[StatNames::MP] = MP;
         SrActorStat stat = { 1, 1 };
-        stats[StatNames::STRENGTH] = stat;
-        stats[StatNames::VITALITY] = stat;
-        stats[StatNames::MAGIC] = stat;
-        stats[StatNames::SPIRIT] = stat;
-        stats[StatNames::DEXTERITY] = stat;
-        stats[StatNames::LUCK] = stat;
-        stats[StatNames::EVADE] = stat;
-        stats[StatNames::MEVADE] = stat;
-
-        stats[StatNames::FIRE_RES] = stat;
-        stats[StatNames::ICE_RES] = stat;
-        stats[StatNames::LIGHT_RES] = stat;
-        stats[StatNames::WATER_RES] = stat;
-        stats[StatNames::EARTH_RES] = stat;
-        stats[StatNames::WIND_RES] = stat;
-        stats[StatNames::POISON_RES] = stat;
-        stats[StatNames::GRAVITY_RES] = stat;
-        stats[StatNames::HOLY_RES] = stat;
-        stats[StatNames::SHADOW_RES] = stat;
-
-        stats[StatNames::FIRE_AFF] = stat;
-        stats[StatNames::ICE_AFF] = stat;
-        stats[StatNames::LIGHT_AFF] = stat;
-        stats[StatNames::WATER_AFF] = stat;
-        stats[StatNames::EARTH_AFF] = stat;
-        stats[StatNames::WATER_AFF] = stat;
-        stats[StatNames::WIND_AFF] = stat;
-        stats[StatNames::GRAVITY_AFF] = stat;
-        stats[StatNames::HOLY_AFF] = stat;
-        stats[StatNames::SHADOW_AFF] = stat;
-
-        partyMembers[i] = partyData;
+        for (const auto& element : gContext.stats.named_registry) {
+            stats[element.first] = stat;
+        }
+        srLogWrite("Initialized party member with %lu stats", partyData.playerStats.size());
+        partyMembers[partyIdx] = partyData;
     }
 }
 
@@ -131,6 +105,9 @@ void SrPartyMembers::battleActivatePartyMember(u8 partyIdx) {
     auto& srMember = getSrPartyMember(partyIdx);
     auto& activeMember = getActivePartyMember(partyIdx);
 
+    srLogWrite("ACTIVATING PARTY MEMBER at %p", &activeMember);
+    srLogWrite("Max HP: %d", srMember.gamePartyMember->maxHP);
+    srLogWrite("Strength: %d", srMember.gamePartyMember->strength);
     *activeMember.gamePartyMember = *srMember.gamePartyMember;
 }
 
@@ -228,11 +205,12 @@ void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
 
     StatBoostModifiers statModifiers = StatBoostModifiers();
     //Add all stat modifiers from weapons to the modification object, for determining the base value of that stat
-    const auto& weapon = gContext.weapons.getResource(getPartyActorCharacterRecord(partyIdx)->equipped_weapon);
+    auto& characterRecord = gContext.characters.getResource(characterID);
+    const auto& weapon = gContext.weapons.getResource(characterRecord.equippedWeapon);
     addStatBoosts(statModifiers, weapon.equipEffects);
-    const auto& armor = gContext.armors.getResource(getPartyActorCharacterRecord(partyIdx)->equipped_armor);
+    const auto& armor = gContext.armors.getResource(characterRecord.equippedArmor);
     addStatBoosts(statModifiers, armor.equipEffects);
-    const auto& accessory = gContext.accessories.getResource(getPartyActorCharacterRecord(partyIdx)->equipped_accessory);
+    const auto& accessory = gContext.accessories.getResource(characterRecord.equippedAccessory);
     addStatBoosts(statModifiers, accessory.equipEffects);
     for (auto equippedMateria : equippedMaterias) {
         const auto& materia = gContext.materias.getResource(equippedMateria.item_id);
@@ -244,18 +222,18 @@ void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
     auto& gamePartyMember = *partyMember.gamePartyMember;
     auto& srPartyMember = *partyMember.srPartyMember;
     //TODO after all references are removed kill these copies
-    gamePartyMember.maxHP = srPartyMember.playerStats["HP"].statValue;
-    gamePartyMember.maxMP = srPartyMember.playerStats["MP"].statValue;
-    gamePartyMember.physAttack = srPartyMember.playerStats["STR"].statValue;
-    gamePartyMember.physDefense = srPartyMember.playerStats["VIT"].statValue;
-    gamePartyMember.magAttack = srPartyMember.playerStats["MAG"].statValue;
-    gamePartyMember.magDefense = srPartyMember.playerStats["SPR"].statValue;
-    gamePartyMember.strength = srPartyMember.playerStats["STR"].statValue;
-    gamePartyMember.vitality = srPartyMember.playerStats["VIT"].statValue;
-    gamePartyMember.magic = srPartyMember.playerStats["MAG"].statValue;
-    gamePartyMember.spirit = srPartyMember.playerStats["SPR"].statValue;
-    gamePartyMember.speed = srPartyMember.playerStats["DEX"].statValue;
-    gamePartyMember.luck = srPartyMember.playerStats["LCK"].statValue;
+    gamePartyMember.maxHP = srPartyMember.playerStats[StatNames::HP].statValue;
+    gamePartyMember.maxMP = srPartyMember.playerStats[StatNames::MP].statValue;
+    gamePartyMember.physAttack = srPartyMember.playerStats[StatNames::WEAPON_ATTACK].statValue;
+    gamePartyMember.physDefense = srPartyMember.playerStats[StatNames::ARMOR_DEFENSE].statValue;
+    gamePartyMember.magAttack = srPartyMember.playerStats[StatNames::WEAPON_MAGIC].statValue;
+    gamePartyMember.magDefense = srPartyMember.playerStats[StatNames::ARMOR_MDEFENSE].statValue;
+    gamePartyMember.strength = srPartyMember.playerStats[StatNames::STRENGTH].statValue;
+    gamePartyMember.vitality = srPartyMember.playerStats[StatNames::VITALITY].statValue;
+    gamePartyMember.magic = srPartyMember.playerStats[StatNames::MAGIC].statValue;
+    gamePartyMember.spirit = srPartyMember.playerStats[StatNames::SPIRIT].statValue;
+    gamePartyMember.speed = srPartyMember.playerStats[StatNames::DEXTERITY].statValue;
+    gamePartyMember.luck = srPartyMember.playerStats[StatNames::LUCK].statValue;
     battleActivatePartyMember(partyIdx);
 }
 

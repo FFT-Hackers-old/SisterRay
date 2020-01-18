@@ -29,7 +29,7 @@ namespace StatNames {
     const std::string ARMOR_MDEFENSE = "ARMMAGDEF";
     const std::string WEAPON_MAGIC = "WPNMATK";
     const std::string EVADE = "PEV";
-    const std::string MEVADE = "PEV";
+    const std::string MEVADE = "MEV";
 
     const std::string WEAPON_ATTACK_NAME = "Weapon Atk";
     const std::string WEAPON_ACCURACY_NAME = "Weapon Hit";
@@ -54,6 +54,18 @@ namespace StatNames {
     const std::string POISON_RES = "PSNRES";
     const std::string HOLY_RES = "HOLYRES";
     const std::string SHADOW_RES = "SHADRES";
+
+    //Element Display Names
+    const std::string FIRE_NAME = "Fire";
+    const std::string ICE_NAME = "Ice";
+    const std::string LIGHT_NAME = "Lightning";
+    const std::string EARTH_NAME = "Earth";
+    const std::string WATER_NAME = "Water";
+    const std::string WIND_NAME = "Wind";
+    const std::string GRAV_NAME = "Gravity";
+    const std::string POISON_NAME = "Poison";
+    const std::string HOLY_NAME = "Holy";
+    const std::string SHADOW_NAME = "Shadow";
 
     const std::string FIRE_AFF = "FIREAFF";
     const std::string ICE_AFF = "ICEAFF";

@@ -165,7 +165,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u8      unknown;
-    u8      damage_type;
+    u8      elementDamageType;
     u8      defense;
     u8      magic_defense;
     u8      evade;

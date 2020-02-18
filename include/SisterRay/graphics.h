@@ -32,7 +32,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     u32 field_C;
     u32 field_10;
@@ -87,7 +87,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 version;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 vertexType;
     u32 numVertices;
     u32 numNormals;
@@ -158,7 +158,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 flags;
-    u32 field_4;
+    u32 specialDamageFlags;
     LightPoint* lightPoint8;
     LightPoint* lightPointC;
     LightPoint* lightPoint10;
@@ -248,7 +248,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     void* nextDrawable; //type is DrawableObjectCahin, cast if using
-    u32 field_4;
+    u32 specialDamageFlags;
     DrawableState* drawableState;
     Matrix matrix;
     PaletteAuxillary paletteAuxillary;
@@ -258,7 +258,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     u32 frameCounter;
     DrawableObjectChain* graphicsObjectChain;
@@ -283,7 +283,7 @@ typedef struct {
 #pragma pack(push, 1)
 struct _PolygonSet {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     u32 field_C;
     u32 numgroups;
@@ -327,7 +327,7 @@ struct _PolygonSet {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 count;
     u32 vertexCount;
     u32 field_10;
@@ -345,7 +345,7 @@ typedef struct {
 #pragma pack(push, 1)
 struct _GraphicsObject {
     u32 polytype;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     AuxillaryGFX* auxillaries;
     MatrixSet* matrixSet;

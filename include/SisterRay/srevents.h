@@ -132,7 +132,18 @@ typedef struct {
 
 typedef struct {
     DamageCalcStruct* damageContext;
+    AIBattleContext* aiContext;
+
 } CommandSetupEvent;
+
+typedef struct ActorBattleState_ ActorBattleState;
+
+typedef struct {
+    DamageCalcStruct* damageContext;
+    AIBattleContext* aiContext;
+    ActorBattleState* attackerState;
+    ActorBattleState* targetState;
+} DamageCalculationEvent;
 
 typedef struct {
     Menu*  menuObect;
@@ -182,7 +193,7 @@ typedef struct {
     u8 activeAllies;
     u8 spellEffectID;
     u8 commandIndex;
-    u8 field_4;
+    u8 specialDamageFlags;
     u8 animationScriptID;
     u16 actionIndex;
     u16 cameraData;
@@ -196,7 +207,7 @@ typedef struct {
     u8 attackerID;
     u8 damagedAnimScriptIdx;
     u8 impactEventQueueIdx;
-    u16 field_4;
+    u16 specialDamageFlags;
     u8 field_6;
     u8 field_7;
     u32 targetStatusMask;

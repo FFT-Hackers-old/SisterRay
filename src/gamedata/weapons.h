@@ -14,6 +14,7 @@ typedef struct {
     EncodedString weaponName;
     EncodedString weaponDescription;
     EquipmentStatBoosts equipEffects;
+    std::vector<std::string> attackElements;
 } SrWeapon;
  
 class SrWeaponRegistry : public SrNamedResourceRegistry<SrWeapon, std::string> {

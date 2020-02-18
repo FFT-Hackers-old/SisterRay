@@ -11,6 +11,7 @@
 typedef struct {
     EncodedString displayName;
     i32 maxValue;
+    i32 minValue;
     bool canBeNegative;
 }SrStat;
 

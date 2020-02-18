@@ -241,6 +241,9 @@ void calculateFinalStats(SrEnemyData& enemy) {
 
 i32 getResistanceFromElementalModifier(u8 modifier) {
     switch (modifier) {
+    case 0: {
+        return -255; // not a reachable value, but signals instant death
+    }
     case 2: {
         return -50;
     }
@@ -252,6 +255,9 @@ i32 getResistanceFromElementalModifier(u8 modifier) {
     }
     case 6: {
         return 150;
+    }
+    case 7: {
+        return 255; // not a reachable value, but signals full cure behavior
     }
     default: {
         return 0;

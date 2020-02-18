@@ -4,6 +4,7 @@
 #include <SisterRay/SisterRay.h>
 #include "command_callbacks.h"
 
+#define ELEMENT_COUNT 16
 void srSetupAction(CommandSetupEvent setupEvent);
 void srLoadAbilityData();
 void initializeLimitContext(DamageCalcStruct* damageContext);

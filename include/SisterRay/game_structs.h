@@ -89,8 +89,8 @@ typedef struct {
     u32 hitCountCopy; //0xFC
     /*256 unused bytes*/
     u8 padding3[0x100];
-    u32 targetObjectBlock1Ptr; //0x200
-    u32 targetObjectBlock2Ptr; //0x204
+    u32 vTimerBlock; //0x200
+    u32 party34Block; //0x204
     u32 targetID; //0x208
     u32 targetEnemyIndex; //0x20C
     u32 targetDefense; //0x210
@@ -338,7 +338,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     CharacterRecord* characterRecord;
-    u8 field_4;
+    u8 specialDamageFlags;
     u8 limitLevelIdx;
     u8 field_6;
     u8 field_7;

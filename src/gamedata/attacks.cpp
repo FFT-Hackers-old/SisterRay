@@ -70,6 +70,7 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.useOverride = 0;
             attack.useMulti = 0;
         }
+        initializeActionElements(attack);
         addElement(assembleGDataKey(attack.attackID), attack);
         auto& cmd = gContext.commands.getResource(cmdIdx);
         cmd.actionCount++;
@@ -81,6 +82,17 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
     addCommandAction(assembleGDataKey(CMD_SUMMON), assembleGDataKey(attack96.attackID));
     addElement(assembleGDataKey(attack97.attackID), attack96);
     addCommandAction(assembleGDataKey(CMD_SUMMON), assembleGDataKey(attack97.attackID));
+}
+
+//Set elements 
+initializeActionElements(SrAttack& attack) {
+    auto& attackElements = attack.attackElements;
+    for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
+        if (!(attack.attackData.elementMask & (1 << elementIdx))) {
+            continue;
+        }
+        attackElements.push_back(getElementIDFromIndex(elementIdx));
+    }
 }
 
 void initAttacks(SrKernelStream* stream) {

@@ -23,8 +23,42 @@ SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegist
         armor.equipEffects[StatNames::ARMOR_DEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.defense, false));
         armor.equipEffects[StatNames::ARMOR_MDEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.magic_defense, false));
         populatekernelStatBoosts(armor.equipEffects, armor.gameArmor.stats_to_boost, armor.gameArmor.stat_boost_amounts, 4, idx, SR_GEAR_ARMOR);
+        initializeAccessoryElements(armor, idx);
         addElement(assembleGDataKey(idx), armor);
         ++idx;
+    }
+}
+
+initializeAccessoryElements(SrArmor& armor, u16 relativeID) {
+    auto& equipEffects = armor.equipEffects;
+    for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
+        if (!(armor.gameArmor.elemental_defense_mask & (1 << elementIdx))) {
+            continue;
+        }
+        auto elementDamageType = armor.gameArmor.elementDamageType;
+        auto elementName = getElementIDFromIndex(elementIdx);
+        auto element = gContext.elements.getElement(elementName);
+        if (elementDamageType = 0) {
+            StatBoost boost{0, 125, false};
+            statBoost.tags.insert("GEAR");
+            statBoost.tags.insert("ARMOR");
+            statBoost.tags.insert(assembleGDataKey(relativeGearIdx));
+            equipEffects[element.resName].push_back(boost);
+        }
+        if (elementDamageType = 1) {
+            statBoost.tags.insert("GEAR");
+            statBoost.tags.insert("ARMOR");
+            statBoost.tags.insert(assembleGDataKey(relativeGearIdx));
+            StatBoost boost{ 0, 100, false };
+            equipEffects[element.resName].push_back(boost);
+        }
+        if (elementDamageType = 2) {
+            statBoost.tags.insert("GEAR");
+            statBoost.tags.insert("ARMOR");
+            statBoost.tags.insert(assembleGDataKey(relativeGearIdx));
+            StatBoost boost{ 0, 50, false };
+            equipEffects[element.resName].push_back(boost);
+        }
     }
 }
 

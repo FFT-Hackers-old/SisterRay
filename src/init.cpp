@@ -125,6 +125,7 @@ static void Init(void) {
     initMateriaInventory();
     initGameStrings();
     initStats(true);
+    initElements();
     initParty();
     srLoadKernel2Bin();
     srLoadKernelBin();

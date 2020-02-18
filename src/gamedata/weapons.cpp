@@ -19,9 +19,20 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         weapon.weaponName = gContext.gameStrings.weapon_names.get_string(idx);
         weapon.weaponDescription = gContext.gameStrings.weapon_descriptions.get_string(idx);
         weapon.gameWeapon = baseWeapon;
+        initializeWeaponElements(weapon)
         populatekernelStatBoosts(weapon.equipEffects, weapon.gameWeapon.stats_to_boost, weapon.gameWeapon.stat_boost_amounts, 4, idx, SR_GEAR_WEAPON);
         addElement(assembleGDataKey(idx), weapon);
         ++idx;
+    }
+}
+
+initializeWeaponElements(SrWeapon& weapon) {
+    auto& attackElements = weapon.attackElements;
+    for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
+        if (!(weapon.gameWeapon.attackElementMask & (1 << elementIdx))) {
+            continue;
+        }
+        attackElements.push_back(getElementIDFromIndex(elementIdx));
     }
 }
 

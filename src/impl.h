@@ -29,6 +29,7 @@ extern "C" {
 #include "gamedata/attacks.h"
 #include "gamedata/formations.h"
 #include "gamedata/enemies.h"
+#include "gamedata/elements.h"
 #include "gamedata/scene_loader.h"
 #include "battle/engine/animation_script_opcode.h"
 #include "inventories/inventory.h"
@@ -77,6 +78,8 @@ typedef struct {
     SrPartyMembers                      party;
     SrBattleActors                      battleActors;
     SrStatRegistry                      stats;
+    SrElementRegistry                   elements;
+    SrStatusRegistry                    statuses;
 
     SrFormationRegistry                 formations;
     SrEnemyRegistry                     enemies;

@@ -11,6 +11,21 @@ typedef struct {
     u8 buffer[1024]; //this is 8x the amount available in the base game, per actor
 } ActorScriptVariables;
 
+//There can be multiple instances of a status, unlike the original game, which can change effects
+typedef struct {
+    std::string statusName;
+    bool doesExpire;
+    u16 ticksToExpiration;
+    u16 initialDuration;
+    bool doesStack;
+    u16 stacks;
+    u16 maxStacks
+    bool allowMultiple;
+    u16 maxInstances;
+    u32 context[8]; // 8 variables to use for each status to track important things
+    std::vector<std::string> tags;
+} ActiveStatus;
+
 //Maintained for each of the games 10 actors. 
 typedef struct {
     std::map<std::string, SrBattleStat> battleStats;
@@ -29,14 +44,15 @@ typedef struct {
     SrBattleActor battleActor;
 } SrEnemyBattleActor;
 
-typedef struct {
+struct ActorBattleState_{
     ActorTimerData* actorTimers;
     ActorBattleVars* actorBattleVars;
     std::map<std::string, SrBattleStat>* battleStats;
     BattleParty34* party34; //null for enemy actors
     BattleParty10* party10; //null for enemy actors
     BattleWeaponCtx* weaponCtx;
-} ActorBattleState;
+    std::vector<ActiveStatus> activeStatuses;
+};
 
 
 class SrBattleActors {

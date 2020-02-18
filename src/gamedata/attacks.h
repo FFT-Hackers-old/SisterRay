@@ -7,6 +7,7 @@
 #include "game_data_interface.h"
 #include "../EncodedString.h"
 #include "../battle/engine/action_spell_effects.h"
+#include "statuses.h"""
 
 typedef struct {
     AttackData attackData;
@@ -19,6 +20,8 @@ typedef struct {
     SpellEffect overrideEffect;
     u8 useMulti;
     SpellEffect multiEffect;
+    std::vector<std::string> attackElements;
+    std::unordered_map<std::string, StatusInfliction> statusAttack;
 } SrAttack;
 
 class SrAttackRegistry : public SrNamedResourceRegistry<SrAttack, std::string> {

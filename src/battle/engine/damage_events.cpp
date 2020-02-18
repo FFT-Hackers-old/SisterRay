@@ -26,3 +26,13 @@ DamageDisplayEvent* getFirstTargetDisplayEvent(u8 targetID) {
     }
     return nullptr;
 }
+
+#define G_DAMAGE_EVENT_QUEUE          ((DamageEvent*)0x9ACB98)
+#define G_CURRENT_DAMAGE_QUEUE_IDX    ((u8*)0x9AEAA0)
+DamageEvent* newDamageEvent() {
+    DamageEvent* damageEvent = &G_DAMAGE_EVENT_QUEUE[G_CURRENT_DAMAGE_QUEUE_IDX];
+    G_DAMAGE_EVENT_QUEUE[G_CURRENT_DAMAGE_QUEUE_IDX].impactEventQueueIdx = -1;
+    if (G_CURRENT_DAMAGE_QUEUE_IDX < 128)
+        ++G_CURRENT_DAMAGE_QUEUE_IDX;
+    return damageEvent;
+}

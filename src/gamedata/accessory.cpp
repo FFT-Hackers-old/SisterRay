@@ -17,9 +17,43 @@ SrAccessoryRegistry::SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResour
         accessory.accessoryName = gContext.gameStrings.accessory_names.get_string(idx);
         accessory.accessoryDescription = gContext.gameStrings.accessory_descriptions.get_string(idx);
         accessory.gameAccessory = baseAccessory;
+        initializeAccessoryElements(accessory, idx);
         populatekernelStatBoosts(accessory.equipEffects, accessory.gameAccessory.stats_to_boost, accessory.gameAccessory.stat_boost_amounts, 2, idx, SR_GEAR_ACCESSORY);
         addElement(assembleGDataKey(idx), accessory);
         ++idx;
+    }
+}
+
+initializeAccessoryElements(SrAccessory& accessory, u16 relativeID) {
+    auto& equipEffects = accessory.equipEffects;
+    for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
+        if (!(accessory.gameAccessory.elements_mask & (1 << elementIdx))) {
+            continue;
+        }
+        auto elementDamageType = accessory.gameAccessory.elemental_interaction;
+        auto elementName = getElementIDFromIndex(elementIdx);
+        auto element = gContext.elements.getElement(elementName);
+        if (elementDamageType = 0) {
+            StatBoost boost{ 0, 125, false };
+            statBoost.tags.insert("GEAR");
+            statBoost.tags.insert("ACCESSORY");
+            statBoost.tags.insert(assembleGDataKey(relativeID));
+            equipEffects[element.resName].push_back(boost);
+        }
+        if (elementDamageType = 1) {
+            statBoost.tags.insert("GEAR");
+            statBoost.tags.insert("ACCESSORY");
+            statBoost.tags.insert(assembleGDataKey(relativeID));
+            StatBoost boost{ 0, 100, false };
+            equipEffects[element.resName].push_back(boost);
+        }
+        if (elementDamageType = 2) {
+            statBoost.tags.insert("GEAR");
+            statBoost.tags.insert("ACCESSORY");
+            statBoost.tags.insert(assembleGDataKey(relativeID));
+            StatBoost boost{ 0, 50, false };
+            equipEffects[element.resName].push_back(boost);
+        }
     }
 }
 

@@ -71,6 +71,7 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.useMulti = 0;
         }
         initializeActionElements(attack);
+        initializeStatusAfflictions(attacks);
         addElement(assembleGDataKey(attack.attackID), attack);
         auto& cmd = gContext.commands.getResource(cmdIdx);
         cmd.actionCount++;
@@ -92,6 +93,18 @@ initializeActionElements(SrAttack& attack) {
             continue;
         }
         attackElements.push_back(getElementIDFromIndex(elementIdx));
+    }
+}
+
+
+initializeStatusAfflictions(SrAttack& attack) {
+    auto& statusAttack = attack.statusAttack;
+    for (auto statusIdx = 0; statusIdx < 32; statusIdx++) {
+        if (!(attack.attackData.statusMask & (1 << statusIdx))) {
+            continue;
+        }
+        StatusInfliction infliction{attack.attackData.statusInflictType & 0x3F, attack.attackData.statusInflictType & 0x80, attack.attackData.statusInflictType & 0x40 };
+        statusAttack[getStatusIDFromIndex(statusIdx)] = infliction;
     }
 }
 

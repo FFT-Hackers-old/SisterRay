@@ -130,19 +130,21 @@ typedef struct {
     u8 materiaLevel;
 } DrawMateriaDataEvent;
 
+
+typedef struct ActorBattleState_ ActorBattleState;
+typedef struct SrDamageContext_ SrDamageContext;
+
 typedef struct {
     DamageCalcStruct* damageContext;
+    SrDamageContext* srDamageContext;
     AIBattleContext* aiContext;
 
 } CommandSetupEvent;
 
-typedef struct ActorBattleState_ ActorBattleState;
-
 typedef struct {
     DamageCalcStruct* damageContext;
+    SrDamageContext* srDamageContext;
     AIBattleContext* aiContext;
-    ActorBattleState* attackerState;
-    ActorBattleState* targetState;
 } DamageCalculationEvent;
 
 typedef struct {

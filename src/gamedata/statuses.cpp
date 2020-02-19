@@ -13,16 +13,20 @@ SrStatusRegistry::SrStatusRegistry(bool useResistances) {
     SrStatus poison{ EncodedString::from_unicode(StatusNames::PSN_STS_NAME.c_str()), true, 3, StatNames::POISON_PEN_STS, StatNames::POISON_RES_STS };
     addElement(StatusNames::POISON, poison);
     SrStatus sadness{ EncodedString::from_unicode(StatusNames::SADNESS_NAME.c_str()), true, 4, StatNames::SADNESS_PEN, StatNames::SADNESS_RES };
+    sadness.neutralizeOnInflict.push_back(StatusNames::FURY);
     addElement(StatusNames::SADNESS, sadness);
     SrStatus fury{ EncodedString::from_unicode(StatusNames::FURY_NAME.c_str()), true, 5, StatNames::FURY_PEN, StatNames::FURY_RES };
+    fury.neutralizeOnInflict.push_back(StatusNames::SADNESS);
     addElement(StatusNames::FURY, fury);
     SrStatus confusion{ EncodedString::from_unicode(StatusNames::CONFUSION_NAME.c_str()), true, 6, StatNames::CONFUSION_PEN, StatNames::CONFUSION_RES };
     addElement(StatusNames::CONFUSION, confusion);
     SrStatus silence{ EncodedString::from_unicode(StatusNames::SILENCE_NAME.c_str()), true, 7, StatNames::SILENCE_PEN, StatNames::SILENCE_RES };
     addElement(StatusNames::SILENCE, silence);
     SrStatus haste{ EncodedString::from_unicode(StatusNames::HASTE_NAME.c_str()), true, 8, StatNames::HASTE_PEN, StatNames::HASTE_RES };
+    haste.neutralizeOnInflict.push_back(StatusNames::SLOW);
     addElement(StatusNames::HASTE, haste);
     SrStatus slow{ EncodedString::from_unicode(StatusNames::SLOW_NAME.c_str()), true, 9, StatNames::SLOW_PEN, StatNames::SLOW_RES };
+    slow.neutralizeOnInflict.push_back(StatusNames::HASTE);
     addElement(StatusNames::SLOW, slow);
     SrStatus sleep{ EncodedString::from_unicode(StatusNames::SLEEP_NAME.c_str()), true, 10, StatNames::STOP_PEN, StatNames::STOP_RES };
     addElement(StatusNames::SLEEP, sleep);
@@ -78,35 +82,101 @@ void initStatuses() {
 
 std::string getStatusIDFromIndex(u8 statusIdx) {
     switch (statusIdx) {
-    case ELM_FIRE: {
-        return ElementNames::FIRE;
+    case STS_DEATH_IDX: {
+        return StatusNames::DEATH;
     }
-    case ELM_ICE: {
-        return ElementNames::ICE;
+    case STS_CRITICAL_IDX: {
+        return StatusNames::CRITICAL;
     }
-    case ELM_THUNDER: {
-        return ElementNames::BOLT;
+    case STS_SLEEP_IDX: {
+        return StatusNames::SLEEP;
     }
-    case ELM_WATER: {
-        return ElementNames::WATER;
+    case STS_POISON_IDX: {
+        return StatusNames::POISON;
     }
-    case ELM_WIND: {
-        return ElementNames::WIND;
+    case STS_SADNESS_IDX: {
+        return StatusNames::SADNESS;
     }
-    case ELM_EARTH: {
-        return ElementNames::EARTH;
+    case STS_FURY_IDX: {
+        return StatusNames::FURY;
     }
-    case ELM_POISON: {
-        return ElementNames::PSN;
+    case STS_CONFUSION_IDX: {
+        return StatusNames::CONFUSION;
     }
-    case ELM_GRAVITY: {
-        return ElementNames::GRAV;
+    case STS_SILENCE_IDX: {
+        return StatusNames::SILENCE;
     }
-    case ELM_HOLY: {
-        return ElementNames::HOLY;
+    case STS_SLOW_IDX: {
+        return StatusNames::SLOW;
     }
-    case ELM_SHADOW: {
-        return ElementNames::DARK;
+    case STS_HASTE_IDX: {
+        return StatusNames::HASTE;
+    }
+    case STS_STOP_IDX: {
+        return StatusNames::STOP;
+    }
+    case STS_TOAD_IDX: {
+        return StatusNames::FROG;
+    }
+    case STS_MINI_IDX: {
+        return StatusNames::SMALL;
+    }
+    case STS_SLOWNUMB_IDX: {
+        return StatusNames::SLOWNUMB;
+    }
+    case STS_STONE_IDX: {
+        return StatusNames::PETRIFY;
+    }
+    case STS_REGEN_IDX: {
+        return StatusNames::REGEN;
+    }
+    case STS_BARRIER_IDX: {
+        return StatusNames::BARRIER;
+    }
+    case STS_MBARRIER_IDX: {
+        return StatusNames::MBARRIER;
+    }
+    case STS_REFLECT_IDX: {
+        return StatusNames::REFLECT;
+    }
+    case STS_DUAL_IDX: {
+        return StatusNames::DUAL;
+    }
+    case STS_SHIELD_IDX: {
+        return StatusNames::SHIELD;
+    }
+    case STS_DOOM_IDX: {
+        return StatusNames::DOOM;
+    }
+    case STS_MANIP_IDX: {
+        return StatusNames::MANIPULATE;
+    }
+    case STS_BERSERK_IDX: {
+        return StatusNames::BERSERK;
+    }
+    case STS_PEERLESS_IDX: {
+        return StatusNames::PEERLESS;
+    }
+    case STS_BLIND_IDX: {
+        return StatusNames::BLIND;
+    }
+    case STS_DRAIN_IDX: {
+        return StatusNames::DRAIN;
+    }
+    case STS_ZOMBIE_IDX: {
+        return StatusNames::ZOMBIE;
+    }
+    case STS_RESIST_IDX: {
+        return StatusNames::RESIST;
+    }
+    case STS_LUCKYGIRL_IDX: {
+        return StatusNames::LUCKYGIRL;
+    }
+    case STS_IMPRISON_IDX: {
+        return StatusNames::IMPRISON;
+    }
+    case STS_SILENCE_IDX: {
+        return StatusNames::SILENCE;
     }
     }
 }

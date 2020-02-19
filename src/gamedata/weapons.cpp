@@ -19,7 +19,8 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         weapon.weaponName = gContext.gameStrings.weapon_names.get_string(idx);
         weapon.weaponDescription = gContext.gameStrings.weapon_descriptions.get_string(idx);
         weapon.gameWeapon = baseWeapon;
-        initializeWeaponElements(weapon)
+        initializeWeaponElements(weapon);
+        initializeWeaponAfflictions(weapon);
         populatekernelStatBoosts(weapon.equipEffects, weapon.gameWeapon.stats_to_boost, weapon.gameWeapon.stat_boost_amounts, 4, idx, SR_GEAR_WEAPON);
         addElement(assembleGDataKey(idx), weapon);
         ++idx;
@@ -34,6 +35,12 @@ initializeWeaponElements(SrWeapon& weapon) {
         }
         attackElements.push_back(getElementIDFromIndex(elementIdx));
     }
+}
+
+initializeWeaponAfflictions(SrWeapon& weapon) {
+    auto& statusAttack = weapon.statusAttack;
+    StatusInfliction infliction{ 63, false, false };
+    statusAttack[getStatusIDFromIndex(statusIdx)] = infliction;
 }
 
 SISTERRAY_API SrWeaponData getSrWeapon(u16 modItemID, const char* modName) {

@@ -11,7 +11,10 @@ typedef struct {
     bool gameIndex;
     std::string penName;
     std::string resName;
+    bool doesExpire;
+    bool doesStack;
     bool persistsAfterBattle;
+    bool allowMultiple;
     std::vector<std::string> removeOnInflict;
     std::vector<std::string> neutralizeOnInflict;
 }SrStatus;

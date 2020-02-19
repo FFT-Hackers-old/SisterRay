@@ -3,6 +3,20 @@
 
 #include <SisterRay/SisterRay.h>
 #include "command_callbacks.h"
+#include "statuses.h"
+#include <vector>
+#include <string>
+
+struct SrDamageContext_ {
+    std::vector<std::string> attackElements;
+    std::vector<StatusInfliction> statusToInflict; //vector of statuses to inflict
+    std::vector<std::string> toAddStatuses;
+    std::vector<std::string> toToggleStatuses;
+    std::vector<std::string> toRemoveStatuses;
+    std::vector<std::string> wereInflictedStatuses;
+    ActorBattleState* attackerState;
+    ActorBattleState* targetState;
+};
 
 #define ELEMENT_COUNT 16
 void srSetupAction(CommandSetupEvent setupEvent);

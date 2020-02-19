@@ -73,6 +73,18 @@ namespace StatNames {
     const std::string SHADOW_AFF = "SHADAFF";
     const std::string RESTORE_AFF = "RESTOREAFF";
 
+    const std::string FIRE_PEN = "FIREPEN";
+    const std::string ICE_PEN = "ICEPEN";
+    const std::string LIGHT_PEN = "LITPEN";
+    const std::string EARTH_PEN = "ETHPEN";
+    const std::string WATER_PEN = "WATPEN";
+    const std::string WIND_PEN = "WINDPEN";
+    const std::string GRAVITY_PEN = "GRAVPEN";
+    const std::string POISON_PEN = "PSNPEN";
+    const std::string HOLY_PEN = "HOLYPEN";
+    const std::string SHADOW_PEN = "SHADPEN";
+    const std::string RESTORE_PEN = "RESTOREPEN";
+
     // New Status Resistances
     const std::string DEATH_RES = "DEATHRES";
     const std::string CRITICAL_RES = "CRITICALRES";

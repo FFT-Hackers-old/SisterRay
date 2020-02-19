@@ -86,16 +86,9 @@ void setCommandAction(const std::string commandKey, const std::string actionKey,
     srCommand.commandActions[actionIndex] = attackIdx;
 }
 
-
-/*run every initializer callback in order*/
-SISTERRAY_API void runSetupCallbacks(const char* name) {
-    auto idx = gContext.commands.getResourceIndex(std::string(name));
-    runSetupCallbacks(idx);
-}
-
-void runSetupCallbacks(u16 commandIdx) {
-    CommandSetupEvent setupEvent = { gDamageContextPtr };
-    auto& callbacks = getCommand(commandIdx).setupCallbacks;
+void runSetupCallbacks(ActionContextEvent actionEvent) {
+    CommandSetupEvent setupEvent = { actionEvent.damageContext, actionEvent.srDamageContext, actionEvent.battleAIContext };
+    auto& callbacks = getCommand(actionEvent.damageContext->commandIndex).setupCallbacks;
     for (auto callback : callbacks) {
         callback(setupEvent);
     }

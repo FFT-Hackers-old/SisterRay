@@ -2,6 +2,7 @@
 #include "../battle/scene_globals.h"
 #include "../battle/engine/damage_events.h"
 #include "../impl.h"
+#include "status_names.h"
 
 void srLoadAbilityData() {
     CommandSetupEvent srEvent = { gDamageContextPtr };
@@ -210,14 +211,13 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
          damageContext->abilityFlags1 |= 0x20;
      }
      u8 targetID = damageContext->targetID;
-     //setElementalDamageContext();
-     //setElementalFlags();
      if (damageContext->attackElementsMask & 0x200)
          damageContext->abilityFlags2 |= 1u;
      if (!(damageContext->specialAbilityFlags & 1))
          damageContext->abilityFlags2 |= 4;
-     if (aiContext.actorAIStates[targetID].actorFlags & 0x4000)
+     if (aiContext.actorAIStates[targetID].stateFlags & 0x4000)
          damageContext->abilityFlags1 |= 1u;
+
      if (!(damageContext->abilityFlags1 & 1))
          runFormulas();
 
@@ -388,38 +388,51 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
      damageContext->targetStatusImmuneMask = sub_434568(damageContext->targetID, 1, (damageContext->rmStatusMaskCopy & 1) != 0);
  }
 
+
+ typedef u32(*SRPFN_GETINFLICTRAND)(u32);
+#define gameGetInflictRand (SRPFN_GETINFLICTRAND(0x5C8BDC))
  bool didInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* srDamageEvent) {
      auto damageContext = srDamageEvent->damageContext;
-     auto inflictChance = damageContext->inflictStatusChance;
-     auto levelDelta = damageContext->attackerLevel - damageContext->targetLevel;
-     auto magDelta = AI_BATTLE_STATE.actorAIStates[damageContext->attackerID].magAtk
-         - AI_BATTLE_STATE.actorAIStates[damageContext->targetID].mdefense;
-     combinedMask = damageContext->toggleStatusMask | damageContext->rmStatusMask | damageContext->addStatusMask;
-     didInflict = 1;
-     damageContext->attackerLevel;
-     damageContext->targetLevel;
-     if ((damageContext->targetStatusMask & 0x800) == combinedMask)
+
+     /*auto levelDelta = damageContext->attackerLevel - damageContext->targetLevel;
+     auto magDelta = AI_BATTLE_STATE.actorAIStates[damageContext->attackerID].magAtk - AI_BATTLE_STATE.actorAIStates[damageContext->targetID].mdefense;*/
+
+     const auto& inflictions = srDamageEvent->srDamageContext->statusToInflict;
+     auto inflictChance = 4 * infliction.inflictionChance;
+     if ((damageContext->targetStatusMask & 0x800) && std::find_if(
+         inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::FROG}) != inflictions.end())
          inflictChance = 252;
-     if ((damageContext->targetStatusMask & 0x1000) == combinedMask)
+     if ((damageContext->targetStatusMask & 0x1000) && std::find_if(
+         inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::SMALL}) != inflictions.end())
          inflictChance = 252;
-     if (damageContext->targetID < 3 && (unsigned int)aRcBattleBattle & combinedMask)
+     if (damageContext->targetID < 3 && aRcBattleBattle & combinedMask)
          inflictChance = 252;
-     if (inflictChance < 252)
-     {
-         inflictChancea = damageContext->MPTurboBoost * inflictChance / 100 + inflictChance;
-         if ((damageContext->targetingFlags & 0xC) != 4 && damageContext->targetCount > 1)
-             inflictChancea = 2 * inflictChancea / 3;
-         if (damageContext->quadCount)
-             inflictChancea >>= 1;
-         if ((unsigned __int8)getRandomNumber_0(100) + 1 >= inflictChancea)
-             didInflict = 0;
+
+     if (inflictChance < 252) {
+        inflictChance = damageContext->MPTurboBoost * inflictChance / 100 + inflictChance;
+        if ((damageContext->abilityTargetingFlags & 0xC) != 4 && damageContext->targetCount > 1)
+            inflictChance = 2 * inflictChance / 3;
+        if (damageContext->quadCount)
+            inflictChance >>= 1;
      }
-     if (combinedMask & 1 && (1 << damageContext->targetID) & (unsigned __int16)gEscapedActorsMask)
-         didInflict = 0;
-     return didInflict;
+     // apply target resistances for this status, reducing infliction chance
+     const auto& status = gContext.statuses.getElement(infliction.statusName);
+     auto res = srDamageEvent->srDamageContext->targetState->battleStats->at(status.resName).activeValue; 
+     auto pen = srDamageEvent->srDamageContext->attackerState->battleStats->at(status.penName).activeValue + srDamageEvent->srDamageContext->attackStats[status.penName].statValue;
+     auto modifier = res - pen;
+     inflictChance -= (modifier / 100) * inflictChance;
+     // return no to death immunity in weird context
+     auto isInflictingDeath = std::find_if(inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::DEATH}) != inflictions.end();
+     if (isInflictingDeath && (1 << damageContext->targetID) & gEscapedActorsMask)
+         return false;
+
+     if (inflictChance >= gameGetInflictRand(100) + 1) {
+             return true;
+     }
+     return false;
  }
 
- void handleStatusInfliction(CommandSetupEvent* setupEvent, auto& damageEvent) {
+ void handleStatusInfliction(CommandSetupEvent* setupEvent, DamageCalculationEvent* srDamageEvent) {
      auto damageContext = setupEvent.damageContext;
      auto srDamageContext = setupEvent->srDamageContext;
      auto& aiContext = *setupEvent.aiContext;
@@ -433,7 +446,22 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
      auto& addStatuses = srDamageContext->toAddStatuses;
      auto& removeStatuses = srDamageContext->toRemoveStatuses;
      auto& toggleStatuses = srDamageContext->toToggleStatuses;
+     for (const auto& statusName : toggleStatuses) {
+         auto wasFound = std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName}) != targetStatuses.end();
+         if (wasFound) {
+             removeStatuses.push_back(statusName);
+             continue;
+         }
+         addStatuses.push_back(statusName);
+     }
 
+     u32 previousTargetStatus = 0;
+     for (const auto& activeStatus : targetStatuses) {
+         const auto& status = gContext.statuses.getElement(activeStatus.statusName);
+         if (status.isGameStatus) {
+             previousTargetStatus & (1 << status.gameIndex);
+         }
+     }
      // add every status to be added
      for (auto statusName : addStatuses) {
          auto wasFound = std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName}) != targetStatuses.end();
@@ -458,69 +486,36 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
          }
      }
      //Remove all stats to be removed
-
      targetStatuses.erase(
          std::remove_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
              return std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
                  return (std::find(removeStatuses.begin(), removeStatuses.end(), activeStatus.statusName) != removeStatuses.end())}) != targetStatuses.end()}));
 
-
-     for (auto statusName : toggleStatuses) {
-         auto wasFound = std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName}) != targetStatuses.end();
-         const auto& status = gContext.statuses.getElement(statusName);
-         if (!wasFound || status.allowMultiple) {
-             ActiveStatus activeStatus = ActiveStatus{ statusName };
-             targetStatuses.push_back(activeStatus);
+     //now that Active Statuses have been synced, set game statuses appropriately
+     u32 newTargetStatus = 0;
+     for (const auto& activeStatus : targetStatuses) {
+         const auto& status = gContext.statuses.getElement(activeStatus.statusName);
+         if (status.isGameStatus) {
+             newTargetStatus& (1 << status.gameIndex);
          }
      }
-     targetStatuses.erase(
-         std::remove_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
-             return std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
-                 return (std::find(toggleStatuses.begin(), toggleStatuses.end(), activeStatus.statusName) != toggleStatuses.end())}) != targetStatuses.end()}));
-
-     //now that Active Statuses have been synced, set game statuses appropriately
-
-     u32 targetSusceptibleMask = ~damageContext->targetStatusImmuneMask;
-     u32 targetStatusMask = damageContext->targetStatusMask;
-     // Handles incopmatible statuses haste/slow and sadness/fury
-
-     inflictConflictingStatus(setupEvent, STS_HASTE, STS_SLOW);
-     inflictConflictingStatus(setupEvent, STS_FURY, STS_SADNESS);
-
-     if (damageContext->killRecoverDamage == -2)
-         targetSusceptibleMask |= 1u;
-     u32 removedMask = ~(targetSusceptibleMask & damageContext->rmStatusMaskCopy);
-     u32 inflictedMask = targetSusceptibleMask & damageContext->addStatusMaskCopy | targetStatusMask;
-     u32 newTargetStatus = targetSusceptibleMask & damageContext->changeStatusMaskCopy ^ removedMask & inflictedMask;
-     damageContext->targetStatusMask = newTargetStatus;
      aiContext.actorAIStates[targetID].statusMasks = newTargetStatus;
 
-     if (targetStatusMask == newTargetStatus) {
+     //If no status was inflicted
+     if (previousTargetStatus == newTargetStatus) {
          damageContext->abilityFlags1 |= 0x800000;
      }
      else {
          if (damageContext->combinedStatusMask & newTargetStatus && damageContext->attackerID != targetID)
              damageContext->actionCounterable |= 1 << targetID;
-         if ((newTargetStatus ^ targetStatusMask) & 1) {
-             gameSetHitReaction(targetStatusMask & 1);
+
+         //Handle the case where death has been inflicted
+         if ((newTargetStatus ^ previousTargetStatus) & 1) {
+             gameSetHitReaction(previousTargetStatus & 1);
          }
          else {
-             damageEvent.specialDamageFlags |= 8;
+             srDamageEvent->gameDamageEvent->specialDamageFlags |= 8;
          }
-     }
- }
-
- void inflictConflictingStatus(CommandSetupEvent setupEvent, u32 statMask1, u32 statMask2) {
-     auto damageContext = setupEvent.damageContext;
-     if (damageContext->addStatusMaskCopy & statMask1) {
-         damageContext->addStatusMaskCopy &= ~statMask1;
-         damageContext->addStatusMaskCopy &= ~statMask2;
-         damageContext->rmStatusMaskCopy &= statMask2;
-     }
-     if (damageContext->addStatusMaskCopy & statMask1) {
-         damageContext->addStatusMaskCopy &= ~statMask1;
-         damageContext->addStatusMaskCopy &= ~statMask2;
-         damageContext->rmStatusMaskCopy &= statMask2;
      }
  }
 
@@ -683,15 +678,46 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
  // Much fuller elemental logic, supporting resistances and multiple elements
  void applyElementalModifiers(DamageCalculationEvent* setupEvent) {
      auto& damageContext = *setupEvent->damageContext;
-     auto& attackerState = *setupEvent->attackerState;
-     auto& targetState = *setupEvent->attackerState;
-
+     auto& srDamageContext = *setupEvent->srDamageContext;
+     auto& attackerState = srDamageContext.attackerState;
+     auto& targetState = srDamageContext.attackerState;
+     auto& aiContext = *setupEvent->aiContext;
      float damageModifier = 1;
-     for (const auto& element: gContext.elements) {
-         if (damageContext.attackElementsMask & 1 << element.gameIndex) {
+
+     for (const auto& elementPair: gContext.elements.named_registry) {
+         const auto& name = elementPair.first;
+         const auto& element = elementPair.second;
+         if (std::find(srDamageContext.attackElements.begin(), srDamageContext.attackElements.end(), name) != srDamageContext.attackElements.end()) {
              auto res = targetState.battleStats[element.resName];
+             if (res == 255) {
+                 aiContext.actorAIStates[damageContext->targetID].currentHP = aiContext.actorAIStates[damageContext->targetID].maxHP;
+                 aiContext.actorAIStates[damageContext->targetID].currentMP = aiContext.actorAIStates[damageContext->targetID].maxMP;
+                 damageContext.abilityFlags2 = 1;
+                 damageContext.abilityFlags1 &= 0xFFFFFFFD;
+                 damageContext.addStatusMaskCopy &= 0xFFFFFFFE;
+                 damageContext.killRecoverDamage = -3;
+             }
+             if (res == -255) {
+                 std::vector<std::string> toAdd = { StatusNames::DEATH };
+                 srDamageContext.toAddStatuses = toAdd;
+                 std::vector<std::string> toRemove = {};
+                 for (const auto& statusPair : gContext.statuses.named_registry) {
+                     if (statusPair.first != StatusNames::DEATH) {
+                         toRemove.push_back(statusPair.first);
+                     }
+                 }
+                 damageContext.abilityFlags1 &= 0xFFFFFFFD;
+                 damageContext.abilityFlags2 &= 0xFFFFFFFE;
+                 damageContext.killRecoverDamage = -2;
+                 break;
+             }
+             auto pen = attackerState.battleStats[element.penName];
+             auto eRes = res - pen;
              auto aff = attackerState.battleStats[element.affName];
-             damageModifier = damageModifier - (res / 100);
+             if (eRes > 100) {
+                 damageContext->abilityFlags2 ^= 1u;
+             }
+             damageModifier = damageModifier - (eRes / 100);
              damageModifier = (aff / 100) + damageModifier;
          }
      }
@@ -715,6 +741,10 @@ void srSetupAction(CommandSetupEvent setupEvent) {
     u16* currentSceneAbilityIDs = (u16*)(0x9A9444);
 
     damageContext->MPCost = -1;
+    setupEvent.srDamageContext->attackStats = action.attackStats;
+    setupEvent.srDamageContext->statusToInflict = action.statusAttack;
+    setupEvent.srDamageContext->attackElements = action.attackElements;
+
     switch (damageContext->commandIndexCopy) {
         case 20: {
             if (damageContext->attackerID < 3)
@@ -885,7 +915,6 @@ void setStatusInflictionData(DamageCalcStruct* damageContext, i32 statusInflicti
     auto statusType = statusInflictionByte >> 6;
     if (statusType < 3) {
         if (inflictedStatusMask >= 0) {
-            damageContext->inflictStatusChance = 4 * (statusInflictionByte & 0x3F);// statusInflictionChance
             switch (statusType) {
                 case 0:
                     damageContext->addStatusMask = inflictedStatusMask;

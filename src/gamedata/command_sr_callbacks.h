@@ -9,6 +9,7 @@
 
 struct SrDamageContext_ {
     std::vector<std::string> attackElements;
+    std::unordered_map<std::string, SrActorStat> attackStats;
     std::vector<StatusInfliction> statusToInflict; //vector of statuses to inflict
     std::vector<std::string> toAddStatuses;
     std::vector<std::string> toToggleStatuses;

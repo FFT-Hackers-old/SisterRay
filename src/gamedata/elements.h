@@ -11,6 +11,7 @@ typedef struct {
     bool gameIndex;
     std::string affName;
     std::string resName;
+    std::string penName;
 }SrElement;
 
 class SrElementRegistry : public SrNamedResourceRegistry<SrElement, std::string> {

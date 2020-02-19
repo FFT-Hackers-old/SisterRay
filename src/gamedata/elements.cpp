@@ -3,25 +3,25 @@
 #include "element_names.h"
 
 SrElementRegistry::SrElementRegistry(bool useResistances) {
-    SrElement fire{ EncodedString::from_unicode(ElementNames::FIRE_NAME.c_str()), true, 0, StatNames::FIRE_AFF, StatNames::FIRE_RES };
+    SrElement fire{ EncodedString::from_unicode(ElementNames::FIRE_NAME.c_str()), true, 0, StatNames::FIRE_AFF, StatNames::FIRE_RES, StatNames::FIRE_PEN };
     addElement(ElementNames::FIRE, fire);
-    SrElement ice{ EncodedString::from_unicode(ElementNames::ICE_NAME.c_str()), true, 1, StatNames::ICE_AFF, StatNames::ICE_RES };
+    SrElement ice{ EncodedString::from_unicode(ElementNames::ICE_NAME.c_str()), true, 1, StatNames::ICE_AFF, StatNames::ICE_RES, StatNames::ICE_PEN };
     addElement(ElementNames::ICE, ice);
-    SrElement bolt{ EncodedString::from_unicode(ElementNames::LIGHT_NAME.c_str()), true, 2, StatNames::LIGHT_AFF, StatNames::LIGHT_RES };
+    SrElement bolt{ EncodedString::from_unicode(ElementNames::LIGHT_NAME.c_str()), true, 2, StatNames::LIGHT_AFF, StatNames::LIGHT_RES, StatNames::LIGHT_PEN };
     addElement(ElementNames::BOLT, bolt);
-    SrElement earth{ EncodedString::from_unicode(ElementNames::EARTH_NAME.c_str()), true, 3, StatNames::EARTH_AFF, StatNames::EARTH_RES };
+    SrElement earth{ EncodedString::from_unicode(ElementNames::EARTH_NAME.c_str()), true, 3, StatNames::EARTH_AFF, StatNames::EARTH_RES, StatNames::EARTH_PEN };
     addElement(ElementNames::EARTH, earth);
-    SrElement poison{ EncodedString::from_unicode(ElementNames::POISON_NAME.c_str()), true, 4, StatNames::POISON_AFF, StatNames::POISON_RES };
+    SrElement poison{ EncodedString::from_unicode(ElementNames::POISON_NAME.c_str()), true, 4, StatNames::POISON_AFF, StatNames::POISON_RES, StatNames::POISON_PEN };
     addElement(ElementNames::PSN, poison);
-    SrElement gravity{ EncodedString::from_unicode(ElementNames::GRAV_NAME.c_str()), true, 5, StatNames::GRAVITY_AFF, StatNames::GRAVITY_RES };
+    SrElement gravity{ EncodedString::from_unicode(ElementNames::GRAV_NAME.c_str()), true, 5, StatNames::GRAVITY_AFF, StatNames::GRAVITY_RES, StatNames::GRAVITY_PEN };
     addElement(ElementNames::GRAV, gravity);
-    SrElement water{ EncodedString::from_unicode(ElementNames::WATER_NAME.c_str()), true, 6, StatNames::WATER_AFF, StatNames::WATER_RES };
+    SrElement water{ EncodedString::from_unicode(ElementNames::WATER_NAME.c_str()), true, 6, StatNames::WATER_AFF, StatNames::WATER_RES, StatNames::WATER_PEN };
     addElement(ElementNames::WATER, water);
-    SrElement wind{ EncodedString::from_unicode(ElementNames::WIND_NAME.c_str()), true, 7, StatNames::WIND_AFF, StatNames::WIND_RES };
+    SrElement wind{ EncodedString::from_unicode(ElementNames::WIND_NAME.c_str()), true, 7, StatNames::WIND_AFF, StatNames::WIND_RES, StatNames::WIND_PEN };
     addElement(ElementNames::WIND, wind);
-    SrElement holy{ EncodedString::from_unicode(ElementNames::HOLY_NAME.c_str()), true, 8, StatNames::HOLY_AFF, StatNames::HOLY_RES };
+    SrElement holy{ EncodedString::from_unicode(ElementNames::HOLY_NAME.c_str()), true, 8, StatNames::HOLY_AFF, StatNames::HOLY_RES, StatNames::HOLY_PEN };
     addElement(ElementNames::HOLY, holy);
-    SrElement restore{ EncodedString::from_unicode(ElementNames::RESTORE_NAME.c_str()), true, 9, StatNames::HOLY_AFF, StatNames::HOLY_RES };
+    SrElement restore{ EncodedString::from_unicode(ElementNames::RESTORE_NAME.c_str()), true, 9, StatNames::HOLY_AFF, StatNames::HOLY_RES, StatNames::HOLY_PEN };
     addElement(ElementNames::RESTORE, restore);
 
     SrElement slash{ EncodedString::from_unicode(ElementNames::SLASH_NAME.c_str()), true, 10, StatNames::SLASH_ARM, };
@@ -30,7 +30,7 @@ SrElementRegistry::SrElementRegistry(bool useResistances) {
     addElement(ElementNames::BLUNT, blunt);
     SrElement pierce{ EncodedString::from_unicode(ElementNames::PIERCE_NAME.c_str()), true, 12, StatNames::PIERCE_ARM,  };
     addElement(ElementNames::PIERCE, pierce);
-    SrElement shadow{ EncodedString::from_unicode(ElementNames::SHADOW_NAME.c_str()), true, 15, StatNames::SHADOW_AFF, StatNames::SHADOW_RES };
+    SrElement shadow{ EncodedString::from_unicode(ElementNames::SHADOW_NAME.c_str()), true, 15, StatNames::SHADOW_AFF, StatNames::SHADOW_RES, StatNames::SHADOW_PEN };
     addElement(ElementNames::DARK, shadow);
 }
 

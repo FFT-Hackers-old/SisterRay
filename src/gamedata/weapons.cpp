@@ -39,7 +39,7 @@ initializeWeaponElements(SrWeapon& weapon) {
 
 initializeWeaponAfflictions(SrWeapon& weapon) {
     auto& statusAttack = weapon.statusAttack;
-    StatusInfliction infliction{ 63, false, false };
+    StatusInfliction infliction{ getStatusIDFromIndex(statusIdx), 63, false, false };
     statusAttack[getStatusIDFromIndex(statusIdx)] = infliction;
 }
 

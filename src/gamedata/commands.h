@@ -27,8 +27,7 @@ public:
     SrCommandRegistry() : SrNamedResourceRegistry<SrCommand, std::string>() {}
 };
 
-SISTERRAY_API void runSetupCallbacks(const char* name);
-void runSetupCallbacks(u16 commandIdx);
+void runSetupCallbacks(ActionContextEvent actionEvent);
 void runSelectCallbacks(EnabledCommand& command, Menu* menu);
 void initCommands(SrKernelStream* stream);
 u16 getDefaultCmdAnimScript(u16 idx);

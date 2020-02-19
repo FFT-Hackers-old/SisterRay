@@ -103,8 +103,8 @@ initializeStatusAfflictions(SrAttack& attack) {
         if (!(attack.attackData.statusMask & (1 << statusIdx))) {
             continue;
         }
-        StatusInfliction infliction{attack.attackData.statusInflictType & 0x3F, attack.attackData.statusInflictType & 0x80, attack.attackData.statusInflictType & 0x40 };
-        statusAttack[getStatusIDFromIndex(statusIdx)] = infliction;
+        StatusInfliction infliction{ getStatusIDFromIndex(statusIdx), attack.attackData.statusInflictType & 0x3F, attack.attackData.statusInflictType & 0x80, attack.attackData.statusInflictType & 0x40 };
+        statusAttack.push_back(infliction);
     }
 }
 

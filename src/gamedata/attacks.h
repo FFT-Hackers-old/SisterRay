@@ -21,7 +21,8 @@ typedef struct {
     u8 useMulti;
     SpellEffect multiEffect;
     std::vector<std::string> attackElements;
-    std::unordered_map<std::string, StatusInfliction> statusAttack;
+    std::vector<StatusInfliction> statusAttack;
+    std::unordered_map<std::string, SrActorStat> attackStats; //For example status penetration
 } SrAttack;
 
 class SrAttackRegistry : public SrNamedResourceRegistry<SrAttack, std::string> {

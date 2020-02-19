@@ -16,6 +16,8 @@ void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
         return;
 
     auto issuingActorID = poppedAction->queueAction.attackerActorID;
+    SrDamageContext srDamageContext = SrDamageContext();
+    ActionContextEvent actionEvent = { gDamageContextPtr, srDamageContext, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
 
     if (!(*dword_9AEA84)) {
         *dword_9AEA6C = 0;
@@ -25,7 +27,7 @@ void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
         *dword_9AEA84 = 1;
     }
 
-    runSetupCallbacks(gDamageContextPtr->commandIndex);
+    runSetupCallbacks(actionEvent);
     *dword_9AEA84 = 2;
 
     if (!(*dword_9AEA60)) {
@@ -43,13 +45,11 @@ typedef void(*PFNSRSUB5C7D59)(u8, u32, u8, u32*);
 typedef void(*PFNSRSUB5C8B80)();
 #define incrementRandom     ((PFNSRSUB5C8B80)0x5C8B80)
 
-void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
+void preActionHandles(ActionContextEvent actionEvent) {
     u16* gDisplayTextIdx = (u16*)0x9AAD16;
     u16* word_9AAD18 = (u16*)0x9AAD18;
     incrementRandom();
     memset((void*)gDamageContextPtr, 0, sizeof(DamageCalcStruct));
-
-    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
     srLogWrite("HANDLING BATTLE ACTION: actor: %d, command %d", poppedAction->queueAction.attackerActorID, poppedAction->queueAction.actionCommandIndex);
     gContext.eventBus.dispatch(ACTION_PRE_COMMAND, &actionEvent);
 
@@ -72,11 +72,9 @@ void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
 typedef void(*PFNSUBSR436CF2)();
 #define setDamageEventFlags   ((PFNSUBSR436CF2)0x436CF2)
 
-void postActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
+void postActionHandles(ActionContextEvent actionEvent) {
     u32* dword_9AD1B4 = (u32*)0x9AD1B4;
     setDamageEventFlags();
-
-    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
     gContext.eventBus.dispatch(ACTION_POST_COMMAND, &actionEvent);
     srLogWrite("Running post action callbacks");
 

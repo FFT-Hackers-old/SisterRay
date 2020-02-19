@@ -20,6 +20,7 @@ typedef struct {
 }SrStatus;
 
 typedef struct {
+    std::string statusName;
     u8 inflictionChance;
     bool doesToggle;
     bool doesRemove;

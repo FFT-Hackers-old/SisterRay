@@ -133,6 +133,41 @@ typedef struct {
 
 typedef struct ActorBattleState_ ActorBattleState;
 typedef struct SrDamageContext_ SrDamageContext;
+#pragma pack(push, 1)
+typedef struct {
+    u8 targetID;
+    u8 attackerID;
+    u8 damagedAnimScriptIdx;
+    u8 impactEventQueueIdx;
+    u16 specialDamageFlags;
+    u8 field_6;
+    u8 field_7;
+    u32 targetStatusMask;
+} DamageEvent;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 targetID;
+    u16 dealtDamage;
+    u16 actionFlags;
+    u16 currentTargetHP;
+    u16 currentTargetMP;
+    u16 impactSoundID;
+    u16 impactEffectID;
+} ImpactEvent;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 dealtDamage;
+    u16 actionFlags;
+    u16 impactSoundID;
+    u16 impactEffectID;
+    u16 impactEventQueueIdx;
+    u16 damageEventQueueIdx;
+} DamageDisplayEvent;
+#pragma pack(pop)
 
 typedef struct {
     DamageCalcStruct* damageContext;
@@ -145,6 +180,7 @@ typedef struct {
     DamageCalcStruct* damageContext;
     SrDamageContext* srDamageContext;
     AIBattleContext* aiContext;
+    DamageEvent* gameDamageEvent;
 } DamageCalculationEvent;
 
 typedef struct {
@@ -154,6 +190,7 @@ typedef struct {
 
 typedef struct {
     DamageCalcStruct* damageContext;
+    SrDamageContext* srDamageContext;
     BattleQueueEntry* poppedAction;
     u8 issuingActorID;
     AIBattleContext* battleAIContext;
@@ -201,42 +238,6 @@ typedef struct {
     u16 cameraData;
     u16 damageEventQueueIdx;
 } AnimationEvent;
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-typedef struct {
-    u8 targetID;
-    u8 attackerID;
-    u8 damagedAnimScriptIdx;
-    u8 impactEventQueueIdx;
-    u16 specialDamageFlags;
-    u8 field_6;
-    u8 field_7;
-    u32 targetStatusMask;
-} DamageEvent;
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-typedef struct {
-    u16 targetID;
-    u16 dealtDamage;
-    u16 actionFlags;
-    u16 currentTargetHP;
-    u16 currentTargetMP;
-    u16 impactSoundID;
-    u16 impactEffectID;
-} ImpactEvent;
-#pragma pack(pop)
-
-#pragma pack(push, 1)
-typedef struct {
-    u16 dealtDamage;
-    u16 actionFlags;
-    u16 impactSoundID;
-    u16 impactEffectID;
-    u16 impactEventQueueIdx;
-    u16 damageEventQueueIdx;
-} DamageDisplayEvent;
 #pragma pack(pop)
 
 #endif // !SR_EVENTS_H

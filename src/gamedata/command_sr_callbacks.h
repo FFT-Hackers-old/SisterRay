@@ -17,6 +17,9 @@ struct SrDamageContext_ {
     std::vector<std::string> wereInflictedStatuses;
     ActorBattleState* attackerState;
     ActorBattleState* targetState;
+    bool useActionDamageLimits;
+    u16 hpDamageLimit;
+    u16 mpDamageLimit;
 };
 
 #define ELEMENT_COUNT 16

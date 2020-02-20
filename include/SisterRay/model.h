@@ -263,7 +263,7 @@ typedef struct {
     u16 field_30;
     u8 modelDataIndex; //0x032
     u8 field_33;
-    u8 statusImmuneMask;
+    u8 innateStatusMask;
     u8 field_35;
     u8 field_36;
     u8 field_37;
@@ -339,7 +339,7 @@ typedef struct {
     u16 field_2E;
     u16 field_30;
     u16 field_32;
-    u32 statusImmuneMask;
+    u32 innateStatusMask;
     u32 field_38;
     u32 field_3C;
 } ModelRotationData;

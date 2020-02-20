@@ -23,6 +23,9 @@ typedef struct {
     std::vector<std::string> attackElements;
     std::vector<StatusInfliction> statusAttack;
     std::unordered_map<std::string, SrActorStat> attackStats; //For example status penetration
+    bool useOverrideLimits;
+    u16 hpDamageLimit;
+    u16 mpDamageLimit;
 } SrAttack;
 
 class SrAttackRegistry : public SrNamedResourceRegistry<SrAttack, std::string> {

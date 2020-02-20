@@ -1,0 +1,4 @@
+#ifndef DAMAGE_FORMULAS_H
+#define DAMAGE_FORMULAS_H
+
+#endif // !DAMAGE_FORMULAS_H

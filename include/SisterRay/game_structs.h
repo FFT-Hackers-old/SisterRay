@@ -322,7 +322,7 @@ typedef struct {
     u8 field_2B;                //0x2B
     u32 field_2C;               //0x2C
     u32 field_30;               //0x30
-    u32 statusImmuneMask;       //0x34
+    u32 innateStatusMask;       //0x34
     EnemyData* battleEnemyData;               //0x38
     u16 currentHP;              //0x3C
     u16 currentMP;              //0x3E

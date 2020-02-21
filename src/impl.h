@@ -52,6 +52,21 @@ extern "C" {
 
 /*Game Context holds all the registries which contain
   Resources, in the form of either data or registered callback*/
+struct SrDamageContext_ {
+    std::vector<std::string> attackElements;
+    std::unordered_map<std::string, SrActorStat> attackStats;
+    std::vector<StatusInfliction> statusToInflict; //vector of statuses to inflict
+    std::vector<std::string> toAddStatuses;
+    std::vector<std::string> toToggleStatuses;
+    std::vector<std::string> toRemoveStatuses;
+    std::vector<std::string> wereInflictedStatuses;
+    ActorBattleState* attackerState;
+    ActorBattleState* targetState;
+    bool useActionDamageLimits;
+    u16 hpDamageLimit;
+    u16 mpDamageLimit;
+};
+
 typedef struct {
     lua_State*                          L;
     HWND                                console;

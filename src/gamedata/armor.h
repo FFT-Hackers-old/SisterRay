@@ -23,4 +23,7 @@ public:
     SrArmorRegistry() : SrNamedResourceRegistry<SrArmor, std::string>() {}
 };
 
+
+void initializeArmorElements(SrArmor& armor, u16 relativeID);
+
 #endif

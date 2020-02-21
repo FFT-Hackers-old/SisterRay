@@ -18,7 +18,7 @@ void attemptStatusInfliction(DamageCalculationEvent* srDamageEvent);
 bool didInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* srDamageEvent);
 void handleStatusInfliction(CommandSetupEvent* setupEvent, DamageCalculationEvent* srDamageEvent);
 void handleDamage(DamageCalculationEvent* srDamageEvent);
-void handleReactions(DamageCalculationEvent* srDamageEvent);
+void handleDamageReaction(DamageCalculationEvent* srDamageEvent);
 void applyDamageCaps(DamageCalculationEvent* srDamageEvent);
 void applyReflect(DamageCalculationEvent* srDamageEvent);
 void nullifyAction(DamageCalculationEvent* srDamageEvent);

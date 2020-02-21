@@ -22,4 +22,6 @@ public:
     SrAccessoryRegistry() : SrNamedResourceRegistry<SrAccessory, std::string>() {}
 };
 
+void initializeAccessoryElements(SrAccessory& accessory, u16 relativeID);
+
 #endif

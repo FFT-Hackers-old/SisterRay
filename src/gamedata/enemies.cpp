@@ -1,4 +1,5 @@
 #include "enemies.h"
+#include "../impl.h"
 
 /*Using this computation to avoid annoying template specialization issues, and avoid wrapping addElement and changing the API for this registry
   Pre-computing this may be logical, but we can't overwrite addElement so there's not a great way to implement that and keep the shared registry interface*/

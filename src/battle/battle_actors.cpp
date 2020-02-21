@@ -100,7 +100,7 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     actorBattleVars->backDamageMult = 16;
     actorBattleVars->statusMask = characterRecord->outOfBattleStatus & 0x30;
     actorBattleVars->initalStatusMasks = 0;
-    actorTimers->statusImmuneMask = partyMember->immuneStatusesMask;
+    actorTimers->innateStatusMask = partyMember->immuneStatusesMask;
     setWeaponData(partyIdx, partyActor);
     // handleAccessorySpecialEffect(partyActorID, characterRecordPtr->equipped_accessory);
     actorBattleVars->gilStolen = 0;
@@ -217,7 +217,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         actorTimers->field_D = -1;
         actorTimers->field_C = -1;
         actorTimers->field_F = -1;
-        actorTimers->statusImmuneMask = ~sceneEnemyDataPtr->statusImmunityMask;
+        actorTimers->innateStatusMask = ~sceneEnemyDataPtr->statusImmunityMask;
 
         // Initialize the formation relative ID for enemies
         actorBattleVars->characterID = 0;

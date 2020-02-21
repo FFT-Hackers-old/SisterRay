@@ -7,7 +7,10 @@
 #include "game_data_interface.h"
 #include "../EncodedString.h"
 #include "../battle/engine/action_spell_effects.h"
-#include "statuses.h"""
+#include "statuses.h"
+#include <unordered_map>
+#include <string>
+#include "../party/battle_stats.h"
 
 typedef struct {
     AttackData attackData;
@@ -36,6 +39,8 @@ public:
 
 void initAttacks(SrKernelStream* stream);
 u16 getDefaultMagicUseMulti(u16 actionID);
+void initializeActionElements(SrAttack& attack);
+void initializeStatusAfflictions(SrAttack& attack);
 SpellEffect getDefaultMagicMultiEffects(u16 actionID);
 
 #endif

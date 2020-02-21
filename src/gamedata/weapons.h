@@ -5,6 +5,7 @@
 #include "../sr_named_registry.h"
 #include "game_data_interface.h"
 #include "base_item.h"
+#include <vector>
 
 #define KERNEL_WEAPON_COUNT 128
 
@@ -15,6 +16,7 @@ typedef struct {
     EncodedString weaponDescription;
     EquipmentStatBoosts equipEffects;
     std::vector<std::string> attackElements;
+    std::vector<StatusInfliction> statusAttack;
 } SrWeapon;
  
 class SrWeaponRegistry : public SrNamedResourceRegistry<SrWeapon, std::string> {
@@ -24,5 +26,7 @@ public:
 };
 
 u8 getWeaponIcon(u8 characterID);
+void initializeWeaponElements(SrWeapon& weapon);
+void initializeWeaponAfflictions(SrWeapon& weapon);
 
 #endif

@@ -17,13 +17,13 @@ void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
 
     auto issuingActorID = poppedAction->queueAction.attackerActorID;
     SrDamageContext srDamageContext = SrDamageContext();
-    ActionContextEvent actionEvent = { gDamageContextPtr, srDamageContext, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
+    ActionContextEvent actionEvent = { gDamageContextPtr, &srDamageContext, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
 
     if (!(*dword_9AEA84)) {
         *dword_9AEA6C = 0;
         *dword_9AEA60 = 0;
         *word_9AAD10 = 0;
-        preActionHandles(poppedAction, issuingActorID);
+        preActionHandles(actionEvent);
         *dword_9AEA84 = 1;
     }
 
@@ -31,7 +31,7 @@ void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
     *dword_9AEA84 = 2;
 
     if (!(*dword_9AEA60)) {
-        postActionHandles(poppedAction, issuingActorID);
+        postActionHandles(actionEvent);
         *dword_9AEA84 = 0;
         *dword_9AEA6C = 1;
     }
@@ -46,6 +46,8 @@ typedef void(*PFNSRSUB5C8B80)();
 #define incrementRandom     ((PFNSRSUB5C8B80)0x5C8B80)
 
 void preActionHandles(ActionContextEvent actionEvent) {
+    auto poppedAction = actionEvent.poppedAction;
+    auto issuingActorID = actionEvent.issuingActorID;
     u16* gDisplayTextIdx = (u16*)0x9AAD16;
     u16* word_9AAD18 = (u16*)0x9AAD18;
     incrementRandom();
@@ -73,6 +75,8 @@ typedef void(*PFNSUBSR436CF2)();
 #define setDamageEventFlags   ((PFNSUBSR436CF2)0x436CF2)
 
 void postActionHandles(ActionContextEvent actionEvent) {
+    auto poppedAction = actionEvent.poppedAction;
+    auto issuingActorID = actionEvent.issuingActorID;
     u32* dword_9AD1B4 = (u32*)0x9AD1B4;
     setDamageEventFlags();
     gContext.eventBus.dispatch(ACTION_POST_COMMAND, &actionEvent);

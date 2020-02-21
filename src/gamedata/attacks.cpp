@@ -71,7 +71,7 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.useMulti = 0;
         }
         initializeActionElements(attack);
-        initializeStatusAfflictions(attacks);
+        initializeStatusAfflictions(attack);
         addElement(assembleGDataKey(attack.attackID), attack);
         auto& cmd = gContext.commands.getResource(cmdIdx);
         cmd.actionCount++;
@@ -86,7 +86,7 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
 }
 
 //Set elements 
-initializeActionElements(SrAttack& attack) {
+void initializeActionElements(SrAttack& attack) {
     auto& attackElements = attack.attackElements;
     for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
         if (!(attack.attackData.elementMask & (1 << elementIdx))) {
@@ -96,8 +96,7 @@ initializeActionElements(SrAttack& attack) {
     }
 }
 
-
-initializeStatusAfflictions(SrAttack& attack) {
+void initializeStatusAfflictions(SrAttack& attack) {
     auto& statusAttack = attack.statusAttack;
     for (auto statusIdx = 0; statusIdx < 32; statusIdx++) {
         if (!(attack.attackData.statusMask & (1 << statusIdx))) {

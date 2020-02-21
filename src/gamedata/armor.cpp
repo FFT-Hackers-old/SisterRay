@@ -3,6 +3,7 @@
 #include "../impl.h"
 #include "armor.h"
 #include "../party/stat_names.h"
+#include "../party/battle_stats.h"
 
 SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrArmor, std::string>() {
     size_t read_size;
@@ -23,13 +24,13 @@ SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegist
         armor.equipEffects[StatNames::ARMOR_DEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.defense, false));
         armor.equipEffects[StatNames::ARMOR_MDEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.magic_defense, false));
         populatekernelStatBoosts(armor.equipEffects, armor.gameArmor.stats_to_boost, armor.gameArmor.stat_boost_amounts, 4, idx, SR_GEAR_ARMOR);
-        initializeAccessoryElements(armor, idx);
+        initializeArmorElements(armor, idx);
         addElement(assembleGDataKey(idx), armor);
         ++idx;
     }
 }
 
-initializeAccessoryElements(SrArmor& armor, u16 relativeID) {
+void initializeArmorElements(SrArmor& armor, u16 relativeID) {
     auto& equipEffects = armor.equipEffects;
     for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
         if (!(armor.gameArmor.elemental_defense_mask & (1 << elementIdx))) {
@@ -39,25 +40,25 @@ initializeAccessoryElements(SrArmor& armor, u16 relativeID) {
         auto elementName = getElementIDFromIndex(elementIdx);
         auto element = gContext.elements.getElement(elementName);
         if (elementDamageType = 0) {
-            StatBoost boost{0, 125, false};
+            StatBoost statBoost{0, 125, false};
             statBoost.tags.insert("GEAR");
             statBoost.tags.insert("ARMOR");
-            statBoost.tags.insert(assembleGDataKey(relativeGearIdx));
-            equipEffects[element.resName].push_back(boost);
+            statBoost.tags.insert(assembleGDataKey(relativeID));
+            equipEffects[element.resName].push_back(statBoost);
         }
         if (elementDamageType = 1) {
+            StatBoost statBoost{ 0, 100, false };
             statBoost.tags.insert("GEAR");
             statBoost.tags.insert("ARMOR");
-            statBoost.tags.insert(assembleGDataKey(relativeGearIdx));
-            StatBoost boost{ 0, 100, false };
-            equipEffects[element.resName].push_back(boost);
+            statBoost.tags.insert(assembleGDataKey(relativeID));
+            equipEffects[element.resName].push_back(statBoost);
         }
         if (elementDamageType = 2) {
+            StatBoost statBoost{ 0, 50, false };
             statBoost.tags.insert("GEAR");
             statBoost.tags.insert("ARMOR");
-            statBoost.tags.insert(assembleGDataKey(relativeGearIdx));
-            StatBoost boost{ 0, 50, false };
-            equipEffects[element.resName].push_back(boost);
+            statBoost.tags.insert(assembleGDataKey(relativeID));
+            equipEffects[element.resName].push_back(statBoost);
         }
     }
 }

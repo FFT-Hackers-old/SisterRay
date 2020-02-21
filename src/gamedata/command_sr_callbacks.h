@@ -5,22 +5,9 @@
 #include "command_callbacks.h"
 #include "statuses.h"
 #include <vector>
+#include <unordered_map>
 #include <string>
-
-struct SrDamageContext_ {
-    std::vector<std::string> attackElements;
-    std::unordered_map<std::string, SrActorStat> attackStats;
-    std::vector<StatusInfliction> statusToInflict; //vector of statuses to inflict
-    std::vector<std::string> toAddStatuses;
-    std::vector<std::string> toToggleStatuses;
-    std::vector<std::string> toRemoveStatuses;
-    std::vector<std::string> wereInflictedStatuses;
-    ActorBattleState* attackerState;
-    ActorBattleState* targetState;
-    bool useActionDamageLimits;
-    u16 hpDamageLimit;
-    u16 mpDamageLimit;
-};
+#include "../party/battle_stats.h"
 
 #define ELEMENT_COUNT 16
 void srSetupAction(CommandSetupEvent setupEvent);

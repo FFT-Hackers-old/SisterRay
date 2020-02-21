@@ -13,15 +13,15 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     damageEvent.attackerID = attackerID;
     damageEvent.specialDamageFlags = 0;
     aiContext.actorAIStates[targetID].lastCovered = -1;
-    handleCover(damageEvent);
-    setTargetContext(damageEvent->originalTarget, srDamageEvent);
+    handleCover(srDamageEvent);
+    setTargetContext(damageEvent.targetID, srDamageEvent);
     attemptStatusInfliction(srDamageEvent);
 
     if (damageEvent.targetID != targetID) {
         sub_436E92();
         damageContext->abilityFlags1 |= 0x20;
     }
-    u8 targetID = damageContext->targetID;
+    u8 targetIDLocal = damageContext->targetID;
     if (!(damageContext->specialAbilityFlags & 1))
         damageContext->abilityFlags2 |= 4;
     if (aiContext.actorAIStates[targetID].stateFlags & 0x4000)
@@ -30,7 +30,7 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     if (!(damageContext->abilityFlags1 & 1))
         runFormulas();
 
-    handleAdditionalEffects(3);
+    gContext.eventBus.dispatch(PRE_DAMAGE_DEALT, (void*)srDamageEvent);
     if (!damageContext->abilityPower)
         damageContext->abilityFlags1 |= 2u;
     /*if (sub_5DC08E(targetID))
@@ -49,7 +49,7 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     else {
         damageContext->incOnDamageDealt++;
         damageEvent.specialDamageFlags |= 1;
-        handleAdditionalEffects(4);
+        gContext.eventBus.dispatch(POST_DAMAGE_DEALT, (void*)srDamageEvent);
         if (damageContext->attackerID != targetID)
             damageContext->damageCalcMask |= 1 << targetID;
         if (damageContext->abilityFlags1 & 4 && damageContext->attackHitCount <= 8)
@@ -65,7 +65,7 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
         }
     }
     applyDamageCaps(srDamageEvent);
-    handleReactions(srDamageEvent);
+    handleDamageReaction(srDamageEvent);
     handleStatusInfliction(srDamageEvent);
     handleDamage(srDamageEvent);
 
@@ -80,6 +80,7 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
         sub_5DF30B(damageContext->currentUnitIDTempt, damageContext->targetID, damageContext->currentDamage / 100, 1);
     if (damageContext->miscActionFlags & 0x40)
         sub_5DF30B(damageContext->currentUnitIDTempt, damageContext->targetID, damageContext->currentDamage / 10, 2);
+
     if (targetID < 3 && damageContext->attackerID >= 4 && damageContext->unkActorBlockPtr->learnedESkillsMask && damageContext->commandIndexCopy == 13) {
         handleLearnESkill();
     }
@@ -94,19 +95,19 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
 
 //Hit and Damage Formulas will now live in a registry
 void runFormulas(DamageCalculationEvent* srDamageEvent) {
-    counter = dword_C069C0[damageContext->formulaType];
-    chosen_formula = gFormulaPtrTable[damageContext->formulaID];
+    u8 counter = dword_C069C0[srDamageEvent->damageContext->formulaType];
+    auto chosenFormula = gContext.formulas.getResource(srDamageEvent->damageContext->formulaID);
     while (1) {
-        u8 type_order_array_index = (gFormulaExecutionOrderArray[counter++];
-        if (type_order_array_index == 8)
+        u8 typeOrderArrayIndex = (gFormulaExecutionOrderArray[counter++];
+        if (typeOrderArrayIndex == 8)
             break;
-        gHitFormulaTable[type_order_array_index]();
+        gHitFormulaTable[typeOrderArrayIndex]();
     }
-    if (damageContext->abilityPower) {
-        if (chosen_formula) {
-            handleAdditionalEffects(0);
-            ((void(__cdecl*)(signed int))chosen_formula)(8);
-            handleAdditionalEffects(1);
+    if (srDamageEvent->damageContext->abilityPower) {
+        if (chosenFormula) {
+            gContext.eventBus.dispatch(PRE_DAMAGE_FORMULA, (void*)srDamageEvent);
+            ((void(__cdecl*)(signed int))chosenFormula)(srDamageEvent);
+            gContext.eventBus.dispatch(POST_DAMAGE_FORMULA, (void*)srDamageEvent);
         }
     }
 }
@@ -163,22 +164,30 @@ void handleCover(DamageCalculationEvent* srDamageEvent) {
 
 void setupGameDamageAndImpactEvents(DamageCalculationEvent* srDamageEvent) {
     auto& damageContext = *srDamageEvent->damageContext;
+    auto& srDamageContext = *srDamageEvent->srDamageContext;
     auto& damageEvent = *srDamageEvent->gameDamageEvent;
     auto& aiContext = *srDamageEvent->aiContext;
     damageEvent.targetStatusMask = aiContext.actorAIStates[srDamageEvent->damageContext.originalTarget].statusMask;
     damageEvent.damagedAnimScriptIdx = damageContext.targetReactionAnimation;
 
-    if (damageContext->abilityFlags1 & 2) {
-        if (0x800000 & damageContext->abilityFlags1)
-            sub_5DC323(damageEvent);
+    if (damageContext.abilityFlags1 & 2) {
+        if (0x800000 & damageContext.abilityFlags1) {
+            if (~damageContext.targetStatusImmuneMask & (damageContext.toggleStatusMask | damageContext.rmStatusMask | damageContext.addStatusMask)) {
+                if (damageEvent.impactEventQueueIdx == -1)
+                    createImpactEvent(damageEvent, -1, 0, -1, -1, aiContext.actorAIStates[damageContext.targetID].currentHP, aiContext.actorAIStates[damageContext.targetID].currentMP);
+            }
+        }
     }
     else {
-        initializeImpactEvent(
+        createImpactEvent(
             damageEvent,
-            damageContext->killRecoverDamage,
-            damageContext->abilityFlags2,
-            damageContext->attackImpactSoundID,
-            damageContext->attackImpactEffectID);
+            damageContext.killRecoverDamage,
+            damageContext.abilityFlags2,
+            damageContext.attackImpactSoundID,
+            damageContext.attackImpactEffectID,
+            aiContext.actorAIStates[damageContext.targetID].currentHP,
+            aiContext.actorAIStates[damageContext.targetID].currentMP
+        );
     }
 
     if (damageContext->abilityFlags1 & 0x20)
@@ -467,7 +476,7 @@ void handleDamage(DamageCalculationEvent* srDamageEvent) {
 
 typedef void(*SRPFN_GAMESETREACTIONANIM)(bool);
 #define gameSetHitReaction (SRPFN_GAMESETREACTIONANIM(0x5DB8D6))
-void handleReactions(DamageCalculationEvent* srDamageEvent) {
+void handleDamageReaction(DamageCalculationEvent* srDamageEvent) {
     auto damageContext = srDamageEvent->damageContext;
     if (damageContext->abilityFlags1 & 3) {
         if (damageContext->abilityFlags1 & 1) {

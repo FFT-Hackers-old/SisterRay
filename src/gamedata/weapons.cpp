@@ -27,7 +27,7 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
     }
 }
 
-initializeWeaponElements(SrWeapon& weapon) {
+void initializeWeaponElements(SrWeapon& weapon) {
     auto& attackElements = weapon.attackElements;
     for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
         if (!(weapon.gameWeapon.attackElementMask & (1 << elementIdx))) {
@@ -37,8 +37,9 @@ initializeWeaponElements(SrWeapon& weapon) {
     }
 }
 
-initializeWeaponAfflictions(SrWeapon& weapon) {
+void initializeWeaponAfflictions(SrWeapon& weapon) {
     auto& statusAttack = weapon.statusAttack;
+    auto statusIdx = weapon.gameWeapon.status_attack;
     StatusInfliction infliction{ getStatusIDFromIndex(statusIdx), 63, false, false };
     statusAttack[getStatusIDFromIndex(statusIdx)] = infliction;
 }

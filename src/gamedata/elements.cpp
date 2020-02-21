@@ -1,6 +1,7 @@
 #include "elements.h"
 #include "../party/stat_names.h"
 #include "element_names.h"
+#include "../impl.h"
 
 SrElementRegistry::SrElementRegistry(bool useResistances) {
     SrElement fire{ EncodedString::from_unicode(ElementNames::FIRE_NAME.c_str()), true, 0, StatNames::FIRE_AFF, StatNames::FIRE_RES, StatNames::FIRE_PEN };

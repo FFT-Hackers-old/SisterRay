@@ -24,7 +24,7 @@ SrAccessoryRegistry::SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResour
     }
 }
 
-initializeAccessoryElements(SrAccessory& accessory, u16 relativeID) {
+void initializeAccessoryElements(SrAccessory& accessory, u16 relativeID) {
     auto& equipEffects = accessory.equipEffects;
     for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
         if (!(accessory.gameAccessory.elements_mask & (1 << elementIdx))) {
@@ -34,25 +34,25 @@ initializeAccessoryElements(SrAccessory& accessory, u16 relativeID) {
         auto elementName = getElementIDFromIndex(elementIdx);
         auto element = gContext.elements.getElement(elementName);
         if (elementDamageType = 0) {
-            StatBoost boost{ 0, 125, false };
+            StatBoost statBoost{ 0, 125, false };
             statBoost.tags.insert("GEAR");
             statBoost.tags.insert("ACCESSORY");
             statBoost.tags.insert(assembleGDataKey(relativeID));
-            equipEffects[element.resName].push_back(boost);
+            equipEffects[element.resName].push_back(statBoost);
         }
         if (elementDamageType = 1) {
+            StatBoost statBoost{ 0, 100, false };
             statBoost.tags.insert("GEAR");
             statBoost.tags.insert("ACCESSORY");
             statBoost.tags.insert(assembleGDataKey(relativeID));
-            StatBoost boost{ 0, 100, false };
-            equipEffects[element.resName].push_back(boost);
+            equipEffects[element.resName].push_back(statBoost);
         }
         if (elementDamageType = 2) {
+            StatBoost statBoost{ 0, 50, false };
             statBoost.tags.insert("GEAR");
             statBoost.tags.insert("ACCESSORY");
             statBoost.tags.insert(assembleGDataKey(relativeID));
-            StatBoost boost{ 0, 50, false };
-            equipEffects[element.resName].push_back(boost);
+            equipEffects[element.resName].push_back(statBoost);
         }
     }
 }

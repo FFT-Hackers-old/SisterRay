@@ -20,7 +20,6 @@
 #include "battle/sr_battle_engine.h"
 #include "gamedata/command_sr_callbacks.h"
 
-
 SrContext gContext;
 
 static const SrKernelStreamHandler kKernelBinHandlers[9] = {

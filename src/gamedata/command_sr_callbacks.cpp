@@ -137,9 +137,9 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
                 }
             }
             for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
-                if (gActorTimerBlock[actorIdx].field_2C)
+                if (gActorTimerBlock[actorIdx].someHPCopy)
                     sub_5DA380(actorIdx, 0);
-                if (gActorTimerBlock[actorIdx].field_30)
+                if (gActorTimerBlock[actorIdx].someMPCopy)
                     sub_5DA380(actorIdx, 1);
             }
             // This block handles quadra magic

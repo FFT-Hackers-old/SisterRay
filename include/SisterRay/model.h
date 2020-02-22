@@ -258,9 +258,9 @@ typedef struct {
     u16 field_26;
     u16 field_28;
     u16 field_2A;
-    u16 field_2C;
+    u16 someHPCopy;
     u16 field_2E;
-    u16 field_30;
+    u16 someMPCopy;
     u8 modelDataIndex; //0x032
     u8 field_33;
     u8 innateStatusMask;
@@ -335,9 +335,9 @@ typedef struct {
     GameRotationMatrix rotationMatrix;
     u16 field_26;
     u32 field_28;
-    u16 field_2C;
+    u16 someHPCopy;
     u16 field_2E;
-    u16 field_30;
+    u16 someMPCopy;
     u16 field_32;
     u32 innateStatusMask;
     u32 field_38;

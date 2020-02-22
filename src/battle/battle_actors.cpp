@@ -198,6 +198,9 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         auto sceneEnemyDataPtr = getInBattleActorEnemyData(sceneRelativeID);
         actorFormation.enemyID = sceneRelativeID;
         actorBattleVars->index = sceneRelativeID;
+        const auto& formationEnemy = *getInBattleFormationActorData(enemyIdx);
+        const auto& srEnemy = gContext.enemies.getResource(getUniqueEnemyID(formationEnemy.enemyID));
+        enemyActors[enemyIdx].enemyData = srEnemy;
         setEnemyStats(enemyIdx, enemyActor);
         actorBattleVars->level = sceneEnemyDataPtr->enemyLevel;
         actorBattleVars->backDamageMult = sceneEnemyDataPtr->backDamageMultipler;
@@ -281,6 +284,7 @@ ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
         actorState.party10 = &(partyActor.party10);
         actorState.party34 = &(partyActor.party34);
         actorState.weaponCtx = &(partyActor.weaponCtx);
+        actorState.enemyData = nullptr;
         return actorState;
     }
     actorState.actorBattleVars = &enemyActors[actorIdx - 4].battleActor.gameAIState;
@@ -289,6 +293,7 @@ ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
     actorState.party10 = nullptr;
     actorState.party34 = nullptr;
     actorState.weaponCtx = nullptr;
+    actorState.enemyData = &enemyActors[actorIdx - 4].enemyData;
     return actorState;
 }
 
@@ -475,12 +480,12 @@ void setWeaponData(u8 partyIdx, ActorBattleState& partyActor) {
 }
 
 //Fetch Enemy Battle Stats from Enemy Registry
-void setEnemyStats(u8 enemyIndex, ActorBattleState& partyActor) {
+void setEnemyStats(u8 enemyIndex, ActorBattleState& enemyActor) {
     const auto& formationEnemy = *getInBattleFormationActorData(enemyIndex);
     const auto& srEnemy = gContext.enemies.getResource(getUniqueEnemyID(formationEnemy.enemyID));
-    auto& actorBattleVars = partyActor.actorBattleVars;
+    auto& actorBattleVars = enemyActor.actorBattleVars;
     auto& stats = srEnemy.enemyStats;
-    auto& battleStats = *partyActor.battleStats;
+    auto& battleStats = *enemyActor.battleStats;
     for (const auto& statElement : gContext.stats.named_registry) {
         battleStats[statElement.first].statValue = stats.at(statElement.first).statValue;
     }

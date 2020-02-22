@@ -117,6 +117,7 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
         initializeBattleAIData(&(sceneData.enemyAIData[0]), formationRelativeEnemyIdx, enemyAIData);
         srEnemyData.enemyAI = enemyAIData;
         calculateEnemyStats(srEnemyData);
+        setStealableItems(srEnemyData);
         /*Add enemies to the enemy registry*/
         gContext.enemies.addElement(registryName, srEnemyData);
         srLogWrite("Enemy:%s added to registry with unique idx %d", registryName.c_str(), *uniqueIdx);
@@ -169,6 +170,16 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
         //In the event the string ID already exists (kernel action) just ref it
     }
     srLogWrite("scene fully registered!");
+}
+
+
+void setStealableItems(SrEnemyData& enemy) {
+    const auto& itemsToSteal = enemy.enemyData.itemsToStealDrop;
+    const auto& stealRates = enemy.enemyData.itemStealDropRates;
+    for (u8 idx = 0; idx < 4; idx++) {
+        StealItem stealItem{ itemsToSteal[idx], stealRates[idx] };
+        enemy.toSteal.push_back(stealItem);
+    }
 }
 
 void calculateEnemyStats(SrEnemyData& enemy) {

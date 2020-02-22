@@ -6,6 +6,9 @@
 #include "../sr_named_registry.h"
 #include <map>
 #include <array>
+#include <vector>
+#include <string>
+#include "../gamedata/enemies.h"
 
 typedef struct {
     u8 buffer[1024]; //this is 8x the amount available in the base game, per actor
@@ -40,6 +43,7 @@ typedef struct {
 
 typedef struct {
     SrBattleActor battleActor;
+    SrEnemyData enemyData;
 } SrEnemyBattleActor;
 
 struct ActorBattleState_{
@@ -49,6 +53,7 @@ struct ActorBattleState_{
     BattleParty34* party34; //null for enemy actors
     BattleParty10* party10; //null for enemy actors
     BattleWeaponCtx* weaponCtx;
+    SrEnemyData* enemyData;
     std::vector<ActiveStatus>* activeStatuses;
 };
 

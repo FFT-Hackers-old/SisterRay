@@ -41,57 +41,57 @@ SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<S
     SrStat fres = { EncodedString::from_unicode(ElementNames::FIRE_NAME.c_str()), 200, -100, true };
     addElement(StatNames::FIRE_RES, fres);
     addElement(StatNames::FIRE_AFF, fres);
-    pen.displayName = EncodedString::from_unicode(ElementNames::FIRE_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::FIRE_NAME.c_str());
     addElement(StatNames::FIRE_PEN, pen);
     SrStat ice = { EncodedString::from_unicode(ElementNames::ICE_NAME.c_str()), 200, -100, true };
     addElement(StatNames::ICE_RES, ice);
     addElement(StatNames::ICE_AFF, ice);
-    pen.displayName = EncodedString::from_unicode(ElementNames::ICE_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::ICE_NAME.c_str());
     addElement(StatNames::ICE_PEN, pen);
     SrStat light = { EncodedString::from_unicode(ElementNames::LIGHT_NAME.c_str()), 200, -100, true };
     addElement(StatNames::LIGHT_RES, light);
     addElement(StatNames::LIGHT_AFF, light);
-    pen.displayName = EncodedString::from_unicode(ElementNames::LIGHT_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::LIGHT_NAME.c_str());
     addElement(StatNames::LIGHT_PEN, pen);
     SrStat earth = { EncodedString::from_unicode(ElementNames::EARTH_NAME.c_str()), 200, -100, true };
     addElement(StatNames::EARTH_RES, earth);
     addElement(StatNames::EARTH_AFF, earth);
-    pen.displayName = EncodedString::from_unicode(ElementNames::EARTH_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::EARTH_NAME.c_str());
     addElement(StatNames::EARTH_PEN, pen);
     SrStat wind = { EncodedString::from_unicode(ElementNames::WIND_NAME.c_str()), 200, -100, true };
     addElement(StatNames::WIND_RES, wind);
     addElement(StatNames::WIND_AFF, wind);
-    pen.displayName = EncodedString::from_unicode(ElementNames::WIND_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::WIND_NAME.c_str());
     addElement(StatNames::WIND_PEN, pen);
     SrStat water = { EncodedString::from_unicode(ElementNames::WATER_NAME.c_str()), 200, -100, true };
     addElement(StatNames::WATER_RES, water);
     addElement(StatNames::WATER_AFF, water);
-    pen.displayName = EncodedString::from_unicode(ElementNames::WATER_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::WATER_NAME.c_str());
     addElement(StatNames::WATER_PEN, pen);
     SrStat grav = { EncodedString::from_unicode(ElementNames::GRAV_NAME.c_str()), 200, -100, true };
     addElement(StatNames::GRAVITY_RES, grav);
     addElement(StatNames::GRAVITY_AFF, grav);
-    pen.displayName = EncodedString::from_unicode(ElementNames::GRAV_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::GRAV_NAME.c_str());
     addElement(StatNames::GRAVITY_PEN, pen);
     SrStat poison = { EncodedString::from_unicode(ElementNames::POISON_NAME.c_str()), 200, -100, true };
     addElement(StatNames::POISON_RES, poison);
     addElement(StatNames::POISON_AFF, poison);
-    pen.displayName = EncodedString::from_unicode(ElementNames::POISON_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::POISON_NAME.c_str());
     addElement(StatNames::POISON_PEN, pen);
     SrStat holy = { EncodedString::from_unicode(ElementNames::HOLY_NAME.c_str()), 200, -100, true };
     addElement(StatNames::HOLY_RES, holy);
     addElement(StatNames::HOLY_AFF, holy);
-    pen.displayName = EncodedString::from_unicode(ElementNames::HOLY_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::HOLY_NAME.c_str());
     addElement(StatNames::HOLY_PEN, pen);
     SrStat shadow = { EncodedString::from_unicode(ElementNames::SHADOW_NAME.c_str()), 200, -100, true };
     addElement(StatNames::SHADOW_RES, shadow);
     addElement(StatNames::SHADOW_AFF, shadow);
-    pen.displayName = EncodedString::from_unicode(ElementNames::SHADOW_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::SHADOW_NAME.c_str());
     addElement(StatNames::SHADOW_PEN, pen);
     SrStat restore = { EncodedString::from_unicode(ElementNames::RESTORE_NAME.c_str()), 200, -100, true };
     addElement(StatNames::RESTORE_RES, restore);
     addElement(StatNames::RESTORE_AFF, restore);
-    pen.displayName = EncodedString::from_unicode(ElementNames::RESTORE_NAME.c_str();
+    pen.displayName = EncodedString::from_unicode(ElementNames::RESTORE_NAME.c_str());
     addElement(StatNames::RESTORE_PEN, pen);
 
 
@@ -101,14 +101,13 @@ SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<S
     SrStat blunt = { EncodedString::from_unicode(ElementNames::BLUNT_NAME.c_str()), 200, -100, true };
     addElement(StatNames::BLUNT_ARM, blunt);
     addElement(StatNames::BLUNT_SKL, holy);
-    SrStat shadow = { EncodedString::from_unicode(ElementNames::PIERCE_NAME.c_str()), 200, -100, true };
+    SrStat pierce = { EncodedString::from_unicode(ElementNames::PIERCE_NAME.c_str()), 200, -100, true };
     addElement(StatNames::PIERCE_ARM, shadow);
     addElement(StatNames::PIERCE_SKL, shadow);
 
     //Status Res/Pen
 
     SrStat res = { EncodedString::from_unicode(StatusNames::DEATH_NAME.c_str()), 200, -100, true };
-    SrStat pen = { EncodedString::from_unicode(StatusNames::DEATH_NAME.c_str()), 100, 0, false };
 
     res.displayName = EncodedString::from_unicode(StatusNames::DEATH_NAME.c_str());
     pen.displayName = EncodedString::from_unicode(StatusNames::DEATH_NAME.c_str());
@@ -214,7 +213,7 @@ SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<S
 
     res.displayName = EncodedString::from_unicode(StatusNames::SHIELD_NAME.c_str());
     pen.displayName = EncodedString::from_unicode(StatusNames::SHIELD_NAME.c_str());
-    addElement(StatNames::SHEILD_RES, res);
+    addElement(StatNames::SHIELD_RES, res);
     addElement(StatNames::SHIELD_PEN, pen);
 
     res.displayName = EncodedString::from_unicode(StatusNames::DOOM_NAME.c_str());

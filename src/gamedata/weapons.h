@@ -6,6 +6,7 @@
 #include "game_data_interface.h"
 #include "base_item.h"
 #include <vector>
+#include "statuses.h"
 
 #define KERNEL_WEAPON_COUNT 128
 

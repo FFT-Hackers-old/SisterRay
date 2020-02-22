@@ -274,7 +274,7 @@ OpCodeControlSequence OpCode9A(AnimScriptEvent* srEvent) {
 
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[1] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    scriptCtx.field_8 = GAME_ANGLE_MAX - (targetModelState74.field_2C + 2048);
+    scriptCtx.field_8 = GAME_ANGLE_MAX - (targetModelState74.someHPCopy + 2048);
     scriptCtx.opCodeArgs[0] = (targetModelState.field_6 * targetModelState.field_12 / GAME_ANGLE_MAX);
 
     i16 xDecrement = (i16)((scriptCtx.opCodeArgs[0] * srCalculateXVectorComponent(scriptCtx.field_8)) / GAME_ANGLE_MAX);
@@ -1612,8 +1612,8 @@ OpCodeControlSequence OpCodeFC(AnimScriptEvent* srEvent) {
         i32 xDelta = targetModelState.restingPosition.x - ownerModelState.restingPosition.x;
         srLogWrite("computed orientation in FC: %x", calculateYAngleComponent(xDelta, zDelta));
         ownerModelState.restingYRotation = calculateYAngleComponent(xDelta, zDelta) + (GAME_ANGLE_MAX / 2);
-        targetModelState74.field_2C = calculateYAngleComponent(xDelta, zDelta);
-        srLogWrite("target orientation set to %x", targetModelState74.field_2C);
+        targetModelState74.someHPCopy = calculateYAngleComponent(xDelta, zDelta);
+        srLogWrite("target orientation set to %x", targetModelState74.someHPCopy);
     }
     return RUN_NEXT;
 }

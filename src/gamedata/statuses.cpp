@@ -28,11 +28,11 @@ SrStatusRegistry::SrStatusRegistry(bool useResistances) {
     SrStatus slow{ EncodedString::from_unicode(StatusNames::SLOW_NAME.c_str()), true, 9, StatNames::SLOW_PEN, StatNames::SLOW_RES };
     slow.neutralizeOnInflict.push_back(StatusNames::HASTE);
     addElement(StatusNames::SLOW, slow);
-    SrStatus sleep{ EncodedString::from_unicode(StatusNames::SLEEP_NAME.c_str()), true, 10, StatNames::STOP_PEN, StatNames::STOP_RES };
+    SrStatus sleep{ EncodedString::from_unicode(StatusNames::SLEEP_NAME.c_str()), true, 10, StatNames::SLEEP_PEN, StatNames::SLEEP_RES };
     addElement(StatusNames::SLEEP, sleep);
     SrStatus frog{ EncodedString::from_unicode(StatusNames::FROG_NAME.c_str()), true, 11, StatNames::FROG_PEN, StatNames::FROG_RES };
     addElement(StatusNames::FROG, frog);
-    SrStatus mini{ EncodedString::from_unicode(StatusNames::MINI_NAME.c_str()), true, 12, StatNames::SMALL_PEN, StatNames::SMALL_RES };
+    SrStatus mini{ EncodedString::from_unicode(StatusNames::MINI_NAME.c_str()), true, 12, StatNames::MINI_PEN, StatNames::MINI_RES };
     addElement(StatusNames::SMALL, mini);
     SrStatus slownumb{ EncodedString::from_unicode(StatusNames::SLOWNUMB_NAME.c_str()), true, 13, StatNames::SLOWNUMB_PEN, StatNames::SLOWNUMB_RES };
     addElement(StatusNames::SLOWNUMB, slownumb);
@@ -174,9 +174,6 @@ std::string getStatusIDFromIndex(u8 statusIdx) {
     }
     case STS_IMPRISON_IDX: {
         return StatusNames::IMPRISON;
-    }
-    case STS_SILENCE_IDX: {
-        return StatusNames::SILENCE;
     }
     }
 }

@@ -320,8 +320,8 @@ typedef struct {
     u8 unkActorFlags;           //0x29
     u8 field_2A;                //0x2A
     u8 field_2B;                //0x2B
-    u32 field_2C;               //0x2C
-    u32 field_30;               //0x30
+    u32 someHPCopy;               //0x2C
+    u32 someMPCopy;               //0x30
     u32 innateStatusMask;       //0x34
     EnemyData* battleEnemyData;               //0x38
     u16 currentHP;              //0x3C
@@ -358,10 +358,10 @@ typedef struct {
     u32 field_20;
     u32 learnedEnemySkills;
     u32 knownEnemySkills;
-    u8 field_2C;
+    u8 someHPCopy;
     u8 field_2D;
     u8 field_2F;
-    u8 field_30;
+    u8 someMPCopy;
     u8 field_31;
     u8 field_32;
     u8 field_33;

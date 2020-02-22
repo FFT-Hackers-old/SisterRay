@@ -5,6 +5,8 @@
 #include "status_names.h"
 #include "element_names.h"
 
+typedef void(*SRPFN_SUB436E92)();
+#define gameResetAnimEventCamera   ((SRPFN_SUB436E92)0x436E92)
 void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 targetID) {
     auto damageContext = srDamageEvent->damageContext;
     auto& aiContext = *srDamageEvent->aiContext;
@@ -18,9 +20,10 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     attemptStatusInfliction(srDamageEvent);
 
     if (damageEvent.targetID != targetID) {
-        sub_436E92();
+        gameResetAnimEventCamera();
         damageContext->abilityFlags1 |= 0x20;
     }
+
     u8 targetIDLocal = damageContext->targetID;
     if (!(damageContext->specialAbilityFlags & 1))
         damageContext->abilityFlags2 |= 4;
@@ -28,42 +31,15 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
         damageContext->abilityFlags1 |= 1u;
 
     if (!(damageContext->abilityFlags1 & 1))
-        runFormulas();
+        runFormulas(srDamageEvent);
 
     gContext.eventBus.dispatch(PRE_DAMAGE_DEALT, (void*)srDamageEvent);
     if (!damageContext->abilityPower)
         damageContext->abilityFlags1 |= 2u;
     /*if (sub_5DC08E(targetID))
         damageContext->elementalDefenseMask = 32;*/
-    applyElementalModifiers();
-    const auto& activeStatuses = *srDamageEvent->srDamageContext->targetState->activeStatuses;
-    bool isDead = std::find_if(activeStatuses.begin(), activeStatuses.end(), [&](ActiveStatus activeStatus) {return activeStatus.statusName == StatusNames::DEATH});
-    bool isReflectable = !(damageContext->specialAbilityFlags & 0x200) && !((1 << targetID) & word_C3F37C[0]) && damageContext->targetStatusMask & 0x40000;
-    bool elementalMiss = (isDead) && !(damageContext->elementalDefenseMask & 0xC1));
-    if (!(damageContext->specialAbilityFlags & 0x100) && !isReflectable && !elementalMiss) {
-        damageContext->abilityFlags1 |= 1u;
-    }
-    if (damageContext->abilityFlags1 & 1) {
-        nullifyAction(srDamageEvent);
-    }
-    else {
-        damageContext->incOnDamageDealt++;
-        damageEvent.specialDamageFlags |= 1;
-        gContext.eventBus.dispatch(POST_DAMAGE_DEALT, (void*)srDamageEvent);
-        if (damageContext->attackerID != targetID)
-            damageContext->damageCalcMask |= 1 << targetID;
-        if (damageContext->abilityFlags1 & 4 && damageContext->attackHitCount <= 8)
-            handleSteal();
-        applyReflect(srDamageEvent);
-        damageEvent.specialDamageFlags |= 2; //Display reflect flag
-        // Set Barrier/MBarrier flags
-        if (damageContext->abilityFlags1 & 0x4000) {
-            damageEvent.specialDamageFlags |= 0x10;
-        }
-        if (damageContext->abilityFlags1 & 0x8000) {
-            damageEvent.specialDamageFlags |= 0x20;
-        }
-    }
+    applyElementalModifiers(srDamageEvent);
+    handleDamageSuccessful(srDamageEvent);
     applyDamageCaps(srDamageEvent);
     handleDamageReaction(srDamageEvent);
     handleStatusInfliction(srDamageEvent);
@@ -74,16 +50,11 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     }
     // where impact events are made
     setupGameDamageAndImpactEvents(srDamageEvent);
-    if (!(damageContext->specialAbilityFlags & 0x10))
-        sub_5DF3ED();
-    if (damageContext->miscActionFlags & 0x80)
-        sub_5DF30B(damageContext->currentUnitIDTempt, damageContext->targetID, damageContext->currentDamage / 100, 1);
-    if (damageContext->miscActionFlags & 0x40)
-        sub_5DF30B(damageContext->currentUnitIDTempt, damageContext->targetID, damageContext->currentDamage / 10, 2);
+    handleHealEffects(srDamageEvent);
 
-    if (targetID < 3 && damageContext->attackerID >= 4 && damageContext->unkActorBlockPtr->learnedESkillsMask && damageContext->commandIndexCopy == 13) {
+    /*if (targetID < 3 && damageContext->attackerID >= 4 && damageContext->unkActorBlockPtr->learnedESkillsMask && damageContext->commandIndexCopy == 13) {
         handleLearnESkill();
-    }
+    }*/
     damageEvent.targetStatusMask = aiContext.actorAIStates[targetID].statusMask;
     damageEvent.damagedAnimScriptIdx = damageContext->targetReactionAnimation;
 
@@ -96,30 +67,106 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
 //Hit and Damage Formulas will now live in a registry
 void runFormulas(DamageCalculationEvent* srDamageEvent) {
     u8 counter = dword_C069C0[srDamageEvent->damageContext->formulaType];
-    auto chosenFormula = gContext.formulas.getResource(srDamageEvent->damageContext->formulaID);
+    auto chosenFormula = gContext.damageFormulas.getResource(srDamageEvent->damageContext->formulaID);
     while (1) {
-        u8 typeOrderArrayIndex = (gFormulaExecutionOrderArray[counter++];
+        u8 typeOrderArrayIndex = gFormulaExecutionOrderArray[counter++];
         if (typeOrderArrayIndex == 8)
             break;
-        gHitFormulaTable[typeOrderArrayIndex]();
+        gContext.hitFormulas.getResource(typeOrderArrayIndex)(srDamageEvent);
     }
     if (srDamageEvent->damageContext->abilityPower) {
         if (chosenFormula) {
             gContext.eventBus.dispatch(PRE_DAMAGE_FORMULA, (void*)srDamageEvent);
-            ((void(__cdecl*)(signed int))chosenFormula)(srDamageEvent);
+            chosenFormula(srDamageEvent);
             gContext.eventBus.dispatch(POST_DAMAGE_FORMULA, (void*)srDamageEvent);
         }
     }
 }
 
+void handleDamageSuccessful(DamageCalculationEvent* srDamageEvent) {
+    auto& damageContext = *srDamageEvent->damageContext;
+    const auto& activeStatuses = *srDamageEvent->srDamageContext->targetState->activeStatuses;
+    bool isDead = std::find_if(activeStatuses.begin(), activeStatuses.end(), [&](ActiveStatus activeStatus) {return activeStatus.statusName == StatusNames::DEATH; }) != activeStatuses.end();
+    bool isReflectable = !(damageContext.specialAbilityFlags & 0x200) && !((1 << damageContext.targetID) & word_C3F37C[0]) && damageContext.targetStatusMask & 0x40000;
+    bool elementalMiss = (isDead) && !(damageContext.elementalDefenseMask & 0xC1);
+    if (!(damageContext.specialAbilityFlags & 0x100) && !isReflectable && !elementalMiss) {
+        damageContext.abilityFlags1 |= 1u;
+    }
+    if (damageContext.abilityFlags1 & 1) {
+        nullifyAction(srDamageEvent);
+    }
+    else {
+        damageContext.incOnDamageDealt++;
+        srDamageEvent->gameDamageEvent.specialDamageFlags |= 1;
+        gContext.eventBus.dispatch(POST_DAMAGE_DEALT, (void*)srDamageEvent);
+        if (damageContext.attackerID != damageContext.targetID)
+            damageContext.wasDamagedMask |= 1 << damageContext.targetID;
+        if (damageContext.abilityFlags1 & 4 && damageContext.attackHitCount <= 8)
+            handleSteal(srDamageEvent);
+        applyReflect(srDamageEvent);
+        srDamageEvent->gameDamageEvent.specialDamageFlags |= 2; //Display reflect flag
+        // Set Barrier/MBarrier flags
+        if (damageContext.abilityFlags1 & 0x4000) {
+            srDamageEvent->gameDamageEvent.specialDamageFlags |= 0x10;
+        }
+        if (damageContext.abilityFlags1 & 0x8000) {
+            srDamageEvent->gameDamageEvent.specialDamageFlags |= 0x20;
+        }
+    }
+}
+
+typedef u8(*SRPFN_GAMEGETRAND)();
+#define gameGetRand  ((SRPFN_GAMEGETRAND)0x5C8BA1)
+void handleSteal(DamageCalculationEvent* srDamageEvent) {
+    auto& damageContext = *srDamageEvent->damageContext;
+    auto& targetState = *srDamageEvent->srDamageContext->targetState;
+    auto& attackerState = *srDamageEvent->srDamageContext->attackerState;
+    u8 targetID = damageContext.targetID;
+    u16 stealString = 49;
+    u16 stolenItem = 0xFFFF;
+    if (damageContext.targetEnemyIndex != -1) {
+        auto& enemy = *targetState.enemyData;
+        for (auto& item : enemy.toSteal) {
+            if (item.alreadyStolen) {
+                continue;
+            }
+            if (!(targetState.actorTimers->unkActorFlags & 1)) {
+                u16 levelDelta = damageContext.attackerLevel + 40 - damageContext.targetLevel;
+                if (attackerState.actorTimers->field_C == 4 && levelDelta < 100)
+                    levelDelta = 100;
+                u16 levelFactor = (levelDelta * 512) / 100;
+                u16 stealChance = (item.stealChance * levelFactor) / 256;
+                if ((gameGetRand() & 0x3F) < stealChance) {
+                    stolenItem = item.itemID;
+                    item.alreadyStolen = true;
+                    break;
+                }
+
+            }
+        }
+        if (stolenItem == 0xFFFF) {
+            stealString = 48;
+        }
+        else {
+            srCreateEvent(0, damageContext.attackerID, 3, stolenItem);
+            targetState.actorTimers->unkActorFlags |= 1u;
+            stealString = 47;
+        }
+    }
+    pushDisplayString(damageContext.attackerID, stealString, 1, (u32*)&stolenItem);
+}
+
 
 typedef u32(*SRPFN_GETINFLICTRAND)(u32);
 #define gameGetInflictRand (SRPFN_GETINFLICTRAND(0x5C8BDC))
+typedef u32(*SRPFN_GAMEGETRANDOMBIT)(u16);
+#define getRandomMaskBit ((SRPFN_GAMEGETRANDOMBIT)0x5C80B5)
 void handleCover(DamageCalculationEvent* srDamageEvent) {
     auto& damageContext = *srDamageEvent->damageContext;
     auto& damageEvent = *srDamageEvent->gameDamageEvent;
     auto& aiContext = *srDamageEvent->aiContext;
-    u8 originalTarget = damageEvent->originalTarget;
+    u8 originalTarget = damageEvent.targetID;
+    u16* word_9A88AA = (u16*)(0x9A88AA);
     u16 someMask = 0;
     for (u8 partyIdx = 0; partyIdx < 3; ++partyIdx) {
         someMask = word_9A88AA[partyIdx];
@@ -147,13 +194,13 @@ void handleCover(DamageCalculationEvent* srDamageEvent) {
             if (!(partyState.gamePartyMember->coverChance))
                 continue;
 
-            if (!(actorState.actorTimers.unkActorFlags & 8) && (1 << partyIdx) & someMask && !(AI_BATTLE_STATE.actorAIStates[partyIdx].statusMask & 0x86805C45)) {
+            if (!(actorState.actorTimers.unkActorFlags & 8) && (1 << partyIdx) & someMask && !(aiContext.actorAIStates[partyIdx].statusMask & 0x86805C45)) {
                 u8 coverChance = partyState.gamePartyMember->coverChance;
                 if (coverChance > gameGetInflictRand(100))
                     candidateCoverers |= 1 << partyIdx;
             }
         }
-        u16 coveringActor = getRandomTarget((aiContext.actorPartyMask & candidateCoverers));
+        u16 coveringActor = getRandomMaskBit((aiContext.actorPartyMask & candidateCoverers));
         if (coveringActor) {
             damageEvent.targetID = sub_5C8041(coveringActor);
             damageEvent.attackerID = originalTarget;
@@ -174,24 +221,59 @@ void setupGameDamageAndImpactEvents(DamageCalculationEvent* srDamageEvent) {
         if (0x800000 & damageContext.abilityFlags1) {
             if (~damageContext.targetStatusImmuneMask & (damageContext.toggleStatusMask | damageContext.rmStatusMask | damageContext.addStatusMask)) {
                 if (damageEvent.impactEventQueueIdx == -1)
-                    createImpactEvent(damageEvent, -1, 0, -1, -1, aiContext.actorAIStates[damageContext.targetID].currentHP, aiContext.actorAIStates[damageContext.targetID].currentMP);
+                    createImpactEvent(&damageEvent, -1, 0, -1, -1, aiContext.actorAIStates[damageContext.targetID].currentHP, aiContext.actorAIStates[damageContext.targetID].currentMP);
             }
         }
     }
     else {
         createImpactEvent(
-            damageEvent,
+            &damageEvent,
             damageContext.killRecoverDamage,
             damageContext.abilityFlags2,
-            damageContext.attackImpactSoundID,
+            damageContext.attackImpactSound,
             damageContext.attackImpactEffectID,
             aiContext.actorAIStates[damageContext.targetID].currentHP,
             aiContext.actorAIStates[damageContext.targetID].currentMP
         );
     }
 
-    if (damageContext->abilityFlags1 & 0x20)
+    if (damageContext.abilityFlags1 & 0x20)
         damageEvent.damagedAnimScriptIdx = 9;
+}
+
+void handleHealEffects(DamageCalculationEvent* srDamageEvent) {
+    auto& damageContext = *srDamageEvent->damageContext;
+    if (!(damageContext.specialAbilityFlags & 0x10))
+        calculateHealAmounts(srDamageEvent);
+    if (damageContext.miscActionFlags & 0x80)
+        calculateHealAmounts(srDamageEvent);
+    if (damageContext.miscActionFlags & 0x40)
+        calculateHealAmounts(srDamageEvent);
+}
+
+void calculateHealAmounts(DamageCalculationEvent* srDamageEvent) {
+    auto& damageContext = *srDamageEvent->damageContext;
+    bool healActive = (damageContext.abilityFlags2 & 1) != 0;
+    auto& attackerTimers = *srDamageEvent->srDamageContext->attackerState->actorTimers;
+    u16 currentDamage = damageContext.currentDamage;
+    auto tempTarget = damageContext.currentUnitIDTempt;
+    auto someFlags = ((damageContext.specialAbilityFlags & 0x20 != 0) ? 0 : 3) | (2 - ((damageContext.abilityFlags2 & 4) != 0));
+    if (damageContext.miscActionFlags & 0x80 || someFlags & 1) {
+        currentDamage /= 100;
+        if (tempTarget == damageContext.targetID && damageContext.targeCurrentMP < currentDamage)
+            currentDamage = damageContext.targeCurrentMP;
+        if (healActive)
+            currentDamage = -currentDamage;
+        attackerTimers.someMPCopy -= currentDamage;
+    }
+    if (damageContext.miscActionFlags & 0x40 || someFlags & 2) {
+        currentDamage /= 10;
+        if (tempTarget == damageContext.targetID && damageContext.targetCurrentHP < currentDamage)
+            currentDamage = damageContext.targetCurrentHP;
+        if (healActive)
+            currentDamage = -currentDamage;
+        attackerTimers.someHPCopy -= currentDamage;
+    }
 }
 
 void handleDeathImpactSetup(DamageCalculationEvent* srDamageEvent) {
@@ -207,14 +289,16 @@ void handleDeathImpactSetup(DamageCalculationEvent* srDamageEvent) {
         if (damageContext.commandIndexCopy == 26) {
             if (gUnkBattleStructArray[damageContext.targetID].deathType < 17)
                 gUnkBattleStructArray[damageContext.targetID].deathType = 8;
-            initializeImpactEvent(damageEvent, -2, 0, damageContext.attackImpactSound, damageContext.impactEffectID);
+            createImpactEvent(&damageEvent, -2, 0, damageContext.attackImpactSound, damageContext.impactEffectID,
+                aiContext.actorAIStates[damageContext.targetID].currentHP,
+                aiContext.actorAIStates[damageContext.targetID].currentMP);
         }
     }
 }
 
 void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent) {
     auto damageContext = srDamageEvent->damageContext;
-    auto& targetBattleVars = *srDamageEvent->targetState->actorBattleVars;
+    auto& targetBattleVars = *srDamageEvent->srDamageContext->targetState->actorBattleVars;
 
     damageContext->targetID = targetID;
     damageContext->targetEnemyIndex = -1;
@@ -230,12 +314,8 @@ void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent) {
     damageContext->targetLevel = targetBattleVars.level;
     damageContext->targetCurrentHP = targetBattleVars.currentHP;
     damageContext->targetCurrentMP = targetBattleVars.currentMP;
-    damageContext->vTimerBlock = &gActorTimerBlock[targetActorID];
-    if (targetID >= 3)
-        coverChance = (UnkActorStateStruct*)-1;
-    else
-        coverChance = &unkActorArray[targetActorID];
-    damageContext->party34Block = coverChance;
+    damageContext->vTimerBlock = srDamageEvent->srDamageContext->targetState->actorTimers;
+    damageContext->party34Block = srDamageEvent->srDamageContext->targetState->party34;
     damageContext->attackImpactSoundID = -1;
     damageContext->attackImpactEffectID = -1;
     damageContext->killRecoverDamage = -1;
@@ -250,20 +330,21 @@ void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent) {
     damageContext->currentDamage = 0;
 
     if (damageContext->specialAbilityFlags & 0x400) {
-        if (damageContext->specialAbilityFlags & 4)
+        /*if (damageContext->specialAbilityFlags & 4)
             damageContext->targetDefense = getStatWithModifiers(
                 targetActorID,
-                AI_BATTLE_STATE.actorAIStates[targetActorID].mdefense,
+                aiContext.actorAIStates[targetActorID].mdefense,
                 3);
         else
             damageContext->targetDefense = getStatWithModifiers(
                 targetActorID,
-                AI_BATTLE_STATE.actorAIStates[targetActorID].defense,
+                aiContext.actorAIStates[targetActorID].defense,
                 2);
     }
     if (damageContext->targetDefense > 512)
-        damageContext->targetDefense = 512;
-    if (targetActorID >= 4)
+        damageContext->targetDefense = 512;*/
+    }
+    if (damageContext->targetID >= 4)
         damageContext->targetEnemyIndex = formationData[8 * (targetActorID - 4)];
 }
 
@@ -282,21 +363,21 @@ void attemptStatusInfliction(DamageCalculationEvent* srDamageEvent) {
     for (const auto& infliction : inflictions) {
         if (didInflictionSucceed(infliction, srDamageEvent)) {
             if (infliction.doesToggle) {
-                toggle.push_back(infliction);
+                toggle.push_back(infliction.statusName);
                 continue;
             }
             if (infliction.doesRemove) {
-                remove.push_back(infliction);
+                remove.push_back(infliction.statusName);
                 continue;
             }
-            add.push_back(infliction);
+            add.push_back(infliction.statusName);
         }
     }
     srDamageEvent->srDamageContext->toAddStatuses = add;
     srDamageEvent->srDamageContext->toRemoveStatuses = remove;
     srDamageEvent->srDamageContext->toToggleStatuses = toggle;
 
-    damageContext->targetStatusImmuneMask = sub_434568(damageContext->targetID, 1, (damageContext->rmStatusMaskCopy & 1) != 0);
+    damageContext->targetStatusImmuneMask = sub_434568(damageContext->tempTarget, 1, (damageContext->rmStatusMaskCopy & 1) != 0);
 }
 
 bool didInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* srDamageEvent) {
@@ -308,12 +389,12 @@ bool didInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* s
     const auto& inflictions = srDamageEvent->srDamageContext->statusToInflict;
     auto inflictChance = 4 * infliction.inflictionChance;
     if ((damageContext->targetStatusMask & 0x800) && std::find_if(
-        inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::FROG}) != inflictions.end())
+        inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::FROG;}) != inflictions.end())
         inflictChance = 252;
     if ((damageContext->targetStatusMask & 0x1000) && std::find_if(
-        inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::SMALL}) != inflictions.end())
+        inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::SMALL;}) != inflictions.end())
         inflictChance = 252;
-    if (damageContext->targetID < 3 && aRcBattleBattle & combinedMask)
+    if (damageContext->tempTarget < 3 && aRcBattleBattle & combinedMask)
         inflictChance = 252;
 
     if (inflictChance < 252) {
@@ -330,8 +411,8 @@ bool didInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* s
     auto modifier = res - pen;
     inflictChance -= (modifier / 100) * inflictChance;
     // return no to death immunity in weird context
-    auto isInflictingDeath = std::find_if(inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::DEATH}) != inflictions.end();
-    if (isInflictingDeath && (1 << damageContext->targetID) & gEscapedActorsMask)
+    auto isInflictingDeath = std::find_if(inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::DEATH; }) != inflictions.end();
+    if (isInflictingDeath && (1 << damageContext->currentUnitIDTempt) & gEscapedActorsMask)
         return false;
 
     if (inflictChance >= gameGetInflictRand(100) + 1) {
@@ -340,11 +421,11 @@ bool didInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* s
     return false;
 }
 
-void handleStatusInfliction(CommandSetupEvent* setupEvent, DamageCalculationEvent* srDamageEvent) {
-    auto damageContext = setupEvent.damageContext;
-    auto srDamageContext = setupEvent->srDamageContext;
-    auto& aiContext = *setupEvent.aiContext;
-    u8 targetID = damageContext->originalTarget;
+void handleStatusInfliction(DamageCalculationEvent* srDamageEvent) {
+    auto damageContext = srDamageEvent.damageContext;
+    auto srDamageContext = srDamageEvent->srDamageContext;
+    auto& aiContext = *srDamageEvent.aiContext;
+    u8 tempTarget = damageContext->originalTarget;
     if (damageContext->abilityFlags1 & 1) {
         damageContext->abilityFlags1 |= 0x800000;
         return;
@@ -355,7 +436,7 @@ void handleStatusInfliction(CommandSetupEvent* setupEvent, DamageCalculationEven
     auto& removeStatuses = srDamageContext->toRemoveStatuses;
     auto& toggleStatuses = srDamageContext->toToggleStatuses;
     for (const auto& statusName : toggleStatuses) {
-        auto wasFound = std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName}) != targetStatuses.end();
+        auto wasFound = std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName; }) != targetStatuses.end();
         if (wasFound) {
             removeStatuses.push_back(statusName);
             continue;
@@ -397,7 +478,7 @@ void handleStatusInfliction(CommandSetupEvent* setupEvent, DamageCalculationEven
     targetStatuses.erase(
         std::remove_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
             return std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
-                return (std::find(removeStatuses.begin(), removeStatuses.end(), activeStatus.statusName) != removeStatuses.end())}) != targetStatuses.end()}));
+                return (std::find(removeStatuses.begin(), removeStatuses.end(), activeStatus.statusName) != removeStatuses.end()); }) != targetStatuses.end(); }));
 
     //now that Active Statuses have been synced, set game statuses appropriately
     u32 newTargetStatus = 0;
@@ -407,15 +488,15 @@ void handleStatusInfliction(CommandSetupEvent* setupEvent, DamageCalculationEven
             newTargetStatus& (1 << status.gameIndex);
         }
     }
-    aiContext.actorAIStates[targetID].statusMasks = newTargetStatus;
+    aiContext.actorAIStates[tempTarget].statusMasks = newTargetStatus;
 
     //If no status was inflicted
     if (previousTargetStatus == newTargetStatus) {
         damageContext->abilityFlags1 |= 0x800000;
     }
     else {
-        if (damageContext->combinedStatusMask & newTargetStatus && damageContext->attackerID != targetID)
-            damageContext->actionCounterable |= 1 << targetID;
+        if (damageContext->combinedStatusMask & newTargetStatus && damageContext->attackerID != tempTarget)
+            damageContext->actionCounterable |= 1 << tempTarget;
 
         //Handle the case where death has been inflicted
         if ((newTargetStatus ^ previousTargetStatus) & 1) {
@@ -432,9 +513,9 @@ typedef void(*SRPFN_HANDLEDAMAGEORHEAL)(u32, u32, u32 bool);
 void handleDamage(DamageCalculationEvent* srDamageEvent) {
     auto damageContext = srDamageEvent->damageContext;
     auto& aiContext = *srDamageEvent->aiContext;
-    auto& actorState = aiContext.actorAIStates[damageContext->targetID];
+    auto& actorState = aiContext.actorAIStates[damageContext->tempTarget];
     auto& target34 = *srDamageEvent->targetState->party34;
-    auto& targetTimers = *srDamageEvent->targetState->actorTimers;
+    auto& attackerTimers = *srDamageEvent->targetState->actorTimers;
     auto isHeal = damageContext->abilityFlags2 & 1;
 
     if (!damageContext->currentDamage)
@@ -457,7 +538,7 @@ void handleDamage(DamageCalculationEvent* srDamageEvent) {
     }
 
     //Handle Limit Fill
-    if (damageContext->targetID < 3 && damageContext->attackerID >= 4 && !isHeal && (target34.limitLevelIdx < 4) && !(targetTimers.unkActorFlags & 8)) {
+    if (damageContext->tempTarget < 3 && damageContext->attackerID >= 4 && !isHeal && (target34.limitLevelIdx < 4) && !(attackerTimers.unkActorFlags & 8)) {
         auto limitFill = 256;
         if (damageContext->targetStatusMask & 0x20) {
             limitFill = 512;
@@ -489,8 +570,8 @@ void handleDamageReaction(DamageCalculationEvent* srDamageEvent) {
         }
     }
     else {
-        if (!(damageContext->abilityFlags2 & 1) && damageContext->attackerID != damageContext->targetID)
-            damageContext->actionCounterable |= 1 << damageContext->targetID;
+        if (!(damageContext->abilityFlags2 & 1) && damageContext->attackerID != damageContext->tempTarget)
+            damageContext->actionCounterable |= 1 << damageContext->tempTarget;
 
         if (damageContext->killRecoverDamage == -1)
             damageContext->killRecoverDamage = damageContext->currentDamage;
@@ -519,7 +600,7 @@ void applyDamageCaps(DamageCalculationEvent* srDamageEvent) {
 
     u16 hpDamageCap = 9999;
     u16 mpDamageCap = 999;
-    if (damageContext->targetID >= 3) {
+    if (damageContext->tempTarget >= 3) {
         hpDamageCap = 9999;
         mpDamageCap = 999;
     }
@@ -567,23 +648,23 @@ void applyReflect(DamageCalculationEvent* srDamageEvent) {
     u32* dword_C3F364 = (u32*)(0xC3F364);
     const auto& targetState = *srDamageEvent->srDamageContext->targetState;
     const auto& targetStatuses = targetState.activeStatuses;
-    bool reflectIsActive = std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return activeStatus.statusName = StatusNames::REFLECT}) != targetStatuses.end();
-    bool isReflectable = !(damageContext->specialAbilityFlags & 0x200) && !((1 << damageContext->targetID) & word_C3F37C[0]) && reflectIsActive;
+    bool reflectIsActive = std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return activeStatus.statusName = StatusNames::REFLECT; }) != targetStatuses.end();
+    bool isReflectable = !(damageContext->specialAbilityFlags & 0x200) && !((1 << damageContext->tempTarget) & word_C3F37C[0]) && reflectIsActive;
     if (isReflectable) {
         u8 reflectTarget;
         //For party actors, just reflect to attacker
-        if (isCrossRowReflect(damageContext->attackerID, damageContext->targetID)) {
+        if (isCrossRowReflect(damageContext->attackerID, damageContext->tempTarget)) {
             reflectTarget = damageContext->attackerID;
         }
         else {
-            if (reflectTargets[damageContext->targetID] == -1) {
-                u16 reflectMask = sub_5DB199(damageContext->targetID);
-                reflectTargets[damageContext->targetID] = sub_5C8041(reflectMask);
+            if (reflectTargets[damageContext->tempTarget] == -1) {
+                u16 reflectMask = sub_5DB199(damageContext->tempTarget);
+                reflectTargets[damageContext->tempTarget] = sub_5C8041(reflectMask);
             }
-            reflectTarget = reflectTargets[damageContext->targetID];
+            reflectTarget = reflectTargets[damageContext->tempTarget];
         }
         *dword_C3F364 |= 2u;
-        G_ATTACKER_TARGETS[damageContext->targetID] |= 1 << reflectTarget;
+        G_ATTACKER_TARGETS[damageContext->tempTarget] |= 1 << reflectTarget;
         nullifyAction(srDamageEvent);
         /*if (targetState.actorTimers->innateStatusMask & 0x40000) {
             word_C3F37C[0] |= 1 << damageContext->targetID; //Handle the case where it is auto-reflect, as inflicted by the reflect ring
@@ -595,7 +676,7 @@ void applyReflect(DamageCalculationEvent* srDamageEvent) {
             srDamageEvent->srDamageContext->toRemoveStatuses.push_back(StatusNames::REFLECT);
         }
         damageContext->abilityFlags1 |= 2u;
-        if (damageContext->targetID < 3)
+        if (damageContext->tempTarget < 3)
             damageContext->targetReactionAnimation = 10;
     }
 }
@@ -622,8 +703,8 @@ void applyElementalModifiers(DamageCalculationEvent* setupEvent) {
         if (std::find(srDamageContext.attackElements.begin(), srDamageContext.attackElements.end(), name) != srDamageContext.attackElements.end()) {
             auto res = targetState.battleStats[element.resName];
             if (res == 255) {
-                aiContext.actorAIStates[damageContext.targetID].currentHP = aiContext.actorAIStates[damageContext.targetID].maxHP;
-                aiContext.actorAIStates[damageContext.targetID].currentMP = aiContext.actorAIStates[damageContext.targetID].maxMP;
+                aiContext.actorAIStates[damageContext.tempTarget].currentHP = aiContext.actorAIStates[damageContext.tempTarget].maxHP;
+                aiContext.actorAIStates[damageContext.tempTarget].currentMP = aiContext.actorAIStates[damageContext.tempTarget].maxMP;
                 damageContext.abilityFlags2 = 1;
                 damageContext.abilityFlags1 &= 0xFFFFFFFD;
                 srDamageContext.toAddStatuses.erase(std::remove(srDamageContext.toAddStatuses.begin(), srDamageContext.toAddStatuses.end(), StatusNames::DEATH));

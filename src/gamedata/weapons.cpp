@@ -41,7 +41,7 @@ void initializeWeaponAfflictions(SrWeapon& weapon) {
     auto& statusAttack = weapon.statusAttack;
     auto statusIdx = weapon.gameWeapon.status_attack;
     StatusInfliction infliction{ getStatusIDFromIndex(statusIdx), 63, false, false };
-    statusAttack[getStatusIDFromIndex(statusIdx)] = infliction;
+    statusAttack.push_back(infliction);
 }
 
 SISTERRAY_API SrWeaponData getSrWeapon(u16 modItemID, const char* modName) {

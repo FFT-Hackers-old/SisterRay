@@ -31,8 +31,8 @@ typedef struct {
     u32 field_20;
     u32 field_24;
     u32 field_28;
-    u32 field_2C;
-    u32 field_30;
+    u32 someHPCopy;
+    u32 someMPCopy;
     void *callbackData;
     void *callback;
 } GameHeap;

@@ -28,8 +28,8 @@ SrStatusRegistry::SrStatusRegistry(bool useResistances) {
     SrStatus slow{ EncodedString::from_unicode(StatusNames::SLOW_NAME.c_str()), true, 9, StatNames::SLOW_PEN, StatNames::SLOW_RES };
     slow.neutralizeOnInflict.push_back(StatusNames::HASTE);
     addElement(StatusNames::SLOW, slow);
-    SrStatus sleep{ EncodedString::from_unicode(StatusNames::SLEEP_NAME.c_str()), true, 10, StatNames::SLEEP_PEN, StatNames::SLEEP_RES };
-    addElement(StatusNames::SLEEP, sleep);
+    SrStatus stop{ EncodedString::from_unicode(StatusNames::STOP_NAME.c_str()), true, 10, StatNames::STOP_PEN, StatNames::STOP_RES };
+    addElement(StatusNames::STOP, stop);
     SrStatus frog{ EncodedString::from_unicode(StatusNames::FROG_NAME.c_str()), true, 11, StatNames::FROG_PEN, StatNames::FROG_RES };
     addElement(StatusNames::FROG, frog);
     SrStatus mini{ EncodedString::from_unicode(StatusNames::MINI_NAME.c_str()), true, 12, StatNames::MINI_PEN, StatNames::MINI_RES };

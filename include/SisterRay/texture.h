@@ -58,7 +58,7 @@ typedef struct {
     u32 maxAlphaBits;
     u32 minBitsPerPixel;
     u32 maxBitsPerPixel;
-    u32 someHPCopy;
+    u32 drainedHP;
     u32 paletteCount;					
     u32 paletteEntries;
     u32 bitsPerPixel;
@@ -111,8 +111,8 @@ typedef struct {
     u32 field_20;
     u32 field_24;
     u32 field_28;
-    u32 someHPCopy;
-    u32 someMPCopy;
+    u32 drainedHP;
+    u32 drainedMP;
     u32 innateStatusMask;
     u32 field_38;
     u32 field_3C;

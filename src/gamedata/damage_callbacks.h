@@ -1,6 +1,5 @@
 #ifndef DAMAGE_CALLBACKS_H
 #define DAMAGE_CALLBACKS_H
-#endif // !1
 
 #include <SisterRay/SisterRay.h>
 #include "command_callbacks.h"
@@ -19,7 +18,9 @@ void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent);
 void attemptStatusInfliction(DamageCalculationEvent* srDamageEvent);
 bool didInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* srDamageEvent);
 void handleStatusInfliction(DamageCalculationEvent* srDamageEvent);
+void handleMorph(DamageCalculationEvent* srDamageEvent);
 void handleHealEffects(DamageCalculationEvent* srDamageEvent);
+void handleLimitFill(DamageCalculationEvent* srDamageEvent);
 void calculateHealAmounts(DamageCalculationEvent* srDamageEvent);
 void handleDamage(DamageCalculationEvent* srDamageEvent);
 void handleDamageReaction(DamageCalculationEvent* srDamageEvent);
@@ -27,3 +28,5 @@ void applyDamageCaps(DamageCalculationEvent* srDamageEvent);
 void applyReflect(DamageCalculationEvent* srDamageEvent);
 void nullifyAction(DamageCalculationEvent* srDamageEvent);
 void applyElementalModifiers(DamageCalculationEvent* setupEvent);
+
+#endif 

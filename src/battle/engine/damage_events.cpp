@@ -59,3 +59,40 @@ ImpactEvent* createImpactEvent(DamageEvent* damageEvent, u16 dealtDamage, u16 ac
     impactEvent->currentTargetMP = targetMP;
     return impactEvent;
 }
+
+#define G_ANIMATION_EVENT_QUEUE ((AnimationEvent*)0x9AAD70)
+AnimationEvent* getAnimationEvent(u8 queueIndex) {
+    if (queueIndex > 64)
+        return nullptr;
+    return &(G_ANIMATION_EVENT_QUEUE[queueIndex]);
+}
+
+#define G_CURRENT_ANIMATION_EVENT_QUEUE_IDX (u8*)0xBF2A38
+AnimationEvent* getAnimationEventTop() {
+    return getAnimationEvent(*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX);
+}
+
+AnimationEvent* newAnimEvent() {
+    AnimationEvent* animationEvent = &G_ANIMATION_EVENT_QUEUE[*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX];
+    G_ANIMATION_EVENT_QUEUE[*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX].damageEventQueueIdx = *G_CURRENT_DAMAGE_QUEUE_IDX;
+    animationEvent->commandIndex = 0;
+    animationEvent->spellEffectID = 0;
+    if (*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX < 64)
+        (*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX)++;
+    return animationEvent;
+}
+
+
+AnimationEvent* createAnimEvent(u8 attackerID, u8 activeAllies, u8 animScriptID, u8 commandIdx, u16 actionIdx, u8 spellEffectIdx, u8 specialDamageFlags, u16 cameraData) {
+    auto animationEvent = newAnimEvent();
+    animationEvent->attackerID = attackerID;
+    animationEvent->activeAllies = activeAllies;
+    animationEvent->animationScriptID = animScriptID;
+    animationEvent->commandIndex = commandIdx;
+    animationEvent->spellEffectID = spellEffectIdx;
+    animationEvent->cameraData = cameraData;
+    animationEvent->actionIndex = actionIdx;
+    animationEvent->specialDamageFlags = specialDamageFlags;
+    return animationEvent;
+}
+

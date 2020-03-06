@@ -5,6 +5,7 @@
 #include "../impl.h"
 #include "status_names.h"
 #include "element_names.h"
+#include "damage_callback_utils.h"
 
 void srLoadAbilityData() {
     CommandSetupEvent srEvent = { gDamageContextPtr };
@@ -31,6 +32,7 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
         handleFailedAction(damageContext->displayString);
         return;
     }
+
     if (!(damageContext->commandIndexCopy > 32 || !sub_5DBE6F()))
         return;
 
@@ -125,7 +127,8 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
                         for (u8 targetActorID = 0; targetActorID < 10; ++targetActorID) {
                             if ((1 << targetActorID) & damageContext->targetMask)// calculates main damage for each target
                                 auto gameDamageEvent = newDamageEvent();
-                                DamageCalculationEvent srDamageEvent{ &setupEvent.damageContext, &setupEvent.srDamageContext, &setupEvent.srDamageContext, gameDamageEvent };
+                                DamageCalculationEvent srDamageEvent{ setupEvent.damageContext, setupEvent.srDamageContext, setupEvent.aiContext, gameDamageEvent };
+                                srDamageEvent.srDamageContext->attackerState = gContext.battleActors.getActiveBattleActor(attackerActorID);
                                 calculateDamage(&srDamageEvent, attackerActorID, targetActorID);
                         }
                         if (damageContext->attackHitCount)
@@ -136,12 +139,7 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
                     handleAdditionalEffects(5);
                 }
             }
-            for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
-                if (gActorTimerBlock[actorIdx].someHPCopy)
-                    sub_5DA380(actorIdx, 0);
-                if (gActorTimerBlock[actorIdx].someMPCopy)
-                    sub_5DA380(actorIdx, 1);
-            }
+            handleDrainEffects(setupEvent);
             // This block handles quadra magic
             if (!(*dword_C3F364 & 2)) {
                 if (damageContext->quadCount)
@@ -196,6 +194,62 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
         pushActorAnimationEvent(71);
     if (damageContext->unkDword8 != -1)
         sub_5C7D99(damageContext->unkDword8);
+ }
+
+ void handleDrainEffects(CommandSetupEvent setupEvent) {
+     for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
+         const auto& actorState = gContext.battleActors.getActiveBattleActor(actorIdx);
+         if (actorState.actorTimers->drainedHP)
+             handleActorDrain(setupEvent, actorIdx, false);
+         if (actorState.actorTimers->drainedMP)
+             handleActorDrain(setupEvent, actorIdx, true);
+     }
+ }
+
+ void handleActorDrain(CommandSetupEvent setupEvent, u8 actorIdx, bool drainMP) {
+     auto& aiContext = *setupEvent.aiContext;
+     auto& damageCtx = *setupEvent.damageContext;
+     auto& actorState = gContext.battleActors.getActiveBattleActor(actorIdx);
+     bool isDead = std::find(actorState.activeStatuses->begin(), actorState.activeStatuses->end(), StatusNames::DEATH) != actorState.activeStatuses->end();
+     if (!isDead) {
+         auto animationEvent = createAnimEvent(actorIdx, 1, 46, 0, 0, 0, 0, 0xFFFF);
+         auto damageFlagLocal = 1;
+         auto drainedHP = 0;
+         if (!drainMP) {
+             drainedHP = actorState.actorTimers->drainedHP;
+             actorState.actorTimers->drainedHP = 0;
+         }
+         else{
+             drainedHP = actorState.actorTimers->drainedMP;
+             actorState.actorTimers->drainedMP = 0;
+         }
+         damageCtx.targetID = actorIdx;
+         damageCtx.abilityFlags2 = a2 != 0 ? 4 : 0;
+         if (drainedHP < 0) {
+             drainedHP = -drainedHP;
+             damageCtx.abilityFlags2 |= 1;
+         }
+         bool isMagic = damageCtx.specialAbilityFlags & 4;
+         if (actorIsDamageImmune(aiContext.actorAIStates[actorIdx], actorState, isMagic))
+             drainedHP = 0;
+         damageCtx.currentDamage = drainedHP;
+
+         auto damageEvent = newDamageEvent();
+         DamageCalculationEvent srDamageEvent{setupEvent.damageContext, setupEvent.srDamageContext, setupEvent.aiContext, damageEvent};
+         handleDamage(srDamageEvent);
+         if (actorPosessesStatus(aiContext.actorAIStates[actorIdx], actorState, StatusNames::DEATH)) {
+             damageFlagLocal = 5;
+             damageCtx.wasKilledMask |= 1 << actorIdx;
+         }
+         damageEvent->targetID = actorIdx;
+         damageEvent->attackerID = actorIdx;
+         damageEvent->damagedAnimScriptIdx = 46;
+         damageEvent->specialDamageFlags = damageFlagLocal;
+         damageEvent->targetStatusMask = aiContext.actorAIStates[actorIdx].statusMask;
+         createImpactEvent(damageEvent, damageCtx.currentDamage, damageCtx.abilityFlags2, -1, -1,
+             aiContext.actorAIStates[actorIdx].currentHP, aiContext.actorAIStates[actorIdx].currentHP);
+         damageEvent->targetID = 0xFF;
+     }
  }
 
 void srSetupAction(CommandSetupEvent setupEvent) {

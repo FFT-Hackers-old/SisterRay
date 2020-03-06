@@ -42,7 +42,7 @@ typedef struct {
     u32 field_20;
     u32 shadeMode;
     u32 lightstateAmbient;
-    u32 someHPCopy;
+    u32 drainedHP;
     void *lightstateMaterialPointer;
     u32 srcBlend;
     u32 dstBlend;
@@ -97,7 +97,7 @@ typedef struct {
     u32 numEdges;
     u32 numPolygons;
     u32 field_28;
-    u32 someHPCopy;
+    u32 drainedHP;
     u32 numHundreds;
     u32 numGroups;
     u32 numBoundingBoxes;
@@ -288,7 +288,7 @@ struct _PolygonSet {
     u32 field_C;
     u32 numgroups;
     GraphicsChain field_14;
-    u32 someHPCopy;
+    u32 drainedHP;
     PFilePartHeader* pFilePolygons;
     AuxillaryGFX* auxillaries;
     u32 hasPerGroupAuxillaies;
@@ -337,7 +337,7 @@ typedef struct {
     u16* indices;
     u32 field_24;
     u8* palettes;
-    u32 someHPCopy;
+    u32 drainedHP;
     GraphicsObject* graphicsObject;
 } IndexedVertices;
 #pragma pack(pop)

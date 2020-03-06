@@ -335,9 +335,9 @@ typedef struct {
     GameRotationMatrix rotationMatrix;
     u16 field_26;
     u32 field_28;
-    u16 someHPCopy;
+    u16 drainedHP;
     u16 field_2E;
-    u16 someMPCopy;
+    u16 drainedMP;
     u16 field_32;
     u32 innateStatusMask;
     u32 field_38;

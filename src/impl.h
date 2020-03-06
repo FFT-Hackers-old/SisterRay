@@ -63,8 +63,8 @@ struct SrDamageContext_ {
     std::vector<std::string> toToggleStatuses;
     std::vector<std::string> toRemoveStatuses;
     std::vector<std::string> wereInflictedStatuses;
-    ActorBattleState* attackerState;
-    ActorBattleState* targetState;
+    ActorBattleState attackerState;
+    ActorBattleState targetState;
     bool useActionDamageLimits;
     u16 hpDamageLimit;
     u16 mpDamageLimit;

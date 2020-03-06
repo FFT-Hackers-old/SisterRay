@@ -22,6 +22,179 @@ typedef struct {
 } BattleQueueEntry;
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+typedef struct {
+    u16 vTimerIncrement;       //0x00
+    u16 yurnTimerIncrement;    //0x02
+    u16 charATBValue;          //0x04
+    u16 field_6;               //0x06
+    u16 field_8;
+    u16 CTimerIncrement;       //0xA
+    u8 field_C;
+    u8 field_D;
+    u8 activeCommandsMask;     //0x0D
+    u8 field_F;                //0x0F
+    u8 field_10;               //0x10
+    u8 field_11;               //0x11
+    u8 field_12;
+    u8 field_13;
+    u8 field_14;
+    u8 field_15;               //0x15
+    u8 field_16;               //0x16
+    u8 poisonTick;             //0x17
+    u8 field_18;
+    u8 field_19;
+    u8 field_1A;
+    u8 field_1B;
+    u8 field_1C;
+    u8 field_1D;
+    u8 field_1E;
+    u8 field_1F;
+    u8 field_20;
+    u8 field_21;
+    u8 field_22;
+    u8 field_23;
+    u8 field_24;
+    u8 field_25;
+    u8 field_26;
+    u8 field_27;
+    u8 reflectCount;
+    u8 unkActorFlags;           //0x29
+    u8 field_2A;                //0x2A
+    u8 field_2B;                //0x2B
+    u32 drainedHP;               //0x2C
+    u32 drainedMP;               //0x30
+    u32 innateStatusMask;       //0x34
+    EnemyData* battleEnemyData;               //0x38
+    u16 currentHP;              //0x3C
+    u16 currentMP;              //0x3E
+    u8 field_40;                //0x40
+    u8 field_41;
+    u8 field_42;
+    u8 field_43;
+} ActorTimerData;
+#pragma pack(pop)
+
+#define G_ACTOR_TIMER_ARRAY ((ActorTimerData*)(0x9A8B10))
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 characterID;
+    u8 level;
+    u8 strength;
+    u8 vitality;
+    u8 magic;
+    u8 spirit;
+    u8 dexterity;
+    u8 luck;
+    u8 bonus_strength;
+    u8 bonus_vitality;
+    u8 bonus_magic;
+    u8 bonus_spirit;
+    u8 bonus_dexterity;
+    u8 bonus_luck;
+    u8 activeLimitLevel;
+    u8 limit_bar_progress;
+    char character_name[12];
+    u8 equipped_weapon;
+    u8 equipped_armor;
+    u8 equipped_accessory;
+    u8 outOfBattleStatus;
+    u8 character_row;
+    u8 level_progress;
+    u16 learned_limits;
+    u16 character_kills;
+    u16 limit_1A_uses;
+    u16 limit_2A_uses;
+    u16 limit_3A_uses;
+    u16 current_HP;
+    u16 base_HP;
+    u16 current_MP;
+    u16 base_MP;
+    u8 unknown[4];
+    u16 max_HP;
+    u16 max_MP;
+    u32 current_EXP;
+    u32 equippedWeaponMateria[8]; //This is primarily written to/from here, so this should be relocated if we are to expand 
+    u32 equippedArmorMateria[8];
+    u32 exp_to_next_level;
+} CharacterRecord;
+#pragma pack(pop)
+
+#define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
+
+#pragma pack(push, 1)
+typedef struct {
+    CharacterRecord* characterRecord;
+    u8 specialDamageFlags;
+    u8 limitLevelIdx;
+    u8 field_6;
+    u8 field_7;
+    u16 limitBar;
+    u16 limitBarCopy;
+    u16 currentMP;
+    u16 currentHP;
+    u16 maxMP;
+    u16 maxHP;
+    u16 field_14; //Seems to be HP/MP switch HP
+    u16 field_16; //Seems to be HP/MP switch MP
+    u16 previousSupportMasks[2];
+    u8 limitLevelDivisor;
+    u8 field_1D;
+    u8 field_1E;
+    u8 field_1F;
+    u32 field_20;
+    u32 learnedEnemySkills;
+    u32 knownEnemySkills;
+    u8 drainedHP;
+    u8 field_2D;
+    u8 field_2F;
+    u8 drainedMP;
+    u8 field_31;
+    u8 field_32;
+    u8 field_33;
+}BattleParty34;
+#pragma pack(pop)
+
+#define G_BATTLE_PARTY34_ARRAY  ((BattleParty34*)(0x09A8DB8))
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 characterID; //0x00
+    u8 field_1;    //0x01
+    u8 field_2;    //0x02
+    u8 field_3;    //0x03
+    u8 deathType;    //0x04
+    u8 field_5;       //0x05
+    u16 field_6;    //0x06
+    u32 field_8;   //0x08
+    u32 field_C;   //0x0C
+} BattleParty10;
+#pragma pack(pop)
+
+#define G_BATTLE_PARTY10_ARRAY ((BattleParty10*)0x9A87F4)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 targetFlags; //0x00
+    u8 attackEffectID;    //0x01
+    u8 damageCalculation;    //0x02
+    u8 weaponHitRate;    //0x03
+    u8 impactEffectID;    //0x04
+    u8 criticalRate;       //0x05
+    u16 padding;
+    u16 normalSoundID;
+    u16 critSoundID;
+    u16 missSoundID;
+    u16 attackElementMask;
+    u16 cameraMovement;
+    u16 specialAttackFlags;
+    u32 attackStatusMask;
+} BattleWeaponCtx;
+#pragma pack(pop)
+
+#define G_BATTLE_WEAPON_ARRAY ((BattleWeaponCtx*)0x9A8E54)
+
 //This struct has size 260h and is referenced by the main context ptr
 #pragma pack(push, 1)
 typedef struct {
@@ -89,8 +262,8 @@ typedef struct {
     u32 hitCountCopy; //0xFC
     /*256 unused bytes*/
     u8 padding3[0x100];
-    u32 vTimerBlock; //0x200
-    u32 party34Block; //0x204
+    ActorTimerData* vTimerBlock; //0x200
+    BattleParty34* party34Block; //0x204
     u32 targetID; //0x208
     u32 targetEnemyIndex; //0x20C
     u32 targetDefense; //0x210
@@ -223,52 +396,6 @@ typedef struct {
 
 #define AI_BATTLE_CONTEXT   ((AIBattleContext*)0x9AB0A0)
 
-#pragma pack(push, 1)
-typedef struct {
-    u8 characterID;
-    u8 level;
-    u8 strength;
-    u8 vitality;
-    u8 magic;
-    u8 spirit;
-    u8 dexterity;
-    u8 luck;
-    u8 bonus_strength;
-    u8 bonus_vitality;
-    u8 bonus_magic;
-    u8 bonus_spirit;
-    u8 bonus_dexterity;
-    u8 bonus_luck;
-    u8 activeLimitLevel;
-    u8 limit_bar_progress;
-    char character_name[12];
-    u8 equipped_weapon;
-    u8 equipped_armor;
-    u8 equipped_accessory;
-    u8 outOfBattleStatus;
-    u8 character_row;
-    u8 level_progress;
-    u16 learned_limits;
-    u16 character_kills;
-    u16 limit_1A_uses;
-    u16 limit_2A_uses;
-    u16 limit_3A_uses;
-    u16 current_HP;
-    u16 base_HP;
-    u16 current_MP;
-    u16 base_MP;
-    u8 unknown[4];
-    u16 max_HP;
-    u16 max_MP;
-    u32 current_EXP;
-    u32 equippedWeaponMateria[8]; //This is primarily written to/from here, so this should be relocated if we are to expand 
-    u32 equippedArmorMateria[8];
-    u32 exp_to_next_level;
-} CharacterRecord;
-#pragma pack(pop)
-
-#define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
-
 #pragma pack(push)
 typedef struct {
     u32 flags;
@@ -279,133 +406,6 @@ typedef struct {
 #pragma pack(pop)
 
 #define PLAYER_FLAG_COPIES  ((PlayerFlagCopies*)0x9A8800)
-
-#pragma pack(push, 1)
-typedef struct {
-    u16 vTimerIncrement;       //0x00
-    u16 yurnTimerIncrement;    //0x02
-    u16 charATBValue;          //0x04
-    u16 field_6;               //0x06
-    u16 field_8;
-    u16 CTimerIncrement;       //0xA
-    u8 field_C;
-    u8 field_D;
-    u8 activeCommandsMask;     //0x0D
-    u8 field_F;                //0x0F
-    u8 field_10;               //0x10
-    u8 field_11;               //0x11
-    u8 field_12;
-    u8 field_13;
-    u8 field_14;
-    u8 field_15;               //0x15
-    u8 field_16;               //0x16
-    u8 poisonTick;             //0x17
-    u8 field_18;
-    u8 field_19;
-    u8 field_1A;
-    u8 field_1B;
-    u8 field_1C;
-    u8 field_1D;
-    u8 field_1E;
-    u8 field_1F;
-    u8 field_20;
-    u8 field_21;
-    u8 field_22;
-    u8 field_23;
-    u8 field_24;
-    u8 field_25;
-    u8 field_26;
-    u8 field_27;
-    u8 reflectCount;
-    u8 unkActorFlags;           //0x29
-    u8 field_2A;                //0x2A
-    u8 field_2B;                //0x2B
-    u32 someHPCopy;               //0x2C
-    u32 someMPCopy;               //0x30
-    u32 innateStatusMask;       //0x34
-    EnemyData* battleEnemyData;               //0x38
-    u16 currentHP;              //0x3C
-    u16 currentMP;              //0x3E
-    u8 field_40;                //0x40
-    u8 field_41;
-    u8 field_42;
-    u8 field_43;
-} ActorTimerData;
-#pragma pack(pop)
-
-#define G_ACTOR_TIMER_ARRAY ((ActorTimerData*)(0x9A8B10))
-
-#pragma pack(push, 1)
-typedef struct {
-    CharacterRecord* characterRecord;
-    u8 specialDamageFlags;
-    u8 limitLevelIdx;
-    u8 field_6;
-    u8 field_7;
-    u16 limitBar;
-    u16 limitBarCopy;
-    u16 currentMP;
-    u16 currentHP;
-    u16 maxMP;
-    u16 maxHP;
-    u16 field_14; //Seems to be HP/MP switch HP
-    u16 field_16; //Seems to be HP/MP switch MP
-    u16 previousSupportMasks[2];
-    u8 limitLevelDivisor;
-    u8 field_1D;
-    u8 field_1E;
-    u8 field_1F;
-    u32 field_20;
-    u32 learnedEnemySkills;
-    u32 knownEnemySkills;
-    u8 someHPCopy;
-    u8 field_2D;
-    u8 field_2F;
-    u8 someMPCopy;
-    u8 field_31;
-    u8 field_32;
-    u8 field_33;
-}BattleParty34;
-#pragma pack(pop)
-
-#define G_BATTLE_PARTY34_ARRAY  ((BattleParty34*)(0x09A8DB8))
-
-#pragma pack(push, 1)
-typedef struct {
-    u8 characterID; //0x00
-    u8 field_1;    //0x01
-    u8 field_2;    //0x02
-    u8 field_3;    //0x03
-    u8 deathType;    //0x04
-    u8 field_5;       //0x05
-    u16 field_6;    //0x06
-    u32 field_8;   //0x08
-    u32 field_C;   //0x0C
-} BattleParty10;
-#pragma pack(pop)
-
-#define G_BATTLE_PARTY10_ARRAY ((BattleParty10*)0x9A87F4)
-
-#pragma pack(push, 1)
-typedef struct {
-    u8 targetFlags; //0x00
-    u8 attackEffectID;    //0x01
-    u8 damageCalculation;    //0x02
-    u8 weaponHitRate;    //0x03
-    u8 impactEffectID;    //0x04
-    u8 criticalRate;       //0x05
-    u16 padding;
-    u16 normalSoundID;
-    u16 critSoundID;
-    u16 missSoundID;
-    u16 attackElementMask;
-    u16 cameraMovement;
-    u16 specialAttackFlags;
-    u32 attackStatusMask;
-} BattleWeaponCtx;
-#pragma pack(pop)
-
-#define G_BATTLE_WEAPON_ARRAY ((BattleWeaponCtx*)0x9A8E54)
 
 #pragma pack(push, 1)
 typedef struct {

@@ -4,6 +4,7 @@
 #include "../../party/party_utils.h"
 #include <memory>
 #include "../../impl.h"
+#include "../../gamedata/damage_callback_utils.h"
 
 /*Re-implemented to modularize adding commands to the game*/
 void srHandlePoppedAction(BattleQueueEntry* poppedAction) {

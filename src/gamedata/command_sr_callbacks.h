@@ -24,4 +24,5 @@ void handleActorDrain(CommandSetupEvent& setupEvent, u8 actorIdx, bool drainMP);
 void setupAttackerAnimEvent(CommandSetupEvent& setupEvent, u16 targetMask);
 void setSupportMateriaFlags(CommandSetupEvent& srSetupEvent);
 void srPushSpecialAnimEvent(u16 animationScriptID, CommandSetupEvent& setupEvent);
+
 #endif // !COMMAND_CALLBACKS_H

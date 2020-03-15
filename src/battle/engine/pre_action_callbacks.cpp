@@ -1,6 +1,7 @@
 #include "pre_action_callbacks.h"
 #include "../battle.h"
 #include "../../impl.h"
+#include "../../gamedata/damage_callback_utils.h"
 
 void runPreActionScripts(ActionContextEvent* actionEvent) {
     auto damageContext = actionEvent->damageContext;

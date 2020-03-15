@@ -17,7 +17,7 @@ typedef struct {
 class SrElementRegistry : public SrNamedResourceRegistry<SrElement, std::string> {
 public:
     SrElementRegistry() : SrNamedResourceRegistry<SrElement, std::string>() {}
-    SrElementRegistry(bool useResistances = true);
+    explicit SrElementRegistry(bool useResistances);
 };
 
 void initElements();

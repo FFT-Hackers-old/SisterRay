@@ -30,7 +30,7 @@ typedef struct {
 class SrStatusRegistry : public SrNamedResourceRegistry<SrStatus, std::string> {
 public:
     SrStatusRegistry() : SrNamedResourceRegistry<SrStatus, std::string>() {}
-    SrStatusRegistry(bool useResistances = true);
+    explicit SrStatusRegistry(bool useResistances);
 };
 
 void initStatuses();

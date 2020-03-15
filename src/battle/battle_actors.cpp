@@ -7,15 +7,6 @@
 #define ENEMY_ACTOR_COUNT 6
 #define CHARACTER_COUNT 10
 
-SrBattleActors::SrBattleActors() {
-    for (u8 actorIdx = 0; actorIdx < CHARACTER_COUNT; actorIdx++) {
-        partyActors[actorIdx] = SrPartyBattleActor();
-    }
-    for (u8 enemyIdx = 0; enemyIdx < ENEMY_ACTOR_COUNT; enemyIdx++) {
-        enemyActors[enemyIdx] = SrEnemyBattleActor();
-    }
-}
-
 void SrBattleActors::setActivePartyActor(u8 partyIdx, u8 characterID) {
     if (partyIdx < 3)
         activeParty[partyIdx] = characterID;

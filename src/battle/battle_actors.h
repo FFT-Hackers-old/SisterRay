@@ -60,7 +60,7 @@ struct ActorBattleState_{
 
 class SrBattleActors {
 public:
-    SrBattleActors();
+    SrBattleActors() {}
     ActorBattleState getSrBattleActor(u8 actorIdx);
     ActorBattleState getActiveBattleActor(u8 actorIdx);
     void initializePartyActor(u8 partyIdx, u8 characterID);
@@ -78,7 +78,6 @@ private:
     std::array<SrPartyBattleActor, 10> partyActors;
     std::array<SrEnemyBattleActor, 6> enemyActors;
     std::array<ActorScriptVariables, 10> actorScriptVariables;
-
 };
 
 const SrBattleStat& getSrBattleStat(u8 actorID, std::string statName);

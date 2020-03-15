@@ -18,8 +18,9 @@ typedef struct {
 /*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/
 class SrStatRegistry : public SrNamedResourceRegistry<SrStat, std::string> {
 public:
-    SrStatRegistry(bool initResistances);
-    SrStatRegistry(): SrNamedResourceRegistry<SrStat, std::string>(){}
+
+    SrStatRegistry() : SrNamedResourceRegistry<SrStat, std::string>() {}
+    explicit SrStatRegistry(bool initResistances);
 };
 
 typedef struct {

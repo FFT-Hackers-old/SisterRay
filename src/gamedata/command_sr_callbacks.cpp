@@ -6,6 +6,8 @@
 #include "status_names.h"
 #include "element_names.h"
 #include "damage_callback_utils.h"
+#include "../battle/battle_utils.h"
+#include <algorithm>
 
 void srLoadAbilityData() {
     CommandSetupEvent srEvent = { gDamageContextPtr };
@@ -14,30 +16,32 @@ void srLoadAbilityData() {
 
 typedef void(*PFNSR_VOIDSUB)();
 #define handleCantReach ((PFNSR_VOIDSUB)0x5DA278)
-void srApplyDamage(CommandSetupEvent setupEvent) {
-    auto damageContext = setupEvent.damageContext;
+#define createFinalTargetMask ((PFNSR_VOIDSUB)0x5DC390)
+#define gameCopyEventQueuePositions ((PFNSR_VOIDSUB)0x436C30)
+void srApplyDamage(CommandSetupEvent& srSetupEvent) {
+    auto damageContext = srSetupEvent.damageContext;
     auto& aiContext = *AI_BATTLE_CONTEXT;
-    u32* dword_C3F364 = (u32*)dword_C3F364;
+    u32* G_ACTION_STATE_FLAGS = (u32*)G_ACTION_STATE_FLAGS;
     u16* word_C3F37C = (u16*)0xC3F37C;
     u16* G_ATTACKER_TARGETS = (u16*)0xC3F340;
     u16* G_TEMP_ATTACKER_TARGETS = (u16*)0xC3F368;
     u8* byte_C3F358 = (u8*)0xC3F358;
 
-    *dword_C3F364 = 0;
+    *G_ACTION_STATE_FLAGS = 0;
     u32 localActionCount;
     if (!(damageContext->animationScriptID != -1))
         return;
 
     if (!(damageContext->displayString == -1)) {
-        handleFailedAction(damageContext->displayString);
+        handleFailedAction(srSetupEvent, damageContext->displayString);
         return;
     }
 
-    if (!(damageContext->commandIndexCopy > 32 || !sub_5DBE6F()))
+    if (!(damageContext->commandIndexCopy > 32 || !didActionFail(srSetupEvent)))
         return;
 
     if (damageContext->supportMatFlags)
-        setSupportMateriaFlags(damageContext->supportMatFlags);
+        setSupportMateriaFlags(srSetupEvent);
     damageContext->usedTargetMask = damageContext->targetMask;
     damageContext->abilityPowerCopy = damageContext->abilityPower;
 
@@ -52,9 +56,9 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
                 auto followUpID = damageContext->followUpActions[followUpIdx];
                 damageContext->followUpActions[followUpIdx] = -1;
                 damageContext->absAttackIndex = followUpID;
-                damageContext->sceneActionIndex = damageContext->absAttackIndex;
+                damageContext->sceneAbilityIndex = damageContext->absAttackIndex;
                 damageContext->abilityTargetingFlags = 0xFFF;
-                srLoadAbilityData(setupEvent);
+                srSetupAction(srSetupEvent);
                 //some special flag setting, investigate and replace bit packing trick
                 /*if (followUpID & 0x80) {
                     damageContext->specialAbilityFlags &=0xDFu;
@@ -65,8 +69,8 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
         word_C3F37C[0] = 0;
         damageContext->targetMask = damageContext->usedTargetMask;
         damageContext->hitCountCopy = damageContext->attackHitCount;
-        createFinalTargetMask();
-        handleCantReach();
+        handleTargeting(srSetupEvent); //Reverse/redo in the future
+        handleCantReach(); //Reverse/redo in the future
         if (damageContext->miscActionFlags & 0x80000) {
             for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
                 if ((1 << actorIdx) & damageContext->targetMask) {
@@ -75,12 +79,12 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
                 }
             }
             if (!damageContext->targetMask) {
-                pushActionAnimationEvent(damageContext->animationScriptID);
+                srPushSpecialAnimEvent(damageContext->animationScriptID, srSetupEvent);
                 break;
             }
         }
         if (!damageContext->targetMask) {
-            handleFailedCast(damageContext->displayString);
+            handleFailedAction(srSetupEvent, damageContext->displayString);
             break;
         }
         // Why do this lol?
@@ -88,12 +92,11 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
             G_TEMP_ATTACKER_TARGETS[actorIdx] = 0;
             byte_C3F358[actorIdx] = -1;
         }
-        setDamageFormula();
         G_TEMP_ATTACKER_TARGETS[damageContext->attackerID] = damageContext->targetMask;
-        *dword_C3F364 |= 9u;
-        while (*dword_C3F364 & 1) {
-            if (*dword_C3F364 & 6) {
-                *dword_C3F364 &= 0xFFFFFFFD;
+        *G_ACTION_STATE_FLAGS |= 9u;
+        while (*G_ACTION_STATE_FLAGS & 1) {
+            if (*G_ACTION_STATE_FLAGS & 6) {
+                *G_ACTION_STATE_FLAGS &= 0xFFFFFFFD;
                 if (damageContext->commandIndexCopy != 3)
                     damageContext->activeAllies = 3;
             }
@@ -108,64 +111,39 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
                     damageContext->currentUnitIDTempt = attackerActorID;
                     damageContext->incOnDamageDealt = 0;
                     damageContext->attackHitCount = damageContext->hitCountCopy;
-                    sub_436C30();
-                    createActionAnimationEvent(targetMask);
+                    gameCopyEventQueuePositions();
+                    setupAttackerAnimEvent(srSetupEvent, targetMask);
                     do {
                         bool shouldRandomTarget = false;
                         damageContext->targetMask = targetMask;
                         if (damageContext->attackHitCount)
                             shouldRandomTarget = true;
-                        if (damageContext->quadCount && (damageContext->targetingFlags & 0xC) != 4)
+                        if (damageContext->quadCount && (damageContext->abilityTargetingFlags & 0xC) != 4)
                             shouldRandomTarget = true;
-                        if (damageContext->targetingFlags & 0x80)
+                        if (damageContext->abilityTargetingFlags & 0x80)
                             shouldRandomTarget = true;
                         if (damageContext->commandIndexCopy == 3)
                             shouldRandomTarget = true;
 
                         if (shouldRandomTarget)
-                            damageContext->targetMask = getRandomTarget(damageContext->targetMask);
+                            damageContext->targetMask = getRandomMaskBit(damageContext->targetMask);
                         for (u8 targetActorID = 0; targetActorID < 10; ++targetActorID) {
-                            if ((1 << targetActorID) & damageContext->targetMask)// calculates main damage for each target
-                                auto gameDamageEvent = newDamageEvent();
-                                DamageCalculationEvent srDamageEvent{ setupEvent.damageContext, setupEvent.srDamageContext, setupEvent.aiContext, gameDamageEvent };
+                            if ((1 << targetActorID) & damageContext->targetMask) {
+                                DamageCalculationEvent srDamageEvent{ srSetupEvent.damageContext, srSetupEvent.srDamageContext, srSetupEvent.aiContext, newDamageEvent() };
                                 srDamageEvent.srDamageContext->attackerState = gContext.battleActors.getActiveBattleActor(attackerActorID);
                                 calculateDamage(&srDamageEvent, attackerActorID, targetActorID);
+                            }
                         }
                         if (damageContext->attackHitCount)
                             --damageContext->attackHitCount;
 
                     } while (damageContext->attackHitCount);// for every attackHitCount
-                    unTarget();
-                    handleAdditionalEffects(5);
+                    newDamageEvent()->targetID = 0xFF;
+                    gContext.eventBus.dispatch(POST_ACTION_DAMAGE_CALC, &srSetupEvent);
                 }
             }
-            handleDrainEffects(setupEvent);
-            // This block handles quadra magic
-            if (!(*dword_C3F364 & 2)) {
-                if (damageContext->quadCount)
-                    --damageContext->quadCount;
-                if (damageContext->quadCount) {
-                    u16 targetMask = damageContext->targetMask;
-                    if (damageContext->commandIndexCopy == 3)
-                        targetMask = word_9A8894 & 0x3F0;
-                    if (targetMask) {
-                        for (u8 i = 0; i < 10; ++i) {
-                            if (aiContext.actorAIStates[i].statusMask & 1)
-                                targetMask &= ~(1 << i);
-                        }
-                        G_TEMP_ATTACKER_TARGETS[damageContext->attackerID] = targetMask;
-                        if (!targetMask)
-                            damageContext->quadCount = 0;
-                    }
-                }
-                if (damageContext->quadCount) {
-                    *dword_C3F364 |= 4;
-                }
-                else {
-                    *dword_C3F364 &= 0xFFFFFFFE;
-                }
-            }
-            // End Quadra Magic
+            handleDrainEffects(srSetupEvent);
+            handleQuadraMagic(srSetupEvent);
 
             if (damageContext->miscActionFlags & 0x1000)
                 damageContext->cameraDataSingle = -4;
@@ -191,26 +169,381 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
         }
     }
     if (damageContext->miscActionFlags & 0x10000)
-        pushActorAnimationEvent(71);
-    if (damageContext->unkDword8 != -1)
-        sub_5C7D99(damageContext->unkDword8);
+        srPushSpecialAnimEvent(71, srSetupEvent);
+    if (damageContext->unkDword8 != -1) {
+        auto animEvent = createAnimEvent(10, 2, 1, 0xFF, damageContext->unkDword8, 0xFF, 0, 0xFFFF);
+        animEvent->damageEventQueueIdx = 0xFFFF;
+    }
  }
 
- void handleDrainEffects(CommandSetupEvent setupEvent) {
-     for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
-         const auto& actorState = gContext.battleActors.getActiveBattleActor(actorIdx);
-         if (actorState.actorTimers->drainedHP)
-             handleActorDrain(setupEvent, actorIdx, false);
-         if (actorState.actorTimers->drainedMP)
-             handleActorDrain(setupEvent, actorIdx, true);
+ void setupAttackerAnimEvent(CommandSetupEvent& setupEvent, u16 targetMask) {
+     auto damageContext = setupEvent.damageContext;
+     auto& aiContext = *setupEvent.aiContext;
+     auto& attackerState = setupEvent.srDamageContext->attackerState;
+     u8* byte_8FF1E8 = (u8*)0x8FF1E8;
+     u8* byte_8FF1E9 = (u8*)0x8FF1E9;
+
+     auto animEvent = newAnimEvent();
+     damageContext->targetCount = countTargets(targetMask);
+     animEvent->attackerID = damageContext->attackerID;
+     animEvent->activeAllies = damageContext->activeAllies;
+     animEvent->animationScriptID = damageContext->animationScriptID;
+     if (damageContext->attackerID >= 4 && srActorHasStatus(attackerState, StatusNames::FROG) && animEvent->animationScriptID != 52) {
+         if (damageContext->commandIndexCopy != 32 || damageContext->animationEffectID != 0xFF) {
+             if (damageContext->commandIndexCopy <= 32)
+                 animEvent->animationScriptID = 29;
+         }
+         else {
+             animEvent->animationScriptID = 20;
+         }
+     }
+     if (damageContext->attackerID < 3 && (damageContext->targetCount > 1 || damageContext->miscActionFlags & 0x20000)) {
+         for (u8 i = 0; i < 7; ++i) {
+             if (animEvent->animationScriptID == byte_8FF1E8[2 * i]) {
+                 animEvent->animationScriptID = byte_8FF1E9[2 * i];
+                 break;
+             }
+         }
+     }
+     animEvent->commandIndex = damageContext->commandIndexCopy;
+     animEvent->spellEffectID = damageContext->animationEffectID;
+     if (damageContext->targetCount <= 1)
+         animEvent->cameraData = damageContext->cameraDataSingle;
+     else
+         animEvent->cameraData = damageContext->cameraDataMultiple;
+     animEvent->actionIndex = damageContext->sceneAbilityIndex;
+     animEvent->specialDamageFlags = 0;
+}
+
+
+
+ bool didActionFail(CommandSetupEvent& setupEvent) {
+     bool cannotPerformAction; // [esp+Ch] [ebp-8h]
+     bool didActionFail; // [esp+10h] [ebp-4h]
+
+     auto damageContext = setupEvent.damageContext;
+     auto& aiContext = *setupEvent.aiContext;
+     auto& attackerState = setupEvent.srDamageContext->attackerState;
+
+     didActionFail = false;
+     if (!(srActorHasStatus(attackerState, StatusNames::STOP)) && damageContext->animationScriptID != 52) {
+         cannotPerformAction = false;
+         if (srActorHasStatus(attackerState, StatusNames::SILENCE)) {
+             switch (damageContext->commandIndexCopy) {
+             case 2:
+             case 3:
+             case 0xD:
+             case 0x15:
+             case 0x16:
+                 cannotPerformAction = true;
+                 break;
+             case 0x20:
+                 if (damageContext->MPCost)
+                     cannotPerformAction = true;
+                 break;
+             default:
+                 break;
+             }
+         }
+         if (srActorHasStatus(attackerState, StatusNames::FROG)) {
+             switch (damageContext->commandIndexCopy)
+             {
+             case 1:
+             case 4:
+                 break;
+             case 2:
+             case 0x15:
+                 if (damageContext->absAttackIndex != 10)
+                     cannotPerformAction = true;
+                 break;
+             case 0x20:
+                 if (damageContext->MPCost)
+                     cannotPerformAction = true;
+                 break;
+             default:
+                 cannotPerformAction = true;
+                 break;
+             }
+         }
+         if (cannotPerformAction) {
+             handleFailedAction(setupEvent, -1);
+             didActionFail = true;
+         }
+         else if (attackerState.actorBattleVars->currentMP < damageContext->MPCost) {
+             handleFailedAction(setupEvent, (damageContext->attackerID >= 3) + 91);
+             didActionFail = true;
+         }
+         else {
+             attackerState.actorBattleVars->currentMP -= damageContext->MPCost;
+         }
+     }
+     damageContext->MPCost = 0;
+     return didActionFail;
+ }
+
+ void setSupportMateriaFlags(CommandSetupEvent& srSetupEvent) {
+     auto damageContext = srSetupEvent.damageContext;
+     u8 supportMateriaFlags = srSetupEvent.damageContext->supportMatFlags;
+     if (supportMateriaFlags & 1) {
+         damageContext->miscActionFlags |= 0x80;
+     }
+     if (supportMateriaFlags & 2) {
+         damageContext->miscActionFlags |= 0x40;
+     }
+     if (supportMateriaFlags & 8)
+         damageContext->miscActionFlags |= 4u;
+     if (supportMateriaFlags & 0x10) {
+         damageContext->miscActionFlags |= 8u;
+     }
+     if (supportMateriaFlags & 0xE0)
+         damageContext->MPTurboBoost = 10 * (supportMateriaFlags >> 5);
+ }
+
+
+ void handleFailedAction(CommandSetupEvent& srSetupEvent, u16 strIdx) {
+     auto damageContext = srSetupEvent.damageContext;
+     auto& aiContext = *srSetupEvent.aiContext;
+     u16 stringArgs[2]; // [esp+4h] [ebp-8h]
+     int animScriptID; // [esp+8h] [ebp-4h]
+
+     //TODO modularize this as part of the command object
+     animScriptID = 3;
+     switch (damageContext->commandIndexCopy) {
+     case 2:
+         animScriptID = 56;
+         break;
+     case 3:
+         animScriptID = 54;
+         break;
+     case 0xD:
+         animScriptID = 55;
+         break;
+     case 0x14:
+         animScriptID = 53;
+         break;
+     default:
+         break;
+     }
+
+     const auto& attackerState = srSetupEvent.srDamageContext->attackerState;
+     if (damageContext->attackerID >= 3) {
+         if (strIdx != -1) {
+             stringArgs[0] = damageContext->attackerID;
+             stringArgs[1] = -1;
+             if (attackerState.actorTimers->field_F != 0xFF)
+                 stringArgs[1] = attackerState.actorTimers->field_F;
+             pushDisplayString(damageContext->attackerID, strIdx, 1, (u32*)&stringArgs);
+         }
+     }
+     else {
+         srPushSpecialAnimEvent(animScriptID, srSetupEvent);
+         if (strIdx != -1) {
+             auto animEvent = createAnimEvent(10, 2, 1, 0xFF, strIdx, 0xFF, 0, 0xFFFF);
+             animEvent->damageEventQueueIdx = 0xFFFF;
+             srPushSpecialAnimEvent(59, srSetupEvent);
+         }
+         if (animScriptID == 3) {
+             srPushSpecialAnimEvent(4, srSetupEvent);
+         }
+         
      }
  }
 
- void handleActorDrain(CommandSetupEvent setupEvent, u8 actorIdx, bool drainMP) {
-     auto& aiContext = *setupEvent.aiContext;
-     auto& damageCtx = *setupEvent.damageContext;
+ void srPushSpecialAnimEvent(u16 animationScriptID, CommandSetupEvent& srSetupEvent) {
+     auto damageContext = srSetupEvent.damageContext;
+     auto animEvent = createAnimEvent(
+         damageContext->attackerID,
+         1,
+         animationScriptID,
+         damageContext->commandIndexCopy,
+         damageContext->sceneAbilityIndex,
+         damageContext->animationEffectID,
+         0,
+         0xFFFF
+     );
+     auto damageEvent = newDamageEvent();
+     damageEvent->targetID = damageContext->attackerID;
+     damageEvent->attackerID = damageContext->attackerID;
+     damageEvent->damagedAnimScriptIdx = 51;
+     damageEvent->specialDamageFlags = 0;
+     damageEvent->targetStatusMask = 0;
+     auto terminatorEvent = newDamageEvent();
+     terminatorEvent->targetID = 0xFF;
+ }
+
+ void handleTargeting(CommandSetupEvent& srSetupEvent) {
+     u16 validRowTargets; 
+     u16 validCanTargetMask; 
+     bool targetOppositeRow; 
+     bool pickValidTarget; 
+     signed int v6; 
+     u16 invalidTargetMask; 
+     int v9; 
+     u16 validTargetsMask; 
+     u16* word_9A8894 = (u16*)0x9A8894;
+     u16* word_9A88A2 = (u16*)0x9A88A2;
+     u16* word_9A8896 = (u16*)0x9A8896;
+     u16* word_9A88AA = (u16*)0x9A88AA;
+     u16* word_9A88AE = (u16*)0x9A88AE;
+     u16* word_9A8898 = (u16*)0x9A8898;
+     u16* G_ESCAPED_ACTORS_MASK = (u16*)0x9AAD24;
+
+     auto damageContext = srSetupEvent.damageContext;
+     auto& aiContext = *srSetupEvent.aiContext;
+
+     u8 targetFlags = damageContext->abilityTargetingFlags;
+     if (damageContext->miscActionFlags & 0x1000000) {
+         invalidTargetMask = *word_9A88A2 | *word_9A8896;
+     }
+     else {
+         invalidTargetMask = (*word_9A8894 & *word_9A8896);
+         if (!(damageContext->specialAbilityFlags & 0x100) || !(damageContext->specialAbilityFlags & 0x800))
+             invalidTargetMask |= (~*G_ESCAPED_ACTORS_MASK & *word_9A88A2);
+     }
+     validTargetsMask = damageContext->targetMask & (invalidTargetMask ^ damageContext->targetMask);
+     if (validTargetsMask) {
+         for ( u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
+             if ((1 << actorIdx) & validTargetsMask) {
+                 auto actorState = gContext.battleActors.getActiveBattleActor(actorIdx);
+                 if (actorState.actorTimers->field_C != 0xFF)
+                     damageContext->targetMask |= (1 << actorState.actorTimers->field_C);
+             }
+         }
+     }
+     if (targetFlags) {
+         bool confusionActive = srActorHasStatus(srSetupEvent.srDamageContext->attackerState, StatusNames::CONFUSION);
+         bool manipulateActive = srActorHasStatus(srSetupEvent.srDamageContext->attackerState, StatusNames::MANIPULATE);
+         if (targetFlags & TGT_FLAG_ALL_ROWS) {
+             damageContext->targetMask = (~(*word_9A88A2) & *word_9A8894);
+         }
+         else {
+             v6 = 0;
+             if (targetFlags & TGT_FLAG_START_ENEMIES) {
+                 if (damageContext->attackerID < 4u)
+                     validRowTargets = 15;
+                 else
+                     validRowTargets = 1008;
+             }
+             else {
+                 if (damageContext->attackerID < 4u)
+                     validRowTargets = 1008;
+                 else
+                     validRowTargets = 15;
+             }
+
+             u8 cmdIdx = damageContext->commandIndexCopy;
+             if (cmdIdx != CMD_SUMMON && cmdIdx != CMD_LIMIT) {
+                 if (confusionActive && manipulateActive)
+                     validRowTargets = (~validRowTargets) & 0x3FF;
+                 if (confusionActive) {
+                     damageContext->targetMask = validRowTargets;
+                     if (!(damageContext->miscActionFlags & 0x200))
+                         damageContext->targetMask = getRandomMaskBit(damageContext->targetMask);
+                 }
+             }
+
+             if ((targetFlags & TGT_FLAG_TOGGLE_MULTIPLE & TGT_FLAG_START_MULTIPLE) == 4)
+                 v6 = 1;
+             if (damageContext->quadCount) {
+                 v6 = 1;
+                 targetFlags = targetFlags | TGT_FLAG_START_MULTIPLE;
+             }
+             u16 canTargetMask = 0;
+             if (targetFlags & TGT_FLAG_ONE_ROW) {
+                 canTargetMask &= validRowTargets;
+             }
+             else if (targetFlags & TGT_SHORT_RANGE) {
+                 canTargetMask = (*word_9A8898 & invalidTargetMask);
+             }
+             damageContext->targetMask &= canTargetMask;
+             validCanTargetMask = canTargetMask & validRowTargets;
+             if (!(damageContext->miscActionFlags & 0x200000)) {
+                 if (damageContext->targetMask && countTargets(damageContext->finalTargetMask) > 1 || v6) {
+                     v9 = ((damageContext->targetMask & 0xF) != 0 ? 15 : 1008) & canTargetMask;
+                     if (!(*word_9A88AA & damageContext->targetMask))
+                         v9 &= ~(*word_9A88AA);
+                     if (!(*word_9A88AE & damageContext->targetMask))
+                         v9 &= ~(*word_9A88AE);
+                     damageContext->targetMask = v9;
+                 }
+                 if (!damageContext->targetMask) {
+                     if (targetFlags & TGT_FLAG_START_MULTIPLE && targetFlags & TGT_FLAG_TOGGLE_MULTIPLE && !(damageContext->miscActionFlags & 0x200))
+                         validCanTargetMask = getRandomMaskBit(validCanTargetMask);
+                     damageContext->targetMask = validCanTargetMask;
+                 }
+                 if (!(targetFlags & TGT_FLAG_START_MULTIPLE) || (damageContext->miscActionFlags & 0x100200) == 1049088)
+                     damageContext->targetMask = getRandomMaskBit(damageContext->targetMask);
+             }
+
+             if (*word_9A88AA & damageContext->targetMask && *word_9A88AE & damageContext->targetMask) {
+                 u8 v0 = getRandomNumber();
+                 damageContext->targetMask &= word_9A88AA[v0 & 2];
+                 damageContext->usedTargetMask &= word_9A88AA[v0 & 2];
+             }
+         }
+     }
+     else {
+         damageContext->targetMask = 1 << damageContext->attackerID;
+     }
+     if (!damageContext->finalTargetMask)
+         damageContext->finalTargetMask = damageContext->targetMask;
+ }
+
+ void handleQuadraMagic(CommandSetupEvent& srSetupEvent) {
+     auto damageContext = srSetupEvent.damageContext;
+     auto& aiContext = *srSetupEvent.aiContext;
+     u32* G_ACTION_STATE_FLAGS = (u32*)G_ACTION_STATE_FLAGS;
+     u16* G_ATTACKER_TARGETS = (u16*)0xC3F340;
+     u16* G_TEMP_ATTACKER_TARGETS = (u16*)0xC3F368;
+     u8* byte_C3F358 = (u8*)0xC3F358;
+     u16* word_9A8894 = (u16*)0x9A8894;
+
+     if (!(*G_ACTION_STATE_FLAGS & 2)) {
+         if (damageContext->quadCount)
+             --damageContext->quadCount;
+
+         if (damageContext->quadCount) {
+             u16 targetMask = damageContext->targetMask;
+             if (damageContext->commandIndexCopy == 3)
+                 targetMask = *word_9A8894 & 0x3F0;
+             // Don't target anything that is dead
+             if (targetMask) {
+                 for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
+                     auto actorState = gContext.battleActors.getActiveBattleActor(actorIdx);
+                     auto battleVars = srSetupEvent.aiContext->actorAIStates[actorIdx];
+                     if (srActorHasStatus(actorState, StatusNames::DEATH));
+                         targetMask &= ~(1 << actorIdx);
+                 }
+                 G_TEMP_ATTACKER_TARGETS[damageContext->attackerID] = targetMask;
+                 if (!targetMask)
+                     damageContext->quadCount = 0;
+             }
+         }
+         if (damageContext->quadCount) {
+             *G_ACTION_STATE_FLAGS |= 4;
+         }
+         else {
+             *G_ACTION_STATE_FLAGS &= 0xFFFFFFFE;
+         }
+     }
+     // End Quadra Magic
+ }
+
+ void handleDrainEffects(CommandSetupEvent& srSetupEvent) {
+     for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
+         const auto& actorState = gContext.battleActors.getActiveBattleActor(actorIdx);
+         if (actorState.actorTimers->drainedHP)
+             handleActorDrain(srSetupEvent, actorIdx, false);
+         if (actorState.actorTimers->drainedMP)
+             handleActorDrain(srSetupEvent, actorIdx, true);
+     }
+ }
+
+ void handleActorDrain(CommandSetupEvent& srSetupEvent, u8 actorIdx, bool drainMP) {
+     auto& aiContext = *srSetupEvent.aiContext;
+     auto& damageCtx = *srSetupEvent.damageContext;
      auto& actorState = gContext.battleActors.getActiveBattleActor(actorIdx);
-     bool isDead = std::find(actorState.activeStatuses->begin(), actorState.activeStatuses->end(), StatusNames::DEATH) != actorState.activeStatuses->end();
+     bool isDead = srActorHasStatus(actorState, StatusNames::DEATH);
      if (!isDead) {
          auto animationEvent = createAnimEvent(actorIdx, 1, 46, 0, 0, 0, 0, 0xFFFF);
          auto damageFlagLocal = 1;
@@ -224,7 +557,7 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
              actorState.actorTimers->drainedMP = 0;
          }
          damageCtx.targetID = actorIdx;
-         damageCtx.abilityFlags2 = a2 != 0 ? 4 : 0;
+         damageCtx.abilityFlags2 = drainMP != false ? 4 : 0;
          if (drainedHP < 0) {
              drainedHP = -drainedHP;
              damageCtx.abilityFlags2 |= 1;
@@ -235,9 +568,9 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
          damageCtx.currentDamage = drainedHP;
 
          auto damageEvent = newDamageEvent();
-         DamageCalculationEvent srDamageEvent{setupEvent.damageContext, setupEvent.srDamageContext, setupEvent.aiContext, damageEvent};
-         handleDamage(srDamageEvent);
-         if (actorPosessesStatus(aiContext.actorAIStates[actorIdx], actorState, StatusNames::DEATH)) {
+         DamageCalculationEvent srDamageEvent{srSetupEvent.damageContext, srSetupEvent.srDamageContext, srSetupEvent.aiContext, damageEvent};
+         handleDamage(&srDamageEvent);
+         if (srActorHasStatus(actorState, StatusNames::DEATH)) {
              damageFlagLocal = 5;
              damageCtx.wasKilledMask |= 1 << actorIdx;
          }
@@ -252,7 +585,8 @@ void srApplyDamage(CommandSetupEvent setupEvent) {
      }
  }
 
-void srSetupAction(CommandSetupEvent setupEvent) {
+
+void srSetupAction(CommandSetupEvent& srSetupEvent) {
     i32 sceneAbilityIndex;
     i32 enemyActionIndex;
     u16 elementMask;
@@ -260,7 +594,7 @@ void srSetupAction(CommandSetupEvent setupEvent) {
 
     auto deathSentenceFlag = 0;
     u16 cameraOverrideData = 0xFFFF;
-    auto damageContext = setupEvent.damageContext;
+    auto damageContext = srSetupEvent.damageContext;
     const SrAttack& action = getCommandAction(damageContext->commandIndex, damageContext->relAttackIndex);
     const AttackData& abilityData = action.attackData;
     BattleQueueEntry executingAction = (*(BattleQueueEntry*)0x9A9884);
@@ -269,12 +603,12 @@ void srSetupAction(CommandSetupEvent setupEvent) {
     u16* currentSceneAbilityIDs = (u16*)(0x9A9444);
 
     damageContext->MPCost = -1;
-    setupEvent.srDamageContext->attackStats = action.attackStats;
-    setupEvent.srDamageContext->statusToInflict = action.statusAttack;
-    setupEvent.srDamageContext->attackElements = action.attackElements;
-    setupEvent.srDamageContext->useActionDamageLimits = action.useOverrideLimits;
-    setupEvent.srDamageContext->hpDamageLimit = action.hpDamageLimit;
-    setupEvent.srDamageContext->mpDamageLimit = action.mpDamageLimit;
+    srSetupEvent.srDamageContext->attackStats = action.attackStats;
+    srSetupEvent.srDamageContext->statusToInflict = action.statusAttack;
+    srSetupEvent.srDamageContext->attackElements = action.attackElements;
+    srSetupEvent.srDamageContext->useActionDamageLimits = action.useOverrideLimits;
+    srSetupEvent.srDamageContext->hpDamageLimit = action.hpDamageLimit;
+    srSetupEvent.srDamageContext->mpDamageLimit = action.mpDamageLimit;
 
     switch (damageContext->commandIndexCopy) {
         case 20: {
@@ -323,6 +657,9 @@ void srSetupAction(CommandSetupEvent setupEvent) {
 
     damageContext->abilityHitRate = abilityData.abilityHitRate;
     damageContext->damageFormulaID = abilityData.damageFormula;
+    srSetupEvent.srDamageContext->damageFormula = gContext.damageFormulas.getResource(action.damageFormula);
+    srSetupEvent.srDamageContext->hitFormula = gContext.hitFormulas.getResource(action.hitFormula);
+    srSetupEvent.srDamageContext->damageType = action.damageType;
 
     if (abilityData.elementMask == 0xFFFF)
         elementMask = 0;

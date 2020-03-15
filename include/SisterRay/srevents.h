@@ -56,6 +56,7 @@ typedef enum {
     POST_DAMAGE_FORMULA,
     PRE_DAMAGE_DEALT,
     POST_DAMAGE_DEALT,
+    POST_ACTION_DAMAGE_CALC
 } SrEventType;
 
 
@@ -139,8 +140,16 @@ typedef struct {
 } DrawMateriaDataEvent;
 
 
+typedef enum {
+    PHYSICAL,
+    MAGICAL
+} DamageType;
+
 typedef struct ActorBattleState_ ActorBattleState;
 typedef struct SrDamageContext_ SrDamageContext;
+typedef struct DamageFormula_ DamageFormula;
+typedef struct HitFormula_ HitFormula;
+
 #pragma pack(push, 1)
 typedef struct {
     u8 targetID;

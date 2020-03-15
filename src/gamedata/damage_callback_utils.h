@@ -8,6 +8,9 @@
 #include <string>
 
 bool actorIsDamageImmune(ActorBattleVars battleVars, ActorBattleState srActorState, bool isMagic);
-bool actorPosessesStatus(const ActorBattleVars& battleVars, const ActorBattleState& srActorState, std::string statusName);
+bool srActorHasStatus(const ActorBattleState& srActorState, std::string statusName);
+
+typedef u32(*SRPFN_GAMEGETRANDOMBIT)(u16);
+#define getRandomMaskBit ((SRPFN_GAMEGETRANDOMBIT)0x5C80B5)
 
 #endif 

@@ -32,7 +32,6 @@ extern "C" {
 #include "gamedata/elements.h"
 #include "gamedata/statuses.h"
 #include "gamedata/damage_formulas.h"
-#include "gamedata/hit_formulas.h"
 #include "gamedata/scene_loader.h"
 #include "battle/engine/animation_script_opcode.h"
 #include "inventories/inventory.h"
@@ -68,6 +67,9 @@ struct SrDamageContext_ {
     bool useActionDamageLimits;
     u16 hpDamageLimit;
     u16 mpDamageLimit;
+    DamageType damageType;
+    DamageFormula damageFormula;
+    HitFormula hitFormula;
 };
 
 typedef struct {

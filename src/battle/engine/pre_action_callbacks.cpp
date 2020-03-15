@@ -35,7 +35,9 @@ void initDamageContext(ActionContextEvent* actionEvent) {
     damageContext->attackerStatusMask = actorAIStates[issuingActorID].statusMask;
     damageContext->activeAllies = 1;
     damageContext->animationScriptID = getCommand(damageContext->commandIndex).auxData.animationScriptIndex;
-    damageContext->damageFormulaID = getCommand(damageContext->commandIndex).auxData.damageCalculationByte;
+    actionEvent->srDamageContext->damageFormula = gContext.damageFormulas.getResource(getCommand(damageContext->commandIndex).damageFormula);
+    actionEvent->srDamageContext->hitFormula = gContext.hitFormulas.getResource(getCommand(damageContext->commandIndex).hitFormula);
+    actionEvent->srDamageContext->damageType = getCommand(damageContext->commandIndex).damageType;
     damageContext->miscActionFlags = getCommand(damageContext->commandIndex).auxData.miscCommandFlags;
     damageContext->enabledMagicsIndex = -1;
     damageContext->impactSound = -1;

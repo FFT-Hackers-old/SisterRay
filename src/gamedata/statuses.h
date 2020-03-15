@@ -8,7 +8,7 @@
 typedef struct {
     EncodedString displayName;
     bool isGameStatus;
-    bool gameIndex;
+    u8 gameIndex;
     std::string penName;
     std::string resName;
     bool doesExpire;

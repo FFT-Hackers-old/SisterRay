@@ -267,7 +267,7 @@ typedef struct {
     u32 targetID; //0x208
     u32 targetEnemyIndex; //0x20C
     u32 targetDefense; //0x210
-    u32 currentDamage; //0x214
+    i32 currentDamage; //0x214
     u32 abilityFlags1; //0x218
     u32 unkDWord6; //0x21C
     u32 abilityFlags2; //0x220

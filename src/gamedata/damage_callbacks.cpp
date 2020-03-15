@@ -4,6 +4,7 @@
 #include "../impl.h"
 #include "status_names.h"
 #include "element_names.h"
+#include "damage_callback_utils.h"
 #include <algorithm>
 
 typedef void(*SRPFN_SUB436E92)();
@@ -69,26 +70,17 @@ void runFormulas(DamageCalculationEvent* srDamageEvent) {
     if (srDamageEvent->damageContext->abilityFlags1 & 1)
         return;
 
-    // u8 counter = dword_C069C0[srDamageEvent->damageContext->formulaType];
-    auto hitFormula = gContext.hitFormulas.getResource(srDamageEvent->damageContext->formulaType);
-    auto chosenFormula = gContext.damageFormulas.getResource(srDamageEvent->damageContext->formulaID);
-    /*while (1) {
-        u8 typeOrderArrayIndex = gFormulaExecutionOrderArray[counter++];
-        if (typeOrderArrayIndex == 8)
-            break;
-        gContext.hitFormulas.getResource(typeOrderArrayIndex)(srDamageEvent);
-    }*/
-   if (hitFormula) {
+    auto hitFormula = srDamageEvent->srDamageContext->hitFormula;
+    auto chosenFormula = srDamageEvent->srDamageContext->damageFormula;
+    if (std::find(hitFormula.modifiers.begin(), hitFormula.modifiers.end(), CHECK_ACCURACY) != hitFormula.modifiers.end()) {
        gContext.eventBus.dispatch(PRE_HIT_FORMULA, (void*)srDamageEvent);
-       hitFormula(srDamageEvent);
+       hitFormula.baseFormulaCallback(srDamageEvent);
        gContext.eventBus.dispatch(POST_HIT_FORMULA, (void*)srDamageEvent);
     }
     if (srDamageEvent->damageContext->abilityPower) {
-        if (chosenFormula) {
-            gContext.eventBus.dispatch(PRE_DAMAGE_FORMULA, (void*)srDamageEvent);
-            chosenFormula(srDamageEvent);
-            gContext.eventBus.dispatch(POST_DAMAGE_FORMULA, (void*)srDamageEvent);
-        }
+        gContext.eventBus.dispatch(PRE_DAMAGE_FORMULA, (void*)srDamageEvent);
+        chosenFormula.baseFormulaCallback(srDamageEvent);
+        gContext.eventBus.dispatch(POST_DAMAGE_FORMULA, (void*)srDamageEvent);
     }
 }
 
@@ -169,8 +161,6 @@ void handleSteal(DamageCalculationEvent* srDamageEvent) {
 
 typedef u32(*SRPFN_GETINFLICTRAND)(u32);
 #define gameGetInflictRand (SRPFN_GETINFLICTRAND(0x5C8BDC))
-typedef u32(*SRPFN_GAMEGETRANDOMBIT)(u16);
-#define getRandomMaskBit ((SRPFN_GAMEGETRANDOMBIT)0x5C80B5)
 typedef u8 (*SRPFN_GAMEGETMASKIDX)(u16);
 #define getFirstMaskActiveBit ((SRPFN_GAMEGETMASKIDX)0x5C8041)
 void handleCover(DamageCalculationEvent* srDamageEvent) {
@@ -194,7 +184,7 @@ void handleCover(DamageCalculationEvent* srDamageEvent) {
         && (std::find(toRemove.begin(), toRemove.end(), StatusNames::FROG) != toRemove.end())
         && (std::find(toToggle.begin(), toToggle.end(), StatusNames::FROG) != toToggle.end());
 
-    if (validCoverTarget && !(damageContext.specialAbilityFlags & 4) && !inflictingToad && validCoverCommand) {
+    if (validCoverTarget && srDamageEvent->srDamageContext->damageType == PHYSICAL && !inflictingToad && validCoverCommand) {
         auto candidateCoverers = 0;
         for (u8 partyIdx = 0; partyIdx < 3; ++partyIdx) {
             if (originalTarget == partyIdx)
@@ -317,7 +307,7 @@ void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent) {
     damageContext.targetID = targetID;
     srDamageEvent->srDamageContext->targetState = gContext.battleActors.getActiveBattleActor(targetID);
     damageContext.targetEnemyIndex = -1;
-    damageContext.unkDword10 = 0;
+    //damageContext.unkDword10 = 0;
     damageContext.abilityFlags2 = 0;
     damageContext.targetDefense = 0;
     damageContext.currentDamage = 0;
@@ -463,7 +453,7 @@ void handleStatusInfliction(DamageCalculationEvent* srDamageEvent) {
     for (const auto& activeStatus : targetStatuses) {
         const auto& status = gContext.statuses.getElement(activeStatus.statusName);
         if (status.isGameStatus) {
-            previousTargetStatus& (1 << status.gameIndex);
+            previousTargetStatus &= (1 << status.gameIndex);
         }
     }
     // add every status to be added
@@ -500,7 +490,7 @@ void handleStatusInfliction(DamageCalculationEvent* srDamageEvent) {
     for (const auto& activeStatus : targetStatuses) {
         const auto& status = gContext.statuses.getElement(activeStatus.statusName);
         if (status.isGameStatus) {
-            newTargetStatus& (1 << status.gameIndex);
+            newTargetStatus &= (1 << status.gameIndex);
         }
     }
     aiContext.actorAIStates[tempTarget].statusMask = newTargetStatus;
@@ -582,8 +572,8 @@ void handleMorph(DamageCalculationEvent* srDamageEvent) {
     auto isHeal = damageContext->abilityFlags2 & 1;
 
     if (damageContext->targetID >= 4 && !(targetState.actorTimers->unkActorFlags & 0x10)) {
-        u16 morphItemID = srDamageContext->targetState.enemyData.morphItem;
-        bool canMorph = srDamageContext->targetState.enemyData.canMorph;
+        u16 morphItemID = srDamageContext->targetState.enemyData->morphItem;
+        bool canMorph = srDamageContext->targetState.enemyData->canMorph;
         if (canMorph) {
             if (targetState.party10->deathType < 17)
                 targetState.party10->deathType = 7;
@@ -691,11 +681,11 @@ void applyDamageCaps(DamageCalculationEvent* srDamageEvent) {
     if (damageContext->currentDamage > damageCap)
         damageContext->currentDamage = damageCap;
 
-    if (damageContext->specialAbilityFlags & 4) {
+    if (srDamageEvent->srDamageContext->damageType == PHYSICAL) {
         if (targetBattleVars.stateFlags & 0x200)
             damageContext->currentDamage = 0;
     }
-    else if (targetBattleVars.stateFlags & 0x100) {
+    else if (srDamageEvent->srDamageContext->damageType == MAGICAL) {
         damageContext->currentDamage = 0;
     }
 
@@ -706,6 +696,8 @@ void applyDamageCaps(DamageCalculationEvent* srDamageEvent) {
 
 typedef bool(*SRPFN_GETREFLECTTYPE)(u32, u32);
 #define isCrossRowReflect (SRPFN_GETREFLECTTYPE(0x5DB166))
+typedef bool (*SRPFN_MAKEREFLECTMASK)(u8);
+#define makeReflectMask    ((SRPFN_MAKEREFLECTMASK)0x5DB199)
 void applyReflect(DamageCalculationEvent* srDamageEvent) {
     auto damageContext = srDamageEvent->damageContext;
     auto& aiContext = *srDamageEvent->aiContext;
@@ -725,7 +717,7 @@ void applyReflect(DamageCalculationEvent* srDamageEvent) {
         }
         else {
             if (reflectTargets[damageContext->targetID] == -1) {
-                u16 reflectMask = sub_5DB199(damageContext->targetID);
+                u16 reflectMask = makeReflectMask(damageContext->targetID);
                 reflectTargets[damageContext->targetID] = getFirstMaskActiveBit(reflectMask);
             }
             reflectTarget = reflectTargets[damageContext->targetID];

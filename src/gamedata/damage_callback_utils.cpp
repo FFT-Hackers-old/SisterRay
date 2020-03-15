@@ -11,13 +11,14 @@ bool actorIsDamageImmune(ActorBattleVars battleVars, ActorBattleState srActorSta
     else if (battleVars.stateFlags & 0x100) {
         isDamageImmune = 1;
     }
-    bool immuneStatii = (actorPosessesStatus(battleVars, srActorState, StatusNames::SHIELD) || actorPosessesStatus(battleVars, srActorState, StatusNames::PETRIFY));
+    bool immuneStatii = (srActorHasStatus(srActorState, StatusNames::SHIELD) || srActorHasStatus(srActorState, StatusNames::PETRIFY));
     return isDamageImmune || immuneStatii;
 }
 
 
-bool actorPosessesStatus(const ActorBattleVars& battleVars, const ActorBattleState& srActorState, std::string statusName) {
+bool srActorHasStatus(const ActorBattleState& srActorState, std::string statusName) {
     const auto& status = gContext.statuses.getElement(statusName);
+    const auto& battleVars = *srActorState.actorBattleVars;
     if (status.isGameStatus) {
         bool gameStatusActive = battleVars.statusMask & 1 << status.gameIndex;
         bool srStatusActive = std::find_if(srActorState.activeStatuses->begin(), srActorState.activeStatuses->end(),

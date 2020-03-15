@@ -21,6 +21,8 @@ typedef struct {
     BattleAIData enemyAI;
     std::unordered_map<std::string, SrActorStat> enemyStats;
     std::vector<StealItem> toSteal;
+    bool canMorph;
+    u16 morphItem;
 } SrEnemyData;
 
 typedef struct {

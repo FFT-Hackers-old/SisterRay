@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include <string>
 #include "../party/battle_stats.h"
+#include "damage_formulas.h"
 
 typedef struct {
     AttackData attackData;
@@ -29,6 +30,9 @@ typedef struct {
     bool useOverrideLimits;
     u16 hpDamageLimit;
     u16 mpDamageLimit;
+    DamageType damageType;
+    u16 damageFormula;
+    u16 hitFormula;
 } SrAttack;
 
 class SrAttackRegistry : public SrNamedResourceRegistry<SrAttack, std::string> {

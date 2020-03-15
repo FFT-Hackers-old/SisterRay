@@ -40,5 +40,5 @@ public:
 AnimationScript animScriptFromBuffer(u8* animScriptStart, u16 animScriptLength, u16* trueScriptLength);
 void initAnimationScripts(void* battleLGPBuffer);
 void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader);
-#pragma pack(pop)
+
 #endif // !ANIMATION_SCRIPTS_H

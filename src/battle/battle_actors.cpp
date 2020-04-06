@@ -85,8 +85,10 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     actorBattleVars->damageAnimID = 5;
     actorBattleVars->stateFlags = 8;
     party34->characterRecord = characterRecord;
-    if (!(characterRecord->character_row & 1))
+    if (!(characterRecord->character_row & 1)) {
         actorBattleVars->stateFlags |= 0x40u;
+        actorBattleVars->actorRow = characterRecord->character_row;
+    }
     setPartyStats(partyIdx, partyActor);
     actorBattleVars->backDamageMult = 16;
     actorBattleVars->statusMask = characterRecord->outOfBattleStatus & 0x30;

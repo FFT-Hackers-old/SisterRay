@@ -129,6 +129,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                             damageContext->targetMask = getRandomMaskBit(damageContext->targetMask);
                         for (u8 targetActorID = 0; targetActorID < 10; ++targetActorID) {
                             if ((1 << targetActorID) & damageContext->targetMask) {
+                                srSetupEvent.srDamageContext->targetRow = srSetupEvent.aiContext->actorAIStates[targetActorID].actorRow;
                                 DamageCalculationEvent srDamageEvent{ srSetupEvent.damageContext, srSetupEvent.srDamageContext, srSetupEvent.aiContext, newDamageEvent() };
                                 srDamageEvent.srDamageContext->attackerState = gContext.battleActors.getActiveBattleActor(attackerActorID);
                                 calculateDamage(&srDamageEvent, attackerActorID, targetActorID);
@@ -657,8 +658,11 @@ void srSetupAction(CommandSetupEvent& srSetupEvent) {
 
     damageContext->abilityHitRate = abilityData.abilityHitRate;
     damageContext->damageFormulaID = abilityData.damageFormula;
-    srSetupEvent.srDamageContext->damageFormula = gContext.damageFormulas.getResource(action.damageFormula);
-    srSetupEvent.srDamageContext->hitFormula = gContext.hitFormulas.getResource(action.hitFormula);
+
+    srSetupEvent.srDamageContext->damageFormula = action.damageFormula;
+    srSetupEvent.srDamageContext->dmgFormulaModifiers = action.dmgFormulaModifiers;
+    srSetupEvent.srDamageContext->hitFormula = action.hitFormula;
+    srSetupEvent.srDamageContext->hitFormulaModifiers = action.hitFormulaModifiers;
     srSetupEvent.srDamageContext->damageType = action.damageType;
 
     if (abilityData.elementMask == 0xFFFF)

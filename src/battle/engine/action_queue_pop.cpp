@@ -46,7 +46,7 @@ typedef void(*PFNSRSUB5C7D59)(u8, u32, u8, u32*);
 typedef void(*PFNSRSUB5C8B80)();
 #define incrementRandom     ((PFNSRSUB5C8B80)0x5C8B80)
 
-void preActionHandles(ActionContextEvent actionEvent) {
+void preActionHandles(ActionContextEvent& actionEvent) {
     auto poppedAction = actionEvent.poppedAction;
     auto issuingActorID = actionEvent.issuingActorID;
     u16* gDisplayTextIdx = (u16*)0x9AAD16;
@@ -75,7 +75,7 @@ void preActionHandles(ActionContextEvent actionEvent) {
 typedef void(*PFNSUBSR436CF2)();
 #define setDamageEventFlags   ((PFNSUBSR436CF2)0x436CF2)
 
-void postActionHandles(ActionContextEvent actionEvent) {
+void postActionHandles(ActionContextEvent& actionEvent) {
     auto poppedAction = actionEvent.poppedAction;
     auto issuingActorID = actionEvent.issuingActorID;
     u32* dword_9AD1B4 = (u32*)0x9AD1B4;

@@ -7,6 +7,7 @@
 #include "base_item.h"
 #include <vector>
 #include "statuses.h"
+#include "formulas.h"
 
 #define KERNEL_WEAPON_COUNT 128
 
@@ -18,6 +19,11 @@ typedef struct {
     EquipmentStatBoosts equipEffects;
     std::vector<std::string> attackElements;
     std::vector<StatusInfliction> statusAttack;
+    DamageType damageType;
+    u16 damageFormula;
+    std::unordered_set<DamageModifiers> dmgFormulaModifiers;
+    u16 hitFormula;
+    std::unordered_set<HitModifiers> hitFormulaModifiers;
 } SrWeapon;
  
 class SrWeaponRegistry : public SrNamedResourceRegistry<SrWeapon, std::string> {

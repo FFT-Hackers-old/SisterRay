@@ -33,3 +33,63 @@ bool srActorHasStatus(const ActorBattleState& srActorState, std::string statusNa
             [&](ActiveStatus status) {return status.statusName == statusName; }) != srActorState.activeStatuses->end();
     }
 }
+
+void setActionDidHit(DamageCalculationEvent* dmgEvent, bool didHit) {
+    if (!didHit) {
+        dmgEvent->damageContext->abilityFlags1 &= 1;
+    }
+    else {
+        if (dmgEvent->damageContext->targetStateFlags & 2)
+            dmgEvent->aiContext->actorAIStates[dmgEvent->damageContext->targetID].stateFlags ^= 0x80u;
+    }
+}
+
+bool checkActionDidHit(DamageCalculationEvent* dmgEvent) {
+    return !(dmgEvent->damageContext->abilityFlags1 & 1);
+}
+
+bool isHitFormulaModifierActive(DamageCalculationEvent* srDamageEvent, HitModifiers modifier) {
+    auto& hitModifiers = srDamageEvent->srDamageContext->hitFormulaModifiers;
+    return std::find(hitModifiers.begin(), hitModifiers.end(), modifier) != hitModifiers.end();
+}
+
+bool isDmgFormulaModifierActive(DamageCalculationEvent* srDamageEvent, DamageModifiers modifier) {
+    auto& damageModifiers = srDamageEvent->srDamageContext->dmgFormulaModifiers;
+    return std::find(damageModifiers.begin(), damageModifiers.end(), modifier) != damageModifiers.end();
+}
+
+void setDisplayBarrier(DamageCalculationEvent* srDamageEvent) {
+    srDamageEvent->damageContext->abilityFlags1 |= 0x4000;
+}
+
+void setDisplayMBarrier(DamageCalculationEvent* srDamageEvent) {
+    srDamageEvent->damageContext->abilityFlags1 |= 0x8000;
+}
+
+bool checkDisplayBarrier(const DamageCalculationEvent* srDamageEvent) {
+    return srDamageEvent->damageContext->abilityFlags1 & 0x4000;
+}
+
+bool checkDisplayMBarrier(const DamageCalculationEvent* srDamageEvent) {
+    return srDamageEvent->damageContext->abilityFlags1 & 0x8000;
+}
+
+bool actionIsReflectable(const DamageCalculationEvent* srDamageEvent) {
+    return !(srDamageEvent->damageContext->specialAbilityFlags & 0x200);
+}
+
+bool actionOnlyHitsDead(const DamageCalculationEvent* srDamageEvent) {
+    return !(srDamageEvent->damageContext->specialAbilityFlags & 0x100);
+}
+
+void setStatusWasChanged(DamageCalculationEvent* srDamageEvent, bool wasChanged) {
+    if (!wasChanged) {
+        srDamageEvent->damageContext->abilityFlags1 |= 0x800000;
+        return;
+    }
+    srDamageEvent->damageContext->abilityFlags1 &= (~0x800000);
+}
+
+bool wasStatusChanged(const DamageCalculationEvent* srDamageEvent) {
+    return !(srDamageEvent->damageContext->abilityFlags1 & 0x800000);
+}

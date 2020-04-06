@@ -22,6 +22,7 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         initializeWeaponElements(weapon);
         initializeWeaponAfflictions(weapon);
         populatekernelStatBoosts(weapon.equipEffects, weapon.gameWeapon.stats_to_boost, weapon.gameWeapon.stat_boost_amounts, 4, idx, SR_GEAR_WEAPON);
+        setSrDamageInfo<SrWeapon>(weapon, baseWeapon.damageCalculation);
         addElement(assembleGDataKey(idx), weapon);
         ++idx;
     }

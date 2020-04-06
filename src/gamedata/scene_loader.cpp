@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <memory>
 #include "../EncodedString.h"
+#include "gdata_utils.h"
 
 #define BLOCK_SIZE 0x2000
 #define SCENE_SIZE 0x1E80
@@ -157,6 +158,7 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
             auto attackName = EncodedString((const char *)enemyAttackNames[relAttackIndex].name);
             auto attackData = enemyAttacks[relAttackIndex];
             SrAttack enemyAttack = { attackData, attackID, attackName, EncodedString::from_unicode(""), ENEMY_ATTACK,  };
+            setSrDamageInfo<SrAttack>(enemyAttack, attackData.damageFormula);
             gContext.attacks.addElement(stringID, enemyAttack);
             /*srLogWrite("Enemy Attack:%s added to registry with name:%s, and ID:%i",
                 stringID.c_str(),

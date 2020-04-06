@@ -11,7 +11,9 @@
 #include <unordered_map>
 #include <string>
 #include "../party/battle_stats.h"
-#include "damage_formulas.h"
+#include "formulas.h"
+#include <unordered_set>
+#include "gdata_utils.h"
 
 typedef struct {
     AttackData attackData;
@@ -32,7 +34,10 @@ typedef struct {
     u16 mpDamageLimit;
     DamageType damageType;
     u16 damageFormula;
+    std::unordered_set<DamageModifiers> dmgFormulaModifiers;
     u16 hitFormula;
+    std::unordered_set<HitModifiers> hitFormulaModifiers;
+
 } SrAttack;
 
 class SrAttackRegistry : public SrNamedResourceRegistry<SrAttack, std::string> {

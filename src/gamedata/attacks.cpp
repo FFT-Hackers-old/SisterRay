@@ -1,5 +1,6 @@
 #include "attacks.h"
 #include "../impl.h"
+#include "gdata_utils.h"
 
 #define KERNEL_MAGIC_CUTOFF 56
 #define KERNEL_SUMMON_CUTOFF 72
@@ -72,6 +73,7 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         }
         initializeActionElements(attack);
         initializeStatusAfflictions(attack);
+        setSrDamageInfo<SrAttack>(attack, baseAttack.damageFormula);
         addElement(assembleGDataKey(attack.attackID), attack);
         auto& cmd = gContext.commands.getResource(cmdIdx);
         cmd.actionCount++;
@@ -112,7 +114,7 @@ void initAttacks(SrKernelStream* stream) {
     srLogWrite("kernel.bin: Loaded %lu attacks", (unsigned long)gContext.attacks.resourceCount());
 }
 
- u16 getDefaultMagicUseMulti(u16 actionID) {
+u16 getDefaultMagicUseMulti(u16 actionID) {
      switch (actionID) {
      case 0x1D:
      case 0x20:
@@ -128,6 +130,8 @@ void initAttacks(SrKernelStream* stream) {
      }
      }
 }
+
+
 
  SpellEffect getDefaultMagicMultiEffects(u16 actionID) {
      auto multiEffect = SpellEffect();

@@ -31,7 +31,7 @@ extern "C" {
 #include "gamedata/enemies.h"
 #include "gamedata/elements.h"
 #include "gamedata/statuses.h"
-#include "gamedata/damage_formulas.h"
+#include "gamedata/formulas.h"
 #include "gamedata/scene_loader.h"
 #include "battle/engine/animation_script_opcode.h"
 #include "inventories/inventory.h"
@@ -52,6 +52,11 @@ extern "C" {
 #include <map>
 #include <string>
 #include <memory>
+#include <random>
+
+typedef std::mt19937 PRNG_Type;
+extern PRNG_Type rng;
+extern std::uniform_int_distribution<PRNG_Type::result_type> udist;
 
 typedef struct {
     lua_State*                          L;

@@ -41,6 +41,9 @@ void initializeWeaponElements(SrWeapon& weapon) {
 void initializeWeaponAfflictions(SrWeapon& weapon) {
     auto& statusAttack = weapon.statusAttack;
     auto statusIdx = weapon.gameWeapon.status_attack;
+    if (statusIdx == 0xFF) {
+        return;
+    }
     StatusInfliction infliction{ getStatusIDFromIndex(statusIdx), 63, false, false };
     statusAttack.push_back(infliction);
 }

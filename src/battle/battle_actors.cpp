@@ -166,6 +166,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
     auto actorBattleVars = enemyActor.actorBattleVars;
     auto& actorFormation = *getInBattleFormationActorData(enemyIdx);
     auto enemyModelID = actorFormation.enemyID;
+    auto& aiBattleContext = *AI_BATTLE_CONTEXT;
     actorBattleVars->index = -1;
     actorBattleVars->formationID = -1;
     actorBattleVars->stateFlags = 0;
@@ -181,15 +182,20 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
     if (enemyModelID != 0xFFFF) {
         actorBattleVars->formationID = enemyModelID;
         auto sceneRelativeID = 0;
+        //DebugBreak();
         for (auto idx = 0; idx < 3; ++idx) {
             if (getInBattleFormationEnemyModels()->EnemyIds[idx] == enemyModelID) {
+                srLogWrite("assigning scene relative index to model id");
                 sceneRelativeID = idx;
                 break;
             }
         }
+
+        aiBattleContext.unkMask |= 1 << (enemyIdx + 4);
         byte_9AAD2C[sceneRelativeID]++;
         auto sceneEnemyDataPtr = getInBattleActorEnemyData(sceneRelativeID);
         actorFormation.enemyID = sceneRelativeID;
+        srLogWrite("Enemy Actor %i has model index %i", enemyIdx, sceneRelativeID);
         actorBattleVars->index = sceneRelativeID;
         const auto& formationEnemy = *getInBattleFormationActorData(enemyIdx);
         const auto& srEnemy = gContext.enemies.getResource(getUniqueEnemyID(formationEnemy.enemyID));
@@ -218,7 +224,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         // Initialize the formation relative ID for enemies
         actorBattleVars->characterID = 0;
         for (auto idx = 0; idx < enemyIdx; ++idx) {
-            if (enemyActors[idx + 4].battleActor.gameAIState.formationID == actorBattleVars->formationID)
+            if (enemyActors[idx].battleActor.gameAIState.formationID == actorBattleVars->formationID)
                 ++actorBattleVars->characterID;
         }
         /* for (manipulatedAttackIDs = 0; manipulatedAttackIDs < 3; ++manipulatedAttackIDs) {
@@ -254,8 +260,10 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
             v0[3] = 3;
         }*/
         actorTimers->unkActorFlags = 0;
-        if (byte_9AAD2C[actorFormation.enemyID] > 1)
-            actorTimers->field_F = actorBattleVars->characterID;
+        for (u8 enemyIdx = 0; enemyIdx < 6;  enemyIdx++) {
+            if (byte_9AAD2C[getInBattleFormationActorData(enemyIdx)->enemyID] > 1)
+                enemyActors[enemyIdx].battleActor.gameTimerState.field_F = enemyActors[enemyIdx].battleActor.gameAIState.characterID;
+        }
 
         activateEnemyActor(enemyIdx);
     }
@@ -277,12 +285,14 @@ ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
         actorState.party10 = &(partyActor.party10);
         actorState.party34 = &(partyActor.party34);
         actorState.weaponCtx = &(partyActor.weaponCtx);
+        actorState.activeStatuses = &(partyActors[activeParty[actorIdx]].battleActor.activeStatuses);
         actorState.enemyData = nullptr;
         return actorState;
     }
     actorState.actorBattleVars = &enemyActors[actorIdx - 4].battleActor.gameAIState;
     actorState.actorTimers = &enemyActors[actorIdx - 4].battleActor.gameTimerState;
     actorState.battleStats = &(enemyActors[actorIdx - 4].battleActor.battleStats);
+    actorState.activeStatuses = &(partyActors[actorIdx - 4].battleActor.activeStatuses);
     actorState.party10 = nullptr;
     actorState.party34 = nullptr;
     actorState.weaponCtx = nullptr;
@@ -296,15 +306,19 @@ ActorBattleState SrBattleActors::getActiveBattleActor(u8 actorIdx) {
     actorState.actorTimers = getActorTimerBlock(actorIdx);
     if (actorIdx < 3) {
         actorState.battleStats = &(partyActors[activeParty[actorIdx]].battleActor.battleStats);
+        actorState.activeStatuses = &(partyActors[activeParty[actorIdx]].battleActor.activeStatuses);
         actorState.party10 = getBattleParty10(actorIdx);
         actorState.party34 = getBattleParty34(actorIdx);
         actorState.weaponCtx = getBattleWeaponCtx(actorIdx);
+        actorState.enemyData = nullptr;
         return actorState;
     }
     actorState.battleStats = &(enemyActors[actorIdx - 4].battleActor.battleStats);
+    actorState.activeStatuses = &(enemyActors[actorIdx -4].battleActor.activeStatuses);
     actorState.party10 = nullptr;
     actorState.party34 = nullptr;
     actorState.weaponCtx = nullptr;
+    actorState.enemyData = &enemyActors[actorIdx - 4].enemyData;
     return actorState;
 }
 
@@ -365,9 +379,9 @@ CharacterRecord* getCharacterRecordWithID(u8 characterID) {
     return nullptr;
 }
 
-#define DEX_NORMALIZATION (u16)75
+#define DEX_NORMALIZATION (u16)25
 void initializePlayerActors() {
-    DebugBreak();
+    //DebugBreak();
     u16* G_DEX_NORMALIZATION = (u16*)0x9AAD00;
     auto partyDex = 0;
     auto partyCount = 0;
@@ -389,7 +403,6 @@ void initializeEnemyActors() {
         byte_9AAD2C[sceneRelativeIdx] = 0;
 
     for (auto enemyIdx = 0; enemyIdx < 6; ++enemyIdx) {
-        aiBattleContext.unkMask |= 1 << (enemyIdx + 4);
         gContext.battleActors.initializeEnemyActor(enemyIdx);
     }
 }
@@ -399,8 +412,14 @@ void setPartyStats(u8 partyIdx, ActorBattleState& partyActor) {
     auto& actorBattleVars = partyActor.actorBattleVars;
     auto& stats = srPartyMember.srPartyMember->playerStats;
     auto& battleStats = *partyActor.battleStats;
+
     for (const auto& statElement : gContext.stats.named_registry) {
-        battleStats[statElement.first].statValue = stats[statElement.first].statValue;
+        if (stats.find(statElement.first) != stats.end()) {
+            battleStats[statElement.first].statValue = stats.at(statElement.first).statValue;
+        }
+        else {
+            battleStats[statElement.first].statValue = 0;
+        }
     }
     //Setup old acto battle vars for now
     actorBattleVars->maxHP = battleStats[StatNames::HP].statValue;
@@ -480,7 +499,12 @@ void setEnemyStats(u8 enemyIndex, ActorBattleState& enemyActor) {
     auto& stats = srEnemy.enemyStats;
     auto& battleStats = *enemyActor.battleStats;
     for (const auto& statElement : gContext.stats.named_registry) {
-        battleStats[statElement.first].statValue = stats.at(statElement.first).statValue;
+        if (stats.find(statElement.first) != stats.end()) {
+            battleStats[statElement.first].statValue = stats.at(statElement.first).statValue;
+        }
+        else {
+            battleStats[statElement.first].statValue = 0;
+        }
     }
     if (!actorBattleVars->physAtk)
         actorBattleVars->physAtk = 1;

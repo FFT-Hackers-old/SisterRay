@@ -73,5 +73,20 @@ std::string getElementIDFromIndex(u8 elementIdx) {
     case ELM_SHADOW: {
         return ElementNames::DARK;
     }
+    case ELM_RESTORE: {
+        return ElementNames::RESTORE;
+    }
+    case ELM_CUT: {
+        return ElementNames::SLASH;
+    }
+    case ELM_HIT: {
+        return ElementNames::PIERCE;
+    }
+    case ELM_PUNCH: {
+        return ElementNames::BLUNT;
+    }
+    default: {
+        return ElementNames::BLUNT;
+    }
     }
 }

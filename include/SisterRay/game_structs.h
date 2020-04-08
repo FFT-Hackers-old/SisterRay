@@ -148,6 +148,7 @@ typedef struct {
     u32 knownEnemySkills;
     u8 drainedHP;
     u8 field_2D;
+    u8 field_2E;
     u8 field_2F;
     u8 drainedMP;
     u8 field_31;
@@ -360,7 +361,6 @@ typedef struct {
     u8 bankAccessValue; //10
     u8 dummyByte;   //18
     u8 battleType;  //20
-    u8 unk1; //28
     u8 unk2; //30
     u8 limitLevel; //38
     u8 unk3; //40

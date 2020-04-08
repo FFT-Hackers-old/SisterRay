@@ -14,14 +14,13 @@ void srLoadAbilityData() {
     srSetupAction(srEvent);
 }
 
-typedef void(*PFNSR_VOIDSUB)();
 #define handleCantReach ((PFNSR_VOIDSUB)0x5DA278)
 #define createFinalTargetMask ((PFNSR_VOIDSUB)0x5DC390)
 #define gameCopyEventQueuePositions ((PFNSR_VOIDSUB)0x436C30)
 void srApplyDamage(CommandSetupEvent& srSetupEvent) {
     auto damageContext = srSetupEvent.damageContext;
     auto& aiContext = *AI_BATTLE_CONTEXT;
-    u32* G_ACTION_STATE_FLAGS = (u32*)G_ACTION_STATE_FLAGS;
+    u32* G_ACTION_STATE_FLAGS = (u32*)0xC3F364;
     u16* word_C3F37C = (u16*)0xC3F37C;
     u16* G_ATTACKER_TARGETS = (u16*)0xC3F340;
     u16* G_TEMP_ATTACKER_TARGETS = (u16*)0xC3F368;
@@ -42,6 +41,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
 
     if (damageContext->supportMatFlags)
         setSupportMateriaFlags(srSetupEvent);
+
     damageContext->usedTargetMask = damageContext->targetMask;
     damageContext->abilityPowerCopy = damageContext->abilityPower;
 
@@ -95,16 +95,19 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
         G_TEMP_ATTACKER_TARGETS[damageContext->attackerID] = damageContext->targetMask;
         *G_ACTION_STATE_FLAGS |= 9u;
         while (*G_ACTION_STATE_FLAGS & 1) {
+
             if (*G_ACTION_STATE_FLAGS & 6) {
                 *G_ACTION_STATE_FLAGS &= 0xFFFFFFFD;
                 if (damageContext->commandIndexCopy != 3)
                     damageContext->activeAllies = 3;
             }
+
             // I doubt this needs to be done this way
             for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
                 G_ATTACKER_TARGETS[actorIdx] = G_TEMP_ATTACKER_TARGETS[actorIdx];
                 G_TEMP_ATTACKER_TARGETS[actorIdx] = 0;
             }
+
             for (u8 attackerActorID = 0; attackerActorID < 10; ++attackerActorID) {
                 auto targetMask = G_ATTACKER_TARGETS[attackerActorID];
                 if (targetMask) {
@@ -127,6 +130,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
 
                         if (shouldRandomTarget)
                             damageContext->targetMask = getRandomMaskBit(damageContext->targetMask);
+
                         for (u8 targetActorID = 0; targetActorID < 10; ++targetActorID) {
                             if ((1 << targetActorID) & damageContext->targetMask) {
                                 srSetupEvent.srDamageContext->targetRow = srSetupEvent.aiContext->actorAIStates[targetActorID].actorRow;
@@ -171,6 +175,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
     }
     if (damageContext->miscActionFlags & 0x10000)
         srPushSpecialAnimEvent(71, srSetupEvent);
+
     if (damageContext->unkDword8 != -1) {
         auto animEvent = createAnimEvent(10, 2, 1, 0xFF, damageContext->unkDword8, 0xFF, 0, 0xFFFF);
         animEvent->damageEventQueueIdx = 0xFFFF;
@@ -631,9 +636,11 @@ void srSetupAction(CommandSetupEvent& srSetupEvent) {
         deathSentenceFlag = 1;
 
     if (!((damageContext->miscActionFlags) & 0x400000)) {
-        EnabledSpell* spellData = getSpellSlot(damageContext->attackerID, damageContext->commandIndexCopy, damageContext->relAttackIndex);
-        if (spellData)
-            updatePlayerSpellData(damageContext, spellData, abilityData);
+        if (damageContext->attackerID < 3) {
+            EnabledSpell* spellData = getSpellSlot(damageContext->attackerID, damageContext->commandIndexCopy, damageContext->relAttackIndex);
+            if (spellData)
+                updatePlayerSpellData(damageContext, spellData, abilityData);
+        }
     }
 
     if (deathSentenceFlag) {

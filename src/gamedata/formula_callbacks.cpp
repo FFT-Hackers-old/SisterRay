@@ -20,6 +20,9 @@ void applyBarrierDamageModifier(DamageCalculationEvent* srDamageEvent) {
 }
 
 void applySplitDamageModifier(DamageCalculationEvent* srDamageEvent) {
+    if (!isDmgFormulaModifierActive(srDamageEvent, APPLY_SPLIT))
+        return;
+
     if (srDamageEvent->damageContext->targetCount > 1) {
         if (srDamageEvent->damageContext->abilityTargetingFlags & 0x80)
             srDamageEvent->damageContext->currentDamage = (srDamageEvent->damageContext->currentDamage * 2) / 3;
@@ -38,12 +41,35 @@ void applySadnessModifier(DamageCalculationEvent* srDamageEvent) {
     }
 }
 
-void srApplyRangeModifier(DamageCalculationEvent* srDamageEvent) {
+void applyRangeModifier(DamageCalculationEvent* srDamageEvent) {
+    if (!isDmgFormulaModifierActive(srDamageEvent, APPLY_RANGE)) 
+        return;
+
+    i16 attackerRow = srDamageEvent->srDamageContext->attackerRow;
+    i16 targetRow = -srDamageEvent->srDamageContext->targetRow;
+    i16 row_difference = (attackerRow - targetRow) - 2;
+    i16 penalty = .1 * row_difference;
+
+    if (srDamageEvent->damageContext->abilityTargetingFlags & TGT_SHORT_RANGE) {
+        srDamageEvent->damageContext->currentDamage *= (1 - penalty);
+    }
+}
+
+void applyFuryModifier(DamageCalculationEvent* srDamageEvent) {
+    if (srActorHasStatus(srDamageEvent->srDamageContext->targetState, StatusNames::FURY)) {
+        srDamageEvent->srDamageContext->hitChance_ *= 0.8f;
+    }
+}
+
+void applyRangeHitModifier(DamageCalculationEvent* srDamageEvent) {
+    if (!isHitFormulaModifierActive(srDamageEvent, APPLY_RANGE_HIT))
+        return;
+
     i16 attackerRow = srDamageEvent->srDamageContext->attackerRow;
     i16 targetRow = -srDamageEvent->srDamageContext->targetRow;
     i16 row_difference = (attackerRow - targetRow) - 2;
     i16 penalty = .1 * row_difference;
     if (srDamageEvent->damageContext->abilityTargetingFlags & TGT_SHORT_RANGE) {
-        srDamageEvent->damageContext->currentDamage *= penalty;
+        srDamageEvent->srDamageContext->hitChance_ *= (1 - penalty);
     }
 }

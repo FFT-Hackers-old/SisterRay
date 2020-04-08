@@ -175,5 +175,8 @@ std::string getStatusIDFromIndex(u8 statusIdx) {
     case STS_IMPRISON_IDX: {
         return StatusNames::IMPRISON;
     }
+    default: {
+        return StatusNames::DEATH;
+    }
     }
 }

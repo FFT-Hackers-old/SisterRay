@@ -241,7 +241,7 @@ typedef struct {
 } ApplySupportEvent;
 
 typedef void(*SRPFNCMDSELECTCALLBACK)(SelectCommandEvent*);
-typedef void(*SRPFNCOMMANDSETUP)(CommandSetupEvent);
+typedef void(*SRPFNCOMMANDSETUP)(CommandSetupEvent&);
 
 #pragma pack(push, 1)
 typedef struct {

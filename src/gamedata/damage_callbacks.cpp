@@ -12,8 +12,7 @@ typedef void(*SRPFN_SUB436E92)();
 void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 targetID) {
     auto damageContext = srDamageEvent->damageContext;
     auto& aiContext = *srDamageEvent->aiContext;
-    auto& gameDamageEvent = *newDamageEvent();
-    srDamageEvent->gameDamageEvent = &gameDamageEvent;
+    auto& gameDamageEvent = *srDamageEvent->gameDamageEvent;
     gameDamageEvent.targetID = targetID;
     gameDamageEvent.attackerID = attackerID;
     gameDamageEvent.specialDamageFlags = 0;
@@ -89,8 +88,12 @@ void runFormulas(DamageCalculationEvent* srDamageEvent) {
     }
     if (srDamageEvent->damageContext->abilityPower) {
         gContext.eventBus.dispatch(PRE_DAMAGE_FORMULA, (void*)srDamageEvent);
+        srLogWrite("Calculating damage using a damage formula: attacker: %i, target %i",
+            srDamageEvent->damageContext->attackerID, srDamageEvent->damageContext->targetID);
         damageFormula.baseFormulaCallback(srDamageEvent);
+        srLogWrite("Formula Damage: %i", srDamageEvent->damageContext->currentDamage);
         gContext.eventBus.dispatch(POST_DAMAGE_FORMULA, (void*)srDamageEvent);
+        srLogWrite("Formula Damage after modifiers: %i", srDamageEvent->damageContext->currentDamage);
     }
 }
 
@@ -180,6 +183,7 @@ void handleCover(DamageCalculationEvent* srDamageEvent) {
     u8 originalTarget = damageEvent.targetID;
     u16* word_9A88AA = (u16*)(0x9A88AA);
     u16 someMask = 0;
+    srLogWrite("Handling Action Cover");
     for (u8 partyIdx = 0; partyIdx < 3; ++partyIdx) {
         someMask = word_9A88AA[partyIdx];
         if ((1 << originalTarget) & someMask)
@@ -208,6 +212,7 @@ void handleCover(DamageCalculationEvent* srDamageEvent) {
 
             if (!(actorState.actorTimers->unkActorFlags & 8) && (1 << partyIdx) & someMask && !(aiContext.actorAIStates[partyIdx].statusMask & 0x86805C45)) {
                 u8 coverChance = partyState.gamePartyMember->coverChance;
+                srLogWrite("actor %i has coverChance %i", damageContext.attackerID, coverChance);
                 if (coverChance > gameGetInflictRand(100))
                     candidateCoverers |= 1 << partyIdx;
             }
@@ -317,9 +322,11 @@ void handleDeathImpactSetup(DamageCalculationEvent* srDamageEvent) {
 
 void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent) {
     auto& damageContext = *srDamageEvent->damageContext;
-    auto& targetBattleVars = *srDamageEvent->srDamageContext->targetState.actorBattleVars;
 
     damageContext.targetID = targetID;
+    srDamageEvent->srDamageContext->targetState = gContext.battleActors.getActiveBattleActor(damageContext.targetID);
+    auto& targetBattleVars = *srDamageEvent->srDamageContext->targetState.actorBattleVars;
+
     srDamageEvent->srDamageContext->targetState = gContext.battleActors.getActiveBattleActor(targetID);
     damageContext.targetEnemyIndex = -1;
     //damageContext.unkDword10 = 0;

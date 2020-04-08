@@ -12,6 +12,7 @@
 #define ELEMENT_COUNT 16
 void srSetupAction(CommandSetupEvent& setupEvent);
 void srLoadAbilityData();
+void srApplyDamage(CommandSetupEvent& srSetupEvent);
 void initializeLimitContext(DamageCalcStruct* damageContext);
 void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellData, const AttackData& abilityData);
 void setStatusInflictionData(DamageCalcStruct* damageContext, i32 statusInflictionByte, i32 inflictedStatusMask);

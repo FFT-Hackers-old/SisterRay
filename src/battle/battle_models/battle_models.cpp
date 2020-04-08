@@ -13,6 +13,7 @@ BattleModel* srCreateModel(u32 readTypeFlag, u32 weaponModelID, ModelAAHeader *a
     BattleModel *modelData;
     char FF7Directory[204];
     u32 animationsCount;
+    srLogWrite("loading battle model: %s", filename);
 
     if (readTypeFlag)
         noLGPgetDirectory(&fileContext->lgpContext, FF7Directory);
@@ -76,7 +77,7 @@ typedef BattleModel*(*SRPFNSUB5E1AD2)(i32, i32, UnkModelLoadStruct*, FileContext
 #define getBattleModel         ((SRPFNSUB5E1AD2)0x5E1AD2)
 
 /*This now saves the model that was set keyed by actor index for later use*/
-BattleModel* srSetPlayerModel(i32 a1, i32 a2, u8 actorIndex, char *filename) {
+BattleModel* srSetPlayerModel(i32 a1, i32 a2, u8 modelArrayIdx, char *filename) {
     srLogWrite("Inside srSetPlayerModel");
     UnkModelLoadStruct structBuffer;
     UnkModelLoadStruct *unkStructPtr; 
@@ -88,20 +89,21 @@ BattleModel* srSetPlayerModel(i32 a1, i32 a2, u8 actorIndex, char *filename) {
     initializeFileContext(&fileContext);
     unkStructPtr->field_10 = a1;
     unkStructPtr->field_14 = a2;
-
-    getSrPartyMember(actorIndex).srPartyMember->modelName = std::string(filename);
+    if (modelArrayIdx < 3) {
+        getSrPartyMember(modelArrayIdx).srPartyMember->modelName = std::string(filename);
+    }
     //The following code runs if a model is being swapped
-    if (BATTLE_MODEL_PTRS[actorIndex]) {
-        freeOldModel(BATTLE_MODEL_PTRS[actorIndex]);
-        BATTLE_MODEL_PTRS[actorIndex] = nullptr;
+    if (BATTLE_MODEL_PTRS[modelArrayIdx]) {
+        freeOldModel(BATTLE_MODEL_PTRS[modelArrayIdx]);
+        BATTLE_MODEL_PTRS[modelArrayIdx] = nullptr;
         for (auto partyIdx = 0; partyIdx < 3; ++partyIdx) {
-            if (BATTLE_MODEL_PTRS[actorIndex] == BATTLE_MODEL_STATE_BIG_ARRAY[partyIdx].modelDataPtr)
+            if (BATTLE_MODEL_PTRS[modelArrayIdx] == BATTLE_MODEL_STATE_BIG_ARRAY[partyIdx].modelDataPtr)
                 BATTLE_MODEL_STATE_BIG_ARRAY[partyIdx].modelDataPtr = nullptr;
         }
     }
     //The following code sets the 7 models that are active for the battle
-    modelDataPtr = getBattleModel(0, actorIndex, unkStructPtr, &fileContext, filename);
+    modelDataPtr = getBattleModel(0, modelArrayIdx, unkStructPtr, &fileContext, filename);
     if (modelDataPtr)
-        BATTLE_MODEL_PTRS[actorIndex] = modelDataPtr;
+        BATTLE_MODEL_PTRS[modelArrayIdx] = modelDataPtr;
     return modelDataPtr;
 }

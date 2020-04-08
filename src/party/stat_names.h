@@ -30,6 +30,7 @@ namespace StatNames {
     const std::string WEAPON_MAGIC = "WPNMATK";
     const std::string EVADE = "PEV";
     const std::string MEVADE = "MEV";
+    const std::string MAGIC_ACCURACY = "MAGHIT";
 
     const std::string WEAPON_ATTACK_NAME = "Weapon Atk";
     const std::string WEAPON_ACCURACY_NAME = "Weapon Hit";
@@ -38,6 +39,7 @@ namespace StatNames {
     const std::string WEAPON_MAGIC_NAME = "M.Attack";
     const std::string EVADE_NAME = "Evade";
     const std::string MEVADE_NAME = "M.Evade";
+    const std::string MAGIC_ACCURACY_NAME = "Magic Acc.";
 
     const std::string SLASH_ARM = "SLASHRES";
     const std::string PIERCE_ARM = "PIERCERES";

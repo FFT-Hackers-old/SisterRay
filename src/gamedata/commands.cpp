@@ -1,6 +1,7 @@
 #include "commands.h"
 #include "../impl.h"
 #include "gdata_utils.h"
+#include "damage_callback_utils.h"
 
 /*No patched offsets are needed here, so let's unify this*/
 SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceRegistry<SrCommand, std::string>() {
@@ -91,6 +92,7 @@ void setCommandAction(const std::string commandKey, const std::string actionKey,
 
 void runSetupCallbacks(ActionContextEvent& actionEvent) {
     CommandSetupEvent setupEvent = { actionEvent.damageContext, actionEvent.srDamageContext, actionEvent.battleAIContext };
+    setupEvent.srDamageContext->attackerState = gContext.battleActors.getActiveBattleActor(actionEvent.damageContext->attackerID);
     auto& callbacks = getCommand(actionEvent.damageContext->commandIndex).setupCallbacks;
     for (auto callback : callbacks) {
         callback(setupEvent);

@@ -9,6 +9,8 @@ typedef void(*PFNSR_DAMAGECALLBACK)(DamageCalculationEvent*);
 
 typedef enum {
     APPLY_BARRIERS,
+    APPLY_SPLIT,
+    APPLY_RANGE,
     IGNORE_DEFENSE,
     CAN_CRIT
 } DamageModifiers;
@@ -16,6 +18,7 @@ typedef enum {
 typedef enum {
     CHECK_ACCURACY,
     ALWAYS_HIT,
+    APPLY_RANGE_HIT
 } HitModifiers;
 
 struct DamageFormula_ {

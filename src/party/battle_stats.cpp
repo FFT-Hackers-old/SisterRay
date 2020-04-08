@@ -35,6 +35,8 @@ SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<S
     addElement(StatNames::EVADE, pev);
     SrStat mev = { EncodedString::from_unicode(StatNames::MEVADE_NAME.c_str()), 255, 0, false };
     addElement(StatNames::MEVADE_NAME, mev);
+    SrStat magHit = { EncodedString::from_unicode(StatNames::MAGIC_ACCURACY_NAME.c_str()), 255, 0, false };
+    addElement(StatNames::MAGIC_ACCURACY, magHit);
 
 
     SrStat pen = { EncodedString::from_unicode(ElementNames::FIRE_NAME.c_str()), 100, 0, false };

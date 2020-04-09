@@ -277,5 +277,9 @@ typedef void(*pfnsub6DC1EB)(void);
 typedef u32(*pfnsub41AB67)(u32);
 #define sub_41AB67                ((pfnsub41AB67)0x41AB67)
 
+//String display needs to be reworked, it is reliant on the kernel
+typedef void(*PFNSRSUB5C7D59)(u8, u32, u8, u32*);
+#define pushDisplayString   ((PFNSRSUB5C7D59)0x5C7D59)
+
 // const pfnsub6E59BC sub_deez_nuts = ((pfnsub6E59BC)0x6E59BC);
 #endif

@@ -42,8 +42,8 @@ typedef struct {
     u32 field_24;
     u32 field_28;
     u32 loadWeapon;
-    u32 field_30;
-    u32 field_34;
+    u32 someMPCopy;
+    u32 statusImmuneMask;
     u32 field_38;
     u32 field_3C;
     u32 field_40;
@@ -67,7 +67,7 @@ typedef struct {
     u32 field_20;
     u32 weaponCount;
     u32 weaponAnimAcount;
-    u32 field_2C;
+    u32 someHPCopy;
     AABone* boneDataPtr;
 } ModelAAHeader;
 

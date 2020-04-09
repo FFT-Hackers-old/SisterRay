@@ -25,7 +25,7 @@ typedef struct {
     u8 commandFlags;
     u8 allCount;
     u8 supportMatFlags;
-} EnabledCommandStruct;
+} EnabledCommand;
 #pragma pack(pop)
 
 /*This contains a bit vector of flags for spells*/
@@ -87,10 +87,10 @@ typedef struct {
     u16 limitGuage;
     u16 barrierGauge; //0x1C
     u16 mBarrierGauge; //0x1E
-    u8 unkbyte; //0x20
+    u8 activeLimitLevel; //0x20
     u8 commandColumns; //0x21
-    u8 unknownDiviosr; //0x22
-    u8 commandRows; //0x23
+    u8 unknownDivisor; //0x22
+    u8 actorFlags; //0x23
     u8 unknown24bitInts[24]; //0x24
     u16 attackElementsMask; //0x3C
     u16 halvedElementsMask; //003E
@@ -98,7 +98,7 @@ typedef struct {
     u16 absorbeElementsMask; //0x42
     u32 attackStatusesMask; //0x44
     u32 immuneStatusesMask; //0x48
-    EnabledCommandStruct enabledCommandArray[16]; //0x4C
+    EnabledCommand enabledCommandArray[16]; //0x4C
     u8 enabledLimitBytes[8]; //0xAC
     AttackData enabledLimitData[3]; //0xB4
     EnabledSpell enabledMagicsData[54]; //0x108
@@ -112,10 +112,10 @@ typedef struct {
     u8 encounterRate;
     u8 chocoboChance;
     u8 preEmptiveChance;
-} ActivePartyMemberStruct;
+} PartyMember;
 #pragma pack(pop)
 
-#define PARTY_STRUCT_ARRAY ((ActivePartyMemberStruct*)0xDBA498)
+#define PARTY_STRUCT_ARRAY ((PartyMember*)0xDBA498)
 
 #pragma pack(push, 1)
 typedef struct {

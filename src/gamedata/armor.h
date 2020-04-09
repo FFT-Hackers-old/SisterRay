@@ -5,20 +5,25 @@
 #include "../sr_named_registry.h"
 #include "game_data_interface.h"
 #include "base_item.h"
+#include "game_data_interface.h"
 
 #define KERNEL_ARMOR_COUNT 32
 
-class SrArmorRegistry : public SrNamedResourceRegistry<ArmorData, std::string> {
+typedef struct {
+    ArmorData gameArmor;
+    AuxArmorData auxData;
+    EncodedString armorName;
+    EncodedString armorDescription;
+    EquipmentStatBoosts equipEffects;
+} SrArmor;
+
+class SrArmorRegistry : public SrNamedResourceRegistry<SrArmor, std::string> {
 public:
-    SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<ArmorData, std::string>(stream) {}
-    SrArmorRegistry() : SrNamedResourceRegistry<ArmorData, std::string>() {}
+    SrArmorRegistry(SrKernelStream* stream);
+    SrArmorRegistry() : SrNamedResourceRegistry<SrArmor, std::string>() {}
 };
 
-class SrAuxArmorRegistry : public SrNamedResourceRegistry<AuxArmorData, std::string> {
-public:
-    SrAuxArmorRegistry() : SrNamedResourceRegistry<AuxArmorData, std::string>() {}
-};
 
-void initializeAuxArmorRegistry();
+void initializeArmorElements(SrArmor& armor, u16 relativeID);
 
 #endif

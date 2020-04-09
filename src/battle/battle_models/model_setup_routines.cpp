@@ -184,7 +184,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
     if (!(modelState.field_25 & 4)) {
         sub_66335F(modelState.field_28, modelState.unkActorFlags, modelState.field_2A);
         
-        auto actorDataPtr = getActivePartyMember(actorIdx);
+        auto actorDataPtr = getGamePartyMember(actorIdx);
         if (!actorDataPtr)
             return;
 
@@ -233,7 +233,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         modelData->unk1 = 0;
         modelData->unk2 = 0;
 
-        std::string& modelName = gContext.party.getElement(getPartyKey(actorIdx)).modelName;
+        std::string& modelName = getSrPartyMember(actorIdx).srPartyMember->modelName;
         u16 weaponOffset = gContext.battleAnimations.getElement(modelName).modelAnimationCount;
         playWeaponAnimation(modelState.setForLimitBreaks, modelState.tableRelativeModelAnimIdx + weaponOffset, modelState.currentPlayingFrame, weaponModelID, modelData);
         Matrix* matrix = getMatrix(0, weaponDataPtr->bonesArray->parts->part->polygonSet->matrixSet);

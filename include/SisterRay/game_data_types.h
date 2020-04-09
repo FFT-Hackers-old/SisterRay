@@ -25,27 +25,9 @@ typedef enum {
 
 typedef enum {
     SR_GEAR_WEAPON,
-    SR_GEAR_ARMOR
+    SR_GEAR_ARMOR,
+    SR_GEAR_ACCESSORY
 } SrGearType;
-
-typedef struct {
-    u32 sign;
-    u16 statIndex;
-    u16 amount;
-    u16 percentAmount;
-} StatBoost;
-
-typedef struct {
-    StatBoost strBoost;
-    StatBoost vitBoost;
-    StatBoost magBoost;
-    StatBoost magDefBoost;
-    StatBoost dexBoost;
-    StatBoost luckBoost;
-    StatBoost maxHPBoost;
-    StatBoost maxMPBoost;
-    StatBoost coverChance;
-} ActorStatBoosts;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -141,36 +123,36 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u8      target_flags;
-    u8      attack_effect_id;
-    u8      damage_calculation;
+    u8      targetFlags;
+    u8      attackEffectID;
+    u8      damageCalculation;
     u8      unused_byte;
     u8      weapon_strength;
     u8      status_attack;
     u8      materia_growth;
-    u8      critical_rate;
-    u8      weapon_hit_rate;
+    u8      criticalRate;
+    u8      weaponHitRate;
     u8      weapon_model;
     u8      padding;
-    u8      sound_access_mask;
-    u16     camera_movement;
+    u8      soundAccessMask;
+    u16     cameraMovement;
     u16     equip_mask;
-    u16     attack_element;
+    u16     attackElementMask;
     u16     unknown;
     u8      stats_to_boost[4];
     u8      stat_boost_amounts[4];
     u8      materia_slots[8];
-    u8      normal_sound_id;
-    u8      crit_sound_id;
-    u8      miss_sound_id;
-    u8      impact_effect_id;
-    u16     special_attack_flags;
+    u8      normalSoundID;
+    u8      critSoundID;
+    u8      missSoundID;
+    u8      impactEffectID;
+    u16     specialAttackFlags;
     u16     restriction_mask;
 } WeaponData;
 #pragma pack(pop)
 
 typedef struct {
-    ActorStatBoosts boosts;
+    u16 stagger;
 } AuxWeaponData;
 
 typedef struct {
@@ -183,7 +165,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u8      unknown;
-    u8      damage_type;
+    u8      elementDamageType;
     u8      defense;
     u8      magic_defense;
     u8      evade;
@@ -203,7 +185,7 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    ActorStatBoosts boosts;
+    u16 staggerRes;
 } AuxArmorData;
 
 typedef struct {
@@ -227,7 +209,8 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    ActorStatBoosts boosts;
+    u16 stagger;
+    u16 staggerRes;
 } AuxAccessoryData;
 
 typedef struct {
@@ -249,7 +232,7 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
-    ActorStatBoosts equipEffects;
+    u8 canLink;
 } AuxMateriaData;
 
 typedef struct {

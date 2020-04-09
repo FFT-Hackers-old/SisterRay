@@ -10,6 +10,11 @@
 #include "../battle_utils.h"
 #include "../battle_models/model_setup_routines.h"
 
+
+OpCodeControlSequence nopCode(AnimScriptEvent* srEvent) {
+    return RUN_NEXT;
+}
+
 OpCodeControlSequence OpCode8E(AnimScriptEvent* srEvent) {
     u8* byte_BF8710 = (u8*)0xBFB710;
     u8* byte_BF2150 = (u8*)0xBF2150;
@@ -173,7 +178,7 @@ OpCodeControlSequence OpCode96(AnimScriptEvent* srEvent) {
 
     scriptCtx->opCodeArgs[0] = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
     scriptCtx->opCodeArgs[1] = readOpCodeArg8(scriptPtr, scriptCtx, getBattleModelState(actorID));
-    auto actorData = getActivePartyMember(actorID);
+    auto actorData = getGamePartyMember(actorID);
     if (actorData) {
         u16 weaponModelIdx = actorData->weaponData.weapon_model & 0xF;
         scriptCtx->opCodeArgs[2] = someBarretWeaponData[weaponModelIdx];
@@ -269,7 +274,7 @@ OpCodeControlSequence OpCode9A(AnimScriptEvent* srEvent) {
 
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[1] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    scriptCtx.field_8 = GAME_ANGLE_MAX - (targetModelState74.field_2C + 2048);
+    scriptCtx.field_8 = GAME_ANGLE_MAX - (targetModelState74.someHPCopy + 2048);
     scriptCtx.opCodeArgs[0] = (targetModelState.field_6 * targetModelState.field_12 / GAME_ANGLE_MAX);
 
     i16 xDecrement = (i16)((scriptCtx.opCodeArgs[0] * srCalculateXVectorComponent(scriptCtx.field_8)) / GAME_ANGLE_MAX);
@@ -516,7 +521,7 @@ OpCodeControlSequence OpCodeAC(AnimScriptEvent* srEvent) {
     scriptCtx.opCodeArgs[0] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     u8 modelIdx = 4;
     if (scriptCtx.opCodeArgs[0] == 10) {
-        const auto& vincentData = getActivePartyMember(srEvent->actorID);
+        const auto& vincentData = getGamePartyMember(srEvent->actorID);
         u8 vincentModel = vincentData->weaponData.weapon_model & 0xF0;
         if (vincentModel == 0x10) {
             modelIdx = 5;
@@ -1137,6 +1142,17 @@ OpCodeControlSequence OpCodeD8(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+//This opcode is used to extend the script to run player registered opcodes
+OpCodeControlSequence OpCodeDA(AnimScriptEvent* srEvent) {
+    auto extendedCode = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    if (extendedCode <= 0x71) {
+        srLogWrite("ERROR: Extended opcodes must have indexes greater than 0xFF");
+        return RUN_NEXT;
+    }
+    auto opcode = gContext.animScriptOpcodes.getResource(extendedCode);
+    return opcode(srEvent);
+}
+
 OpCodeControlSequence OpCodeDB(AnimScriptEvent* srEvent) {
     u32** dword_9AEAF0 = (u32**)0x9AEAF0; 
     u32* dword_D8E490 = (u32*)0xD8E490;
@@ -1540,7 +1556,7 @@ OpCodeControlSequence OpCodeF8(AnimScriptEvent* srEvent) {
     effectCtx.wordArray[2] = srEvent->actorID;
     effectCtx.byteArray[22] = 0;
     effectCtx.wordArray[1] = 0;
-    effectCtx.wordArray[0] = ++(getBattleModelState74(srEvent->actorID)->field_34);
+    effectCtx.wordArray[0] = ++(getBattleModelState74(srEvent->actorID)->innateStatusMask);
     return RUN_NEXT;
 }
 
@@ -1596,8 +1612,8 @@ OpCodeControlSequence OpCodeFC(AnimScriptEvent* srEvent) {
         i32 xDelta = targetModelState.restingPosition.x - ownerModelState.restingPosition.x;
         srLogWrite("computed orientation in FC: %x", calculateYAngleComponent(xDelta, zDelta));
         ownerModelState.restingYRotation = calculateYAngleComponent(xDelta, zDelta) + (GAME_ANGLE_MAX / 2);
-        targetModelState74.field_2C = calculateYAngleComponent(xDelta, zDelta);
-        srLogWrite("target orientation set to %x", targetModelState74.field_2C);
+        targetModelState74.someHPCopy = calculateYAngleComponent(xDelta, zDelta);
+        srLogWrite("target orientation set to %x", targetModelState74.someHPCopy);
     }
     return RUN_NEXT;
 }

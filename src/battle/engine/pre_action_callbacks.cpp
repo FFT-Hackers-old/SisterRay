@@ -1,6 +1,7 @@
 #include "pre_action_callbacks.h"
 #include "../battle.h"
 #include "../../impl.h"
+#include "../../gamedata/damage_callback_utils.h"
 
 void runPreActionScripts(ActionContextEvent* actionEvent) {
     auto damageContext = actionEvent->damageContext;
@@ -35,7 +36,12 @@ void initDamageContext(ActionContextEvent* actionEvent) {
     damageContext->attackerStatusMask = actorAIStates[issuingActorID].statusMask;
     damageContext->activeAllies = 1;
     damageContext->animationScriptID = getCommand(damageContext->commandIndex).auxData.animationScriptIndex;
-    damageContext->damageFormulaID = getCommand(damageContext->commandIndex).auxData.damageCalculationByte;
+    actionEvent->srDamageContext->damageFormula = getCommand(damageContext->commandIndex).damageFormula;
+    actionEvent->srDamageContext->dmgFormulaModifiers = getCommand(damageContext->commandIndex).dmgFormulaModifiers;
+    actionEvent->srDamageContext->hitFormula = getCommand(damageContext->commandIndex).hitFormula;
+    actionEvent->srDamageContext->hitFormulaModifiers = getCommand(damageContext->commandIndex).hitFormulaModifiers;
+    actionEvent->srDamageContext->damageType = getCommand(damageContext->commandIndex).damageType;
+    actionEvent->srDamageContext->attackerRow = actorAIStates[issuingActorID].actorRow;
     damageContext->miscActionFlags = getCommand(damageContext->commandIndex).auxData.miscCommandFlags;
     damageContext->enabledMagicsIndex = -1;
     damageContext->impactSound = -1;
@@ -194,9 +200,9 @@ void prepareMimedAction(ActionContextEvent* actionEvent) {
         return;
 
     for (auto mimeCmdIdx = 0; mimeCmdIdx < 2; ++mimeCmdIdx) {
-        if (gUnkActorArray[issuingActorID].previousSupportMasks[mimeCmdIdx] != 0xFFFF) {
-            prevActionSupportFlags = gUnkActorArray[issuingActorID].previousSupportMasks[mimeCmdIdx];
-            gUnkActorArray[issuingActorID].previousSupportMasks[mimeCmdIdx] = -1;
+        if (G_BATTLE_PARTY34_ARRAY[issuingActorID].previousSupportMasks[mimeCmdIdx] != 0xFFFF) {
+            prevActionSupportFlags = G_BATTLE_PARTY34_ARRAY[issuingActorID].previousSupportMasks[mimeCmdIdx];
+            G_BATTLE_PARTY34_ARRAY[issuingActorID].previousSupportMasks[mimeCmdIdx] = -1;
             break;
         }
     }

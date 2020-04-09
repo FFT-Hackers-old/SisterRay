@@ -4,12 +4,25 @@
 #include "../sr_named_registry.h"
 #include "../battle/ai_scripts.h"
 #include "../EncodedString.h"
+#include "../party/battle_stats.h"
+#include "../party/stat_names.h"
 #include <unordered_set>
+#include <vector>
+
+typedef struct {
+    u16 itemID;
+    u16 stealChance;
+    bool alreadyStolen;
+} StealItem;
 
 typedef struct {
     EnemyData enemyData;
     u16 modelID;
     BattleAIData enemyAI;
+    std::unordered_map<std::string, SrActorStat> enemyStats;
+    std::vector<StealItem> toSteal;
+    bool canMorph;
+    u16 morphItem;
 } SrEnemyData;
 
 typedef struct {

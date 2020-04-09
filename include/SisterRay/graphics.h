@@ -32,7 +32,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     u32 field_C;
     u32 field_10;
@@ -42,7 +42,7 @@ typedef struct {
     u32 field_20;
     u32 shadeMode;
     u32 lightstateAmbient;
-    u32 field_2C;
+    u32 drainedHP;
     void *lightstateMaterialPointer;
     u32 srcBlend;
     u32 dstBlend;
@@ -80,14 +80,14 @@ typedef struct {
     u32 v_offset;
     u32 paletteIndex;
     AuxillaryGFX* auxillaryData;
-    u8 field_34[16];
+    u8 innateStatusMask[16];
 } PaletteAuxillary;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
 typedef struct {
     u32 version;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 vertexType;
     u32 numVertices;
     u32 numNormals;
@@ -97,7 +97,7 @@ typedef struct {
     u32 numEdges;
     u32 numPolygons;
     u32 field_28;
-    u32 field_2C;
+    u32 drainedHP;
     u32 numHundreds;
     u32 numGroups;
     u32 numBoundingBoxes;
@@ -158,7 +158,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 flags;
-    u32 field_4;
+    u32 specialDamageFlags;
     LightPoint* lightPoint8;
     LightPoint* lightPointC;
     LightPoint* lightPoint10;
@@ -248,7 +248,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     void* nextDrawable; //type is DrawableObjectCahin, cast if using
-    u32 field_4;
+    u32 specialDamageFlags;
     DrawableState* drawableState;
     Matrix matrix;
     PaletteAuxillary paletteAuxillary;
@@ -258,7 +258,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     u32 frameCounter;
     DrawableObjectChain* graphicsObjectChain;
@@ -283,12 +283,12 @@ typedef struct {
 #pragma pack(push, 1)
 struct _PolygonSet {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     u32 field_C;
     u32 numgroups;
     GraphicsChain field_14;
-    u32 field_2C;
+    u32 drainedHP;
     PFilePartHeader* pFilePolygons;
     AuxillaryGFX* auxillaries;
     u32 hasPerGroupAuxillaies;
@@ -327,7 +327,7 @@ struct _PolygonSet {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 count;
     u32 vertexCount;
     u32 field_10;
@@ -337,7 +337,7 @@ typedef struct {
     u16* indices;
     u32 field_24;
     u8* palettes;
-    u32 field_2C;
+    u32 drainedHP;
     GraphicsObject* graphicsObject;
 } IndexedVertices;
 #pragma pack(pop)
@@ -345,7 +345,7 @@ typedef struct {
 #pragma pack(push, 1)
 struct _GraphicsObject {
     u32 polytype;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     AuxillaryGFX* auxillaries;
     MatrixSet* matrixSet;
@@ -357,7 +357,7 @@ struct _GraphicsObject {
     float vOffset;
     void *dx_sfx_2C;
     void *graphicsInstance;
-    u32 field_34;
+    u32 innateStatusMask;
     u32 verticesPerShape;
     u32 indicesPerShape;
     u32 vertexOffset;

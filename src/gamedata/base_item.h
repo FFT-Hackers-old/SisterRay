@@ -3,7 +3,8 @@
 
 #include <SisterRay/SisterRay.h>
 #include "../sr_named_registry.h"
-#include "../party/stat_boosts.h"
+#include "../party/battle_stats.h"
+#include <map>
 
 #define ITYPE_CONSUMABLE  0
 #define ITYPE_WEAPON      1
@@ -22,6 +23,8 @@
 #define ICONTYPE_GUN        8
 #define ICONTYPE_ARMOR      10
 #define ICONTYPE_ACC        11
+
+typedef std::map<std::string, std::vector<StatBoost>> EquipmentStatBoosts;
 
 
 // indexed by global "item_id"
@@ -49,8 +52,9 @@ protected:
 u8 getKernelIconType(u8 itemType, u16 typeRelativeIndex);
 const char* getItemNameFromAbsoluteIdx(u16 absoluteIdx);
 const char* getItemDescFromAbsoluteIdx(u16 absoluteIdx);
+StatBoost createGearBoost(SrGearType gearType, u16 relativeGearIdx, bool isPercent, u16 amount, bool isNegative);
 SISTERRAY_API void initItemTypeData();
 
-void populatekernelStatBoosts(const u8* const stats, const u8* const amts, ActorStatBoosts& boosts, u8 count);
 
+void populatekernelStatBoosts(EquipmentStatBoosts& statBoosts, const u8* const stats, const u8* const amts, u8 count, u16 relativeGearIdx, SrGearType gearType);
 #endif // !BASE_ITEM_H

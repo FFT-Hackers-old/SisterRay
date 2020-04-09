@@ -3,18 +3,7 @@
 #include "../../system/ff7memory.h"
 
 std::string assembleAnimScriptKey(u16 idx) {
-    std::string numString;
-    if (idx < 10) {
-        numString = std::string("00") + std::to_string(idx);
-    }
-    else if (idx < 100) {
-        numString = std::string("0") + std::to_string(idx);
-    }
-    else {
-
-        numString = std::to_string(idx);
-    }
-    return numString + std::string(BASE_PREFIX);
+    return std::string(BASE_PREFIX) + std::to_string(idx);
 }
 
 SrModelScripts createSrModelScripts(SrModelType modelType, const std::string archiveName, void* battleLGPBuffer) {
@@ -57,15 +46,13 @@ SrModelScripts createSrModelScripts(SrModelType modelType, const std::string arc
                 u16 trueAnimScriptLength = 4;
                 auto animationScript = animScriptFromBuffer((((u8*)abFilePtr) + scriptPtrTable[0]), animScriptLength, &trueAnimScriptLength);
                 SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
-                u8* scriptPtr = srAnimScript.animScript.data();
-                srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
+                srModelScripts.modelAnimScripts.addElement(assembleAnimScriptKey(scriptIdx), srAnimScript);
                 continue;
             }
             u16 trueAnimScriptLength = animScriptLength;
             auto animationScript = animScriptFromBuffer(animScriptStart, animScriptLength, &trueAnimScriptLength);
             SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
-            u8* scriptPtr = srAnimScript.animScript.data();
-            srModelScripts.modelAnimScripts[assembleAnimScriptKey(scriptIdx)] = srAnimScript;
+            srModelScripts.modelAnimScripts.addElement(assembleAnimScriptKey(scriptIdx), srAnimScript);
         }
     }
     srModelScripts.scriptCount = animScriptCount;
@@ -98,8 +85,7 @@ u32 SrBattleAnimScriptRegistry::getMemoryBufferSize(const std::string& name){
     auto scriptData = getElement(name);
     auto scriptCount = 0;
     auto scriptLength = 0;
-    for (auto element : scriptData.modelAnimScripts) {
-        auto script = element.second;
+    for (auto script : scriptData.modelAnimScripts) {
         scriptLength += script.scriptLength;
         scriptCount++;
     }
@@ -137,9 +123,8 @@ void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader)
 
     /*Initialize the actual form of the animation scripts data in memory from the ba file data*/
     auto scriptIdx = 0;
-    for (auto animScriptElement : animScriptsData.modelAnimScripts) {
+    for (auto animScript : animScriptsData.modelAnimScripts) {
         tableBufferPtr[scriptIdx] = scriptBufferPtr; // use the relative index like in the file for the time being
-        auto animScript = animScriptElement.second;
         memcpy((void*)scriptBufferPtr, (void*)animScript.animScript.data(), animScript.scriptLength);
         scriptBufferPtr += animScript.scriptLength;
         scriptIdx++;
@@ -148,34 +133,12 @@ void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader)
 }
 
 /*Add an animation script from a provided buffer, with a given Length*/
-SISTERRAY_API void addAnimationScript(const char* modelName, u8* script, u16 scriptLength) {
+SISTERRAY_API void addAnimationScript(const char* modName, u16 modIdx, const char* modelName, u8* script, u16 scriptLength) {
     u16 trueAnimScriptLength = 0;
+    auto name = std::string(modName) + std::to_string(modIdx);
     auto animationScript = animScriptFromBuffer(script, scriptLength, &trueAnimScriptLength);
     SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
     auto& modelScripts = gContext.battleAnimationScripts.getElement(modelName);
-    modelScripts.modelAnimScripts[assembleAnimScriptKey(modelScripts.scriptCount)] = srAnimScript;
+    modelScripts.modelAnimScripts.addElement(name, srAnimScript);
     modelScripts.scriptCount++;
 }
-
-NewActorAnimScripts::NewActorAnimScripts() {
-    transformScript = (u32)&(transformationScript);
-}
-
-/*Replace the current animation script function for command index 0x23 with a new one*/
-/*SISTERRAY_API void animationScriptTrampoline(u16 actor_id, u32 ptr_to_anim_scripts, u32 unk1, u32 unk2) {
-    u32* modelDatPtrArray = (u32*)0x0BFB2B8;
-    u32 ptr_to_new_animation;
-    u8** tablePtr = (u8**)ptr_to_anim_scripts;
-    u16* byteViewAnimBlock = (u16*)&(gBigAnimBlock[actor_id].characterID);
-    if ((gBigAnimBlock[actor_id].commandID == CMD_LIMIT) && (gBigAnimBlock[actor_id].animScriptPtr == 0x3D)) {
-        srLogWrite("Redirecting animation script execution for actor %i", actor_id);
-        srLogWrite("Writing to address %p, base %p", &gBigAnimBlock[actor_id].animScriptPtr, &gBigAnimBlock[0].animScriptPtr);
-        ptr_to_new_animation = (u32)&(actorAnimArray);
-        srLogWrite("actor animation address:%p, passed address %p", &actorAnimArray, ptr_to_new_animation);
-    }
-    else {
-        ptr_to_new_animation = (u32)ptr_to_anim_scripts;
-    }
-
-    oldRunAnimationScript(actor_id, (u32)ptr_to_new_animation, unk1, unk1);
-}*/

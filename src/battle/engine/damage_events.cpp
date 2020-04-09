@@ -1,4 +1,5 @@
 #include "damage_events.h"
+#include "../../impl.h"
 
 #define G_DAMAGE_DISPLAY_EVENT_QUEUE  ((DamageDisplayEvent*)0xBF2A40)
 #define DISPLAY_QUEUE_CAPACITY        78
@@ -26,3 +27,91 @@ DamageDisplayEvent* getFirstTargetDisplayEvent(u8 targetID) {
     }
     return nullptr;
 }
+
+#define G_DAMAGE_EVENT_QUEUE          ((DamageEvent*)0x9ACB98)
+#define G_CURRENT_DAMAGE_QUEUE_IDX    ((u8*)0x9AEAA0)
+DamageEvent* newDamageEvent() {
+    DamageEvent* damageEvent = &G_DAMAGE_EVENT_QUEUE[*G_CURRENT_DAMAGE_QUEUE_IDX];
+    G_DAMAGE_EVENT_QUEUE[*G_CURRENT_DAMAGE_QUEUE_IDX].impactEventQueueIdx = -1;
+    if (*G_CURRENT_DAMAGE_QUEUE_IDX < 128)
+        ++*G_CURRENT_DAMAGE_QUEUE_IDX;
+    return damageEvent;
+}
+
+void printDamageEvent(DamageEvent* damageEvent) {
+    srLogWrite("Damage Event @ %p: attacker ID: %i, target ID: %i, targert hurt script: %i",
+        damageEvent, damageEvent->attackerID, damageEvent->targetID, damageEvent->damagedAnimScriptIdx);
+}
+
+void printDamageQueueState() {
+    srLogWrite("Total Damage Events: %i", *G_CURRENT_DAMAGE_QUEUE_IDX);
+}
+
+
+#define G_IMPACT_EVENT_QUEUE          ((ImpactEvent*)0x9ABA08)
+#define G_CURRENT_IMPACT_QUEUE_IDX    ((u8*)0x9AEA98)
+ImpactEvent* newImpactEvent(DamageEvent* damageEvent) {
+    ImpactEvent* impactEvent = &G_IMPACT_EVENT_QUEUE[*G_CURRENT_IMPACT_QUEUE_IDX];
+    damageEvent->impactEventQueueIdx = *G_CURRENT_IMPACT_QUEUE_IDX;
+    impactEvent->targetID = damageEvent->targetID;
+    if (*G_CURRENT_IMPACT_QUEUE_IDX < 128)
+        ++*G_CURRENT_IMPACT_QUEUE_IDX;
+    return impactEvent;
+}
+
+ImpactEvent* createImpactEvent(DamageEvent* damageEvent, u16 dealtDamage, u16 actionFlags, u16 impactSound, u16 impactEffect, u32 targetHP, u16 targetMP) {
+    auto impactEvent = newImpactEvent(damageEvent);
+    impactEvent->dealtDamage = dealtDamage;
+    impactEvent->actionFlags = actionFlags;
+    impactEvent->impactSoundID = impactSound;
+    impactEvent->impactEffectID = impactEffect;
+    impactEvent->currentTargetHP = targetHP;
+    impactEvent->currentTargetMP = targetMP;
+    return impactEvent;
+}
+
+#define G_ANIMATION_EVENT_QUEUE ((AnimationEvent*)0x9AAD70)
+AnimationEvent* getAnimationEvent(u8 queueIndex) {
+    if (queueIndex > 64)
+        return nullptr;
+    return &(G_ANIMATION_EVENT_QUEUE[queueIndex]);
+}
+
+#define G_CURRENT_ANIMATION_EVENT_QUEUE_IDX (u8*)0x9AEA9C
+AnimationEvent* getAnimationEventTop() {
+    return getAnimationEvent(*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX);
+}
+
+AnimationEvent* newAnimEvent() {
+    AnimationEvent* animationEvent = &G_ANIMATION_EVENT_QUEUE[*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX];
+    G_ANIMATION_EVENT_QUEUE[*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX].damageEventQueueIdx = *G_CURRENT_DAMAGE_QUEUE_IDX;
+    animationEvent->commandIndex = 0;
+    animationEvent->spellEffectID = 0;
+    if (*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX < 64)
+        (*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX)++;
+    return animationEvent;
+}
+
+void printAnimationEvent(AnimationEvent* animEvent) {
+    srLogWrite("Attacker Event @ %p: attacker ID: %i, command ID: %i, actionIdx: %i, action script: %i, camera: %x",
+        animEvent, animEvent->attackerID, animEvent->commandIndex, animEvent->actionIndex, animEvent->animationScriptID, animEvent->cameraData);
+}
+
+void printAnimationEventQueue() {
+    srLogWrite("Total Animation Events: %i", *G_CURRENT_ANIMATION_EVENT_QUEUE_IDX);
+}
+
+
+AnimationEvent* createAnimEvent(u8 attackerID, u8 activeAllies, u8 animScriptID, u8 commandIdx, u16 actionIdx, u8 spellEffectIdx, u8 specialDamageFlags, u16 cameraData) {
+    auto animationEvent = newAnimEvent();
+    animationEvent->attackerID = attackerID;
+    animationEvent->activeAllies = activeAllies;
+    animationEvent->animationScriptID = animScriptID;
+    animationEvent->commandIndex = commandIdx;
+    animationEvent->spellEffectID = spellEffectIdx;
+    animationEvent->cameraData = cameraData;
+    animationEvent->actionIndex = actionIdx;
+    animationEvent->specialDamageFlags = specialDamageFlags;
+    return animationEvent;
+}
+

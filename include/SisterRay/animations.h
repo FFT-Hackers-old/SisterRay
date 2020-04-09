@@ -40,4 +40,9 @@ typedef struct {
     AnimationFrame** frameDataView; //size here is frameCount, this is a ptr to a table of ptrs
 } BattleAnimation;
 
+typedef struct {
+    u32 rawBufferSize; //This is used when memcopying to the buffers actually used in battle
+    BattleAnimation* animationData;
+} SrAnimation;
+
 #endif

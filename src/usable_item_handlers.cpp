@@ -118,7 +118,7 @@ u16 calculateHPHealAmount(u8 partyIdx, u16 itemID) {
     }
     else if (gContext.items.getResource(itemID).auxData.hp_heal_percent){
         u8 healDivisor = gContext.items.getResource(itemID).auxData.hp_heal_percent;
-        return ((getActivePartyMember(partyIdx)->maxHP / healDivisor) * 100);
+        return ((getGamePartyMember(partyIdx)->maxHP / healDivisor) * 100);
     }
     return 0;
 }
@@ -129,7 +129,7 @@ u16 calculateMPHealAmount(u8 partyIdx, u16 itemID) {
     }
     else if (gContext.items.getResource(itemID).auxData.mp_heal_percent) {
         u8 healDivisor = gContext.items.getResource(itemID).auxData.mp_heal_percent;
-        return ((getActivePartyMember(partyIdx)->maxMP / healDivisor) * 100);
+        return ((getGamePartyMember(partyIdx)->maxMP / healDivisor) * 100);
     }
     return 0;
 }
@@ -141,7 +141,7 @@ bool checkIsHPHealable(u8 target, u16 itemID) {
         return isHealable;
     }
 
-    bool isAlive = ((bool)(getActivePartyMember(target)->currentHP));
+    bool isAlive = ((bool)(getGamePartyMember(target)->currentHP));
     return (isHealable && isAlive);
 }
 
@@ -152,7 +152,7 @@ bool checkIsMPHealable(u8 target, u16 itemID) {
         return isHealable;
     }
 
-    bool isAlive = ((bool)(getActivePartyMember(target)->currentHP));
+    bool isAlive = ((bool)(getGamePartyMember(target)->currentHP));
     return (isHealable && isAlive);
 }
 
@@ -165,7 +165,7 @@ bool checkActorMPFull(u8 party_member_index) {
 }
 
 bool check_character_dead(u8 partyIdx) {
-    return (bool)getActivePartyMember(partyIdx)->currentHP;
+    return (bool)getGamePartyMember(partyIdx)->currentHP;
 }
 
 void playUseSound(bool did_succeed, i32 success_sound_id, i32 failure_sound_id) {
@@ -243,7 +243,7 @@ bool handleBoostStat(u8 partyIdx, u16 itemID, u16 inventoryIdx) {
   Performing the same checks during battle will allow some "consumables" to have
   per character restrictions*/
 bool handleTeachLimits(u8 partyIdx, u16 item_id, u16 inventory_index) {
-    u8 characterID = getActivePartyMember(partyIdx)->characterID;
+    u8 characterID = getGamePartyMember(partyIdx)->characterID;
     bool isItemUsable = canCharacterUseItem(characterID, item_id); //If the character can't use the item, give the old "nothing to do with me message"
     bool limitTaught = false;
     auto registry = gContext.gameStrings.character_specific_strings[characterID];

@@ -7,13 +7,13 @@
 typedef struct {
     char enemyName[32];       //0x00
     u8 enemyLevel;            //0x20
-    u8 enemyDex;              //0x21
-    u8 enemyLuck;             //0x22
+    u8 dexterity;              //0x21
+    u8 luck;             //0x22
     u8 enemyEvade;            //0x23
-    u8 enemyStrength;         //0x24
-    u8 enemyDefense;          //0x25
-    u8 enemyMagic;            //0x26
-    u8 enemyMDefense;         //0x27
+    u8 strength;         //0x24
+    u8 defense;          //0x25
+    u8 magic;            //0x26
+    u8 mDefense;         //0x27
     u8 elementTypes[8];       //0x28
     u8 elementModifiers[8];   //0x30
     u8 attackAnimScripts[16]; //0x38
@@ -23,12 +23,12 @@ typedef struct {
     u16 itemsToStealDrop[4];  //0x8C
     u16 manipAttackIDs[3];    //0x94
     u8 unknownBytes[2];       //0x9A
-    u16 enemyMP;              //0x9C
+    u16 maxMP;              //0x9C
     u16 apAward;              //0x9E
     u16 morphItemID;          //0xA0
     u8 backDamageMultipler;   //0xA2
     u8 align;                 //0xA3
-    u32 enemyHP;              //0xA4
+    u32 maxHP;              //0xA4
     u32 expAward;             //0xA8
     u32 gilAward;             //0xAC
     u32 statusImmunityMask;   //0xB0

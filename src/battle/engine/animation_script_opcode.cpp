@@ -24,6 +24,8 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
 
     addElement(assembleOpCodeKey(0xA0), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeA0);
     addElement(assembleOpCodeKey(0xA1), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeA1);
+    addElement(assembleOpCodeKey(0xA2), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
+    addElement(assembleOpCodeKey(0xA3), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xA4), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeA4);
     addElement(assembleOpCodeKey(0xA5), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeA5);
     addElement(assembleOpCodeKey(0xA6), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeA6);
@@ -40,18 +42,23 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
 
     addElement(assembleOpCodeKey(0xB0), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB0);
     addElement(assembleOpCodeKey(0xB1), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB1);
-    //addElement(assembleOpCodeKey(0xB2), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB2); This is a NOP
+    addElement(assembleOpCodeKey(0xB2), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
+    addElement(assembleOpCodeKey(0xB3), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xB4), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB4);
+    addElement(assembleOpCodeKey(0xB5), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xB6), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB6);
     addElement(assembleOpCodeKey(0xB7), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB7);
     addElement(assembleOpCodeKey(0xB8), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB8);
     addElement(assembleOpCodeKey(0xB9), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeB9);
     addElement(assembleOpCodeKey(0xBA), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBA);
+    addElement(assembleOpCodeKey(0xBB), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xBC), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBC);
     addElement(assembleOpCodeKey(0xBD), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBD);
     addElement(assembleOpCodeKey(0xBE), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBE);
     addElement(assembleOpCodeKey(0xBF), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeBF);
 
+
+    addElement(assembleOpCodeKey(0xC0), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xC1), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeC1);
     addElement(assembleOpCodeKey(0xC2), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeC2);
     addElement(assembleOpCodeKey(0xC3), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeC3);
@@ -60,20 +67,26 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     addElement(assembleOpCodeKey(0xC6), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeC6);
     addElement(assembleOpCodeKey(0xC7), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeC7);
     addElement(assembleOpCodeKey(0xC8), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeC8);
-    //addElement(assembleOpCodeKey(0xC9), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeC9); This is a NOP/JD
+    addElement(assembleOpCodeKey(0xC9), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xCA), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeCA);
+    addElement(assembleOpCodeKey(0xCB), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xCC), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeCC);
-    //addElement(assembleOpCodeKey(0xCD), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeCD); This is a NOP/JD
+    addElement(assembleOpCodeKey(0xCD), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode); 
     addElement(assembleOpCodeKey(0xCE), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeCE);
     addElement(assembleOpCodeKey(0xCF), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeCF);
 
     addElement(assembleOpCodeKey(0xD0), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD0);
     addElement(assembleOpCodeKey(0xD1), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD1);
+    addElement(assembleOpCodeKey(0xD2), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
+    addElement(assembleOpCodeKey(0xD3), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xD4), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD4);
     addElement(assembleOpCodeKey(0xD5), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD5);
     addElement(assembleOpCodeKey(0xD6), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD6);
     addElement(assembleOpCodeKey(0xD7), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD7);
     addElement(assembleOpCodeKey(0xD8), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD8);
+    addElement(assembleOpCodeKey(0xD9), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
+    addElement(assembleOpCodeKey(0xDA), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeDA);
+    addElement(assembleOpCodeKey(0xDB), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xDC), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeDC);
     addElement(assembleOpCodeKey(0xDD), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeDD);
     addElement(assembleOpCodeKey(0xDE), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeDE);
@@ -94,11 +107,12 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     addElement(assembleOpCodeKey(0xEC), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeEC);
     addElement(assembleOpCodeKey(0xED), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeED);
     addElement(assembleOpCodeKey(0xEE), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeEE);
+    addElement(assembleOpCodeKey(0xEF), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
 
 
     addElement(assembleOpCodeKey(0xF0), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeF0);
     addElement(assembleOpCodeKey(0xF1), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeF1);
-    //addElement(assembleOpCodeKey(0xF2), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeF2); This is a NOP
+    addElement(assembleOpCodeKey(0xF2), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
     addElement(assembleOpCodeKey(0xF3), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeF3);
     addElement(assembleOpCodeKey(0xF4), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeF4);
     addElement(assembleOpCodeKey(0xF5), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeF5);
@@ -112,7 +126,6 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
     addElement(assembleOpCodeKey(0xFD), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeFD);
     addElement(assembleOpCodeKey(0xFE), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeFE);
     addElement(assembleOpCodeKey(0xFF), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeEE);
-
 }
 
 SISTERRAY_API void initAnimScriptOpCodes() {
@@ -145,4 +158,13 @@ u32 readOpCodeArg32(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* mod
 
 std::string assembleOpCodeKey(u16 opCode) {
     return std::to_string(opCode) + std::string("srff7Base");
+}
+
+SISTERRAY_API void registerOpCode(SRPFNANMSCRIPTOPCODEHANDLER opcode, const char* modName, u16 modCodeIdx) {
+    gContext.animScriptOpcodes.addElement(std::string(modName) + std::to_string(modCodeIdx), opcode);
+}
+
+
+SISTERRAY_API u16 getOpCodeIdx(SRPFNANMSCRIPTOPCODEHANDLER opcode, const char* modName, u16 modCodeIdx) {
+    return gContext.animScriptOpcodes.getResourceIndex(std::string(modName) + std::to_string(modCodeIdx));
 }

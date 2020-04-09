@@ -160,21 +160,21 @@ bool canCharacterUseItem(u8 characterID, u16 itemID) {
         break;
     }
     case 1: {
-        restriction_mask = gContext.weapons.getResource(relative_id).equip_mask;
+        restriction_mask = gContext.weapons.getResource(relative_id).gameWeapon.equip_mask;
         if (restriction_mask & (1 << (characterID))) {
             return true;
         }
         break;
     }
     case 2: {
-        restriction_mask = gContext.armors.getResource(relative_id).equip_mask;
+        restriction_mask = gContext.armors.getResource(relative_id).gameArmor.equip_mask;
         if (restriction_mask & (1 << (characterID))) {
             return true;
         }
         break;
     }
     case 3: {
-        restriction_mask = gContext.accessories.getResource(relative_id).equip_mask;
+        restriction_mask = gContext.accessories.getResource(relative_id).gameAccessory.equip_mask;
         if (restriction_mask & (1 << (characterID))) {
             return true;
         }

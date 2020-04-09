@@ -1,28 +1,31 @@
 #ifndef MATERIA_H
 #define MATERIA_H
 
-#include <SisterRay/types.h>
-#include <SisterRay/data_addresses.h>
 #include "../sr_named_registry.h"
 #include "game_data_interface.h"
+#include "base_item.h"
+#include "../EncodedString.h"
+#include <map>
 
 #define KERNEL_MATERIA_COUNT 96
 
-class SrMateriaRegistry : public SrNamedResourceRegistry<MateriaData, std::string> {
+typedef struct {
+    MateriaData gameMateria;
+    AuxMateriaData auxData;
+    EncodedString materiaName;
+    EncodedString materiaDescription;
+    EquipmentStatBoosts equipEffects;
+} SrMateria;
+
+class SrMateriaRegistry : public SrNamedResourceRegistry<SrMateria, std::string> {
 public:
     SrMateriaRegistry(SrKernelStream* stream);
-    SrMateriaRegistry() : SrNamedResourceRegistry<MateriaData, std::string>() {}
-};
-
-class SrAuxMateriaRegistry : public SrNamedResourceRegistry<AuxMateriaData, std::string> {
-public:
-    SrAuxMateriaRegistry() : SrNamedResourceRegistry<AuxMateriaData, std::string>() {}
+    SrMateriaRegistry() : SrNamedResourceRegistry<SrMateria, std::string>() {}
 };
 
 
-void initializeAuxMateriaRegistry();
-void populateEquipEffects(const MateriaData& kernelMateria, ActorStatBoosts& boosts);
 
+void setEquipEffects(u16 equipEffect, SrMateria& srMateria, u16 materiaIdx);
 u8 getMateriaTopType(u16 materiaID);
 u8 getMateriaSubType(u16 materiaID);
 u32 getMateriaColorType(u16 materiaID);

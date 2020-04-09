@@ -24,7 +24,7 @@ SrMateriaInventory::SrMateriaInventory(i16 allocation_size) : SrResourceRegistry
 /*there's some other things that normally happen when this is called*/
 void SrMateriaInventory::insertIntoMateriaInventory(const MateriaInventoryEntry& entry) {
     u16 inventoryIndex;
-    for (auto it = begin(_resource_registry); it != end(_resource_registry); ++it) {
+    for (auto it = std::begin(_resource_registry); it != std::end(_resource_registry); ++it) {
         if ((*it).item_id == 0xFFFF) {
             inventoryIndex = distance(_resource_registry.begin(), it);
             updateResource(inventoryIndex, entry);

@@ -6,6 +6,7 @@
 #include "../menu_utils.h"
 #include "../../widgets/widget.h"
 #include "equip_widget_names.h"
+#include "../../party/characters.h"
 
 void equipGearHandler(const MenuInputEvent* event); //Signature of Listener Callback
 void selectGearHandler(const MenuInputEvent* event);
@@ -15,8 +16,8 @@ void changeCharLeft(const MenuInputEvent* event);
 void changeCharRight(const MenuInputEvent* event);
 void changeToMateriaMenu(const MenuInputEvent* event);
 void handleUnequipAcc(const MenuInputEvent* event);
-void handleMateriaUpdate(CharacterRecord& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex);
-void handleEquipGear(CharacterRecord& characterRecordArray, u8 gearType, u8 equippedGearRelativeIndex);
+void handleMateriaUpdate(SrCharacterData& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex);
+void handleEquipGear(SrCharacterData& characterRecordArray, u8 gearType, u8 equippedGearRelativeIndex);
 u16 setupGearMenu(u8 itemType);
 
 #endif

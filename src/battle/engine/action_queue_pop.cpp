@@ -4,9 +4,11 @@
 #include "../../party/party_utils.h"
 #include <memory>
 #include "../../impl.h"
+#include "../../gamedata/damage_callback_utils.h"
 
 /*Re-implemented to modularize adding commands to the game*/
 void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
+    srLogWrite("handling popped action %i, targetMask: %x", poppedAction->queueAction.actionCommandIndex, poppedAction->queueAction.actionTargetMask);
     u32* dword_9AEA84 = (u32*)0x9AEA84;
     u32* dword_9AEA60 = (u32*)0x9AEA60;
     u32* dword_9AEA6C = (u32*)0x9AEA6C;
@@ -16,41 +18,22 @@ void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
         return;
 
     auto issuingActorID = poppedAction->queueAction.attackerActorID;
+    SrDamageContext srDamageContext = SrDamageContext();
+    ActionContextEvent actionEvent = { gDamageContextPtr, &srDamageContext, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
 
     if (!(*dword_9AEA84)) {
         *dword_9AEA6C = 0;
         *dword_9AEA60 = 0;
         *word_9AAD10 = 0;
-        preActionHandles(poppedAction, issuingActorID);
+        preActionHandles(actionEvent);
         *dword_9AEA84 = 1;
     }
 
-    runSetupCallbacks(gDamageContextPtr->commandIndex);
+    runSetupCallbacks(actionEvent);
     *dword_9AEA84 = 2;
 
-    /*while (1) {
-        callbackIdx = commandTypeExecutionArray[handlerToRunIdx++];
-        if (callbackIdx == 31)
-            break;
-        if (callbackIdx == 20) {
-            dword_9AEA78 = 0;
-            commandTypeHandlers[20]();
-            if (!dword_9AEA78)
-            {
-                *dword_9AEA60 = 1;
-                break;
-            }
-            *dword_9AEA60 = 0;
-            *dword_9AEA84 = 2;
-        }
-        else {
-            commandTypeHandlers[callbackIdx]();
-            dword_9AEA84 = 2;
-        }
-    }*/
-
     if (!(*dword_9AEA60)) {
-        postActionHandles(poppedAction, issuingActorID);
+        postActionHandles(actionEvent);
         *dword_9AEA84 = 0;
         *dword_9AEA6C = 1;
     }
@@ -64,20 +47,20 @@ typedef void(*PFNSRSUB5C7D59)(u8, u32, u8, u32*);
 typedef void(*PFNSRSUB5C8B80)();
 #define incrementRandom     ((PFNSRSUB5C8B80)0x5C8B80)
 
-void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
+void preActionHandles(ActionContextEvent& actionEvent) {
+    auto poppedAction = actionEvent.poppedAction;
+    auto issuingActorID = actionEvent.issuingActorID;
     u16* gDisplayTextIdx = (u16*)0x9AAD16;
     u16* word_9AAD18 = (u16*)0x9AAD18;
     incrementRandom();
     memset((void*)gDamageContextPtr, 0, sizeof(DamageCalcStruct));
-
-    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
     srLogWrite("HANDLING BATTLE ACTION: actor: %d, command %d", poppedAction->queueAction.attackerActorID, poppedAction->queueAction.actionCommandIndex);
     gContext.eventBus.dispatch(ACTION_PRE_COMMAND, &actionEvent);
 
     //Display Lucky 7's text
-    if (gActorTimerBlock[issuingActorID].unkActorFlags & 0x80) {
-        gActorTimerBlock[issuingActorID].unkActorFlags &= 0x7Fu;
-        if (gActorTimerBlock[issuingActorID].currentHP == 7777) {
+    if (G_ACTOR_TIMER_ARRAY[issuingActorID].unkActorFlags & 0x80) {
+        G_ACTOR_TIMER_ARRAY[issuingActorID].unkActorFlags &= 0x7Fu;
+        if (G_ACTOR_TIMER_ARRAY[issuingActorID].currentHP == 7777) {
             *gDisplayTextIdx = 81;
             *word_9AAD18 = 47;
         }
@@ -93,11 +76,11 @@ void preActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
 typedef void(*PFNSUBSR436CF2)();
 #define setDamageEventFlags   ((PFNSUBSR436CF2)0x436CF2)
 
-void postActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
+void postActionHandles(ActionContextEvent& actionEvent) {
+    auto poppedAction = actionEvent.poppedAction;
+    auto issuingActorID = actionEvent.issuingActorID;
     u32* dword_9AD1B4 = (u32*)0x9AD1B4;
     setDamageEventFlags();
-
-    ActionContextEvent actionEvent = { gDamageContextPtr, poppedAction, issuingActorID, AI_BATTLE_CONTEXT };
     gContext.eventBus.dispatch(ACTION_POST_COMMAND, &actionEvent);
     srLogWrite("Running post action callbacks");
 
@@ -105,7 +88,7 @@ void postActionHandles(BattleQueueEntry* poppedAction, u8 issuingActorID) {
         --(*dword_9AD1B4);
     }
     else if (poppedAction->entryPriority <= 2) {
-        ++gActorTimerBlock[issuingActorID].field_2A;
+        ++G_ACTOR_TIMER_ARRAY[issuingActorID].field_2A;
     }
 }
 

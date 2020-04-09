@@ -47,7 +47,16 @@ typedef enum {
     ACTION_POST_COMMAND,
     ON_LOAD_ANIMATION_EFFECT,
     ON_DISPATCH_ANIMAMTION_EFFECT,
-    ON_RUN_ANIMATION_SCRIPT
+    ON_RUN_ANIMATION_SCRIPT,
+
+    //DAMAGE CALC EVENTS, ADDITIONAL EFFECTS IMPLEMENTED WITH THESE
+    PRE_HIT_FORMULA,
+    POST_HIT_FORMULA,
+    PRE_DAMAGE_FORMULA,
+    POST_DAMAGE_FORMULA,
+    PRE_DAMAGE_DEALT,
+    POST_DAMAGE_DEALT,
+    POST_ACTION_DAMAGE_CALC
 } SrEventType;
 
 
@@ -130,76 +139,16 @@ typedef struct {
     u8 materiaLevel;
 } DrawMateriaDataEvent;
 
-typedef struct {
-    DamageCalcStruct* damageContext;
-} CommandSetupEvent;
 
-typedef struct {
-    Menu*  menuObect;
-    EnabledCommandStruct* command;
-} SelectCommandEvent;
+typedef enum {
+    PHYSICAL,
+    MAGICAL
+} DamageType;
 
-typedef struct {
-    DamageCalcStruct* damageContext;
-    BattleQueueEntry* poppedAction;
-    u8 issuingActorID;
-    AIBattleContext* battleAIContext;
-} ActionContextEvent;
-
-typedef struct {
-    u8 actorID;
-    u8* scriptPtr;
-    AnimScriptContext* scriptContext;
-    u8 currentScriptIdx;
-    BattleModelState* battleModelState;
-    u8** animationScriptTable;
-} AnimScriptEvent;
-
-typedef struct {
-    u8 actorID;
-    u8 animationType;
-    u8 animationEffectID;
-    u8 commandIdx;
-    u16 actionIdx;
-    u16 targetMask;
-} AnimEffectEvent;
-
-typedef struct {
-    const u8 partyIndex;
-    const MateriaInventoryEntry materia;
-    const MateriaData materiaData;
-    const u8 materiaLevel;
-    ActorStatBoosts* statBoosts;
-} EnableAbilitiesEvent;
-
-typedef struct {
-    const u8 partyIndex;
-    const MateriaInventoryEntry supportMateria;
-    const u8 supportMateriaLevel;
-    const MateriaData SupportMateriaData;
-    const MateriaInventoryEntry pairedMateria;
-    const u8 pairedMateriaLevel;
-    const MateriaData pairedData;
-    ActorStatBoosts* statBoosts;
-    SrGearType gearType;
-} ApplySupportEvent;
-
-typedef void(*SRPFNCMDSELECTCALLBACK)(SelectCommandEvent*);
-typedef void(*SRPFNCOMMANDSETUP)(CommandSetupEvent);
-
-#pragma pack(push, 1)
-typedef struct {
-    u8 attackerID;
-    u8 activeAllies;
-    u8 spellEffectID;
-    u8 commandIndex;
-    u8 field_4;
-    u8 animationScriptID;
-    u16 actionIndex;
-    u16 cameraData;
-    u16 damageEventQueueIdx;
-} AnimationEvent;
-#pragma pack(pop)
+typedef struct ActorBattleState_ ActorBattleState;
+typedef struct SrDamageContext_ SrDamageContext;
+typedef struct DamageFormula_ DamageFormula;
+typedef struct HitFormula_ HitFormula;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -207,7 +156,7 @@ typedef struct {
     u8 attackerID;
     u8 damagedAnimScriptIdx;
     u8 impactEventQueueIdx;
-    u16 field_4;
+    u16 specialDamageFlags;
     u8 field_6;
     u8 field_7;
     u32 targetStatusMask;
@@ -235,6 +184,77 @@ typedef struct {
     u16 impactEventQueueIdx;
     u16 damageEventQueueIdx;
 } DamageDisplayEvent;
+#pragma pack(pop)
+
+typedef struct {
+    DamageCalcStruct* damageContext;
+    SrDamageContext* srDamageContext;
+    AIBattleContext* aiContext;
+
+} CommandSetupEvent;
+
+typedef struct {
+    DamageCalcStruct* damageContext;
+    SrDamageContext* srDamageContext;
+    AIBattleContext* aiContext;
+    DamageEvent* gameDamageEvent;
+} DamageCalculationEvent;
+
+typedef struct {
+    Menu*  menuObect;
+    EnabledCommand* command;
+} SelectCommandEvent;
+
+typedef struct {
+    DamageCalcStruct* damageContext;
+    SrDamageContext* srDamageContext;
+    BattleQueueEntry* poppedAction;
+    u8 issuingActorID;
+    AIBattleContext* battleAIContext;
+} ActionContextEvent;
+
+typedef struct {
+    u8 actorID;
+    u8 animationType;
+    u8 animationEffectID;
+    u8 commandIdx;
+    u16 actionIdx;
+    u16 targetMask;
+} AnimEffectEvent;
+
+typedef struct {
+    const u8 partyIndex;
+    const MateriaInventoryEntry materia;
+    const MateriaData materiaData;
+    const u8 materiaLevel;
+} EnableAbilitiesEvent;
+
+typedef struct {
+    const u8 partyIndex;
+    const MateriaInventoryEntry supportMateria;
+    const u8 supportMateriaLevel;
+    const MateriaData SupportMateriaData;
+    const MateriaInventoryEntry pairedMateria;
+    const u8 pairedMateriaLevel;
+    const MateriaData pairedData;
+    SrGearType gearType;
+} ApplySupportEvent;
+
+typedef void(*SRPFNCMDSELECTCALLBACK)(SelectCommandEvent*);
+typedef void(*SRPFNCOMMANDSETUP)(CommandSetupEvent&);
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 attackerID;
+    u8 activeAllies;
+    u8 spellEffectID;
+    u8 commandIndex;
+    u8 specialDamageFlags;
+    u8 animationScriptID;
+    u16 actionIndex;
+    u16 cameraData;
+    u16 damageEventQueueIdx;
+} AnimationEvent;
 #pragma pack(pop)
 
 #endif // !SR_EVENTS_H

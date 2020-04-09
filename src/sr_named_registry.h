@@ -30,7 +30,7 @@ public:
         }
     }
 
-    void addElement(const std::string& name, const T& element) {
+    void addElement(const S& name, const T& element) {
         if (contains(name))
             return;
         addResource(element);
@@ -38,28 +38,28 @@ public:
         named_registry[name] = index;
     }
 
-    void updateElement(const std::string& name, const T& element) {
+    void updateElement(const S& name, const T& element) {
         if (!contains(name))
             return;
         updateResource(named_registry[name], element);
     }
 
-    const T& getElement(const std::string& name) const {
+    const T& getElement(const S& name) const {
         return getResource(named_registry[name]);
     }
 
-    T& getElement(const std::string& name) {
+    T& getElement(const S& name) {
         return getResource(named_registry[name]);
     }
 
-    u32 getResourceIndex(const std::string& name) {
+    u32 getResourceIndex(const S& name) {
         if (contains(name)) {
             return named_registry[name];
         }
         return 0;
     }
 
-    bool contains(const std::string& name) {
+    bool contains(const S& name) {
         auto doesContain = (named_registry.find(name) == named_registry.end()) ? false : true;
         return doesContain;
     }

@@ -32,9 +32,8 @@ std::string getCharacterName (u8 characterID) {
     }
 }
 
-ActivePartyMemberStruct* getActivePartyMember(u8 actorIdx) {
-    u8* partyCharacterIndexArray = (u8*)(0xDC0230);
-    if (partyCharacterIndexArray[actorIdx] == 0xFF) {
+PartyMember* getGamePartyMember(u8 actorIdx) {
+    if (G_SAVE_MAP->activeParty[actorIdx] == 0xFF) {
         return nullptr;
     }
     return &(PARTY_STRUCT_ARRAY[actorIdx]);
@@ -43,24 +42,24 @@ ActivePartyMemberStruct* getActivePartyMember(u8 actorIdx) {
 CharacterRecord* getPartyActorCharacterRecord(u8 partyIdx) {
     CharacterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
     auto characterIdx = getCharacterRecordIndex(partyIdx);
-    return &(characterRecordArray[characterIdx]);
+    return gContext.characters.getResource(characterIdx).gameCharacter;
 }
 
 u16 getEquippedGear(u8 characterID, u8 gearType) {
-    CharacterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
+    auto& characterRecord = gContext.characters.getResource(characterID);
     u16 kernelObjectID;
 
     switch (gearType) { //probably refactor this into a utility
     case 1: {
-        kernelObjectID = characterRecordArray[characterID].equipped_weapon;
+        kernelObjectID = characterRecord.equippedWeapon;
         break;
     }
     case 2: {
-        kernelObjectID = characterRecordArray[characterID].equipped_armor;
+        kernelObjectID = characterRecord.equippedArmor;
         break;
     }
     case 3: {
-        kernelObjectID = characterRecordArray[characterID].equipped_accessory;
+        kernelObjectID = characterRecord.equippedAccessory;
         break;
     }
     default: {
@@ -70,9 +69,9 @@ u16 getEquippedGear(u8 characterID, u8 gearType) {
     return kernelObjectID;
 }
 
-bool characterCanEquipItem(u8 characterID, u16 item_id){
-    auto characterMask = getCharacterRestrictionMask(item_id);
-    u32 characterCanUse = (u32)(characterMask & (1 << characterID));
+bool characterCanEquipItem(u8 characterID, u16 itemID){
+    auto characterMask = getCharacterRestrictionMask(itemID);
+    bool characterCanUse = (bool)(characterMask & (1 << characterID));
 
     return characterCanUse;
 }

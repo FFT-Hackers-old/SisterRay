@@ -16,7 +16,7 @@ void handleSelectCommand(const MenuInputEvent* event) {
     }
 
     auto commandChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
-    auto& enabledCommands = getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID)->enabledCommandArray;
+    auto& enabledCommands = getGamePartyMember(*BATTLE_ACTIVE_ACTOR_ID)->enabledCommandArray;
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (commandChoiceCursor.maxColumnBound * (commandChoiceCursor.relativeRowIndex + commandChoiceCursor.baseRowIndex)) + commandChoiceCursor.relativeColumnIndex;

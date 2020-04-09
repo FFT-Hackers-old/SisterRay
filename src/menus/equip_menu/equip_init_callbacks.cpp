@@ -2,6 +2,7 @@
 #include "../../impl.h"
 #include "../../party/party_utils.h"
 #include "../../widgets/updaters.h"
+#include "../../party/stat_names.h"
 
 /* This Module contains code which initializes the Widget that represents the equip menu internally
    You can mutate this widget prior to draw by registered your listeners to the "OnEquipMenuDraw" event
@@ -177,27 +178,33 @@ void initStatDiffWidget(const MenuInitEvent* event) {
     std::vector<std::string> numberNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
     std::vector<std::string> candidateNumberNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
     std::vector<std::string> arrowNames = { ARROW_1, ARROW_2, ARROW_3, ARROW_4, ARROW_5, ARROW_6, ARROW_7 };
-    for (i32 i = 0; i < 7; ++i) {
-        menuText = gContext.gameStrings.equipMenuTexts.get_string(3 + i);
-        setTextParams(&textParams, 53, windowTop + 26 * i - 6, menuText, COLOR_TEAL, 0.2f);
-        textWidget = createTextWidget(textParams, statNames[i]);
-        addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[i]);
+    std::vector<std::string> displayStatNames = {
+        StatNames::WEAPON_ATTACK, StatNames::WEAPON_ACCURACY,
+        StatNames::ARMOR_DEFENSE, StatNames::EVADE,
+        StatNames::WEAPON_MAGIC, StatNames::ARMOR_MDEFENSE,
+        StatNames::MEVADE_NAME
+    };
+    for (u8 displayStatIdx = 0; displayStatIdx < 7; ++displayStatIdx) {
+        menuText = gContext.stats.getElement(displayStatNames[displayStatIdx]).displayName.str();
+        srLogWrite("CREATING EQUIP MENU WIDGET WITH STAT NAME: %s", gContext.stats.getElement(displayStatNames[displayStatIdx]).displayName.unicode());
+        setTextParams(&textParams, 53, windowTop + 26 * displayStatIdx - 6, menuText, COLOR_TEAL, 0.2f);
+        textWidget = createTextWidget(textParams, statNames[displayStatIdx]);
+        addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[displayStatIdx]);
 
-        simpleAssetParams = { 244, 26 * i + windowTop, 0xDAu, COLOR_TEAL, 0.2f };
-        simpleAssetWidget = createSimpleGameAssetWidget(simpleAssetParams, arrowNames[i]);
-        addChildWidget(statDiffWidget, (Widget*)simpleAssetWidget, arrowNames[i]);
+        simpleAssetParams = { 244, 26 * displayStatIdx + windowTop, 0xDAu, COLOR_TEAL, 0.2f };
+        simpleAssetWidget = createSimpleGameAssetWidget(simpleAssetParams, arrowNames[displayStatIdx]);
+        addChildWidget(statDiffWidget, (Widget*)simpleAssetWidget, arrowNames[displayStatIdx]);
 
-        setNumberParams(&numberParams, 200, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);
-        numberWidget = createNumberWidget(numberParams, numberNames[i]);
-        addChildWidget(statDiffWidget, (Widget*)numberWidget, numberNames[i]);
+        setNumberParams(&numberParams, 200, windowTop + 26 * displayStatIdx, 0, 3, COLOR_WHITE, 0.2f);
+        numberWidget = createNumberWidget(numberParams, numberNames[displayStatIdx]);
+        addChildWidget(statDiffWidget, (Widget*)numberWidget, numberNames[displayStatIdx]);
 
-        setNumberParams(&numberParams, 270, windowTop + 26 * i, 0, 3, COLOR_WHITE, 0.2f);
-        numberWidget = createNumberWidget(numberParams, candidateNumberNames[i]);
-        addChildWidget(statDiffWidget, (Widget*)numberWidget, candidateNumberNames[i]);
+        setNumberParams(&numberParams, 270, windowTop + 26 * displayStatIdx, 0, 3, COLOR_WHITE, 0.2f);
+        numberWidget = createNumberWidget(numberParams, candidateNumberNames[displayStatIdx]);
+        addChildWidget(statDiffWidget, (Widget*)numberWidget, candidateNumberNames[displayStatIdx]);
     }
     addChildWidget(mainWidget, statDiffWidget, STAT_DIFF_WIDGET_NAME);
 }
-
 
 //Initialize the gear list with just a box and a series of disabled widgets.
 void initGearListWidget(const MenuInitEvent* event) {

@@ -10,7 +10,7 @@ typedef struct {
 
 typedef struct {
     u32 useAssertAlloc;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 nodeCount;
     GameListNode *head;
     GameListNode *tail;
@@ -31,8 +31,8 @@ typedef struct {
     u32 field_20;
     u32 field_24;
     u32 field_28;
-    u32 field_2C;
-    u32 field_30;
+    u32 drainedHP;
+    u32 drainedMP;
     void *callbackData;
     void *callback;
 } GameHeap;

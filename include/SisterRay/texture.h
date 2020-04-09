@@ -48,7 +48,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 version;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 colorKey;
     u32 field_C;
     u32 field_10;
@@ -117,7 +117,7 @@ typedef struct {
     void* rgbaPalette;
     void* paletteEntry;
     u32 ddPalette;
-    u32 field_34;
+    u32 innateStatusMask;
     u32 field_38;
     u32 field_3C;
 } Palette;
@@ -135,9 +135,9 @@ typedef struct {
     u32 field_20;
     u32 field_24;
     u32 field_28;
-    u32 field_2C;
-    u32 field_30;
-    u32 field_34;
+    u32 drainedHP;
+    u32 drainedMP;
+    u32 innateStatusMask;
     u32 field_38;
     u32 field_3C;
     u32 field_40;
@@ -168,7 +168,7 @@ typedef struct {
 
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     u32 field_C;
     u32 field_10;

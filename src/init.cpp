@@ -19,9 +19,12 @@
 #include "files/lgp_loader.h"
 #include "battle/sr_battle_engine.h"
 #include "gamedata/command_sr_callbacks.h"
+#include <random>
 
 
 SrContext gContext;
+PRNG_Type rng;
+std::uniform_int_distribution<PRNG_Type::result_type> udist(0, 255);
 
 static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     initCommands,
@@ -29,10 +32,10 @@ static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     initCharacterData,
     NULL,
     initItems,
-    init_weapon,
-    init_armor,
-    init_accessory,
-    init_materia,
+    initWeapons,
+    initArmor,
+    initAccessories,
+    initMateria,
 };
 
 struct Kernel2Entry {
@@ -117,6 +120,9 @@ PFNRUNANIMSCRIPT* oldRunAnimationScript;
 
 static void Init(void) {
     MessageBoxA(NULL, "Sister Ray drawing power...", "SisterRay", 0);
+    std::random_device seeder;
+    PRNG_Type::result_type const seedval = seeder(); 
+    rng.seed(seedval);
     initLog();
     //srInitLua();
     initFunctionRegistry();
@@ -124,6 +130,11 @@ static void Init(void) {
     initBattleInventory();
     initMateriaInventory();
     initGameStrings();
+    initStats(true);
+    initStatuses();
+    initElements();
+    initFormulas();
+    initParty();
     srLoadKernel2Bin();
     srLoadKernelBin();
     initOnUseCallbackRegistry();

@@ -29,6 +29,9 @@ extern "C" {
 #include "gamedata/attacks.h"
 #include "gamedata/formations.h"
 #include "gamedata/enemies.h"
+#include "gamedata/elements.h"
+#include "gamedata/statuses.h"
+#include "gamedata/formulas.h"
 #include "gamedata/scene_loader.h"
 #include "battle/engine/animation_script_opcode.h"
 #include "inventories/inventory.h"
@@ -44,11 +47,18 @@ extern "C" {
 #include "battle/battle_models/animation_registry.h"
 #include "battle/battle_models/animation_scripts.h"
 #include "battle/battle_models/battle_models.h"
+#include "battle/ai_script_engine.h"
+#include "battle/battle_actors.h"
 #include <map>
+#include <string>
 #include <memory>
+#include <random>
 
-/*Game Context holds all the registries which contain
-  Resources, in the form of either data or registered callback*/
+typedef std::mt19937 PRNG_Type;
+extern PRNG_Type rng;
+extern std::uniform_int_distribution<PRNG_Type::result_type> udist;
+typedef void(*PFNSR_VOIDSUB)();
+
 typedef struct {
     lua_State*                          L;
     HWND                                console;
@@ -60,21 +70,26 @@ typedef struct {
     srNoTargetCallbackRegistry          untargeted_handlers;
 
     SrWeaponRegistry                    weapons;
-    SrAuxWeaponRegistry                 auxWeapons;
     SrArmorRegistry                     armors;
-    SrAuxArmorRegistry                  auxArmors;
     SrAccessoryRegistry                 accessories;
-    SrAuxAccessoryRegistry              auxAccessories;
     SrMateriaRegistry                   materias;
-    SrAuxMateriaRegistry                auxMaterias;
 
     SrBattleAnimationRegistry           battleAnimations;
     SrBattleAnimScriptRegistry          battleAnimationScripts;
     SrAnimOpCodeRegistry                animScriptOpcodes;
+    SrAIScriptOpCodeRegistry            AIScriptOpcodes;
+
     SrCommandRegistry                   commands;
     SrAttackRegistry                    attacks;
     SrCharacterRegistry                 characters;
-    SrPartyDataRegistry                 party;
+    SrPartyMembers                      party;
+    SrBattleActors                      battleActors;
+    SrStatRegistry                      stats;
+    SrElementRegistry                   elements;
+    SrStatusRegistry                    statuses;
+
+    SrFormulaRegistry                   damageFormulas;
+    SrHitFormulaRegistry                hitFormulas;
 
     SrFormationRegistry                 formations;
     SrEnemyRegistry                     enemies;
@@ -97,11 +112,11 @@ SISTERRAY_API void srInitLua(void);
 SISTERRAY_API void srInitLuaConsole(void);
 
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
-SISTERRAY_API void init_materia(SrKernelStream* stream);
-SISTERRAY_API void init_armor(SrKernelStream* stream);
-SISTERRAY_API void init_accessory(SrKernelStream* stream);
+SISTERRAY_API void initMateria(SrKernelStream* stream);
+SISTERRAY_API void initArmor(SrKernelStream* stream);
+SISTERRAY_API void initAccessories(SrKernelStream* stream);
 SISTERRAY_API void initItems(SrKernelStream* stream);
-SISTERRAY_API void init_weapon(SrKernelStream* stream);
+SISTERRAY_API void initWeapons(SrKernelStream* stream);
 
 SISTERRAY_API void initLog(void);
 SISTERRAY_API void srLogWrite(const char* format, ...);

@@ -9,6 +9,7 @@
 #include "cmd_select_callbacks.h"
 #include "gdata_utils.h"
 #include "attacks.h"
+#include "formulas.h"
 
 #define KERNEL_COMMAND_COUNT 32
 
@@ -19,6 +20,11 @@ typedef struct {
     std::vector<SRPFNCMDSELECTCALLBACK> selectCallbacks;
     u16 actionCount;
     std::vector<u16> commandActions; //vector of indexes into the attacks table. Game engine fetches attack data through this
+    DamageType damageType;
+    u16 damageFormula;
+    std::unordered_set<DamageModifiers> dmgFormulaModifiers;
+    u16 hitFormula;
+    std::unordered_set<HitModifiers> hitFormulaModifiers;
 } SrCommand;
 
 class SrCommandRegistry : public SrNamedResourceRegistry<SrCommand, std::string> {
@@ -27,9 +33,8 @@ public:
     SrCommandRegistry() : SrNamedResourceRegistry<SrCommand, std::string>() {}
 };
 
-SISTERRAY_API void runSetupCallbacks(const char* name);
-void runSetupCallbacks(u16 commandIdx);
-void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu);
+void runSetupCallbacks(ActionContextEvent& actionEvent);
+void runSelectCallbacks(EnabledCommand& command, Menu* menu);
 void initCommands(SrKernelStream* stream);
 u16 getDefaultCmdAnimScript(u16 idx);
 u8 getDefaultCmdDamage(u16 commandIdx);

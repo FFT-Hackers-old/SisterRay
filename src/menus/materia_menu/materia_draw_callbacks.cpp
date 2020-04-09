@@ -22,12 +22,12 @@ void handleChangeMateriaCharacter(const MenuDrawEvent* event) {
         updateText(getChild(topWidget, listNames[row]), fetchedName);
     }
 
-    auto slotsPtr = &(gContext.weapons.getResource(getEquippedGear(characterRecordArrayIndex, 1)).materia_slots[0]);
+    auto slotsPtr = &(gContext.weapons.getResource(getEquippedGear(characterRecordArrayIndex, 1)).gameWeapon.materia_slots[0]);
     updateMateriaSlots(getChild(topWidget, GEAR_1_SLOTS), slotsPtr);
     auto materiaPtr = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).wpnMaterias.data();
     updateMateriaData(getChild(topWidget, GEAR_1_SLOTS), materiaPtr);
 
-    slotsPtr = &(gContext.armors.getResource(getEquippedGear(characterRecordArrayIndex, 2)).materia_slots[0]);
+    slotsPtr = &(gContext.armors.getResource(getEquippedGear(characterRecordArrayIndex, 2)).gameArmor.materia_slots[0]);
     updateMateriaSlots(getChild(topWidget, GEAR_2_SLOTS), slotsPtr);
     materiaPtr = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).armMaterias.data();
     updateMateriaData(getChild(topWidget, GEAR_2_SLOTS), materiaPtr);
@@ -66,7 +66,7 @@ void handleUpdateMateriaDescription(const MenuDrawEvent* event) {
         }
     }
     enableWidget(descriptionWidget);
-    fetchedDescription = gContext.gameStrings.materia_descriptions.get_string(materiaID);
+    fetchedDescription = gContext.materias.getResource(materiaID).materiaDescription.str();
     updateText(descriptionWidget, fetchedDescription);
 }
 
@@ -127,10 +127,10 @@ void handleUpdateMateriaData(const MenuDrawEvent* event) {
 }
 
 void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) {
-    auto materiaName = gContext.gameStrings.materia_names.get_string(materia.item_id);
+    auto materiaName = gContext.materias.getResource(materia.item_id).materiaName.str();
     updateText(getChild(displayWidget, MATERIA_NAME), materiaName);
     /*last byte of status effect is element index; this is temporary until we have fully moved materia into sister ray*/
-    auto elementIndex = gContext.materias.getResource(materia.item_id).elementType;
+    auto elementIndex = gContext.materias.getResource(materia.item_id).gameMateria.elementType;
     auto elementName = gContext.gameStrings.elementNames.get_string(elementIndex);
     updateText(getChild(displayWidget, MATERIA_ELEMENT), elementName);
 
@@ -145,7 +145,7 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
         enableWidget(getChild(displayWidget, CURRENT_AP));
         disableWidget(getChild(displayWidget, MASTERED));
         updateNumber(getChild(displayWidget, CURRENT_AP), materia.materia_ap);
-        updateNumber(getChild(displayWidget, TO_LEVEL_AP), gContext.materias.getResource(materia.item_id).apLevel[materiaLevel - 1] * 100 - materia.materia_ap);
+        updateNumber(getChild(displayWidget, TO_LEVEL_AP), gContext.materias.getResource(materia.item_id).gameMateria.apLevel[materiaLevel - 1] * 100 - materia.materia_ap);
     }
     else {
         disableWidget(getChild(displayWidget, CURRENT_AP));

@@ -10,7 +10,7 @@
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 field_8;
     u32 textureCount;
     u32 field_10;
@@ -59,7 +59,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     u32 debugActive;
     u32 skeletonFlags;
     u32 totalBones;
@@ -101,7 +101,7 @@ typedef struct {
 typedef struct {
     u16 characterID; //BE1170, 0
     u16 animScriptIndex; //BE1172, 2
-    u8 field_4;
+    u8 specialDamageFlags;
     u8 field_5;
     u16 field_6;
     u16 AnimationData; //BE1178, 8
@@ -172,6 +172,84 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
+    u8 isScriptActive;
+    u8 currentOpCode;
+    u8 field_2;
+    u8 field_3;
+    u8* scriptPtr;
+    u16 field_8;
+    u16 opCodeArgs[5];
+    u8 field_14;
+    u8 field_15;
+    u16 field_16;
+    u16 field_18;
+    u16 field_1A;
+    u8 field_1C;
+} AnimScriptContext;
+#pragma pack(pop)
+
+typedef struct {
+    u8 actorID;
+    u8* scriptPtr;
+    AnimScriptContext* scriptContext;
+    u8 currentScriptIdx;
+    BattleModelState* battleModelState;
+    u8** animationScriptTable;
+} AnimScriptEvent;
+
+#pragma pack(push, 1)
+typedef struct {
+    u32 type1;
+    u32 type2;
+} AIScriptTypes;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 type1;
+    u16 type2;
+} AIScriptMasks;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    i32 type1Array[10];
+    i32 type2Array[10];
+} AIScriptValues;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u32 actorID;
+    u32 currentScriptIdx;
+    u32 stackPosition;
+    u32 currentOpCode;
+    u32 opCodeLow;
+    u32 opCodeHigh;
+    AIScriptTypes highTypes;
+    AIScriptTypes lowTypes;
+    AIScriptMasks popMasks;
+    AIScriptValues arguments;
+    u8 scriptStack[512];
+} AIScriptContext;
+#pragma pack(pop)
+
+#define G_AI_SCRIPT_CTX   ((AIScriptContext*)0x99E308)
+
+typedef struct {
+    u8 actorID;
+    const u8* const scriptPtr;
+    AIScriptContext* scriptContext;
+    u8 currentScriptIdx;
+    u8 charID;
+} AIScriptEvent;
+
+enum OpCodeControlSequence { RUN_NEXT, PLAY_ANIM, BREAK };
+typedef OpCodeControlSequence(*SRPFNANMSCRIPTOPCODEHANDLER)(AnimScriptEvent*);
+typedef OpCodeControlSequence(*SRPFNAISCRIPTOPCODEHANDLER)(AIScriptEvent*);
+
+#pragma pack(push, 1)
+typedef struct {
     u32 field_0;
     u16 bData68[4];
     u16 field_C;
@@ -180,12 +258,12 @@ typedef struct {
     u16 field_26;
     u16 field_28;
     u16 field_2A;
-    u16 field_2C;
+    u16 someHPCopy;
     u16 field_2E;
-    u16 field_30;
+    u16 someMPCopy;
     u8 modelDataIndex; //0x032
     u8 field_33;
-    u8 field_34;
+    u8 innateStatusMask;
     u8 field_35;
     u8 field_36;
     u8 field_37;
@@ -253,15 +331,15 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 field_4;
+    u32 specialDamageFlags;
     GameRotationMatrix rotationMatrix;
     u16 field_26;
     u32 field_28;
-    u16 field_2C;
+    u16 drainedHP;
     u16 field_2E;
-    u16 field_30;
+    u16 drainedMP;
     u16 field_32;
-    u32 field_34;
+    u32 innateStatusMask;
     u32 field_38;
     u32 field_3C;
 } ModelRotationData;

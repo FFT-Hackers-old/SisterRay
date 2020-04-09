@@ -1,5 +1,6 @@
 #include "attacks.h"
 #include "../impl.h"
+#include "gdata_utils.h"
 
 #define KERNEL_MAGIC_CUTOFF 56
 #define KERNEL_SUMMON_CUTOFF 72
@@ -7,7 +8,6 @@
 
 SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAttack, std::string>() {
     size_t read_size;
-    SrAttack attack;
     AttackData baseAttack;
     std::string srAttackID;
     SrAttack attack96;
@@ -15,6 +15,7 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
 
     auto idx = 0;
     while (1) {
+        SrAttack attack;
         auto cmdIdx = 0;
         read_size = srKernelStreamRead(stream, &baseAttack, sizeof(baseAttack));
         if (read_size != sizeof(baseAttack))
@@ -70,6 +71,9 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.useOverride = 0;
             attack.useMulti = 0;
         }
+        initializeActionElements(attack);
+        initializeStatusAfflictions(attack);
+        setSrDamageInfo<SrAttack>(attack, baseAttack.damageFormula);
         addElement(assembleGDataKey(attack.attackID), attack);
         auto& cmd = gContext.commands.getResource(cmdIdx);
         cmd.actionCount++;
@@ -83,12 +87,39 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
     addCommandAction(assembleGDataKey(CMD_SUMMON), assembleGDataKey(attack97.attackID));
 }
 
+//Set elements 
+void initializeActionElements(SrAttack& attack) {
+    auto& attackElements = attack.attackElements;
+    for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
+        if (!(attack.attackData.elementMask & (1 << elementIdx))) {
+            continue;
+        }
+        attackElements.push_back(getElementIDFromIndex(elementIdx));
+    }
+}
+
+void initializeStatusAfflictions(SrAttack& attack) {
+    auto& statusAttack = attack.statusAttack;
+    if (attack.attackData.statusMask == 0xFFFFFFFF) {
+        return;
+    }
+    for (auto statusIdx = 0; statusIdx < 32; statusIdx++) {
+        if (!(attack.attackData.statusMask & (1 << statusIdx))) {
+            continue;
+        }
+        srLogWrite("added infliction for status: %s", getStatusIDFromIndex(statusIdx).c_str());
+        StatusInfliction infliction{ getStatusIDFromIndex(statusIdx), attack.attackData.statusInflictType & 0x3F, attack.attackData.statusInflictType & 0x80, attack.attackData.statusInflictType & 0x40 };
+        statusAttack.push_back(infliction);
+    }
+    srLogWrite("Intialized %i statuses for attack %i", attack.statusAttack.size(), attack.attackID);
+}
+
 void initAttacks(SrKernelStream* stream) {
     gContext.attacks = SrAttackRegistry(stream);
     srLogWrite("kernel.bin: Loaded %lu attacks", (unsigned long)gContext.attacks.resourceCount());
 }
 
- u16 getDefaultMagicUseMulti(u16 actionID) {
+u16 getDefaultMagicUseMulti(u16 actionID) {
      switch (actionID) {
      case 0x1D:
      case 0x20:
@@ -104,6 +135,8 @@ void initAttacks(SrKernelStream* stream) {
      }
      }
 }
+
+
 
  SpellEffect getDefaultMagicMultiEffects(u16 actionID) {
      auto multiEffect = SpellEffect();

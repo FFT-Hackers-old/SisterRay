@@ -9,6 +9,8 @@
   And unify our String Registry and all of our various item registries*/
 template<class T> class SrResourceRegistry {
 public:
+    typedef typename std::vector<T>::iterator iterator;
+    typedef typename std::vector<T>::const_iterator const_iterator;
     /*Constructor for initializing a resource registry from a kernel stream*/
     SrResourceRegistry(SrKernelStream* stream) {
         size_t read_size;
@@ -73,6 +75,22 @@ public:
 
     T* getData() {
         return _resource_registry.data();
+    }
+
+    iterator begin() {
+        return _resource_registry.begin();
+    }
+
+    const_iterator begin() const {
+        return _resource_registry.begin();
+    }
+
+    iterator end() {
+        return _resource_registry.end();
+    }
+
+    const_iterator end() const {
+        return _resource_registry.end();
     }
 
 protected:

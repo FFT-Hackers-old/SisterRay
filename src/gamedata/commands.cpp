@@ -1,5 +1,7 @@
 #include "commands.h"
 #include "../impl.h"
+#include "gdata_utils.h"
+#include "damage_callback_utils.h"
 
 /*No patched offsets are needed here, so let's unify this*/
 SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceRegistry<SrCommand, std::string>() {
@@ -20,6 +22,8 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
         srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
         registerDefaultCallbacks(commandIdx, srCommand);
         registerSelectCallbacks(commandIdx, srCommand);
+
+        setSrDamageInfo<SrCommand>(srCommand, srCommand.auxData.damageCalculationByte);
         addElement(assembleGDataKey(commandIdx), srCommand);
         commandIdx++;
     }
@@ -34,6 +38,10 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
         srCommand.auxData.damageCalculationByte = getDefaultCmdDamage(commandIdx);
         srCommand.auxData.miscCommandFlags = getDefaultCmdFlags(commandIdx);
         srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
+        if (commandIdx == CMD_POISONTICK) {
+            srCommand.gameCommand.singleCameraID = 0xFFFF;
+            srCommand.gameCommand.multipleCameraID = 0xFFFF;
+        }
         registerDefaultCallbacks(commandIdx, srCommand);
         registerSelectCallbacks(commandIdx, srCommand);
         addElement(assembleGDataKey(commandIdx), srCommand);
@@ -86,22 +94,16 @@ void setCommandAction(const std::string commandKey, const std::string actionKey,
     srCommand.commandActions[actionIndex] = attackIdx;
 }
 
-
-/*run every initializer callback in order*/
-SISTERRAY_API void runSetupCallbacks(const char* name) {
-    auto idx = gContext.commands.getResourceIndex(std::string(name));
-    runSetupCallbacks(idx);
-}
-
-void runSetupCallbacks(u16 commandIdx) {
-    CommandSetupEvent setupEvent = { gDamageContextPtr };
-    auto& callbacks = getCommand(commandIdx).setupCallbacks;
+void runSetupCallbacks(ActionContextEvent& actionEvent) {
+    CommandSetupEvent setupEvent = { actionEvent.damageContext, actionEvent.srDamageContext, actionEvent.battleAIContext };
+    setupEvent.srDamageContext->attackerState = gContext.battleActors.getActiveBattleActor(actionEvent.damageContext->attackerID);
+    auto& callbacks = getCommand(actionEvent.damageContext->commandIndex).setupCallbacks;
     for (auto callback : callbacks) {
         callback(setupEvent);
     }
 }
 
-void runSelectCallbacks(EnabledCommandStruct& command, Menu* menu) {
+void runSelectCallbacks(EnabledCommand& command, Menu* menu) {
     SelectCommandEvent setupEvent = { menu, &command };
     auto& callbacks = getCommand(command.commandID).selectCallbacks;
     for (auto callback : callbacks) {
@@ -418,6 +420,7 @@ void registerDefaultCallbacks(u16 commandIdx, SrCommand& auxCommand) {
             break;
         }
         case 33: {
+            auxCommand.setupCallbacks.push_back(&createStringEvent);
             break;
         }
         case 34: {

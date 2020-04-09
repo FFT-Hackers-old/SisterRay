@@ -2,6 +2,7 @@
 #define SISTER_RAY_GAME_STRUCTS_H
 
 #include <SisterRay/types.h>
+#include <SisterRay/scene_data.h>
 
 
 #pragma pack(push, 1)
@@ -20,6 +21,180 @@ typedef struct {
     QueueAction queueAction;
 } BattleQueueEntry;
 #pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
+    u16 vTimerIncrement;       //0x00
+    u16 yurnTimerIncrement;    //0x02
+    u16 charATBValue;          //0x04
+    u16 field_6;               //0x06
+    u16 field_8;
+    u16 CTimerIncrement;       //0xA
+    u8 field_C;
+    u8 field_D;
+    u8 activeCommandsMask;     //0x0D
+    u8 field_F;                //0x0F
+    u8 field_10;               //0x10
+    u8 field_11;               //0x11
+    u8 field_12;
+    u8 field_13;
+    u8 field_14;
+    u8 field_15;               //0x15
+    u8 field_16;               //0x16
+    u8 poisonTick;             //0x17
+    u8 field_18;
+    u8 field_19;
+    u8 field_1A;
+    u8 field_1B;
+    u8 field_1C;
+    u8 field_1D;
+    u8 field_1E;
+    u8 field_1F;
+    u8 field_20;
+    u8 field_21;
+    u8 field_22;
+    u8 field_23;
+    u8 field_24;
+    u8 field_25;
+    u8 field_26;
+    u8 field_27;
+    u8 reflectCount;
+    u8 unkActorFlags;           //0x29
+    u8 field_2A;                //0x2A
+    u8 field_2B;                //0x2B
+    u32 drainedHP;               //0x2C
+    u32 drainedMP;               //0x30
+    u32 innateStatusMask;       //0x34
+    EnemyData* battleEnemyData;               //0x38
+    u16 currentHP;              //0x3C
+    u16 currentMP;              //0x3E
+    u8 field_40;                //0x40
+    u8 field_41;
+    u8 field_42;
+    u8 field_43;
+} ActorTimerData;
+#pragma pack(pop)
+
+#define G_ACTOR_TIMER_ARRAY ((ActorTimerData*)(0x9A8B10))
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 characterID;
+    u8 level;
+    u8 strength;
+    u8 vitality;
+    u8 magic;
+    u8 spirit;
+    u8 dexterity;
+    u8 luck;
+    u8 bonus_strength;
+    u8 bonus_vitality;
+    u8 bonus_magic;
+    u8 bonus_spirit;
+    u8 bonus_dexterity;
+    u8 bonus_luck;
+    u8 activeLimitLevel;
+    u8 limit_bar_progress;
+    char character_name[12];
+    u8 equipped_weapon;
+    u8 equipped_armor;
+    u8 equipped_accessory;
+    u8 outOfBattleStatus;
+    u8 character_row;
+    u8 level_progress;
+    u16 learned_limits;
+    u16 character_kills;
+    u16 limit_1A_uses;
+    u16 limit_2A_uses;
+    u16 limit_3A_uses;
+    u16 current_HP;
+    u16 base_HP;
+    u16 current_MP;
+    u16 base_MP;
+    u8 unknown[4];
+    u16 max_HP;
+    u16 max_MP;
+    u32 current_EXP;
+    u32 equippedWeaponMateria[8]; //This is primarily written to/from here, so this should be relocated if we are to expand 
+    u32 equippedArmorMateria[8];
+    u32 exp_to_next_level;
+} CharacterRecord;
+#pragma pack(pop)
+
+#define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
+
+#pragma pack(push, 1)
+typedef struct {
+    CharacterRecord* characterRecord;
+    u8 specialDamageFlags;
+    u8 limitLevelIdx;
+    u8 field_6;
+    u8 field_7;
+    u16 limitBar;
+    u16 limitBarCopy;
+    u16 currentMP;
+    u16 currentHP;
+    u16 maxMP;
+    u16 maxHP;
+    u16 field_14; //Seems to be HP/MP switch HP
+    u16 field_16; //Seems to be HP/MP switch MP
+    u16 previousSupportMasks[2];
+    u8 limitLevelDivisor;
+    u8 field_1D;
+    u8 field_1E;
+    u8 field_1F;
+    u32 field_20;
+    u32 learnedEnemySkills;
+    u32 knownEnemySkills;
+    u8 drainedHP;
+    u8 field_2D;
+    u8 field_2E;
+    u8 field_2F;
+    u8 drainedMP;
+    u8 field_31;
+    u8 field_32;
+    u8 field_33;
+}BattleParty34;
+#pragma pack(pop)
+
+#define G_BATTLE_PARTY34_ARRAY  ((BattleParty34*)(0x09A8DB8))
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 characterID; //0x00
+    u8 field_1;    //0x01
+    u8 field_2;    //0x02
+    u8 field_3;    //0x03
+    u8 deathType;    //0x04
+    u8 field_5;       //0x05
+    u16 field_6;    //0x06
+    u32 field_8;   //0x08
+    u32 field_C;   //0x0C
+} BattleParty10;
+#pragma pack(pop)
+
+#define G_BATTLE_PARTY10_ARRAY ((BattleParty10*)0x9A87F4)
+
+#pragma pack(push, 1)
+typedef struct {
+    u8 targetFlags; //0x00
+    u8 attackEffectID;    //0x01
+    u8 damageCalculation;    //0x02
+    u8 weaponHitRate;    //0x03
+    u8 impactEffectID;    //0x04
+    u8 criticalRate;       //0x05
+    u16 padding;
+    u16 normalSoundID;
+    u16 critSoundID;
+    u16 missSoundID;
+    u16 attackElementMask;
+    u16 cameraMovement;
+    u16 specialAttackFlags;
+    u32 attackStatusMask;
+} BattleWeaponCtx;
+#pragma pack(pop)
+
+#define G_BATTLE_WEAPON_ARRAY ((BattleWeaponCtx*)0x9A8E54)
 
 //This struct has size 260h and is referenced by the main context ptr
 #pragma pack(push, 1)
@@ -88,12 +263,12 @@ typedef struct {
     u32 hitCountCopy; //0xFC
     /*256 unused bytes*/
     u8 padding3[0x100];
-    u32 targetObjectBlock1Ptr; //0x200
-    u32 targetObjectBlock2Ptr; //0x204
+    ActorTimerData* vTimerBlock; //0x200
+    BattleParty34* party34Block; //0x204
     u32 targetID; //0x208
     u32 targetEnemyIndex; //0x20C
     u32 targetDefense; //0x210
-    u32 currentDamage; //0x214
+    i32 currentDamage; //0x214
     u32 abilityFlags1; //0x218
     u32 unkDWord6; //0x21C
     u32 abilityFlags2; //0x220
@@ -143,8 +318,8 @@ typedef struct {
     u16     prevAttackerMask;  //0x1A
     u16     prevPhysAttackerMask; //0x1C
     u16     prevMagAttackerMask;  //0x1E
-    u16     Defense;           //0x20
-    u16     MDefense;
+    u16     defense;           //0x20
+    u16     mDefense;
     u16     formationID;
     u16     absorbedElementsMask;
     u16     currentMP;
@@ -186,7 +361,6 @@ typedef struct {
     u8 bankAccessValue; //10
     u8 dummyByte;   //18
     u8 battleType;  //20
-    u8 unk1; //28
     u8 unk2; //30
     u8 limitLevel; //38
     u8 unk3; //40
@@ -212,13 +386,13 @@ typedef struct {
     u16 unkBattleFlags;      //160
     u16 specialAttackFlags;  //170
     u16 unkLimitDivisor;     //180
-    u32 unkDword;            //190
+    u16 unkDword;            //190
+    u16 stringArgs;
     u16 somethingEmerald;    //1A0
     u32 partyGil;            //1C0
     ActorBattleVars actorAIStates[10];
 } AIBattleContext;
 #pragma pack(pop)
-
 
 #define AI_BATTLE_CONTEXT   ((AIBattleContext*)0x9AB0A0)
 
@@ -235,146 +409,139 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u16 vTimerIncrement;       //0x00
-    u16 yurnTimerIncrement;    //0x02
-    u16 charATBValue;          //0x04
-    u16 field_6;               //0x06
-    u16 field_8;
-    u16 CTimerIncrement;       //0xA
-    u16 field_C;
-    u8 activeCommandsMask;     //0x0D
-    u8 field_F;                //0x0F
-    u8 field_10;               //0x10
-    u8 field_11;               //0x11
-    u8 field_12;
-    u8 field_13;
-    u8 field_14;
-    u8 field_15;               //0x15
-    u8 field_16;               //0x16
-    u8 poisonTick;             //0x17
-    u8 field_18;
-    u8 field_19;
-    u8 field_1A;
-    u8 field_1B;
-    u8 field_1C;
-    u8 field_1D;
-    u8 field_1E;
-    u8 field_1F;
-    u8 field_20;
-    u8 field_21;
-    u8 field_22;
-    u8 field_23;
-    u8 field_24;
-    u8 field_25;
-    u8 field_26;
-    u8 field_27;
-    u8 reflectCount;
-    u8 unkActorFlags;           //0x29
-    u8 field_2A;                //0x2A
-    u8 field_2B;                //0x2B
-    u32 field_2C;               //0x2C
-    u32 field_30;               //0x30
-    u32 field_34;               //0x34
-    u32 field_38;               //0x38
-    u16 currentHP;              //0x3C
-    u16 currentMP;              //0x3E
-    u8 field_40;                //0x40
-    u8 field_41;
-    u8 field_42;
-    u8 field_43;
-} ActorTimerData;
+    u8 strCurve;
+    u8 vitCurve;
+    u8 magCurve;
+    u8 sprCurve;
+    u8 dexCurve;
+    u8 lckCurve;
+    u8 hpCurve;
+    u8 mpCurve;
+    u8 expCurve;
+    u8 pad;
+    u8 startingLevel;
+    u8 pad2;
+    u8 limit1_1;
+    u8 limit1_2;
+    u8 limit1_3;
+    u8 limit2_1;
+    u8 limit2_2;
+    u8 limit2_3;
+    u8 limit3_1;
+    u8 limit3_2;
+    u8 limit3_3;
+    u8 limit4_1;
+    u8 limit4_2;
+    u8 limit4_3;
+    u16 level2ReqKills;
+    u16 level3ReqKills;
+    u16 limit1_2ReqUses;
+    u16 limit1_3ReqUses;
+    u16 limit2_2ReqUses;
+    u16 limit2_3ReqUses;
+    u16 limit3_2ReqUses;
+    u16 limit3_3ReqUses;
+    u32 level1Divisor;
+    u32 level2Divisor;
+    u32 level3Divisor;
+    u32 level4Divisor;
+} KernelCharacterGrowth;
 #pragma pack(pop)
 
-#define gActorTimerBlock ((ActorTimerData*)(0x9A8B10))
-
-#pragma pack(push, 1)
 typedef struct {
-    u8 field_0[0x18];
-    u16 previousSupportMasks[2];
-    u8 field_1C[24];
-}UnkActorState;
-#pragma pack(pop)
+    u32 checksum;
+    u8 previewLevel;
+    u8 previewPortraits[3];
+    char previewCharName[16];
+    u16 previewHP;
+    u16 previewMaxHP;
+    u16 previewMP;
+    u16 previewMaxMP;
+    u32 previewGil;
+    u32 previewSeconds;
+    char previewLocation[32];
+    char ul_window_red;
+    char ul_window_green;
+    char ul_window_blue;
+    char ur_window_red;
+    char ur_window_green;
+    char ur_window_blue;
+    char ll_window_red;
+    char ll_window_green;
+    char ll_window_blue;
+    char lr_window_red;
+    char lr_window_green;
+    char lr_window_blue;
+    CharacterRecord characterRecords[9];
+    u8 activeParty[3];
+    u8 align;
+    u16 saveMapInventory[320];
+    u32 materiaInventory[200];
+    u32 stolenMateria[48];
+    u32 field_B5C;
+    u32 field_B60;
+    u32 field_B64;
+    u32 field_B68;
+    u32 field_B6C;
+    u32 field_B70;
+    u32 field_B74;
+    u32 field_B78;
+    u32 gil;
+    u32 seconds;
+    u32 countdown;
+    u32 field_B88;
+    u32 field_B8C;
+    u32 field_B90;
+    u16 currentModule;
+    u16 currentLocation;
+    u16 align2;
+    i16 x;
+    i16 y;
+    u16 walkMeshTriangle;
+    u8 fieldModelOrientation;
+    u8 field_BA1;
+    u8 field_BA2;
+    u8 field_BA3;
+    u8 fieldBank1[256];
+    u8 fieldBank2[256];
+    u8 fieldBank3[256];
+    u8 fieldBank4[256];
+    u8 fieldBank5[256];
+    u16 phsLockMask;
+    u16 phsVisibilityMask;
+    u8 field_10A8;
+    u8 field_10A9;
+    u8 field_10AA;
+    u8 field_10AB;
+    u8 field_10AC;
+    u16 field_10AD;
+    u16 field_10AF;
+    u8 field_10B1;
+    u16 field_10B2;
+    u32 field_10B4;
+    u32 field_10B8;
+    u32 field_10BC;
+    u32 field_10C0;
+    u32 field_10C4;
+    u32 field_10C8;
+    u32 field_10CC;
+    u32 field_10D0;
+    u32 field_10D4;
+    u8 battleSpeed;
+    u8 battleMsgSpeed;
+    u8 field_10DA;
+    u8 field_10DB;
+    u32 field_10DC;
+    u32 field_10E0;
+    u32 field_10E4;
+    u32 field_10E8;
+    u8 messageSpeed;
+    u8 field_10ED;
+    u16 field_10EE;
+    u32 field_10F0;
+} SaveMap;
 
-#define gUnkActorArray  ((UnkActorState*)(0x09A8DB8))
 
-#pragma pack(push, 1)
-typedef struct {
-    u8 characterID; //0x00
-    u8 field_1;    //0x01
-    u8 field_2;    //0x02
-    u8 field_3;    //0x03
-    u8 deathType;    //0x04
-    u8 align;       //0x05
-    u16 unkWrd1;    //0x06
-    u32 unkDWrd1;   //0x08
-    u32 unkDwrd2;   //0x0C
-} UnkPartyStruct;
-#pragma pack(pop)
-
-#define gUnkPartyDataArray ((UnkPartyStruct*)0x9A87F4)
-
-#pragma pack(push, 1)
-typedef struct {
-    u8 character_id;
-    u8 level;
-    u8 strength;
-    u8 vitality;
-    u8 magic;
-    u8 spirit;
-    u8 dexterity;
-    u8 luck;
-    u8 bonus_strength;
-    u8 bonus_vitality;
-    u8 bonus_magic;
-    u8 bonus_spirit;
-    u8 bonus_dexterity;
-    u8 bonus_luck;
-    u8 active_limit_level;
-    u8 limit_bar_progress;
-    char character_name[12];
-    u8 equipped_weapon;
-    u8 equipped_armor;
-    u8 equipped_accessory;
-    u8 out_of_battle_status;
-    u8 character_row;
-    u8 level_progress;
-    u16 learned_limits;
-    u16 character_kills;
-    u16 limit_1A_uses;
-    u16 limit_2A_uses;
-    u16 limit_3A_uses;
-    u16 current_HP;
-    u16 base_HP;
-    u16 current_MP;
-    u16 base_MP;
-    u8 unknown[4];
-    u16 max_HP;
-    u16 max_MP;
-    u32 current_EXP;
-    u32 equippedWeaponMateria[8]; //This is primarily written to/from here, so this should be relocated if we are to expand 
-    u32 equippedArmorMateria[8];
-    u32 exp_to_next_level;
-} CharacterRecord;
-#pragma pack(pop)
-
-#define CHARACTER_RECORD_ARRAY ((CharacterRecord*)0xDBFD8C)
-
-#pragma pack(push, 1)
-typedef struct {
-    u8 isScriptActive;
-    u8 currentOpCode;
-    u8 field_2;
-    u8 field_3;
-    u8* scriptPtr;
-    u16 field_8;
-    u16 opCodeArgs[5];
-    u8 field_14;
-    u8 field_15;
-    u16 field_16;
-    u16 field_18;
-    u16 field_1A;
-    u8 field_1C;
-} AnimScriptContext;
-#pragma pack(pop)
+#define G_SAVE_MAP ((SaveMap*)0xDBFD38)
 
 #endif

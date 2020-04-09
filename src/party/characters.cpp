@@ -8,6 +8,7 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
     gContext.characters = SrCharacterRegistry();
     u8* sectionBuffer = (u8*)malloc(CHARACTER_BLOCK_SIZE);
     srKernelStreamRead(stream, (void*)sectionBuffer, CHARACTER_BLOCK_SIZE);
+    KernelCharacterGrowth* growthDataPtr = (KernelCharacterGrowth*)sectionBuffer;
     auto characterAIPtr = sectionBuffer + 0x61C;
 
     for (auto characterIndex = 0; characterIndex < 12; characterIndex++) {
@@ -15,7 +16,12 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
         auto characterData = SrCharacterData();
         BattleAIData characterAIData = BattleAIData();
         initializeBattleAIData(characterAIPtr, characterIndex, characterAIData);
+        characterData.gameCharacter = nullptr;
         characterData.characterAI = characterAIData;
+        if (characterIndex < 9) {
+            characterData.characterGrowth = growthDataPtr[characterIndex];
+            characterData.gameCharacter = &(CHARACTER_RECORD_ARRAY[characterIndex]);
+        }
         auto charName = getCharacterName(characterIndex);
 
         MateriaInventoryEntry defaultMat = MateriaInventoryEntry();

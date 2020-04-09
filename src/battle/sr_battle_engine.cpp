@@ -24,7 +24,7 @@ void initializeSrBattleEngine() {
     mogReplaceFunction(LOAD_FORMATION_HANDLER, &srLoadBattleFormation);
     mogReplaceFunction(FF7_DISPLAY_BATTLE_STRING, &nopBattleString);
     mogReplaceFunction(RUN_ANIMATION_SCRIPT, &runAnimationScript);
-    //mogReplaceFunction(FF7_RUN_AI_SCRIPT, &srRunAIScript);
+    mogReplaceFunction(FF7_RUN_AI_SCRIPT, &srRunAIScript);
     mogReplaceFunction(FF7_INIT_PLAYER_ACTORS, &initializePlayerActors);
     mogReplaceFunction(FF7_INIT_ENEMY_ACTORS, &initializeEnemyActors);
     registerActionPopCallbacks();

@@ -131,6 +131,7 @@ static void Init(void) {
     initMateriaInventory();
     initGameStrings();
     initStats(true);
+    initStatuses();
     initElements();
     initFormulas();
     initParty();

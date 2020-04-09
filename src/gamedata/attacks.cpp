@@ -8,7 +8,6 @@
 
 SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAttack, std::string>() {
     size_t read_size;
-    SrAttack attack;
     AttackData baseAttack;
     std::string srAttackID;
     SrAttack attack96;
@@ -16,6 +15,7 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
 
     auto idx = 0;
     while (1) {
+        SrAttack attack;
         auto cmdIdx = 0;
         read_size = srKernelStreamRead(stream, &baseAttack, sizeof(baseAttack));
         if (read_size != sizeof(baseAttack))
@@ -100,13 +100,18 @@ void initializeActionElements(SrAttack& attack) {
 
 void initializeStatusAfflictions(SrAttack& attack) {
     auto& statusAttack = attack.statusAttack;
+    if (attack.attackData.statusMask == 0xFFFFFFFF) {
+        return;
+    }
     for (auto statusIdx = 0; statusIdx < 32; statusIdx++) {
         if (!(attack.attackData.statusMask & (1 << statusIdx))) {
             continue;
         }
+        srLogWrite("added infliction for status: %s", getStatusIDFromIndex(statusIdx).c_str());
         StatusInfliction infliction{ getStatusIDFromIndex(statusIdx), attack.attackData.statusInflictType & 0x3F, attack.attackData.statusInflictType & 0x80, attack.attackData.statusInflictType & 0x40 };
         statusAttack.push_back(infliction);
     }
+    srLogWrite("Intialized %i statuses for attack %i", attack.statusAttack.size(), attack.attackID);
 }
 
 void initAttacks(SrKernelStream* stream) {

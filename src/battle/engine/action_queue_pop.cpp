@@ -8,7 +8,7 @@
 
 /*Re-implemented to modularize adding commands to the game*/
 void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
-    srLogWrite("handling popped action %i", poppedAction->queueAction.actionCommandIndex);
+    srLogWrite("handling popped action %i, targetMask: %x", poppedAction->queueAction.actionCommandIndex, poppedAction->queueAction.actionTargetMask);
     u32* dword_9AEA84 = (u32*)0x9AEA84;
     u32* dword_9AEA60 = (u32*)0x9AEA60;
     u32* dword_9AEA6C = (u32*)0x9AEA6C;

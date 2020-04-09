@@ -14,7 +14,8 @@ void applyDamage(CommandSetupEvent& event) {
 
 void weaponSetup(CommandSetupEvent& event) {
     srLogWrite("Running weapon setup callback");
-    ff7weaponSetup();
+    srSetupWeapon(event);
+    //ff7weaponSetup();
 }
 
 void loadAbility(CommandSetupEvent& event) {

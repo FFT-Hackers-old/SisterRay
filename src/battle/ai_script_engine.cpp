@@ -191,6 +191,7 @@ void srRunAIScript(u8 actorID, u8* scriptPtr, u8 charID) {
     scriptCtx->actorID = actorID;
     scriptCtx->currentScriptIdx = 0;
     scriptCtx->stackPosition = 512;
+    srLogWrite("Inside SR AI Script");
     while (!scriptEnded) {
         scriptCtx->currentOpCode = runningScriptPtr[scriptCtx->currentScriptIdx++];
         scriptCtx->opCodeLow = scriptCtx->currentOpCode & 0xF;

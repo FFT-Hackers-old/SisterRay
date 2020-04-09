@@ -16,6 +16,7 @@ void srNoDamage(DamageCalculationEvent* damageEvent) {
 
 #define gameHandleOrientation ((PFNSR_VOIDSUB)0x5DE356)
 void srAttackDamageBase(DamageCalculationEvent* damageEvent) {
+    srLogWrite("Executing SrBase Physical Formula");
     auto& srDamageCtx = *damageEvent->srDamageContext;
     auto& gameDamageCtx = *damageEvent->damageContext;
 
@@ -37,6 +38,7 @@ void srAttackDamageBase(DamageCalculationEvent* damageEvent) {
 
     u16 lvlFactor = (1 + (atkLevel / 10.0f));
     u16 strFactor = (1 + (attackerStr / 32.0f));
+    srLogWrite("strFactor: %u | levelFactor: %u", strFactor, lvlFactor);
     baseDamage = actionPower * lvlFactor * strFactor;
     gameDamageCtx.currentDamage = baseDamage;
 }

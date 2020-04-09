@@ -158,6 +158,8 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
             auto attackName = EncodedString((const char *)enemyAttackNames[relAttackIndex].name);
             auto attackData = enemyAttacks[relAttackIndex];
             SrAttack enemyAttack = { attackData, attackID, attackName, EncodedString::from_unicode(""), ENEMY_ATTACK,  };
+            initializeActionElements(enemyAttack);
+            initializeStatusAfflictions(enemyAttack);
             setSrDamageInfo<SrAttack>(enemyAttack, attackData.damageFormula);
             gContext.attacks.addElement(stringID, enemyAttack);
             /*srLogWrite("Enemy Attack:%s added to registry with name:%s, and ID:%i",

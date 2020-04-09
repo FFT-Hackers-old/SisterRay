@@ -14,11 +14,59 @@ void srLoadAbilityData() {
     srSetupAction(srEvent);
 }
 
+void srSetupWeapon(CommandSetupEvent& srDamageEvent) {
+    auto damageContext = srDamageEvent.damageContext;
+    auto weaponCtx = srDamageEvent.srDamageContext->attackerState.weaponCtx;
+    auto srWeapon = srDamageEvent.srDamageContext->attackerState.srWeapon;
+    damageContext->abilityPower = 16;
+    if (damageContext->attackerID < 3) {
+        damageContext->animationEffectID = weaponCtx->attackEffectID;
+        srDamageEvent.srDamageContext->damageFormula = srWeapon->damageFormula;
+        srDamageEvent.srDamageContext->dmgFormulaModifiers = srWeapon->dmgFormulaModifiers;
+        srDamageEvent.srDamageContext->damageType = srWeapon->damageType;
+        srDamageEvent.srDamageContext->hitFormula = srWeapon->hitFormula;
+        srDamageEvent.srDamageContext->hitFormulaModifiers = srWeapon->hitFormulaModifiers;
+        damageContext->abilityHitRate = srWeapon->gameWeapon.weaponHitRate;
+        damageContext->impactEffectID = srWeapon->gameWeapon.impactEffectID;
+        srDamageEvent.srDamageContext->attackElements = srWeapon->attackElements;
+        srDamageEvent.srDamageContext->statusToInflict = srWeapon->statusAttack;
+        if (damageContext->cameraDataSingle == 0xFFFF)
+            damageContext->cameraDataSingle = srWeapon->gameWeapon.cameraMovement;
+        if (damageContext->cameraDataMultiple == 0xFFFF)
+            damageContext->cameraDataMultiple = srWeapon->gameWeapon.cameraMovement;
+        damageContext->specialAbilityFlags = srWeapon->gameWeapon.specialAttackFlags;
+        if (damageContext->abilityTargetingFlags == 0xFF) {
+            damageContext->abilityTargetingFlags = srWeapon->gameWeapon.targetFlags;
+        }
+
+        damageContext->impactSound = srWeapon->gameWeapon.normalSoundID;
+        damageContext->critAtkSound = srWeapon->gameWeapon.critSoundID;
+        damageContext->missAtkSound = srWeapon->gameWeapon.missSoundID;
+        //Elemental Materia will have to go here
+    }
+
+    if (srActorHasStatus(srDamageEvent.srDamageContext->attackerState, StatusNames::BLIND))
+        damageContext->abilityHitRate >>= 1;
+
+    if (srActorHasStatus(srDamageEvent.srDamageContext->attackerState, StatusNames::FROG)) {
+        damageContext->impactSound = 363;
+        damageContext->critAtkSound = 364;
+        damageContext->missAtkSound = 5;
+        damageContext->impactEffectID = 0;
+    }
+    if (srDamageEvent.srDamageContext->attackerState.actorTimers->currentHP  == 7777)    {
+
+    }
+}
+
 #define handleCantReach ((PFNSR_VOIDSUB)0x5DA278)
 #define createFinalTargetMask ((PFNSR_VOIDSUB)0x5DC390)
 #define gameCopyEventQueuePositions ((PFNSR_VOIDSUB)0x436C30)
 void srApplyDamage(CommandSetupEvent& srSetupEvent) {
+    srLogWrite("INSIDE SR_APPLY_DAMAGE Callback");
     auto damageContext = srSetupEvent.damageContext;
+    printAnimationEventQueue();
+    srLogWrite("target mask: %x", damageContext->targetMask);
     auto& aiContext = *AI_BATTLE_CONTEXT;
     u32* G_ACTION_STATE_FLAGS = (u32*)0xC3F364;
     u16* word_C3F37C = (u16*)0xC3F37C;
@@ -47,17 +95,19 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
 
     // Execute all follow up actions
     while (1) {
+        srLogWrite("Entering Damage Calculation While Loop");
         localActionCount = damageContext->actionCount--;// do this doublecut param times
         if (!localActionCount)
             break;
 
         for (u32 followUpIdx = 0; followUpIdx < 8; ++followUpIdx) {
             if (damageContext->followUpActions[followUpIdx] != 255) {
+                srLogWrite("Handling follow up action with idx: %i", followUpIdx);
                 auto followUpID = damageContext->followUpActions[followUpIdx];
                 damageContext->followUpActions[followUpIdx] = -1;
                 damageContext->absAttackIndex = followUpID;
                 damageContext->sceneAbilityIndex = damageContext->absAttackIndex;
-                damageContext->abilityTargetingFlags = 0xFFF;
+                damageContext->abilityTargetingFlags = 0xFF;
                 srSetupAction(srSetupEvent);
                 //some special flag setting, investigate and replace bit packing trick
                 /*if (followUpID & 0x80) {
@@ -69,8 +119,12 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
         word_C3F37C[0] = 0;
         damageContext->targetMask = damageContext->usedTargetMask;
         damageContext->hitCountCopy = damageContext->attackHitCount;
+        srLogWrite("Handling Targeting");
         handleTargeting(srSetupEvent); //Reverse/redo in the future
+        srLogWrite("Targeting Handled");
         handleCantReach(); //Reverse/redo in the future
+        srLogWrite("Handling Action Success");
+        srLogWrite("target mask: %x", damageContext->targetMask);
         if (damageContext->miscActionFlags & 0x80000) {
             for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
                 if ((1 << actorIdx) & damageContext->targetMask) {
@@ -78,15 +132,19 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                         damageContext->targetMask &= ~(1 << actorIdx); // unflag dead targets
                 }
             }
+            srLogWrite("Handled untarget any dead targets");
             if (!damageContext->targetMask) {
+                srLogWrite("Pushing Special null target Anim Event");
                 srPushSpecialAnimEvent(damageContext->animationScriptID, srSetupEvent);
                 break;
             }
         }
         if (!damageContext->targetMask) {
+            srLogWrite("No targets in mask, triggering failed action");
             handleFailedAction(srSetupEvent, damageContext->displayString);
             break;
         }
+        srLogWrite("Action succceeded");
         // Why do this lol?
         for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
             G_TEMP_ATTACKER_TARGETS[actorIdx] = 0;
@@ -95,7 +153,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
         G_TEMP_ATTACKER_TARGETS[damageContext->attackerID] = damageContext->targetMask;
         *G_ACTION_STATE_FLAGS |= 9u;
         while (*G_ACTION_STATE_FLAGS & 1) {
-
+            srLogWrite("Entering Target Damage Event While Loop");
             if (*G_ACTION_STATE_FLAGS & 6) {
                 *G_ACTION_STATE_FLAGS &= 0xFFFFFFFD;
                 if (damageContext->commandIndexCopy != 3)
@@ -134,9 +192,13 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                         for (u8 targetActorID = 0; targetActorID < 10; ++targetActorID) {
                             if ((1 << targetActorID) & damageContext->targetMask) {
                                 srSetupEvent.srDamageContext->targetRow = srSetupEvent.aiContext->actorAIStates[targetActorID].actorRow;
+       
                                 DamageCalculationEvent srDamageEvent{ srSetupEvent.damageContext, srSetupEvent.srDamageContext, srSetupEvent.aiContext, newDamageEvent() };
                                 srDamageEvent.srDamageContext->attackerState = gContext.battleActors.getActiveBattleActor(attackerActorID);
+                                printDamageQueueState();
+                                srLogWrite("Creating Damage Event with for attacker: %i, target: %i", attackerActorID, targetActorID);
                                 calculateDamage(&srDamageEvent, attackerActorID, targetActorID);
+                                srLogWrite("Damage Event created at %p", &srDamageEvent.gameDamageEvent);
                             }
                         }
                         if (damageContext->attackHitCount)
@@ -147,6 +209,8 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                     gContext.eventBus.dispatch(POST_ACTION_DAMAGE_CALC, &srSetupEvent);
                 }
             }
+            srLogWrite("Exiting Damage Event Creation Loop");
+            printDamageQueueState();
             handleDrainEffects(srSetupEvent);
             handleQuadraMagic(srSetupEvent);
 
@@ -180,6 +244,9 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
         auto animEvent = createAnimEvent(10, 2, 1, 0xFF, damageContext->unkDword8, 0xFF, 0, 0xFFFF);
         animEvent->damageEventQueueIdx = 0xFFFF;
     }
+    srLogWrite("EXITING SRAPPLYDAMAGE CALLBACK");
+    printDamageQueueState();
+    printAnimationEventQueue();
  }
 
  void setupAttackerAnimEvent(CommandSetupEvent& setupEvent, u16 targetMask) {
@@ -190,6 +257,8 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
      u8* byte_8FF1E9 = (u8*)0x8FF1E9;
 
      auto animEvent = newAnimEvent();
+     printAnimationEvent(animEvent);
+     printAnimationEventQueue();
      damageContext->targetCount = countTargets(targetMask);
      animEvent->attackerID = damageContext->attackerID;
      animEvent->activeAllies = damageContext->activeAllies;
@@ -219,6 +288,8 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
          animEvent->cameraData = damageContext->cameraDataMultiple;
      animEvent->actionIndex = damageContext->sceneAbilityIndex;
      animEvent->specialDamageFlags = 0;
+     printAnimationEvent(animEvent);
+     printAnimationEventQueue();
 }
 
 
@@ -311,7 +382,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
      auto& aiContext = *srSetupEvent.aiContext;
      u16 stringArgs[2]; // [esp+4h] [ebp-8h]
      int animScriptID; // [esp+8h] [ebp-4h]
-
+     srLogWrite("Handling Failed Action, Insite Callback");
      //TODO modularize this as part of the command object
      animScriptID = 3;
      switch (damageContext->commandIndexCopy) {
@@ -333,26 +404,31 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
 
      const auto& attackerState = srSetupEvent.srDamageContext->attackerState;
      if (damageContext->attackerID >= 3) {
-         if (strIdx != -1) {
+         srLogWrite("Failed case: NON-PLAYER Actor");
+         if (strIdx != 0xFFFF) {
              stringArgs[0] = damageContext->attackerID;
              stringArgs[1] = -1;
              if (attackerState.actorTimers->field_F != 0xFF)
                  stringArgs[1] = attackerState.actorTimers->field_F;
+             srLogWrite("Pushing Display string event with arguments: %x, %x, stringIdx: %i", stringArgs[0], stringArgs[1], strIdx);
              pushDisplayString(damageContext->attackerID, strIdx, 1, (u32*)&stringArgs);
          }
      }
      else {
+         srLogWrite("Failed case: PLAYER Actor");
          srPushSpecialAnimEvent(animScriptID, srSetupEvent);
          if (strIdx != -1) {
              auto animEvent = createAnimEvent(10, 2, 1, 0xFF, strIdx, 0xFF, 0, 0xFFFF);
              animEvent->damageEventQueueIdx = 0xFFFF;
              srPushSpecialAnimEvent(59, srSetupEvent);
+             srLogWrite("Special Event Pushed");
          }
          if (animScriptID == 3) {
              srPushSpecialAnimEvent(4, srSetupEvent);
          }
          
      }
+     srLogWrite("returning from callback");
  }
 
  void srPushSpecialAnimEvent(u16 animationScriptID, CommandSetupEvent& srSetupEvent) {
@@ -383,7 +459,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
      bool targetOppositeRow; 
      bool pickValidTarget; 
      signed int v6; 
-     u16 invalidTargetMask; 
+     u16 possibleTargets; 
      int v9; 
      u16 validTargetsMask; 
      u16* word_9A8894 = (u16*)0x9A8894;
@@ -399,14 +475,14 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
 
      u8 targetFlags = damageContext->abilityTargetingFlags;
      if (damageContext->miscActionFlags & 0x1000000) {
-         invalidTargetMask = *word_9A88A2 | *word_9A8896;
+         possibleTargets = *word_9A88A2 | *word_9A8896;
      }
      else {
-         invalidTargetMask = (*word_9A8894 & *word_9A8896);
+         possibleTargets = (*word_9A8894 & *word_9A8896);
          if (!(damageContext->specialAbilityFlags & 0x100) || !(damageContext->specialAbilityFlags & 0x800))
-             invalidTargetMask |= (~*G_ESCAPED_ACTORS_MASK & *word_9A88A2);
+             possibleTargets |= (~*G_ESCAPED_ACTORS_MASK & *word_9A88A2);
      }
-     validTargetsMask = damageContext->targetMask & (invalidTargetMask ^ damageContext->targetMask);
+     validTargetsMask = damageContext->targetMask & (possibleTargets ^ damageContext->targetMask);
      if (validTargetsMask) {
          for ( u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
              if ((1 << actorIdx) & validTargetsMask) {
@@ -415,26 +491,28 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                      damageContext->targetMask |= (1 << actorState.actorTimers->field_C);
              }
          }
+         srLogWrite("calculated valid targetMask: %x", damageContext->targetMask);
      }
      if (targetFlags) {
          bool confusionActive = srActorHasStatus(srSetupEvent.srDamageContext->attackerState, StatusNames::CONFUSION);
          bool manipulateActive = srActorHasStatus(srSetupEvent.srDamageContext->attackerState, StatusNames::MANIPULATE);
          if (targetFlags & TGT_FLAG_ALL_ROWS) {
              damageContext->targetMask = (~(*word_9A88A2) & *word_9A8894);
+             srLogWrite("calculated all row targetMask: %x", damageContext->targetMask);
          }
          else {
              v6 = 0;
              if (targetFlags & TGT_FLAG_START_ENEMIES) {
                  if (damageContext->attackerID < 4u)
-                     validRowTargets = 15;
+                     validRowTargets = 15u;
                  else
-                     validRowTargets = 1008;
+                     validRowTargets = 1008u;
              }
              else {
                  if (damageContext->attackerID < 4u)
-                     validRowTargets = 1008;
+                     validRowTargets = 1008u;
                  else
-                     validRowTargets = 15;
+                     validRowTargets = 15u;
              }
 
              u8 cmdIdx = damageContext->commandIndexCopy;
@@ -454,18 +532,18 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                  v6 = 1;
                  targetFlags = targetFlags | TGT_FLAG_START_MULTIPLE;
              }
-             u16 canTargetMask = 0;
              if (targetFlags & TGT_FLAG_ONE_ROW) {
-                 canTargetMask &= validRowTargets;
+                 possibleTargets &= validRowTargets;
              }
              else if (targetFlags & TGT_SHORT_RANGE) {
-                 canTargetMask = (*word_9A8898 & invalidTargetMask);
+                 possibleTargets = (*word_9A8898 & possibleTargets);
              }
-             damageContext->targetMask &= canTargetMask;
-             validCanTargetMask = canTargetMask & validRowTargets;
+             damageContext->targetMask &= possibleTargets;
+             srLogWrite("Target Mask after short range/one row restrictions: %x", damageContext->targetMask);
+             validCanTargetMask = possibleTargets & validRowTargets;
              if (!(damageContext->miscActionFlags & 0x200000)) {
                  if (damageContext->targetMask && countTargets(damageContext->finalTargetMask) > 1 || v6) {
-                     v9 = ((damageContext->targetMask & 0xF) != 0 ? 15 : 1008) & canTargetMask;
+                     v9 = ((damageContext->targetMask & 0xF) != 0 ? 15 : 1008) & possibleTargets;
                      if (!(*word_9A88AA & damageContext->targetMask))
                          v9 &= ~(*word_9A88AA);
                      if (!(*word_9A88AE & damageContext->targetMask))
@@ -486,6 +564,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                  damageContext->targetMask &= word_9A88AA[v0 & 2];
                  damageContext->usedTargetMask &= word_9A88AA[v0 & 2];
              }
+             srLogWrite("calculated targetFlags targetMask: %x", damageContext->targetMask);
          }
      }
      else {
@@ -498,7 +577,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
  void handleQuadraMagic(CommandSetupEvent& srSetupEvent) {
      auto damageContext = srSetupEvent.damageContext;
      auto& aiContext = *srSetupEvent.aiContext;
-     u32* G_ACTION_STATE_FLAGS = (u32*)G_ACTION_STATE_FLAGS;
+     u32* G_ACTION_STATE_FLAGS = (u32*)0xC3F364;
      u16* G_ATTACKER_TARGETS = (u16*)0xC3F340;
      u16* G_TEMP_ATTACKER_TARGETS = (u16*)0xC3F368;
      u8* byte_C3F358 = (u8*)0xC3F358;
@@ -611,6 +690,10 @@ void srSetupAction(CommandSetupEvent& srSetupEvent) {
     damageContext->MPCost = -1;
     srSetupEvent.srDamageContext->attackStats = action.attackStats;
     srSetupEvent.srDamageContext->statusToInflict = action.statusAttack;
+    srLogWrite("action has %i statuses to inflict", action.statusAttack.size());
+    for (const auto& infliction : action.statusAttack) {
+        srLogWrite("ACTION WILL ATTEMPT TO INFLICT STATUS: %s", infliction.statusName);
+    }
     srSetupEvent.srDamageContext->attackElements = action.attackElements;
     srSetupEvent.srDamageContext->useActionDamageLimits = action.useOverrideLimits;
     srSetupEvent.srDamageContext->hpDamageLimit = action.hpDamageLimit;

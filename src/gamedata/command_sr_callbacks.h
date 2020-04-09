@@ -13,6 +13,7 @@
 void srSetupAction(CommandSetupEvent& setupEvent);
 void srLoadAbilityData();
 void srApplyDamage(CommandSetupEvent& srSetupEvent);
+void srSetupWeapon(CommandSetupEvent& srDamageEvent);
 void initializeLimitContext(DamageCalcStruct* damageContext);
 void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellData, const AttackData& abilityData);
 void setStatusInflictionData(DamageCalcStruct* damageContext, i32 statusInflictionByte, i32 inflictedStatusMask);

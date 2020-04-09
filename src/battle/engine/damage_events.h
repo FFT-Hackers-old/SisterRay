@@ -8,9 +8,14 @@ DamageDisplayEvent* getFirstTargetDisplayEvent(u8 targetID);
 
 AnimationEvent* getAnimationEvent(u8 queueIndex);
 AnimationEvent* getAnimationEventTop();
+void printAnimationEvent(AnimationEvent* animEvent);
+void printAnimationEventQueue();
 
 
 DamageEvent* newDamageEvent();
+void printDamageEvent(DamageEvent* damageEvent);
+void printDamageQueueState();
+
 ImpactEvent* newImpactEvent(DamageEvent* damageEvent);
 ImpactEvent* createImpactEvent(DamageEvent* damageEvent, u16 dealtDamage, u16 actionFlags, u16 impactSound, u16 impactEffect, u32 targetHP, u16 targetMP);
 AnimationEvent* newAnimEvent();

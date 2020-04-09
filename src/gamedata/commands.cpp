@@ -38,6 +38,10 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
         srCommand.auxData.damageCalculationByte = getDefaultCmdDamage(commandIdx);
         srCommand.auxData.miscCommandFlags = getDefaultCmdFlags(commandIdx);
         srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
+        if (commandIdx == CMD_POISONTICK) {
+            srCommand.gameCommand.singleCameraID = 0xFFFF;
+            srCommand.gameCommand.multipleCameraID = 0xFFFF;
+        }
         registerDefaultCallbacks(commandIdx, srCommand);
         registerSelectCallbacks(commandIdx, srCommand);
         addElement(assembleGDataKey(commandIdx), srCommand);

@@ -1,5 +1,6 @@
 #include "cmd_select_callbacks.h"
 #include "../battle/engine/battle_engine_interface.h"
+#include "../impl.h"
 
 void handleCommandTarget(SelectCommandEvent* event) {
     u8* byte_DC3C8C = (u8*)0xDC3C8C;
@@ -11,6 +12,7 @@ void handleCommandTarget(SelectCommandEvent* event) {
 void handleWeaponTarget(SelectCommandEvent* event) {
     u8* byte_DC3C8C = (u8*)0xDC3C8C;
     *byte_DC3C8C = 0;
+    srLogWrite("setting command targeting to: %x", event->command->targetingData);
     setMenuState(event->menuObect, BATTLE_TARGETING_STATE);
     setTargetingFromFlags(event->command->targetingData, false);
 }

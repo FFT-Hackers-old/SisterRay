@@ -80,7 +80,7 @@ void handleBattleStrSubstitions(char* ret, const char* base) {
     char currentChar = base[baseStrIdx];
     const char* resourceName;
     const u16* wordReader = (const u16*)base;
-
+    srLogWrite("Handling variable string substition for string %s", base);
     while (currentChar != char(0xFF)) {
         switch (currentChar) {
         case 0xEB: {

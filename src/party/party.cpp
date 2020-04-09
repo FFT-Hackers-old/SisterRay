@@ -154,7 +154,7 @@ void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& 
         if (commandID != 0xFF) {
             finalTargetingData = getCommand(commandID).gameCommand.targetingFlags;
             if (finalTargetingData == 0xFF)
-                finalTargetingData = actorState.weaponCtx->targetFlags;
+                finalTargetingData = actorState.srWeapon->gameWeapon.targetFlags;
 
             if (commandID >= 0x18u && commandID <= 0x1Bu)
                 enabledCommand.allCount = -1;
@@ -174,6 +174,8 @@ void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& 
             partyMember.commandColumns = commandSlotIdx / 4 + 1;
         }
         enabledCommand.targetingData = finalTargetingData;
+
+        srLogWrite("Set Targeting data for enabled command %i to %x for actor %i", enabledCommand.commandID, enabledCommand.targetingData, partyIdx);
     }
     battleActivatePartyMember(partyIdx);
 }
@@ -222,8 +224,11 @@ void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
     auto& gamePartyMember = *partyMember.gamePartyMember;
     auto& srPartyMember = *partyMember.srPartyMember;
     //TODO after all references are removed kill these copies
+    gamePartyMember.characterID = characterID;
     gamePartyMember.maxHP = srPartyMember.playerStats[StatNames::HP].statValue;
     gamePartyMember.maxMP = srPartyMember.playerStats[StatNames::MP].statValue;
+    gamePartyMember.currentHP = getPartyActorCharacterRecord(partyIdx)->current_HP;
+    gamePartyMember.currentMP = getPartyActorCharacterRecord(partyIdx)->current_MP;
     gamePartyMember.physAttack = srPartyMember.playerStats[StatNames::WEAPON_ATTACK].statValue;
     gamePartyMember.physDefense = srPartyMember.playerStats[StatNames::ARMOR_DEFENSE].statValue;
     gamePartyMember.magAttack = srPartyMember.playerStats[StatNames::WEAPON_MAGIC].statValue;

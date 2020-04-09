@@ -277,6 +277,17 @@ void SrBattleActors::swapPartyActors(u8 partyIdx, u8 newCharacterID) {
 
 ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
     ActorBattleState actorState = ActorBattleState();
+    if (actorIdx == 3) {
+        actorState.actorBattleVars = getActorBattleVars(actorIdx);
+        actorState.actorTimers = getActorTimerBlock(actorIdx);
+        actorState.battleStats = nullptr;
+        actorState.activeStatuses = nullptr;
+        actorState.party10 = nullptr;
+        actorState.party34 = nullptr;
+        actorState.weaponCtx = nullptr;
+        actorState.enemyData = nullptr;
+        return actorState;
+    }
     if (actorIdx < 3) {
         auto& partyActor = partyActors[activeParty[actorIdx]];
         actorState.actorBattleVars = &(partyActor.battleActor.gameAIState);
@@ -287,6 +298,9 @@ ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
         actorState.weaponCtx = &(partyActor.weaponCtx);
         actorState.activeStatuses = &(partyActors[activeParty[actorIdx]].battleActor.activeStatuses);
         actorState.enemyData = nullptr;
+        auto weaponIdx = gContext.party.getActivePartyCharacter(actorIdx).equippedWeapon;
+        srLogWrite("active Actor has weapon %i", weaponIdx);
+        actorState.srWeapon = &(gContext.weapons.getResource(weaponIdx));
         return actorState;
     }
     actorState.actorBattleVars = &enemyActors[actorIdx - 4].battleActor.gameAIState;
@@ -304,6 +318,16 @@ ActorBattleState SrBattleActors::getActiveBattleActor(u8 actorIdx) {
     ActorBattleState actorState = ActorBattleState();
     actorState.actorBattleVars = getActorBattleVars(actorIdx);
     actorState.actorTimers = getActorTimerBlock(actorIdx);
+    if (actorIdx == 3) {
+        actorState.battleStats = nullptr;
+        actorState.activeStatuses = nullptr;
+        actorState.party10 = nullptr;
+        actorState.party34 = nullptr;
+        actorState.weaponCtx = nullptr;
+        actorState.enemyData = nullptr;
+        actorState.weaponCtx = nullptr;
+        return actorState;
+    }
     if (actorIdx < 3) {
         actorState.battleStats = &(partyActors[activeParty[actorIdx]].battleActor.battleStats);
         actorState.activeStatuses = &(partyActors[activeParty[actorIdx]].battleActor.activeStatuses);
@@ -311,6 +335,9 @@ ActorBattleState SrBattleActors::getActiveBattleActor(u8 actorIdx) {
         actorState.party34 = getBattleParty34(actorIdx);
         actorState.weaponCtx = getBattleWeaponCtx(actorIdx);
         actorState.enemyData = nullptr;
+        auto weaponIdx = gContext.party.getActivePartyCharacter(actorIdx).equippedWeapon;
+        srLogWrite("active Actor has weapon %i", weaponIdx);
+        actorState.srWeapon = &(gContext.weapons.getResource(weaponIdx));
         return actorState;
     }
     actorState.battleStats = &(enemyActors[actorIdx - 4].battleActor.battleStats);

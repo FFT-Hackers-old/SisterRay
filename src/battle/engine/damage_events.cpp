@@ -1,4 +1,5 @@
 #include "damage_events.h"
+#include "../../impl.h"
 
 #define G_DAMAGE_DISPLAY_EVENT_QUEUE  ((DamageDisplayEvent*)0xBF2A40)
 #define DISPLAY_QUEUE_CAPACITY        78
@@ -37,6 +38,15 @@ DamageEvent* newDamageEvent() {
     return damageEvent;
 }
 
+void printDamageEvent(DamageEvent* damageEvent) {
+    srLogWrite("Damage Event @ %p: attacker ID: %i, target ID: %i, targert hurt script: %i",
+        damageEvent, damageEvent->attackerID, damageEvent->targetID, damageEvent->damagedAnimScriptIdx);
+}
+
+void printDamageQueueState() {
+    srLogWrite("Total Damage Events: %i", *G_CURRENT_DAMAGE_QUEUE_IDX);
+}
+
 
 #define G_IMPACT_EVENT_QUEUE          ((ImpactEvent*)0x9ABA08)
 #define G_CURRENT_IMPACT_QUEUE_IDX    ((u8*)0x9AEA98)
@@ -67,7 +77,7 @@ AnimationEvent* getAnimationEvent(u8 queueIndex) {
     return &(G_ANIMATION_EVENT_QUEUE[queueIndex]);
 }
 
-#define G_CURRENT_ANIMATION_EVENT_QUEUE_IDX (u8*)0xBF2A38
+#define G_CURRENT_ANIMATION_EVENT_QUEUE_IDX (u8*)0x9AEA9C
 AnimationEvent* getAnimationEventTop() {
     return getAnimationEvent(*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX);
 }
@@ -80,6 +90,15 @@ AnimationEvent* newAnimEvent() {
     if (*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX < 64)
         (*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX)++;
     return animationEvent;
+}
+
+void printAnimationEvent(AnimationEvent* animEvent) {
+    srLogWrite("Attacker Event @ %p: attacker ID: %i, command ID: %i, actionIdx: %i, action script: %i, camera: %x",
+        animEvent, animEvent->attackerID, animEvent->commandIndex, animEvent->actionIndex, animEvent->animationScriptID, animEvent->cameraData);
+}
+
+void printAnimationEventQueue() {
+    srLogWrite("Total Animation Events: %i", *G_CURRENT_ANIMATION_EVENT_QUEUE_IDX);
 }
 
 

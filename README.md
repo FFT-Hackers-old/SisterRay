@@ -7,7 +7,7 @@ Sister Ray is a modularized engine re-implementation for FFVII. It is a rewrite 
 * Modularization of much of the games battle engine to facilitate adding new commands, mechanics, damage formulas, etc
 
 Further down the road:
-A public API against which cod mods can be written and loaded. Data driven approaches to most game resources.
+A public API against which code mods can be written and loaded. Data driven approaches to most game resources.
 
 # Launch Mods
 

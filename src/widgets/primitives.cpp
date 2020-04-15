@@ -12,7 +12,7 @@ void drawTextWidget(TextWidget* textWidget){
     );
 }
 
-SISTERRAY_API void srNewTextWidget(Widget* parent, DrawTextParams params, char* name) {
+SISTERRAY_API void srNewTextWidget(Widget* parent, DrawTextParams params, const char* name) {
     auto strName = std::string(name);
     auto TextWidget = createTextWidget(params, strName);
     addChildWidget(parent, (Widget*)TextWidget, strName);
@@ -120,7 +120,7 @@ void drawNumberWidget(NumberWidget* numberWidget) {
     );
 }
 
-SISTERRAY_API void srNewNumberWidget(Widget* parent, DrawNumberParams params, char* name) {
+SISTERRAY_API void srNewNumberWidget(Widget* parent, DrawNumberParams params, const char* name) {
     auto strName = std::string(name);
     auto NumberWidget = createNumberWidget(params, strName);
     addChildWidget(parent, (Widget*)NumberWidget, strName);
@@ -261,7 +261,7 @@ void drawBoxWidget(BoxWidget* boxWidget) {
     
 }
 
-SISTERRAY_API void srNewBoxWidget(Widget* parent, DrawBoxParams params, char* name) {
+SISTERRAY_API void srNewBoxWidget(Widget* parent, DrawBoxParams params, const char* name) {
     auto strName = std::string(name);
     auto boxWidget = createBoxWidget(params, strName);
     addChildWidget(parent, (Widget*)boxWidget, strName);

@@ -6,6 +6,8 @@ DamageDisplayEvent* getDamageDisplayEvent(u8 queueIndex);
 u8 getDisplayTargetID(u8 queueIndex);
 DamageDisplayEvent* getFirstTargetDisplayEvent(u8 targetID);
 
+
+void initAnimEventQueue();
 AnimationEvent* getAnimationEvent(u8 queueIndex);
 AnimationEvent* getAnimationEventTop();
 void printAnimationEvent(AnimationEvent* animEvent);

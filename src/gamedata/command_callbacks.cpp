@@ -1,6 +1,7 @@
 #include "command_callbacks.h"
 #include "command_sr_callbacks.h"
 #include "../impl.h"
+#include "../battle/engine/damage_events.h"
 
 #define ff7ApplyDamage   ((FF7PFNCOMMANDSETUP)0x5D9940)
 #define ff7weaponSetup   ((FF7PFNCOMMANDSETUP)0x5C9C64)
@@ -20,6 +21,23 @@ void weaponSetup(CommandSetupEvent& event) {
 
 void loadAbility(CommandSetupEvent& event) {
     srSetupAction(event);
+}
+
+void phsChangeSetup(CommandSetupEvent& event) {
+    srLogWrite("RUNNING PHS CHANGE SETUP CALLBACK");
+    auto animEvent = createAnimEvent(event.damageContext->attackerID, 1, 74,
+        event.damageContext->commandIndex,
+        event.damageContext->absAttackIndex,
+        0, 0, 0xFFFF);
+    animEvent->damageEventQueueIdx = 0xFFFF;
+    auto damageEvent = newDamageEvent();
+    damageEvent->targetID = event.damageContext->attackerID;
+    damageEvent->attackerID = event.damageContext->attackerID;
+    damageEvent->damagedAnimScriptIdx = 0;
+    damageEvent->specialDamageFlags = 0;
+    damageEvent->targetStatusMask = 0;
+    auto terminatorEvent = newDamageEvent();
+    terminatorEvent->targetID = 0xFF;
 }
 
 //The following callbacks are primarily used to setup specific commands

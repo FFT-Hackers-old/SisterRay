@@ -16,6 +16,8 @@
 typedef struct {
     CommandData gameCommand;
     AuxCommandData auxData;
+    EncodedString commandName;
+    EncodedString commandDescription;
     std::vector<SRPFNCOMMANDSETUP> setupCallbacks;
     std::vector<SRPFNCMDSELECTCALLBACK> selectCallbacks;
     u16 actionCount;

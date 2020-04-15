@@ -17,7 +17,7 @@ void counterT6S1(const ApplySupportEvent* event) {
         }
         if (dataIdx < event->pairedMateriaLevel) {
             addAutoAction(
-                event->partyIndex,
+                event->characterIdx,
                 COUNTER_ACTION,
                 commandIdx,
                 0xFF,
@@ -42,7 +42,7 @@ void mCounterT9S1(const ApplySupportEvent* event) {
         }
         if (dataIdx < event->pairedMateriaLevel) {
             addAutoAction(
-                event->partyIndex,
+                event->characterIdx,
                 COUNTER_ACTION,
                 CMD_MAGIC,
                 spellIdx,
@@ -63,7 +63,7 @@ void mCounterT11S3(const ApplySupportEvent* event) {
         return;
     }
     addAutoAction(
-        event->partyIndex,
+        event->characterIdx,
         COUNTER_ACTION,
         CMD_SUMMON,
         spellIdx,
@@ -84,7 +84,7 @@ void sAttackT9S1(const ApplySupportEvent* event) {
         }
         if (dataIdx < event->pairedMateriaLevel) {
             addAutoAction(
-                event->partyIndex,
+                event->characterIdx,
                 SNEAK_ATTACK,
                 CMD_MAGIC,
                 spellIdx,
@@ -106,7 +106,7 @@ void sAttackT11S3(const ApplySupportEvent* event) {
         return;
     }
     addAutoAction(
-        event->partyIndex,
+        event->characterIdx,
         SNEAK_ATTACK,
         CMD_SUMMON,
         spellIdx,
@@ -127,7 +127,7 @@ void fAttackT9S1(const ApplySupportEvent* event) {
         }
         if (dataIdx < event->pairedMateriaLevel) {
             addAutoAction(
-                event->partyIndex,
+                event->characterIdx,
                 FINAL_ATTACK,
                 CMD_MAGIC,
                 spellIdx,
@@ -149,7 +149,7 @@ void fAttackT11S3(const ApplySupportEvent* event) {
         return;
     }
     addAutoAction(
-        event->partyIndex,
+        event->characterIdx,
         FINAL_ATTACK,
         CMD_SUMMON,
         spellIdx,

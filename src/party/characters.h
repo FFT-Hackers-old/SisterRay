@@ -10,7 +10,7 @@
 #include <array>
 
 /*Holds character AI, as well as currently equipped materias*/
-typedef struct {
+struct _SrCharacter {
     CharacterRecord* gameCharacter;
     BattleAIData characterAI;
     KernelCharacterGrowth characterGrowth;
@@ -19,13 +19,14 @@ typedef struct {
     u16 equippedWeapon;
     u16 equippedArmor;
     u16 equippedAccessory;
-} SrCharacterData;
+};
 
 /*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/
-class SrCharacterRegistry : public SrNamedResourceRegistry<SrCharacterData, std::string> {
+class SrCharacterRegistry : public SrNamedResourceRegistry<SrCharacter, std::string> {
 public:
-    SrCharacterRegistry() : SrNamedResourceRegistry<SrCharacterData, std::string>() {}
+    SrCharacterRegistry() : SrNamedResourceRegistry<SrCharacter, std::string>() {}
 };
 
 SISTERRAY_API void initCharacterData(SrKernelStream* stream);
+
 #endif

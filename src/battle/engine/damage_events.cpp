@@ -82,6 +82,12 @@ AnimationEvent* getAnimationEventTop() {
     return getAnimationEvent(*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX);
 }
 
+void initAnimEventQueue() {
+    *G_CURRENT_ANIMATION_EVENT_QUEUE_IDX = 0;
+    *G_CURRENT_DAMAGE_QUEUE_IDX = 0;
+    G_ANIMATION_EVENT_QUEUE[0].attackerID = 0xFF;
+}
+
 AnimationEvent* newAnimEvent() {
     AnimationEvent* animationEvent = &G_ANIMATION_EVENT_QUEUE[*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX];
     G_ANIMATION_EVENT_QUEUE[*G_CURRENT_ANIMATION_EVENT_QUEUE_IDX].damageEventQueueIdx = *G_CURRENT_DAMAGE_QUEUE_IDX;

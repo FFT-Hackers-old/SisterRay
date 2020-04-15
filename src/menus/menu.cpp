@@ -17,8 +17,8 @@ MenuRegistry::~MenuRegistry() {
     }
 }
 
-SISTERRAY_API Menu* getMenu(char* menuName) {
-return gContext.menuWidgets.getElement(std::string(menuName));
+SISTERRAY_API Menu* getMenu(const char* menuName) {
+    return gContext.menuWidgets.getElement(std::string(menuName));
 }
 
 /* create menu with default cursors */
@@ -87,6 +87,7 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
         gContext.eventBus.dispatch(MENU_INPUT_R1, &event, dispatchContext);
     }
     else if (checkInputReceived(128)) {
+        srLogWrite("RECEIVED INPUT: SQUARE");
         gContext.eventBus.dispatch(MENU_INPUT_SQUARE, &event, dispatchContext);
     }
     else if (checkInputReceived(16)) { 
@@ -109,14 +110,20 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
     }
 }
 
-SISTERRAY_API void addState(Menu* menu, Cursor* cursor) {
+SISTERRAY_API void addState(Menu* menu, Cursor* cursor, const char* stateName) {
     std::unordered_map<u32, Cursor> stateCursors(
         { {0, *cursor} }
     );
     menu->stateCount++;
+    menu->stateNames[std::string(stateName)] = menu->stateCount;
     menu->cursors[menu->stateCount] = stateCursors;
     menu->activeStateCursors[menu->stateCount] = 0;
     menu->stateStatus[menu->stateCount] = 0;
+}
+
+
+SISTERRAY_API u8 getStateByName(Menu* menu, const char* stateName) {
+    return menu->stateNames[std::string(stateName)];
 }
 
 SISTERRAY_API void addCursorlessState(Menu* menu) {

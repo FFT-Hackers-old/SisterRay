@@ -9,9 +9,8 @@ const WidgetClass* GridWidgetClass() {
     return &kGridWidgetClass;
 }
 
-SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, char* name, u16 srWidgetTypeID) {
-    const WidgetClass* childType = getChildTypeFromID(srWidgetTypeID);
-    auto widget = createGridWidget(params, std::string(name), childType);
+SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, const char* name) {
+    auto widget = createGridWidget(params, std::string(name));
     addChildWidget(parent, (Widget*)widget, std::string(name));
 }
 
@@ -53,6 +52,25 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
             idx--;
         }
     }
+    if (cursorGrid->transpose) {
+        for (u32 rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
+            for (u32 columnIndex = 0; columnIndex < context.viewColumnBound; ++columnIndex) {
+                u16 flatIndex = (context.maxColumnBound) * (columnIndex)+(rowIndex);
+                auto child = getChild((Widget*)cursorGrid, flatIndex);
+                if (child) {
+                    auto elementX = (cursor.columnSpacing * columnIndex) + cursorGrid->widget.widget.xCoordinate;
+                    auto elementY = (cursor.rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
+                    moveWidget(child, elementX, elementY);
+                    u16 startIndex = ((context.maxColumnBound) * (context.baseRowIndex)) + (context.baseColumnIndex);
+                    if (cursorGrid->updater) {
+                        cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex + flatIndex);
+                    }
+                    drawWidget(child);
+                }
+            }
+        }
+        return;
+    }
     for (u32 rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
         for (u32 columnIndex = 0; columnIndex < context.viewColumnBound; ++columnIndex) {
             u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex);
@@ -82,6 +100,7 @@ CursorGridWidget* createGridWidget(drawGridParams params, std::string name, cons
     widget->allocator = params.allocator;
     widget->widget.widget.xCoordinate = params.xCoordinate;
     widget->widget.widget.yCoordinate = params.yCoordinate;
+    widget->transpose = params.transpose;
 
     /*If a primitive childtype or allocator is specified, type allocate the results*/
     if (childType || params.allocator) {

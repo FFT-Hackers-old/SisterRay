@@ -28,6 +28,12 @@ const WidgetClass* CollectionWidgetClass() {
     return &kCollectionWidgetClass;
 }
 
+SISTERRAY_API u8 isCollectionWidget(Widget* widget) {
+    if (widget->klass != CollectionWidgetClass())
+        return false;
+    return true;
+}
+
 //Recursively draw a widget and all of its sub-widgets
 void drawWidget(Widget* widget) {
     if (!widget->enabled)
@@ -88,9 +94,21 @@ Widget* getChild(Widget* parent, u16 index) {
     }
 }
 
-SISTERRAY_API Widget* srGetChild(Widget* parent, char* name) {
+
+SISTERRAY_API Widget* srNewWidget(Widget* parent, const char* name) {
+    auto widget = createWidget(name);
+    addChildWidget(parent, widget, name);
+    return widget;
+}
+
+SISTERRAY_API Widget* srGetChild(Widget* parent, const char* name) {
     auto widget = getChild(parent, std::string(name));
     return widget;
+}
+
+
+SISTERRAY_API Widget* srGetAllocatorBase(const char* name) {
+    return createWidget(name);
 }
 
 //update the values of the named child widget

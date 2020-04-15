@@ -73,6 +73,7 @@ typedef enum {
     BATTLE_ITEM_VIEW,
     BATTLE_CHANGE_VIEW,
     BATTLE_COMMAND_VIEW,
+    ENABLE_ACTION_NO_MATERIA,
     MAT_HIGH_TYPE_0,
     MAT_HIGH_TYPE_1,
     MAT_HIGH_TYPE_2,
@@ -223,14 +224,18 @@ typedef struct {
 } AnimEffectEvent;
 
 typedef struct {
-    const u8 partyIndex;
+    const u8 characterIdx;
     const MateriaInventoryEntry materia;
     const MateriaData materiaData;
     const u8 materiaLevel;
 } EnableAbilitiesEvent;
 
 typedef struct {
-    const u8 partyIndex;
+    const u8 characterIdx;
+} EnableDefaultAbilitiesEvent;
+
+typedef struct {
+    const u8 characterIdx;
     const MateriaInventoryEntry supportMateria;
     const u8 supportMateriaLevel;
     const MateriaData SupportMateriaData;

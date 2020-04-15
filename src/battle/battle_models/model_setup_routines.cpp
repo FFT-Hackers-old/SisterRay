@@ -12,9 +12,6 @@ typedef void(*PFNSRSUB42B579)();
 typedef void(*PFNSRSUB42BC15)(u8);
 #define gameInitEnemiesFromAB   ((PFNSRSUB42BC15)0x42BC15)
 
-typedef void(*PFNSRSUB42B66A)(u8);
-#define copyDataFromBFile  ((PFNSRSUB42B66A)0x42B66A)
-
 /*Rewritten because we are now initializing b-data dynamically, so do not want the original
   loops which could only initialize a fixed number of animations scripts*/
 void translateEnemyABData() {
@@ -235,6 +232,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
 
         std::string& modelName = getSrPartyMember(actorIdx).srPartyMember->modelName;
         u16 weaponOffset = gContext.battleAnimations.getElement(modelName).modelAnimationCount;
+        srLogWrite("Playing WEAPON ANIMATION %i for model %s, offset is %i", modelState.tableRelativeModelAnimIdx, modelName.c_str(), weaponOffset);
         playWeaponAnimation(modelState.setForLimitBreaks, modelState.tableRelativeModelAnimIdx + weaponOffset, modelState.currentPlayingFrame, weaponModelID, modelData);
         Matrix* matrix = getMatrix(0, weaponDataPtr->bonesArray->parts->part->polygonSet->matrixSet);
         extractR3AndTranspose(&(getBattleModelRotationData(actorIdx)->rotationMatrix), matrix);

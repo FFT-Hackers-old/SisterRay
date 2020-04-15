@@ -21,4 +21,5 @@ void registerCommandMenuListeners() {
     gContext.eventBus.addListener(INIT_BATTLE_MENU, (SrEventCallback)&initBattleCommandViewWidget, modName);
     gContext.eventBus.addListener(DRAW_BATTLE_MENU, (SrEventCallback)&drawBattleCommandViewWidget, modName);
     gContext.eventBus.addListener(MENU_INPUT_OK, (SrEventCallback)&handleSelectCommand, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_LEFT, (SrEventCallback)&openMove, modName, contextKeys);
 }

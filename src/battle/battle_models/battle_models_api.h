@@ -1,4 +1,4 @@
-# #ifndef BATTLE_MODELS_API_H
+#ifndef BATTLE_MODELS_API_H
 #define BATTLE_MODELS_API_H
 
 #include <SisterRay/SisterRay.h>
@@ -6,6 +6,6 @@
 #include "animation_scripts.h"
 
 SISTERRAY_API void addModelAnimation(const char* modelName, SrAnimation animation);
-SISTERRAY_API void addAnimationScript(const char* modelName, u8* script, u16 scriptLength);
-SISTERRAY_API void addPlayerModelAnimation(const char* modelName, const SrAnimation animation, const SrAnimation weaponAnimation);
+SISTERRAY_API void addPlayerModelAnimation(const char* modName, u16 modIdx, const char* modelName, const SrAnimation animation, const SrAnimation weaponAnimation);
+SISTERRAY_API void addAnimationScript(const char* modName, u16 modIdx, const char* modelName, u8* script, u16 scriptLength);
 #endif // !BATTLE_MODELS_API_H

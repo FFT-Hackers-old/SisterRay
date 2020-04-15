@@ -134,9 +134,9 @@ static void Init(void) {
     initStatuses();
     initElements();
     initFormulas();
-    initParty();
     srLoadKernel2Bin();
     srLoadKernelBin();
+    initParty();
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();
     testFillInventory();
@@ -147,6 +147,7 @@ static void Init(void) {
     srLogWrite("battleLGP opened read");
     initAnimations(battleLGP); //Must be called after the formation registries have been initialized
     initAnimationScripts(battleLGP);
+    initAnimScriptOpCodes();
     free(battleLGP);
     registerEquipMenuListeners();
     initializeEquipMenu();
@@ -160,7 +161,7 @@ static void Init(void) {
     srLogWrite("menus initialization complete");
     //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
-    mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
+    //mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
     mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);

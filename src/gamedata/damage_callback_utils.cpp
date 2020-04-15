@@ -34,6 +34,19 @@ bool srActorHasStatus(const ActorBattleState& srActorState, std::string statusNa
     }
 }
 
+bool srActorHasStatus(const std::vector<ActiveStatus>& activeStatuses, std::string statusName) {
+    const auto& status = gContext.statuses.getElement(statusName);
+    if (status.isGameStatus) {
+        bool srStatusActive = std::find_if(activeStatuses.begin(), activeStatuses.end(),
+            [&](ActiveStatus status) {return status.statusName == statusName; }) != activeStatuses.end();
+        return srStatusActive;
+    }
+    else {
+        return std::find_if(activeStatuses.begin(), activeStatuses.end(),
+            [&](ActiveStatus status) {return status.statusName == statusName; }) != activeStatuses.end();
+    }
+}
+
 void setActionDidHit(DamageCalculationEvent* dmgEvent, bool didHit) {
     if (!didHit) {
         dmgEvent->damageContext->abilityFlags1 &= 1;

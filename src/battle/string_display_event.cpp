@@ -12,8 +12,20 @@ void nopBattleString(u32 a1) {
     return;
 }
 
+
+void setDisplayStringIdx(u16 stringIdx) {
+    u8* G_BATTLE_TEXT_ACTIVE = (u8*)0xDC38BC;
+    u16* G_STRING_BUFFER_IDX = (u16*)0xDC38C0;
+    if (stringIdx == 0xFFFF) {
+        *G_BATTLE_TEXT_ACTIVE = 0;
+        return;
+    }
+    *G_BATTLE_TEXT_ACTIVE = 0;
+    *G_STRING_BUFFER_IDX = stringIdx;
+}
+
 void handleTopDisplayString(const MenuDrawEvent* event) {
-    u8* battleTextActive = (u8*)0xDC38BC;
+    u8* G_BATTLE_TEXT_ACTIVE = (u8*)0xDC38BC;
     u16* stringBufferIdx = (u16*)0xDC38C0;
     u32* stringCommandIdx = (u32*)0xDC38EC;
     u32* stringActionIdx = (u32*)0xDC38F0;
@@ -26,7 +38,9 @@ void handleTopDisplayString(const MenuDrawEvent* event) {
     }
 
     auto topDisplayWidget = getChild(getChild(event->menu->menuWidget, BATTLE_BASE_WIDGET_NAME), TOP_STRING_DISPLAY);
-    if (*battleTextActive) {
+    auto bottomDisplayWidget = getChild(getChild(event->menu->menuWidget, BATTLE_BASE_WIDGET_NAME), BOTTOM_STRING_DISPLAY);
+    disableWidget(bottomDisplayWidget);
+    if (*G_BATTLE_TEXT_ACTIVE) {
         enableWidget(topDisplayWidget);
         if (*stringBufferIdx < 256) {
             auto baseStr = gContext.gameStrings.battle_texts.get_string(*stringBufferIdx);

@@ -9,7 +9,7 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
     auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);
     u8* byte_9ADEF8 = (u8*)0x9ADEF8;
     if (ownerModelState.animScriptIndex != 0) {
-        srLogWrite("running animation script with idx: %d for actor %d", ownerModelState.animScriptIndex, actorID);
+        srLogWrite("running animation script with idx: %d for actor %d. current position: %i", ownerModelState.animScriptIndex, actorID, ownerModelState.currentScriptPosition);
     }
     if (!*BATTLE_PAUSED_GLOBAL) {
         auto& scriptCtx = *(*scriptCtxGlobal);
@@ -74,10 +74,13 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
         if (ownerModelState.isScriptExecuting) {
             ownerModelState.playedAnimFrames = 0;
             while (scriptCtx.isScriptActive) {
+
+                srLogWrite("selecting opcode at position: %i", ownerModelState.currentScriptPosition);
                 scriptCtx.currentOpCode = scriptCtx.scriptPtr[ownerModelState.currentScriptPosition++];
+                srLogWrite("chosen opcode: %x, new script position: %i", scriptCtx.currentOpCode, ownerModelState.currentScriptPosition);
                 if (scriptCtx.currentOpCode < 0x8E) {
                     if (ownerModelState.animScriptIndex != 0) {
-                        srLogWrite("CURRENTLY EXECUTING ANIMATION %d for actor %d", ownerModelState.runningAnimIdx, actorID);
+                        srLogWrite("CURRENTLY EXECUTING ANIMATION %d for actor %d. Current position: %i", ownerModelState.runningAnimIdx, actorID, ownerModelState.currentScriptPosition);
                     }
                     ownerModelState.runningAnimIdx = scriptCtx.currentOpCode;
                     ownerModelState.field_74 = 0;

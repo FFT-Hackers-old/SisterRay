@@ -21,6 +21,7 @@ struct _Menu {
     SrEventType initEvent;
     SrEventType drawEvent;
     SrEventContext inputContext;
+    std::unordered_map<std::string, u32> stateNames;
     std::unordered_map<u32, std::unordered_map<u32, Cursor>> cursors; //associate cursors to a various state by name
     std::unordered_map<u32, u32> activeStateCursors;
     std::unordered_map<u32, TransitionData> transitionData;

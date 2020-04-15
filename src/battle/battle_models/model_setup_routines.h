@@ -11,6 +11,10 @@ typedef void(*PFNSRSUB42BC15)(u8);
 #define gameInitEnemiesFromAB   ((PFNSRSUB42BC15)0x42BC15)
 
 
+typedef void(*PFNSRSUB42B66A)(u8);
+#define copyDataFromBFile  ((PFNSRSUB42B66A)0x42B66A)
+
+
 
 #pragma pack(push, 1)
 typedef struct {

@@ -3,6 +3,8 @@
 
 using namespace BattleMenuWidgetNames;
 
+#define computeResourceDisplays ((PFNSR_VOIDSUB)0x6DCBAA)
+
 void drawBaseViewWidget(const MenuDrawEvent* event) {
     u8* byte_DC3930  = (u8*)0xDC3930;
     u32* dword_DC3BB0 = (u32*)0xDC3BB0;
@@ -12,15 +14,15 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     /*This should be a draw callback, probably*/
 
+    computeResourceDisplays();
     std::vector<std::string> names = { PARTY_1_STATE_NAME, PARTY_2_STATE_NAME, PARTY_3_STATE_NAME };
     for (i32 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
         if (CURRENT_PARTY_MEMBER_ARRAY[partyIdx] != 0xFF) {
             auto dataWidget = getChild(getChild(menuWidget, BATTLE_BASE_WIDGET_NAME), names[partyIdx]);
             enableWidget(dataWidget);
 
-            u8 characterID = getCharacterRecordIndex(partyIdx);
-            auto name = &(CHARACTER_RECORD_ARRAY[characterID].character_name);
-            updateText(getChild(dataWidget, PARTY_DATA_NAME), (const char*)name);
+            const char* characterName = gContext.party.getActivePartyCharacter(partyIdx).gameCharacter->character_name;
+            updateText(getChild(dataWidget, PARTY_DATA_NAME), characterName);
             updateTextColor(getChild(dataWidget, PARTY_DATA_NAME), COLOR_WHITE);
             if (partyIdx == *BATTLE_ACTIVE_ACTOR_ID && getMenuState(event->menu) != BATTLE_INACTIVE) {
                 auto nameColor = COLOR_WHITE;

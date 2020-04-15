@@ -11,5 +11,6 @@ void handleTopDisplayString(const MenuDrawEvent* event);
 char* srGetStrFromGlobalBuffer(u16 strBufferIndex);
 void handleBattleStrSubstitions(char* ret, const char* base);
 u16 insertEncodedStr(char* dst, u16 baseStart, const char* toInject);
+void setDisplayStringIdx(u16 stringIdx);
 
 #endif

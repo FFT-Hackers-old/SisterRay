@@ -1,7 +1,7 @@
 #include "cursor.h"
 #include "../impl.h"
 
-Cursor* createCursor(CursorContext* context, i32 xCoordinate, i32 yCoordinate, i32 rowSpacing, i32 columnSpacing) {
+SISTERRAY_API Cursor* createCursor(CursorContext* context, i32 xCoordinate, i32 yCoordinate, i32 rowSpacing, i32 columnSpacing) {
     Cursor* cursor = new Cursor();
     cursor->xCoordinate = xCoordinate;
     cursor->yCoordinate = yCoordinate;
@@ -13,6 +13,11 @@ Cursor* createCursor(CursorContext* context, i32 xCoordinate, i32 yCoordinate, i
 
 void deleteCursor(Cursor* cursor) {
     delete cursor;
+}
+
+
+SISTERRAY_API CursorContext* getCursorContext(Cursor* cursor){
+    return &(cursor->context);
 }
 
 SISTERRAY_API void drawCursor(Cursor* cursor, float priority) {

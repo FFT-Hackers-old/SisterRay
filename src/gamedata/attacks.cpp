@@ -172,4 +172,47 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
      return multiEffect;
  }
 
+ SISTERRAY_API void addSrAction(SrActionData data, u16 modActionIdx, const char* modName) {
+     auto name = std::string(modName) + std::to_string(modActionIdx);
+     auto srAttack = SrAttack();
+     srAttack.attackData = data.baseData;
+     // srAttack.auxData = data.auxData;
+     srAttack.attackName = EncodedString::from_unicode(data.attackName);
+     srAttack.attackDescription = EncodedString::from_unicode(data.attackName);
+     gContext.attacks.addElement(name, srAttack);
+ }
 
+
+ SISTERRAY_API SrActionData getSrAction(u16 attackIdx, const char* modName) {
+     auto srAttack = gContext.attacks.getElement(std::string(modName) + std::to_string(attackIdx));
+     SrActionData ret{ srAttack.attackData, srAttack.attackName.str(), srAttack.attackDescription.str() };
+     return ret;
+ }
+
+
+ SISTERRAY_API void addElementToAction(const  char* modName, u16 modActionIdx, const char* elementName) {
+     auto actionID = std::string(modName) + std::to_string(modActionIdx);
+     
+     auto& elements = gContext.attacks.getElement(actionID).attackElements;
+     if (std::find(elements.begin(), elements.end(), elementName) != elements.end()) {
+         elements.push_back(elementName);
+     }
+ }
+
+ SISTERRAY_API void addStatusToAction(const char* modName, u16 modActionIdx, const char* statusName, u8 inflictionChance, u8 doesRemove, u8 doesToggle, u16 duration) {
+     auto actionID = std::string(modName) + std::to_string(modActionIdx);
+
+     auto& status = gContext.attacks.getElement(actionID).statusAttack;
+     StatusInfliction infliction{ statusName, inflictionChance, doesRemove, doesToggle, duration };
+     if (std::find_if(status.begin(), status.end(), [&](StatusInfliction infliction) {return infliction.statusName == statusName; }) != status.end()) {
+         status.push_back(infliction);
+     }
+ }
+
+
+ SISTERRAY_API SrActionData getSrCommandAction(const char* modName, u8 modCmdIdx, u16 cmdAtkIdx){
+     u8 actionIdx = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx)).commandActions[cmdAtkIdx];
+     auto srAction = gContext.attacks.getResource(actionIdx);
+     SrActionData ret{srAction.attackData, srAction.attackName.str(), srAction.attackDescription.str()};
+     return ret;
+ }

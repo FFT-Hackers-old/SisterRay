@@ -84,4 +84,6 @@ public:
 const std::string assembleAnimKey(u16 idx);
 void initAnimations(void* battleLGPBuffer);
 void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const char* filename, ModelAAHeader* aaHeader);
+std::vector<std::unordered_map<std::string, SrAnimation>> loadModelAnimationFromDAFile(const char* modelName, void* daFileBuffer, bool hasWeapon);
+void loadNewAnimations();
 #endif // !1

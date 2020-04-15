@@ -8,5 +8,6 @@
 #include "../../menu.h"
 
 void handleSelectCommand(const MenuInputEvent* event);
+void openMove(const MenuInputEvent* event);
 
 #endif

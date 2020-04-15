@@ -9,6 +9,7 @@
 #define FF7_DISPLAY_BATTLE_STRING ((void*)0x6D7245)
 #define FF7_INIT_PLAYER_ACTORS    ((void*)0x5CF650)
 #define FF7_INIT_ENEMY_ACTORS     ((void*)0x5D0690)
+#define FF7_SETUP_BATTLE          ((void*)0x437DB0)
 
 
 PFNSETPLAYERDATA* oldSetPlayerModel;
@@ -27,5 +28,6 @@ void initializeSrBattleEngine() {
     mogReplaceFunction(FF7_RUN_AI_SCRIPT, &srRunAIScript);
     mogReplaceFunction(FF7_INIT_PLAYER_ACTORS, &initializePlayerActors);
     mogReplaceFunction(FF7_INIT_ENEMY_ACTORS, &initializeEnemyActors);
+    mogReplaceFunction(FF7_SETUP_BATTLE, &setupBattle);
     registerActionPopCallbacks();
 }

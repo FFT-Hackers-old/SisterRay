@@ -47,7 +47,7 @@ bool isScrollerWidget(Widget* widget);
 
 struct PortraitWidget_ {
     Widget widget;
-    u8 partyIndex;
+    u8 characterIdx;
     float priority;
 };
 
@@ -59,7 +59,7 @@ bool isPortraitWidget(Widget* widget);
 
 struct HPBarWidget_ {
     Widget widget;
-    u8 partyIndex;
+    u8 characterIdx;
     float priority;
 };
 

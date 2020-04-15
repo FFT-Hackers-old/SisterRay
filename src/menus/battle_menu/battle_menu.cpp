@@ -138,6 +138,10 @@ void initializeBattleMenu() {
     initializeBattleItemMenu();
     registerESkillMenuListeners();
     initializeBattleESkillMenu();
+    registerPHSViewListeners();
+    initializeBattlePHSMenu();
+    registerMoveMenuListeners();
+    initializeBattleMoveMenu();
     gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
 }
 

@@ -39,6 +39,14 @@ namespace BattleMenuWidgetNames {
     const std::string PARTY_3_CMD_GRID = "3_CMD_GRID";
     const std::string CMD_GRID_BOX = "CMD_BOX";
 
+
+    //Command Names
+    const std::string BATTLE_MOVE_WIDGET_NAME = "BATTLE_COMMAND";
+    const std::string PARTY_1_MOVE_GRID = "1_MOVE_GRID";
+    const std::string PARTY_2_MOVE_GRID = "2_MOVE_GRID";
+    const std::string PARTY_3_MOVE_GRID = "3_MOVE_GRID";
+    const std::string MOVE_GRID_BOX = "MOVE_BOX";
+
     //Magic Names
     const std::string BATTLE_SPELL_WIDGET_NAME = "BATTLE_SPELL";
     const std::string PARTY_1_SPELL_GRID = "1_SPELL_GRID";
@@ -66,5 +74,12 @@ namespace BattleMenuWidgetNames {
     const std::string PARTY_2_ESKILL_GRID = "2_ESKILL_GRID";
     const std::string PARTY_3_ESKILL_GRID = "3_ESKILL_GRID";
     const std::string ESKILL_GRID_BOX = "ESKILL_BOX";
+
+    //Summon Names
+    const std::string BATTLE_PHS_WIDGET_NAME = "BATTLE_PHS";
+    const std::string PARTY_1_PHS_GRID = "1_PHS_GRID";
+    const std::string PARTY_2_PHS_GRID = "2_PHS_GRID";
+    const std::string PARTY_3_PHS_GRID = "3_PHS_GRID";
+    const std::string PHS_GRID_BOX = "PHS_BOX";
 }
 #endif

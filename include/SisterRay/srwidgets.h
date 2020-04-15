@@ -109,7 +109,7 @@ typedef float(*PFNSRGETBOXPRIORITYPROC)(Widget*);
 typedef struct {
     i32 xCoordinate;
     i32 yCoordinate;
-    u8 partyIndex;
+    u8 characterIdx;
     float priority;
 } drawPortraitParams;
 typedef void(*PFNPORTRAITPARAMSPROC)(drawPortraitParams*, i32, i32, u8, float);
@@ -123,7 +123,7 @@ typedef void(*PFNSRUPDATEPORTRAITPARTYINDEXPROC)(Widget*, u8);
 typedef struct {
     i32 xCoordinate;
     i32 yCoordinate;
-    u8 partyIndex;
+    u8 characterIdx;
     float priority;
 } drawHPBarParams;
 typedef void(*PFNHPBARPARAMSPROC)(drawHPBarParams*, i32, i32, u8, float);
@@ -222,6 +222,7 @@ typedef struct {
     i32 yCoordinate;
     SRLISTALLOCPROC allocator;
     u32 cursorIdx;
+    u8 transpose;
 } drawGridParams;
 
 typedef struct CursorGridWidget_ CursorGridWidget;
@@ -236,6 +237,7 @@ typedef struct {
     u16 columnSpacing;
     u16 rowSpacing;
     SRLISTALLOCPROC allocator;
+    u8 transpose;
 } DrawStaticGridParams;
 
 typedef struct StaticGridWidget_ StaticGridWidget;

@@ -4,9 +4,15 @@
 using namespace BattleMenuWidgetNames;
 
 void drawBattleCommandViewWidget(const MenuDrawEvent* event) {
+    srLogWrite("UPDATING COMMAND VIEW WIDGET");
     auto menuWidget = event->menu->menuWidget;
+    Cursor* commandChoiceCursor = getStateCursor(event->menu, BATTLE_CMD_STATE, *BATTLE_ACTIVE_ACTOR_ID);
+    commandChoiceCursor->context.maxColumnBound = gContext.party.getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID).gamePartyMember->commandColumns;
+    commandChoiceCursor->context.viewColumnBound = gContext.party.getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID).gamePartyMember->commandColumns;
+    srLogWrite("VIEW COLUMN BOUND: %i", commandChoiceCursor->context.viewColumnBound);
+    resizeBox(getChild(menuWidget, CMD_GRID_BOX), 135, 340, 88 * commandChoiceCursor->context.maxColumnBound, 150);
 
-    if (event->menuState != BATTLE_CMD_STATE) {
+    if (event->menuState != BATTLE_CMD_STATE || event->menuState != BATTLE_MOVE_STATE) {
         disableWidget(getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME));
         return;
     }
@@ -22,10 +28,4 @@ void drawBattleCommandViewWidget(const MenuDrawEvent* event) {
         }
         disableWidget(getChild(getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME), names[partyIdx]));
     }
-
-    // Resize the box based onn the number of commands
-    auto commandChoiceCursor = getStateCursor(event->menu, BATTLE_CMD_STATE, *BATTLE_ACTIVE_ACTOR_ID);
-    commandChoiceCursor->context.maxColumnBound = PARTY_STRUCT_ARRAY[*BATTLE_ACTIVE_ACTOR_ID].commandColumns;
-    commandChoiceCursor->context.viewColumnBound = PARTY_STRUCT_ARRAY[*BATTLE_ACTIVE_ACTOR_ID].commandColumns;
-    resizeBox(getChild(menuWidget, CMD_GRID_BOX), 135, 340, 88 * commandChoiceCursor->context.maxColumnBound, 150);
 }

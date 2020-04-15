@@ -1,5 +1,5 @@
 #ifndef GAME_DATA_INTERFACE_H
-#define GAME_DATA_INTERFACE
+#define GAME_DATA_INTERFACE_H
 
 #include <SisterRay/SisterRay.h>
 
@@ -25,9 +25,18 @@ SISTERRAY_API void setSrMateriaData(SrMateriaData attackData, u16 itemID, const 
 SISTERRAY_API void addSrMateria(SrMateriaData attackData, u16 itemID, const char* modName);
 
 SISTERRAY_API SrCommandData getSrCommand(u8 commandIdx, const char* modName);
+SISTERRAY_API u8 getInternalCommandID(u8 commandIdx, const char* modName);
 SISTERRAY_API void addSrCommand(SrCommandData commandData, u8 commandIdx, const char* modName);
-SISTERRAY_API void registerSelectCallback(const char* name, SRPFNCMDSELECTCALLBACK callback);
-SISTERRAY_API void registerSetupCallback(const char* name, SRPFNCOMMANDSETUP callback);
-SISTERRAY_API void addActionToCommand(const char* commandName, const char* actionName);
+SISTERRAY_API void addActionToCommand(const char* modName, u8 commandIdx, const char* actionModName, u16 actionIdx);
+SISTERRAY_API u8 getCommandActionCount(const  char* modName, u8 modCmdIdx);
+SISTERRAY_API void registerSelectCallback(const char* modName, u8 commandIdx, SRPFNCMDSELECTCALLBACK callback);
+SISTERRAY_API void registerSetupCallback(const char* modName, u8 commandIdx, SRPFNCOMMANDSETUP callback);
+
+
+SISTERRAY_API void addSrAction(SrActionData data, u16 modActionIdx, const char* modName);
+SISTERRAY_API SrActionData getSrAction(u16 attackIdx, const char* modName);
+SISTERRAY_API SrActionData getSrCommandAction(const char* modName, u8 modCmdIdx, u16 cmdAtkIdx);
+SISTERRAY_API void addElementToAction(const char* modName, u16 modActionIdx, const char* elementName);
+SISTERRAY_API void addStatusToAction(const char* modName, u16 modActionIdx, const char* statusName, u8 inflictionChance, u8 doesRemove, u8 doesToggle, u16 duration);
 
 #endif

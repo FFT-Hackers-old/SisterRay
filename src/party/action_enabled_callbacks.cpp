@@ -18,7 +18,7 @@ void enableAblT6S1(const EnableAbilitiesEvent* const event) {
             return;
         }
         if (dataIdx < event->materiaLevel) //Insert a command as long as there is enough space and it is not already enabled
-            insertEnabledCommand(event->partyIndex, commandID);
+            insertEnabledCommand(event->characterIdx, commandID);
     }
 }
 
@@ -30,7 +30,7 @@ void enableAblT2S1(const EnableAbilitiesEvent* const event) {
             return;
         }
         if (dataIdx < event->materiaLevel) //override the attack command 
-            enableCommand(event->partyIndex, 0, commandID);
+            enableCommand(event->characterIdx, 0, commandID);
     }
 }
 
@@ -57,7 +57,7 @@ void enableAblT3S3(const EnableAbilitiesEvent* const event) {
         }
     }
     if (commandID != 0xFF)
-        enableCommand(event->partyIndex, replacedIndex, commandID);
+        enableCommand(event->characterIdx, replacedIndex, commandID);
 }
 
 /*Enabler handlers for each type of materia*/
@@ -68,28 +68,28 @@ void enableAblT9S1(const EnableAbilitiesEvent* const event) {
             continue;
         }
         if (dataIdx < event->materiaLevel)
-            enableMagic(event->partyIndex, spellIdx, spellIdx);
+            enableMagic(event->characterIdx, spellIdx, spellIdx);
     }
 }
 
 /*Enabler handlers for each type of materia*/
 void enableAblT10S0(const EnableAbilitiesEvent* const event) {
     for (auto spellIdx = 0; spellIdx < getCommand(CMD_MAGIC).actionCount; spellIdx++) {
-        enableMagic(event->partyIndex, spellIdx, spellIdx);
+        enableMagic(event->characterIdx, spellIdx, spellIdx);
     }
 }
 
 
 void enableAblT12S0(const EnableAbilitiesEvent* const event) {
     for (auto spellIdx = 0; spellIdx < getCommand(CMD_SUMMON).actionCount; spellIdx++) {
-        enableSummon(event->partyIndex, spellIdx, spellIdx);
+        enableSummon(event->characterIdx, spellIdx, spellIdx);
     }
 }
 
 void enableAblT11S3(const EnableAbilitiesEvent* const event) {
     auto spellIdx = event->materiaData.data[0];
-    enableSummon(event->partyIndex, spellIdx, spellIdx);
-    auto spellSlotPtr = getEnabledSummonSlot(event->partyIndex, spellIdx);
+    enableSummon(event->characterIdx, spellIdx, spellIdx);
+    auto spellSlotPtr = getEnabledSummonSlot(event->characterIdx, spellIdx);
     if ((event->materiaLevel < 1) || (event->materiaLevel > 5)) {
         srLogWrite("INVALID MATERIA LEVEL ENCOUNTERED");
         return;

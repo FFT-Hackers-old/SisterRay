@@ -4,6 +4,9 @@
 #include <SisterRay/types.h>
 #include <SisterRay/game_data_types.h>
 
+
+typedef struct _SrCharacter SrCharacter;
+
 #pragma pack(push, 1)
 typedef struct {
     u8 field_0;

@@ -135,7 +135,7 @@ void handleUnequipAcc(const MenuInputEvent* event) {
     }
 }
 
-void handleEquipGear(SrCharacterData& characterRecord, u8 gearType, u8 equippedGearRelativeIndex) {
+void handleEquipGear(SrCharacter& characterRecord, u8 gearType, u8 equippedGearRelativeIndex) {
     u8 removedGearRelativeID;
     u16 removedGearAbsoluteID;
     u16 equippedGearAbsoluteID;
@@ -174,7 +174,7 @@ void handleEquipGear(SrCharacterData& characterRecord, u8 gearType, u8 equippedG
 }
 
 //Update Materia after new items are equipped
-void handleMateriaUpdate(SrCharacterData& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
+void handleMateriaUpdate(SrCharacter& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
     WeaponData newWeaponData;
     ArmorData newArmorData;
     MateriaInventoryEntry& equippedMateriaData = MateriaInventoryEntry();

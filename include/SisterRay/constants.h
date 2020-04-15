@@ -156,6 +156,8 @@
 #define BATTLE_ITEM_STATE        5
 #define BATTLE_ESKILL_STATE      4
 #define BATTLE_MANIP_STATE       19
+#define BATTLE_PHS_STATE         34
+#define BATTLE_MOVE_STATE        35
 
 #define SLOT_LEFT_LINKED           3
 #define SLOT_RIGHT_LINKED          2

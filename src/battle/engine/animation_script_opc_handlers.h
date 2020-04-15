@@ -4,6 +4,8 @@
 #include <SisterRay/SisterRay.h>
 #include "animation_script_opcode.h"
 
+extern bool invertDirection;
+
 
 OpCodeControlSequence nopCode(AnimScriptEvent* srEvent);
 
@@ -70,6 +72,8 @@ OpCodeControlSequence OpCodeCF(AnimScriptEvent* srEvent);
 
 OpCodeControlSequence OpCodeD0(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeD1(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeD2(AnimScriptEvent* srEvent);
+OpCodeControlSequence OpCodeD3(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeD4(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeD5(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeD6(AnimScriptEvent* srEvent);
@@ -112,5 +116,7 @@ OpCodeControlSequence OpCodeFA(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeFC(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeFD(AnimScriptEvent* srEvent);
 OpCodeControlSequence OpCodeFE(AnimScriptEvent* srEvent);
+
+OpCodeControlSequence OpCodePHSChange(AnimScriptEvent* srEvent);
 
 #endif 

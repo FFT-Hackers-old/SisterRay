@@ -39,12 +39,6 @@ PartyMember* getGamePartyMember(u8 actorIdx) {
     return &(PARTY_STRUCT_ARRAY[actorIdx]);
 }
 
-CharacterRecord* getPartyActorCharacterRecord(u8 partyIdx) {
-    CharacterRecord* characterRecordArray = CHARACTER_RECORD_ARRAY;
-    auto characterIdx = getCharacterRecordIndex(partyIdx);
-    return gContext.characters.getResource(characterIdx).gameCharacter;
-}
-
 u16 getEquippedGear(u8 characterID, u8 gearType) {
     auto& characterRecord = gContext.characters.getResource(characterID);
     u16 kernelObjectID;
@@ -76,8 +70,8 @@ bool characterCanEquipItem(u8 characterID, u16 itemID){
     return characterCanUse;
 }
 
-u8 getCharacterRecordIndex(u8 partyIndex) {
-    return (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[partyIndex])];
+u8 getCharacterRecordIndex(u8 characterIdx) {
+    return (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[characterIdx])];
 }
 
 u16 getMateriaID(u8 characterID, u8 slot, u8 gearType) {

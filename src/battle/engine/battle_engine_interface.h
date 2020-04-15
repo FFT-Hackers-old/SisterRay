@@ -6,4 +6,7 @@
 #include "action_targeting.h"
 #include "action_dispatch.h"
 
+u16 getBattleSpeed();
+u16 getDexNormalization();
+void setBattleSpeed(u8 speedFactor);
 #endif

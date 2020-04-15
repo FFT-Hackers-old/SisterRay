@@ -308,14 +308,14 @@ void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto commands = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].enabledCommandArray;
+    const auto& commands = gContext.party.getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID).gamePartyMember->enabledCommandArray;;
     auto commandID = commands[flatIndex].commandID;
     if (commandID == 0xFF) {
         disableWidget(widget);
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.gameStrings.command_names.get_string(commandID));
+    updateText(widget, gContext.commands.getResource(commands[flatIndex].commandID).commandName.str());
     updateTextColor(widget, COLOR_WHITE);
 }
 

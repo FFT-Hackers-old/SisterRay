@@ -7,6 +7,139 @@
 #include <cstdio>
 #include <memory>
 #include "../EncodedString.h"
+#include <algorithm>
+#include "engine/damage_events.h"
+#include "engine/action_queue.h"
+#include "engine/battle_engine_interface.h"
+#include "../inventories/inventory_functions.h"
+#include "string_display_event.h"
+
+
+#define initEventList         ((PFNSR_VOIDSUB)0x4350CB)
+#define modifyPartyStateFlags ((PFNSR_VOIDSUB)0x5D0CA0)
+#define modifyEnemyStateFlags ((PFNSR_VOIDSUB)0x432C60)
+#define runPartyInitScripts   ((PFNSR_VOIDSUB)0x5CFE10)
+#define runEnemyInitAIScripts ((PFNSR_VOIDSUB)0x5D0BDF)
+#define runFormationAIScripts ((PFNSR_VOIDSUB)0x5C8931)
+#define initActorATBs         ((PFNSR_VOIDSUB)0x4383F5)
+#define sub_433020            ((PFNSR_VOIDSUB)0x433020)
+
+typedef void(*PFNSR_UNKSUB433020)(int);
+#define sub_5C8C42            ((PFNSR_UNKSUB433020)0x5C8C42)
+void setupBattle(u32 formationID) {
+    u32* dword_9ACB84 = (u32*)0x9ACB84;
+    u32* dword_9AB070 = (u32*)0x9AB070;
+    u32* dword_9AB9F4 = (u32*)0x9AB9F4;
+    u16* word_9A8B08 = (u16*)0x9A8B08;
+    u32* dword_9A89D0 = (u32*)0x9A89D0;
+    u8* G_BATTLE_TYPE = (u8*)0x9A8762;
+
+    auto randInt = rand();
+    sub_5C8C42(randInt);
+    for (u8 characterID = 0; characterID < 9; ++characterID) {
+        //recalculateBaseStats(characterIndex);
+        bool characterActive = false;
+        for (auto idx = 0; idx < 3; idx++) {
+            if (G_SAVE_MAP->activeParty[idx] == characterID) {
+                gContext.party.recalculatePartyMember(idx);
+                characterActive = true;
+            }
+        }
+        if (characterActive)
+            continue;
+        gContext.party.recalculateCharacter(characterID);
+        //srRecalculateDerivedStats(characterIndex);
+    }
+    updateMiscPartyStats();
+    //auto battleString = getBattleString(126);
+    *dword_9ACB84 = 0x10;
+    *dword_9AB070 = 0x21;
+    initAnimEventQueue();
+    initializeActionQueue();
+    /*for (partyIndexc = 0; partyIndexc < 2; ++partyIndexc)
+        gMimeActions[partyIndexc].attackerID = -1;*/
+    initEventList();
+    *dword_9AB9F4 = -1;
+    setDisplayStringIdx(0xFFFF);
+    auto aiContext = AI_BATTLE_CONTEXT;
+    for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
+        aiContext->actorAIStates[actorIdx].index = -1;
+        aiContext->actorAIStates[actorIdx].sizeScale = 16;
+    }
+    sub_433020();
+
+    u8* byte_DC0E10 = (u8*)0xDC0E10;
+    setBattleSpeed(*byte_DC0E10);
+    initializePlayerActors();
+    setupBattleInventory();
+    srLoadBattleFormation(formationID, 0);
+    *dword_9A89D0 = 0;
+    initializeEnemyActors();
+
+    u16* word_9AAD02 = (u16*)0x9AAD02;
+    u16* word_DC0E12 = (u16*)0xDC0E12;
+    //setBattleSpeed(*byte_DC0E10);
+    *word_9AAD02 = (*word_DC0E12 & 0xC0) >> 6;
+    for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
+        if (aiContext->actorAIStates[actorIdx].index != -1)
+            aiContext->activeActorMask |= 1 << actorIdx;
+    }
+    aiContext->battleFormationIdx = formationID;
+    aiContext->battleType = *G_BATTLE_TYPE;
+    modifyPartyStateFlags();
+    modifyEnemyStateFlags();
+    runPartyInitScripts();
+    runEnemyInitAIScripts();
+    runFormationAIScripts();
+    modifyEnemyStateFlags();
+    initActorATBs();
+    //initTimerHPCopies();
+    *word_9A8B08 |= 1u;
+    for (u8 partyIdx = 0; partyIdx < 3; ++partyIdx)
+        dispatchAutoActions(partyIdx, 1);           // sneakAttackActions
+
+    if (aiContext->unkBattleFlags & 8) {
+        setBattleSpeed(128);
+        word_9AAD02 = 0;
+        /*for (u8 partyIdx = 0; partyIdx < 3; ++partyIdx)
+            sub_5D0097(partyIdx)*/
+    }
+    else {
+        //enqueue7777Hits();
+    }
+
+    u32* dword_C06644 = (u32*)0xC06644;
+    u32* dword_C06648 = (u32*)0xC06648;
+    u32* dword_C06640 = (u32*)0xC06640;
+    u32* dword_99CE08 = (u32*)0x99CE08;
+    u32* dword_9ACB64 = (u32*)0x9ACB64;
+    if (aiContext->unkBattleFlags & 4) {
+        if (!(*dword_99CE08 & 4)) {
+            *dword_99CE08 |= 4u;
+            *dword_C06640 = -1;
+        }
+
+        *dword_C06644 = aiContext->unkLimitDivisor;
+        auto limitDivisor = aiContext->unkLimitDivisor;
+        auto v7 = 1 << (6 * aiContext->unkLimitDivisor);
+        for (u8 enemyIdx = 0; enemyIdx < 6; ++enemyIdx) {
+            if (v7 & *dword_C06640) {
+                *dword_C06640 &= ~v7;
+            }
+            else if (aiContext->actorAIStates[enemyIdx + 4].index != -1) {
+                aiContext->actorAIStates[enemyIdx + 4].currentHP = dword_C06648[6 * limitDivisor + enemyIdx];
+                if (!aiContext->actorAIStates[enemyIdx + 4].currentHP) {
+                    aiContext->actorAIStates[enemyIdx + 4].statusMask |= 1;
+                    aiContext->actorAIStates[enemyIdx + 4].initalStatusMasks | 1;
+                    aiContext->actorAIStates[enemyIdx + 4].stateFlags &= 0xE7;
+                }
+            }
+            v7 *= 2;
+        }
+        modifyEnemyStateFlags();
+    }
+    *dword_9ACB64 = 1;
+}
 
 void srLoadBattleFormation(i32 formationIndex, i32(*modelAppearCallback)(void)) {
     int enemyIndex;
@@ -201,7 +334,7 @@ i32 srExecuteFormationScripts() {
     return (void*)gDamageContextPtr;
 }*/
 
-void dispatchAutoActions(u8 partyIndex, i32 actionType) {
+void dispatchAutoActions(u8 characterIdx, i32 actionType) {
     AutoActionType dispatchType;
     switch (actionType) {
         case 0: {
@@ -210,7 +343,7 @@ void dispatchAutoActions(u8 partyIndex, i32 actionType) {
         }
         case 1: {
             dispatchType = SNEAK_ATTACK;
-            G_ACTOR_TIMER_ARRAY[partyIndex].unkActorFlags |= 4;
+            G_ACTOR_TIMER_ARRAY[characterIdx].unkActorFlags |= 4;
             break;
         }
         case 2: {
@@ -221,7 +354,7 @@ void dispatchAutoActions(u8 partyIndex, i32 actionType) {
             dispatchType = COUNTER_ACTION;
         }
     }
-    auto& autoActions = getSrPartyMember(partyIndex).srPartyMember->actorAutoActions;
+    auto& autoActions = getSrPartyMember(characterIdx).srPartyMember->actorAutoActions;
     for (auto& action : autoActions) {
         if (action.dispatchType == AUTOACT_NO_ACTION)
             continue;
@@ -230,11 +363,11 @@ void dispatchAutoActions(u8 partyIndex, i32 actionType) {
         if (dispatchType == action.dispatchType) {
             //Add counter chance based code here
             auto finalAction = getActionToDispatch(action);
-            auto targetMask = setTargetMask(partyIndex, action);
+            auto targetMask = setTargetMask(characterIdx, action);
             u8 priority = 1;
             if (action.dispatchType == FINAL_ATTACK)
                 priority = 0;
-            enqueueAction(partyIndex, priority, action.commandIndex, finalAction, targetMask);
+            enqueueAction(characterIdx, priority, action.commandIndex, finalAction, targetMask);
             action.counterCount--;
         }
     }
@@ -248,23 +381,23 @@ u16 getActionToDispatch(const SrAutoAction& action) {
     return 0;
 }
 
-u16 setTargetMask(u8 partyIndex, const SrAutoAction& action) {
+u16 setTargetMask(u8 characterIdx, const SrAutoAction& action) {
     u16 targetMask = 0;
     u8 targetingData = 3; //default targeting mask
     /*In the case of magic */
     if (action.commandIndex == CMD_MAGIC || action.commandIndex == CMD_SUMMON) {
-        auto actionData = getSpellSlot(partyIndex, action.commandIndex, action.actionIndex);
+        auto actionData = getSpellSlot(characterIdx, action.commandIndex, action.actionIndex);
         targetingData = actionData->targetData;
     }
     else {
-        targetingData = getCommandSlot(partyIndex, action.commandIndex)->targetingData;
+        targetingData = getCommandSlot(characterIdx, action.commandIndex)->targetingData;
     }
     if (action.dispatchType != SNEAK_ATTACK) {
         if (targetingData & 2) {
-            targetMask = gAiActorVariables[partyIndex].prevAttackerMask;
+            targetMask = gAiActorVariables[characterIdx].prevAttackerMask;
         }
         else {
-            targetMask = 1 << partyIndex;
+            targetMask = 1 << characterIdx;
         }
     }
     return targetMask;

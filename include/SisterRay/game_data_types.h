@@ -83,6 +83,13 @@ typedef struct {
     u16 specialAttackFlags;       //0x1A
 } AttackData;
 
+
+typedef struct {
+    AttackData baseData;
+    const char* attackName;
+    const char* attackDesc;
+} SrActionData;
+
 #pragma pack(push, 1)
 typedef struct {
     u8      unknown[8];

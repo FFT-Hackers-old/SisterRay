@@ -89,7 +89,7 @@ Widget* allocateBarWidget(const char* name, i32 xCoordinate, i32 yCoordinate) {
     DrawGameAssetParams barBorder = BarBorder(xCoordinate, yCoordinate, 0.6f);
     addChildWidget(atbDataWidget, (Widget*)createGameAssetWidget(barBorder, std::string("BORDER")), std::string("BORDER"));
 
-    DrawBarParams atbBarParams = { xCoordinate, yCoordinate, 0, 12, 0, 0.6f };
+    DrawBarParams atbBarParams = { xCoordinate + 6, yCoordinate, 0, 12, 0, 0.6f };
     addChildWidget(atbDataWidget, (Widget*)createBarWidget(atbBarParams, std::string("BAR")), std::string("BAR"));
     return atbDataWidget;
 }

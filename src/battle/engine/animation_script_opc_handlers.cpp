@@ -10,6 +10,7 @@
 #include "../battle_utils.h"
 #include "../battle_models/model_setup_routines.h"
 
+bool invertDirection = false;
 
 OpCodeControlSequence nopCode(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
@@ -815,6 +816,13 @@ OpCodeControlSequence OpCodeC4(AnimScriptEvent* srEvent) {
     effectCtx.wordArray[3] = srEvent->actorID;
     effectCtx.wordArray[4] = 0;
     effectCtx.wordArray[1] = *(u16*)off_C06010 ;
+    if (invertDirection) {
+        srLogWrite("INVERTING DIRECTION");
+        *off_C0600C = -*off_C0600C;
+        srEvent->battleModelState->restingYRotation = 2048;
+        invertDirection = false;
+    }
+
     switch (getBattleType()) {
     case 0:
     case 1:
@@ -854,6 +862,7 @@ OpCodeControlSequence OpCodeC4(AnimScriptEvent* srEvent) {
 OpCodeControlSequence OpCodeC5(AnimScriptEvent* srEvent) {
     u8* G_SCRIPT_WAIT_FRAMES = (u8*)0xBFD0F0;
     srEvent->battleModelState->waitFrames = *G_SCRIPT_WAIT_FRAMES;
+    srLogWrite("Set model wait frames global to %i", srEvent->battleModelState->waitFrames);
     return RUN_NEXT;
 }
 
@@ -861,6 +870,7 @@ OpCodeControlSequence OpCodeC5(AnimScriptEvent* srEvent) {
 OpCodeControlSequence OpCodeC6(AnimScriptEvent* srEvent) {
     u8* G_SCRIPT_WAIT_FRAMES = (u8*)0xBFD0F0;
     *G_SCRIPT_WAIT_FRAMES = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
+    srLogWrite("Set wait frames global to %i", *G_SCRIPT_WAIT_FRAMES);
     return RUN_NEXT;
 }
 
@@ -1072,6 +1082,16 @@ OpCodeControlSequence OpCodeD4(AnimScriptEvent* srEvent) {
     return RUN_NEXT;
 }
 
+OpCodeControlSequence OpCodeD2(AnimScriptEvent* srEvent) {
+    invertDirection = true;
+    return RUN_NEXT;
+}
+
+OpCodeControlSequence OpCodeD3(AnimScriptEvent* srEvent) {
+    srEvent->battleModelState->restingYRotation = 0;
+    return RUN_NEXT;
+}
+
 
 #define selfRelative3DMoveEffect   ((PFNSREFFECTCALLBACK)0x4270DE)
 OpCodeControlSequence OpCodeD5(AnimScriptEvent* srEvent) {
@@ -1145,10 +1165,11 @@ OpCodeControlSequence OpCodeD8(AnimScriptEvent* srEvent) {
 //This opcode is used to extend the script to run player registered opcodes
 OpCodeControlSequence OpCodeDA(AnimScriptEvent* srEvent) {
     auto extendedCode = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    if (extendedCode <= 0x71) {
+    srLogWrite("DA EXTENDED CODE READ: %x", extendedCode);
+    /*if (extendedCode < 0x71) {
         srLogWrite("ERROR: Extended opcodes must have indexes greater than 0xFF");
         return RUN_NEXT;
-    }
+    }*/
     auto opcode = gContext.animScriptOpcodes.getResource(extendedCode);
     return opcode(srEvent);
 }
@@ -1487,10 +1508,13 @@ OpCodeControlSequence OpCodeF1(AnimScriptEvent* srEvent) {
 OpCodeControlSequence OpCodeF3(AnimScriptEvent* srEvent) {
     auto& ownerModelState = *srEvent->battleModelState;
     if (!ownerModelState.waitFrames) {
+        srLogWrite("Wait Frames decremented, continuuing");
         return RUN_NEXT;
     }
+    srLogWrite("Running F3: Blocking for %i frames", ownerModelState.waitFrames);
     --ownerModelState.waitFrames;
     --ownerModelState.currentScriptPosition;
+    srLogWrite("Script position: %i, remaining Frames: %i", ownerModelState.currentScriptPosition, ownerModelState.waitFrames);
     srEvent->scriptContext->isScriptActive = 0;
     return BREAK;
 }
@@ -1651,6 +1675,50 @@ OpCodeControlSequence OpCodeFE(AnimScriptEvent* srEvent) {
         }
     }
     return RUN_NEXT;
+}
+
+
+std::string getPlayerModelName(u8 characterID) {
+    switch (characterID) {
+    case 1: {
+        return characterModelNames[characterID];
+    }
+    case 8: {
+        return characterModelNames[characterID];
+    }
+    default: {
+        return characterModelNames[characterID];
+    }
+    }
+}
+
+
+OpCodeControlSequence OpCodePHSChange(AnimScriptEvent* srEvent) {
+    auto& ownerModelState = *srEvent->battleModelState;
+    auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
+    auto& scriptCtx = *srEvent->scriptContext;
+    auto characterID = ownerModelState74.actionIdx;
+    auto modelName = getPlayerModelName(characterID);
+    srLogWrite("Switching actor %i to character %i, new model: %s", srEvent->actorID, characterID, modelName.c_str());
+    srSetPlayerModel(0, 1, srEvent->actorID, const_cast<char*>(modelName.c_str()));
+    if (BATTLE_MODEL_PTRS[srEvent->actorID])
+        ownerModelState.modelDataPtr = BATTLE_MODEL_PTRS[srEvent->actorID];
+    ownerModelState.runningAnimIdx = 0;
+    ownerModelState.playedAnimFrames = 0;
+    ownerModelState.currentPlayingFrame = 0;
+    ownerModelState.tableRelativeModelAnimIdx = 0;
+    ownerModelState.setForLimitBreaks = 0;
+    //sub_42C21B(actor_id);
+    auto newModelDataPtr = BATTLE_MODEL_PTRS[srEvent->actorID]->animScriptStruct;// get the start value
+    copyDataFromBFile(srEvent->actorID);
+    //ownerModelState.modelEffectFlags |= 1u;
+    ownerModelState.modelEffectFlags |= 4u;
+    ownerModelState.field_25 &= 0xFDu;
+    gContext.party.swapPartyMembers(srEvent->actorID, characterID);
+    gContext.battleActors.swapPartyActors(srEvent->actorID, characterID);
+    gContext.party.getActivePartyMember(srEvent->actorID).srPartyMember->modelName = modelName;
+    //sub_430D32(0x2D9u, actor_id, 0);
+    return BREAK;
 }
 
 /*

@@ -3,54 +3,54 @@
 #include "party_utils.h"
 #include "../impl.h"
 
-void clearCommandArray(u8 partyIndex) {
-    auto& commandArray = *getGamePartyMember(partyIndex)->enabledCommandArray;
+void clearCommandArray(u8 characterIdx) {
+    auto& commandArray = *getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
-        voidCommand(partyIndex, slotIndex);
+        voidCommand(characterIdx, slotIndex);
     }
 }
 
 /*Hooking into here we can insert default commands for characters and such*/
-void enableDefaultCommands(u8 partyIndex, bool magicEnabled, bool summonEnabled) {
-    enableCommand(partyIndex, 0, CMD_ATTACK);
-    enableCommand(partyIndex, 3, CMD_ITEM);
+void enableDefaultCommands(u8 characterIdx, bool magicEnabled, bool summonEnabled) {
+    enableCommand(characterIdx, 0, CMD_ATTACK);
+    enableCommand(characterIdx, 3, CMD_ITEM);
     if (magicEnabled) {
-        enableCommand(partyIndex, 1, CMD_MAGIC);
+        enableCommand(characterIdx, 1, CMD_MAGIC);
     }
     if (summonEnabled) {
-        enableCommand(partyIndex, 2, CMD_SUMMON);
+        enableCommand(characterIdx, 2, CMD_SUMMON);
     }
 }
 
 
-SISTERRAY_API void addAutoAction(u8 partyIndex, AutoActionType type, u8 commandIndex, u16 actionID, u8 activationChance, u8 counterCount) {
+SISTERRAY_API void addAutoAction(u8 characterIdx, AutoActionType type, u8 commandIndex, u16 actionID, u8 activationChance, u8 counterCount) {
     auto& action = SrAutoAction();
     action.dispatchType = type;
     action.commandIndex = commandIndex;
     action.actionIndex = actionID;
     action.counterCount = counterCount;
     action.activationChance = activationChance;
-    gContext.party.addAutoAction(partyIndex, action);
+    gContext.party.addAutoAction(characterIdx, action);
 }
 
-SISTERRAY_API void enableCommand(u8 partyIndex, u8 enabledIndex, u8 commandIndex) {
+SISTERRAY_API void enableCommand(u8 characterIdx, u8 enabledIndex, u8 commandIndex) {
     if (enabledIndex >= 16) {
         srLogWrite("attempt to enable an invalid command slot");
         return;
     }
-    auto commandArray = gContext.party.getSrPartyMember(partyIndex).gamePartyMember->enabledCommandArray;
+    auto commandArray = gContext.party.getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
     commandArray[enabledIndex].commandID = commandIndex;
     commandArray[enabledIndex].cursorCommandType = getCommand(commandIndex).gameCommand.commandMenuID;
     commandArray[enabledIndex].targetingData = getCommand(commandIndex).gameCommand.targetingFlags;
     commandArray[enabledIndex].commandFlags = 0;
 }
 
-SISTERRAY_API void voidCommand(u8 partyIndex, u8 enabledIndex) {
+SISTERRAY_API void voidCommand(u8 characterID, u8 enabledIndex) {
     if (enabledIndex >= 16) {
         srLogWrite("attempt to void an invalid command slot");
         return;
     }
-    auto& command = gContext.party.getSrPartyMember(partyIndex).gamePartyMember->enabledCommandArray[enabledIndex];
+    auto& command = gContext.party.getSrCharacter(characterID).gamePartyMember->enabledCommandArray[enabledIndex];
     command.commandID = 0xFF;
     command.cursorCommandType = 0;
     command.targetingData = 0xFF;
@@ -59,8 +59,8 @@ SISTERRAY_API void voidCommand(u8 partyIndex, u8 enabledIndex) {
     command.supportMatFlags = 0;
 }
 
-SISTERRAY_API u8 getEnabledSlotIndex(u8 partyIndex, u8 commandIndex) {
-    auto& commandArray = gContext.party.getSrPartyMember(partyIndex).gamePartyMember->enabledCommandArray;
+SISTERRAY_API u8 getEnabledSlotIndex(u8 characterIdx, u8 commandIndex) {
+    auto& commandArray = gContext.party.getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         if (commandArray[slotIndex].commandID == commandIndex)
             return slotIndex;
@@ -69,8 +69,8 @@ SISTERRAY_API u8 getEnabledSlotIndex(u8 partyIndex, u8 commandIndex) {
 }
 
 /*Searches the corresponding array for now, once we have order data loaded we can just seek*/
-SISTERRAY_API EnabledSpell* getSpellSlot(u8 partyIndex, u8 commandIndex, u16 actionIndex) {
-    auto& partyData = getSrPartyMember(partyIndex);
+SISTERRAY_API EnabledSpell* getSpellSlot(u8 characterIdx, u8 commandIndex, u16 actionIndex) {
+    auto& partyData = getSrPartyMember(characterIdx);
     switch (commandIndex) {
     case 2: {
         for (auto& spell : partyData.srPartyMember->actorMagics) {
@@ -97,8 +97,8 @@ SISTERRAY_API EnabledSpell* getSpellSlot(u8 partyIndex, u8 commandIndex, u16 act
 }
 
 /*Insert a given command index, enabling it. Will not insert at Magic/Command/Summon indexes*/
-SISTERRAY_API void  insertEnabledCommand(u8 partyIndex, u8 commandIndex) {
-    auto& commandArray = gContext.party.getSrPartyMember(partyIndex).gamePartyMember->enabledCommandArray;
+SISTERRAY_API void  insertEnabledCommand(u8 characterIdx, u8 commandIndex) {
+    auto& commandArray = gContext.party.getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
     u8 freeIndex = 0xFF;
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         if (commandArray[slotIndex].commandID == 0xFF) {
@@ -110,11 +110,11 @@ SISTERRAY_API void  insertEnabledCommand(u8 partyIndex, u8 commandIndex) {
         }
     }
     if (freeIndex != 0xFF)
-        enableCommand(partyIndex, freeIndex, commandIndex);
+        enableCommand(characterIdx, freeIndex, commandIndex);
 }
 
-SISTERRAY_API EnabledCommand* getCommandSlot(u8 partyIdx, u8 commandIndex) {
-    auto& commandArray = getSrPartyMember(partyIdx).gamePartyMember->enabledCommandArray;
+SISTERRAY_API EnabledCommand* getCommandSlot(u8 characterIdx, u8 commandIndex) {
+    auto& commandArray = getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         if (commandArray[slotIndex].commandID == commandIndex)
             return &(commandArray[slotIndex]);
@@ -123,8 +123,8 @@ SISTERRAY_API EnabledCommand* getCommandSlot(u8 partyIdx, u8 commandIndex) {
 }
 
 /*These functions will be acessible through the C API, and so return raw pointers*/
-SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 partyIndex, u32 enabledSlotIndex) {
-    auto& magicArray = getSrPartyMember(partyIndex).srPartyMember->actorMagics;
+SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 characterIdx, u32 enabledSlotIndex) {
+    auto& magicArray = getSrCharacter(characterIdx).srPartyMember->actorMagics;
     if (enabledSlotIndex < magicArray.max_size()) {
         auto partyPtr = magicArray.data();
         return &(partyPtr[enabledSlotIndex]);
@@ -134,9 +134,9 @@ SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 partyIndex, u32 enabledSlotIn
 }
 
 /*Public API methods for enabling an action at a specific command index*/
-SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
+SISTERRAY_API void enableMagic(u8 characterIdx, u32 enabledIndex, u32 commandlRelativeIndex) {
     srLogWrite("enabling magic %d and index %d", commandlRelativeIndex, enabledIndex);
-    auto& enabledMagics = getSrPartyMember(partyIndex).srPartyMember->actorMagics;
+    auto& enabledMagics = getSrCharacter(characterIdx).srPartyMember->actorMagics;
     if (enabledIndex < enabledMagics.max_size()) {
         auto& enabledSlot = enabledMagics[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
@@ -147,8 +147,8 @@ SISTERRAY_API void enableMagic(u8 partyIndex, u32 enabledIndex, u32 commandlRela
     srLogWrite("attempted to enable magic spell at an invalid index");
 }
 
-SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u8 partyIndex, u32 enabledSlotIndex) {
-    auto& summonArray = getSrPartyMember(partyIndex).srPartyMember->actorSummons;
+SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u8 characterIdx, u32 enabledSlotIndex) {
+    auto& summonArray = getSrCharacter(characterIdx).srPartyMember->actorSummons;
     if (enabledSlotIndex < summonArray.max_size()) {
         auto partyPtr = summonArray.data();
         return &(partyPtr[enabledSlotIndex]);
@@ -158,8 +158,8 @@ SISTERRAY_API EnabledSpell* getEnabledSummonSlot(u8 partyIndex, u32 enabledSlotI
 }
 
 
-SISTERRAY_API void enableSummon(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
-    auto& enabledSummons = getSrPartyMember(partyIndex).srPartyMember->actorSummons;
+SISTERRAY_API void enableSummon(u8 characterIdx, u32 enabledIndex, u32 commandlRelativeIndex) {
+    auto& enabledSummons = getSrCharacter(characterIdx).srPartyMember->actorSummons;
     if (enabledIndex < enabledSummons.max_size()) {
         auto& enabledSlot = enabledSummons[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;
@@ -171,8 +171,8 @@ SISTERRAY_API void enableSummon(u8 partyIndex, u32 enabledIndex, u32 commandlRel
 }
 
 
-SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u8 partyIndex, u32 enabledSlotIndex) {
-    auto& ESkillArray = getSrPartyMember(partyIndex).srPartyMember->actorEnemySkills;
+SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u8 characterIdx, u32 enabledSlotIndex) {
+    auto& ESkillArray = getSrCharacter(characterIdx).srPartyMember->actorEnemySkills;
     if (enabledSlotIndex < ESkillArray.max_size()) {
         auto partyPtr = ESkillArray.data();
         return &(partyPtr[enabledSlotIndex]);
@@ -182,8 +182,8 @@ SISTERRAY_API EnabledSpell* getEnabledESkillSlot(u8 partyIndex, u32 enabledSlotI
 }
 
 
-SISTERRAY_API void enableESkill(u8 partyIndex, u32 enabledIndex, u32 commandlRelativeIndex) {
-    auto& enabledESkills = getSrPartyMember(partyIndex).srPartyMember->actorEnemySkills;
+SISTERRAY_API void enableESkill(u8 characterIdx, u32 enabledIndex, u32 commandlRelativeIndex) {
+    auto& enabledESkills = getSrCharacter(characterIdx).srPartyMember->actorEnemySkills;
     if (enabledIndex < enabledESkills.max_size()) {
         auto& enabledSlot = enabledESkills[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;

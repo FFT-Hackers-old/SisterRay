@@ -25,7 +25,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u16 vTimerIncrement;       //0x00
-    u16 yurnTimerIncrement;    //0x02
+    u16 turnTimerIncrement;    //0x02
     u16 charATBValue;          //0x04
     u16 field_6;               //0x06
     u16 field_8;

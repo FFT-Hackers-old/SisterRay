@@ -35,35 +35,40 @@ const WidgetClass* ScrollerWidgetKlass() {
 }
 
 
-SISTERRAY_API void srNewPortraitWidget(Widget* parent, drawPortraitParams params, char* name) {
+SISTERRAY_API void srNewPortraitWidget(Widget* parent, drawPortraitParams params, const char* name) {
     auto strName = std::string(name);
     auto portraitWidget = createPortraitWidget(params, strName);
     addChildWidget(parent, (Widget*)portraitWidget, strName);
 }
 
-SISTERRAY_API void setPortraitParams(drawPortraitParams* params, i32 xCoordinate, i32 yCoordinate, u8 partyIndex, float priority) {
+SISTERRAY_API void setPortraitParams(drawPortraitParams* params, i32 xCoordinate, i32 yCoordinate, u8 characterIdx, float priority) {
     params->xCoordinate = xCoordinate;
     params->yCoordinate = yCoordinate;
-    params->partyIndex = partyIndex;
+    params->characterIdx = characterIdx;
     params->priority = priority;
 }
 
 typedef u8* (*pfnsub6E6C5B)(i32, i32, i32, float);
 #define displayPortrait                      ((pfnsub6E6C5B)0x6E6C5B)
 void drawPortraitWidget(PortraitWidget* portraitWidget) {
+    u32* dword_91AA8C = (u32*)0x91AA8C;
+    auto swap = *dword_91AA8C;
+    *dword_91AA8C = 1;
+    srLogWrite("DRAWING PORTRAIT WIDGET at %x, %y", portraitWidget->widget.xCoordinate, portraitWidget->widget.yCoordinate);
     displayPortrait(
         portraitWidget->widget.xCoordinate,
         portraitWidget->widget.yCoordinate,
-        portraitWidget->partyIndex,
+        portraitWidget->characterIdx,
         portraitWidget->priority
     );
+    *dword_91AA8C = swap;
 }
 
 PortraitWidget* createPortraitWidget(drawPortraitParams params, std::string name) {
     PortraitWidget* widget = (PortraitWidget*)createWidget(name, sizeof(PortraitWidget), &kPortraitWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
-    widget->partyIndex = params.partyIndex;
+    widget->characterIdx = params.characterIdx;
     widget->priority = params.priority;
     return widget;
 }
@@ -79,22 +84,22 @@ const WidgetClass* PortraitWidgetKlass() {
 SISTERRAY_API void updatePortraitPartyIndex(Widget* widget, u8 portraitIndex) {
     if (isPortraitWidget(widget)) {
         auto typedPtr = (PortraitWidget*)widget;
-        typedPtr->partyIndex = portraitIndex;
+        typedPtr->characterIdx = portraitIndex;
     }
     else {
         //YA DONE MESSED UP
     }
 }
 
-SISTERRAY_API void srNewHPBarWidget(Widget* parent, drawHPBarParams params, char* name) {
+SISTERRAY_API void srNewHPBarWidget(Widget* parent, drawHPBarParams params, const char* name) {
     auto strName = std::string(name);
     auto HPBarWidget = createHPBarWidget(params, strName);
     addChildWidget(parent, (Widget*)HPBarWidget, strName);
 }
-SISTERRAY_API void setHPBarParams(drawHPBarParams* params, i32 xCoordinate, i32 yCoordinate, u8 partyIndex, float priority) {
+SISTERRAY_API void setHPBarParams(drawHPBarParams* params, i32 xCoordinate, i32 yCoordinate, u8 characterIdx, float priority) {
     params->xCoordinate = xCoordinate;
     params->yCoordinate = yCoordinate;
-    params->partyIndex = partyIndex;
+    params->characterIdx = characterIdx;
     params->priority = priority;
 }
 
@@ -104,7 +109,7 @@ void drawHPBarWidget(HPBarWidget* hpBarWidget) {
     renderHPAndStatus(
         hpBarWidget->widget.xCoordinate,
         hpBarWidget->widget.yCoordinate,
-        hpBarWidget->partyIndex,
+        hpBarWidget->characterIdx,
         hpBarWidget->priority
     );
 }
@@ -113,7 +118,7 @@ HPBarWidget* createHPBarWidget(drawHPBarParams params, std::string name) {
     HPBarWidget* widget = (HPBarWidget*)createWidget(name, sizeof(HPBarWidget), &kHPBarWidgetClass);
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
-    widget->partyIndex = params.partyIndex;
+    widget->characterIdx = params.characterIdx;
     widget->priority = params.priority;
     return widget;
 }
@@ -126,17 +131,17 @@ bool isHPBarWidget(Widget* widget) {
     return ((widget->klass == &kHPBarWidgetClass));
 }
 
-SISTERRAY_API void updateHPBarPartyIndex(Widget* widget, u8 partyIndex) {
+SISTERRAY_API void updateHPBarPartyIndex(Widget* widget, u8 characterIdx) {
     if (isHPBarWidget(widget)) {
         auto typedPtr = (HPBarWidget*)widget;
-        typedPtr->partyIndex = partyIndex;
+        typedPtr->characterIdx = characterIdx;
     }
     else {
         //YA DONE MESSED UP
     }
 }
 
-SISTERRAY_API void srNewSlotsWidget(Widget* parent, drawSlotsParams params, char* name) {
+SISTERRAY_API void srNewSlotsWidget(Widget* parent, drawSlotsParams params, const char* name) {
     auto strName = std::string(name);
     auto slotsWidget = createSlotsWidget(params, strName);
     addChildWidget(parent, (Widget*)slotsWidget, strName);
@@ -216,7 +221,7 @@ SISTERRAY_API void updateMateriaData(Widget* widget, MateriaInventoryEntry* mate
     }
 }
 
-SISTERRAY_API void srNewSimpleAssetWidget(Widget* parent, DrawSimpleAssetParams params, char* name) {
+SISTERRAY_API void srNewSimpleAssetWidget(Widget* parent, DrawSimpleAssetParams params, const char* name) {
     auto strName = std::string(name);
     auto simpleAssetWidget = createSimpleGameAssetWidget(params, strName);
     addChildWidget(parent, (Widget*)simpleAssetWidget, strName);
@@ -283,7 +288,7 @@ DrawSimpleAssetParams Cross(i32 xCoordinate, i32 yCoordinate, color color, float
 }
 
 
-SISTERRAY_API void srNewGameAssetWidget(Widget* parent, DrawGameAssetParams params, char* name) {
+SISTERRAY_API void srNewGameAssetWidget(Widget* parent, DrawGameAssetParams params, const char* name) {
     auto strName = std::string(name);
     auto gameAssetWidget = createGameAssetWidget(params, strName);
     addChildWidget(parent, (Widget*)gameAssetWidget, strName);

@@ -1,5 +1,6 @@
 #include "animation_script_opcode.h"
 #include "animation_script_opc_handlers.h"
+#include "animation_script_interface.h"
 #include "../../impl.h"
 
 SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMSCRIPTOPCODEHANDLER, std::string>() {
@@ -77,8 +78,8 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
 
     addElement(assembleOpCodeKey(0xD0), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD0);
     addElement(assembleOpCodeKey(0xD1), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD1);
-    addElement(assembleOpCodeKey(0xD2), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
-    addElement(assembleOpCodeKey(0xD3), (SRPFNANMSCRIPTOPCODEHANDLER)nopCode);
+    addElement(assembleOpCodeKey(0xD2), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD2);
+    addElement(assembleOpCodeKey(0xD3), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD3);
     addElement(assembleOpCodeKey(0xD4), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD4);
     addElement(assembleOpCodeKey(0xD5), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD5);
     addElement(assembleOpCodeKey(0xD6), (SRPFNANMSCRIPTOPCODEHANDLER)OpCodeD6);
@@ -130,6 +131,8 @@ SrAnimOpCodeRegistry::SrAnimOpCodeRegistry() : SrNamedResourceRegistry<SRPFNANMS
 
 SISTERRAY_API void initAnimScriptOpCodes() {
     gContext.animScriptOpcodes = SrAnimOpCodeRegistry();
+    registerOpCode(OpCodePHSChange, "battlePHS", 0);
+    srLogWrite("Registered %i Animation Script OpCodes", gContext.animScriptOpcodes.resourceCount());
 }
 
 u8 readOpCodeArg8(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
@@ -165,6 +168,6 @@ SISTERRAY_API void registerOpCode(SRPFNANMSCRIPTOPCODEHANDLER opcode, const char
 }
 
 
-SISTERRAY_API u16 getOpCodeIdx(SRPFNANMSCRIPTOPCODEHANDLER opcode, const char* modName, u16 modCodeIdx) {
+SISTERRAY_API u16 getOpCodeIdx(const char* modName, u16 modCodeIdx) {
     return gContext.animScriptOpcodes.getResourceIndex(std::string(modName) + std::to_string(modCodeIdx));
 }

@@ -35,6 +35,7 @@ struct SrDamageContext_ {
 
 bool actorIsDamageImmune(ActorBattleVars battleVars, ActorBattleState srActorState, bool isMagic);
 bool srActorHasStatus(const ActorBattleState& srActorState, std::string statusName);
+bool srActorHasStatus(const std::vector<ActiveStatus>& activeStatuses, std::string statusName);
 void setActionDidHit(DamageCalculationEvent* event, bool didHit);
 bool checkActionDidHit(DamageCalculationEvent* dmgEvent);
 void setDisplayBarrier(DamageCalculationEvent* event);

@@ -26,5 +26,6 @@ void setupQuadCut(CommandSetupEvent& event);
 void setupPoison(CommandSetupEvent& event);
 void setupEnemyAttack(CommandSetupEvent& setupEvent);
 void createStringEvent(CommandSetupEvent& setupEvent);
+void phsChangeSetup(CommandSetupEvent& event);
 
 #endif // !COMMAND_CALLBACKS_H

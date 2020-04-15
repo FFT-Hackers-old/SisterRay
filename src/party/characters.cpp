@@ -13,7 +13,7 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
 
     for (auto characterIndex = 0; characterIndex < 12; characterIndex++) {
         srLogWrite("attemping to load AI scripts for character %i", characterIndex);
-        auto characterData = SrCharacterData();
+        auto characterData = SrCharacter();
         BattleAIData characterAIData = BattleAIData();
         initializeBattleAIData(characterAIPtr, characterIndex, characterAIData);
         characterData.gameCharacter = nullptr;
@@ -35,4 +35,16 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
 
     free(sectionBuffer);
     srLogWrite("kernel.bin: Loaded %lu character AI scripts", (unsigned long)gContext.characters.resourceCount());
+}
+
+SISTERRAY_API CharacterRecord* getPartyActorCharacterRecord(u8 characterIdx) {
+    return gContext.characters.getResource(characterIdx).gameCharacter;
+}
+
+SISTERRAY_API SrCharacter* getSrCharacterRecord(u8 characterIdx) {
+    return &(gContext.characters.getResource(characterIdx));
+}
+
+SISTERRAY_API CharacterRecord* getGameCharacter(SrCharacter* srCharacter) {
+    return srCharacter->gameCharacter;
 }

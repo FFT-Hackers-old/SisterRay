@@ -25,15 +25,15 @@ SrPartyMembers::SrPartyMembers(u8 characterCount) {
 }
 
 
-SrCharacterData& SrPartyMembers::getActivePartyCharacter(u8 partyIdx) {
+SrCharacter& SrPartyMembers::getActivePartyCharacter(u8 partyIdx) {
     if (partyIdx < 3) {
         return gContext.characters.getResource(activeParty[partyIdx]);
     }
     return gContext.characters.getResource(0);
 }
 
-void SrPartyMembers::addAutoAction(u32 partyIndex, const SrAutoAction& action) {
-    auto& autoActons = getSrPartyMember(partyIndex).srPartyMember->actorAutoActions;
+void SrPartyMembers::addAutoAction(u32 characterIdx, const SrAutoAction& action) {
+    auto& autoActons = getSrPartyMember(characterIdx).srPartyMember->actorAutoActions;
     for (auto& actionSlot : autoActons) {
         if (actionSlot.dispatchType == AUTOACT_NO_ACTION) {
             actionSlot = action;
@@ -42,8 +42,8 @@ void SrPartyMembers::addAutoAction(u32 partyIndex, const SrAutoAction& action) {
 }
 
 /* clear all data arrays prior to recalculation based on current equipment configuration*/
-void SrPartyMembers::clearActions(u32 partyIndex) {
-    auto& actor = getSrPartyMember(partyIndex);
+void SrPartyMembers::clearActions(u32 characterIdx) {
+    auto& actor = getSrCharacter(characterIdx);
     auto& magicArray = actor.srPartyMember->actorMagics;
     auto& summonArray = actor.srPartyMember->actorSummons;
     auto& eSkillArray = actor.srPartyMember->actorEnemySkills;
@@ -52,7 +52,7 @@ void SrPartyMembers::clearActions(u32 partyIndex) {
     clearActionArray<SUMMON_COUNT>(summonArray);
     clearActionArray<ESKILL_COUNT>(eSkillArray);
     clearAutoActionArray<AUTO_ACTION_COUNT>(autoActions);
-    clearCommandArray(partyIndex);
+    clearCommandArray(characterIdx);
 }
 
 
@@ -68,10 +68,13 @@ PartyMemberState SrPartyMembers::getSrPartyMember(u8 partyIdx) {
     return ret;
 }
 
+PartyMemberState SrPartyMembers::getSrCharacter(u8 characterID) {
+    PartyMemberState ret = { &(gamePartyMembers[characterID]), &(partyMembers[characterID]) };
+    return ret;
+}
+
 /*This method enables actions*/
-void SrPartyMembers::handleMateriaActorUpdates(u8 partyIdx, const std::vector<MateriaInventoryEntry>& equippedMaterias) {
-    if (partyIdx > 3)
-        return;
+void SrPartyMembers::handleMateriaActorUpdates(u8 characterID, const std::vector<MateriaInventoryEntry>& equippedMaterias) {
 
     bool magicEnabled = false;
     bool summonEnabled = false;
@@ -84,7 +87,10 @@ void SrPartyMembers::handleMateriaActorUpdates(u8 partyIdx, const std::vector<Ma
             summonEnabled = true;
         }
     }
-    enableDefaultCommands(partyIdx, magicEnabled, summonEnabled);
+    enableDefaultCommands(characterID, magicEnabled, summonEnabled);
+    EnableDefaultAbilitiesEvent enableActionEvent = { characterID };
+    std::vector<SrEventContext> dispatchContexts = { ENABLE_ACTION_NO_MATERIA };
+    gContext.eventBus.dispatch(ENABLE_ACTIONS, &enableActionEvent, dispatchContexts);
 
     for (auto it = std::begin(equippedMaterias); it != std::end(equippedMaterias); ++it) {
         auto materia = *it;
@@ -92,13 +98,13 @@ void SrPartyMembers::handleMateriaActorUpdates(u8 partyIdx, const std::vector<Ma
             continue;
         u8 maxLevel = 1;
         auto materiaLevel = getMateriaLevel(materia, &maxLevel);
-        EnableAbilitiesEvent enableActionEvent = { partyIdx, materia, gContext.materias.getResource(materia.item_id).gameMateria, materiaLevel };
+        EnableAbilitiesEvent enableActionEvent = { characterID, materia, gContext.materias.getResource(materia.item_id).gameMateria, materiaLevel };
         auto topkey = getTopKey(getMateriaTopType(materia.item_id));
         auto subkey = getSubKey(getMateriaSubType(materia.item_id));
         std::vector<SrEventContext> dispatchContexts = { topkey, subkey };
         gContext.eventBus.dispatch(ENABLE_ACTIONS, &enableActionEvent, dispatchContexts);
     }
-    gamePartyMembers[activeParty[partyIdx]].commandColumns = getCommandRows(partyIdx);
+    gamePartyMembers[characterID].commandColumns = getCommandRows(characterID);
 }
 
 void SrPartyMembers::battleActivatePartyMember(u8 partyIdx) {
@@ -109,6 +115,30 @@ void SrPartyMembers::battleActivatePartyMember(u8 partyIdx) {
     srLogWrite("Max HP: %d", srMember.gamePartyMember->maxHP);
     srLogWrite("Strength: %d", srMember.gamePartyMember->strength);
     *activeMember.gamePartyMember = *srMember.gamePartyMember;
+
+    std::array<u8, 10> inactiveParty;
+    for (auto idx = 0; idx < inactiveParty.size(); idx++) {
+        inactiveParty[idx] = 0xFF;
+    }
+
+    if (activeParty[partyIdx] > (CHARACTER_COUNT))
+        return;
+
+    u8 arrayIdx = 0;
+    //Setup the swap array
+    for (auto charIdx = 0; charIdx < CHARACTER_COUNT - 1; charIdx++) {
+        if (std::find(activeParty.begin(), activeParty.end(), charIdx) != activeParty.end()) {
+            continue;
+        }
+        inactiveParty[arrayIdx] = charIdx;
+        arrayIdx++;
+    }
+
+    for (auto partyIdx = 0; partyIdx < 3; partyIdx ++ ) {
+        if (activeParty[partyIdx] > (CHARACTER_COUNT))
+            continue;
+        getActivePartyMember(partyIdx).srPartyMember->partySwapBuffer = inactiveParty;
+    }
 }
 
 void SrPartyMembers::battleSavePartyMember(u8 partyIdx) {
@@ -133,7 +163,14 @@ void SrPartyMembers::swapPartyMembers(u8 partyIdx, u8 newCharacterID) {
 }
 
 void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& actorState) {
-    auto& partyMember = *getSrPartyMember(partyIdx).gamePartyMember;
+    u8 characterID = activeParty[partyIdx];
+    initCharacterBattleFields(characterID, actorState);
+    battleActivatePartyMember(partyIdx);
+}
+
+
+void SrPartyMembers::initCharacterBattleFields(u8 characterID, const ActorBattleState& actorState) {
+    auto& partyMember = *getSrCharacter(characterID).gamePartyMember;
     partyMember.unknownDivisor = 0;
     partyMember.atbTimer = 0;
     partyMember.barrierGauge = 0;
@@ -142,7 +179,7 @@ void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& 
     partyMember.activeLimitLevel = 1;
 
     partyMember.limitGuage = actorState.party34->limitBar << 8;
-    const auto& characterRecord = gContext.characters.getResource(activeParty[partyIdx]);
+    const auto& characterRecord = gContext.characters.getResource(characterID);
     partyMember.activeLimitLevel = characterRecord.gameCharacter->activeLimitLevel;
 
     partyMember.commandColumns = 1;
@@ -175,14 +212,11 @@ void SrPartyMembers::initPartyBattleFields(u8 partyIdx, const ActorBattleState& 
         }
         enabledCommand.targetingData = finalTargetingData;
 
-        srLogWrite("Set Targeting data for enabled command %i to %x for actor %i", enabledCommand.commandID, enabledCommand.targetingData, partyIdx);
+        srLogWrite("Set Targeting data for enabled command %i to %x for actor %i", enabledCommand.commandID, enabledCommand.targetingData, characterID);
     }
-    battleActivatePartyMember(partyIdx);
 }
 
-void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
-    auto characterID = G_SAVE_MAP->activeParty[partyIdx];
-    setPartyMemberActive(partyIdx, characterID);
+void SrPartyMembers::recalculateCharacter(u8 characterID) {
     auto characterName = getCharacterName(characterID);
     auto weaponMaterias = gContext.characters.getElement(characterName).wpnMaterias;
     auto armorMaterias = gContext.characters.getElement(characterName).armMaterias;
@@ -200,10 +234,10 @@ void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
     std::copy(begin(weaponMaterias), end(weaponMaterias), begin(wpnVector));
     std::copy(begin(armorMaterias), end(armorMaterias), begin(armVector));
 
-    clearActions(partyIdx);
-    handleMateriaActorUpdates(partyIdx, equippedMaterias); //Enable spells, counters, commands, and fill out stat boosts based on materia stuff
-    applyLinkedMateriaModifiers(partyIdx, wpnVector, SR_GEAR_WEAPON);
-    applyLinkedMateriaModifiers(partyIdx, armVector, SR_GEAR_ARMOR);
+    clearActions(characterID);
+    handleMateriaActorUpdates(characterID, equippedMaterias); //Enable spells, counters, commands, and fill out stat boosts based on materia stuff
+    applyLinkedMateriaModifiers(characterID, wpnVector, SR_GEAR_WEAPON);
+    applyLinkedMateriaModifiers(characterID, armVector, SR_GEAR_ARMOR);
 
     StatBoostModifiers statModifiers = StatBoostModifiers();
     //Add all stat modifiers from weapons to the modification object, for determining the base value of that stat
@@ -219,16 +253,15 @@ void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
         addStatBoosts(statModifiers, materia.equipEffects);
     }
 
-    auto partyMember = getSrPartyMember(partyIdx);
-    calculateActorStats(*partyMember.srPartyMember, *getPartyActorCharacterRecord(partyIdx), statModifiers);
-    auto& gamePartyMember = *partyMember.gamePartyMember;
-    auto& srPartyMember = *partyMember.srPartyMember;
-    //TODO after all references are removed kill these copies
+    auto& srPartyMember = partyMembers[characterID];
+    auto& gamePartyMember = gamePartyMembers[characterID];
+    calculateActorStats(srPartyMember, *getCharacterRecordWithID(characterID), statModifiers);
+
     gamePartyMember.characterID = characterID;
     gamePartyMember.maxHP = srPartyMember.playerStats[StatNames::HP].statValue;
     gamePartyMember.maxMP = srPartyMember.playerStats[StatNames::MP].statValue;
-    gamePartyMember.currentHP = getPartyActorCharacterRecord(partyIdx)->current_HP;
-    gamePartyMember.currentMP = getPartyActorCharacterRecord(partyIdx)->current_MP;
+    gamePartyMember.currentHP = getPartyActorCharacterRecord(characterID)->current_HP;
+    gamePartyMember.currentMP = getPartyActorCharacterRecord(characterID)->current_MP;
     gamePartyMember.physAttack = srPartyMember.playerStats[StatNames::WEAPON_ATTACK].statValue;
     gamePartyMember.physDefense = srPartyMember.playerStats[StatNames::ARMOR_DEFENSE].statValue;
     gamePartyMember.magAttack = srPartyMember.playerStats[StatNames::WEAPON_MAGIC].statValue;
@@ -239,6 +272,15 @@ void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
     gamePartyMember.spirit = srPartyMember.playerStats[StatNames::SPIRIT].statValue;
     gamePartyMember.speed = srPartyMember.playerStats[StatNames::DEXTERITY].statValue;
     gamePartyMember.luck = srPartyMember.playerStats[StatNames::LUCK].statValue;
+    //TODO after all references are removed kill these copies
+}
+
+void SrPartyMembers::recalculatePartyMember(u8 partyIdx) {
+    auto characterID = G_SAVE_MAP->activeParty[partyIdx];
+    if (characterID > CHARACTER_COUNT)
+        return;
+    setPartyMemberActive(partyIdx, characterID);
+    recalculateCharacter(characterID);
     battleActivatePartyMember(partyIdx);
 }
 
@@ -247,12 +289,16 @@ PartyMemberState getSrPartyMember(u8 partyIdx) {
     return gContext.party.getSrPartyMember(partyIdx);
 }
 
+PartyMemberState getSrCharacter(u8 characterIdx) {
+    return gContext.party.getSrCharacter(characterIdx);
+}
+
 PartyMemberState getActivePartyMember(u8 partyIdx) {
     return gContext.party.getActivePartyMember(partyIdx);
 }
 
-u8 getCommandRows(u8 partyIdx) {
-    const auto commands = getSrPartyMember(partyIdx).gamePartyMember->enabledCommandArray;
+u8 getCommandRows(u8 characterID) {
+    const auto commands = getSrCharacter(characterID).gamePartyMember->enabledCommandArray;
     u8 count = 0;
     for (auto idx = 0; idx < 16; idx++) {
         if (commands[idx].commandID != 0xFF) {
@@ -265,9 +311,9 @@ u8 getCommandRows(u8 partyIdx) {
 }
 
 /*Applys modifiers when support materia are paired with others*/
-void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType) {
+void applyLinkedMateriaModifiers(u8 characterIdx, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType) {
     for (auto pairIndex = 0; pairIndex < 8; pairIndex += 2) {
-        auto slots = getMateriaSlots(partyIndex, gearType);
+        auto slots = getMateriaSlots(characterIdx, gearType);
         auto leftSlot = slots[pairIndex];
         auto rightSlot = slots[pairIndex];
 
@@ -278,10 +324,10 @@ void applyLinkedMateriaModifiers(u8 partyIndex, const std::vector<MateriaInvento
         auto& leftMateria = equippedMaterias[pairIndex];
         auto& rightMateria = equippedMaterias[pairIndex + 1];
         if (getMateriaTopType(leftMateria.item_id) == 5) {
-            dispatchSupportHandlers(partyIndex, leftMateria, rightMateria, gearType);
+            dispatchSupportHandlers(characterIdx, leftMateria, rightMateria, gearType);
         }
         if (getMateriaTopType(rightMateria.item_id) == 5) {
-            dispatchSupportHandlers(partyIndex, rightMateria, leftMateria, gearType);
+            dispatchSupportHandlers(characterIdx, rightMateria, leftMateria, gearType);
         }
     }
 }
@@ -311,13 +357,13 @@ bool slotsAreLinked(u8 leftSlot, u8 rightSlot) {
 }
 
 /*Dispatch support materia handlers, keyed on contexts corresponding to the type and subtype of the paired materia*/
-void dispatchSupportHandlers(u8 partyIndex, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGearType gearType) {
+void dispatchSupportHandlers(u8 characterIdx, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGearType gearType) {
     u8 supportMax;
     u8 pairedMax;
     auto supportLevel = getMateriaLevel(supportMateria, &supportMax);
     auto pairedLevel = getMateriaLevel(pairedMateria, &pairedMax);
     ApplySupportEvent applySupportEvent = {
-        partyIndex,
+        characterIdx,
         supportMateria,
         supportLevel,
         gContext.materias.getResource(supportMateria.item_id).gameMateria,
@@ -333,9 +379,9 @@ void dispatchSupportHandlers(u8 partyIndex, const MateriaInventoryEntry& support
     gContext.eventBus.dispatch(APPLY_SUPPORT, (void*)&applySupportEvent, dispatchContexts);
 }
 
-void srUpdatePartyMember(u8 partyIndex) {
-    recalculateBaseStats(partyIndex);
-    recalculateDerivedStats(partyIndex); //This function will be replaced with an sr version to correctly init the new command fields
+void srUpdatePartyMember(u8 characterIdx) {
+    recalculateBaseStats(characterIdx);
+    recalculateDerivedStats(characterIdx); //This function will be replaced with an sr version to correctly init the new command fields
     updateMiscPartyStats();
 }
 
@@ -345,32 +391,32 @@ void srRecalculateDerivedStats(u8 partyIdx) {
 }
 
 /*determine whether or not commands are enabled from resizeable SR arrays*/
-void updateCommandsActive(u8 partyIndex, i32 commandType) {
-    if ((partyIndex < 3) && (1 << commandType) & G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask) {
-        i32 statusMask = gAiActorVariables[partyIndex].statusMask;
-        G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask &= ~(u8)(1 << commandType);
+void updateCommandsActive(u8 characterIdx, i32 commandType) {
+    if ((characterIdx < 3) && (1 << commandType) & G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask) {
+        i32 statusMask = gAiActorVariables[characterIdx].statusMask;
+        G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask &= ~(u8)(1 << commandType);
         switch (commandType) {
             case 0: {
-                updateCommands(partyIndex, statusMask);
+                updateCommands(characterIdx, statusMask);
                 break;
             }
             case 1: {
-                G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask &= 0xDFu;// Unset Bit 0x20
-                if (!updateMagicCommand(partyIndex, statusMask)) {
-                    G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask |= 0x20;
+                G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask &= 0xDFu;// Unset Bit 0x20
+                if (!updateMagicCommand(characterIdx, statusMask)) {
+                    G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask |= 0x20;
                 }
                 break;
             }
             case 2: {
-                G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask &= 0xBFu;// Unset bit 0x40
-                if (!updateSummonCommand(partyIndex, statusMask))
-                    G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask |= 0x40;
+                G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask &= 0xBFu;// Unset bit 0x40
+                if (!updateSummonCommand(characterIdx, statusMask))
+                    G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask |= 0x40;
                 break;
             }
             case 3: {
-                G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask &= 0x7Fu;// unset bit 0x80
-                if (!updateESkillCommand(partyIndex, statusMask))
-                    G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask |= 0x80;
+                G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask &= 0x7Fu;// unset bit 0x80
+                if (!updateESkillCommand(characterIdx, statusMask))
+                    G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask |= 0x80;
                 break;
             }
             default:
@@ -380,9 +426,9 @@ void updateCommandsActive(u8 partyIndex, i32 commandType) {
 }
 
 /*Probably a good place to allow callbacks to hook into*/
-void updateCommands(i32 partyIndex, i16 statusMask) {
+void updateCommands(i32 characterIdx, i16 statusMask) {
     i32 result; // eax
-    auto enabledCommands = getSrPartyMember(partyIndex).gamePartyMember->enabledCommandArray;
+    auto enabledCommands = getSrPartyMember(characterIdx).gamePartyMember->enabledCommandArray;
     u8* byte_DC3BA0 = (u8*)(0xDC3BA0);
     enabledCommands[0].commandFlags = 0;
     /*Deals with enabling limit commands. Instead we will change how limit breaks work
@@ -415,8 +461,8 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
             switch (commandID) {
                 case 2:
                 case 21: {
-                    updateCommandsActive(partyIndex, 1);
-                    if (G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask & 0x20) {
+                    updateCommandsActive(characterIdx, 1);
+                    if (G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask & 0x20) {
                         srLogWrite("A:Flagging command %i inactive", commandID);
                         commandFlags |= 2u;
                     }
@@ -424,8 +470,8 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
                 }
                 case 3:
                 case 22: {
-                    updateCommandsActive(partyIndex, 2);
-                    if (G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask & 0x40) {
+                    updateCommandsActive(characterIdx, 2);
+                    if (G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask & 0x40) {
                         commandFlags |= 2u;
                     }
                     break;
@@ -444,8 +490,8 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
                     break;
                 }
                 case 13: {
-                    updateCommandsActive(partyIndex, 3);
-                    if (G_ACTOR_TIMER_ARRAY[partyIndex].activeCommandsMask & 0x80) {
+                    updateCommandsActive(characterIdx, 3);
+                    if (G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask & 0x80) {
                         commandFlags |= 2u;
                     }
                     break;
@@ -478,9 +524,9 @@ void updateCommands(i32 partyIndex, i16 statusMask) {
     };
 }
 
-bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
-    auto actorMP = G_ACTOR_TIMER_ARRAY[partyIndex].currentMP;
-    auto& spellData = getSrPartyMember(partyIndex).srPartyMember->actorMagics;
+bool updateMagicCommand(u8 characterIdx, u32 actorStatusMask) {
+    auto actorMP = G_ACTOR_TIMER_ARRAY[characterIdx].currentMP;
+    auto& spellData = getSrPartyMember(characterIdx).srPartyMember->actorMagics;
 
     bool commandEnabled = false;
     for (auto it = begin(spellData); it != end(spellData); ++it) {
@@ -510,9 +556,9 @@ bool updateMagicCommand(u8 partyIndex, u32 actorStatusMask) {
 }
 
 /*With this we can add a charge mechanic to summons*/
-bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
-    auto actorMP = G_ACTOR_TIMER_ARRAY[partyIndex].currentMP;
-    auto& summonData = getSrPartyMember(partyIndex).srPartyMember->actorSummons;
+bool updateSummonCommand(u8 characterIdx, u32 actorStatusMask) {
+    auto actorMP = G_ACTOR_TIMER_ARRAY[characterIdx].currentMP;
+    auto& summonData = getSrPartyMember(characterIdx).srPartyMember->actorSummons;
 
     bool commandEnabled = false;
     for (auto it = begin(summonData); it != end(summonData); ++it) {
@@ -528,9 +574,9 @@ bool updateSummonCommand(u8 partyIndex, u32 actorStatusMask) {
     return commandEnabled;
 }
 
-bool updateESkillCommand(u8 partyIndex, u32 actorStatusMask) {
-    auto actorMP = G_ACTOR_TIMER_ARRAY[partyIndex].currentMP;
-    auto& ESkillData = getSrPartyMember(partyIndex).srPartyMember->actorEnemySkills;
+bool updateESkillCommand(u8 characterIdx, u32 actorStatusMask) {
+    auto actorMP = G_ACTOR_TIMER_ARRAY[characterIdx].currentMP;
+    auto& ESkillData = getSrPartyMember(characterIdx).srPartyMember->actorEnemySkills;
 
     bool commandEnabled = false;
     for (auto it = begin(ESkillData); it != end(ESkillData); ++it) {

@@ -8,9 +8,8 @@
 u16 getEquippedGear(u8 characterID, u8 gearType);
 bool characterCanEquipItem(u8 characterID, u16 item_id);
 std::string getCharacterName(u8 characterID);
-CharacterRecord* getPartyActorCharacterRecord(u8 partyIdx);
 u16 getMateriaID(u8 characterID, u8 slot, u8 gearType);
-u8 getCharacterRecordIndex(u8 partyIndex);
+u8 getCharacterRecordIndex(u8 characterIdx);
 PartyMember* getGamePartyMember(u8 actorIdx);
 bool isPartyActor(u8 actorIdx);
 bool actorHasStatus(u8 actorID, u32 maskOfStatus);

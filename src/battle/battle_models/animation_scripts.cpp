@@ -1,6 +1,8 @@
 #include "animation_scripts.h"
 #include "../../impl.h"
 #include "../../system/ff7memory.h"
+#include "../engine/animation_script_interface.h"
+#include "../battle_models/battle_model_state_interface.h"
 
 std::string assembleAnimScriptKey(u16 idx) {
     return std::string(BASE_PREFIX) + std::to_string(idx);
@@ -62,7 +64,7 @@ SrModelScripts createSrModelScripts(SrModelType modelType, const std::string arc
 // Initialize, enemy script related data so that we may reassemble in a way the game understands
 SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> enemyModelIDs, void* battleLGPBuffer) : SrNamedResourceRegistry<SrModelScripts, std::string>() {
     LGPContext lgpContext = { 0, 1, 2, (PFNFF7MANGLER)0x5E2198 }; //This is used by the game, the name mangler is at 0x5E2198 and called when opening an lgp file
-    srLogWrite("Loading animations for %i enemies", enemyModelIDs.size());
+    srLogWrite("Loading animations for %i enemies from archive", enemyModelIDs.size());
     for (auto modelID : enemyModelIDs) {
         auto name = assembleEnemyModelKey(modelID);
         srLogWrite("Loading model animation scripts from SR registry for model %s constructed from modelID: %i", name.c_str(), modelID);
@@ -73,6 +75,9 @@ SrBattleAnimScriptRegistry::SrBattleAnimScriptRegistry(std::unordered_set<u16> e
         srLogWrite("Loading model animation scripts from SR registry for model %s", name.c_str());
         SrModelScripts srModelScripts = createSrModelScripts(MODEL_TYPE_PLAYER, name, battleLGPBuffer);
         addElement(name, srModelScripts);
+
+        //Add a "phs change" script to each model name
+        srLogWrite("Loaded animation scripts for %i player model: %s", getElement(name).scriptCount, name.c_str());
     }
     for (auto name : specialModelNames) {
         srLogWrite("Loading model animation scripts from SR registry for model %s", name.c_str());
@@ -109,6 +114,16 @@ AnimationScript animScriptFromBuffer(u8* animScriptStart, u16 animScriptLength, 
 void initAnimationScripts(void* battleLGPBuffer) {
     auto enemyModelIDs = gContext.enemies.getUniqueModelIDs();
     gContext.battleAnimationScripts = SrBattleAnimScriptRegistry(enemyModelIDs, battleLGPBuffer);
+    for (auto name : characterModelNames){
+        u8 phsChange[36] = { 0xD8, 0, 0, 3, 0xC6, 10, 0xC5, 0xF3, 0x95, 0xF0, 0xC4, 90, 1, 6, 7, 0xE2, 0xC5, 0xF3, 0xC9, 0xF4, 1, 0xF3, 0xCA, 0xDA, 0, 0, 0xF0, 0x95, 0xD2, 0xC4, 90, 1, 6, 7, 0xD3, 0xEE };
+        u16* extendedInjection = (u16*)(&(phsChange[24]));
+        *extendedInjection = 0x72;
+        u16* soundInjection = (u16*)(&(phsChange[2]));
+        *soundInjection = 0x1C3;
+        addAnimationScript("battlePHS", 0, name.c_str(), &(phsChange[0]), 36);
+        
+        srLogWrite("Loaded %i animationScripts player model: %s", gContext.battleAnimationScripts.getElement(name).scriptCount, name.c_str());
+    }
 }
 
 
@@ -134,11 +149,20 @@ void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader)
 
 /*Add an animation script from a provided buffer, with a given Length*/
 SISTERRAY_API void addAnimationScript(const char* modName, u16 modIdx, const char* modelName, u8* script, u16 scriptLength) {
-    u16 trueAnimScriptLength = 0;
+    u16 trueAnimScriptLength = scriptLength;
     auto name = std::string(modName) + std::to_string(modIdx);
     auto animationScript = animScriptFromBuffer(script, scriptLength, &trueAnimScriptLength);
+    for (auto opcode : animationScript) {
+        srLogWrite("PRINTING PHS ANIMATION SCRIPT OPCODE: %x", opcode);
+    }
     SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
     auto& modelScripts = gContext.battleAnimationScripts.getElement(modelName);
     modelScripts.modelAnimScripts.addElement(name, srAnimScript);
     modelScripts.scriptCount++;
+
+    srLogWrite("PHS CHANGE LENGTH: %i", modelScripts.modelAnimScripts.getResource(74).scriptLength);
+    auto animScript = modelScripts.modelAnimScripts.getResource(74).animScript;
+    for (auto opcode : animScript) {
+        srLogWrite("PRINTING PHS ANIMATION SCRIPT OPCODE: %x", opcode);
+    }
 }

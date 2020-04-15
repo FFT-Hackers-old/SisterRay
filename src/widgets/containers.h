@@ -11,6 +11,7 @@ struct CursorGridWidget_ {
     u32 cursorIdx;
     SRLISTUPDATERPROC updater;
     SRLISTALLOCPROC allocator;
+    bool transpose;
 };
 
 void drawGridWidget(CursorGridWidget* gridWidget); //draw visibleRow # of child widgets

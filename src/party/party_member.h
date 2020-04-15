@@ -20,6 +20,7 @@ typedef struct {
     std::array<EnabledSpell, ESKILL_COUNT> actorEnemySkills;
     std::array<SrAutoAction, AUTO_ACTION_COUNT> actorAutoActions;
     std::string modelName;
+    std::array<u8, 10> partySwapBuffer;
 } SrPartyData;
 
 typedef struct {

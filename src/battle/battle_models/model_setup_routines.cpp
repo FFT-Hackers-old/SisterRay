@@ -228,7 +228,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
 
         sub_684F73(structPtr, weaponDataPtr);
         modelData->unk1 = 0;
-        modelData->unk2 = 0;
+        modelData->colorMask = 0;
 
         std::string& modelName = getSrPartyMember(actorIdx).srPartyMember->modelName;
         u16 weaponOffset = gContext.battleAnimations.getElement(modelName).modelAnimationCount;

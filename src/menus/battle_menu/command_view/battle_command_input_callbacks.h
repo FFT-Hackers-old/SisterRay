@@ -9,5 +9,6 @@
 
 void handleSelectCommand(const MenuInputEvent* event);
 void openMove(const MenuInputEvent* event);
+void toggleLimit(const MenuInputEvent* srMenuEvent);
 
 #endif

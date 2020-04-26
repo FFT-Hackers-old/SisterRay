@@ -70,6 +70,9 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     // These are used when learning a new ESkill, this should be handled differently
     //party34->learnedEnemySkills = getLearnedEnemySkills(characterRecord);
     //party34->knownEnemySkills = party34->learnedEnemySkills;
+
+    InitBattleActorEvent initActorEvent{partyIdx, characterID, &getSrBattleCharacterActor(characterID) };
+    gContext.eventBus.dispatch(INIT_PLAYER_BATTLE_ACTOR, &initActorEvent);
     activatePartyActor(partyIdx);
 }
 
@@ -213,7 +216,6 @@ void SrBattleActors::initializePartyCharacter(u8 characterID) {
 
     actorTimers.currentHP = actorBattleVars.currentHP;
     actorTimers.currentMP = actorBattleVars.currentMP;
-
     // These are used when learning a new ESkill, this should be handled differently
     //party34->learnedEnemySkills = getLearnedEnemySkills(characterRecord);
     //party34->knownEnemySkills = party34->learnedEnemySkills;
@@ -236,7 +238,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
 
     byte_9A9AAC[8 * enemyIdx] = -1;
     for (u8 l = 0; l < 16; ++l)
-        *(&actorTimers->field_10 + l) = 0;
+        actorTimers->eventTimers[l] = 0;
     for (u8 m = 0; m < 8; ++m)
         *(&actorTimers->field_20 + m) = 0;
 
@@ -246,7 +248,6 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         //DebugBreak();
         for (auto idx = 0; idx < 3; ++idx) {
             if (getInBattleFormationEnemyModels()->EnemyIds[idx] == enemyModelID) {
-                srLogWrite("assigning scene relative index to model id");
                 sceneRelativeID = idx;
                 break;
             }
@@ -256,7 +257,6 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         byte_9AAD2C[sceneRelativeID]++;
         auto sceneEnemyDataPtr = getInBattleActorEnemyData(sceneRelativeID);
         actorFormation.enemyID = sceneRelativeID;
-        srLogWrite("Enemy Actor %i has model index %i", enemyIdx, sceneRelativeID);
         actorBattleVars->index = sceneRelativeID;
         const auto& formationEnemy = *getInBattleFormationActorData(enemyIdx);
         const auto& srEnemy = gContext.enemies.getResource(getUniqueEnemyID(formationEnemy.enemyID));
@@ -269,7 +269,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         actorBattleVars->damageAnimID = 1;
         actorBattleVars->unknown6 = 1;
         actorBattleVars->apValue = 2;
-        actorBattleVars->idleAnimID = 0;
+        actorBattleVars->idleAnimScript = 0;
         actorBattleVars->statusMask = 0;
         actorBattleVars->initalStatusMasks = 0;
         actorBattleVars->gilStolen = 0;
@@ -408,7 +408,6 @@ ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
         actorState.activeStatuses = &(partyActors[activeParty[actorIdx]].battleActor.activeStatuses);
         actorState.enemyData = nullptr;
         auto weaponIdx = gContext.party.getActivePartyCharacter(actorIdx).equippedWeapon;
-        srLogWrite("active Actor has weapon %i", weaponIdx);
         actorState.srWeapon = &(gContext.weapons.getResource(weaponIdx));
         return actorState;
     }
@@ -436,7 +435,6 @@ ActorBattleState SrBattleActors::getSrBattleCharacterActor(u8 characterIdx) {
     actorState.activeStatuses = &(partyActors[characterIdx].battleActor.activeStatuses);
     actorState.enemyData = nullptr;
     auto weaponIdx = gContext.party.getActivePartyCharacter(characterIdx).equippedWeapon;
-    srLogWrite("active Actor has weapon %i", weaponIdx);
     actorState.srWeapon = &(gContext.weapons.getResource(weaponIdx));
     return actorState;
 }
@@ -463,7 +461,6 @@ ActorBattleState SrBattleActors::getActiveBattleActor(u8 actorIdx) {
         actorState.weaponCtx = getBattleWeaponCtx(actorIdx);
         actorState.enemyData = nullptr;
         auto weaponIdx = gContext.party.getActivePartyCharacter(actorIdx).equippedWeapon;
-        srLogWrite("active Actor has weapon %i", weaponIdx);
         actorState.srWeapon = &(gContext.weapons.getResource(weaponIdx));
         return actorState;
     }

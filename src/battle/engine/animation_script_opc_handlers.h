@@ -5,7 +5,9 @@
 #include "animation_script_opcode.h"
 
 extern bool invertDirection;
-
+extern bool stallBeforeRetreat[10];
+extern u16 stallFrames[10];
+extern u16 framesStalled[10];
 
 OpCodeControlSequence nopCode(AnimScriptEvent* srEvent);
 

@@ -80,8 +80,12 @@ void addChildWidget(Widget* parent, Widget* child, std::string name) {
 }
 
 Widget* getChild(Widget* parent, std::string name) {
-    auto child = parent->children[parent->childrenNames[name]];
-    return child;
+    if (parent->childrenNames.find(name) != parent->childrenNames.end()) {
+        auto child = parent->children[parent->childrenNames[name]];
+        return child;
+    }
+    srLogWrite("Attempted to fetch invalid child with name %s for parent: %s", name.c_str(), parent->name.c_str());
+    return nullptr;
 }
 
 Widget* getChild(Widget* parent, u16 index) {

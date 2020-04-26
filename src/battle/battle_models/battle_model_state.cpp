@@ -1,4 +1,5 @@
 #include "battle_model_state_interface.h"
+#include "../../impl.h"
 
 
 SISTERRAY_API BattleModelState* getBattleModelState(u8 actorID) {
@@ -21,4 +22,16 @@ SISTERRAY_API void setModelVanish(u8 actorID) {
 
 SISTERRAY_API void setModelAppaer(u8 actorID) {
     getBattleModelState(actorID)->modelEffectFlags |= 4;
+}
+
+SISTERRAY_API void setActorIdleAnim(u8 actorID, u16 animScriptIdx) {
+    u8* actorIdleAnimScripts = (u8*)0xBF2DF8;
+    actorIdleAnimScripts[actorID] = animScriptIdx;
+    gContext.battleActors.getActiveBattleActor(actorID).actorBattleVars->idleAnimScript = animScriptIdx;
+    gContext.battleActors.getActiveBattleActor(actorID).actorBattleVars->idleAnimHolder = animScriptIdx;
+    gContext.battleActors.getActiveBattleActor(actorID).party10->idleAnimScript = animScriptIdx;
+}
+
+SISTERRAY_API void setActorHurtAnim(u8 actorID, u16 animScriptIdx) {
+    gContext.battleActors.getActiveBattleActor(actorID).actorBattleVars->damageAnimID = animScriptIdx;
 }

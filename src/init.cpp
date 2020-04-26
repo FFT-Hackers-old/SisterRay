@@ -19,6 +19,7 @@
 #include "files/lgp_loader.h"
 #include "battle/sr_battle_engine.h"
 #include "gamedata/command_sr_callbacks.h"
+#include "gamedata/limits.h"
 #include <random>
 
 
@@ -144,11 +145,14 @@ static void Init(void) {
     //Register base callbacks
     //setupLGPTable(BATTLE_LGP_PATH, 2);
     auto battleLGP = readLGPArchive(srGetGamePath(BATTLE_LGP_PATH));
+    auto magicLGP = readLGPArchive(srGetGamePath(MAGIC_LGP_PATH));
     srLogWrite("battleLGP opened read");
-    initAnimations(battleLGP); //Must be called after the formation registries have been initialized
+    initAnimations(battleLGP, magicLGP); //Must be called after the formation registries have been initialized
     initAnimationScripts(battleLGP);
     initAnimScriptOpCodes();
+    initLimits((u8*)magicLGP);
     free(battleLGP);
+    free(magicLGP);
     registerEquipMenuListeners();
     initializeEquipMenu();
     registerInventoryMenuListeners();
@@ -176,6 +180,7 @@ static void Init(void) {
     initializeBattleMenu();
     srLogWrite("initialization complete");
     LoadMods();
+    DispatchBattleMenuSetup();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 
     /* Init RNG */

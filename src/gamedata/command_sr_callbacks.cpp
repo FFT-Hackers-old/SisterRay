@@ -211,7 +211,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
             }
             srLogWrite("Exiting Damage Event Creation Loop");
             printDamageQueueState();
-            handleDrainEffects(srSetupEvent);
+            //handleDrainEffects(srSetupEvent);
             handleQuadraMagic(srSetupEvent);
 
             if (damageContext->miscActionFlags & 0x1000)
@@ -630,6 +630,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
      auto& actorState = gContext.battleActors.getActiveBattleActor(actorIdx);
      bool isDead = srActorHasStatus(actorState, StatusNames::DEATH);
      if (!isDead) {
+         srLogWrite("Creating Drain Event to heal actor %i", actorIdx);
          auto animationEvent = createAnimEvent(actorIdx, 1, 46, 0, 0, 0, 0, 0xFFFF);
          auto damageFlagLocal = 1;
          auto drainedHP = 0;
@@ -754,6 +755,10 @@ void srSetupAction(CommandSetupEvent& srSetupEvent) {
     srSetupEvent.srDamageContext->hitFormula = action.hitFormula;
     srSetupEvent.srDamageContext->hitFormulaModifiers = action.hitFormulaModifiers;
     srSetupEvent.srDamageContext->damageType = action.damageType;
+    if (damageContext->animationScriptID == 0xFFFF) {
+        srLogWrite("Setting Action Specific Animation Script ID: %i", action.animScriptIndex);
+        damageContext->animationScriptID = action.animScriptIndex;
+    }
 
     if (abilityData.elementMask == 0xFFFF)
         elementMask = 0;

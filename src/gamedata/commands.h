@@ -22,6 +22,7 @@ typedef struct {
     std::vector<SRPFNCMDSELECTCALLBACK> selectCallbacks;
     u16 actionCount;
     std::vector<u16> commandActions; //vector of indexes into the attacks table. Game engine fetches attack data through this
+    std::vector<u16> swapActions;
     DamageType damageType;
     u16 damageFormula;
     std::unordered_set<DamageModifiers> dmgFormulaModifiers;
@@ -49,5 +50,6 @@ const SrCommand& getCommand(u8 commandIdx);
 const SrAttack& getCommandAction(u8 commandIdx, u16 actionIdx);
 void addCommandAction(const std::string commandKey, const std::string actionKey);
 void setCommandAction(const std::string commandKey, const std::string actionKey, u32 actionIndex);
+void addCommandSwapAction(const std::string commandKey, const std::string actionKey);
 
 #endif

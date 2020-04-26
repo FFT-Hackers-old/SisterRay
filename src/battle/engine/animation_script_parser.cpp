@@ -101,6 +101,7 @@ void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
                 if (ownerModelState.animScriptIndex != 0) {
                     srLogWrite("executing opcode %x", scriptCtx.currentOpCode);
                 }
+                gContext.eventBus.dispatch(RUN_ANIM_SCRIPT_OPCODE, &animScriptEvent);
                 auto control = opcode(&animScriptEvent);
                 switch (control) {
                 case RUN_NEXT: {

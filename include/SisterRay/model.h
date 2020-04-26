@@ -85,7 +85,7 @@ typedef struct {
     float matrixMeta[11];              //0x20
     float modelMatrix[16];             //initialized to identity element of GL_4(R) on model create
     float unk1;
-    float unk2;
+    float colorMask;
 } BattleModel;
 
 #pragma pack(push, 1)

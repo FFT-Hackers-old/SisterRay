@@ -11,13 +11,12 @@ void initBattleMoveViewWidget(const MenuInitEvent* event) {
     auto mainWidget = menuObject->menuWidget;
 
     auto battleCommandView = createWidget(BATTLE_MOVE_WIDGET_NAME);
-    srLogWrite("CALLING BATTLE COMMAND INIT HANDLER");
 
     boxParams = {
-        0x90 - 110,
-        0x154,
-        0x6E,
-        0x70,
+        15 + 25,
+        340,
+        120,
+        120,
         0.502f
     };
     boxWidget = createBoxWidget(boxParams, MOVE_GRID_BOX);
@@ -27,7 +26,7 @@ void initBattleMoveViewWidget(const MenuInitEvent* event) {
     for (auto idx = 0; idx < names.size(); idx++) {
         auto cmdItemChoice = getStateCursor(event->menu, idx);
 
-        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_MOVE_STATE, &battleMoveNameViewUpdater, 156 - 110, 350, allocateMoveRow, idx };
+        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_MOVE_STATE, &battleMoveNameViewUpdater, 15 + 8 + 25, 350, allocateMoveRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleCommandView, (Widget*)gridWidget, names[idx]);
     }

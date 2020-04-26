@@ -2,26 +2,16 @@
 #include "../../impl.h"
 #include "../../system/ff7memory.h"
 #include "../../files/lgp_loader.h"
+#include "battle_models_api.h"
 #include <unordered_map>
 
 //Might just changed to a vector data structure
 const std::string assembleAnimKey(u16 idx) {
-    std::string numString;
-    if (idx < 10) {
-        numString = std::string("00") + std::to_string(idx);
-    }
-    else if (idx < 100) {
-        numString = std::string("0") + std::to_string(idx);
-    }
-    else {
-
-        numString = std::to_string(idx);
-    }
-    return numString + std::string(BASE_PREFIX);
+    return std::string(BASE_PREFIX) + std::to_string(idx);
 }
 
 /*Creates an SrModleAnimation from a da file archive. It is NOT responsible for the underlying animation, so you must free this if you need*/
-SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon, u8* battleLGP) {
+SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon, u8* battleLGP, u8* magicLGP) {
     LGPContext lgpContext = { 0, 1, 2, (PFNFF7MANGLER)0x5E2908 };
     LGPArchiveFile archiveFile = srOpenDAFile(&lgpContext, archiveName.c_str(), (void*)battleLGP);
     u32* daFilePtr = (u32*)(archiveFile.buffer);
@@ -32,6 +22,7 @@ SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::stri
 
     SrModelAnimations modelAnims = SrModelAnimations();
     modelAnims.type = modelType;
+    auto trueModelCount = totalAnims - 0x34;
     for (u32 animationIdx = 0; animationIdx < totalAnims; animationIdx++) {
         auto animHeader = (DaAnimHeader*)animDataStartPtr;
         u8* frameDataPtr = (u8*)(animDataStartPtr + 3);
@@ -39,10 +30,10 @@ SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::stri
         u32 animSize = ((12 * (animHeader->bonesCount - 1)) + 24) * animHeader->framesCount;
         SrAnimation srAnim = { animSize, currentAnimation };
         if (hasWeapon) {
-            if (animationIdx < BASE_WEAPON_OFFSET) {
+            if (animationIdx < trueModelCount) {
                 modelAnims.modelAnimations.addElement(assembleAnimKey(animationIdx), srAnim);
             }
-            else {
+            else if (animationIdx >= BASE_WEAPON_OFFSET) {
                 modelAnims.weaponAnimations.addElement(assembleAnimKey(animationIdx - BASE_WEAPON_OFFSET), srAnim);
             }
         }
@@ -51,10 +42,11 @@ SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::stri
         }
         animDataStartPtr = (u32*)&(frameDataPtr[animHeader->compressedSize]);
     }
+
     if (hasWeapon) {
-        modelAnims.totalAnimationCount = totalAnims;
-        modelAnims.modelAnimationCount = 0x34;
-        modelAnims.weaponsAnimationCount = totalAnims - 0x34;
+        modelAnims.totalAnimationCount = 2 * trueModelCount;
+        modelAnims.modelAnimationCount = trueModelCount;
+        modelAnims.weaponsAnimationCount = trueModelCount;
         return modelAnims;
     }
     modelAnims.totalAnimationCount = totalAnims;
@@ -64,30 +56,30 @@ SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::stri
 }
 
 /*Constructor takes the IDs of all unique enemies which were loaded into the gContext enemies registry*/
-SrBattleAnimationRegistry::SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs, void* battleLGPBuffer) : SrNamedResourceRegistry<SrModelAnimations, std::string>() {
+SrBattleAnimationRegistry::SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs, void* battleLGPBuffer, void* magicLGPBuffer) : SrNamedResourceRegistry<SrModelAnimations, std::string>() {
     auto battlelgpHeader = (LGPHeader*)battleLGPBuffer;
     //srLogWrite("lgpArchive loaded, name: %s, filecount:%i", battlelgpHeader->name, battlelgpHeader->fileCount);
     //srLogWrite("Loading animations for %i enemies", enemyModelIDs.size());
     for (auto modelID : enemyModelIDs) {
         auto name = assembleEnemyModelKey(modelID);
-        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_ENEMY, name, false, (u8*)battleLGPBuffer);
+        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_ENEMY, name, false, (u8*)battleLGPBuffer, (u8*)magicLGPBuffer);
         addElement(name, modelAnims);
     }
     for (auto name : characterModelNames) {
-        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, true, (u8*)battleLGPBuffer);
+        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, true, (u8*)battleLGPBuffer, (u8*)magicLGPBuffer);
         addElement(name, modelAnims);
     }
     for (auto name : specialModelNames) {
-        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, false, (u8*)battleLGPBuffer);
+        SrModelAnimations modelAnims = createSrModelAnimations(MODEL_TYPE_PLAYER, name, false, (u8*)battleLGPBuffer, (u8*)magicLGPBuffer);
         addElement(name, modelAnims);
     }
+
 }
 
 
-void initAnimations(void* battleLGPBuffer) {
+void initAnimations(void* battleLGPBuffer, void* magicLGPBuffer) {
     auto enemyModelIDs = gContext.enemies.getUniqueModelIDs();
-    gContext.battleAnimations = SrBattleAnimationRegistry(enemyModelIDs, battleLGPBuffer);
-    loadNewAnimations();
+    gContext.battleAnimations = SrBattleAnimationRegistry(enemyModelIDs, battleLGPBuffer, magicLGPBuffer);
     srLogWrite("Loaded model animation packs for %lu unique models", (unsigned long)gContext.battleAnimations.resourceCount());
 }
 
@@ -114,6 +106,8 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
             srLogWrite("ERROR: Assigning animation to invalid index for model %s", filename);
         }
     }
+    srLogWrite("MODEL %s initialized with %i animations in table, last index: %i", filename, tableIdx - 1);
+    srLogWrite("MODEL %s weapon initialization beginning, first index: %i", filename, tableIdx);
     if (aaHeader->weaponCount) {
         for (auto srAnim : weaponAnimations) {
             u32 rawBufferSize = srAnim.rawBufferSize;
@@ -145,18 +139,29 @@ SISTERRAY_API void addPlayerModelAnimation(const char* modName, u16 modIdx, cons
     auto name = std::string(modName) + std::to_string(modIdx);
     modelAnimations.modelAnimations.addElement(name, animation);
     modelAnimations.weaponAnimations.addElement(name, weaponAnimation);
-    modelAnimations.totalAnimationCount++;
+    modelAnimations.modelAnimationCount++;
+    modelAnimations.weaponsAnimationCount++;
+    modelAnimations.totalAnimationCount += 2;
+    srLogWrite("Adding animation for mod %s, idx: %i, trueIdx: %i",  modName, modIdx, modelAnimations.modelAnimations.getResourceIndex(name));
 }
+
+
+SISTERRAY_API u16 getSrPlayerAnimationIdx(const char* modName, u16 relativeModIdx, const char* modelName) {
+    auto& modelAnimations = gContext.battleAnimations.getElement(modelName);
+    auto name = std::string(modName) + std::to_string(relativeModIdx);
+    srLogWrite("Fetching animation with True Idx: %i for model %s", modelAnimations.modelAnimations.getResourceIndex(name), modelName);
+    return modelAnimations.modelAnimations.getResourceIndex(name);
+}
+
 
 std::vector<std::unordered_map<std::string, SrAnimation>> loadModelAnimationFromDAFile(const char* modelName, void* daFileBuffer, bool hasWeapon) {
     u32* daFilePtr = (u32*)(daFileBuffer);
     //u32* daFilePtr = (u32*)srOpenDAFile(&lgpContext, archiveName.c_str());
-    srLogWrite("daFilePtr successfully opened at %p, first bytes: %x, %x, %x, %x, %x, size: %i", daFilePtr, daFilePtr[0], daFilePtr[1], daFilePtr[2], daFilePtr[3], daFilePtr[4]);
+    srLogWrite("daFilePtr successfully opened at %p, first bytes: %x, %x, %x, %x, %x", daFilePtr, daFilePtr[0], daFilePtr[1], daFilePtr[2], daFilePtr[3], daFilePtr[4]);
     auto totalAnims = daFilePtr[0];
     u32* animDataStartPtr = &(daFilePtr[1]);
 
     std::vector<std::unordered_map<std::string, SrAnimation>> parsedAnimations;
-
     for (u32 animationIdx = 0; animationIdx < totalAnims; animationIdx++) {
         auto animHeader = (DaAnimHeader*)animDataStartPtr;
         u8* frameDataPtr = (u8*)(animDataStartPtr + 3);
@@ -180,7 +185,4 @@ std::vector<std::unordered_map<std::string, SrAnimation>> loadModelAnimationFrom
         animDataStartPtr = (u32*)&(frameDataPtr[animHeader->compressedSize]);
     }
     return parsedAnimations;
-}
-
-void loadNewAnimations() {
 }

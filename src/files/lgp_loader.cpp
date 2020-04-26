@@ -11,13 +11,18 @@ void setupLGPTable(char *filePath, u32 tableIdx) {
 }
 
 void* readLGPArchive(const char* filepath) {
+    errno = 0;
     std::ifstream file(filepath, std::ios::binary | std::ios::ate);
+    srLogWrite("Error opening file : %s", strerror(errno));
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
+    srLogWrite("Error opening file : %s", strerror(errno));
     srLogWrite("attempting to open file at %s", filepath);
     char* buffer = (char*)malloc(size);
+    srLogWrite("reading file of size: %i", size);
     if (!file.read(buffer, size)) {
         srLogWrite("ERROR: COULD NOT READ LGP FILE INOT BUFFER");
+        srLogWrite("Error opening file : %s", strerror(errno));
         return nullptr;
     }
     void* blockaddr = (void*)(buffer);
@@ -33,6 +38,7 @@ LGPArchiveFile lgpArchiveRead(u8* lgpBuffer, const char* mangledName) {
     u8* archiveFilePtr = nullptr;
     u32 archiveSize = 0;
     auto matchName = lowerCaseStr(std::string(mangledName));
+    srLogWrite("Trying to match name: %s", matchName);
     while (tableIdx < headerPtr->fileCount) {
         auto tableEntry = tablePtr[tableIdx];
         if (std::string(&(tableEntry.name[0])) == matchName) {

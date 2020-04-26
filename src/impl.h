@@ -58,6 +58,7 @@ typedef std::mt19937 PRNG_Type;
 extern PRNG_Type rng;
 extern std::uniform_int_distribution<PRNG_Type::result_type> udist;
 typedef void(*PFNSR_VOIDSUB)();
+typedef void(*PFNSR_INTSUB)(u32);
 
 typedef struct {
     lua_State*                          L;

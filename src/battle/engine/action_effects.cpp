@@ -32,6 +32,11 @@ u16 getEffect100QueueSize() {
     return *EFFECT100_QUEUE_SIZE;
 }
 
+EffectContext* getEffect100QueueTop() {
+    u16* effect100QueueTop = (u16*)0xBF23B8;
+    return getEffectContext100(*effect100QueueTop);
+}
+
 
 #define GAME_EFFECT_10_QUEUE     ((EffectContext*)0xBF2E70)
 EffectContext* getEffectContext10(u16 effectIndex) {

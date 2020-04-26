@@ -99,6 +99,9 @@ template<class T> void setSrDamageLow(u8 lowType, T& dmgResource) {
     case 1: {
         dmgResource.damageFormula = gContext.damageFormulas.getResourceIndex(FormulaNames::PHYSICAL_BASE_DMG);
     }
+    default: {
+        dmgResource.damageFormula = gContext.damageFormulas.getResourceIndex(FormulaNames::PHYSICAL_BASE_DMG);
+    }
     }
 }
 

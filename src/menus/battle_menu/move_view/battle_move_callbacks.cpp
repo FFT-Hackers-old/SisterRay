@@ -8,7 +8,7 @@ using namespace BattleMenuWidgetNames;
 
 void initializeBattleMoveMenu() {
     CursorContext commandSelection = { 0, 0, 1, 3, 0, 0, 1, 3, 0, 0, 1, 1, 0, 0 };
-    Cursor moveChoiceCursor = { commandSelection, (0x90 - 36) - 110, (0x150 + 6), 24, 88 };
+    Cursor moveChoiceCursor = { commandSelection, 5, 350, 24, 88 };
     auto battleMenu = gContext.menuWidgets.getElement(BATTLE_MENU_NAME);
     setStateCursor(battleMenu, BATTLE_MOVE_STATE, moveChoiceCursor, 0);
     setStateCursor(battleMenu, BATTLE_MOVE_STATE, moveChoiceCursor, 1);

@@ -2,6 +2,8 @@
 #include "../battle_models/battle_model_state_interface.h"
 #include "../../impl.h"
 
+u32 previousFrameInputMask;
+
 void srHandleAnimateModel(u8 actorID) {
     u8* byte_9ADEF8 = (u8*)0x9ADEF8;
     u8* byte_BFD0E4 = (u8*)0xBFD0E4;
@@ -71,6 +73,10 @@ void srPlayModelAnimation(u8 actorID) {
             return;
         }
 
+
+        ModelAnimationEvent modelEvent = { actorID,  &actorModelState, getBattleModelState74(actorID) };
+        dispatchAnimationInputs(&modelEvent);
+        gContext.eventBus.dispatch(SETUP_MODEL_ANIMATION, &modelEvent);
         actorModelState.tableRelativeModelAnimIdx = modelAnimationIndex;
         auto playingAnimation = battleModel->animationsTable[modelAnimationIndex];
         if (playingAnimation) {
@@ -99,10 +105,42 @@ void srPlayModelAnimation(u8 actorID) {
                 actorModelState.playedAnimFrames = playingAnimation->frameCount - 1;
                 actorModelState.isScriptExecuting = 1;
             }
+
+            gContext.eventBus.dispatch(POST_MODEL_ANIMATION, &modelEvent);
         }
         return;
     }
     srLogWrite("CRITICAL: Feteched nullptr for actor %d when executing animation!", actorID);
+}
+
+void dispatchAnimationInputs(ModelAnimationEvent* modelAnimEvent) {
+    std::vector<SrEventContext> dispatchContext{ PLAYING_ANIMATION };
+    u32* capturedInputMask = ((u32*)0x9A85D4);
+    srLogWrite("INPUT MASK STATE DURING ANIM CAPTURE: %x", *capturedInputMask);
+    if (checkInputReceived(32)) {
+        gContext.eventBus.dispatch(MENU_INPUT_OK, modelAnimEvent, dispatchContext);
+    }
+    else if (checkInputReceived(64)) {
+        gContext.eventBus.dispatch(MENU_INPUT_CANCEL, modelAnimEvent, dispatchContext);
+    }
+    else if (checkInputReceived(2)) {
+        gContext.eventBus.dispatch(MENU_INPUT_R2, modelAnimEvent, dispatchContext);
+    }
+    else if (checkInputReceived(4)) {
+        gContext.eventBus.dispatch(MENU_INPUT_L1, modelAnimEvent, dispatchContext);
+    }
+    else if (checkInputReceived(8)) {
+        gContext.eventBus.dispatch(MENU_INPUT_R1, modelAnimEvent, dispatchContext);
+    }
+    else if (*capturedInputMask & 128u) {
+        srLogWrite("CAPTURED DISPATCHED INPUT DURING ANIMATION");
+        gContext.eventBus.dispatch(MENU_INPUT_SQUARE, modelAnimEvent, dispatchContext);
+    }
+    else if (*capturedInputMask & 16u) {
+        srLogWrite("CAPTURED DISPATCHED INPUT DURING ANIMATION");
+        gContext.eventBus.dispatch(MENU_INPUT_TRIANGLE, modelAnimEvent, dispatchContext);
+    }
+    previousFrameInputMask = *capturedInputMask;
 }
 
 typedef i64(*SRPFNCALCULATEVECTORCOPMONENTS)(i32);
@@ -124,3 +162,6 @@ void srComputeEnemyPartyCenter(u16 targetMask, R3PointWord* ret) {
     gameComputeEnemyPartyCenter(targetMask, ret);
 }
 
+u32 getPreviousInputMask() {
+    return previousFrameInputMask;
+}

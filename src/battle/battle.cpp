@@ -279,7 +279,7 @@ void srExecuteAIScript(i32 actorIndex, i32 scriptType, i32 a3) {
         //Here we copy the animation index, size scale, and damaged animation of each actor so we can react if they are changed by scripts
         for (auto actorID = 0; actorID < 10; ++actorID) {
             modelDataCpys[actorID].sizeScale = gAiActorVariables[actorID].sizeScale;
-            modelDataCpys[actorID].idleAnim = gAiActorVariables[actorID].idleAnimID;
+            modelDataCpys[actorID].idleAnim = gAiActorVariables[actorID].idleAnimScript;
             modelDataCpys[actorID].damagedAnim = gAiActorVariables[actorID].damageAnimID;
         }
 

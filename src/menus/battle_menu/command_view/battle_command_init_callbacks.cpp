@@ -27,7 +27,7 @@ void initBattleCommandViewWidget(const MenuInitEvent* event) {
     for (auto idx = 0; idx < names.size(); idx++) {
         auto cmdItemChoice = getStateCursor(event->menu, idx);
 
-        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_CMD_STATE, battleCommandNameViewUpdater, 156, 350, allocateCommandRow, idx, true };
+        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_CMD_STATE, battleCommandNameViewUpdater, 175, 350, allocateCommandRow, idx, true };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleCommandView, (Widget*)gridWidget, names[idx]);
     }
@@ -60,7 +60,10 @@ void battleCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fl
     updateText(getChild(widget, std::string("TXT")), gContext.commands.getResource(commands[flatIndex].commandID).commandName.str());
     auto color = COLOR_WHITE;
     if (commands[flatIndex].commandFlags & 2) {
-        auto color = COLOR_GRAY;
+        color = COLOR_GRAY;
+    }
+    if (commands[flatIndex].commandID == CMD_LIMIT) {
+        color = COLOR_TEAL;
     }
     updateTextColor(widget, color);
 

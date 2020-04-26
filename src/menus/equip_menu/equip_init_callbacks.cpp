@@ -239,12 +239,10 @@ void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
     if (self->collectionType != GridWidgetClass()) {
         return;
     }
-
     auto typedPtr = (CursorGridWidget*)self;
     auto gearType = gContext.gearViewData.getItemType();
     auto relativeItemID = gContext.gearViewData.getResource(flatIndex).relative_item_id;
-    srLogWrite("updating gear view widget with item ID: %i at relative index %i", relativeItemID, flatIndex);
     const char* name = getNameFromRelativeID(relativeItemID, gearType);
-    srLogWrite("updating gear view widget with name: %s", name);
     updateText(widget, name);
+    updateTextColor(widget, COLOR_WHITE);
 }

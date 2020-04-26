@@ -1,4 +1,7 @@
 #include "action_effect_callbacks.h"
+#include "../battle_utils.h"
+#include "../../impl.h"
+#include "action_effects.h"
 
 #define displayActionStringEffect       ((PFNSREFFECTCALLBACK)0x42782A)
 void srDisplayActionStringEffect() {

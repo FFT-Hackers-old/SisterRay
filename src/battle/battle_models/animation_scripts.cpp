@@ -3,6 +3,8 @@
 #include "../../system/ff7memory.h"
 #include "../engine/animation_script_interface.h"
 #include "../battle_models/battle_model_state_interface.h"
+#include "../../gamedata/element_names.h"
+#include "battle_models_api.h"
 
 std::string assembleAnimScriptKey(u16 idx) {
     return std::string(BASE_PREFIX) + std::to_string(idx);
@@ -152,17 +154,22 @@ SISTERRAY_API void addAnimationScript(const char* modName, u16 modIdx, const cha
     u16 trueAnimScriptLength = scriptLength;
     auto name = std::string(modName) + std::to_string(modIdx);
     auto animationScript = animScriptFromBuffer(script, scriptLength, &trueAnimScriptLength);
-    for (auto opcode : animationScript) {
-        srLogWrite("PRINTING PHS ANIMATION SCRIPT OPCODE: %x", opcode);
-    }
+
     SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
     auto& modelScripts = gContext.battleAnimationScripts.getElement(modelName);
     modelScripts.modelAnimScripts.addElement(name, srAnimScript);
     modelScripts.scriptCount++;
 
-    srLogWrite("PHS CHANGE LENGTH: %i", modelScripts.modelAnimScripts.getResource(74).scriptLength);
-    auto animScript = modelScripts.modelAnimScripts.getResource(74).animScript;
+    srLogWrite("ADDED SCRIPT LENGTH: %i", modelScripts.modelAnimScripts.getResource(74).scriptLength);
+    auto animScript = modelScripts.modelAnimScripts.getResource(modelScripts.modelAnimScripts.getResourceIndex(name)).animScript;
+    srLogWrite("ADDED SCRIPT TRUE IDX: %i", modelScripts.modelAnimScripts.getResourceIndex(name));
     for (auto opcode : animScript) {
-        srLogWrite("PRINTING PHS ANIMATION SCRIPT OPCODE: %x", opcode);
+        srLogWrite("PRINTING NEW ANIMATION SCRIPT OPCODE: %x", opcode);
     }
+}
+
+
+SISTERRAY_API u16 getSrPlayerAnimScriptID(const char* modName, u16 relativeModIdx, const char* modelName) {
+    auto name = std::string(modName) + std::to_string(relativeModIdx);
+    return gContext.battleAnimationScripts.getElement(modelName).modelAnimScripts.getResourceIndex(name);
 }

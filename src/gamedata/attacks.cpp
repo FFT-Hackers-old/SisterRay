@@ -1,6 +1,7 @@
 #include "attacks.h"
 #include "../impl.h"
 #include "gdata_utils.h"
+#include "element_names.h"
 
 #define KERNEL_MAGIC_CUTOFF 56
 #define KERNEL_SUMMON_CUTOFF 72
@@ -85,6 +86,8 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
     addCommandAction(assembleGDataKey(CMD_SUMMON), assembleGDataKey(attack96.attackID));
     addElement(assembleGDataKey(attack97.attackID), attack96);
     addCommandAction(assembleGDataKey(CMD_SUMMON), assembleGDataKey(attack97.attackID));
+
+    //Initialize Limit Break Attacks
 }
 
 //Set elements 
@@ -116,7 +119,6 @@ void initializeStatusAfflictions(SrAttack& attack) {
 
 void initAttacks(SrKernelStream* stream) {
     gContext.attacks = SrAttackRegistry(stream);
-    srLogWrite("kernel.bin: Loaded %lu attacks", (unsigned long)gContext.attacks.resourceCount());
 }
 
 u16 getDefaultMagicUseMulti(u16 actionID) {
@@ -135,8 +137,6 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
      }
      }
 }
-
-
 
  SpellEffect getDefaultMagicMultiEffects(u16 actionID) {
      auto multiEffect = SpellEffect();
@@ -180,6 +180,7 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
      srAttack.attackName = EncodedString::from_unicode(data.attackName);
      srAttack.attackDescription = EncodedString::from_unicode(data.attackName);
      gContext.attacks.addElement(name, srAttack);
+     srLogWrite("Mod %s added action with true idx: %i ", modName, gContext.attacks.getResourceIndex(name));
  }
 
 
@@ -211,8 +212,30 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
 
 
  SISTERRAY_API SrActionData getSrCommandAction(const char* modName, u8 modCmdIdx, u16 cmdAtkIdx){
-     u8 actionIdx = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx)).commandActions[cmdAtkIdx];
-     auto srAction = gContext.attacks.getResource(actionIdx);
+     u16 actionIdx = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx)).commandActions[cmdAtkIdx];
+     auto& srAction = gContext.attacks.getResource(actionIdx);
      SrActionData ret{srAction.attackData, srAction.attackName.str(), srAction.attackDescription.str()};
      return ret;
+ }
+
+ SISTERRAY_API SrActionData getSrCommandSwapAction(const char* modName, u8 modCmdIdx, u16 cmdAtkIdx) {
+     u16 actionIdx = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx)).swapActions[cmdAtkIdx];
+     auto& srAction = gContext.attacks.getResource(actionIdx);
+     SrActionData ret{ srAction.attackData, srAction.attackName.str(), srAction.attackDescription.str() };
+     return ret;
+ }
+
+ SISTERRAY_API void setActionAnimationScript(const char* modName, u16 modActionID, const char* modelName, const char* scriptModName, u16 modScriptID) {
+     auto name = std::string(modName) + std::to_string(modActionID);
+     auto& attack = gContext.attacks.getElement(name);
+     auto animScriptName = std::string(scriptModName) + std::to_string(modScriptID);
+     attack.animScriptIndex = gContext.battleAnimationScripts.getElement(modelName).modelAnimScripts.getResourceIndex(animScriptName);
+     srLogWrite("modelName: %s, animScriptName: %s", modelName, animScriptName.c_str());
+     srLogWrite("Initializing Animation Script for Action: %s to value %i", name.c_str(), gContext.battleAnimationScripts.getElement(modelName).modelAnimScripts.getResourceIndex(animScriptName));
+ }
+
+ SISTERRAY_API void setActionEffectType(const char* modName, u16 modActionID, SrAnimationType effectType) {
+     auto name = std::string(modName) + std::to_string(modActionID);
+     auto& attack = gContext.attacks.getElement(name);
+     attack.animationType = effectType;
  }

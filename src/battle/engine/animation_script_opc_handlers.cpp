@@ -466,7 +466,7 @@ OpCodeControlSequence OpCodeA9(AnimScriptEvent* srEvent) {
     actorModelState.field_74 = 0;
     actorModelState74.field_36 = 0;
     actorRotationData.field_0 = 0;
-    *byte_C05F80 += 3; //Unsure why this code is needed, may modify
+    *byte_C05F80 += 3; 
     *off_C06008 = *byte_C05F80 & 0xF;
     for (u32 frame = 0; frame < *off_C06008; ++frame){
         ++actorModelState74.field_36;
@@ -1479,6 +1479,7 @@ OpCodeControlSequence OpCodeEE(AnimScriptEvent* srEvent) {
     actorModelState.field_26 = 1;
     actorModelState74.field_C &= 0xFFF7u;
     actorModelState.animScriptIndex = G_ACTOR_IDLE_SCRIPTS[srEvent->actorID];
+    srLogWrite("RETURNING TO IDLE ANIMATION FOR ACTOR %i, scriptIdx: %i", srEvent->actorID, actorModelState.animScriptIndex);
     scriptCtx.scriptPtr = srEvent->animationScriptTable[actorModelState.animScriptIndex];
     actorModelState.isScriptExecuting;
     actorModelState.currentScriptPosition = 0;
@@ -1508,13 +1509,11 @@ OpCodeControlSequence OpCodeF1(AnimScriptEvent* srEvent) {
 OpCodeControlSequence OpCodeF3(AnimScriptEvent* srEvent) {
     auto& ownerModelState = *srEvent->battleModelState;
     if (!ownerModelState.waitFrames) {
-        srLogWrite("Wait Frames decremented, continuuing");
         return RUN_NEXT;
     }
-    srLogWrite("Running F3: Blocking for %i frames", ownerModelState.waitFrames);
+
     --ownerModelState.waitFrames;
     --ownerModelState.currentScriptPosition;
-    srLogWrite("Script position: %i, remaining Frames: %i", ownerModelState.currentScriptPosition, ownerModelState.waitFrames);
     srEvent->scriptContext->isScriptActive = 0;
     return BREAK;
 }
@@ -1591,9 +1590,42 @@ OpCodeControlSequence OpCodeF9(AnimScriptEvent* srEvent) {
 }
 
 //return actor to default position
+bool stallBeforeRetreat[10] = { false, false, false, false, true, false, false, false ,false, false };
+u16 stallFrames[10] = { 0, 0, 0, 0, 15, 0, 0, 0, 0, 0 };
+u16 framesStalled[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+
+SISTERRAY_API void activateActorStall(u8 actorIdx, u16 stallAmt) {
+    stallBeforeRetreat[actorIdx] = true;
+    stallFrames[actorIdx] = stallAmt;
+}
+
+SISTERRAY_API void deactivateActorStall(u8 actorIdx) {
+    stallBeforeRetreat[actorIdx] = false;
+    stallFrames[actorIdx] = 0;
+}
+
 OpCodeControlSequence OpCodeFA(AnimScriptEvent* srEvent) {
     R3PointWord* actorPositionArray = (R3PointWord*)(0xBFD0A0);
     auto& ownerModelState = *srEvent->battleModelState;
+
+    if (stallBeforeRetreat[srEvent->actorID]) {
+        if (framesStalled[srEvent->actorID] <= stallFrames[srEvent->actorID]) {
+            --srEvent->battleModelState->currentScriptPosition;
+            framesStalled[srEvent->actorID]++;
+            srEvent->scriptContext->isScriptActive = 0;
+            srLogWrite("Stalled %i Frames before resetting position", framesStalled[srEvent->actorID]);
+            return BREAK;
+        }
+        stallBeforeRetreat[srEvent->actorID] = false;
+        framesStalled[srEvent->actorID] = 0;
+        srLogWrite("Stall complete, running next opcode");
+    }
+
+    if (!stallBeforeRetreat[srEvent->actorID] && stallFrames[srEvent->actorID]) {
+        stallFrames[srEvent->actorID] = 0;
+        framesStalled[srEvent->actorID] = 0;
+    }
 
     ownerModelState.restingPosition.x = actorPositionArray[srEvent->actorID].x;
     ownerModelState.restingPosition.y = actorPositionArray[srEvent->actorID].y;

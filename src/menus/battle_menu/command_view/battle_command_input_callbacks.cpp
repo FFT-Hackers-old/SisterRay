@@ -35,9 +35,7 @@ void handleSelectCommand(const MenuInputEvent* srMenuEvent) {
 }
 
 void openMove(const MenuInputEvent* srMenuEvent) {
-    srLogWrite("In Open Move View Handler");
     if (srMenuEvent->menuState != BATTLE_CMD_STATE) {
-        srLogWrite("Aborting Move Open due to menuState mismatch");
         return;
     }
 
@@ -45,8 +43,22 @@ void openMove(const MenuInputEvent* srMenuEvent) {
     if (commandChoiceCursor.relativeColumnIndex != 0)
         return;
 
-    srLogWrite("Transitioning to Move View");
     playMenuSound(1);
     *PREVIOUS_BATTLE_MENU_STATE = BATTLE_CMD_STATE;
     setMenuState(srMenuEvent->menu, BATTLE_MOVE_STATE);
+}
+
+
+void toggleLimit(const MenuInputEvent* srMenuEvent) {
+    if (srMenuEvent->menuState != BATTLE_CMD_STATE) {
+        return;
+    }
+
+    auto partyState = gContext.party.getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID);
+    if (partyState.gamePartyMember->limitGuage != 0xFF00) {
+        return;
+    }
+
+    toggleBack(*BATTLE_ACTIVE_ACTOR_ID, 0);
+    playMenuSound(1);
 }

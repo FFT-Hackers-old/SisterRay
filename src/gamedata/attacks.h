@@ -51,5 +51,6 @@ u16 getDefaultMagicUseMulti(u16 actionID);
 void initializeActionElements(SrAttack& attack);
 void initializeStatusAfflictions(SrAttack& attack);
 SpellEffect getDefaultMagicMultiEffects(u16 actionID);
+void setSummonSpellCtx(SrAttack& attack);
 
 #endif

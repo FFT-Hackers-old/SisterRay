@@ -7,7 +7,7 @@ void battleMenuUpdateHandler(i32 updateStateMask) {
     Menu* menu = gContext.menuWidgets.getElement(BATTLE_MENU_NAME);
     i32* menuStateMask = (i32*)(0xDC35B4);
     runMenu(menu, *menuStateMask);
-    drawCursor(getStateCursor(menu, menu->currentState, *BATTLE_ACTIVE_ACTOR_ID), 0.1f);
+    drawCursor(getStateCursor(menu, menu->currentState, getActiveCursorIndex(menu, menu->currentState)), 0.1f);
 }
 
 typedef i32(*pfnsub6DD041)();
@@ -142,6 +142,9 @@ void initializeBattleMenu() {
     initializeBattlePHSMenu();
     registerMoveMenuListeners();
     initializeBattleMoveMenu();
+}
+
+void DispatchBattleMenuSetup() {
     gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
 }
 

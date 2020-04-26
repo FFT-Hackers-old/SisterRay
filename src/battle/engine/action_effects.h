@@ -27,6 +27,7 @@ EffectContext* getEffectContext60(u16 effectIndex);
 EffectContext* getEffectContext100(u16 effectIndex);
 EffectContext* getEffectContext10(u16 effectIndex);
 u16 getEffect100QueueSize();
+EffectContext* getEffect100QueueTop();
 
 typedef enum {
     EFFECT60,

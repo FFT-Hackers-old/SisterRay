@@ -5,6 +5,7 @@
 #include "srparty.h"
 #include "srwidgets.h"
 #include "game_data_types.h"
+#include "srparty.h"
 
 typedef enum {
     NO_TYPE,
@@ -48,6 +49,8 @@ typedef enum {
     ON_LOAD_ANIMATION_EFFECT,
     ON_DISPATCH_ANIMAMTION_EFFECT,
     ON_RUN_ANIMATION_SCRIPT,
+    SETUP_MODEL_ANIMATION,
+    POST_MODEL_ANIMATION,
 
     //DAMAGE CALC EVENTS, ADDITIONAL EFFECTS IMPLEMENTED WITH THESE
     PRE_HIT_FORMULA,
@@ -56,7 +59,11 @@ typedef enum {
     POST_DAMAGE_FORMULA,
     PRE_DAMAGE_DEALT,
     POST_DAMAGE_DEALT,
-    POST_ACTION_DAMAGE_CALC
+    POST_ACTION_DAMAGE_CALC,
+
+
+    INIT_PLAYER_BATTLE_ACTOR,
+    RUN_ANIM_SCRIPT_OPCODE
 } SrEventType;
 
 
@@ -74,6 +81,7 @@ typedef enum {
     BATTLE_CHANGE_VIEW,
     BATTLE_COMMAND_VIEW,
     ENABLE_ACTION_NO_MATERIA,
+    PLAYING_ANIMATION,
     MAT_HIGH_TYPE_0,
     MAT_HIGH_TYPE_1,
     MAT_HIGH_TYPE_2,
@@ -213,6 +221,18 @@ typedef struct {
     u8 issuingActorID;
     AIBattleContext* battleAIContext;
 } ActionContextEvent;
+
+typedef struct {
+    u8 actorIdx;
+    BattleModelState* ownerModelState;
+    BattleModelStateSmall* ownerModelState74;
+} ModelAnimationEvent;
+
+typedef struct {
+    u8 actorIdx;
+    u8 characterIdx;
+    ActorBattleState* ownerState;
+} InitBattleActorEvent;
 
 typedef struct {
     u8 actorID;

@@ -1,6 +1,7 @@
 #include "action_spell_effects.h"
 #include "../../impl.h"
 #include "../battle_utils.h"
+#include "summon_effects.h"
 
 #define gameBeatRushEffect ((SRPFNSPELLEFFECTCALLBACK)0x4E1627)
 #define gameSomersaultEffect ((SRPFNSPELLEFFECTCALLBACK)0x4E163E)
@@ -170,7 +171,7 @@ SRPFNSPELLEFFECTCALLBACK srGetDispatchCallback(SrAnimationType animationType, u8
         break;
     }
     case SUMMON: {
-        return summonLoaderIdxMap[animEffectID];
+        return (SRPFNSPELLEFFECTCALLBACK)summonEffectMainDispatcher;;
         break;
     }
     case ITEM: {
@@ -225,7 +226,9 @@ void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     if (command.auxData.hasActions) {
         auto action = getCommandAction(commandIdx, actionIdx);
         animEffectID = action.attackData.animationEffectID;
+        srLogWrite("Animation Effect Idx: %i", animEffectID);
         animationType = action.animationType;
+        srLogWrite("Effect Dispatch type: %i", animationType);
         if (action.useOverride) {
             AnimEffectEvent srEvent = { actorID, animationType, animEffectID, commandIdx, actionIdx, getAnimatingActionTargetMask() };
             gContext.eventBus.dispatch(ON_DISPATCH_ANIMAMTION_EFFECT, (void*)&srEvent);

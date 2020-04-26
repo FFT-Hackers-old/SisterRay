@@ -21,6 +21,8 @@ typedef struct {
     std::array<SrAutoAction, AUTO_ACTION_COUNT> actorAutoActions;
     std::string modelName;
     std::array<u8, 10> partySwapBuffer;
+    EnabledCommand toggleCommandArray[16];
+    bool isLimitActive;
 } SrPartyData;
 
 typedef struct {

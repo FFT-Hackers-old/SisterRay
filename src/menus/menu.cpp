@@ -87,7 +87,6 @@ void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext men
         gContext.eventBus.dispatch(MENU_INPUT_R1, &event, dispatchContext);
     }
     else if (checkInputReceived(128)) {
-        srLogWrite("RECEIVED INPUT: SQUARE");
         gContext.eventBus.dispatch(MENU_INPUT_SQUARE, &event, dispatchContext);
     }
     else if (checkInputReceived(16)) { 
@@ -114,11 +113,12 @@ SISTERRAY_API void addState(Menu* menu, Cursor* cursor, const char* stateName) {
     std::unordered_map<u32, Cursor> stateCursors(
         { {0, *cursor} }
     );
-    menu->stateCount++;
     menu->stateNames[std::string(stateName)] = menu->stateCount;
     menu->cursors[menu->stateCount] = stateCursors;
     menu->activeStateCursors[menu->stateCount] = 0;
     menu->stateStatus[menu->stateCount] = 0;
+    menu->stateCount++;
+    srLogWrite("Menu State %s assigned to idx %i", stateName, menu->stateNames[stateName]);
 }
 
 

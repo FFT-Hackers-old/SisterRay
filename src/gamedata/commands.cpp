@@ -60,11 +60,20 @@ void initCommands(SrKernelStream* stream) {
     srCommand.auxData.animationScriptIndex = 0x72;
     srCommand.setupCallbacks.push_back(phsChangeSetup);
     gContext.commands.addElement(std::string("CMD_PHS"), srCommand);
+
+    auto commandData = SrCommandData();
+    commandData.baseData.singleCameraID = 0xFFFF;
+    commandData.baseData.multipleCameraID = 0xFFFF;
+    commandData.auxData.animationEffectID = 0xFF;
+    commandData.commandName = "SOLDIER";
+    commandData.commandDesc = "Use SOLDIER skills";
+    addSrCommand(commandData, 0, CLOUD_LIMIT_MOD_NAME);
+    // registerSelectCallback(CLOUD_MOD_NAME, 0, cmdSoldierelectHandler);
+    registerSetupCallback(CLOUD_LIMIT_MOD_NAME, 0, loadAbility);
+    registerSetupCallback(CLOUD_LIMIT_MOD_NAME, 0, applyDamage);
+
     srLogWrite("sister-ray: Loaded %lu commands", (unsigned long)gContext.commands.resourceCount());
-    
-    //srCommand.setupCallbacks.push_back(phsChangeSetup);
-    gContext.commands.addElement(std::string("CMD_SOLDIER"), srCommand);
-    srLogWrite("sister-ray: Loaded %lu commands", (unsigned long)gContext.commands.resourceCount());
+
 }
 
 const SrCommand& getCommand(u8 commandIdx) {
@@ -93,6 +102,22 @@ SISTERRAY_API void addActionToCommand(const char* modName, u8 commandIdx, const 
     addCommandAction(std::string(commandName), std::string(actionName));
 }
 
+SISTERRAY_API void addSwapActionToCommand(const char* modName, u8 commandIdx, const char* actionModName, u16 actionIdx) {
+    auto commandName = std::string(modName) + std::to_string(commandIdx);
+    auto actionName = std::string(actionModName) + std::to_string(actionIdx);
+    addCommandSwapAction(std::string(commandName), std::string(actionName));
+}
+
+SISTERRAY_API void toggleSwapActions(const char* modName, u8 commandIdx, u16 enabledIdx) {
+    auto commandName = std::string(modName) + std::to_string(commandIdx);
+    auto& command = gContext.commands.getElement(commandName);
+    if (enabledIdx < command.actionCount) {
+        u16 swap = command.commandActions[enabledIdx];
+        command.commandActions[enabledIdx] = command.swapActions[enabledIdx];
+        command.swapActions[enabledIdx] = swap;
+    }
+}
+
 void addCommandAction(const std::string commandKey, const std::string actionKey) {
     auto& srCommand = gContext.commands.getElement(commandKey);
     srLogWrite("fetching index for actionKey %s", actionKey.c_str());
@@ -100,6 +125,16 @@ void addCommandAction(const std::string commandKey, const std::string actionKey)
     srLogWrite("adding true idx %d to command %s", trueAtkIdx, commandKey.c_str());
     srCommand.commandActions.push_back(trueAtkIdx);
     srCommand.actionCount++;
+    if (!srCommand.auxData.hasActions)
+        srCommand.auxData.hasActions = 1;
+}
+
+void addCommandSwapAction(const std::string commandKey, const std::string actionKey) {
+    auto& srCommand = gContext.commands.getElement(commandKey);
+    srLogWrite("fetching index for actionKey %s", actionKey.c_str());
+    auto trueAtkIdx = gContext.attacks.getResourceIndex(actionKey);
+    srLogWrite("adding true idx %d to command %s", trueAtkIdx, commandKey.c_str());
+    srCommand.swapActions.push_back(trueAtkIdx);
 }
 
 void setCommandAction(const std::string commandKey, const std::string actionKey, u32 actionIndex) {
@@ -136,6 +171,7 @@ SISTERRAY_API void addSrCommand(SrCommandData data, u8 commandIdx, const char* m
     srCommand.auxData = data.auxData;
     srCommand.commandName = EncodedString::from_unicode(data.commandName);
     srCommand.commandDescription = EncodedString::from_unicode(data.commandDesc);
+    srCommand.auxData.animationScriptIndex = 0xFFFF;
     gContext.commands.addElement(name, srCommand);
 }
 
@@ -157,12 +193,12 @@ SISTERRAY_API u8 getCommandActionCount(const  char* modName, u8 modCmdIdx) {
 
 
 SISTERRAY_API void registerSelectCallback(const char* modName, u8 modCmdIdx, SRPFNCMDSELECTCALLBACK callback) {
-    auto srCommand = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx));
+    auto& srCommand = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx));
     srCommand.selectCallbacks.push_back(callback);
 }
 
 SISTERRAY_API void registerSetupCallback(const char* modName, u8 modCmdIdx, SRPFNCOMMANDSETUP callback) {
-    auto srCommand = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx));
+    auto& srCommand = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx));
     srCommand.setupCallbacks.push_back(callback);
 }
 

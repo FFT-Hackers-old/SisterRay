@@ -9,6 +9,7 @@
 
 #define BASE_WEAPON_OFFSET (u16)0x34 //This is the offset between a model animation and its weapon animation for player models
 //Indexes 0x2C - 0x34 are reserve for limits, but the data doesn't appear to be in the animation file
+#define CLOUD_LIMIT_MOD_NAME "srff7LimCloud"
 
 /*These are player data model names, which possess weapons*/
 static const std::vector<std::string> characterModelNames = {
@@ -38,7 +39,17 @@ static const std::vector<std::string> specialModelNames = {
     std::string("CHAOS.DAT")
 };
 
-static const std::vector <std::string> summonModelnames = {
+static const std::vector<std::string> cloudLimitNames = {
+    "BLAVER.DAT",
+    "KYOU.DAT",
+    "LIMCL2.DAT",
+    "LIMCL6.DAT",
+    "LIMCL3.DAT",
+    "LIMCL7.DAT",
+    "LIMCL4.DAT",
+};
+
+static const std::vector<std::string> summonModelnames = {
     std::string("LIMIT/MOGURIDA.DAT"),
     std::string("LIMIT/CYVADAT.DAT"),
     std::string("LIMIT/IFREETDA.DAT"),
@@ -71,19 +82,19 @@ typedef struct SrModelAnimations {
     SrNamedResourceRegistry<SrAnimation, std::string> weaponAnimations;
 } SrModelAnimations;
 
-SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon, void* battleLGPBuffer);
+SrModelAnimations createSrModelAnimations(SrModelType modelType, const std::string archiveName, bool hasWeapon, u8* battleLGPBuffer, u8* magicLGPBUffer=nullptr);
 
 /*Registry which holds animation data in memory for the various models, player data models will be keyed by named,
   Enemies will be keyed by their their model index number*/
 class SrBattleAnimationRegistry : public SrNamedResourceRegistry<SrModelAnimations, std::string> {
 public:
-    SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs, void* battleLGPBuffer); 
+    SrBattleAnimationRegistry(std::unordered_set<u16> enemyModelIDs, void* battleLGPBuffer, void* magicLGPBuffer); 
     SrBattleAnimationRegistry() : SrNamedResourceRegistry<SrModelAnimations, std::string>() {}
 };
 
 const std::string assembleAnimKey(u16 idx);
-void initAnimations(void* battleLGPBuffer);
+void initAnimations(void* battleLGPBuffer, void* magicLGPBuffer);
 void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const char* filename, ModelAAHeader* aaHeader);
 std::vector<std::unordered_map<std::string, SrAnimation>> loadModelAnimationFromDAFile(const char* modelName, void* daFileBuffer, bool hasWeapon);
-void loadNewAnimations();
+void loadCloudLimits(u8* magicLGPBuffer);
 #endif // !1

@@ -33,6 +33,50 @@ SISTERRAY_API void addAutoAction(u8 characterIdx, AutoActionType type, u8 comman
     gContext.party.addAutoAction(characterIdx, action);
 }
 
+
+SISTERRAY_API void enableActorCommand(u8 actorIdx, u8 enabledIndex, const char* modName, u8 modCmdIdx) {
+
+    if (enabledIndex >= 16) {
+        srLogWrite("attempt to enable an invalid command slot");
+        return;
+    }
+    auto name = std::string(modName) + std::to_string(modCmdIdx);
+    auto& commandArray = gContext.party.getActivePartyMember(actorIdx).gamePartyMember->enabledCommandArray;
+    commandArray[enabledIndex].commandID = gContext.commands.getResourceIndex(name);
+    commandArray[enabledIndex].cursorCommandType = getCommand(commandArray[enabledIndex].commandID).gameCommand.commandMenuID;
+    commandArray[enabledIndex].targetingData = getCommand(commandArray[enabledIndex].commandID).gameCommand.targetingFlags;
+    commandArray[enabledIndex].commandFlags = 0;
+    srLogWrite("UPDATED COMMAND AT %i to IDX: %i", enabledIndex, commandArray[enabledIndex].commandID);
+}
+
+SISTERRAY_API void setToggleCommand(u8 partyIdx, u8 enabledIndex, const char* modName, u8 modCmdIdx) {
+    if (enabledIndex >= 16) {
+        srLogWrite("attempt to enable an invalid command slot");
+        return;
+    }
+    auto name = std::string(modName) + std::to_string(modCmdIdx);
+    auto& commandArray = gContext.party.getActivePartyMember(partyIdx).gamePartyMember->enabledCommandArray;
+    auto& toggleCommand =  gContext.party.getActivePartyMember(partyIdx).srPartyMember->toggleCommandArray[enabledIndex];
+    toggleCommand.commandID = commandArray[enabledIndex].commandID;
+    toggleCommand.cursorCommandType = commandArray[enabledIndex].cursorCommandType;
+    toggleCommand.targetingData = commandArray[enabledIndex].targetingData;
+    toggleCommand.commandFlags = 0;
+    enableActorCommand(partyIdx, enabledIndex, modName, modCmdIdx);
+}
+
+SISTERRAY_API void toggleBack(u8 partyIdx, u8 enabledIndex) {
+    if (enabledIndex >= 16) {
+        srLogWrite("attempt to enable an invalid command slot");
+        return;
+    }
+    auto& activeCommand = gContext.party.getActivePartyMember(partyIdx).gamePartyMember->enabledCommandArray[enabledIndex];
+    auto& toggleCommand = gContext.party.getActivePartyMember(partyIdx).srPartyMember->toggleCommandArray[enabledIndex];
+    auto swap = activeCommand;
+    activeCommand = toggleCommand;
+    toggleCommand = swap;
+    srLogWrite("Toggling Command at Idx: %i back to cmd: %i", enabledIndex, activeCommand.commandID);
+}
+
 SISTERRAY_API void enableCommand(u8 characterIdx, u8 enabledIndex, u8 commandIndex) {
     if (enabledIndex >= 16) {
         srLogWrite("attempt to enable an invalid command slot");

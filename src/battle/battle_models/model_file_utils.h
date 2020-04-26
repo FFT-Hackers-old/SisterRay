@@ -5,6 +5,7 @@
 #include "../../files/lgp_loader.h"
 
 #define BATTLE_LGP_PATH "data\\battle\\battle.lgp"
+#define MAGIC_LGP_PATH "data\\battle\\magic.lgp"
 
 typedef void(*PFNFF7MANGLER)(const char*, char*);
 
@@ -47,7 +48,7 @@ typedef struct {
     u32 field_38;
     u32 field_3C;
     u32 field_40;
-} UnkModelLoadStruct;
+} LGPLoadCtx;
 
 typedef struct {
     u32 parent;
@@ -114,8 +115,18 @@ typedef void*(*PFNSRSUB6829FE)(LGPContext*, int*, char*);
 typedef void*(*PFNSRSUB5E82DE)(u32, u32, void**, LGPContext*, char*);
 #define ff7InitAnimations   ((PFNSRSUB5E82DE)0x5E82DE)
 
+typedef ModelAAHeader*(*SRPFNSUB5E0FC0)(u32, LGPContext*, char*);
+#define loadModelAAHeader    ((SRPFNSUB5E0FC0)0x5E0FC0)
+
+typedef void(*SRPFNSUB429A12)(u32, u32, LGPLoadCtx*, FileContext*);
+#define initLoadCtx          ((SRPFNSUB429A12)0x429A12)
+
+
+typedef void(*SRPFNSUB5E0EED)(u32, ModelAAHeader*);
+#define destroyModelAAHeader ((SRPFNSUB5E0EED)0x5E0EED)
+
 void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename);
-LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer);
+LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer, bool doMangle=true);
 LGPArchiveFile srOpenABFile(LGPContext* context, const char* baseFileName, void* battleLGpBuffer);
 void* srGameLoadABFile(LGPContext* context, char* baseFileName);
 void srGameInitAnimations(u32 lgpIndex, u32 unkint, void** srAnimsTable, LGPContext* context, char* filename);

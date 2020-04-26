@@ -296,7 +296,7 @@ SISTERRAY_API void srNewGameAssetWidget(Widget* parent, DrawGameAssetParams para
 
 void drawGameAssetWidget(GameAssetWidget* gameAssetWidget) {
     drawComplexGameAsset(gameAssetWidget->widget.xCoordinate, gameAssetWidget->widget.yCoordinate,
-        gameAssetWidget->unk1, gameAssetWidget->unk2, gameAssetWidget->unk3,
+        gameAssetWidget->unk1, gameAssetWidget->colorMask, gameAssetWidget->unk3,
         gameAssetWidget->unk4, gameAssetWidget->unk5, gameAssetWidget->unk6,
         gameAssetWidget->unk7, gameAssetWidget->priority);
 }
@@ -306,7 +306,7 @@ GameAssetWidget* createGameAssetWidget(DrawGameAssetParams params, std::string n
     widget->widget.xCoordinate = params.xCoordinate;
     widget->widget.yCoordinate = params.yCoordinate;
     widget->unk1 = params.unk1;
-    widget->unk2 = params.unk2;
+    widget->colorMask = params.colorMask;
     widget->unk3 = params.unk3;
     widget->unk4 = params.unk4;
     widget->unk5 = params.unk5;
@@ -328,7 +328,7 @@ SISTERRAY_API void setGameAssetParams(DrawGameAssetParams* params, i32 xCoordina
     params->xCoordinate = xCoordinate;
     params->yCoordinate = yCoordinate;
     params->unk1 = arg3;
-    params->unk2 = arg4;
+    params->colorMask = arg4;
     params->unk3 = arg5;
     params->unk4 = arg6;
     params->unk5 = arg7;
@@ -352,7 +352,7 @@ SISTERRAY_API void transformAsset(Widget* widgetToUpdate, i32 type1Array, i32 ty
     if (isGameAssetWidget(widgetToUpdate)) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;
         typedPtr->unk1 = type1Array;
-        typedPtr->unk2 = type2Array;
+        typedPtr->colorMask = type2Array;
         typedPtr->unk3 = type3;
         typedPtr->unk4 = type4;
     }
@@ -405,54 +405,54 @@ DrawGameAssetParams BarrierBarBorder(i32 xCoordinate, i32 yCoordinate, float pri
 
 DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority, int type) {
     i32 unk1 = 0;
-    i32 unk2 = 0;
+    i32 colorMask = 0;
     i32 unk3 = 0;
     switch (type) {
         case 0: {
             unk1 = 96;
-            unk2 = 8;
+            colorMask = 8;
             unk3 = 24;
             break;
         }
         case 1: {
             unk1 = 112;
-            unk2 = 0;
+            colorMask = 0;
             unk3 = 24;
             break;
         }
         case 2: {
             unk1 = 128;
-            unk2 = 16;
+            colorMask = 16;
             unk3 = 26;
             break;
         }
         case 3: {
             unk1 = 80;
-            unk2 = 0;
+            colorMask = 0;
             unk3 = 16;
             break;
         }
         case 4: {
             unk1 = 96;
-            unk2 = 0;
+            colorMask = 0;
             unk3 = 16;
             break;
         }
         case 5: {
             unk1 = 56;
-            unk2 = 0;
+            colorMask = 0;
             unk3 = 24;
             break;
         }
         case 6: {
             unk1 = 56;
-            unk2 = 8;
+            colorMask = 8;
             unk3 = 38;
             break;
         }
     }
 
-    DrawGameAssetParams menuTextAsset = { xCoordinate, yCoordinate, unk1, unk2, unk3, 5, 1, 0, 0, priority };
+    DrawGameAssetParams menuTextAsset = { xCoordinate, yCoordinate, unk1, colorMask, unk3, 5, 1, 0, 0, priority };
     return menuTextAsset;
 }
 
@@ -461,10 +461,10 @@ void setStarShaded(Widget* widgetToUpdate, bool shaded) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;
         if (typedPtr->unk1 == 144) {
             if (shaded) {
-                typedPtr->unk2 = 32;
+                typedPtr->colorMask = 32;
                 return;
             }
-            typedPtr->unk2 = 48;
+            typedPtr->colorMask = 48;
         }
     }
     else {
@@ -476,7 +476,7 @@ void updateItemIcon(Widget* widgetToUpdate, i32 iconType) {
     if (isGameAssetWidget(widgetToUpdate)) {
         auto typedPtr = (GameAssetWidget*)widgetToUpdate;
         typedPtr->unk1 = 16 * (iconType & 1) + 96;
-        typedPtr->unk2 = 16 * (iconType / 2) + 112;
+        typedPtr->colorMask = 16 * (iconType / 2) + 112;
     }
     else {
         srLogWrite("attempting to update assetType field of an invalid Widget type");
@@ -489,7 +489,7 @@ void drawBarWidget(BarWidget* barWidget) {
         barWidget->widget.yCoordinate,
         barWidget->length,
         barWidget->thickness,
-        barWidget->unk2,
+        barWidget->colorMask,
         barWidget->priority
     );
 }
@@ -500,7 +500,7 @@ BarWidget* createBarWidget(DrawBarParams params, std::string name) {
     widget->widget.yCoordinate = params.yCoordinate;
     widget->length = params.length;
     widget->thickness = params.thickness;
-    widget->unk2 = params.unk2;
+    widget->colorMask = params.colorMask;
     widget->priority = params.priority;
     return widget;
 }
@@ -522,12 +522,12 @@ void updateBarLength(BarWidget* barWidget, u32 length) {
     }
 }
 
-void updateBarColor(BarWidget* barWidget, i32 colorMask) {
+void updateBarColor(BarWidget* barWidget, u32 colorMask) {
     if (isBarWidget((Widget*)barWidget)) {
-        barWidget->unk2 = colorMask;
+        barWidget->colorMask = colorMask;
     }
     else {
-        srLogWrite("attempting to update bar length field of an invalid Widget type");
+        srLogWrite("attempting to update bar length color of an invalid Widget type");
     }
 }
 

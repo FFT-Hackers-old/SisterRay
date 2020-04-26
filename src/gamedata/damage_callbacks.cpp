@@ -323,6 +323,7 @@ void calculateHealAmounts(DamageCalculationEvent* srDamageEvent) {
             currentDamage = -currentDamage;
         attackerTimers.drainedHP -= currentDamage;
     }
+    srLogWrite("Drain amounts HP: %i, MP: %i", attackerTimers.drainedHP, attackerTimers.drainedMP);
 }
 
 void handleDeathImpactSetup(DamageCalculationEvent* srDamageEvent) {
@@ -498,6 +499,7 @@ void handleStatusInfliction(DamageCalculationEvent* srDamageEvent) {
     auto& addStatuses = srDamageContext->toAddStatuses;
     auto& removeStatuses = srDamageContext->toRemoveStatuses;
     auto& toggleStatuses = srDamageContext->toToggleStatuses;
+
     for (const auto& statusName : toggleStatuses) {
         auto wasFound = std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName; }) != targetStatuses.end();
         if (wasFound) {
@@ -628,6 +630,11 @@ void handleDamage(DamageCalculationEvent* srDamageEvent) {
         if (previousHP) {
             //Handle Death inflicted
             actorState.statusMask |= 1u;
+            if (!srActorHasStatus(srDamageEvent->srDamageContext->targetState, StatusNames::DEATH)) {
+                auto death = ActiveStatus{ StatusNames::DEATH };
+                srDamageEvent->srDamageContext->targetState.activeStatuses->push_back(death);
+            }
+            srLogWrite("FLAGGING TARGET %i AS DEAD");
             if (damageContext->miscActionFlags & 0x2000)
                 handleMorph(srDamageEvent);
         }

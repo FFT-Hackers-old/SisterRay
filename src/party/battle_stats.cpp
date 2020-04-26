@@ -232,6 +232,21 @@ SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<S
     pen.displayName = EncodedString::from_unicode(StatusNames::BERSERK_NAME.c_str());
     addElement(StatNames::BERSERK_RES, res);
     addElement(StatNames::BERSERK_PEN, pen);
+
+    res.displayName = EncodedString::from_unicode(StatusNames::PEERLESS_NAME.c_str());
+    pen.displayName = EncodedString::from_unicode(StatusNames::PEERLESS_NAME.c_str());
+    addElement(StatNames::PEERLESS_RES, res);
+    addElement(StatNames::PEERLESS_PEN, pen);
+
+    res.displayName = EncodedString::from_unicode(StatusNames::PARALYSIS_NAME.c_str());
+    pen.displayName = EncodedString::from_unicode(StatusNames::PARALYSIS_NAME.c_str());
+    addElement(StatNames::PARALYSIS_RES, res);
+    addElement(StatNames::PARALYSIS_PEN, pen);
+
+    res.displayName = EncodedString::from_unicode(StatusNames::BLIND_NAME.c_str());
+    pen.displayName = EncodedString::from_unicode(StatusNames::BLIND_NAME.c_str());
+    addElement(StatNames::BLIND_RES, res);
+    addElement(StatNames::BLIND_PEN, pen);
 }
 
 void initStats(bool initResistances) {

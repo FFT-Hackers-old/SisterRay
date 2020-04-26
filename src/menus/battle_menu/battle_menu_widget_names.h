@@ -41,7 +41,7 @@ namespace BattleMenuWidgetNames {
 
 
     //Command Names
-    const std::string BATTLE_MOVE_WIDGET_NAME = "BATTLE_COMMAND";
+    const std::string BATTLE_MOVE_WIDGET_NAME = "BATTLE_MOVE";
     const std::string PARTY_1_MOVE_GRID = "1_MOVE_GRID";
     const std::string PARTY_2_MOVE_GRID = "2_MOVE_GRID";
     const std::string PARTY_3_MOVE_GRID = "3_MOVE_GRID";

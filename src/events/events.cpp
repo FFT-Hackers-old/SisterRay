@@ -12,5 +12,6 @@ SISTERRAY_API u32 srAddListener(SrEventType eventType, SrEventCallback callback,
     else {
         listener = gContext.eventBus.addListener(eventType, callback, std::string(modName), keys);
     }
+   // srLogWrite("Registering Mod Callaback for mod %s to event %i", modName, eventType);
     return listener.listenerID;
 }

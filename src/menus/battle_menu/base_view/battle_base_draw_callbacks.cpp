@@ -16,7 +16,7 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
 
     computeResourceDisplays();
     std::vector<std::string> names = { PARTY_1_STATE_NAME, PARTY_2_STATE_NAME, PARTY_3_STATE_NAME };
-    for (i32 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
+    for (u8 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
         if (CURRENT_PARTY_MEMBER_ARRAY[partyIdx] != 0xFF) {
             auto dataWidget = getChild(getChild(menuWidget, BATTLE_BASE_WIDGET_NAME), names[partyIdx]);
             enableWidget(dataWidget);
@@ -28,41 +28,42 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
                 auto nameColor = COLOR_WHITE;
                 if (((*dword_DC1F44 >> 3) & 1) != 0)
                     nameColor = COLOR_GRAY;
-
                 updateTextColor(getChild(dataWidget, PARTY_DATA_NAME), nameColor);
             }
 
-            i32 atbValue = PARTY_STRUCT_ARRAY[partyIdx].atbTimer;
+            u16 atbValue = getActivePartyMember(partyIdx).gamePartyMember->atbTimer;
             updateBarLength((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), atbValue >> 10);
-            updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), -2146402240);
-            if (atbValue == 0xFFFF) {
-                if (*BATTLE_ACTIVE_ACTOR_ID == partyIdx || getMenuState(event->menu) == BATTLE_CMD_STATE) {
+            updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), 0x80108040);
+            if (atbValue == 0xFFFFu) {
+                if (*BATTLE_ACTIVE_ACTOR_ID == partyIdx && getMenuState(event->menu) != BATTLE_INACTIVE) {
                     u16* word_DC3BE4 = (u16*)0xDC3BE4;
-                    i32 colorMask = ((*word_DC3BE4 / 2) << 8) | (*word_DC3BE4 << 16);
+                    u32 colorMask = (word_DC3BE4[0] / 2 << 8) | (word_DC3BE4[0] << 16);
                     updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), colorMask);
+                }
+                else {
+                    updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), 0x80808020);
                 }
             }
 
-            i32 limitValue = PARTY_STRUCT_ARRAY[partyIdx].limitGuage;
+            u16 limitValue = getActivePartyMember(partyIdx).gamePartyMember->limitGuage;
             updateBarLength((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_LIMIT), std::string("BAR")), limitValue >> 10);
             updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_LIMIT), std::string("BAR")), -2139086768);
             if (limitValue == 0xFF00) {
                 u32* dword_DC1F44 = (u32*)0xDC1F44;
                 u32* dword_91E970 = (u32*)0x91E970;
-                i32 colorMask = dword_91E970[(*dword_DC1F44 >> 1) & 7];
-                updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), colorMask);
+                u32 colorMask = dword_91E970[(*dword_DC1F44 >> 1) & 7];
+                updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_LIMIT), std::string("BAR")), colorMask);
             }
             else if (gAiActorVariables[partyIdx].statusMask & STS_FURY) {
-                updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), 0x80000080);
+                updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_LIMIT), std::string("BAR")), 0x80000080);
             }
             else if (gAiActorVariables[partyIdx].statusMask & STS_SADNESS) {
-                updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), 0x80800000);
+                updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_LIMIT), std::string("BAR")), 0x80800000);
             }
-            updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), -2146402240);
+            //updateBarColor((BarWidget*)getChild(getChild(dataWidget, PARTY_DATA_ATB), std::string("BAR")), -2146402240);
 
 
             auto isDead = (PLAYER_FLAG_COPIES[partyIdx].flags & 1);
-
             u16 maxHP = PARTY_STRUCT_ARRAY[partyIdx].maxHP;
             auto displayHP = dword_DC3AA0[partyIdx] >> 8;
             auto HPWidget = getChild(dataWidget, PARTY_DATA_HP);

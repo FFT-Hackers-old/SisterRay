@@ -7,7 +7,7 @@ void drawBattleMoveViewWidget(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
 
     if (event->menuState != BATTLE_MOVE_STATE) {
-        disableWidget(getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME));
+        disableWidget(getChild(menuWidget, BATTLE_MOVE_WIDGET_NAME));
         return;
     }
     // updateCommandsActive(*BATTLE_ACTIVE_ACTOR_ID, 0);

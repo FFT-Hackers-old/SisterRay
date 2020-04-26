@@ -159,7 +159,7 @@ void handleBattleStrSubstitions(char* ret, const char* base) {
         }
         baseStrIdx++;
         currentChar = base[baseStrIdx];
-        srLogWrite("base: %s, ret:%s, base str idx: %d, current character:%d", EncodedString(base).unicode(), EncodedString(ret).unicode(), baseStrIdx, (u8)currentChar);
+        //srLogWrite("base: %s, ret:%s, base str idx: %d, current character:%d", EncodedString(base).unicode(), EncodedString(ret).unicode(), baseStrIdx, (u8)currentChar);
     }
     ret[retStrIdx] = char(0xFF);
 }

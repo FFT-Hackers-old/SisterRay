@@ -164,7 +164,7 @@ typedef struct {
     i32 yCoordinate;
     i32 length;
     i32 thickness;
-    i32 unk2;
+    i32 colorMask;
     float priority;
 } DrawBarParams;
 
@@ -196,7 +196,7 @@ typedef struct {
     i32 xCoordinate;
     i32 yCoordinate;
     i32 unk1;
-    i32 unk2;
+    i32 colorMask;
     i32 unk3;
     i32 unk4;
     i32 unk5; //not sure, best guess

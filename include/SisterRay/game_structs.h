@@ -34,22 +34,7 @@ typedef struct {
     u8 field_D;
     u8 activeCommandsMask;     //0x0D
     u8 field_F;                //0x0F
-    u8 field_10;               //0x10
-    u8 field_11;               //0x11
-    u8 field_12;
-    u8 field_13;
-    u8 field_14;
-    u8 field_15;               //0x15
-    u8 field_16;               //0x16
-    u8 poisonTick;             //0x17
-    u8 field_18;
-    u8 field_19;
-    u8 field_1A;
-    u8 field_1B;
-    u8 field_1C;
-    u8 field_1D;
-    u8 field_1E;
-    u8 field_1F;
+    u8 eventTimers[16];
     u8 field_20;
     u8 field_21;
     u8 field_22;
@@ -162,7 +147,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u8 characterID; //0x00
-    u8 field_1;    //0x01
+    u8 idleAnimScript;    //0x01
     u8 field_2;    //0x02
     u8 field_3;    //0x03
     u8 deathType;    //0x04
@@ -306,7 +291,7 @@ typedef struct {
     u8      physAtk;           //0x0D
     u8      magAtk;            //0x0E
     u8      pEvade;            //0x0F
-    u8      idleAnimID;        //0x10
+    u8      idleAnimScript;        //0x10
     u8      damageAnimID;      //0x11
     u8      backDamageMult;    //0x12
     u8      sizeScale;         //0x13
@@ -361,7 +346,7 @@ typedef struct {
     u8 bankAccessValue; //10
     u8 dummyByte;   //18
     u8 battleType;  //20
-    u8 unk2; //30
+    u8 colorMask; //30
     u8 limitLevel; //38
     u8 unk3; //40
     u8 unk4; //48
@@ -400,7 +385,7 @@ typedef struct {
 typedef struct {
     u32 flags;
     u32 unk1;
-    u32 unk2;
+    u32 colorMask;
     u32 unk3;
 } PlayerFlagCopies;
 #pragma pack(pop)

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <fstream>
 #include <string>
+#include "mods/char_commands.h"
 
 #include "impl.h"
 
@@ -37,6 +38,7 @@ SISTERRAY_API void LoadMods(void)
     const char* modsListsPath = srGetGamePath("mods.txt");
     std::ifstream mods(modsListsPath);
     std::string modName;
+    loadCharMod();
 
     if (!mods.good())
         return;

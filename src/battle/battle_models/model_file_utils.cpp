@@ -20,18 +20,23 @@ void srGameInitAnimations(u32 lgpIndex, u32 unkint, void** srAnimsTable, LGPCont
     ff7InitAnimations(lgpIndex, unkint, srAnimsTable, context, filename);
 }
 
-LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer) {
+LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer, bool doMangle) {
     i32 bytesRead = 0;
     char daFileNameBuffer[204];
     char mangledName[32];
     u32 archiveIndex = 0;
 
-    createDAFilename(archiveIndex, baseFileName, &(daFileNameBuffer[0]));
-    context->mangler(&(daFileNameBuffer[0]), &(mangledName[0]));
-
-    //srLogWrite("mangled name: %s", mangledName);
-    LGPArchiveFile archiveFile = lgpArchiveRead((u8*)battleLGPBuffer, mangledName);
-    return archiveFile;
+    if (doMangle) {
+        createDAFilename(archiveIndex, baseFileName, &(daFileNameBuffer[0]));
+        context->mangler(&(daFileNameBuffer[0]), &(mangledName[0]));
+        srLogWrite("attempting to open file with mangled name: %s", &(mangledName[0]));
+        return lgpArchiveRead((u8*)battleLGPBuffer, lowerCaseStr(mangledName).c_str());
+    }
+    else {
+        createDAFilename(archiveIndex, baseFileName, &(daFileNameBuffer[0]));
+        srLogWrite("attempting to open file with mangled name: %s", &(daFileNameBuffer[0]));
+        return lgpArchiveRead((u8*)battleLGPBuffer, daFileNameBuffer);
+    }
 }
 
 LGPArchiveFile srOpenABFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer) {

@@ -5,5 +5,4 @@
 #include <SisterRay/SisterRay.h>
 
 void initializeActionQueue();
-void srEnqueueAction();
 #endif // !ACTION_QUEUE_H

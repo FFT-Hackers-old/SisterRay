@@ -31,7 +31,7 @@
 
 #define ARRAY_SIZE(x)   (sizeof(x) / sizeof(*x))
 
-#define BASE_PREFIX     "srFF7"
+#define BASE_PREFIX     "srFF7base"
 
 typedef const void* (*PFNSRLOADFUNCTIONPROC)(const char*);
 typedef const void* (*PFNSRREGISTERFUNCTIONPROC)(const char*, const void*);

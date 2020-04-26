@@ -33,7 +33,7 @@ typedef struct {
 typedef struct {
     u16 modelArrayIdx;
     R3PointWord enemyPosition;
-    u16 unk2;
+    u16 colorMask;
     u16 unk3;
 } EnemyPosition;
 #pragma pack(pop)

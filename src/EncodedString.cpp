@@ -47,17 +47,16 @@ const char* EncodedString::unicode() const {
         "@ABCDEFGHIJKLMNO"
         "PQRSTUVWXYZ[\\]^_"
         "`abcdefghijklmno"
-        "pqrstuvwxyz{ }~ "
-        "                "
-        "                "
-        "                "
-        "                "
-        "                "
-        "                "
-        "                "
-        "                "
-        "                "
-        "               ";
+        "pqrstuvwxyz{|}~ "
+        "ÄÅÇÉÑÖÜáàâäãåçéè"
+        "êëíìîïñóòôöõúùûü"
+        "♥°¢£↔→♪ßα  ´¨≠ÆØ"
+        "∞±≤≥¥µ∂ΣΠπ⌡ªºΩæø"
+        "¿¡¬√ƒ≈∆«»… ÀÃÕŒœ"
+        "–—“”‘’÷◊ÿŸ⁄ ‹›ﬁﬂ"
+        "■‧‚„‰ÂÊÁËÈÍÎÏÌÓÔ"
+        " ÒÚÛÙıˆ˜¯˘˙˚¸˝˛ˇ"
+        "       ";
 
     static char buffer[16384];
 

@@ -5,6 +5,10 @@
 #include "../gamedata/status_names.h"
 #include "../gamedata/damage_callback_utils.h"
 #include "engine/battle_engine_interface.h"
+#include "../battle/battle_models/battle_model_state_interface.h"
+#include "../battle/engine/animation_script_interface.h"
+#include "../battle/battle_models/battle_models_api.h"
+#include "../gamedata/summons.h"
 
 #define ACTOR_COUNT 10
 #define ENEMY_ACTOR_COUNT 6
@@ -221,6 +225,132 @@ void SrBattleActors::initializePartyCharacter(u8 characterID) {
     //party34->knownEnemySkills = party34->learnedEnemySkills;
 }
 
+
+void SrBattleActors::initializePartySummon(u8 summonIdx) {
+    auto& summonActor = summonActors[summonIdx];
+    auto summonCtx = gContext.party.getSummonCtx(summonIdx);
+    if (!summonCtx.summonActive)
+        return;
+
+    const auto& summonPartyMember = gContext.party.getSrSummon(summonIdx);
+
+    auto& actorTimers = summonActor.battleActor.gameTimerState;
+    auto& actorBattleVars = summonActor.battleActor.gameAIState;
+    auto& party34 = summonActor.party34;
+    auto& party10 = summonActor.party10;
+    const auto& partyMember = summonPartyMember.gamePartyMember;
+    auto partyWeaponCtx = summonActor.weaponCtx;
+
+    party10.characterID = -1;
+    actorTimers.unkActorFlags = 1;
+    actorTimers.field_C = -1;
+    actorTimers.field_F = -1;
+    party10.characterID = summonIdx;
+    actorBattleVars.index =summonIdx;
+    actorBattleVars.characterID = summonIdx + 0x10;
+    actorBattleVars.level = min(10 + (gContext.party.getSummonCtx(summonIdx).cumulativeAP / 1000), 99);
+    actorBattleVars.idleAnimHolder = 0;
+    actorBattleVars.apValue = 8;
+    actorBattleVars.damageAnimID = 5;
+    actorBattleVars.stateFlags = 8;
+    party34.characterRecord = nullptr;
+    setBattleStats(summonPartyMember, summonActor);
+    actorBattleVars.backDamageMult = 16;
+    actorBattleVars.statusMask = 0;
+    actorBattleVars.initalStatusMasks = 0;
+    actorTimers.innateStatusMask = partyMember->immuneStatusesMask;
+    // setWeaponData(characterID, getSrBattleCharacterActor(characterID));
+    // handleAccessorySpecialEffect(partyActorID, characterRecordPtr->equipped_accessory);
+    actorBattleVars.gilStolen = 0;
+    actorBattleVars.itemStolen = -1;
+    actorTimers.unkActorFlags &= 0xFDu;
+
+    if (partyMember->actorFlags & 4)
+        partyWeaponCtx.targetFlags &= 0xDFu;
+    if (!(partyWeaponCtx.targetFlags & 0x20))
+        actorTimers.unkActorFlags |= 2u;
+
+    actorTimers.charATBValue = 0;
+
+    party34.limitLevelIdx = 0xFF;
+    u8 limitLevel = 1;
+    if (limitLevel >= 1 && limitLevel <= 4) {
+        party34.limitBar = 0;
+        party34.limitBarCopy = party34.limitBar;
+        party34.limitLevelIdx = limitLevel - 1;
+        party34.limitLevelDivisor = gContext.party.getSummonCtx(summonIdx).maxLevel;
+        // setLearnedLimits(characterID, characterRecord->learnedLimits, partyMember->enabledLimitBytes);
+    }
+
+    actorBattleVars.stateFlags |= 8u;
+    if (!actorBattleVars.currentHP) {
+        actorBattleVars.statusMask |= 1;
+    }
+
+    //sub_437370(partyIdx); Routine sets up attack data for switching to limit. Won't be needed
+    u16* word_9A889E = (u16*)0x9A889E;
+    /*if (party34.limitBar == 255) {
+        if (party34.limitLevelIdx != 255) {
+            *word_9A889E |= 1 << summonID;
+            actorTimers.field_8 |= 1;
+            actorTimers.activeCommandsMask |= 1u;
+        }
+        actorTimers.field_8 &= 0xFFFEu;
+    }*/
+
+    gContext.party.initSummonBattleFields(summonIdx, getSrBattleSummonActor(summonIdx));
+
+    u16* word_9AAD1E = (u16*)0x9AAD1E;
+    auto statusMask = (i32)actorBattleVars.statusMask;
+    auto vTimer = 0;
+    auto cTimer = 0;
+    //DebugBreak();
+    if (statusMask < 0) {
+        switch (*word_9AAD1E) {
+        case 1:
+            statusMask |= (1 << STS_PARALYSIS_IDX);
+            break;
+        case 0:
+        case 3:
+            statusMask |= (1 << STS_BLIND_IDX);
+            break;
+        }
+    }
+
+    auto srStatus = summonActor.battleActor.activeStatuses;
+    if (!(srActorHasStatus(srStatus, StatusNames::STOP) || srActorHasStatus(srStatus, StatusNames::DEATH))) {
+        if (srActorHasStatus(srStatus, StatusNames::SLOW)) {
+            vTimer = getBattleSpeed();
+            cTimer = 34;
+        }
+        else if (srActorHasStatus(srStatus, StatusNames::HASTE)) {
+            vTimer = 3 * getBattleSpeed();
+            cTimer = 136;
+        }
+        else {
+            vTimer = 2 * getBattleSpeed();;
+            cTimer = 68;
+        }
+    }
+
+    u16 dexterity = summonActor.battleActor.battleStats[StatNames::DEXTERITY].activeValue;
+    auto turnTimer = dexterity * vTimer / getDexNormalization();
+
+    if (srActorHasStatus(srStatus, StatusNames::STOP) || srActorHasStatus(srStatus, StatusNames::PARALYSIS) || srActorHasStatus(srStatus, StatusNames::SLEEP))
+        turnTimer = 0;
+
+    actorTimers.vTimerIncrement = vTimer;
+    actorTimers.turnTimerIncrement = turnTimer;
+    actorTimers.CTimerIncrement = cTimer;
+
+    actorTimers.currentHP = actorBattleVars.currentHP;
+    actorTimers.currentMP = actorBattleVars.currentMP;
+    // These are used when learning a new ESkill, this should be handled differently
+    //party34->learnedEnemySkills = getLearnedEnemySkills(characterRecord);
+    //party34->knownEnemySkills = party34->learnedEnemySkills;
+}
+
+
 void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
     u8* byte_9AAD2C = (u8*)0x9AAD2C;
     u8* byte_9A9AAC = (u8*)0x9A9AAC;
@@ -384,6 +514,36 @@ void SrBattleActors::swapPartyActors(u8 partyIdx, u8 newCharacterID) {
     activatePartyActor(partyIdx);
 }
 
+void SrBattleActors::swapPartyToSummon(u8 summonIdx){
+    savePartyActors();
+    actorIsSummon[1] = true;
+    activeSummonIdx = summonIdx;
+    auto gameActor = getActiveBattleActor(1);
+    auto srActor = getSrBattleSummonActor(summonIdx);
+    *gameActor.actorBattleVars = *srActor.actorBattleVars;
+    *gameActor.actorTimers = *srActor.actorTimers;
+    *gameActor.party10 = *srActor.party10;
+    *gameActor.party34 = *srActor.party34;
+    //*gameActor.weaponCtx = *srActor.weaponCtx;
+    gContext.party.battleDeactivatePartyMember(0);
+    gContext.party.battleDeactivatePartyMember(2);
+    getActiveBattleActor(0).actorBattleVars->stateFlags &= (~(0x8));
+    getActiveBattleActor(2).actorBattleVars->stateFlags &= (~(0x8));
+    srLogWrite("state for disabled actor: %x", getActiveBattleActor(0).actorBattleVars->stateFlags);
+}
+
+bool SrBattleActors::isActorSummon(u8 actorIdx) {
+    return actorIsSummon[actorIdx];
+}
+
+
+
+void SrBattleActors::savePartyActors() {
+    for (auto partyIdx = 0; partyIdx < 3; partyIdx++) {
+        savePartyActor(partyIdx);
+    }
+}
+
 ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
     ActorBattleState actorState = ActorBattleState();
     if (actorIdx == 3) {
@@ -439,10 +599,37 @@ ActorBattleState SrBattleActors::getSrBattleCharacterActor(u8 characterIdx) {
     return actorState;
 }
 
+ActorBattleState SrBattleActors::getSrBattleSummonActor(u8 summonIdx) {
+    ActorBattleState actorState = ActorBattleState();
+    auto& partyActor = summonActors[summonIdx];
+    actorState.actorBattleVars = &(partyActor.battleActor.gameAIState);
+    actorState.actorTimers = &(partyActor.battleActor.gameTimerState);
+    actorState.battleStats = &(partyActor.battleActor.battleStats);
+    actorState.party10 = &(partyActor.party10);
+    actorState.party34 = &(partyActor.party34);
+    actorState.weaponCtx = nullptr;
+    actorState.activeStatuses = &(summonActors[summonIdx].battleActor.activeStatuses);
+    actorState.enemyData = nullptr;
+    auto weaponIdx = 0;
+    actorState.srWeapon = nullptr;
+    return actorState;
+}
+
 ActorBattleState SrBattleActors::getActiveBattleActor(u8 actorIdx) {
     ActorBattleState actorState = ActorBattleState();
     actorState.actorBattleVars = getActorBattleVars(actorIdx);
     actorState.actorTimers = getActorTimerBlock(actorIdx);
+    if (isActorSummon(actorIdx)) {
+        actorState.battleStats = &(summonActors[activeSummonIdx].battleActor.battleStats);
+        actorState.activeStatuses = &(summonActors[activeSummonIdx].battleActor.activeStatuses);
+        actorState.party10 = getBattleParty10(actorIdx);
+        actorState.party34 = getBattleParty34(actorIdx);
+        actorState.weaponCtx = nullptr;
+        actorState.enemyData = nullptr;
+        auto weaponIdx = 0;
+        actorState.srWeapon = nullptr;
+        return actorState;
+    }
     if (actorIdx == 3) {
         actorState.battleStats = nullptr;
         actorState.activeStatuses = nullptr;
@@ -541,7 +728,7 @@ void initializePlayerActors() {
     *G_DEX_NORMALIZATION = DEX_NORMALIZATION;
     for (auto characterID = 0; characterID < 9; characterID++) {
         bool isActive = false;
-        for (auto partyIdx = 0; partyIdx <3; partyIdx++) {
+        for (auto partyIdx = 0; partyIdx < 3; partyIdx++) {
             if (characterID == G_SAVE_MAP->activeParty[partyIdx]) {
                 aiBattleContext.actorPartyMask |= 1 << partyIdx;
                 gContext.battleActors.initializePartyActor(partyIdx, characterID);
@@ -552,6 +739,9 @@ void initializePlayerActors() {
         if (!isActive) {
             gContext.battleActors.initializePartyCharacter(characterID);
         }
+    }
+    for (auto summonIdx = 0; summonIdx < 16; summonIdx++) {
+        gContext.battleActors.initializePartySummon(summonIdx);
     }
 }
 
@@ -567,8 +757,13 @@ void initializeEnemyActors() {
     }
 }
 
+
 void setPartyStats(u8 characterID, SrPartyBattleActor& partyActor) {
     const auto& srPartyMember = gContext.party.getSrCharacter(characterID);
+    setBattleStats(srPartyMember, partyActor);
+}
+
+void setBattleStats(const PartyMemberState& srPartyMember, SrPartyBattleActor& partyActor) {
     auto& actorBattleVars = partyActor.battleActor.gameAIState;
     auto& stats = srPartyMember.srPartyMember->playerStats;
     auto& battleStats = partyActor.battleActor.battleStats;
@@ -616,10 +811,10 @@ void setPartyStats(u8 characterID, SrPartyBattleActor& partyActor) {
     actorBattleVars.mEvade = stats["MEV"].statValue;
 }
 
-void setWeaponData(u8 characterID, ActorBattleState& partyActor) {
+void setWeaponData(u8 characterID, ActorBattleState& summonActor) {
     const auto& srPartyMember = gContext.party.getSrCharacter(characterID);
     auto& partyMember = *srPartyMember.gamePartyMember;
-    auto& partyWeaponCtx = *partyActor.weaponCtx;
+    auto& partyWeaponCtx = *summonActor.weaponCtx;
 
     partyWeaponCtx.targetFlags = partyMember.weaponData.targetFlags;
     partyWeaponCtx.attackEffectID = partyMember.weaponData.attackEffectID;

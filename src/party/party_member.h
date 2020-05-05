@@ -23,11 +23,13 @@ typedef struct {
     std::array<u8, 10> partySwapBuffer;
     EnabledCommand toggleCommandArray[16];
     bool isLimitActive;
+    bool isActive;
 } SrPartyData;
 
-typedef struct {
+
+struct PartyMemberState_{
     PartyMember* gamePartyMember;
     SrPartyData* srPartyMember;
-} PartyMemberState;
+};
 
 #endif

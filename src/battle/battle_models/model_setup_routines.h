@@ -15,7 +15,6 @@ typedef void(*PFNSRSUB42B66A)(u8);
 #define copyDataFromBFile  ((PFNSRSUB42B66A)0x42B66A)
 
 
-
 #pragma pack(push, 1)
 typedef struct {
     R3PointWord enemyPosition[3];

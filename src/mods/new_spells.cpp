@@ -4,6 +4,31 @@
 #include "../impl.h"
 #include "../battle/engine/action_effects.h"
 #include "../battle/battle_models/battle_model_state_interface.h"
+#include "../gamedata/element_names.h"
+#include "../gamedata/damage_callback_utils.h"
+
+#define SPELL_MOD_NAME "SR_SPELLS"
+void registerEruption() {
+    auto eruption = SrActionData();
+    eruption.attackName = "Eruption";
+    eruption.attackDesc = "Ground erupts beneath the enemy party";
+    eruption.baseData.attackPower = 56;
+    eruption.baseData.additionalEffect = 0xFF;
+    eruption.baseData.additionalEffectModifier = 0xFF;
+    eruption.baseData.animationEffectID = 0xFF;
+    eruption.baseData.targetingFlags = TGT_FLAG_ENABLE_SELECT | TGT_FLAG_START_ENEMIES | TGT_FLAG_START_MULTIPLE;
+    eruption.baseData.abilityHitRate = 0x64;
+    eruption.baseData.cameraMovementSingle = 0x0024;
+    eruption.baseData.cameraMovementMultiple = 0x0024;
+    eruption.baseData.impactEffectID = 0xFF;
+    eruption.baseData.impactSoundID = 0xFFFF;
+    eruption.baseData.specialAttackFlags = 0xFFFF;
+    addSrAction(eruption, 0, SPELL_MOD_NAME);
+    addElementToAction(SPELL_MOD_NAME, 0, ElementNames::FIRE.c_str());
+    addElementToAction(SPELL_MOD_NAME, 0, ElementNames::EARTH.c_str());
+    addActionToCommand(BASE_PREFIX, 2, SPELL_MOD_NAME, 0);
+    setEffectCallback(SPELL_MOD_NAME, 0, (SRPFNSPELLEFFECTCALLBACK)prepareEruption);
+}
 
 #define gameLoadIfrit   ((PFNSR_VOIDSUB)0x592720)
 void prepareEruption(u16 actioNTargetMask, u8 casterIdx) {
@@ -22,7 +47,7 @@ void prepareEruption(u16 actioNTargetMask, u8 casterIdx) {
     setPoint(G_POINT_BCC790, 0, 0, 0);
     nullGameMatrix(G_IFRIT_MAT_BCC708);
     setDiagonal(G_IFRIT_MAT_BCC708, -768, 768, -768);
-    G_IFRIT_MAT_BCC708->Colummn4[1] = -1000;
+    G_IFRIT_MAT_BCC708->position[1] = -1000;
 
     setPoint(G_POINT_BCC760, 0, 0, 0);
     G_POINT_BCC6F0->x = 1024;
@@ -32,9 +57,9 @@ void prepareEruption(u16 actioNTargetMask, u8 casterIdx) {
 
     nullGameMatrix(G_IFRIT_MAT_BCBFA0);
     setDiagonal(G_IFRIT_MAT_BCBFA0, 1024, 1024, 1024);
-    G_IFRIT_MAT_BCBFA0->Colummn4[0] = 0;
-    G_IFRIT_MAT_BCBFA0->Colummn4[1] = -2500;
-    G_IFRIT_MAT_BCBFA0->Colummn4[2] = 1500;
+    G_IFRIT_MAT_BCBFA0->position[0] = 0;
+    G_IFRIT_MAT_BCBFA0->position[1] = -2500;
+    G_IFRIT_MAT_BCBFA0->position[2] = 1500;
 
     *qword_BCBFB6 = 6446745908796LL;
     gameLoadIfrit();
@@ -51,35 +76,23 @@ typedef void(*SRPFN_SUB662AD8)(R3PointWord*, GameRotationMatrix*);
 #define gameRotateMatrix      ((SRPFN_SUB662AD8)0x662AD8)
 
 typedef void(*SRPFN_SUB5929F6)(void*, GameRotationMatrix*, u8);
-#define pushIfritMoveHandler            ((SRPFN_SUB5929F6)0x5929F6)
+#define pushIfritCameraHandler            ((SRPFN_SUB5929F6)0x5929F6)
 void setupEruptionMain(u16 actionTargetMask, u8 casterIdx) {
     R3PointWord* G_POINT_BCC790 = (R3PointWord*)0xBCC790;
     u8* byte_BFCB64 = (u8*)0xBFCB64;
-    u32* dword_BCC6B0 = (u32*)0xBCC6B0;
+    u16* EFFECT_TARGET_MASK = (u16*)0xBCC6B0;
     auto point = gameGet3DPoint(0);
     GameRotationMatrix* G_IFRIT_MAT_BCC768 = (GameRotationMatrix*)0xBCC768;
-    G_IFRIT_MAT_BCC768->Colummn4[0] = 0;
-    G_IFRIT_MAT_BCC768->Colummn4[1] = 0;
+    G_IFRIT_MAT_BCC768->position[0] = 0;
+    G_IFRIT_MAT_BCC768->position[1] = 0;
 
-    *dword_BCC6B0 = actionTargetMask;
+    srLogWrite("SPELL EFFECT ERUPTION TARGET MASK: %x", actionTargetMask);
+    *EFFECT_TARGET_MASK = actionTargetMask;
+    srLogWrite("computing target Mask Centroid for mask %x", *EFFECT_TARGET_MASK);
     computeTargetsCentroid(actionTargetMask, point);
-    if (point->z >= getBattleModelState(casterIdx)->restingPosition.z) {
-        G_IFRIT_MAT_BCC768->Colummn4[2] = point->z - 5000;
-    }
-    else {
-        G_IFRIT_MAT_BCC768->Colummn4[2] = point->z + 5000;
-        G_POINT_BCC790->y = 2048;
-    }
+    G_IFRIT_MAT_BCC768->position[2] = point->z - 600;
     gameRotateMatrix(G_POINT_BCC790, G_IFRIT_MAT_BCC768);
     srPushEffect100(srEruptionMain);
-
-    void* unk_8C00C0 = (void*)0x8C00C0;
-    void* unk_8C01A8 = (void*)0x8C01A8;
-    if (rand() & 0x100)
-        pushIfritMoveHandler(unk_8C00C0, G_IFRIT_MAT_BCC768, casterIdx);
-    else
-        pushIfritMoveHandler(unk_8C01A8, G_IFRIT_MAT_BCC768, casterIdx);
-
     *byte_BFCB64 |= 8u;
 }
 
@@ -96,8 +109,9 @@ typedef void (*SRPFN_SUB5BFFF3)(u32, u8, u32);
 #define sub_5940B2     ((PFNSREFFECTCALLBACK)0x5940B2)
 #define sub_594C07     ((PFNSREFFECTCALLBACK)0x594C07)
 #define sub_594D82     ((PFNSREFFECTCALLBACK)0x594D82)
-#define sub_596702     ((PFNSREFFECTCALLBACK)0x596702)
-
+#define moveIfritEntrance     ((PFNSREFFECTCALLBACK)0x596702)
+#define sub_595A05     ((PFNSREFFECTCALLBACK)0x595A05)
+#define sub_595791     ((PFNSREFFECTCALLBACK)0x595791)
 void srEruptionMain() {
     u8* byte_BCC6A4 = (u8*)0xBCC6A4;
     R3PointWord* dword_BCC700 = (R3PointWord*)0xBCC700;
@@ -105,6 +119,7 @@ void srEruptionMain() {
     u8* byte_C05EC8 = (u8*)0xC05EC8;
     u16* word_C05EC8 = (u16*)0xC05EC8;
     R3PointWord* G_POINT_BCC790 = (R3PointWord*)0xBCC790;
+    u16* EFFECT_TARGET_MASK = (u16*)0xBCC6B0;
 
     GameRotationMatrix* G_IFRIT_MAT_BCC768 = (GameRotationMatrix*)0xBCC768;
     GameRotationMatrix* mat1 = (GameRotationMatrix*)0xBFCB30;
@@ -140,14 +155,21 @@ void srEruptionMain() {
         srLogWrite("Pushing frame 14 Volcano Effects");
         srPushEffect100(sub_594C07);
         srPushEffect100(sub_594D82);
-        srPushEffect100(sub_596702);
+        srPushEffect100(moveIfritEntrance);
         break;
     }
-    case 44: {
-        //setAnimationTransitionState(2);
-        ifritEffectCtx->handlerIndex = 0xFFFF;
-        //byte_BF1EB0 = 1;
+    case 43: {
+        srPushEffect100(sub_595A05);
+        //srPushEffect100(sub_595791);
         break;
+    }
+    case 47: {
+        srDisplayDamageEvents(*EFFECT_TARGET_MASK);
+        break;
+    }
+    case 75: {
+        ifritEffectCtx->handlerIndex = 0xFFFF;
+        flushSrEffects100();
     }
     }
     ++ifritEffectCtx->wordArray[0];

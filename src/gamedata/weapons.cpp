@@ -19,6 +19,7 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         weapon.weaponName = gContext.gameStrings.weapon_names.get_string(idx);
         weapon.weaponDescription = gContext.gameStrings.weapon_descriptions.get_string(idx);
         weapon.gameWeapon = baseWeapon;
+        weapon.weaponModelID = baseWeapon.weapon_model & 0xF;
         initializeWeaponElements(weapon);
         initializeWeaponAfflictions(weapon);
         populatekernelStatBoosts(weapon.equipEffects, weapon.gameWeapon.stats_to_boost, weapon.gameWeapon.stat_boost_amounts, 4, idx, SR_GEAR_WEAPON);

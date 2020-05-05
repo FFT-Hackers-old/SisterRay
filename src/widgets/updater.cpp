@@ -8,7 +8,7 @@ void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto magics = getSrPartyMember(*BATTLE_ACTIVE_ACTOR_ID).srPartyMember->actorMagics;
+    auto magics = getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID).srPartyMember->actorMagics;
     if (magics[flatIndex].magicIndex == 0xFF) {
         disableWidget(getChild(widget, std::string("ARW")));
         disableWidget(getChild(widget, std::string("TXT")));
@@ -22,21 +22,6 @@ void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
         return;
     }
     disableWidget(getChild(widget, std::string("ARW")));
-}
-
-void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
-    if (self->collectionType != GridWidgetClass()) {
-        return;
-    }
-    auto typedPtr = (CursorGridWidget*)self;
-    auto summons = getSrPartyMember(*BATTLE_ACTIVE_ACTOR_ID).srPartyMember->actorSummons;
-    if (summons[flatIndex].magicIndex == 0xFF) {
-        disableWidget(getChild(widget, std::string("TXT")));
-        return;
-    }
-    enableWidget(getChild(widget, std::string("TXT")));
-    updateText(getChild(widget, std::string("TXT")), getCommandAction(CMD_SUMMON, summons[flatIndex].magicIndex).attackName.str());
-    updateTextColor(getChild(widget, std::string("TXT")), COLOR_WHITE);
 }
 
 void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {

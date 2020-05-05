@@ -121,9 +121,20 @@ typedef ModelAAHeader*(*SRPFNSUB5E0FC0)(u32, LGPContext*, char*);
 typedef void(*SRPFNSUB429A12)(u32, u32, LGPLoadCtx*, FileContext*);
 #define initLoadCtx          ((SRPFNSUB429A12)0x429A12)
 
+typedef void(*SRPFNSUB5DFDC0)(LGPLoadCtx*);
+#define clearLoadCtx       ((SRPFNSUB5DFDC0)0x5DFDC0)
 
 typedef void(*SRPFNSUB5E0EED)(u32, ModelAAHeader*);
 #define destroyModelAAHeader ((SRPFNSUB5E0EED)0x5E0EED)
+
+typedef void(*SRPFNSUB67455E)(FileContext*);
+#define initializeFileContext  ((SRPFNSUB67455E)0x67455E)
+
+typedef void(*PFNSRSUB674659)(u32, FileContext*);
+#define setSomeFileContext  ((PFNSRSUB674659)0x674659)
+
+typedef void(*PFNSR_SUB5E17FE)(FileContext*);
+#define setFileContext  ((PFNSR_SUB5E17FE)0x5E17FE)
 
 void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename);
 LGPArchiveFile srOpenDAFile(LGPContext* context, const char* baseFileName, void* battleLGPBuffer, bool doMangle=true);

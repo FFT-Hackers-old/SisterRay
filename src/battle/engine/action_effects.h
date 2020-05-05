@@ -28,6 +28,7 @@ EffectContext* getEffectContext100(u16 effectIndex);
 EffectContext* getEffectContext10(u16 effectIndex);
 u16 getEffect100QueueSize();
 EffectContext* getEffect100QueueTop();
+EffectContext* getEffect60QueueTop();
 
 typedef enum {
     EFFECT60,
@@ -36,5 +37,6 @@ typedef enum {
 } GameEffectType;
 
 EffectContext* srCreateEffect(PFNSREFFECTCALLBACK callback, GameEffectType effectType);
+void flushSrEffects100();
 
 #endif 

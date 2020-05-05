@@ -1,5 +1,6 @@
 #include "action_enabled_callbacks.h"
 #include "../impl.h"
+#include <algorithm>
 
 void enableAblT0S2(const EnableAbilitiesEvent* const event) {
     /*this tells you the stat a particular materia type will be increasing
@@ -94,5 +95,7 @@ void enableAblT11S3(const EnableAbilitiesEvent* const event) {
         srLogWrite("INVALID MATERIA LEVEL ENCOUNTERED");
         return;
     }
+    auto& summonCtx = gContext.party.getSummonCtx(spellIdx);
+    gContext.party.setSummonCtx(spellIdx, summonCtx.cumulativeAP + event->materia.materia_ap, max(summonCtx.maxLevel, event->materiaLevel));
     spellSlotPtr->allCount = event->materiaData.data[event->materiaLevel];
 }

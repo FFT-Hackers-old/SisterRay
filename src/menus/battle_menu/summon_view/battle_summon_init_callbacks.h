@@ -11,6 +11,7 @@
 
 void initBattleSummonViewWidget(const MenuInitEvent* event);
 Widget* allocateSummonRow(const char* name, i32 xCoordinate, i32 yCoordinate);
+void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 
 
 #endif

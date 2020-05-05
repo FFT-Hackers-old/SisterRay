@@ -1,4 +1,5 @@
 #include "sr_battle_engine.h"
+#include "engine/summon_effects.h"
 #include "../impl.h"
 
 #define FF7_SET_PLAYER_MODEL      ((void*)0x42A330)
@@ -10,6 +11,8 @@
 #define FF7_INIT_PLAYER_ACTORS    ((void*)0x5CF650)
 #define FF7_INIT_ENEMY_ACTORS     ((void*)0x5D0690)
 #define FF7_SETUP_BATTLE          ((void*)0x437DB0)
+#define FF7_END_SUMMON            ((void*)0x5C18BC)
+#define FF7_RUN_SUMMON_ANIM_SCRIPT ((void*)0x5C1D9A)
 
 
 PFNSETPLAYERDATA* oldSetPlayerModel;
@@ -29,5 +32,7 @@ void initializeSrBattleEngine() {
     mogReplaceFunction(FF7_INIT_PLAYER_ACTORS, &initializePlayerActors);
     mogReplaceFunction(FF7_INIT_ENEMY_ACTORS, &initializeEnemyActors);
     mogReplaceFunction(FF7_SETUP_BATTLE, &setupBattle);
+    mogReplaceFunction(FF7_END_SUMMON, &endSummonHandler);
+    mogReplaceFunction(FF7_RUN_SUMMON_ANIM_SCRIPT, &playSummonAnimationScript);
     registerActionPopCallbacks();
 }

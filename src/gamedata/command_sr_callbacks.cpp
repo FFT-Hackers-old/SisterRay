@@ -782,7 +782,10 @@ void srSetupAction(CommandSetupEvent& srSetupEvent) {
         damageContext->cameraDataSingle = cameraOverrideData;
         damageContext->cameraDataMultiple = cameraOverrideData;
     }
-
+    if (gContext.battleActors.isActorSummon(damageContext->attackerID)) {
+        damageContext->cameraDataSingle = 0xFFFF;
+        damageContext->cameraDataMultiple = 0xFFFF;
+    }
     if (abilityData.impactEffectID != 255)
         damageContext->impactEffectID = abilityData.impactEffectID;
     damageContext->animationEffectID = abilityData.animationEffectID;

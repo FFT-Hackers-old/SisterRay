@@ -14,7 +14,7 @@ void handleSelectSpell(const MenuInputEvent* event) {
         return;
 
     auto magicChoiceCursor = getStateCursor(event->menu, event->menuState, *BATTLE_ACTIVE_ACTOR_ID)->context;
-    auto& enabledSpells = getSrPartyMember(*BATTLE_ACTIVE_ACTOR_ID).srPartyMember->actorMagics;
+    auto& enabledSpells = getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID).srPartyMember->actorMagics;
     u16* restoreTypeGlobal = (u16*)(0xDC2088);
 
     *ACCEPTING_BATTLE_INPUT = 1;

@@ -41,7 +41,7 @@ typedef struct {
     u8 field_23;
     u8 field_24;
     u8 field_25;
-    u8 field_26;
+    u8 actorIsNotActing;
     u8 field_27;
     u8 reflectCount;
     u8 unkActorFlags;           //0x29

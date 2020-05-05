@@ -127,9 +127,20 @@ void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const
 
 
 SISTERRAY_API void addModelAnimation(const char* modName, u16 modIdx, const char* modelName, const SrAnimation animation) {
-    auto& modelAnimations = gContext.battleAnimations.getElement(modelName);
+    if (!gContext.battleAnimations.contains(modelName)) {
+        srLogWrite("MODEL: %s not found in registry, default constructing", modelName);
+        auto modelAnimations = SrModelAnimations(); //construct the model in place if it is not there
+        modelAnimations.totalAnimationCount = 0;
+        modelAnimations.modelAnimationCount = 0;
+        modelAnimations.weaponsAnimationCount = 0;
+        modelAnimations.type = MODEL_TYPE_ENEMY;
+        gContext.battleAnimations.addElement(modelName, modelAnimations);
+    }
+    auto& modelAnimations = gContext.battleAnimations.getElement(modelName); //construct the model in place if it is not there
     auto name = std::string(modName) + std::to_string(modIdx);
+    srLogWrite("Adding animation to model %s with bones: %i and frame count: %i", modelName, animation.animationData->BonesCount, animation.animationData->frameCount);
     modelAnimations.modelAnimations.addElement(name, animation);
+    modelAnimations.modelAnimationCount++;
     modelAnimations.totalAnimationCount++;
 }
 
@@ -165,6 +176,7 @@ std::vector<std::unordered_map<std::string, SrAnimation>> loadModelAnimationFrom
     for (u32 animationIdx = 0; animationIdx < totalAnims; animationIdx++) {
         auto animHeader = (DaAnimHeader*)animDataStartPtr;
         u8* frameDataPtr = (u8*)(animDataStartPtr + 3);
+        srLogWrite("Loading animation with bones: %i, frame count: %i", animHeader->bonesCount, animHeader->framesCount);
         auto currentAnimation = createAnimationFromDABuffer(1, animHeader->bonesCount, animHeader->framesCount, (u32*)frameDataPtr);
         u32 animSize = ((12 * (animHeader->bonesCount - 1)) + 24) * animHeader->framesCount;
         SrAnimation srAnim = { animSize, currentAnimation };

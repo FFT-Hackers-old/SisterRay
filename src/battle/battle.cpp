@@ -13,6 +13,7 @@
 #include "engine/battle_engine_interface.h"
 #include "../inventories/inventory_functions.h"
 #include "string_display_event.h"
+#include "../gamedata/summons.h"
 
 
 #define initEventList         ((PFNSR_VOIDSUB)0x4350CB)
@@ -50,6 +51,7 @@ void setupBattle(u32 formationID) {
         gContext.party.recalculateCharacter(characterID);
         //srRecalculateDerivedStats(characterIndex);
     }
+    gContext.party.initializePlayableSummons();
     updateMiscPartyStats();
     //auto battleString = getBattleString(126);
     *dword_9ACB84 = 0x10;

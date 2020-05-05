@@ -308,7 +308,7 @@ void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    const auto& commands = gContext.party.getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID).gamePartyMember->enabledCommandArray;;
+    const auto& commands = gContext.party.getActivePartyMember(*MAT_MENU_PARTY_INDEX).gamePartyMember->enabledCommandArray;;
     auto commandID = commands[flatIndex].commandID;
     if (commandID == 0xFF) {
         disableWidget(widget);

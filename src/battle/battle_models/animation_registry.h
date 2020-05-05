@@ -49,26 +49,6 @@ static const std::vector<std::string> cloudLimitNames = {
     "LIMCL4.DAT",
 };
 
-static const std::vector<std::string> summonModelnames = {
-    std::string("LIMIT/MOGURIDA.DAT"),
-    std::string("LIMIT/CYVADAT.DAT"),
-    std::string("LIMIT/IFREETDA.DAT"),
-    std::string("LIMIT/LAMDAT.DAT"),
-    std::string("LIMIT/TITANDAT.DAT"),
-    std::string("LIMIT/ODIN_ZDA.DAT"),
-    std::string("LIMIT/RIVADAT.DAT"),
-    std::string("LIMIT/BAHAMDAT.DAT"),
-    std::string("LIMIT/KUJATADA.DAT"),
-    std::string("LIMIT/ALEXDAT.DAT"),
-    std::string("LIMIT/PHEONIXD.DAT"),
-    std::string("LIMIT/BAHAMRDA.DAT"),
-    std::string("LIMIT/HADESDAT.DAT"),
-    std::string("LIMIT/TUPONDAT.DAT"),
-    std::string("LIMIT/BAHAMZDA.DAT"),
-    std::string("LIMIT/DEBCYODA.DAT"),
-    std::string("LIMIT/ODIN_GDA.DAT")
-};
-
 /*Raw buffer size is used for memcpying the relevant information when a model attempts to seek it*/
 
 /*This data lives in a registry, and is copied into the right place when the game is allocating models for a given battle
@@ -96,5 +76,4 @@ const std::string assembleAnimKey(u16 idx);
 void initAnimations(void* battleLGPBuffer, void* magicLGPBuffer);
 void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const char* filename, ModelAAHeader* aaHeader);
 std::vector<std::unordered_map<std::string, SrAnimation>> loadModelAnimationFromDAFile(const char* modelName, void* daFileBuffer, bool hasWeapon);
-void loadCloudLimits(u8* magicLGPBuffer);
 #endif // !1

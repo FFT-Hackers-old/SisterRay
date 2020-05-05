@@ -131,7 +131,9 @@ void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
         else {
             if (command.auxData.useOverride) {
                 auto overrrideLoader = command.auxData.override.loadCallback;
-                srLoadAnimationEffect(overrrideLoader);
+                if (overrrideLoader != nullptr) {
+                    srLoadAnimationEffect(overrrideLoader);
+                }
             }
             animEffectID = command.auxData.animationEffectID;
             animationType = command.auxData.animationType;

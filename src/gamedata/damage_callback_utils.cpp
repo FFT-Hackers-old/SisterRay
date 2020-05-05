@@ -106,3 +106,19 @@ void setStatusWasChanged(DamageCalculationEvent* srDamageEvent, bool wasChanged)
 bool wasStatusChanged(const DamageCalculationEvent* srDamageEvent) {
     return !(srDamageEvent->damageContext->abilityFlags1 & 0x800000);
 }
+
+
+SISTERRAY_API bool maskIsSingleTarget(u16 targetMask) {
+    return targetMask > 0 && (targetMask & (targetMask - 1)) ==  0;
+}
+
+
+SISTERRAY_API u8 getFirstMaskBitIdx(u16 targetMask) {
+    if (targetMask == 0) {
+        return 0xFF;
+    }
+    for (auto idx = 0; idx < 10; idx++) {
+        if (targetMask & (1 << idx))
+            return idx;
+    }
+}

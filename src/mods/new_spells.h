@@ -7,5 +7,6 @@
 void prepareEruption(u16 actioNTargetMask, u8 casterIdx);
 void setupEruptionMain(u16 actionTargetMask, u8 casterIdx);
 void srEruptionMain();
+void registerEruption();
 
 #endif

@@ -19,7 +19,9 @@
 #include "files/lgp_loader.h"
 #include "battle/sr_battle_engine.h"
 #include "gamedata/command_sr_callbacks.h"
+#include "mods/controllable_summon.h"
 #include "gamedata/limits.h"
+#include "gamedata/summons.h"
 #include <random>
 
 
@@ -141,15 +143,14 @@ static void Init(void) {
     initOnUseCallbackRegistry();
     initNoTargetCallbackRegistry();
     testFillInventory();
-    initFormationsRegistries();; //initialize all data from the scene.bin
-    //Register base callbacks
-    //setupLGPTable(BATTLE_LGP_PATH, 2);
+    initFormationsRegistries();
     auto battleLGP = readLGPArchive(srGetGamePath(BATTLE_LGP_PATH));
     auto magicLGP = readLGPArchive(srGetGamePath(MAGIC_LGP_PATH));
-    srLogWrite("battleLGP opened read");
     initAnimations(battleLGP, magicLGP); //Must be called after the formation registries have been initialized
     initAnimationScripts(battleLGP);
     initAnimScriptOpCodes();
+    initSummons((u8*)magicLGP);
+    loadControllableSummon();
     initLimits((u8*)magicLGP);
     free(battleLGP);
     free(magicLGP);

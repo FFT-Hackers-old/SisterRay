@@ -48,7 +48,8 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.multiEffect = getDefaultMagicMultiEffects(idx);
         }
         else if (idx < KERNEL_SUMMON_CUTOFF) {
-            attack.attackName = gContext.gameStrings.summon_attack_names.getResource(idx);
+            attack.attackName = gContext.gameStrings.magic_names.getResource(idx);
+            attack.attackDescription = gContext.gameStrings.magic_descriptions.getResource(idx);
             attack.attackID = idx;
             cmdIdx = CMD_SUMMON;
             attack.animationType = SUMMON;
@@ -238,4 +239,11 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
      auto name = std::string(modName) + std::to_string(modActionID);
      auto& attack = gContext.attacks.getElement(name);
      attack.animationType = effectType;
+ }
+
+ SISTERRAY_API void setEffectCallback(const char* modName, u16 modActionID, SRPFNSPELLEFFECTCALLBACK callback) {
+     auto name = std::string(modName) + std::to_string(modActionID);
+     auto& attack = gContext.attacks.getElement(name);
+     attack.overrideEffect.dispatchCallback = callback;
+     attack.useOverride = true;
  }

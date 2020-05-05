@@ -10,6 +10,7 @@ extern bool doSwitchStance;
 extern bool mashinNoob;
 extern bool counterHandled;
 extern bool doCounter;
+extern u8 punisherCounterTarget;
 
 namespace SoldierWidgetNames {
     const std::string SOLDIER_WIDGET_NAME = "SOLDIER_WIDGET";
@@ -35,4 +36,6 @@ void handlePunisherSwap(const ModelAnimationEvent* modelAnimEvent);
 OpCodeControlSequence playStanceAnimation(AnimScriptEvent* srEvent);
 void useStanceHurtScript(InitBattleActorEvent* initActorEvent);
 void setActorWait(const AnimScriptEvent* modelAnimEvent);
+void triggerCounter(const ModelAnimationEvent* modelAnimEvent);
+void executeCounter(const ModelAnimationEvent* modelAnimEvent);
 #endif

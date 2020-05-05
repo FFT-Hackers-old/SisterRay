@@ -156,11 +156,17 @@ SISTERRAY_API void addAnimationScript(const char* modName, u16 modIdx, const cha
     auto animationScript = animScriptFromBuffer(script, scriptLength, &trueAnimScriptLength);
 
     SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
+    if (!gContext.battleAnimationScripts.contains(modelName)) {
+        srLogWrite("MODEL: %s not found in registry, default constructing", modelName);
+        auto modelScripts = SrModelScripts();
+        modelScripts.scriptCount = 0;
+        modelScripts.modelAnimScripts = SrNamedResourceRegistry<SrAnimationScript, std::string>();
+        gContext.battleAnimationScripts.addElement(modelName, modelScripts);
+    }
     auto& modelScripts = gContext.battleAnimationScripts.getElement(modelName);
     modelScripts.modelAnimScripts.addElement(name, srAnimScript);
     modelScripts.scriptCount++;
 
-    srLogWrite("ADDED SCRIPT LENGTH: %i", modelScripts.modelAnimScripts.getResource(74).scriptLength);
     auto animScript = modelScripts.modelAnimScripts.getResource(modelScripts.modelAnimScripts.getResourceIndex(name)).animScript;
     srLogWrite("ADDED SCRIPT TRUE IDX: %i", modelScripts.modelAnimScripts.getResourceIndex(name));
     for (auto opcode : animScript) {

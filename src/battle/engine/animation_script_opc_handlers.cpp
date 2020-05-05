@@ -344,15 +344,15 @@ OpCodeControlSequence OpCode9E(AnimScriptEvent* srEvent) {
             --actorModelState.currentScriptPosition;
         }
         else {
-            actorModelState.field_26 = 1;
+            actorModelState.actorIsNotActing = 1;
         }
     }
-    else if (getBattleModelState(*byte_BFCDE0)->field_26 != 1 || getEffect100QueueSize()){
-        actorModelState.field_26 = 1;
+    else if (getBattleModelState(*byte_BFCDE0)->actorIsNotActing != 1 || getEffect100QueueSize()){
+        actorModelState.actorIsNotActing = 1;
         --actorModelState.currentScriptPosition;
     }
     else{
-        actorModelState.field_26 = 1;
+        actorModelState.actorIsNotActing = 1;
     }
     return BREAK;
 }
@@ -779,7 +779,7 @@ OpCodeControlSequence OpCodeC2(AnimScriptEvent* srEvent) {
 OpCodeControlSequence OpCodeC3(AnimScriptEvent* srEvent) {
     auto& scriptCtx = *srEvent->scriptContext;
     auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
-    srEvent->battleModelState->field_26 = 1;
+    srEvent->battleModelState->actorIsNotActing = 1;
     ownerModelState74.field_3C = GAME_ANGLE_MAX;
     ownerModelState74.field_3A = GAME_ANGLE_MAX;
     ownerModelState74.field_38 = GAME_ANGLE_MAX;
@@ -888,14 +888,14 @@ OpCodeControlSequence OpCodeC7(AnimScriptEvent* srEvent) {
                 if (*byte_BFD0DC == srEvent->actorID && relActorModelState.field_25 & 0x80){
                     relActorModelState.animScriptIndex = scriptCtx.opCodeArgs[3];
                     relActorModelState.modelEffectFlags |= 1u;
-                    relActorModelState.field_26 = 0;
+                    relActorModelState.actorIsNotActing = 0;
                     relActorModelState74.field_C |= 4u;
                 }
             }
             else if (relActorModelState.field_25 & 0x80) {
                 relActorModelState.animScriptIndex = scriptCtx.opCodeArgs[3];
                 relActorModelState.modelEffectFlags |= 1u;
-                relActorModelState.field_26 = 0;
+                relActorModelState.actorIsNotActing = 0;
                 relActorModelState74.field_C |= 4u;
             }
         }
@@ -904,7 +904,7 @@ OpCodeControlSequence OpCodeC7(AnimScriptEvent* srEvent) {
             relActorModelState.restingYRotation = relActorModelState.initialYRotation;
             relActorModelState.animScriptIndex = scriptCtx.opCodeArgs[3];
             relActorModelState.modelEffectFlags |= 1u;
-            relActorModelState.field_26 = 0;
+            relActorModelState.actorIsNotActing = 0;
             relActorModelState74.field_C |= 4u;
         }
     }
@@ -1476,12 +1476,12 @@ OpCodeControlSequence OpCodeEE(AnimScriptEvent* srEvent) {
     auto& actorModelState74 = *getBattleModelState74(srEvent->actorID);
     auto& actorModelState = *getBattleModelState(srEvent->actorID);
     actorModelState74.field_C &= 0xFFFBu;
-    actorModelState.field_26 = 1;
+    actorModelState.actorIsNotActing = 1;
     actorModelState74.field_C &= 0xFFF7u;
     actorModelState.animScriptIndex = G_ACTOR_IDLE_SCRIPTS[srEvent->actorID];
     srLogWrite("RETURNING TO IDLE ANIMATION FOR ACTOR %i, scriptIdx: %i", srEvent->actorID, actorModelState.animScriptIndex);
     scriptCtx.scriptPtr = srEvent->animationScriptTable[actorModelState.animScriptIndex];
-    actorModelState.isScriptExecuting;
+    actorModelState.isScriptExecuting = 0;
     actorModelState.currentScriptPosition = 0;
     actorModelState.waitFrames = 0;
     return RUN_NEXT;
@@ -1500,7 +1500,7 @@ OpCodeControlSequence OpCodeF1(AnimScriptEvent* srEvent) {
     auto& ownerModelState = *srEvent->battleModelState;
     auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
     ownerModelState74.field_C &= 0xFFFBu;
-    ownerModelState.field_26 = 1;
+    ownerModelState.actorIsNotActing = 1;
     ownerModelState74.field_C &= 0xF7;
     --ownerModelState.currentScriptPosition;
     return BREAK;

@@ -63,6 +63,7 @@ typedef enum {
 
 
     INIT_PLAYER_BATTLE_ACTOR,
+    INIT_SUMMON_PARTY_MEMBER,
     RUN_ANIM_SCRIPT_OPCODE
 } SrEventType;
 
@@ -158,6 +159,7 @@ typedef struct ActorBattleState_ ActorBattleState;
 typedef struct SrDamageContext_ SrDamageContext;
 typedef struct DamageFormula_ DamageFormula;
 typedef struct HitFormula_ HitFormula;
+typedef struct PartyMemberState_ PartyMemberState;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -233,6 +235,13 @@ typedef struct {
     u8 characterIdx;
     ActorBattleState* ownerState;
 } InitBattleActorEvent;
+
+
+typedef struct {
+    u8 summonIdx;
+    PartySummonCtx summonCtx;
+    PartyMemberState* summonState;
+} InitSummonEvent;
 
 typedef struct {
     u8 actorID;

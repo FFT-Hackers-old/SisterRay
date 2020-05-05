@@ -24,6 +24,7 @@ typedef struct {
     std::unordered_set<DamageModifiers> dmgFormulaModifiers;
     u16 hitFormula;
     std::unordered_set<HitModifiers> hitFormulaModifiers;
+    u16 weaponModelID;
 } SrWeapon;
  
 class SrWeaponRegistry : public SrNamedResourceRegistry<SrWeapon, std::string> {

@@ -98,8 +98,6 @@ void loadCloudAnimations() {
     auto punisher3Anims = loadModelAnimationFromDAFile("CLOUD.DAT", punisher3Animation, true);
     localIdx = 0;
     for (auto animation : punisher3Anims) {
-        if (localIdx > 2)
-            break;
         if (localIdx != 2) {
             localIdx++;
             continue;
@@ -237,6 +235,9 @@ void loadCharMod() {
     addSrCommand(commandData, 0, MOD_NAME);
     u8 punisherIdle[3] = { getSrPlayerAnimationIdx(MOD_NAME, 12, "CLOUD.DAT"), 0xFE, 0xC0 };
     addAnimationScript(MOD_NAME, 5, "CLOUD.DAT", punisherIdle, 3);
+    registerSelectCallback(MOD_NAME, 0, cmdSoldierelectHandler);
+    registerSetupCallback(MOD_NAME, 0, loadAbility);
+    registerSetupCallback(MOD_NAME, 0, applyDamage);
 
     auto commandMisc = SrCommandData();
     commandMisc.baseData.singleCameraID = 0xFFFF;
@@ -245,11 +246,13 @@ void loadCharMod() {
     commandMisc.commandName = "MISC";
     commandMisc.commandDesc = "MISC";
     addSrCommand(commandMisc, 1, MOD_NAME);
-    u8 punishCounter[14] = { 0xFC, 0, 0xD8, 0, 0x1A, 0, 0xF7, 4, getSrPlayerAnimationIdx(CLOUD_LIMIT_MOD_NAME, 15, "CLOUD.DAT") , 0xFA, 0xF0, 0x2F, 0xE5, 0xEE };
-    addAnimationScript(MOD_NAME, 7, "CLOUD.DAT", punishCounter, 14);
+    u8 punishCounter[7] = { 0xFC, 0xF7, 4, getSrPlayerAnimationIdx(MOD_NAME, 15, "CLOUD.DAT") , 0xFA, 0xE5, 0xEE };
+    addAnimationScript(MOD_NAME, 7, "CLOUD.DAT", punishCounter, 7);
+    registerSetupCallback(MOD_NAME, 1, loadAbility);
+    registerSetupCallback(MOD_NAME, 1, applyDamage);
 
     auto punish = SrActionData();
-    punish.attackName = "Counterstrike";
+    punish.attackName = "Punish";
     punish.attackDesc = "Quick Punisher Counter";
     punish.baseData.attackPower = 12;
     punish.baseData.additionalEffect = 0xFF;
@@ -264,16 +267,15 @@ void loadCharMod() {
     punish.baseData.specialAttackFlags = 0xFFFF;
     addSrAction(punish, 6, MOD_NAME);
     addElementToAction(MOD_NAME, 6, ElementNames::SLASH.c_str());
-    setActionAnimationScript(MOD_NAME, 6, "CLOUD.DAT", MOD_NAME, 6);
+    setActionAnimationScript(MOD_NAME, 6, "CLOUD.DAT", MOD_NAME, 7);
     addActionToCommand(MOD_NAME, 1, MOD_NAME, 6);
 
-    registerSelectCallback(MOD_NAME, 0, cmdSoldierelectHandler);
-    registerSetupCallback(MOD_NAME, 0, loadAbility);
-    registerSetupCallback(MOD_NAME, 0, applyDamage);
     loadCloudActions();
     srAddListener(ENABLE_ACTIONS, (SrEventCallback)enableSoldier, MOD_NAME, ENABLE_ACTION_NO_MATERIA);
     srAddListener(MENU_INPUT_SQUARE, (SrEventCallback)stanceSwapCallback, MOD_NAME, PLAYING_ANIMATION);
+    srAddListener(MENU_INPUT_SQUARE, (SrEventCallback)triggerCounter, MOD_NAME, PLAYING_ANIMATION);
     srAddListener(POST_MODEL_ANIMATION, (SrEventCallback)handlePunisherSwap, MOD_NAME);
+    srAddListener(POST_MODEL_ANIMATION, (SrEventCallback)executeCounter, MOD_NAME);
     srAddListener(INIT_PLAYER_BATTLE_ACTOR, (SrEventCallback)useStanceHurtScript, MOD_NAME);
     srAddListener(RUN_ANIM_SCRIPT_OPCODE, (SrEventCallback)setActorWait, MOD_NAME);
     initializeLimits();
@@ -530,11 +532,32 @@ void useStanceHurtScript(InitBattleActorEvent* initActorEvent) {
     initActorEvent->ownerState->actorBattleVars->damageAnimID = getSrPlayerAnimScriptID(MOD_NAME, 6, "CLOUD.DAT");
 }
 
+
 bool counterHandled = false;
 bool doCounter = false;
-void triggerCounter(const ModelAnimationEvent* modelAnimEvent) {
-    u16 frameTolerance = 10;
+u8 punisherCounterTarget;
+void executeCounter(const ModelAnimationEvent* modelAnimEvent) {
+    auto animationIdx = modelAnimEvent->ownerModelState->runningAnimIdx;
+    if (animationIdx == getSrPlayerAnimationIdx(MOD_NAME, 14, "CLOUD.DAT")) {
+        u16 currentFrame = modelAnimEvent->ownerModelState->currentPlayingFrame;
+        if (currentFrame == 6) {
+            if (!doCounter) {
+                srLogWrite("No Counter triggered, stall deactivated");
+                deactivateActorStall(punisherCounterTarget);
+                return;
+            }
+            auto targetModelState = getBattleModelState(punisherCounterTarget);
+            targetModelState->actorIsNotActing = 1;
+            BattleQueueEntry queueEntry = { 0, 0, modelAnimEvent->actorIdx, getInternalCommandID(1, MOD_NAME), 0, (1 << punisherCounterTarget) };
+            doCounter = false;
+            counterHandled = false;
+            srEnqueueBattleAction(queueEntry);
+        }
+    }
+}
 
+void triggerCounter(const ModelAnimationEvent* modelAnimEvent) {
+    srLogWrite("IN TRIGGER COUNTER CALLBACK");
     auto animationIdx = modelAnimEvent->ownerModelState->runningAnimIdx;
     if (animationIdx == getSrPlayerAnimationIdx(MOD_NAME, 14, "CLOUD.DAT")) {
         u16 currentFrame = modelAnimEvent->ownerModelState->currentPlayingFrame;
@@ -543,30 +566,11 @@ void triggerCounter(const ModelAnimationEvent* modelAnimEvent) {
             srLogWrite("Button held down prior to window. Returning");
             return;
         }
+
         if (punisherActive && !counterHandled) {
             //srLogWrite("PUNISHER INACTIVE, DISPATCHING STANCE SWITCH");
-            if (currentFrame >= 1 && currentFrame <= 7) {
-                if (mashinNoob) {
-                    counterHandled = true;
-                    BattleQueueEntry queueEntry = { 0, 0,
-                        modelAnimEvent->actorIdx, getInternalCommandID(1, MOD_NAME), 0,
-                        gContext.battleActors.getActiveBattleActor(modelAnimEvent->actorIdx).actorBattleVars->prevPhysAttackerMask };
-                    srEnqueueBattleAction(queueEntry);
-                    doCounter = false;
-                    return;
-                }
-
+            if (currentFrame >= 0 && currentFrame < 6) {
                 doCounter = true;
-                if (!(getPreviousInputMask() & 8)) {
-                    if (doCounter) {
-                        mashinNoob = true;
-                        return;
-                    }
-                    else {
-                        doCounter = true;
-                        counterHandled = true;
-                    }
-                }
             }
         }
     }
@@ -578,12 +582,18 @@ void setActorWait(const AnimScriptEvent* modelAnimEvent) {
     if (modelAnimEvent->scriptContext->currentOpCode != 0xD1)
         return;
 
-    const auto& target = gContext.battleActors.getActiveBattleActor(getAnimatingActionTargetIdx());
-    if (target.party10 == nullptr)
-        return;
 
-    if (punisherActive && target.party10->characterID == ACT_IDX_CLOUD) {
-        activateActorStall(modelAnimEvent->actorID, 200);
+    punisherCounterTarget = modelAnimEvent->actorID;
+    u16 actionTargetMask = getAnimatingActionTargetMask();
+    if (maskIsSingleTarget(actionTargetMask)) {
+        u8 targetID = getFirstMaskBitIdx(actionTargetMask);
+        const auto& target = gContext.battleActors.getActiveBattleActor(targetID);
+        if (target.party10 == nullptr)
+            return;
+
+        if (punisherActive && target.party10->characterID == ACT_IDX_CLOUD) {
+            activateActorStall(modelAnimEvent->actorID, 75);
+        }
     }
     srLogWrite("DEBUG: Handle Set Punisher Counter Wait");
 }

@@ -181,7 +181,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
     if (!(modelState.field_25 & 4)) {
         sub_66335F(modelState.field_28, modelState.unkActorFlags, modelState.field_2A);
         
-        auto actorDataPtr = getGamePartyMember(actorIdx);
+        auto actorDataPtr = getActivePartyMember(actorIdx).gamePartyMember;
         if (!actorDataPtr)
             return;
 
@@ -190,7 +190,11 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
             return;
         }
 
-        u8 weaponModelID = actorDataPtr->weaponData.weapon_model & 0xF;
+        auto character = gContext.party.getActivePartyCharacter(actorIdx);
+        u8 weaponModelID = gContext.weapons.getResource(character.equippedWeapon).weaponModelID;
+        if (!modelData->weaponModels)
+            return;
+
         ModelSkeleton* weaponDataPtr = modelData->weaponModels[weaponModelID];
         if (!weaponDataPtr) {
             return;

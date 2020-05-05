@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include "mods/char_commands.h"
+#include "mods/new_spells.h"
 
 #include "impl.h"
 
@@ -39,6 +40,7 @@ SISTERRAY_API void LoadMods(void)
     std::ifstream mods(modsListsPath);
     std::string modName;
     loadCharMod();
+    registerEruption();
 
     if (!mods.good())
         return;

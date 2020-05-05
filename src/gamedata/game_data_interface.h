@@ -43,5 +43,9 @@ SISTERRAY_API void toggleSwapActions(const char* modName, u8 modCmdIdx, u16 enab
 SISTERRAY_API void addElementToAction(const char* modName, u16 modActionIdx, const char* elementName);
 SISTERRAY_API void addStatusToAction(const char* modName, u16 modActionIdx, const char* statusName, u8 inflictionChance, u8 doesRemove, u8 doesToggle, u16 duration);
 SISTERRAY_API void setActionAnimationScript(const char* modName, u16 modActionID, const char* modelName, const char* scriptModName, u16 modScriptID);
+SISTERRAY_API void setEffectCallback(const char* modName, u16 modActionID, SRPFNSPELLEFFECTCALLBACK callback);
+
+SISTERRAY_API bool maskIsSingleTarget(u16 targetMask);
+SISTERRAY_API u8 getFirstMaskBitIdx(u16 targetMask);
 
 #endif

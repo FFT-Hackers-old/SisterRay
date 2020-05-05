@@ -12,6 +12,11 @@ void drawBattleCommandViewWidget(const MenuDrawEvent* event) {
     }
     updateCommandsActive(*BATTLE_ACTIVE_ACTOR_ID, 0);
 
+    if (!gContext.party.isSlotEnabled(*BATTLE_ACTIVE_ACTOR_ID)) {
+        setMenuState(event->menu, BATTLE_INACTIVE);
+        return;
+    }
+
     enableWidget(getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME));
     std::vector<std::string> names = { PARTY_1_CMD_GRID, PARTY_2_CMD_GRID, PARTY_3_CMD_GRID };
     for (u8 partyIdx = 0; partyIdx < names.size(); partyIdx++) {

@@ -135,6 +135,13 @@ typedef struct {
 #pragma pack(pop)
 
 
+typedef struct {
+    bool summonActive;
+    u32 cumulativeAP;
+    u8 maxLevel;
+} PartySummonCtx;
+
+
 #define UNK_ACTOR_STRUCT_ARRAY ((UnkBattleStruct*)0x9A87F4)
 
 #endif // !SR_PARTY_H

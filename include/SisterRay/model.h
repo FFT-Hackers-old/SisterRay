@@ -121,7 +121,7 @@ typedef struct {
     u8 commandID; //BE119B, 0x23
     u8 field_24;
     u8 field_25;
-    u8 field_26;
+    u8 actorIsNotActing;
     u8 field_27;
     u8 field_28;
     u8 unkActorFlags;
@@ -255,7 +255,7 @@ typedef struct {
     u16 field_C;
     u16 bData76[6];
     u16 bData88[6];
-    u16 field_26;
+    u16 actorIsNotActing;
     u16 field_28;
     u16 field_2A;
     u16 someHPCopy;
@@ -333,7 +333,7 @@ typedef struct {
     u32 field_0;
     u32 specialDamageFlags;
     GameRotationMatrix rotationMatrix;
-    u16 field_26;
+    u16 actorIsNotActing;
     u32 field_28;
     u16 drainedHP;
     u16 field_2E;

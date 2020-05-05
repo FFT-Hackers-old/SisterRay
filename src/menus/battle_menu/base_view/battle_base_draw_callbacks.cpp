@@ -17,11 +17,18 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
     computeResourceDisplays();
     std::vector<std::string> names = { PARTY_1_STATE_NAME, PARTY_2_STATE_NAME, PARTY_3_STATE_NAME };
     for (u8 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
-        if (CURRENT_PARTY_MEMBER_ARRAY[partyIdx] != 0xFF) {
+        if (gContext.party.isSlotEnabled(partyIdx)) {
             auto dataWidget = getChild(getChild(menuWidget, BATTLE_BASE_WIDGET_NAME), names[partyIdx]);
             enableWidget(dataWidget);
 
-            const char* characterName = gContext.party.getActivePartyCharacter(partyIdx).gameCharacter->character_name;
+            const char* characterName = nullptr;
+            if (gContext.battleActors.isActorSummon(1)) {
+                characterName = getCommandAction(CMD_SUMMON, 2).attackName.str();
+            }
+            else {
+                characterName = gContext.party.getActivePartyCharacter(partyIdx).gameCharacter->character_name;
+            }
+
             updateText(getChild(dataWidget, PARTY_DATA_NAME), characterName);
             updateTextColor(getChild(dataWidget, PARTY_DATA_NAME), COLOR_WHITE);
             if (partyIdx == *BATTLE_ACTIVE_ACTOR_ID && getMenuState(event->menu) != BATTLE_INACTIVE) {
@@ -117,20 +124,35 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
     }
 }
 
+#define popCharacterActionQueue   ((PFNSR_INTSUB)0x437481)
 void handleActorReady(const MenuDrawEvent* event) {
     u8* byte_DC2069 = (u8*)0xDC2069;
     u8* byte_DC207B = (u8*)0xDC207B;
     u8* byte_DC2084 = (u8*)0xDC2084;
+    u16* word_9AAD04 = (u16*)0x9AAD04;
 
     if (!*byte_DC2084) {
         auto actorIdx = getActorCycleTop();
-        if (actorIdx != -1 && !*byte_DC2069 && !*byte_DC207B && (getMenuState(event->menu) == BATTLE_INACTIVE)) {
+        srLogWrite("Actor Cycle Top: %i", actorIdx);
+        srLogWrite("Game Menu State: %i, expected inactive: %i", getMenuState(event->menu), BATTLE_INACTIVE);
+        if (actorIdx != 0xFF && !*byte_DC2069 && !*byte_DC207B && (getMenuState(event->menu) == BATTLE_INACTIVE)) {
             if (actorIdx < 4) {
-                *BATTLE_ACTIVE_ACTOR_ID = actorIdx;
-                setActiveCursorIndex(event->menu, BATTLE_CMD_STATE, actorIdx);
-                setMenuState(event->menu, BATTLE_CMD_STATE);
+                srLogWrite("Activating Actor Cycle Top: %i", actorIdx);
+                if (gContext.party.isSlotEnabled(actorIdx)) {
+                    srLogWrite("Activating Actor Cycle Top: %i", actorIdx);
+                    *BATTLE_ACTIVE_ACTOR_ID = actorIdx;
+                    setActiveCursorIndex(event->menu, BATTLE_CMD_STATE, actorIdx);
+                    setMenuState(event->menu, BATTLE_CMD_STATE);
+                }
+                else {
+                    popCharacterActionQueue(actorIdx);
+                    srLogWrite("Deactivating invalid Actor Cycle Top: %i", getActorCycleTop());
+                    setMenuState(event->menu, BATTLE_INACTIVE);
+                    //*word_9AAD04 &= (~(1 << actorIdx));
+                }
             }
             else {
+                srLogWrite("SETTING MENU STATE TO MANIPULATE");
                 *ENEMY_ACTOR_IDX = actorIdx - 4;
                 setMenuState(event->menu, BATTLE_MANIP_STATE);
             }

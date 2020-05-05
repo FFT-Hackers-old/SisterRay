@@ -38,7 +38,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     i16 R3Submatrix[3][3];
-    i32 Colummn4[3];
+    i32 position[3];
 } GameRotationMatrix;
 #pragma pack(pop)
 

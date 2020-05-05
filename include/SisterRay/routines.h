@@ -236,7 +236,7 @@ typedef u8*(*pfnsub436E15)(u8, u8, u8, i16);
 typedef i32(*pfnsub437185)(i32, i32, u8, i32);
 #define sub_437185               ((pfnsub437185)0x437185)
 
-typedef i16(*pfnsub437506)(void);
+typedef u8(*pfnsub437506)(void);
 #define getActorCycleTop         ((pfnsub437506)0x437506)
 
 

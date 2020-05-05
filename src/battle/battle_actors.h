@@ -67,20 +67,28 @@ public:
     ActorBattleState getActiveBattleActor(u8 actorIdx);
     void initializePartyActor(u8 partyIdx, u8 characterID);
     void initializeEnemyActor(u8 actorIdx);
+    void initializePartySummon(u8 summonIdx);
     void swapPartyActors(u8 partyIdx, u8 newCharacterID);
     u8* getActorRandomVarBuffer(u8 actorIdx);
     void initializePartyCharacter(u8 characterID);
+    void swapPartyToSummon(u8 summonIdx);
+    bool isActorSummon(u8 actorIdx);
 protected:
     ActorBattleState getSrBattleCharacterActor(u8 actorIdx);
+    ActorBattleState getSrBattleSummonActor(u8 summonIdx);
     void setActivePartyActor(u8 partyIdx, u8 characterID);
     void activatePartyActor(u8 partyIdx);
     void activateEnemyActor(u8 enemyIdx);
     void savePartyActor(u8 partyIdx);
     void saveEnemyActor(u8 enemyIdx);
+    void savePartyActors();
 private:
     std::array<u8, 3> activeParty;
+    u8 activeSummonIdx;
+    std::array<u8, 10> actorIsSummon;
     std::array<SrPartyBattleActor, 10> partyActors;
     std::array<SrEnemyBattleActor, 6> enemyActors;
+    std::array<SrPartyBattleActor, 16> summonActors;
     std::array<ActorScriptVariables, 10> actorScriptVariables;
 };
 
@@ -88,6 +96,7 @@ const SrBattleStat& getSrBattleStat(u8 actorID, std::string statName);
 SrBattleStat& getMutableSrBattleStat(u8 actorID, std::string statName);
 void setActorBattleStat(u8 actorID, std::string statName, i32 value);
 void setPartyStats(u8 partyIdx, SrPartyBattleActor& partyActor);
+void setBattleStats(const PartyMemberState& srPartyMember, SrPartyBattleActor& partyActor);
 void setWeaponData(u8 partyIdx, ActorBattleState& partyActor);
 void setEnemyStats(u8 enemyIndex, ActorBattleState& partyActor);
 

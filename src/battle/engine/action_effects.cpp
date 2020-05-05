@@ -37,6 +37,11 @@ EffectContext* getEffect100QueueTop() {
     return getEffectContext100(*effect100QueueTop);
 }
 
+EffectContext* getEffect60QueueTop() {
+    u16* effect60QueueTop = (u16*)0xBF2DF4;
+    return getEffectContext60(*effect60QueueTop);
+}
+
 
 #define GAME_EFFECT_10_QUEUE     ((EffectContext*)0xBF2E70)
 EffectContext* getEffectContext10(u16 effectIndex) {
@@ -57,4 +62,12 @@ EffectContext* srCreateEffect(PFNSREFFECTCALLBACK callback, GameEffectType effec
         return getEffectContext10(effectCtxIdx);
     }
     return nullptr;
+}
+
+void flushSrEffects100() {
+    EffectContext* effectQueue = (EffectContext*)0xBFB718;
+    u8 size = 100;
+    for (auto idx = 0; idx < 100; idx++) {
+        effectQueue[idx].handlerIndex = 0xFFFF;
+    }
 }

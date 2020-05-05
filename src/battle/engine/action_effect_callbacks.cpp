@@ -22,3 +22,16 @@ typedef void(*SRPFNSUB5BFEC9)(u16, ModelPosition*);
 void srComputeMultitargetMoveBase(u16 targetMask, ModelPosition* ret) {
     gameComputeMultitargetMoveBase(targetMask, ret);
 }
+
+
+typedef GameRotationMatrix*(*SRPFN_SETDISPLAYDAMAGE)(u8);
+#define sub_5C0158     ((SRPFN_SETDISPLAYDAMAGE)0x5C0158)
+void srDisplayDamageEvents(u32 damagedMask) {
+    srLogWrite("Dispatch ERUPTION Events State: %x", damagedMask);
+    for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
+        if ((1 << actorIdx) & damagedMask) {
+            srLogWrite("DISPATCHING A DAMAGE EVENT FOR ACTOR actorIdx");
+            sub_5C0158(actorIdx);
+        }
+    }
+}

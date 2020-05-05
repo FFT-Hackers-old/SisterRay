@@ -10,6 +10,26 @@ void clearCommandArray(u8 characterIdx) {
     }
 }
 
+void clearSummonCommandArray(u8 summonIdx) {
+    for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
+        auto& command = gContext.party.getSrSummon(summonIdx).gamePartyMember->enabledCommandArray[slotIndex];
+        voidCommand(command, slotIndex);
+    }
+}
+
+void voidCommand(EnabledCommand& command, u8 enabledIndex) {
+    if (enabledIndex >= 16) {
+        srLogWrite("attempt to void an invalid command slot");
+        return;
+    }
+    command.commandID = 0xFF;
+    command.cursorCommandType = 0;
+    command.targetingData = 0xFF;
+    command.commandFlags = 1;
+    command.allCount = 0;
+    command.supportMatFlags = 0;
+}
+
 /*Hooking into here we can insert default commands for characters and such*/
 void enableDefaultCommands(u8 characterIdx, bool magicEnabled, bool summonEnabled) {
     enableCommand(characterIdx, 0, CMD_ATTACK);
@@ -83,6 +103,15 @@ SISTERRAY_API void enableCommand(u8 characterIdx, u8 enabledIndex, u8 commandInd
         return;
     }
     auto commandArray = gContext.party.getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
+    commandArray[enabledIndex].commandID = commandIndex;
+    commandArray[enabledIndex].cursorCommandType = getCommand(commandIndex).gameCommand.commandMenuID;
+    commandArray[enabledIndex].targetingData = getCommand(commandIndex).gameCommand.targetingFlags;
+    commandArray[enabledIndex].commandFlags = 0;
+}
+
+
+SISTERRAY_API void enableSummonCommand(u8 summonIdx, u8 enabledIndex, u8 commandIndex) {
+    auto commandArray = gContext.party.getSrSummon(summonIdx).gamePartyMember->enabledCommandArray;
     commandArray[enabledIndex].commandID = commandIndex;
     commandArray[enabledIndex].cursorCommandType = getCommand(commandIndex).gameCommand.commandMenuID;
     commandArray[enabledIndex].targetingData = getCommand(commandIndex).gameCommand.targetingFlags;
@@ -181,6 +210,19 @@ SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 characterIdx, u32 enabledSlot
 SISTERRAY_API void enableMagic(u8 characterIdx, u32 enabledIndex, u32 commandlRelativeIndex) {
     srLogWrite("enabling magic %d and index %d", commandlRelativeIndex, enabledIndex);
     auto& enabledMagics = getSrCharacter(characterIdx).srPartyMember->actorMagics;
+    if (enabledIndex < enabledMagics.max_size()) {
+        auto& enabledSlot = enabledMagics[enabledIndex];
+        enabledSlot.magicIndex = commandlRelativeIndex;
+        enabledSlot.targetData = getCommandAction(CMD_MAGIC, commandlRelativeIndex).attackData.targetingFlags;
+        enabledSlot.mpCost = getCommandAction(CMD_MAGIC, commandlRelativeIndex).attackData.MPCost & 0xFF; //Narrowing conversion due to game structs
+        return;
+    }
+    srLogWrite("attempted to enable magic spell at an invalid index");
+}
+
+SISTERRAY_API void enableSummonMagic(u8 summonIdx, u32 enabledIndex, u32 commandlRelativeIndex) {
+    srLogWrite("enabling magic %d and index %d", commandlRelativeIndex, enabledIndex);
+    auto& enabledMagics = gContext.party.getSrSummon(summonIdx).srPartyMember->actorMagics;
     if (enabledIndex < enabledMagics.max_size()) {
         auto& enabledSlot = enabledMagics[enabledIndex];
         enabledSlot.magicIndex = commandlRelativeIndex;

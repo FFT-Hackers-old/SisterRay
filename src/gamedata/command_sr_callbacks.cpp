@@ -1,12 +1,12 @@
 #include "command_sr_callbacks.h"
 #include "damage_callbacks.h"
 #include "../battle/scene_globals.h"
-#include "../battle/engine/damage_events.h"
+#include "../battle/actions/actions_api.h"
+#include "../battle/battle_utils.h"
 #include "../impl.h"
 #include "status_names.h"
 #include "element_names.h"
 #include "damage_callback_utils.h"
-#include "../battle/battle_utils.h"
 #include <algorithm>
 
 void srLoadAbilityData() {
@@ -287,7 +287,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
      else
          animEvent->cameraData = damageContext->cameraDataMultiple;
      animEvent->actionIndex = damageContext->sceneAbilityIndex;
-     animEvent->specialDamageFlags = 0;
+     animEvent->actionFlags = 0;
      printAnimationEvent(animEvent);
      printAnimationEventQueue();
 }
@@ -447,7 +447,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
      damageEvent->targetID = damageContext->attackerID;
      damageEvent->attackerID = damageContext->attackerID;
      damageEvent->damagedAnimScriptIdx = 51;
-     damageEvent->specialDamageFlags = 0;
+     damageEvent->actionFlags = 0;
      damageEvent->targetStatusMask = 0;
      auto terminatorEvent = newDamageEvent();
      terminatorEvent->targetID = 0xFF;
@@ -663,7 +663,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
          damageEvent->targetID = actorIdx;
          damageEvent->attackerID = actorIdx;
          damageEvent->damagedAnimScriptIdx = 46;
-         damageEvent->specialDamageFlags = damageFlagLocal;
+         damageEvent->actionFlags = damageFlagLocal;
          damageEvent->targetStatusMask = aiContext.actorAIStates[actorIdx].statusMask;
          createImpactEvent(damageEvent, damageCtx.currentDamage, damageCtx.abilityFlags2, -1, -1,
              aiContext.actorAIStates[actorIdx].currentHP, aiContext.actorAIStates[actorIdx].currentHP);

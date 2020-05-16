@@ -1,10 +1,10 @@
 #include "animation_scripts.h"
-#include "../../impl.h"
-#include "../../system/ff7memory.h"
-#include "../engine/animation_script_interface.h"
-#include "../battle_models/battle_model_state_interface.h"
-#include "../../gamedata/element_names.h"
 #include "battle_models_api.h"
+#include "../animation_script/animation_script_api.h"
+#include "../battle_models/battle_models_api.h"
+#include "../../system/ff7memory.h"
+#include "../../gamedata/element_names.h"
+#include "../../impl.h"
 
 std::string assembleAnimScriptKey(u16 idx) {
     return std::string(BASE_PREFIX) + std::to_string(idx);

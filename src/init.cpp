@@ -14,7 +14,7 @@
 #include "menus/materia_menu/materia_menu_callbacks.h"
 #include "menus/battle_menu//battle_menu.h"
 #include "party/party_callbacks.h"
-#include "battle/ai_script_engine.h"
+#include "battle/battle_engine_api.h"
 #include "battle/battle.h"
 #include "files/lgp_loader.h"
 #include "battle/sr_battle_engine.h"
@@ -28,6 +28,14 @@
 SrContext gContext;
 PRNG_Type rng;
 std::uniform_int_distribution<PRNG_Type::result_type> udist(0, 255);
+
+void finalizeRegistries() {
+    finalizeArmors();
+    finalizeWeapons();
+    finalizeEnemies();
+    finalizeAttacks();
+    finalizeCommands();
+}
 
 static const SrKernelStreamHandler kKernelBinHandlers[9] = {
     initCommands,
@@ -181,6 +189,7 @@ static void Init(void) {
     initializeBattleMenu();
     srLogWrite("initialization complete");
     LoadMods();
+    finalizeRegistries();
     DispatchBattleMenuSetup();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 

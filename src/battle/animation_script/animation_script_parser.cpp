@@ -1,4 +1,6 @@
 #include "animation_script_parser.h"
+#include "animation_script_api.h"
+#include "../animation/animation_api.h"
 #include "../battle_models/battle_model_state_interface.h"
 #include "../../impl.h"
 

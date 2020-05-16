@@ -2,7 +2,7 @@
 #define AI_SCRIPT_ENGINE_H
 
 #include <SisterRay/SisterRay.h>
-#include "../sr_named_registry.h"
+#include "../../sr_named_registry.h"
 #include "ai_script_opcodes.h"
 
 i32 getMPCost(i32 attackID);

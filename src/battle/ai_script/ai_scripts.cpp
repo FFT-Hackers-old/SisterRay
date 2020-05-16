@@ -1,5 +1,5 @@
 #include "ai_scripts.h"
-#include "../impl.h"
+#include "../../impl.h"
 
 const u8* getScriptPtr(const BattleAIData& AIData, u16 scriptType) {
     switch (scriptType) {

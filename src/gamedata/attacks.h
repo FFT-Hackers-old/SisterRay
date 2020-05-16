@@ -6,16 +6,16 @@
 #include "../sr_named_registry.h"
 #include "game_data_interface.h"
 #include "../EncodedString.h"
-#include "../battle/engine/action_spell_effects.h"
+#include "../battle/actions/actions_api.h"
 #include "statuses.h"
 #include <unordered_map>
 #include <string>
-#include "../party/battle_stats.h"
+#include "battle_stats.h"
 #include "formulas.h"
 #include <unordered_set>
 #include "gdata_utils.h"
 
-typedef struct {
+struct SrAttack_ {
     AttackData attackData;
     u16 attackID;
     EncodedString attackName;
@@ -37,8 +37,7 @@ typedef struct {
     std::unordered_set<DamageModifiers> dmgFormulaModifiers;
     u16 hitFormula;
     std::unordered_set<HitModifiers> hitFormulaModifiers;
-
-} SrAttack;
+};
 
 class SrAttackRegistry : public SrNamedResourceRegistry<SrAttack, std::string> {
 public:
@@ -46,7 +45,6 @@ public:
     SrAttackRegistry() : SrNamedResourceRegistry<SrAttack, std::string>() {}
 };
 
-void initAttacks(SrKernelStream* stream);
 u16 getDefaultMagicUseMulti(u16 actionID);
 void initializeActionElements(SrAttack& attack);
 void initializeStatusAfflictions(SrAttack& attack);

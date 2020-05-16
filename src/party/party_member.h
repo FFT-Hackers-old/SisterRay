@@ -2,7 +2,7 @@
 #define PARTY_MEMBER_H
 
 #include <SisterRay/SisterRay.h>
-#include "battle_stats.h"
+#include "../gamedata/battle_stats.h"
 #include <array>
 #include <unordered_map>
 #include <string>

@@ -38,6 +38,13 @@ typedef struct {
     u16 totalDuration;
 } StatModifier;
 
+typedef struct {
+    i32 newValue;
+    i32 previousValue;
+    i32 incrementTargetValue;
+    i32 barDisplayValue;
+} resourceIncrement;
+
 //Stats are modular. 
 typedef struct {
     i32 statValue; //The value of the stat factoring in active modifiers
@@ -48,6 +55,7 @@ typedef struct {
 typedef struct {
     i32 activeValue;
     i32 statValue;
+    resourceIncrement incrementCtx;
     std::vector<StatModifier> modifiers; //consumed and decremented on V-Timer in battle, modifies active value
 } SrBattleStat;
 

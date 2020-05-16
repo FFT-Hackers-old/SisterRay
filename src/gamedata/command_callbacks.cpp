@@ -1,7 +1,7 @@
 #include "command_callbacks.h"
 #include "command_sr_callbacks.h"
 #include "../impl.h"
-#include "../battle/engine/damage_events.h"
+#include "../battle/actions/actions_api.h"
 
 #define ff7ApplyDamage   ((FF7PFNCOMMANDSETUP)0x5D9940)
 #define ff7weaponSetup   ((FF7PFNCOMMANDSETUP)0x5C9C64)
@@ -34,7 +34,7 @@ void phsChangeSetup(CommandSetupEvent& event) {
     damageEvent->targetID = event.damageContext->attackerID;
     damageEvent->attackerID = event.damageContext->attackerID;
     damageEvent->damagedAnimScriptIdx = 0;
-    damageEvent->specialDamageFlags = 0;
+    damageEvent->actionFlags = 0;
     damageEvent->targetStatusMask = 0;
     auto terminatorEvent = newDamageEvent();
     terminatorEvent->targetID = 0xFF;

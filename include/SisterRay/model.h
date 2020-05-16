@@ -9,8 +9,15 @@
 
 #pragma pack(push, 1)
 typedef struct {
+    R2PointWord a;
+    R2PointWord actorPosition;
+} ActorScreenSpaceCtx;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
     u32 field_0;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 field_8;
     u32 textureCount;
     u32 field_10;
@@ -59,7 +66,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 debugActive;
     u32 skeletonFlags;
     u32 totalBones;
@@ -101,7 +108,7 @@ typedef struct {
 typedef struct {
     u16 characterID; //BE1170, 0
     u16 animScriptIndex; //BE1172, 2
-    u8 specialDamageFlags;
+    u8 actionFlags;
     u8 field_5;
     u16 field_6;
     u16 AnimationData; //BE1178, 8
@@ -331,7 +338,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     GameRotationMatrix rotationMatrix;
     u16 actorIsNotActing;
     u32 field_28;

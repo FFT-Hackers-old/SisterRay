@@ -4,7 +4,7 @@
 #include <SisterRay/SisterRay.h>
 #include "../EncodedString.h"
 #include "party_member.h"
-#include "battle_stats.h"
+#include "../gamedata/battle_stats.h"
 #include "../gamedata/base_item.h"
 #include <string>
 

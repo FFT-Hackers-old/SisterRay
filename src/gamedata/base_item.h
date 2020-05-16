@@ -3,7 +3,7 @@
 
 #include <SisterRay/SisterRay.h>
 #include "../sr_named_registry.h"
-#include "../party/battle_stats.h"
+#include "battle_stats.h"
 #include <map>
 
 #define ITYPE_CONSUMABLE  0

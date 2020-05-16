@@ -1,7 +1,7 @@
 #include "statuses.h"
 #include "status_names.h"
 #include "../impl.h"
-#include "../party/stat_names.h"
+#include "stat_names.h"
 
 SrStatusRegistry::SrStatusRegistry(bool useResistances) {
     SrStatus death{ EncodedString::from_unicode(StatusNames::DEATH_NAME.c_str()), true, 0, StatNames::DEATH_PEN, StatNames::DEATH_RES };

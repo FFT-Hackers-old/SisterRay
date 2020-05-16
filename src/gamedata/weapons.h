@@ -11,11 +11,12 @@
 
 #define KERNEL_WEAPON_COUNT 128
 
-typedef struct {
+struct SrWeapon_ {
     WeaponData gameWeapon;
     AuxWeaponData auxData;
     EncodedString weaponName;
     EncodedString weaponDescription;
+    std::unordered_map<std::string, SrActorStat> weaponStats;
     EquipmentStatBoosts equipEffects;
     std::vector<std::string> attackElements;
     std::vector<StatusInfliction> statusAttack;
@@ -25,7 +26,7 @@ typedef struct {
     u16 hitFormula;
     std::unordered_set<HitModifiers> hitFormulaModifiers;
     u16 weaponModelID;
-} SrWeapon;
+};
  
 class SrWeaponRegistry : public SrNamedResourceRegistry<SrWeapon, std::string> {
 public:

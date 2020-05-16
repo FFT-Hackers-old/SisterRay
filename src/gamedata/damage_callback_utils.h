@@ -6,7 +6,7 @@
 #include "statuses.h"
 #include <vector>
 #include <string>
-#include "../party/battle_stats.h"
+#include "battle_stats.h"
 #include "../battle/battle_actors.h"
 #include "formulas.h"
 

@@ -1,6 +1,6 @@
 #include "weapons.h"
 #include "../impl.h"
-#include "../party/stat_names.h"
+#include "stat_names.h"
 
 
 SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrWeapon, std::string>() {
@@ -113,4 +113,8 @@ u8 getWeaponIcon(u8 characterID) {
             return ICONTYPE_SWORD;
         }
     }
+}
+
+void finalizeWeapons() {
+    finalizeRegistry<SrWeapon, InitWeaponEvent, SrWeaponRegistry>(gContext.weapons, INIT_WEAPON);
 }

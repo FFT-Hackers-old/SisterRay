@@ -33,22 +33,26 @@ extern "C" {
 #include "gamedata/statuses.h"
 #include "gamedata/formulas.h"
 #include "gamedata/scene_loader.h"
-#include "battle/engine/animation_script_opcode.h"
+
 #include "inventories/inventory.h"
 #include "inventories/battle_inventory.h"
 #include "inventories/materia_inventory.h"
+
 #include "usable_item_handlers.h"
 #include "events/event_bus.h"
 #include "string_registry.h"
-#include "party/characters.h"
 #include "menus/menu.h"
-#include "party/party.h"
+
 #include "party/characters.h"
+#include "party/party.h"
+
+#include "battle/animation_script/animation_script_opcode.h"
 #include "battle/battle_models/animation_registry.h"
 #include "battle/battle_models/animation_scripts.h"
 #include "battle/battle_models/battle_models.h"
-#include "battle/ai_script_engine.h"
+#include "battle/ai_script/ai_script_engine.h"
 #include "battle/battle_actors.h"
+
 #include <map>
 #include <string>
 #include <memory>
@@ -115,9 +119,16 @@ SISTERRAY_API void srInitLuaConsole(void);
 SISTERRAY_API void srPatchAddresses(void** patchList, size_t patchCount, void* src, void* dst, size_t offset);
 SISTERRAY_API void initMateria(SrKernelStream* stream);
 SISTERRAY_API void initArmor(SrKernelStream* stream);
+void finalizeArmors();
 SISTERRAY_API void initAccessories(SrKernelStream* stream);
 SISTERRAY_API void initItems(SrKernelStream* stream);
 SISTERRAY_API void initWeapons(SrKernelStream* stream);
+void finalizeWeapons();
+void initAttacks(SrKernelStream* stream);
+void finalizeAttacks();
+void initCommands(SrKernelStream* stream);
+void finalizeCommands();
+void finalizeRegistries();
 
 SISTERRAY_API void initLog(void);
 SISTERRAY_API void srLogWrite(const char* format, ...);

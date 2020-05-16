@@ -2,7 +2,7 @@
 #include "../../impl.h"
 #include "../../party/party_utils.h"
 #include "../../widgets/updaters.h"
-#include "../../party/stat_names.h"
+#include "../../gamedata/stat_names.h"
 
 /* This Module contains code which initializes the Widget that represents the equip menu internally
    You can mutate this widget prior to draw by registered your listeners to the "OnEquipMenuDraw" event

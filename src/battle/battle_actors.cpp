@@ -1,13 +1,12 @@
 #include "battle_actors.h"
 #include "scene_globals.h"
+#include "battle_engine_interface.h"
+#include "animation_script/animation_script_interface.h"
+#include "battle_models/battle_models_api.h"
 #include "../impl.h"
-#include "../party/stat_names.h"
+#include "../gamedata/stat_names.h"
 #include "../gamedata/status_names.h"
 #include "../gamedata/damage_callback_utils.h"
-#include "engine/battle_engine_interface.h"
-#include "../battle/battle_models/battle_model_state_interface.h"
-#include "../battle/engine/animation_script_interface.h"
-#include "../battle/battle_models/battle_models_api.h"
 #include "../gamedata/summons.h"
 
 #define ACTOR_COUNT 10

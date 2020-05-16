@@ -1,5 +1,5 @@
 #include "elements.h"
-#include "../party/stat_names.h"
+#include "stat_names.h"
 #include "element_names.h"
 #include "../impl.h"
 

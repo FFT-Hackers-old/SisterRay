@@ -4,9 +4,9 @@
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "party_member.h"
-#include "battle_stats.h"
-#include "../battle/battle_actors.h"
 #include "characters.h"
+#include "../battle/battle_actors.h"
+#include "../gamedata/battle_stats.h"
 #include "party_interface.h"
 #include <array>
 
@@ -89,6 +89,7 @@ void dispatchSupportHandlers(u8 characterIdx, const MateriaInventoryEntry& suppo
 
 u8* getMateriaSlots(u8 characterIdx, SrGearType gearType);
 bool slotsAreLinked(u8 leftSlot, u8 rightSlot);
+void updateCommands(u8 partyIdx, u32 statusMask);
 void updateCommandsActive(u8 characterIdx, i32 commandType);
 bool updateMagicCommand(u8 characterIdx, u32 actorStatusMask);
 bool updateSummonCommand(u8 characterIdx, u32 actorStatusMask);

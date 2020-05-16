@@ -111,7 +111,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     CharacterRecord* characterRecord;
-    u8 specialDamageFlags;
+    u8 actionFlags;
     u8 limitLevelIdx;
     u8 field_6;
     u8 field_7;

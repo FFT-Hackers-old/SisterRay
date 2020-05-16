@@ -3,7 +3,7 @@
 
 
 #include <SisterRay/SisterRay.h>
-#include "animation_script_opcode.h"
+#include "../animation_script/animation_script_opcode.h"
 
 #define GAME_ANGLE_MAX ((u16)4096)
 

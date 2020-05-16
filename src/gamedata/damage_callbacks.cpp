@@ -1,6 +1,6 @@
 #include "damage_callbacks.h"
 #include "../battle/scene_globals.h"
-#include "../battle/engine/damage_events.h"
+#include "../battle/actions/actions_api.h"
 #include "../impl.h"
 #include "status_names.h"
 #include "element_names.h"
@@ -15,7 +15,7 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     auto& gameDamageEvent = *srDamageEvent->gameDamageEvent;
     gameDamageEvent.targetID = targetID;
     gameDamageEvent.attackerID = attackerID;
-    gameDamageEvent.specialDamageFlags = 0;
+    gameDamageEvent.actionFlags = 0;
     aiContext.actorAIStates[targetID].lastCovered = -1;
     printDamageEvent(&gameDamageEvent);
     printDamageQueueState();
@@ -141,7 +141,7 @@ void handleDamageSuccessful(DamageCalculationEvent* srDamageEvent) {
 
     }
     damageContext.incOnDamageDealt++;
-    srDamageEvent->gameDamageEvent->specialDamageFlags |= 1;
+    srDamageEvent->gameDamageEvent->actionFlags |= 1;
     gContext.eventBus.dispatch(POST_DAMAGE_DEALT, (void*)srDamageEvent);
     if (damageContext.attackerID != damageContext.targetID)
         damageContext.wasDamagedMask |= 1 << damageContext.targetID;
@@ -150,10 +150,10 @@ void handleDamageSuccessful(DamageCalculationEvent* srDamageEvent) {
     applyReflect(srDamageEvent);
     // Set Barrier/MBarrier flags
     if (checkDisplayBarrier(srDamageEvent)) {
-        srDamageEvent->gameDamageEvent->specialDamageFlags |= 0x10;
+        srDamageEvent->gameDamageEvent->actionFlags |= 0x10;
     }
     if (checkDisplayMBarrier(srDamageEvent)) {
-        srDamageEvent->gameDamageEvent->specialDamageFlags |= 0x20;
+        srDamageEvent->gameDamageEvent->actionFlags |= 0x20;
     }
 }
 
@@ -333,8 +333,8 @@ void handleDeathImpactSetup(DamageCalculationEvent* srDamageEvent) {
     auto& aiContext = *srDamageEvent->aiContext;
     auto& targetState = srDamageContext.targetState;
     if (aiContext.actorAIStates[damageContext.targetID].statusMask & 1) {
-        damageEvent.specialDamageFlags |= 4;
-        damageEvent.specialDamageFlags &= 0xFFF7u;
+        damageEvent.actionFlags |= 4;
+        damageEvent.actionFlags &= 0xFFF7u;
         damageContext.wasKilledMask |= 1 << damageContext.targetID;
 
         //Handle Flash
@@ -601,7 +601,7 @@ void handleStatusInfliction(DamageCalculationEvent* srDamageEvent) {
             }
         }
         else {
-            srDamageEvent->gameDamageEvent->specialDamageFlags |= 8;
+            srDamageEvent->gameDamageEvent->actionFlags |= 8;
         }
     }
 }
@@ -810,6 +810,7 @@ void applyReflect(DamageCalculationEvent* srDamageEvent) {
         if (targetState.actorTimers->innateStatusMask & 0x40000) {
             *word_C3F37C |= 1 << damageContext->targetID; //Handle the case where it is auto-reflect, as inflicted by the reflect ring
         }
+
         if (targetState.actorTimers->reflectCount) {
             targetState.actorTimers->reflectCount--;
         }
@@ -817,9 +818,11 @@ void applyReflect(DamageCalculationEvent* srDamageEvent) {
             srDamageEvent->srDamageContext->toRemoveStatuses.push_back(StatusNames::REFLECT);
         }
         damageContext->abilityFlags1 |= 2u;
+
         if (damageContext->targetID < 3)
             damageContext->targetReactionAnimation = 10;
-        srDamageEvent->gameDamageEvent->specialDamageFlags |= 2; //Display reflect flag
+
+        srDamageEvent->gameDamageEvent->actionFlags |= 2; //Display reflect flag
     }
 }
 

@@ -1,6 +1,6 @@
 #include "stat_calculation.h"
 #include "../impl.h"
-#include "stat_names.h"
+#include "../gamedata/stat_names.h"
 
 void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& charRecord, const StatBoostModifiers& statModifiers) {
     for (auto& statElement : srPartyMember.playerStats) {

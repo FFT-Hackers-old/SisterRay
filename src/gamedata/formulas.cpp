@@ -1,9 +1,8 @@
 #include "formulas.h"
 #include "../impl.h"
-#include "../party/stat_names.h"
+#include "stat_names.h"
 #include "damage_callback_utils.h"
 #include "formula_names.h"
-#include "../party/stat_names.h"
 #include "command_sr_callbacks.h"
 #include "formula_callbacks.h"
 

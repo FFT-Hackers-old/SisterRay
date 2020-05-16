@@ -13,11 +13,12 @@
 
 #define KERNEL_COMMAND_COUNT 32
 
-typedef struct {
+struct SrCommand_ {
     CommandData gameCommand;
     AuxCommandData auxData;
     EncodedString commandName;
     EncodedString commandDescription;
+    std::unordered_map<std::string, SrActorStat> commandStats;
     std::vector<SRPFNCOMMANDSETUP> setupCallbacks;
     std::vector<SRPFNCMDSELECTCALLBACK> selectCallbacks;
     u16 actionCount;
@@ -28,7 +29,7 @@ typedef struct {
     std::unordered_set<DamageModifiers> dmgFormulaModifiers;
     u16 hitFormula;
     std::unordered_set<HitModifiers> hitFormulaModifiers;
-} SrCommand;
+};
 
 class SrCommandRegistry : public SrNamedResourceRegistry<SrCommand, std::string> {
 public:

@@ -1,16 +1,10 @@
 #ifndef BATTLE_MODELS_API_H
 #define BATTLE_MODELS_API_H
 
-#include <SisterRay/SisterRay.h>
-#include "animation_registry.h"
-#include "animation_scripts.h"
+#include "battle_model_state_interface.h"
+#include "battle_models_interface.h"
+#include "model_file_utils.h"
+#include "battle_models.h"
+#include "model_setup_routines.h"
 
-SISTERRAY_API BattleModel* getActiveModelFromArray(u8 arrayIdx);
-SISTERRAY_API void setActiveModelFromArray(u8 arrayIdx, BattleModel* battleModel);
-SISTERRAY_API void addModelAnimation(const char* modName, u16 modIdx, const char* modelName, const SrAnimation animation);
-SISTERRAY_API void addPlayerModelAnimation(const char* modName, u16 modIdx, const char* modelName, const SrAnimation animation, const SrAnimation weaponAnimation);
-SISTERRAY_API void addAnimationScript(const char* modName, u16 modIdx, const char* modelName, u8* script, u16 scriptLength);
-
-SISTERRAY_API u16 getSrPlayerAnimationIdx(const char* modName, u16 relativeModIdx, const char* modelName);
-SISTERRAY_API u16 getSrPlayerAnimScriptID(const char* modName, u16 relativeModIdx, const char* modelName);
-#endif // !BATTLE_MODELS_API_H
+#endif

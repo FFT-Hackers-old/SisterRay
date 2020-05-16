@@ -1,14 +1,12 @@
 #include "animation_script_opc_handlers.h"
-#include "../battle_models/battle_model_state_interface.h"
-#include "../battle_models/model_skeleton.h"
-#include "action_effects.h"
-#include "../../party/party_utils.h"
-#include "action_spell_effects.h"
-#include "../../impl.h"
-#include "animation_player.h"
-#include "damage_events.h"
-#include "../battle_utils.h"
+#include "../battle_models/battle_models_api.h"
 #include "../battle_models/model_setup_routines.h"
+#include "../effects/effects_api.h"
+#include "../animation/animation_player.h"
+#include "../actions/actions_api.h"
+#include "../battle_utils.h"
+#include "../../party/party_utils.h"
+#include "../../impl.h"
 
 bool invertDirection = false;
 
@@ -1639,6 +1637,7 @@ OpCodeControlSequence OpCodeFC(AnimScriptEvent* srEvent) {
     auto& targetModelState74 = *getBattleModelState74(getAnimatingActionTargetIdx());
     u16* word_9A88AA = (u16*)0x9A88AA;
     if (getTargetAllActive()){
+        srLogWrite("SETTING ORIENTATION FOR TARGET-ALL ACTION");
         switch (getBattleType()) {
         case 3:
         case 5:
@@ -1664,6 +1663,7 @@ OpCodeControlSequence OpCodeFC(AnimScriptEvent* srEvent) {
         }
     }
     else if ((ownerModelState.animationEffect != 21 || ownerModelState.commandID != 13) && getActionActorIdx() != getAnimatingActionTargetIdx()) {
+        srLogWrite("RUNNING SPECIAL CASE ORIENTATION CODE");
         i32 zDelta = targetModelState.restingPosition.z - ownerModelState.restingPosition.z;
         i32 xDelta = targetModelState.restingPosition.x - ownerModelState.restingPosition.x;
         srLogWrite("computed orientation in FC: %x", calculateYAngleComponent(xDelta, zDelta));

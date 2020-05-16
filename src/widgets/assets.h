@@ -159,7 +159,7 @@ DrawGameAssetParams MateriaSphere(i32 xCoordinate, i32 yCoordinate, i32 sphereCo
 DrawGameAssetParams MateriaStar(i32 xCoordinate, i32 yCoordinate, i32 sphereColor, float priority, bool shaded);
 DrawGameAssetParams ItemIcon(i32 xCoordinate, i32 yCoordinate, i32 iconType, float priority);
 DrawGameAssetParams AllArrow(i32 xCoordinate, i32 yCoordinate, float priority);
-DrawGameAssetParams BarBorder(i32 xCoordinate, i32 yCoordinate, float priority);
+DrawGameAssetParams BarBorder(i32 xCoordinate, i32 yCoordinate, float priority, u16 length=40, u16 height=10);
 DrawGameAssetParams BarrierBarBorder(i32 xCoordinate, i32 yCoordinate, float priority);
 DrawGameAssetParams BattleTexts(i32 xCoordinate, i32 yCoordinate, float priority, int type);
 void setStarShaded(Widget* widgetToUpdate, bool shaded);

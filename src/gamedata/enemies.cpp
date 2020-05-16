@@ -12,3 +12,10 @@ std::unordered_set<u16> SrEnemyRegistry::getUniqueModelIDs() {
     }
     return modelIDs;
 }
+
+void finalizeEnemies() {
+    for (auto& enemy : gContext.enemies) {
+        InitEnemyEvent initEnemyEvent{ enemy.isSceneEnemy, enemy.gameSceneIndex, enemy.sceneRelativeIdx,  &enemy };
+        gContext.eventBus.dispatch(INIT_ENEMY, &initEnemyEvent);
+    }
+}

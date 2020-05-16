@@ -1,7 +1,7 @@
 #include "equip_draw_callbacks.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
-#include "../../party/stat_names.h"
+#include "../../gamedata/stat_names.h"
 
 using namespace EquipWidgetNames;
 

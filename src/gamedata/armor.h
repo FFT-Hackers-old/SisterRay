@@ -9,13 +9,14 @@
 
 #define KERNEL_ARMOR_COUNT 32
 
-typedef struct {
+struct SrArmor_ {
     ArmorData gameArmor;
     AuxArmorData auxData;
     EncodedString armorName;
     EncodedString armorDescription;
+    std::unordered_map<std::string, SrActorStat> armorStats;
     EquipmentStatBoosts equipEffects;
-} SrArmor;
+};
 
 class SrArmorRegistry : public SrNamedResourceRegistry<SrArmor, std::string> {
 public:

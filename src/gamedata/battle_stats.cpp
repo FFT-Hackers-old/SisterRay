@@ -1,8 +1,8 @@
 #include "battle_stats.h"
 #include "stat_names.h"
 #include "../impl.h"
-#include "../gamedata/status_names.h"
-#include "../gamedata/element_names.h"
+#include "status_names.h"
+#include "element_names.h"
 
 
 SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<SrStat, std::string>() {
@@ -252,5 +252,11 @@ SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<S
 void initStats(bool initResistances) {
     gContext.stats = SrStatRegistry(initResistances);
     srLogWrite("initialized %lu stats", (unsigned long)gContext.stats.resourceCount());
+}
+
+SISTERRAY_API void registerStat(const char* statName, const char* displayName, i32 max, i32 min) {
+    bool canGoNegative = min < 0;
+    SrStat newStat{ EncodedString::from_unicode(displayName), max, min, canGoNegative };
+    gContext.stats.addElement(std::string(statName), newStat);
 }
 

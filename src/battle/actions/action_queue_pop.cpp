@@ -1,4 +1,6 @@
 #include "action_queue_pop.h"
+#include "pre_action_callbacks.h"
+#include "post_action_callbacks.h"
 #include "../../impl.h"
 #include "../battle.h"
 #include "../../party/party_utils.h"

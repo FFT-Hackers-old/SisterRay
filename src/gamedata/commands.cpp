@@ -76,6 +76,11 @@ void initCommands(SrKernelStream* stream) {
 
 }
 
+
+void finalizeCommands() {
+    finalizeRegistry<SrCommand, InitCommandEvent, SrCommandRegistry>(gContext.commands, INIT_COMMAND);
+}
+
 const SrCommand& getCommand(u8 commandIdx) {
     auto& ret = gContext.commands.getResource(commandIdx);
     srLogWrite("Fetching get command for command index, %d", commandIdx);

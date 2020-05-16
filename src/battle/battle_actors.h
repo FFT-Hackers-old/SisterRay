@@ -2,7 +2,7 @@
 #define BATTLE_ACTORS_H
 
 #include <SisterRay/SisterRay.h>
-#include "../party/battle_stats.h"
+#include "../gamedata/battle_stats.h"
 #include "../sr_named_registry.h"
 #include <map>
 #include <array>

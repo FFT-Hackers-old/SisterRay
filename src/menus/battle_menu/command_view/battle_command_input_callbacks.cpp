@@ -2,7 +2,7 @@
 #include "../../menu.h"
 #include "../../../impl.h"
 #include "../battle_menu_utils.h"
-#include "../../../battle/engine/battle_engine_interface.h"
+#include "../../../battle/battle_engine_interface.h"
 
 using namespace BattleMenuWidgetNames;
 

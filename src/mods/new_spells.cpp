@@ -1,9 +1,6 @@
 #include "new_spells.h"
-#include "../battle/engine/action_spell_effects.h"
-#include "../battle/battle_utils.h"
+#include "../battle/battle_engine_api.h"
 #include "../impl.h"
-#include "../battle/engine/action_effects.h"
-#include "../battle/battle_models/battle_model_state_interface.h"
 #include "../gamedata/element_names.h"
 #include "../gamedata/damage_callback_utils.h"
 

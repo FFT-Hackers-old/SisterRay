@@ -2,8 +2,8 @@
 #include <string.h>
 #include "../impl.h"
 #include "armor.h"
-#include "../party/stat_names.h"
-#include "../party/battle_stats.h"
+#include "stat_names.h"
+#include "battle_stats.h"
 
 SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrArmor, std::string>() {
     size_t read_size;
@@ -100,4 +100,8 @@ SISTERRAY_API void initArmor(SrKernelStream* stream) {
     gContext.armors = SrArmorRegistry(stream);
     gContext.itemTypeData.initializeAugmentedData(ITYPE_ARMOR, gContext.armors.resourceCount());
     srLogWrite("kernel.bin: Loaded %lu Armors", (unsigned long)gContext.armors.resourceCount());
+}
+
+void finalizeArmors() {
+    finalizeRegistry<SrArmor, InitArmorEvent, SrArmorRegistry>(gContext.armors, INIT_ARMOR);
 }

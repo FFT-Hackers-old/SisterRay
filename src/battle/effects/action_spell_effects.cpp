@@ -1,7 +1,7 @@
 #include "action_spell_effects.h"
-#include "../../impl.h"
 #include "../battle_utils.h"
 #include "summon_effects.h"
+#include "../../impl.h"
 
 #define gameBeatRushEffect ((SRPFNSPELLEFFECTCALLBACK)0x4E1627)
 #define gameSomersaultEffect ((SRPFNSPELLEFFECTCALLBACK)0x4E163E)

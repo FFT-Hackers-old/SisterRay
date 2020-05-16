@@ -1,5 +1,5 @@
 #include "ai_script_engine.h"
-#include "../impl.h"
+#include "../../impl.h"
 
 
 SrAIScriptOpCodeRegistry::SrAIScriptOpCodeRegistry() : SrNamedResourceRegistry<SRPFNAISCRIPTOPCODEHANDLER, std::string>() {

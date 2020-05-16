@@ -59,6 +59,12 @@ ImpactEvent* newImpactEvent(DamageEvent* damageEvent) {
     return impactEvent;
 }
 
+
+ImpactEvent* getImpactEvent(u8 impactEffectIdx) {
+    ImpactEvent* impactEvent = &G_IMPACT_EVENT_QUEUE[impactEffectIdx];
+    return impactEvent;
+}
+
 ImpactEvent* createImpactEvent(DamageEvent* damageEvent, u16 dealtDamage, u16 actionFlags, u16 impactSound, u16 impactEffect, u32 targetHP, u16 targetMP) {
     auto impactEvent = newImpactEvent(damageEvent);
     impactEvent->dealtDamage = dealtDamage;
@@ -108,7 +114,7 @@ void printAnimationEventQueue() {
 }
 
 
-AnimationEvent* createAnimEvent(u8 attackerID, u8 activeAllies, u8 animScriptID, u8 commandIdx, u16 actionIdx, u8 spellEffectIdx, u8 specialDamageFlags, u16 cameraData) {
+AnimationEvent* createAnimEvent(u8 attackerID, u8 activeAllies, u8 animScriptID, u8 commandIdx, u16 actionIdx, u8 spellEffectIdx, u8 actionFlags, u16 cameraData) {
     auto animationEvent = newAnimEvent();
     animationEvent->attackerID = attackerID;
     animationEvent->activeAllies = activeAllies;
@@ -117,7 +123,7 @@ AnimationEvent* createAnimEvent(u8 attackerID, u8 activeAllies, u8 animScriptID,
     animationEvent->spellEffectID = spellEffectIdx;
     animationEvent->cameraData = cameraData;
     animationEvent->actionIndex = actionIdx;
-    animationEvent->specialDamageFlags = specialDamageFlags;
+    animationEvent->actionFlags = actionFlags;
     return animationEvent;
 }
 

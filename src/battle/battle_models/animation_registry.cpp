@@ -1,9 +1,9 @@
 #include "animation_registry.h"
+#include "battle_models_api.h"
+#include <unordered_map>
 #include "../../impl.h"
 #include "../../system/ff7memory.h"
 #include "../../files/lgp_loader.h"
-#include "battle_models_api.h"
-#include <unordered_map>
 
 //Might just changed to a vector data structure
 const std::string assembleAnimKey(u16 idx) {
@@ -162,39 +162,4 @@ SISTERRAY_API u16 getSrPlayerAnimationIdx(const char* modName, u16 relativeModId
     auto name = std::string(modName) + std::to_string(relativeModIdx);
     srLogWrite("Fetching animation with True Idx: %i for model %s", modelAnimations.modelAnimations.getResourceIndex(name), modelName);
     return modelAnimations.modelAnimations.getResourceIndex(name);
-}
-
-
-std::vector<std::unordered_map<std::string, SrAnimation>> loadModelAnimationFromDAFile(const char* modelName, void* daFileBuffer, bool hasWeapon) {
-    u32* daFilePtr = (u32*)(daFileBuffer);
-    //u32* daFilePtr = (u32*)srOpenDAFile(&lgpContext, archiveName.c_str());
-    srLogWrite("daFilePtr successfully opened at %p, first bytes: %x, %x, %x, %x, %x", daFilePtr, daFilePtr[0], daFilePtr[1], daFilePtr[2], daFilePtr[3], daFilePtr[4]);
-    auto totalAnims = daFilePtr[0];
-    u32* animDataStartPtr = &(daFilePtr[1]);
-
-    std::vector<std::unordered_map<std::string, SrAnimation>> parsedAnimations;
-    for (u32 animationIdx = 0; animationIdx < totalAnims; animationIdx++) {
-        auto animHeader = (DaAnimHeader*)animDataStartPtr;
-        u8* frameDataPtr = (u8*)(animDataStartPtr + 3);
-        srLogWrite("Loading animation with bones: %i, frame count: %i", animHeader->bonesCount, animHeader->framesCount);
-        auto currentAnimation = createAnimationFromDABuffer(1, animHeader->bonesCount, animHeader->framesCount, (u32*)frameDataPtr);
-        u32 animSize = ((12 * (animHeader->bonesCount - 1)) + 24) * animHeader->framesCount;
-        SrAnimation srAnim = { animSize, currentAnimation };
-        std::unordered_map<std::string, SrAnimation> animMap;
-        if (hasWeapon) {
-            if (animationIdx < 8) {
-                animMap["BASE"] = srAnim;
-                parsedAnimations.push_back(animMap);
-            }
-            else {
-                parsedAnimations[animationIdx - 8]["WPN"] = srAnim;
-            }
-        }
-        else {
-            animMap["BASE"] = srAnim;
-            parsedAnimations.push_back(animMap);
-        }
-        animDataStartPtr = (u32*)&(frameDataPtr[animHeader->compressedSize]);
-    }
-    return parsedAnimations;
 }

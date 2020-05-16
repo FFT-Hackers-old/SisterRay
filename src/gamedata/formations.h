@@ -2,7 +2,7 @@
 #define FORMATIONS_H
 
 #include "../sr_named_registry.h"
-#include "../battle/ai_scripts.h"
+#include "../battle/ai_script/ai_scripts.h"
 
 typedef struct {
     u32 uniqueIDs[3];

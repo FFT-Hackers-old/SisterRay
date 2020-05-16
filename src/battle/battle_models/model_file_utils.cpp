@@ -1,7 +1,6 @@
 #include "model_file_utils.h"
 #include "../../impl.h"
 
-
 void* srLoadLGPFile(LGPContext* context, int* bytesReadBuf, char* filename) {
     return ff7LoadModelFile(context, bytesReadBuf, filename);
 }
@@ -50,4 +49,38 @@ LGPArchiveFile srOpenABFile(LGPContext* context, const char* baseFileName, void*
     //srLogWrite("mangled name: %s", mangledName);
     LGPArchiveFile archiveFile = lgpArchiveRead((u8*)battleLGPBuffer, mangledName);
     return archiveFile;
+}
+
+std::vector<std::unordered_map<std::string, SrAnimation>> loadModelAnimationFromDAFile(const char* modelName, void* daFileBuffer, bool hasWeapon) {
+    u32* daFilePtr = (u32*)(daFileBuffer);
+    //u32* daFilePtr = (u32*)srOpenDAFile(&lgpContext, archiveName.c_str());
+    srLogWrite("daFilePtr successfully opened at %p, first bytes: %x, %x, %x, %x, %x", daFilePtr, daFilePtr[0], daFilePtr[1], daFilePtr[2], daFilePtr[3], daFilePtr[4]);
+    auto totalAnims = daFilePtr[0];
+    u32* animDataStartPtr = &(daFilePtr[1]);
+
+    std::vector<std::unordered_map<std::string, SrAnimation>> parsedAnimations;
+    for (u32 animationIdx = 0; animationIdx < totalAnims; animationIdx++) {
+        auto animHeader = (DaAnimHeader*)animDataStartPtr;
+        u8* frameDataPtr = (u8*)(animDataStartPtr + 3);
+        srLogWrite("Loading animation with bones: %i, frame count: %i", animHeader->bonesCount, animHeader->framesCount);
+        auto currentAnimation = createAnimationFromDABuffer(1, animHeader->bonesCount, animHeader->framesCount, (u32*)frameDataPtr);
+        u32 animSize = ((12 * (animHeader->bonesCount - 1)) + 24) * animHeader->framesCount;
+        SrAnimation srAnim = { animSize, currentAnimation };
+        std::unordered_map<std::string, SrAnimation> animMap;
+        if (hasWeapon) {
+            if (animationIdx < 8) {
+                animMap["BASE"] = srAnim;
+                parsedAnimations.push_back(animMap);
+            }
+            else {
+                parsedAnimations[animationIdx - 8]["WPN"] = srAnim;
+            }
+        }
+        else {
+            animMap["BASE"] = srAnim;
+            parsedAnimations.push_back(animMap);
+        }
+        animDataStartPtr = (u32*)&(frameDataPtr[animHeader->compressedSize]);
+    }
+    return parsedAnimations;
 }

@@ -4,7 +4,7 @@
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
 #include "../sr_named_registry.h"
-#include "../battle/ai_scripts.h"
+#include "../battle/ai_script/ai_scripts.h"
 #include "party_utils.h"
 #include "../gamedata/materia.h"
 #include <array>

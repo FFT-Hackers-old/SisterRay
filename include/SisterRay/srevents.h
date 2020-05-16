@@ -60,10 +60,21 @@ typedef enum {
     PRE_DAMAGE_DEALT,
     POST_DAMAGE_DEALT,
     POST_ACTION_DAMAGE_CALC,
+    TRIGGER_DAMAGE_DISPLAY,
 
-
+    //Initialization Events
     INIT_PLAYER_BATTLE_ACTOR,
+    INIT_PLAYER_PARTY_MEMBER,
     INIT_SUMMON_PARTY_MEMBER,
+    INIT_ENEMY,
+    INIT_ENEMY_ACTOR,
+    INIT_WEAPON,
+    INIT_ARMOR,
+    INIT_ACCESSORY,
+    INIT_COMMAND,
+    INIT_ATTACK,
+
+
     RUN_ANIM_SCRIPT_OPCODE
 } SrEventType;
 
@@ -160,6 +171,7 @@ typedef struct SrDamageContext_ SrDamageContext;
 typedef struct DamageFormula_ DamageFormula;
 typedef struct HitFormula_ HitFormula;
 typedef struct PartyMemberState_ PartyMemberState;
+typedef struct SrEnemyData_ SrEnemyData;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -167,7 +179,7 @@ typedef struct {
     u8 attackerID;
     u8 damagedAnimScriptIdx;
     u8 impactEventQueueIdx;
-    u16 specialDamageFlags;
+    u16 actionFlags;
     u8 field_6;
     u8 field_7;
     u32 targetStatusMask;
@@ -185,6 +197,10 @@ typedef struct {
     u16 impactEffectID;
 } ImpactEvent;
 #pragma pack(pop)
+
+typedef struct {
+    ActorBattleState* targetState;
+} TriggerDamageDisplayEvent;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -244,6 +260,37 @@ typedef struct {
 } InitSummonEvent;
 
 typedef struct {
+    u8 characterIdx;
+    PartyMemberState* partyState;
+} InitPartyMemberEvent;
+
+
+typedef struct {
+    bool fromScene;
+    u16 sceneIdx;
+    u16 formationIdx;
+    SrEnemyData* enemyState;
+} InitEnemyEvent;
+
+typedef struct {
+    SrArmor* armor;
+} InitArmorEvent;
+
+
+typedef struct {
+    SrWeapon* weapon;
+} InitWeaponEvent;
+
+
+typedef struct {
+    SrCommand* command;
+} InitCommandEvent;
+
+typedef struct {
+    SrAttack* attack;
+} InitAttackEvent;
+
+typedef struct {
     u8 actorID;
     u8 animationType;
     u8 animationEffectID;
@@ -283,7 +330,7 @@ typedef struct {
     u8 activeAllies;
     u8 spellEffectID;
     u8 commandIndex;
-    u8 specialDamageFlags;
+    u8 actionFlags;
     u8 animationScriptID;
     u16 actionIndex;
     u16 cameraData;

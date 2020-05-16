@@ -7,7 +7,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
-#include "../party/battle_stats.h"
+#include "battle_stats.h"
 
 #define ELEMENT_COUNT 16
 void srSetupAction(CommandSetupEvent& setupEvent);

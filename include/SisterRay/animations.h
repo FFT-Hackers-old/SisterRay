@@ -10,12 +10,12 @@ typedef enum {
 } SrModelType;
 
 typedef struct {
-    u32 rootTranslationX;
-    u32 rootTranslationY;
-    u32 rootTranslationZ;
-    u32 rootRotationX;
-    u32 rootRotationY;
-    u32 rootRotationZ;
+    float rootTranslationX;
+    float rootTranslationY;
+    float rootTranslationZ;
+    float rootRotationX;
+    float rootRotationY;
+    float rootRotationZ;
 } RootMovement;
 
 typedef struct {

@@ -3,7 +3,6 @@
 
 #include <SisterRay/SisterRay.h>
 
-
 #define FF7_DISPLAY_BATTLE_STRING ((void*)0x6D7245)
 
 void nopBattleString(u32 a1);

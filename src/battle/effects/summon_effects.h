@@ -2,7 +2,6 @@
 #define SUMMON_EFFECTS_H
 
 #include <SisterRay/SisterRay.h>
-#include "action_effects.h"
 #include <string>
 
 std::string getSummonModelNameFromEffectIdx(u8 animationEffectIdx);

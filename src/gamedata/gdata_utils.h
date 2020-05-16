@@ -126,4 +126,12 @@ template<class T> void setSrDamageUltimateMods(u8 lowType, T& attack) {
     }
     }
 }
+
+
+template<class T, class S, class U> void finalizeRegistry(U& registry, SrEventType dispatchEvent) {
+    for (T& armor : registry) {
+        S initArmors{ &armor };
+        gContext.eventBus.dispatch(dispatchEvent, &initArmors);
+    }
+}
 #endif // !GDATA_UTILS_H

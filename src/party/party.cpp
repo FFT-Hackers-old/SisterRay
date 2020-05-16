@@ -1,7 +1,7 @@
 #include "party.h"
 #include "../impl.h"
 #include "stat_calculation.h"
-#include "stat_names.h"
+#include "../gamedata/stat_names.h"
 
 #define CHARACTER_COUNT 0xA
 #define PARTY_COUNT 3
@@ -351,6 +351,8 @@ void SrPartyMembers::recalculateCharacter(u8 characterID) {
     gamePartyMember.spirit = srPartyMember.playerStats[StatNames::SPIRIT].statValue;
     gamePartyMember.speed = srPartyMember.playerStats[StatNames::DEXTERITY].statValue;
     gamePartyMember.luck = srPartyMember.playerStats[StatNames::LUCK].statValue;
+    InitPartyMemberEvent partyEvent{ characterID, &getSrCharacter(characterID) };
+    gContext.eventBus.dispatch(INIT_PLAYER_PARTY_MEMBER, &partyEvent);
     //TODO after all references are removed kill these copies
 }
 
@@ -547,34 +549,10 @@ void updateCommandsActive(u8 partyIdx, i32 commandType) {
 }
 
 /*Probably a good place to allow callbacks to hook into*/
-void updateCommands(i32 characterIdx, i16 statusMask) {
-    i32 result; // eax
-    auto enabledCommands = getSrPartyMember(characterIdx).gamePartyMember->enabledCommandArray;
+void updateCommands(u8 partyIdx, u32 statusMask) {
+    auto enabledCommands = getActivePartyMember(partyIdx).gamePartyMember->enabledCommandArray;
     u8* byte_DC3BA0 = (u8*)(0xDC3BA0);
     enabledCommands[0].commandFlags = 0;
-    /*Deals with enabling limit commands. Instead we will change how limit breaks work
-    /*if (((1 << partyIndex) & (u16)word_9A889E) && !(statusMask & 0x800) || (word_9AB0CC & 8)) {
-        enabledCommands->commandID = CMD_LIMIT;       // Enable Limit Command
-        enabledCommands->cursorActionID = byte_DB9630;
-        enabledCommands->targetingData = byte_DB9631;
-        result = (int)PartyDataArray[partyIndex].enabledCommands;
-        enabledCommands->supportMatFlags = 0;
-    }
-    else if (enabledCommands->allCount && !(statusMask & 0x800)) {
-        enabledCommands->commandID = byte_9AEAD0[6 * partyIndex];
-        enabledCommands->cursorActionID = byte_9AEAD1[6 * partyIndex];
-        enabledCommands->targetingData = byte_9AEAD2[6 * partyIndex];
-        result = 6 * partyIndex;
-        enabledCommands->supportMatFlags = byte_9AEAD5[6 * partyIndex];
-    }
-    else {
-        enabledCommands->commandID = byte_9AEAB8[6 * partyIndex];
-        enabledCommands->cursorActionID = byte_9AEAB9[6 * partyIndex];
-        enabledCommands->targetingData = byte_9AEABA[6 * partyIndex];
-        result = 6 * partyIndex;
-        enabledCommands->supportMatFlags = byte_9AEABD[6 * partyIndex];
-    }
-    /*Deals with enabling the Limit break command*/
     for (auto enabledSlotIdx = 1; enabledSlotIdx < 16; ++enabledSlotIdx) {
         u16 commandID = enabledCommands[enabledSlotIdx].commandID;
         if (commandID != 255) {
@@ -582,8 +560,8 @@ void updateCommands(i32 characterIdx, i16 statusMask) {
             switch (commandID) {
                 case 2:
                 case 21: {
-                    updateCommandsActive(characterIdx, 1);
-                    if (G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask & 0x20) {
+                    updateCommandsActive(partyIdx, 1);
+                    if (G_ACTOR_TIMER_ARRAY[partyIdx].activeCommandsMask & 0x20) {
                         srLogWrite("A:Flagging command %i inactive", commandID);
                         commandFlags |= 2u;
                     }
@@ -591,8 +569,8 @@ void updateCommands(i32 characterIdx, i16 statusMask) {
                 }
                 case 3:
                 case 22: {
-                    updateCommandsActive(characterIdx, 2);
-                    if (G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask & 0x40) {
+                    updateCommandsActive(partyIdx, 2);
+                    if (G_ACTOR_TIMER_ARRAY[partyIdx].activeCommandsMask & 0x40) {
                         commandFlags |= 2u;
                     }
                     break;
@@ -611,8 +589,8 @@ void updateCommands(i32 characterIdx, i16 statusMask) {
                     break;
                 }
                 case 13: {
-                    updateCommandsActive(characterIdx, 3);
-                    if (G_ACTOR_TIMER_ARRAY[characterIdx].activeCommandsMask & 0x80) {
+                    updateCommandsActive(partyIdx, 3);
+                    if (G_ACTOR_TIMER_ARRAY[partyIdx].activeCommandsMask & 0x80) {
                         commandFlags |= 2u;
                     }
                     break;
@@ -641,7 +619,6 @@ void updateCommands(i32 characterIdx, i16 statusMask) {
 
             enabledCommands[enabledSlotIdx].commandFlags = commandFlags;
         }
-        result = enabledSlotIdx + 1;
     };
 }
 
@@ -677,7 +654,6 @@ bool updateMagicCommand(u8 partyIdx, u32 actorStatusMask) {
     return commandEnabled;
 }
 
-/*With this we can add a charge mechanic to summons*/
 bool updateSummonCommand(u8 partyIdx, u32 actorStatusMask) {
     auto actorMP = G_ACTOR_TIMER_ARRAY[partyIdx].currentMP;
     auto& summonData = getActivePartyMember(partyIdx).srPartyMember->actorSummons;

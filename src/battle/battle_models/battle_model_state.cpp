@@ -1,4 +1,4 @@
-#include "battle_model_state_interface.h"
+#include "battle_models_api.h"
 #include "../../impl.h"
 
 
@@ -34,4 +34,10 @@ SISTERRAY_API void setActorIdleAnim(u8 actorID, u16 animScriptIdx) {
 
 SISTERRAY_API void setActorHurtAnim(u8 actorID, u16 animScriptIdx) {
     gContext.battleActors.getActiveBattleActor(actorID).actorBattleVars->damageAnimID = animScriptIdx;
+}
+
+#define G_ACTOR_SCREEN_CTX_ARRAY      ((ActorScreenSpaceCtx*)0xBF2E20)
+SISTERRAY_API ActorScreenSpaceCtx getActorScreenSpacePosition(u8 actorIdx) {
+    auto retCopy = G_ACTOR_SCREEN_CTX_ARRAY[actorIdx];
+    return retCopy;
 }

@@ -7,6 +7,7 @@ SISTERRAY_API BattleModelState* getBattleModelState(u8 actorID);
 SISTERRAY_API BattleModelStateSmall* getBattleModelState74(u8 actorID);
 SISTERRAY_API BattleModel* getActiveModelFromArray(u8 arrayIdx);
 SISTERRAY_API ModelRotationData* getBattleModelRotationData(u8 actorID);
+SISTERRAY_API ActorScreenSpaceCtx getActorScreenSpacePosition(u8 actorIdx);
 
 SISTERRAY_API void addModelAnimation(const char* modName, u16 modIdx, const char* modelName, const SrAnimation animation);;
 SISTERRAY_API void addPlayerModelAnimation(const char* modName, u16 modIdx, const char* modelName, const SrAnimation animation, const SrAnimation weaponAnimation);

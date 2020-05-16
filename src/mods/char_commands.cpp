@@ -1,6 +1,5 @@
 #include "char_commands.h"
-#include "../battle/battle_models/model_animations.h"
-#include "../battle/battle_models/battle_models_api.h"
+#include "../battle/battle_engine_api.h"
 #include "../gamedata/game_data_interface.h"
 #include "../EncodedString.h"
 #include "../gamedata/element_names.h"
@@ -9,10 +8,6 @@
 #include "../events/event_bus_interface.h"
 #include "../party/party_interface.h"
 #include "../menus/battle_menu/battle_menu_widget_names.h"
-#include "../battle/engine/battle_engine_interface.h"
-#include "../battle/battle_models/battle_model_state_interface.h"
-#include "../battle/engine/animation_script_interface.h"
-#include "../battle/battle_utils.h"
 #include "../impl.h"
 
 #define MOD_NAME "SR_NEW_COMMANDS"

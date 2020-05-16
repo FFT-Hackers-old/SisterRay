@@ -1,7 +1,6 @@
 #ifndef ANIMATION_REGISTRY
 #define ANIMATION_REGISTRY
 
-#include "model_animations.h"
 #include <unordered_set>
 #include <map>
 #include <string>
@@ -10,8 +9,6 @@
 #define BASE_WEAPON_OFFSET (u16)0x34 //This is the offset between a model animation and its weapon animation for player models
 //Indexes 0x2C - 0x34 are reserve for limits, but the data doesn't appear to be in the animation file
 #define CLOUD_LIMIT_MOD_NAME "srff7LimCloud"
-
-/*These are player data model names, which possess weapons*/
 static const std::vector<std::string> characterModelNames = {
     std::string("CLOUD.DAT"),
     std::string("BARRETT.DAT"),
@@ -49,10 +46,9 @@ static const std::vector<std::string> cloudLimitNames = {
     "LIMCL4.DAT",
 };
 
-/*Raw buffer size is used for memcpying the relevant information when a model attempts to seek it*/
 
 /*This data lives in a registry, and is copied into the right place when the game is allocating models for a given battle
-  This is necessary to avoid the game attempting to */
+  This is necessary to avoid the game attempting to free them */
 typedef struct SrModelAnimations {
     SrModelType type;
     u16 modelAnimationCount;
@@ -75,5 +71,4 @@ public:
 const std::string assembleAnimKey(u16 idx);
 void initAnimations(void* battleLGPBuffer, void* magicLGPBuffer);
 void srInitializeAnimationsTable(void** animationDataTable, u16 tableSize, const char* filename, ModelAAHeader* aaHeader);
-std::vector<std::unordered_map<std::string, SrAnimation>> loadModelAnimationFromDAFile(const char* modelName, void* daFileBuffer, bool hasWeapon);
 #endif // !1

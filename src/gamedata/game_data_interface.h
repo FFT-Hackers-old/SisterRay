@@ -48,4 +48,6 @@ SISTERRAY_API void setEffectCallback(const char* modName, u16 modActionID, SRPFN
 SISTERRAY_API bool maskIsSingleTarget(u16 targetMask);
 SISTERRAY_API u8 getFirstMaskBitIdx(u16 targetMask);
 
+SISTERRAY_API void registerStat(const char* statName, const char* displayName, i32 max, i32 min);
+
 #endif

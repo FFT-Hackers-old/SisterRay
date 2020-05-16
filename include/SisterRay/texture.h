@@ -48,7 +48,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 version;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 colorKey;
     u32 field_C;
     u32 field_10;
@@ -168,7 +168,7 @@ typedef struct {
 
 typedef struct {
     u32 field_0;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 field_8;
     u32 field_C;
     u32 field_10;

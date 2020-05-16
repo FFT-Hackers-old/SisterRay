@@ -2,10 +2,10 @@
 #define ENEMIES_H
 
 #include "../sr_named_registry.h"
-#include "../battle/ai_scripts.h"
+#include "../battle/ai_script/ai_scripts.h"
 #include "../EncodedString.h"
-#include "../party/battle_stats.h"
-#include "../party/stat_names.h"
+#include "../gamedata/battle_stats.h"
+#include "../gamedata/stat_names.h"
 #include <unordered_set>
 #include <vector>
 
@@ -15,7 +15,7 @@ typedef struct {
     bool alreadyStolen;
 } StealItem;
 
-typedef struct {
+struct SrEnemyData_ {
     EnemyData enemyData;
     u16 modelID;
     BattleAIData enemyAI;
@@ -23,7 +23,10 @@ typedef struct {
     std::vector<StealItem> toSteal;
     bool canMorph;
     u16 morphItem;
-} SrEnemyData;
+    bool isSceneEnemy;
+    u16 gameSceneIndex;
+    u8 sceneRelativeIdx;
+};
 
 typedef struct {
     AttackData attackData;
@@ -43,6 +46,8 @@ public:
     SrEnemyAttackRegistry() : SrNamedResourceRegistry<EnemyAttack, std::string>() {}
 };
 
+
+void finalizeEnemies();
 std::string assembleEnemyDataKey(std::string uniqueID);
 
 #endif

@@ -1,5 +1,5 @@
 #include "cmd_select_callbacks.h"
-#include "../battle/engine/battle_engine_interface.h"
+#include "../battle/battle_engine_interface.h"
 #include "../impl.h"
 
 void handleCommandTarget(SelectCommandEvent* event) {

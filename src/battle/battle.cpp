@@ -1,19 +1,19 @@
 #include "battle.h"
-#include "../impl.h"
-#include "../gzip.h"
-#include "../party/party_actions.h"
 #include <string>
 #include <zlib.h>
 #include <cstdio>
 #include <memory>
-#include "../EncodedString.h"
 #include <algorithm>
-#include "engine/damage_events.h"
-#include "engine/action_queue.h"
-#include "engine/battle_engine_interface.h"
+#include "actions/actions_api.h"
+#include "actions/action_queue.h"
+#include "battle_engine_interface.h"
+#include "../EncodedString.h"
 #include "../inventories/inventory_functions.h"
 #include "string_display_event.h"
 #include "../gamedata/summons.h"
+#include "../impl.h"
+#include "../gzip.h"
+#include "../party/party_actions.h"
 
 
 #define initEventList         ((PFNSR_VOIDSUB)0x4350CB)

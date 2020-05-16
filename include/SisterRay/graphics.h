@@ -32,7 +32,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 field_8;
     u32 field_C;
     u32 field_10;
@@ -87,7 +87,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 version;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 vertexType;
     u32 numVertices;
     u32 numNormals;
@@ -158,7 +158,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 flags;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     LightPoint* lightPoint8;
     LightPoint* lightPointC;
     LightPoint* lightPoint10;
@@ -248,7 +248,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     void* nextDrawable; //type is DrawableObjectCahin, cast if using
-    u32 specialDamageFlags;
+    u32 actionFlags;
     DrawableState* drawableState;
     Matrix matrix;
     PaletteAuxillary paletteAuxillary;
@@ -258,7 +258,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 field_8;
     u32 frameCounter;
     DrawableObjectChain* graphicsObjectChain;
@@ -283,7 +283,7 @@ typedef struct {
 #pragma pack(push, 1)
 struct _PolygonSet {
     u32 field_0;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 field_8;
     u32 field_C;
     u32 numgroups;
@@ -327,7 +327,7 @@ struct _PolygonSet {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 count;
     u32 vertexCount;
     u32 field_10;
@@ -345,7 +345,7 @@ typedef struct {
 #pragma pack(push, 1)
 struct _GraphicsObject {
     u32 polytype;
-    u32 specialDamageFlags;
+    u32 actionFlags;
     u32 field_8;
     AuxillaryGFX* auxillaries;
     MatrixSet* matrixSet;
@@ -362,23 +362,7 @@ struct _GraphicsObject {
     u32 indicesPerShape;
     u32 vertexOffset;
     u32 indexOffset;
-    u32 field_48;
-    u32 field_4C;
-    u32 field_50;
-    u32 field_54;
-    u32 field_58;
-    u32 field_5C;
-    u32 field_60;
-    u32 field_64;
-    u32 field_68;
-    u32 field_6C;
-    u32 field_70;
-    u32 field_74;
-    u32 field_78;
-    u32 field_7C;
-    u32 field_80;
-    u32 field_84;
-    u32 field_88;
+    Matrix rotationMatrix;
     IndexedVertices *indexedVertices;
     void* renderPolygonsCallback; //function type is SRGFXDRIVER_SETPOLYRENDER
     void* drawVerticesCallback;  //function type is SRGFXDRIVER_DRAWVERTICES

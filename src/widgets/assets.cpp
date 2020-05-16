@@ -385,8 +385,8 @@ DrawGameAssetParams AllArrow(i32 xCoordinate, i32 yCoordinate, float priority) {
     return allArw;
 }
 
-DrawGameAssetParams BarBorder(i32 xCoordinate, i32 yCoordinate, float priority) {
-    DrawGameAssetParams barBorder = { xCoordinate, yCoordinate, 16, 0, 40, 10, 1, 0, 0, priority };
+DrawGameAssetParams BarBorder(i32 xCoordinate, i32 yCoordinate, float priority, u16 length, u16 height) {
+    DrawGameAssetParams barBorder = { xCoordinate, yCoordinate, 16, 0, length, height, 1, 0, 0, priority };
     return barBorder;
 }
 

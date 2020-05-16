@@ -247,3 +247,8 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
      attack.overrideEffect.dispatchCallback = callback;
      attack.useOverride = true;
  }
+
+
+ void finalizeAttacks() {
+     finalizeRegistry<SrAttack, InitAttackEvent, SrAttackRegistry>(gContext.attacks, INIT_ATTACK);
+ }

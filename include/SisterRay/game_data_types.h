@@ -140,7 +140,7 @@ typedef struct {
     u8      attackEffectID;
     u8      damageCalculation;
     u8      unused_byte;
-    u8      weapon_strength;
+    u8      weaponStrength;
     u8      status_attack;
     u8      materia_growth;
     u8      criticalRate;
@@ -180,9 +180,9 @@ typedef struct {
     u8      unknown;
     u8      elementDamageType;
     u8      defense;
-    u8      magic_defense;
+    u8      magicDefense;
     u8      evade;
-    u8      magic_evade;
+    u8      magicEvade;
     u8      status_defense;
     u16     unknown2;
     u8      materia_slots[8];

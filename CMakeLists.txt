@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.15)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 option(SUPERBUILD "Build this project using a superbuild" ON)
-
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(VERSION unknown CACHE STRING "The version of SisterRay")
 
 if (SUPERBUILD)
@@ -15,7 +15,22 @@ if (SUPERBUILD)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
     add_subdirectory(third_party)
-
+    ExternalProject_Add(
+        srprotos
+        SOURCE_DIR      "${CMAKE_SOURCE_DIR}/protos"
+        INSTALL_DIR     "${CMAKE_BINARY_DIR}/third_party"
+        CMAKE_ARGS
+            "-DSUPERBUILD=OFF"
+            "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+            "-DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/third_party"
+            "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
+            "-DVERSION=${VERSION}"
+            "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}"
+            "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
+        DEPENDS
+        proto
+    )
+    
     ExternalProject_Add(
         SisterRay
         SOURCE_DIR      "${CMAKE_SOURCE_DIR}"
@@ -31,7 +46,9 @@ if (SUPERBUILD)
         DEPENDS
         zlib
         lua
+        srprotos
     )
+
     ExternalProject_Add_Step(
 		SisterRay
 		reconfigure

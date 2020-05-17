@@ -689,7 +689,7 @@ void srSetupAction(CommandSetupEvent& srSetupEvent) {
     u16* currentSceneAbilityIDs = (u16*)(0x9A9444);
 
     damageContext->MPCost = -1;
-    srSetupEvent.srDamageContext->attackStats = action.attackStats;
+    srSetupEvent.srDamageContext->attackStats = action.stats;
     srSetupEvent.srDamageContext->statusToInflict = action.statusAttack;
     srLogWrite("action has %i statuses to inflict", action.statusAttack.size());
     for (const auto& infliction : action.statusAttack) {

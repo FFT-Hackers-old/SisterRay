@@ -38,6 +38,19 @@ typedef struct {
     u16 totalDuration;
 } StatModifier;
 
+//Static Stats only need a value, they are used for setting fixed properties of data resources
+typedef struct {
+    i32 statValue;
+} SrStaticStat;
+
+//Actors and Enemies have actor stats, have a base value and set of boosts which are applied at stat calculation time. 
+typedef struct {
+    i32 statValue; //The value of the stat factoring in active modifiers
+    i32 baseValue; //The value of this stat without any modifiers from gear, materia, etc
+    std::vector<StatBoost> boosts; //Always active boosts, like from equipment
+} SrActorStat;
+
+
 typedef struct {
     i32 newValue;
     i32 previousValue;
@@ -45,12 +58,6 @@ typedef struct {
     i32 barDisplayValue;
 } resourceIncrement;
 
-//Stats are modular. 
-typedef struct {
-    i32 statValue; //The value of the stat factoring in active modifiers
-    i32 baseValue; //The value of this stat without any modifiers from gear, materia, etc
-    std::vector<StatBoost> boosts; //Always active boosts, like from equipment
-} SrActorStat;
 
 typedef struct {
     i32 activeValue;

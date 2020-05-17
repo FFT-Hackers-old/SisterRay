@@ -1,0 +1,6 @@
+syntax="proto3";
+import "sr_stats.proto";
+
+message SrAttackProto{
+    map<string, SrStatValue> stats;
+}

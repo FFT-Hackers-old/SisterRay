@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+message ModManifest{
+    string modName = 1;
+    repeated string deps = 2;
+}

@@ -25,6 +25,7 @@ namespace StatNames {
 
     const std::string WEAPON_ATTACK = "WPNATK";
     const std::string WEAPON_ACCURACY = "WPNHIT";
+    const std::string WEAPON_CRITRATE = "WPNCRIT";
     const std::string ARMOR_DEFENSE = "ARMDEF";
     const std::string ARMOR_MDEFENSE = "ARMMAGDEF";
     const std::string WEAPON_MAGIC = "WPNMATK";

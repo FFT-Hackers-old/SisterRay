@@ -22,13 +22,13 @@ struct SrAttack_ {
     EncodedString attackDescription;
     SrAnimationType animationType;
     u16 animScriptIndex; //Overrides the command ID if set, -1 treated as null
-    u8 useOverride;
+    bool useOverride;
     SpellEffect overrideEffect;
-    u8 useMulti;
+    bool useMulti;
     SpellEffect multiEffect;
     std::vector<std::string> attackElements;
     std::vector<StatusInfliction> statusAttack;
-    std::unordered_map<std::string, SrActorStat> attackStats; //For example status penetration
+    std::unordered_map<std::string, SrStaticStat> stats; //For example status penetration
     bool useOverrideLimits;
     u16 hpDamageLimit;
     u16 mpDamageLimit;

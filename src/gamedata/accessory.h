@@ -11,6 +11,7 @@ typedef struct {
     AuxAccessoryData auxData;
     EncodedString accessoryName;
     EncodedString accessoryDescription;
+    std::unordered_map<std::string, SrStaticStat> stats;
     EquipmentStatBoosts equipEffects;
 } SrAccessory;
 

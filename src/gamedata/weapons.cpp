@@ -14,12 +14,13 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         if (read_size != sizeof(baseWeapon))
             break;
         SrWeapon weapon;
-        weapon.equipEffects[StatNames::WEAPON_ATTACK].push_back(createGearBoost(SR_GEAR_WEAPON, idx, false, baseWeapon.weapon_strength, false));
+        weapon.equipEffects[StatNames::WEAPON_ATTACK].push_back(createGearBoost(SR_GEAR_WEAPON, idx, false, baseWeapon.weaponStrength, false));
         weapon.equipEffects[StatNames::WEAPON_ACCURACY].push_back(createGearBoost(SR_GEAR_WEAPON, idx, false, baseWeapon.weaponHitRate, false));
         weapon.weaponName = gContext.gameStrings.weapon_names.get_string(idx);
         weapon.weaponDescription = gContext.gameStrings.weapon_descriptions.get_string(idx);
         weapon.gameWeapon = baseWeapon;
         weapon.weaponModelID = baseWeapon.weapon_model & 0xF;
+        initializeWeaponStats(weapon);
         initializeWeaponElements(weapon);
         initializeWeaponAfflictions(weapon);
         populatekernelStatBoosts(weapon.equipEffects, weapon.gameWeapon.stats_to_boost, weapon.gameWeapon.stat_boost_amounts, 4, idx, SR_GEAR_WEAPON);
@@ -27,6 +28,13 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         addElement(assembleGDataKey(idx), weapon);
         ++idx;
     }
+}
+
+void initializeWeaponStats(SrWeapon& weapon) {
+    auto& gameWeapon = weapon.gameWeapon;
+    weapon.stats[StatNames::WEAPON_ATTACK].statValue = gameWeapon.weaponStrength;
+    weapon.stats[StatNames::WEAPON_ACCURACY].statValue = gameWeapon.weaponHitRate;
+    weapon.stats[StatNames::WEAPON_CRITRATE].statValue = gameWeapon.criticalRate;
 }
 
 void initializeWeaponElements(SrWeapon& weapon) {

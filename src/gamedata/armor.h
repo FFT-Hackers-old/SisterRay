@@ -14,7 +14,7 @@ struct SrArmor_ {
     AuxArmorData auxData;
     EncodedString armorName;
     EncodedString armorDescription;
-    std::unordered_map<std::string, SrActorStat> armorStats;
+    std::unordered_map<std::string, SrStaticStat> stats;
     EquipmentStatBoosts equipEffects;
 };
 
@@ -26,5 +26,6 @@ public:
 
 
 void initializeArmorElements(SrArmor& armor, u16 relativeID);
+void initializeArmorStats(SrArmor& armor);
 
 #endif

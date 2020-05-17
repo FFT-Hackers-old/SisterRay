@@ -16,7 +16,7 @@ struct SrWeapon_ {
     AuxWeaponData auxData;
     EncodedString weaponName;
     EncodedString weaponDescription;
-    std::unordered_map<std::string, SrActorStat> weaponStats;
+    std::unordered_map<std::string, SrStaticStat> stats;
     EquipmentStatBoosts equipEffects;
     std::vector<std::string> attackElements;
     std::vector<StatusInfliction> statusAttack;
@@ -35,6 +35,7 @@ public:
 };
 
 u8 getWeaponIcon(u8 characterID);
+void initializeWeaponStats(SrWeapon& weapon);
 void initializeWeaponElements(SrWeapon& weapon);
 void initializeWeaponAfflictions(SrWeapon& weapon);
 

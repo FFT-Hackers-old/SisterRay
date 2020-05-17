@@ -20,14 +20,23 @@ SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegist
         armor.armorDescription = gContext.gameStrings.armor_descriptions.get_string(idx);
         armor.gameArmor = baseArmor;
         armor.equipEffects[StatNames::EVADE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.evade, false));
-        armor.equipEffects[StatNames::MEVADE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.magic_evade, false));
+        armor.equipEffects[StatNames::MEVADE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.magicEvade, false));
         armor.equipEffects[StatNames::ARMOR_DEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.defense, false));
-        armor.equipEffects[StatNames::ARMOR_MDEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.magic_defense, false));
+        armor.equipEffects[StatNames::ARMOR_MDEFENSE].push_back(createGearBoost(SR_GEAR_ARMOR, idx, false, baseArmor.magicDefense, false));
         populatekernelStatBoosts(armor.equipEffects, armor.gameArmor.stats_to_boost, armor.gameArmor.stat_boost_amounts, 4, idx, SR_GEAR_ARMOR);
+        initializeArmorStats(armor);
         initializeArmorElements(armor, idx);
         addElement(assembleGDataKey(idx), armor);
         ++idx;
     }
+}
+
+void initializeArmorStats(SrArmor& armor) {
+    auto& gameArmor = armor.gameArmor;
+    armor.stats[StatNames::ARMOR_DEFENSE].statValue = gameArmor.defense;
+    armor.stats[StatNames::ARMOR_MDEFENSE].statValue = gameArmor.magicDefense;
+    armor.stats[StatNames::EVADE].statValue = gameArmor.evade;
+    armor.stats[StatNames::MEVADE].statValue = gameArmor.magicEvade;
 }
 
 void initializeArmorElements(SrArmor& armor, u16 relativeID) {

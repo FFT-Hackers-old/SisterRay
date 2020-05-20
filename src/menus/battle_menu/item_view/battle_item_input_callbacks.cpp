@@ -22,7 +22,7 @@ void handleSelectItem(const MenuInputEvent* event) {
 
     *ACCEPTING_BATTLE_INPUT = 1;
     auto flatIndex = (itemCursorChoice.maxColumnBound * (itemCursorChoice.relativeRowIndex + itemCursorChoice.baseRowIndex)) + itemCursorChoice.relativeColumnIndex;
-    auto itemID = gContext.battleInventory->getResource(flatIndex).item_id;
+    auto itemID = gContext.battleInventory->getResource(flatIndex).materiaID;
     bool didSucceed = didItemUseSucceed(itemID);
     srLogWrite("ITEM USE SUCCEED bool: %d", didSucceed);
     if (didSucceed) {
@@ -54,7 +54,7 @@ void handleExitItem(const MenuInputEvent* event) {
 
     if (*W_COMMAND_ENABLED == 2 && (*ISSUED_COMMAND_ID == CMD_W_ITEM)) {
         const BattleInventoryEntry& inventoryEntry = gContext.battleInventory->getResource(*W_FIRST_ACTION_INDEX);
-        if (inventoryEntry.item_id == 0xFFFF) {
+        if (inventoryEntry.materiaID == 0xFFFF) {
             gContext.battleInventory->addResourceAtIndex(*W_FIRST_ACTION_INDEX, *W_FIRST_ACTION_USED);
         }
         gContext.battleInventory->incrementInventoryEntry(*W_FIRST_ACTION_INDEX, 1);

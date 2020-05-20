@@ -15,8 +15,8 @@ srNoTargetCallbackRegistry::srNoTargetCallbackRegistry() : SrIndexedCallbackRegi
 }
 
 void initOnUseCallbackRegistry() {
-    for (u16 item_id = 0; item_id < 320; item_id++) {
-        switch (item_id) {
+    for (u16 materiaID = 0; materiaID < 320; materiaID++) {
+        switch (materiaID) {
         case 0:
         case 1:
         case 2:
@@ -35,8 +35,8 @@ void initOnUseCallbackRegistry() {
 }
 
 void initNoTargetCallbackRegistry() {
-    for (u16 item_id = 0; item_id < 320; item_id++) {
-        switch (item_id) {
+    for (u16 materiaID = 0; materiaID < 320; materiaID++) {
+        switch (materiaID) {
         case 98:
             gContext.onUseHandlers.addResource("save_crystal_handler");
         default:
@@ -242,9 +242,9 @@ bool handleBoostStat(u8 partyIdx, u16 itemID, u16 inventoryIdx) {
   Limit Breaks will be the first test, their usable flags will be checked.
   Performing the same checks during battle will allow some "consumables" to have
   per character restrictions*/
-bool handleTeachLimits(u8 partyIdx, u16 item_id, u16 inventory_index) {
+bool handleTeachLimits(u8 partyIdx, u16 materiaID, u16 inventory_index) {
     u8 characterID = getGamePartyMember(partyIdx)->characterID;
-    bool isItemUsable = canCharacterUseItem(characterID, item_id); //If the character can't use the item, give the old "nothing to do with me message"
+    bool isItemUsable = canCharacterUseItem(characterID, materiaID); //If the character can't use the item, give the old "nothing to do with me message"
     bool limitTaught = false;
     auto registry = gContext.gameStrings.character_specific_strings[characterID];
     if (isItemUsable) {

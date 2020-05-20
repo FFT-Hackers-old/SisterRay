@@ -141,7 +141,7 @@ void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
     }
 
     auto typedPtr = (CursorGridWidget*)self;
-    auto itemID = gContext.inventory->getResource(flatIndex).item_id;
+    auto itemID = gContext.inventory->getResource(flatIndex).materiaID;
     auto textWidget = getChild(widget, std::string("TXT"));
     auto numberWidget = getChild(widget, std::string("AMT"));
 

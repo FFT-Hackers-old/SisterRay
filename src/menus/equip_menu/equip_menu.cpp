@@ -21,7 +21,7 @@ void displayMenuObjects(CursorContext* cursorContextArray, u32 menuState, i32 st
     switch (menuState) {
         case 1: {
             //sub_6FA12F(316, 171, 324, 303); //I can't figure out what this does...
-            equippableGearCount = gContext.gearViewData.slots_in_use;
+            equippableGearCount = gContext.gearViewData.slotsInUse;
             drawScrollerParams* arguments = (drawScrollerParams*)word_DCA490;
             setSideScrollerArguments(arguments, 8, equippableGearCount, cursorContextArray[1].baseRowIndex, 618, 171, 17, 303);
             renderMenuSideScroller(arguments, 0.2);

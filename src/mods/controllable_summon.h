@@ -14,7 +14,7 @@ namespace InfernoWidgetNames {
 void loadControllableSummon();
 OpCodeControlSequence activatePlayableSummon(AnimScriptEvent* srEvent);
 void initializeIfrit(InitSummonEvent* summEvent);
-void initPlayableSummons();
+void loadPlayableSummons();
 void cmdInfernoSelectHandler(SelectCommandEvent* menuEvent);
 void cmdRavageSelectHandler(SelectCommandEvent* menuEvent);
 void loadPlayableSummonAnimScripts();

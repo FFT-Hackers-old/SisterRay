@@ -1,6 +1,7 @@
 #include "string_registry.h"
 #include "string.h"
 #include "impl.h"
+#include "gamedata/base_type_names.h"
 
 const char* StringRegistry::get_string(int index)
 {
@@ -100,54 +101,94 @@ void initGameStrings(){
     
 }
 
-const char* getNameFromRelativeID(u16 relativeID, u8 itemType) {
-    srLogWrite("attempting to fetch string with relative ID: %i", relativeID);
+
+const char* getGearNameFromRelativeID(u16 relativeID, SrGameGearType itemType) {
     switch (itemType) {
-    case 0:
-        return gContext.items.getResource(relativeID).itemName.str();
+    case SR_GEAR_WEAPON: {
+        return gContext.weapons.getResource(relativeID).sharedBase.gearName.str();
         break;
-    case 1:
-        return gContext.weapons.getResource(relativeID).weaponName.str();
+    }
+    case SR_GEAR_ARMOR: {
+        return gContext.armors.getResource(relativeID).sharedBase.gearName.str();
         break;
-    case 2:
-        return gContext.armors.getResource(relativeID).armorName.str();
+    }
+    case SR_GEAR_ACCESSORY: {
+        return gContext.accessories.getResource(relativeID).sharedBase.gearName.str();
         break;
-    case 3:
-        return gContext.accessories.getResource(relativeID).accessoryName.str();
+    }
+    default: {
+        return defaultString;
         break;
-    default:
-        return gContext.items.getResource(relativeID).itemName.str();;
+    }
     }
 }
 
-const char* getDescriptionFromRelativeID(u16 relativeID, u8 itemType) {
-    switch (itemType) {
-    case 0:
-        return gContext.items.getResource(relativeID).itemDescription.str();
-        break;
-    case 1:
-        return gContext.weapons.getResource(relativeID).weaponDescription.str();
-        break;
-    case 2:
-        return gContext.armors.getResource(relativeID).armorDescription.str();
-        break;
-    case 3:
-        return gContext.accessories.getResource(relativeID).accessoryDescription.str();
-        break;
-    default:
-        return gContext.items.getResource(relativeID).itemDescription.str();;
+const char* getNameFromRelativeID(u16 relativeID, std::string itemType) {
+    srLogWrite("attempting to fetch string with relative ID: %i", relativeID);
+  
+    if (itemType == ItemTypeNames::CONSUMABLE_TYPE) {
+        return gContext.items.getResource(relativeID).itemName.str();
     }
+    if (itemType == ItemTypeNames::WEAPON_TYPE) {
+        return gContext.weapons.getResource(relativeID).sharedBase.gearName.str();
+    }
+    if (itemType == ItemTypeNames::ARMOR_TYPE) {
+        return gContext.armors.getResource(relativeID).sharedBase.gearName.str();
+    }
+    if (itemType == ItemTypeNames::ACCESSORY_TYPE) {
+        return gContext.accessories.getResource(relativeID).sharedBase.gearName.str();
+    }
+    return defaultString;
+}
+
+
+const char* getGearDescriptionFromRelativeID(u16 relativeID, SrGameGearType itemType) {
+    switch (itemType) {
+    case SR_GEAR_WEAPON: {
+        return gContext.weapons.getResource(relativeID).sharedBase.gearDescription.str();
+        break;
+    }
+    case SR_GEAR_ARMOR: {
+        return gContext.armors.getResource(relativeID).sharedBase.gearDescription.str();
+        break;
+    }
+    case SR_GEAR_ACCESSORY: {
+        return gContext.accessories.getResource(relativeID).sharedBase.gearDescription.str();
+        break;
+    }
+    default: {
+        return defaultString;
+        break;
+    }
+    }
+}
+
+const char* getDescriptionFromRelativeID(u16 relativeID, std::string itemType) {
+
+    if (itemType == ItemTypeNames::CONSUMABLE_TYPE) {
+        return gContext.items.getResource(relativeID).itemDescription.str();
+    }
+    if (itemType == ItemTypeNames::WEAPON_TYPE) {
+        return gContext.weapons.getResource(relativeID).sharedBase.gearDescription.str();
+    }
+    if (itemType == ItemTypeNames::ARMOR_TYPE) {
+        return gContext.armors.getResource(relativeID).sharedBase.gearDescription.str();
+    }
+    if (itemType == ItemTypeNames::ACCESSORY_TYPE) {
+        return gContext.accessories.getResource(relativeID).sharedBase.gearDescription.str();
+    }
+    return defaultString;
 }
 
 const char* getNameFromItemID(u16 itemID){
-    auto itemType = gContext.itemTypeData.getResource(itemID).itemType;
-    auto relativeID = gContext.itemTypeData.getResource(itemID).typeRelativeID;
+    auto itemType = gContext.baseItems.getResource(itemID).itemType;
+    auto relativeID = gContext.baseItems.getResource(itemID).typeRelativeID;
     return getNameFromRelativeID(relativeID, itemType);
 }
 
 const char* getDescriptionFromID(u16 itemID) {
-    auto itemType = gContext.itemTypeData.getResource(itemID).itemType;
-    auto relativeID = gContext.itemTypeData.getResource(itemID).typeRelativeID;
+    auto itemType = gContext.baseItems.getResource(itemID).itemType;
+    auto relativeID = gContext.baseItems.getResource(itemID).typeRelativeID;
     return getDescriptionFromRelativeID(relativeID, itemType);
 }
 

@@ -19,6 +19,10 @@ void initSpellViewWidget(const MenuInitEvent* event);
 Widget* allocateMateriaRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 void materiaEntryUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex);
 
+
+Widget* allocateOptionsRow(const char* name, i32 x, i32 y);
+Widget* allocateMateriaEquipRow(const char* name, i32 x, i32 y);
+void matEquipRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);

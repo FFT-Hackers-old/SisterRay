@@ -156,11 +156,11 @@ SISTERRAY_API void setSlotsParams(drawSlotsParams* params, i32 xCoordinate, i32 
 void drawSlotsWidget(SlotsWidget* slotsWidget) {
     if (slotsWidget->materiaData) {
         for (auto slotIdx = 0; slotIdx < 8; slotIdx++) {
-            if (slotsWidget->materiaData[slotIdx].item_id == 0xFFFF)
+            if (slotsWidget->materiaData[slotIdx].materiaID == 0xFFFF)
                 continue;
             if (!slotsWidget->materiaSlotsData[slotIdx])
                 continue;
-            auto materiaType = getMateriaColorType(slotsWidget->materiaData[slotIdx].item_id);
+            auto materiaType = getMateriaColorType(slotsWidget->materiaData[slotIdx].materiaID);
             drawComplexGameAsset(
                 slotsWidget->widget.xCoordinate + 28 * slotIdx,
                 slotsWidget->widget.yCoordinate,

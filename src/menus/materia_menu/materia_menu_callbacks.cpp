@@ -9,10 +9,10 @@ using namespace MateriaWidgetNames;
 void initializeMateriaMenu() {
     srLogWrite("initializing mateia menu");
     /*The Materia menu has 11 well-defined viewing states*/
-    CursorContext checkArrangeContext = { 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0 };
-    Cursor checkArrangeCursor = { checkArrangeContext, 240, 62, 51, 0 };
-    CursorContext slotSelectContext = { 0, 0, 8, 2, 0, 0, 8, 2, 0, 0, 0, 0, 0, 0 };
-    Cursor slotSelectCursor = { slotSelectContext, 317, 62, 51, 28 };
+    CursorContext checkArrangeContext = { 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 0, 0, 0, 1 };
+    Cursor checkArrangeCursor = { checkArrangeContext, 160, 5, 30, 80 };
+    CursorContext slotSelectContext = { 0, 0, 8, 2, 0, 0, 8, 2, 0, 0, 0, 0, 0, 1 };
+    Cursor slotSelectCursor = { slotSelectContext, 367, 60, 30, 28 };
     CursorContext materiaInventoryContext = { 0, 0, 1, 10, 0, 0, 1, 512, 0, 0, 0, 0, 0, 1 };
     Cursor materiaInventoryCursor = { materiaInventoryContext, 362, 214, 26, 0 };
     /*This is a view of the players command data. It must be set based on the active actor in an updater*/
@@ -75,8 +75,7 @@ void registerMateriaMenuListeners() {
     gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitTrashMateriaView, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitTrashConfirmView, modName, contextKeys);
     gContext.eventBus.addListener(MENU_INPUT_TRIANGLE, (SrEventCallback)&removeMateriaHandler, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_RIGHT, (SrEventCallback)&enterSlotView, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_LEFT, (SrEventCallback)&enterOptionView, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&enterOptionView, modName, contextKeys);
 
     /*Register the materia view callbacks*/
     gContext.eventBus.addListener(DRAW_MATERIA_DATA, (SrEventCallback)&ablListH9S1, modName, std::unordered_set<SrEventContext>({ MAT_HIGH_TYPE_9, MAT_SUB_TYPE_1 }));

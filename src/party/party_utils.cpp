@@ -39,56 +39,12 @@ PartyMember* getGamePartyMember(u8 actorIdx) {
     return &(PARTY_STRUCT_ARRAY[actorIdx]);
 }
 
-u16 getEquippedGear(u8 characterID, u8 gearType) {
-    auto& characterRecord = gContext.characters.getResource(characterID);
-    u16 kernelObjectID;
-
-    switch (gearType) { //probably refactor this into a utility
-    case 1: {
-        kernelObjectID = characterRecord.equippedWeapon;
-        break;
-    }
-    case 2: {
-        kernelObjectID = characterRecord.equippedArmor;
-        break;
-    }
-    case 3: {
-        kernelObjectID = characterRecord.equippedAccessory;
-        break;
-    }
-    default: {
-        return 0;
-    }
-    }
-    return kernelObjectID;
-}
-
-bool characterCanEquipItem(u8 characterID, u16 itemID){
-    auto characterMask = getCharacterRestrictionMask(itemID);
-    bool characterCanUse = (bool)(characterMask & (1 << characterID));
-
-    return characterCanUse;
+bool characterCanEquipItem(u8 characterID, u16 itemID) {
+    return canCharacterUseItem(characterID, itemID);
 }
 
 u8 getCharacterRecordIndex(u8 characterIdx) {
     return (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[characterIdx])];
-}
-
-u16 getMateriaID(u8 characterID, u8 slot, u8 gearType) {
-    u16 materiaID;
-    auto name = getCharacterName(characterID);
-    switch (gearType) {
-        case 0:
-            materiaID = gContext.characters.getElement(name).wpnMaterias[slot].item_id;
-            break;
-        case 1:
-            materiaID = gContext.characters.getElement(name).wpnMaterias[slot].item_id;
-            break;
-        default: {
-            break;
-        }
-    }
-    return materiaID;
 }
 
 bool isPartyActor(u8 actorIdx) {

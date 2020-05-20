@@ -10,58 +10,69 @@ void initMateraCharDataWidget(const MenuInitEvent* event) {
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
-    TextWidget* textWidget;
-    DrawTextParams textParams;
-    BoxWidget* boxWidget;
-    DrawBoxParams boxParams;
-    PortraitWidget* portraitWidget;
-
-    auto currentMateriaWidget = createWidget(CHAR_DATA_WIDGET_NAME);
-    boxParams = {
-       0,
-       0,
-       640,
-       148,
-       0.3f
-    };
-    boxWidget = createBoxWidget(boxParams, CHAR_DATA_BOX_NAME);
-    addChildWidget(currentMateriaWidget, (Widget*)boxWidget, CHAR_DATA_BOX_NAME);
+    auto materiaEquipWidget = createWidget(CHAR_DATA_WIDGET_NAME);
+    DrawBoxParams boxParams = { 0, 0, 640, 148, 0.3f };
+    auto boxWidget = createBoxWidget(boxParams, CHAR_DATA_BOX_NAME);
+    addChildWidget(materiaEquipWidget, (Widget*)boxWidget, CHAR_DATA_BOX_NAME);
 
     drawPortraitParams portraitParams = { 17, 19, 0, 0.2f };
-    portraitWidget = createPortraitWidget(portraitParams, PORTRAIT_WIDGET_NAME);
-    addChildWidget(currentMateriaWidget, (Widget*)portraitWidget, PORTRAIT_WIDGET_NAME);
+    auto portraitWidget = createPortraitWidget(portraitParams, PORTRAIT_WIDGET_NAME);
+    addChildWidget(materiaEquipWidget, (Widget*)portraitWidget, PORTRAIT_WIDGET_NAME);
 
     drawHPBarParams hpBarParams = { 103, 30, 0, 0.2f };
     auto HPBarWidget = createHPBarWidget(hpBarParams, HPBAR_WIDGET_NAME);
-    addChildWidget(currentMateriaWidget, (Widget*)HPBarWidget, HPBAR_WIDGET_NAME);
+    addChildWidget(materiaEquipWidget, (Widget*)HPBarWidget, HPBAR_WIDGET_NAME);
 
-    std::vector<std::string> gearNames = { GEAR_SLOT_1_NAME, GEAR_SLOT_2_NAME };
-    std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR };
-    std::vector<std::string> viewNames = { CHECK_NAME, ARRANGE_NAME };
-    std::vector <std::string> slotNames = { GEAR_1_SLOTS, GEAR_2_SLOTS };
-    for (int row = 0; row < gearNames.size(); row++) {
-        menuText = gContext.gameStrings.materiaMenuTexts.get_string(row);
-        setTextParams(&textParams, 280, 59 + (50 * row), menuText, COLOR_WHITE, 0.1f);
-        textWidget = createTextWidget(textParams, viewNames[row]);
-        addChildWidget(currentMateriaWidget, (Widget*)textWidget, viewNames[row]);
+    DrawStaticGridParams staticGridParams = { &matEquipRowUpdater, 330, 60, 1, 2, 0, 30, &allocateMateriaEquipRow };
+    auto charEquipGrid = createStaticGridWidget(staticGridParams, EQUIP_MATERIA_GRID);
+    addChildWidget(materiaEquipWidget, (Widget*)charEquipGrid, EQUIP_MATERIA_GRID);
 
-        setTextParams(&textParams, 320, 32 + (52 * row), menuText, COLOR_TEAL, 0.1f);
-        textWidget = createTextWidget(textParams, equippedGearNames[row]);
-        addChildWidget(currentMateriaWidget, (Widget*)textWidget, equippedGearNames[row]);
+    staticGridParams = { nullptr, 200, 10, 3, 1, 80, 0, &allocateOptionsRow };
+    auto optionsGrid = createStaticGridWidget(staticGridParams, MATERIA_OPTIONS);
+    updateText(getChild((Widget*)optionsGrid, 0), EncodedString::from_unicode("Set").str());
+    updateText(getChild((Widget*)optionsGrid, 1), EncodedString::from_unicode("Check").str());
+    updateText(getChild((Widget*)optionsGrid, 2), EncodedString::from_unicode("Arrange").str());
+    addChildWidget(materiaEquipWidget, (Widget*)optionsGrid, MATERIA_OPTIONS);
 
-        menuText = gContext.gameStrings.materiaMenuTexts.get_string(row + 2);
-        setTextParams(&textParams, 267, 32 + (52 * row), menuText, COLOR_WHITE, 0.1f);
-        textWidget = createTextWidget(textParams, gearNames[row]);
-        addChildWidget(currentMateriaWidget, (Widget*)textWidget, gearNames[row]);
+    addChildWidget(mainWidget, materiaEquipWidget, CHAR_DATA_WIDGET_NAME);
+}
 
-        /*There is a good chance the slot widget will have to be rewritten, since we want to expand the number of materia*/
-        drawSlotsParams slotsParams = { 357, 59 + (50 * row), nullptr, nullptr };
-        auto slotsWidget = createSlotsWidget(slotsParams, slotNames[row]);
-        addChildWidget(currentMateriaWidget, (Widget*)slotsWidget, slotNames[row]);
+Widget* allocateOptionsRow(const char* name, i32 x, i32 y) {
+    DrawTextParams textParams = { x, y, defaultString, COLOR_WHITE, 0.2f };
+    return (Widget*)createTextWidget(textParams, "OPTION");
+}
 
+Widget* allocateMateriaEquipRow(const char* name, i32 x, i32 y) {
+    auto materiaEquipRow = createWidget("ROW");
+    moveWidget(materiaEquipRow, x, y);
+
+    DrawTextParams textParams = { x, y, defaultString, COLOR_TEAL, 0.2f };
+    auto textWidget = createTextWidget(textParams, "GEAR");
+    addChildWidget(materiaEquipRow, (Widget*)textWidget, "GEAR");
+
+    /*There is a good chance the slot widget will have to be rewritten, since we want to expand the number of materia*/
+    drawSlotsParams slotsParams = { x + 70, y, nullptr, nullptr };
+    auto slotsWidget = createSlotsWidget(slotsParams, "MAT");
+    addChildWidget(materiaEquipRow, (Widget*)slotsWidget, "MAT");
+    return materiaEquipRow;
+}
+
+void matEquipRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != StaticGridWidgetClass()) {
+        return;
+    }
+    auto& gearSlot = gContext.party.getActivePartyCharacter(*MAT_MENU_PARTY_INDEX).equipment.at(flatIndex);
+
+    updateText(getChild(widget, "GEAR"), gearSlot.slotName.str());
+
+    u8* slotsPtr = getMateriaSlots(gearSlot.equippedIdx, gearSlot.slotGearType);
+    if (!slotsPtr) {
+        disableWidget(widget);
+        return;
     }
 
-    addChildWidget(mainWidget, currentMateriaWidget, CHAR_DATA_WIDGET_NAME);
+    updateMateriaSlots(getChild(widget, "MAT"), slotsPtr);
+    updateMateriaData(getChild(widget, "MAT"), &(gearSlot.materia[0]));
 }
 
 void initMateriaDescWidget(const MenuInitEvent* event) {
@@ -88,9 +99,7 @@ void initMateriaDescWidget(const MenuInitEvent* event) {
     boxWidget = createBoxWidget(boxParams, MATERIA_DESC_BOX);
     addChildWidget(mainWidget, (Widget*)boxWidget, MATERIA_DESC_BOX);
 
-    materiaID = getMateriaID(characterID, 0, 0);
-    materiaDescription = gContext.gameStrings.materia_descriptions.get_string(materiaID);
-    setTextParams(&textParams, 16, 160, materiaDescription, COLOR_WHITE, 0.1f);
+    setTextParams(&textParams, 16, 160, defaultString, COLOR_WHITE, 0.2f);
     textWidget = createTextWidget(textParams, MATERIA_DESC);
     addChildWidget(MatDescWidget, (Widget*)textWidget, MATERIA_DESC);
 
@@ -132,10 +141,10 @@ void initMateriaViewWidget(const MenuInitEvent* event) {
 Widget* allocateMateriaRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     auto materiaWidget = createWidget(name);
     moveWidget(materiaWidget, xCoordinate, yCoordinate);
-    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.1f };
+    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.2f };
     addChildWidget(materiaWidget, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
 
-    DrawGameAssetParams assetInitParams = MateriaSphere(xCoordinate - 20, yCoordinate, 0, 0.1f);
+    DrawGameAssetParams assetInitParams = MateriaSphere(xCoordinate - 20, yCoordinate, 0, 0.2f);
     addChildWidget(materiaWidget, (Widget*)createGameAssetWidget(assetInitParams, std::string("SPH")), std::string("SPH"));
     return materiaWidget;
 }
@@ -147,7 +156,7 @@ void materiaEntryUpdater(CollectionWidget* self, Widget*widget, u16 flatIndex) {
     auto typedPtr = (CursorGridWidget*)self;
     auto textWidget = getChild(widget, std::string("TXT"));
     auto sphereWidget = getChild(widget, std::string("SPH"));
-    auto materiaID = gContext.materiaInventory->getResource(flatIndex).item_id;
+    auto materiaID = gContext.materiaInventory->getResource(flatIndex).materiaID;
     if (materiaID != 0xFFFF) {
         enableWidget(textWidget);
         const char* name = gContext.gameStrings.materia_names.get_string(materiaID);

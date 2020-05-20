@@ -96,6 +96,6 @@ void enableAblT11S3(const EnableAbilitiesEvent* const event) {
         return;
     }
     auto& summonCtx = gContext.party.getSummonCtx(spellIdx);
-    gContext.party.setSummonCtx(spellIdx, summonCtx.cumulativeAP + event->materia.materia_ap, max(summonCtx.maxLevel, event->materiaLevel));
+    gContext.party.setSummonCtx(spellIdx, summonCtx.cumulativeAP + event->materia.materiaAP, max(summonCtx.maxLevel, event->materiaLevel));
     spellSlotPtr->allCount = event->materiaData.data[event->materiaLevel];
 }

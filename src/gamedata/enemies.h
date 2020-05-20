@@ -19,7 +19,7 @@ struct SrEnemyData_ {
     EnemyData enemyData;
     u16 modelID;
     BattleAIData enemyAI;
-    std::unordered_map<std::string, SrActorStat> enemyStats;
+    std::unordered_map<std::string, SrBoostedStat> enemyStats;
     std::vector<StealItem> toSteal;
     bool canMorph;
     u16 morphItem;

@@ -16,13 +16,9 @@ namespace MateriaWidgetNames {
     const std::string COMMAND_VIEW_WIDGET_NAME = "COMMAND_VIEW";
     const std::string SPELL_VIEW_WIDGET_NAME = "SPELL_VIEW";
     const std::string ARRANGE_WIDGET_NAME = "ARRANGE";
+    const std::string MATERIA_OPTIONS = "MATERIA_OPTIONS";
     //CHAR DATA WIDGETS//
-    const std::string GEAR_SLOT_1_NAME = "WPN_SLOT";
-    const std::string GEAR_SLOT_2_NAME = "ARM_SLOT";
-    const std::string EQUIPPED_WEAPON = "EQUIPPED_WPN";
-    const std::string GEAR_1_SLOTS = "1_GEAR_SLOTS";
-    const std::string EQUIPPED_ARMOR = "EQUIPPED_ARM";
-    const std::string GEAR_2_SLOTS = "2_GEAR_SLOTS";
+    const std::string EQUIP_MATERIA_GRID = "EQP_MAT_GRID";
     const std::string PORTRAIT_WIDGET_NAME = "CHAR_PORTRAIT";
     const std::string HPBAR_WIDGET_NAME = "CHAR_HPBAR";
     const std::string CHECK_NAME = "CHECK";

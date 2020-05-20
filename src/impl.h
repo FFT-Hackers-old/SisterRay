@@ -69,7 +69,8 @@ typedef struct {
     HWND                                console;
     FILE*                               logFile;
 
-    SrItemTypeRegistry                  itemTypeData;
+    ItemTypeRegistry                    itemTypes;
+    BaseItemRegistry                    baseItems;
     SrItemRegistry                      items;
     srOnUseCallbackRegistry             onUseHandlers; /*Registry of function pointers for using items*/
     srNoTargetCallbackRegistry          untargeted_handlers;

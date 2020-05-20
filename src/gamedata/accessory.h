@@ -7,12 +7,9 @@
 #include "base_item.h"
 
 typedef struct {
+    Equippable sharedBase;
     AccessoryData gameAccessory;
     AuxAccessoryData auxData;
-    EncodedString accessoryName;
-    EncodedString accessoryDescription;
-    std::unordered_map<std::string, SrStaticStat> stats;
-    EquipmentStatBoosts equipEffects;
 } SrAccessory;
 
 #define KERNEL_ACCESSORY_COUNT 32

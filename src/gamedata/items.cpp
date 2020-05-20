@@ -1,5 +1,6 @@
 #include "items.h"
 #include "../impl.h"
+#include "base_type_names.h"
 
 SrItemRegistry::SrItemRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrItem, std::string>() {
     size_t read_size;
@@ -57,7 +58,7 @@ SISTERRAY_API void addSrItem(SrConsumable data, u16 modItemID, const char* modNa
     item.auxData = data.useData;
     item.itemName = EncodedString::from_unicode(data.itemName);
     item.itemName = EncodedString::from_unicode(data.itemName);
-    gContext.itemTypeData.appendItem(name, ITYPE_CONSUMABLE, ICONTYPE_CONSUMABLE);
+    gContext.baseItems.appendItem(name, ITYPE_CONSUMABLE, ICONTYPE_CONSUMABLE);
 
     auto& cmd = gContext.commands.getResource(CMD_ITEM);
     SrAttack associatedAttack = attackFromItem(item);
@@ -91,8 +92,8 @@ SrAttack attackFromItem(const SrItem& item) {
 }
 
 /*initialize on use data to match the vanilla game*/
-ConsumableUseData getOnUseData(u16 item_id) {
-    switch (item_id) {
+ConsumableUseData getOnUseData(u16 materiaID) {
+    switch (materiaID) {
     case 0:
         return createOnUseItemData(100, 0, 0, 0, 0, 0, false, false, true);
         break;
@@ -142,47 +143,38 @@ ConsumableUseData createOnUseItemData(u16 hp_heal_amount, u16 mp_heal_amount,
 
 SISTERRAY_API void initItems(SrKernelStream* stream) {
     gContext.items = SrItemRegistry(stream);
-    gContext.itemTypeData.initializeAugmentedData((u8)0, gContext.items.resourceCount());
+    gContext.baseItems.initializeAugmentedData(ItemTypeNames::CONSUMABLE_TYPE, gContext.items.resourceCount());
     srLogWrite("kernel.bin: Loaded %lu items", (unsigned long)gContext.items.resourceCount());
 }
 
 /*Utility check if an item is usable globally*/
 bool canCharacterUseItem(u8 characterID, u16 itemID) {
-    u8 itemType = gContext.itemTypeData.getResource(itemID).itemType;
-    u16 relative_id = gContext.itemTypeData.getResource(itemID).itemType;
-    u16 restriction_mask;
-    switch(itemType) {
-    case 0: {
-        restriction_mask = gContext.items.getResource(itemID).auxData.characterRestrictionMask;
-        if (restriction_mask & (1 << (characterID))) {
+    std::string itemType = gContext.baseItems.getResource(itemID).itemType;
+    u16 relative_id = gContext.baseItems.getResource(itemID).typeRelativeID;
+    u16 restrictionMask;
+    if (itemType == ItemTypeNames::CONSUMABLE_TYPE) {
+        restrictionMask = gContext.items.getResource(itemID).auxData.characterRestrictionMask;
+        if (restrictionMask & (1 << (characterID))) {
             return true;
         }
-        break;
     }
-    case 1: {
-        restriction_mask = gContext.weapons.getResource(relative_id).gameWeapon.equip_mask;
-        if (restriction_mask & (1 << (characterID))) {
+    if (itemType == ItemTypeNames::WEAPON_TYPE) {
+        restrictionMask = gContext.weapons.getResource(relative_id).gameWeapon.equipMask;
+        if (restrictionMask & (1 << (characterID))) {
             return true;
         }
-        break;
     }
-    case 2: {
-        restriction_mask = gContext.armors.getResource(relative_id).gameArmor.equip_mask;
-        if (restriction_mask & (1 << (characterID))) {
+    if (itemType == ItemTypeNames::ARMOR_TYPE) {
+        restrictionMask = gContext.armors.getResource(relative_id).gameArmor.equipMask;
+        if (restrictionMask & (1 << (characterID))) {
             return true;
         }
-        break;
     }
-    case 3: {
-        restriction_mask = gContext.accessories.getResource(relative_id).gameAccessory.equip_mask;
-        if (restriction_mask & (1 << (characterID))) {
+    if (itemType == ItemTypeNames::ACCESSORY_TYPE) {
+        restrictionMask = gContext.accessories.getResource(relative_id).gameAccessory.equipMask;
+        if (restrictionMask & (1 << (characterID))) {
             return true;
         }
-        break;
     }
-    default:
-        return false;
-    }
-
     return false;
 }

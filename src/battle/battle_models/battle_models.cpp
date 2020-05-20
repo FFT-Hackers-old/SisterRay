@@ -29,7 +29,8 @@ BattleModel* srGetBattleModel(u32 a1, u8 modelPtrArrayIdx, LGPLoadCtx* loadCtx, 
     if (loadCtx->loadWeapon) {
         u16 weaponModelID = 0;
         if (modelPtrArrayIdx < 3) {
-            weaponModelID = gContext.weapons.getResource(gContext.party.getActivePartyCharacter(modelPtrArrayIdx).equippedWeapon).weaponModelID;
+            auto weaponIdx = gContext.party.getActivePartyCharacter(modelPtrArrayIdx).equipment[0].equippedIdx;
+            weaponModelID = gContext.weapons.getResource(weaponIdx).weaponModelID;
         }
         auto modelAAHeader = loadModelAAHeader(0, &fileCtx->lgpContext, filename);
         if (modelAAHeader) {

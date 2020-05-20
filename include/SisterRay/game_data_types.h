@@ -30,10 +30,11 @@ typedef enum {
 } SrAnimationType;
 
 typedef enum {
+    SR_INVALID_GEAR_TYPE,
     SR_GEAR_WEAPON,
     SR_GEAR_ARMOR,
     SR_GEAR_ACCESSORY
-} SrGearType;
+} SrGameGearType;
 
 #pragma pack(push, 1)
 typedef struct {
@@ -149,18 +150,18 @@ typedef struct {
     u8      padding;
     u8      soundAccessMask;
     u16     cameraMovement;
-    u16     equip_mask;
+    u16     equipMask;
     u16     attackElementMask;
     u16     unknown;
     u8      stats_to_boost[4];
     u8      stat_boost_amounts[4];
-    u8      materia_slots[8];
+    u8      materiaSlots[8];
     u8      normalSoundID;
     u8      critSoundID;
     u8      missSoundID;
     u8      impactEffectID;
     u16     specialAttackFlags;
-    u16     restriction_mask;
+    u16     restrictionMask;
 } WeaponData;
 #pragma pack(pop)
 
@@ -185,14 +186,14 @@ typedef struct {
     u8      magicEvade;
     u8      status_defense;
     u16     unknown2;
-    u8      materia_slots[8];
+    u8      materiaSlots[8];
     u8      materia_growth;
-    u16     equip_mask;
+    u16     equipMask;
     u16     elemental_defense_mask;
     u16     unknown3;
     u8      stats_to_boost[4];
     u8      stat_boost_amounts[4];
-    u16     restriction_mask;
+    u16     restrictionMask;
     u16     unknown4;
 } ArmorData;
 #pragma pack(pop)
@@ -216,8 +217,8 @@ typedef struct {
     u8      special_effect; /*We will hook in custom effects here*/
     u16     elements_mask;
     u32     status_defense_mask;
-    u16     equip_mask;
-    u16     restriction_mask;
+    u16     equipMask;
+    u16     restrictionMask;
 } AccessoryData;
 #pragma pack(pop)
 
@@ -256,8 +257,8 @@ typedef struct {
 } SrMateriaData;
 
 typedef struct {
-    u16 item_id;
-    u32 materia_ap;
+    u16 materiaID;
+    u32 materiaAP;
 } MateriaInventoryEntry;
 
 #endif // !GAME_DATA_TYPES_H

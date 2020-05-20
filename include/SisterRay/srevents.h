@@ -318,7 +318,7 @@ typedef struct {
     const MateriaInventoryEntry pairedMateria;
     const u8 pairedMateriaLevel;
     const MateriaData pairedData;
-    SrGearType gearType;
+    SrGameGearType gearType;
 } ApplySupportEvent;
 
 typedef void(*SRPFNCMDSELECTCALLBACK)(SelectCommandEvent*);

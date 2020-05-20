@@ -7,7 +7,7 @@
 
 /*This is the in-battle copy of the item inventory*/
 typedef struct {
-    u16 item_id;
+    u16 materiaID;
     u8 quantity;
     u8 targetFlags;
     u8 restrictionMask;
@@ -16,7 +16,7 @@ typedef struct {
 
 class SrBattleInventory : public SrInventory<BattleInventoryEntry> {
 public:
-    u16 slots_in_use;
+    u16 slotsInUse;
     SrBattleInventory(i16 allocation_size);
     SrBattleInventory() : SrInventory<BattleInventoryEntry>() {}
     void setSlotsInUse(u16 slotsInUse);

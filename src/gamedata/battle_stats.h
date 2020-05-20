@@ -48,7 +48,7 @@ typedef struct {
     i32 statValue; //The value of the stat factoring in active modifiers
     i32 baseValue; //The value of this stat without any modifiers from gear, materia, etc
     std::vector<StatBoost> boosts; //Always active boosts, like from equipment
-} SrActorStat;
+} SrBoostedStat;
 
 
 typedef struct {

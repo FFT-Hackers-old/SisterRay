@@ -25,36 +25,53 @@
 #define ICONTYPE_ACC        11
 
 typedef std::map<std::string, std::vector<StatBoost>> EquipmentStatBoosts;
+typedef struct {
+    EncodedString gearName;
+    EncodedString gearDescription;
+    std::unordered_map<std::string, SrStaticStat> stats;
+    EquipmentStatBoosts equipEffects;
+} Equippable;
+
+// indexed by global "materiaID"
+typedef struct {
+    bool isEquippable;
+    u8 typeDefaultIcon; //00 = normal item, 01 = sword 02= glove, etc
+} ItemType;
+
+class ItemTypeRegistry : public SrNamedResourceRegistry<ItemType, std::string> {
+public:
+    ItemTypeRegistry() : SrNamedResourceRegistry<ItemType, std::string>() {}
+};
+
+void initItemTypes();
 
 
 // indexed by global "item_id"
 typedef struct {
-    u8 itemType; //00 = normal item, 01 = weapon, 02=armor, 03=accessory
+    std::string itemType; 
     u16 typeRelativeID;
     u8 itemIconType; //00 = normal item, 01 = sword 02= glove, etc
-} ItemTypeData;
+} SrBaseItem;
 
 /*Holds type information about every item in the game, used for inventory index to specific data type lookups*/
-class SrItemTypeRegistry : public SrNamedResourceRegistry<ItemTypeData, std::string> {
+class BaseItemRegistry : public SrNamedResourceRegistry<SrBaseItem, std::string> {
 public:
-    SrItemTypeRegistry() : SrNamedResourceRegistry<ItemTypeData, std::string>() {}
-    void initializeAugmentedData(u8 itemType, u32 numberToInitialize);
-    u16 getAbsoluteID(u8 itemType, u8 relativeIndex);
-    void appendItem(const std::string& name, u8 itemType, u8 iconType); //add element is not virtual
+    BaseItemRegistry() : SrNamedResourceRegistry<SrBaseItem, std::string>() {}
+    void initializeAugmentedData(std::string itemType, u32 numberToInitialize);
+    u16 getAbsoluteID(std::string itemType, u8 relativeIndex);
+    void appendItem(const std::string& name, std::string itemType, u8 iconType); //add element is not virtual
 
 protected:
-    std::vector<i16> reverseItemRegistry;
-    std::vector<i16> reverseArmorRegistry;
-    std::vector<i16> reverseAccessoryRegistry;
-    std::vector<i16> reverseWeaponRegistry;
+    std::unordered_map<std::string, std::vector<u16>> reverseIndexMaps;
 };
 
-u8 getKernelIconType(u8 itemType, u16 typeRelativeIndex);
+std::string getItemTypeFromGearType(SrGameGearType gearType);
+u8 getKernelIconType(std::string itemType, u16 typeRelativeIndex);
 const char* getItemNameFromAbsoluteIdx(u16 absoluteIdx);
 const char* getItemDescFromAbsoluteIdx(u16 absoluteIdx);
-StatBoost createGearBoost(SrGearType gearType, u16 relativeGearIdx, bool isPercent, u16 amount, bool isNegative);
-SISTERRAY_API void initItemTypeData();
+StatBoost createGearBoost(SrGameGearType gearType, u16 relativeGearIdx, bool isPercent, u16 amount, bool isNegative);
+SISTERRAY_API void initBaseItems();
 
 
-void populatekernelStatBoosts(EquipmentStatBoosts& statBoosts, const u8* const stats, const u8* const amts, u8 count, u16 relativeGearIdx, SrGearType gearType);
+void populatekernelStatBoosts(EquipmentStatBoosts& statBoosts, const u8* const stats, const u8* const amts, u8 count, u16 relativeGearIdx, SrGameGearType gearType);
 #endif // !BASE_ITEM_H

@@ -42,8 +42,8 @@ void handleUpdateDescription(const MenuDrawEvent* event) {
     auto flatInventoryIndex = itemChoice.baseRowIndex + itemChoice.relativeRowIndex;
     switch (event->menuState) {
         case 1: {
-            if (gContext.inventory->getResource(flatInventoryIndex).item_id != 0xFFFF) {
-                fetchedDescription = getDescriptionFromID(gContext.inventory->getResource(flatInventoryIndex).item_id);
+            if (gContext.inventory->getResource(flatInventoryIndex).materiaID != 0xFFFF) {
+                fetchedDescription = getDescriptionFromID(gContext.inventory->getResource(flatInventoryIndex).materiaID);
                 updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), fetchedDescription);
             }
             else {
@@ -52,8 +52,8 @@ void handleUpdateDescription(const MenuDrawEvent* event) {
             break;
         }
         case 2: {
-            if (gContext.inventory->getResource(flatInventoryIndex).item_id != 0xFFFF) {
-                fetchedDescription = getDescriptionFromID(gContext.inventory->getResource(flatInventoryIndex).item_id);
+            if (gContext.inventory->getResource(flatInventoryIndex).materiaID != 0xFFFF) {
+                fetchedDescription = getDescriptionFromID(gContext.inventory->getResource(flatInventoryIndex).materiaID);
                 updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), fetchedDescription);
             }
             else {
@@ -77,8 +77,8 @@ void handleUpdateDescription(const MenuDrawEvent* event) {
         case 5: {
             auto customSortChoice = getStateCursor(event->menu, 5)->context;
             flatInventoryIndex = customSortChoice.baseRowIndex + customSortChoice.relativeRowIndex;
-            if (gContext.inventory->getResource(flatInventoryIndex).item_id != 0xFFFF) {
-                fetchedDescription = getDescriptionFromID(gContext.inventory->getResource(flatInventoryIndex).item_id);
+            if (gContext.inventory->getResource(flatInventoryIndex).materiaID != 0xFFFF) {
+                fetchedDescription = getDescriptionFromID(gContext.inventory->getResource(flatInventoryIndex).materiaID);
                 updateText(getChild(itemDescWidget, ITEM_DESCRIPTION), fetchedDescription);
             }
             else {

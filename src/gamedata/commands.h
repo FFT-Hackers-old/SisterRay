@@ -18,7 +18,7 @@ struct SrCommand_ {
     AuxCommandData auxData;
     EncodedString commandName;
     EncodedString commandDescription;
-    std::unordered_map<std::string, SrActorStat> commandStats;
+    std::unordered_map<std::string, SrBoostedStat> commandStats;
     std::vector<SRPFNCOMMANDSETUP> setupCallbacks;
     std::vector<SRPFNCMDSELECTCALLBACK> selectCallbacks;
     u16 actionCount;

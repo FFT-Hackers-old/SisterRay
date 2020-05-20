@@ -12,81 +12,79 @@
 using namespace EquipWidgetNames;
 
 void initCharDataWidget(const MenuInitEvent* event) {
-    const char * menuText;
-    auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
-    TextWidget* textWidget;
-    DrawTextParams textParams;
-    BoxWidget* boxWidget;
-    DrawBoxParams boxParams;
-    PortraitWidget* portraitWidget;
-
     auto currentEquipWidget = createWidget(CHAR_DATA_WIDGET_NAME);
 
-    boxParams = {
+    DrawBoxParams boxParams = {
        equipMenuWindowConfig[0].drawDistance1,
        equipMenuWindowConfig[0].drawDistance2,
        equipMenuWindowConfig[0].drawDistance3,
        equipMenuWindowConfig[0].drawDistance4,
        0.3f
     };
-    boxWidget = createBoxWidget(boxParams, CHAR_DATA_BOX_NAME);
+
+    auto boxWidget = createBoxWidget(boxParams, CHAR_DATA_BOX_NAME);
     addChildWidget(currentEquipWidget, (Widget*)boxWidget, CHAR_DATA_BOX_NAME);
 
     drawPortraitParams portraitParams = { 17, 9, 0, 0.2f };
-    portraitWidget = createPortraitWidget(portraitParams, PORTRAIT_WIDGET_NAME);
+    auto portraitWidget = createPortraitWidget(portraitParams, PORTRAIT_WIDGET_NAME);
     addChildWidget(currentEquipWidget, (Widget*)portraitWidget, PORTRAIT_WIDGET_NAME);
 
     drawHPBarParams hpBarParams = { 110, 17, 0, 0.2f };
     auto HPBarWidget = createHPBarWidget(hpBarParams, HPBAR_WIDGET_NAME);
     addChildWidget(currentEquipWidget, (Widget*)HPBarWidget, HPBAR_WIDGET_NAME);
 
-    std::vector<std::string> gearNames = { GEAR_SLOT_1_NAME, GEAR_SLOT_2_NAME, GEAR_SLOT_3_NAME };
-    std::vector<std::string> equippedGearNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
-    for (int row = 0; row < gearNames.size(); row++) {
-        menuText = gContext.gameStrings.equipMenuTexts.get_string(row);
-        setTextParams(&textParams, 250, 13 + (34 * row), menuText, COLOR_TEAL, 0.2f);
-        textWidget = createTextWidget(textParams, gearNames[row]);
-        addChildWidget(currentEquipWidget, (Widget*)textWidget, gearNames[row]);
-
-        setTextParams(&textParams, 303, 13 + (34 * row), menuText, COLOR_WHITE, 0.2f);
-        textWidget = createTextWidget(textParams, equippedGearNames[row]);
-        addChildWidget(currentEquipWidget, (Widget*)textWidget, equippedGearNames[row]);
-    }
+    DrawStaticGridParams staticGridParams = { &equipRowUpdater, 265, 13, 1, 3, 0, 36, &allocateEquipRow };
+    auto charEquipGrid = createStaticGridWidget(staticGridParams, EQUIPMENT_GRID);
+    addChildWidget(currentEquipWidget, (Widget*)charEquipGrid, EQUIPMENT_GRID);
 
     addChildWidget(mainWidget, currentEquipWidget, CHAR_DATA_WIDGET_NAME);
 }
 
-void initGearDescWidget(const MenuInitEvent* event) {
-    const char* fetchedName;
-    u16 kernelObjectID;
-    auto characterID = (RECYCLE_SLOT_OFFSET_TABLE)[(((u8*)CURRENT_PARTY_MEMBER_ARRAY)[*EQUIP_MENU_PARTY_INDEX])];
 
-    TextWidget* textWidget;
+Widget* allocateEquipRow(const char* name, i32 xCoordinate, i32 yCoordinate){
+    auto equipRow = createWidget(CHAR_DATA_WIDGET_NAME);
+    moveWidget(equipRow, xCoordinate, yCoordinate);
+    DrawTextParams textParams{ xCoordinate, yCoordinate, defaultString, COLOR_TEAL, 0.2f };
+    auto textWidget = createTextWidget(textParams, "TYPE");
+    addChildWidget(equipRow, (Widget*)textWidget, "TYPE");
+
+    setTextParams(&textParams, xCoordinate + 63, yCoordinate, defaultString, COLOR_WHITE, 0.2f);
+    textWidget = createTextWidget(textParams, "EQP");
+    addChildWidget(equipRow, (Widget*)textWidget, "EQP");
+    return equipRow;
+}
+
+void equipRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    if (self->collectionType != StaticGridWidgetClass()) {
+        return;
+    }
+    auto& gearSlot = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX).equipment.at(flatIndex);
+    updateText(getChild(widget, "TYPE"), gearSlot.slotName.str());
+    updateText(getChild(widget, "EQP"), gearSlot.equipped.gearName.str());
+}
+
+void initGearDescWidget(const MenuInitEvent* event) {
     DrawTextParams textParams;
-    BoxWidget* boxWidget;
-    DrawBoxParams boxParams;
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto GearDescWidget = createWidget(GEAR_DESC_WIDGET_NAME);
 
-    boxParams = {
+    DrawBoxParams boxParams = {
         equipMenuWindowConfig[1].drawDistance1,
         equipMenuWindowConfig[1].drawDistance2,
         equipMenuWindowConfig[1].drawDistance3,
         equipMenuWindowConfig[1].drawDistance4,
         0.3f
     };
-    boxWidget = createBoxWidget(boxParams, GEAR_DESC_BOX);
+    auto boxWidget = createBoxWidget(boxParams, GEAR_DESC_BOX);
     addChildWidget(mainWidget, (Widget*)boxWidget, GEAR_DESC_BOX);
 
-    kernelObjectID = getEquippedGear(characterID, 1);
-    fetchedName = getNameFromRelativeID(kernelObjectID, 1);
-    setTextParams(&textParams, 4, equipMenuWindowConfig[1].drawDistance2 + 13, fetchedName, COLOR_WHITE, 0.2f);
-    textWidget = createTextWidget(textParams, GEAR_DESCRIPTION);
+    setTextParams(&textParams, 12, equipMenuWindowConfig[1].drawDistance2 + 13, defaultString, COLOR_WHITE, 0.2f);
+    auto textWidget = createTextWidget(textParams, GEAR_DESCRIPTION);
     addChildWidget(GearDescWidget, (Widget*)textWidget, GEAR_DESCRIPTION);
 
     addChildWidget(mainWidget, GearDescWidget, GEAR_DESC_WIDGET_NAME);
@@ -150,13 +148,6 @@ void initGearMateriaSlotWidget(const MenuInitEvent* event) {
 void initStatDiffWidget(const MenuInitEvent* event) {
     u16 windowTop = equipMenuWindowConfig[3].drawDistance2 + 26;
     const char* menuText;
-
-    TextWidget* textWidget;
-    DrawTextParams textParams;
-    NumberWidget* numberWidget;
-    DrawNumberParams numberParams;
-    SimpleAssetWidget* simpleAssetWidget;
-    DrawSimpleAssetParams simpleAssetParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
     auto menuObject = event->menu;
@@ -173,37 +164,36 @@ void initStatDiffWidget(const MenuInitEvent* event) {
     };
     boxWidget = createBoxWidget(boxParams, STAT_DIFF_BOX);
     addChildWidget(statDiffWidget, (Widget*)boxWidget, STAT_DIFF_BOX);
+    DrawStaticGridParams staticGridParams = {nullptr, 53, windowTop, 1, 7, 0, 26, &allocateStatDiffRow};
+    auto statDiffGrid = createStaticGridWidget(staticGridParams, STAT_DIFF_GRID);
+    addChildWidget(statDiffWidget, (Widget*)statDiffGrid, STAT_DIFF_GRID);
 
-    std::vector<std::string> statNames = { STAT_NAME_1, STAT_NAME_2, STAT_NAME_3, STAT_NAME_4, STAT_NAME_5, STAT_NAME_6, STAT_NAME_7 };
-    std::vector<std::string> numberNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
-    std::vector<std::string> candidateNumberNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
-    std::vector<std::string> arrowNames = { ARROW_1, ARROW_2, ARROW_3, ARROW_4, ARROW_5, ARROW_6, ARROW_7 };
-    std::vector<std::string> displayStatNames = {
-        StatNames::WEAPON_ATTACK, StatNames::WEAPON_ACCURACY,
-        StatNames::ARMOR_DEFENSE, StatNames::EVADE,
-        StatNames::WEAPON_MAGIC, StatNames::ARMOR_MDEFENSE,
-        StatNames::MEVADE_NAME
-    };
-    for (u8 displayStatIdx = 0; displayStatIdx < 7; ++displayStatIdx) {
-        menuText = gContext.stats.getElement(displayStatNames[displayStatIdx]).displayName.str();
-        srLogWrite("CREATING EQUIP MENU WIDGET WITH STAT NAME: %s", gContext.stats.getElement(displayStatNames[displayStatIdx]).displayName.unicode());
-        setTextParams(&textParams, 53, windowTop + 26 * displayStatIdx - 6, menuText, COLOR_TEAL, 0.2f);
-        textWidget = createTextWidget(textParams, statNames[displayStatIdx]);
-        addChildWidget(statDiffWidget, (Widget*)textWidget, statNames[displayStatIdx]);
-
-        simpleAssetParams = { 244, 26 * displayStatIdx + windowTop, 0xDAu, COLOR_TEAL, 0.2f };
-        simpleAssetWidget = createSimpleGameAssetWidget(simpleAssetParams, arrowNames[displayStatIdx]);
-        addChildWidget(statDiffWidget, (Widget*)simpleAssetWidget, arrowNames[displayStatIdx]);
-
-        setNumberParams(&numberParams, 200, windowTop + 26 * displayStatIdx, 0, 3, COLOR_WHITE, 0.2f);
-        numberWidget = createNumberWidget(numberParams, numberNames[displayStatIdx]);
-        addChildWidget(statDiffWidget, (Widget*)numberWidget, numberNames[displayStatIdx]);
-
-        setNumberParams(&numberParams, 270, windowTop + 26 * displayStatIdx, 0, 3, COLOR_WHITE, 0.2f);
-        numberWidget = createNumberWidget(numberParams, candidateNumberNames[displayStatIdx]);
-        addChildWidget(statDiffWidget, (Widget*)numberWidget, candidateNumberNames[displayStatIdx]);
-    }
     addChildWidget(mainWidget, statDiffWidget, STAT_DIFF_WIDGET_NAME);
+}
+
+Widget* allocateStatDiffRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
+    DrawTextParams textParams;
+    DrawNumberParams numberParams;
+
+    auto statDiffRow = createWidget(name);
+    moveWidget(statDiffRow, xCoordinate, yCoordinate);
+    setTextParams(&textParams, xCoordinate, yCoordinate, defaultString, COLOR_TEAL, 0.2f);
+    auto textWidget = createTextWidget(textParams, "STA");
+    addChildWidget(statDiffRow, (Widget*)textWidget, "STA");
+
+    DrawSimpleAssetParams simpleAssetParams = { xCoordinate + 191, yCoordinate, 0xDAu, COLOR_TEAL, 0.2f };
+    auto simpleAssetWidget = createSimpleGameAssetWidget(simpleAssetParams, "ARW");
+    addChildWidget(statDiffRow, (Widget*)simpleAssetWidget, "ARW");
+
+    setNumberParams(&numberParams, xCoordinate + 147, yCoordinate, 0, 3, COLOR_WHITE, 0.2f);
+    auto numberWidget = createNumberWidget(numberParams, "CUR");
+    addChildWidget(statDiffRow, (Widget*)numberWidget, "CUR");
+
+    setNumberParams(&numberParams, xCoordinate + 217, yCoordinate, 0, 3, COLOR_WHITE, 0.2f);
+    numberWidget = createNumberWidget(numberParams, "NEW");
+    addChildWidget(statDiffRow, (Widget*)numberWidget, "NEW");
+    srLogWrite("ALLOCATING STATIC GRID ROW FOR EQUIPMENT STAT DIFF");
+    return statDiffRow;
 }
 
 //Initialize the gear list with just a box and a series of disabled widgets.
@@ -241,8 +231,8 @@ void gearViewNameUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
     }
     auto typedPtr = (CursorGridWidget*)self;
     auto gearType = gContext.gearViewData.getItemType();
-    auto relativeItemID = gContext.gearViewData.getResource(flatIndex).relative_item_id;
-    const char* name = getNameFromRelativeID(relativeItemID, gearType);
+    auto relativeItemID = gContext.gearViewData.getResource(flatIndex).relativeItemID;
+    const char* name = getGearNameFromRelativeID(relativeItemID, gearType);
     updateText(widget, name);
     updateTextColor(widget, COLOR_WHITE);
 }

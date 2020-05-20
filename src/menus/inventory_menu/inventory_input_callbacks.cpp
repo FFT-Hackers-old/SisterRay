@@ -38,11 +38,11 @@ void selectItemHandler(const MenuInputEvent* event) {
 
     auto itemChoice = getStateCursor(event->menu, 1)->context;
 
-    if (gContext.inventory->getResource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).item_id == 0xFFFF) {
+    if (gContext.inventory->getResource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).materiaID == 0xFFFF) {
         playMenuSound(3);
     }
     else {
-        auto itemID = gContext.inventory->getResource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).item_id;
+        auto itemID = gContext.inventory->getResource(itemChoice.baseRowIndex + itemChoice.relativeRowIndex).materiaID;
         if (usableInInventoryMenu(itemID)) {
             playMenuSound(3);
         }
@@ -87,7 +87,7 @@ void useTargetedItemHandler(const MenuInputEvent* event) {
 
     auto itemChoice = getStateCursor(event->menu, 1)->context;
     u16 inventory_index = itemChoice.baseRowIndex + itemChoice.relativeRowIndex;
-    auto itemID = gContext.inventory->getResource(inventory_index).item_id;
+    auto itemID = gContext.inventory->getResource(inventory_index).materiaID;
     u32 partyMemberIndex = getStateCursor(event->menu, 2)->context.relativeRowIndex;
 
     u8 character_ID = (CURRENT_PARTY_MEMBER_ARRAY)[partyMemberIndex];
@@ -175,7 +175,7 @@ void handleUsableItemEffects(u16 item_ID, u16 inventory_index, u32 partyMemberIn
     itemWasUsed = gContext.onUseHandlers.get_handler(item_ID)((u16)partyMemberIndex, item_ID, inventory_index);
     if (itemWasUsed) {
         gContext.inventory->decrementInventoryEntry(inventory_index, 1);
-        if (gContext.inventory->getResource(inventory_index).item_id == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
+        if (gContext.inventory->getResource(inventory_index).materiaID == 0xFFFF)// If the Inventory Entry is -1, i.e it has been used up
             setMenuState(menu, 1);
     }
 }

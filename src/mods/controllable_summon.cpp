@@ -18,10 +18,9 @@ void loadControllableSummon() {
     gContext.commands.getResource(CMD_SUMMON).auxData.animationScriptIndex = getSrPlayerAnimScriptID(CONTROL_SUMMON_MOD_NAME, 0, "CLOUD.DAT");
 
     gContext.eventBus.addListener(INIT_SUMMON_PARTY_MEMBER, (SrEventCallback)initializeIfrit, std::string(CONTROL_SUMMON_MOD_NAME));
-    initPlayableSummons();
 }
 
-void initPlayableSummons() {
+void loadPlayableSummons() {
     loadPlayableSummonAnimations();
     loadPlayableSummonAnimScripts();
     initIfritMenu();

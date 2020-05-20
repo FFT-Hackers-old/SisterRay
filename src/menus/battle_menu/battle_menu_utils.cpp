@@ -1,6 +1,7 @@
 #include "battle_menu_utils.h"
 #include "../../impl.h"
 #include "../../inventories/inventory_utils.h"
+#include "../../gamedata/base_type_names.h"
 
 /*Return True if the character is usable by the character attempting to use it*/
 bool isUsableInBattle(u16 itemID) {
@@ -48,8 +49,8 @@ bool didItemUseSucceed(u16 itemID) {
 
 //Set the restore type global used by executing healing actions
 u16 getRestoreTypeGlobal(i16 itemID) {
-    auto itemType = gContext.itemTypeData.getResource(itemID).itemType;
-    if (itemType != 0) {
+    std::string itemType = gContext.baseItems.getResource(itemID).itemType;
+    if (itemType != ItemTypeNames::CONSUMABLE_TYPE) {
         return 0xFFFF;
     }
     return gContext.items.getResource(itemID).gameItem.restoreTypes;

@@ -7,26 +7,14 @@ using namespace EquipWidgetNames;
 
 void handleChangeCharacter(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u16 kernelObjectID;
-    const char* fetchedName;
-
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
-
     auto topWidget = getChild(menuWidget, CHAR_DATA_WIDGET_NAME);
     updatePortraitPartyIndex(getChild(topWidget, PORTRAIT_WIDGET_NAME), *EQUIP_MENU_PARTY_INDEX);
     updateHPBarPartyIndex(getChild(topWidget, HPBAR_WIDGET_NAME), *EQUIP_MENU_PARTY_INDEX);
-
-    std::vector<std::string> listNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR, EQUIPPED_ACC };
-    for (u32 row = 0; row < listNames.size(); row++) {
-        kernelObjectID = getEquippedGear(characterRecordArrayIndex, row + 1);
-        fetchedName = getNameFromRelativeID(kernelObjectID, row + 1);
-        updateText(getChild(topWidget, listNames[row]), fetchedName);
-    }
 }
 
 void handleUpdateEquipDescription(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX);
     u16 kernelObjectID;
     const char * fetchedDescription;
 
@@ -35,21 +23,21 @@ void handleUpdateEquipDescription(const MenuDrawEvent* event) {
 
 
     auto slotChoice = getStateCursor(event->menu, 0)->context;
+    auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
     if (event->menuState == 1) {
         auto gearChoice = getStateCursor(event->menu, 1)->context;
-        kernelObjectID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
+        kernelObjectID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relativeItemID;
+        fetchedDescription = getGearDescriptionFromRelativeID(kernelObjectID, gearSlot.slotGearType);
     }
     else {
-        kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice.relativeRowIndex + 1);
+        fetchedDescription = gearSlot.equipped.gearDescription.str();
     }
-
-    fetchedDescription = getDescriptionFromRelativeID(kernelObjectID, slotChoice.relativeRowIndex + 1); 
     updateText(descrptionWidget, fetchedDescription);
 }
 
 void handleUpdateGearSlotsWidget(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX);
     u16 kernelObjectID;
     u8* materiaSlots;
     u8 materiaGrowth;
@@ -60,31 +48,34 @@ void handleUpdateGearSlotsWidget(const MenuDrawEvent* event) {
 
 
     auto slotChoice = getStateCursor(event->menu, 0)->context;
+    auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
     if (event->menuState == 1) {
         auto gearChoice = getStateCursor(event->menu, 1)->context;
-        kernelObjectID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
+        kernelObjectID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relativeItemID;
     }
     else {
-        kernelObjectID = getEquippedGear(characterRecordArrayIndex, slotChoice.relativeRowIndex + 1);
+        kernelObjectID = gearSlot.equippedIdx;
     }
 
-    switch (slotChoice.relativeRowIndex) {
-        case 0: {
-            materiaSlots = &(gContext.weapons.getResource(kernelObjectID).gameWeapon.materia_slots[0]);
+    switch (gearSlot.slotGearType) {
+        case SR_GEAR_WEAPON: {
+            materiaSlots = &(gContext.weapons.getResource(kernelObjectID).gameWeapon.materiaSlots[0]);
             materiaGrowth = gContext.weapons.getResource(kernelObjectID).gameWeapon.materia_growth;
             break;
         }
-        case 1: {
-            materiaSlots = &(gContext.armors.getResource(kernelObjectID).gameArmor.materia_slots[0]);
+        case SR_GEAR_ARMOR: {
+            materiaSlots = &(gContext.armors.getResource(kernelObjectID).gameArmor.materiaSlots[0]);
             materiaGrowth = gContext.armors.getResource(kernelObjectID).gameArmor.materia_growth;
             break;
         }
         default: {
+            disableWidget(materiaSlotsWidget);
+            disableWidget(growthWidget);
             materiaSlots = nullptr;
             materiaGrowth = 4;
+            return;
         }
     }
-
     updateMateriaSlots(materiaSlotsWidget, materiaSlots);
 
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"
@@ -100,66 +91,65 @@ void handleUpdateGearSlotsWidget(const MenuDrawEvent* event) {
 void handleUpdateStatMenuWidget(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
     auto& characterRecord = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX);
-    u8 statsToDisplay[7];
-    auto statDiffWidget = getChild(menuWidget, STAT_DIFF_WIDGET_NAME);
+    auto statDiffGrid = getChild(getChild(menuWidget, STAT_DIFF_WIDGET_NAME), STAT_DIFF_GRID);
+    auto slotChoice = getStateCursor(event->menu, 0)->context;
+    auto gearChoice = getStateCursor(event->menu, 1)->context;
 
-    if (event->menuState == 1) {
-        auto slotChoice = getStateCursor(event->menu, 0)->context;
-        auto gearChoice = getStateCursor(event->menu, 1)->context;
-        switch (slotChoice.relativeRowIndex) {
-            case 0: {
-                auto toEquipWeaponID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
-                statsToDisplay[0] = gContext.weapons.getResource(toEquipWeaponID).equipEffects[StatNames::WEAPON_ATTACK][0].amount;
-                statsToDisplay[1] = gContext.weapons.getResource(toEquipWeaponID).equipEffects[StatNames::WEAPON_ACCURACY][0].amount;
-                std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2 };
-                std::vector<std::string> currentGearNames = { STAT_VALUE_1, STAT_VALUE_2 };
-                for (u32 row = 0; row < listNames.size(); row++) {
-                    //auto currentStat = getNumber(getChild(statDiffWidget, currentGearNames[row]));
-                    //updateNumberColor(getChild(statDiffWidget, listNames[row]), getStatDisplayColor(currentStat, statsToDisplay[row]));
-                    updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
-                }
-                break;
-            }
-            case 1: {
-                auto toEquipArmorID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
-                statsToDisplay[2] = gContext.armors.getResource(toEquipArmorID).equipEffects[StatNames::ARMOR_DEFENSE][0].amount;
-                statsToDisplay[3] = gContext.armors.getResource(toEquipArmorID).equipEffects[StatNames::EVADE][0].amount;
-                statsToDisplay[4] = 0;
-                statsToDisplay[5] = gContext.armors.getResource(toEquipArmorID).equipEffects[StatNames::ARMOR_MDEFENSE][0].amount;
-                statsToDisplay[6] = gContext.armors.getResource(toEquipArmorID).equipEffects[StatNames::MEVADE][0].amount;
-                std::vector<std::string> listNames = { NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
-                std::vector<std::string> currentGearNames = { STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
-                for (u32 row = 0; row < listNames.size(); row++) {
-                    //auto currentStat = getNumber(getChild(statDiffWidget, currentGearNames[row]));
-                    //updateNumberColor(getChild(statDiffWidget, listNames[row]), getStatDisplayColor(currentStat, statsToDisplay[row]));
-                    updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row + 2]);
-                }
-                break;
-            }
-            default: {
-                break;
-            }
+    std::vector<std::string> armorStatOrder = { StatNames::ARMOR_DEFENSE, StatNames::EVADE, StatNames::ARMOR_MDEFENSE, StatNames::MEVADE };
+    std::vector<std::string> weaponStatOrder = { StatNames::WEAPON_ATTACK, StatNames::WEAPON_ACCURACY, StatNames::WEAPON_MAGIC};
+
+    const auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
+    const auto& equipped = gearSlot.equipped;
+    Equippable toEquip;
+    std::vector<std::string> statOrder;
+    switch (gearSlot.slotGearType) {
+    case SR_GEAR_WEAPON: {
+        statOrder = weaponStatOrder;
+        if (event->menuState == 1) {
+            auto toEquipID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relativeItemID;
+            toEquip = gContext.weapons.getResource(toEquipID).sharedBase;
+        }
+        break;
+    }
+    case SR_GEAR_ARMOR: {
+        statOrder = armorStatOrder;
+        if (event->menuState == 1) {
+            auto toEquipID = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relativeItemID;
+            toEquip = gContext.armors.getResource(toEquipID).sharedBase;
+        }
+        break;
+    }
+    default: {
+        for (auto idx = 0; idx < 7; idx++) {
+            disableWidget(getChild(statDiffGrid, idx));
         }
         return;
     }
-
-    u16 equippedArmorID = characterRecord.equippedArmor;
-    u16 equippedWeaponID = characterRecord.equippedWeapon;
-
-    std::vector<std::string> listNames = { NEW_STAT_VALUE_1, NEW_STAT_VALUE_2, NEW_STAT_VALUE_3, NEW_STAT_VALUE_4, NEW_STAT_VALUE_5, NEW_STAT_VALUE_6, NEW_STAT_VALUE_7 };
-    std::vector<std::string> baseNames = { STAT_VALUE_1, STAT_VALUE_2, STAT_VALUE_3, STAT_VALUE_4, STAT_VALUE_5, STAT_VALUE_6, STAT_VALUE_7 };
-    statsToDisplay[0] = gContext.weapons.getResource(equippedWeaponID).equipEffects[StatNames::WEAPON_ATTACK][0].amount;
-    statsToDisplay[1] = gContext.weapons.getResource(equippedWeaponID).equipEffects[StatNames::WEAPON_ACCURACY][0].amount;
-    statsToDisplay[2] = gContext.armors.getResource(equippedArmorID).equipEffects[StatNames::ARMOR_DEFENSE][0].amount;
-    statsToDisplay[3] = gContext.armors.getResource(equippedArmorID).equipEffects[StatNames::EVADE][0].amount;
-    statsToDisplay[4] = 0;
-    statsToDisplay[5] = gContext.armors.getResource(equippedArmorID).equipEffects[StatNames::ARMOR_MDEFENSE][0].amount;;
-    statsToDisplay[6] = gContext.armors.getResource(equippedArmorID).equipEffects[StatNames::MEVADE][0].amount;;
-    for (u32 row = 0; row < listNames.size(); row++) {
-        updateNumber(getChild(statDiffWidget, listNames[row]), statsToDisplay[row]);
-        updateNumber(getChild(statDiffWidget, baseNames[row]), statsToDisplay[row]);
     }
+    for (auto idx = 0; idx < 7; idx++) {
+        if (idx > statOrder.size() - 1) {
+            disableWidget(getChild(statDiffGrid, idx));
+            continue;
+        }
+        enableWidget(getChild(statDiffGrid, idx));
 
+        bool hasStat = equipped.stats.find(statOrder[idx]) != equipped.stats.end();
+        if (!hasStat) {
+            disableWidget(getChild(statDiffGrid, idx));
+            continue;
+        }
+        auto diffRow = getChild(statDiffGrid, idx);
+        if (event->menuState == 1) {
+            auto currentValue = equipped.stats.at(statOrder[idx]).statValue;
+            updateNumberColor(getChild(diffRow, "NEW"), getStatDisplayColor(currentValue, toEquip.stats.at(statOrder[idx]).statValue));
+            updateNumber(getChild(diffRow, "NEW"), toEquip.stats.at(statOrder[idx]).statValue);
+        }
+        else {
+            updateNumber(getChild(diffRow, "NEW"), equipped.stats.at(statOrder[idx]).statValue);
+        }
+        updateText(getChild(diffRow, "STA"), gContext.stats.getElement(statOrder[idx]).displayName.str());
+        updateNumber(getChild(diffRow, "CUR"), equipped.stats.at(statOrder[idx]).statValue);
+    }
 }
 
 void enableListWidget(const MenuDrawEvent* event) {

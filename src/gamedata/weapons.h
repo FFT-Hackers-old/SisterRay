@@ -12,12 +12,9 @@
 #define KERNEL_WEAPON_COUNT 128
 
 struct SrWeapon_ {
+    Equippable sharedBase;
     WeaponData gameWeapon;
     AuxWeaponData auxData;
-    EncodedString weaponName;
-    EncodedString weaponDescription;
-    std::unordered_map<std::string, SrStaticStat> stats;
-    EquipmentStatBoosts equipEffects;
     std::vector<std::string> attackElements;
     std::vector<StatusInfliction> statusAttack;
     DamageType damageType;

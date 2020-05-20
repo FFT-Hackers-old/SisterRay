@@ -1,6 +1,7 @@
 #include "weapons.h"
 #include "../impl.h"
 #include "stat_names.h"
+#include "base_type_names.h"
 
 
 SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrWeapon, std::string>() {
@@ -14,16 +15,16 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         if (read_size != sizeof(baseWeapon))
             break;
         SrWeapon weapon;
-        weapon.equipEffects[StatNames::WEAPON_ATTACK].push_back(createGearBoost(SR_GEAR_WEAPON, idx, false, baseWeapon.weaponStrength, false));
-        weapon.equipEffects[StatNames::WEAPON_ACCURACY].push_back(createGearBoost(SR_GEAR_WEAPON, idx, false, baseWeapon.weaponHitRate, false));
-        weapon.weaponName = gContext.gameStrings.weapon_names.get_string(idx);
-        weapon.weaponDescription = gContext.gameStrings.weapon_descriptions.get_string(idx);
+        weapon.sharedBase.equipEffects[StatNames::WEAPON_ATTACK].push_back(createGearBoost(SR_GEAR_WEAPON, idx, false, baseWeapon.weaponStrength, false));
+        weapon.sharedBase.equipEffects[StatNames::WEAPON_ACCURACY].push_back(createGearBoost(SR_GEAR_WEAPON, idx, false, baseWeapon.weaponHitRate, false));
+        weapon.sharedBase.gearName = gContext.gameStrings.weapon_names.get_string(idx);
+        weapon.sharedBase.gearDescription = gContext.gameStrings.weapon_descriptions.get_string(idx);
         weapon.gameWeapon = baseWeapon;
         weapon.weaponModelID = baseWeapon.weapon_model & 0xF;
         initializeWeaponStats(weapon);
         initializeWeaponElements(weapon);
         initializeWeaponAfflictions(weapon);
-        populatekernelStatBoosts(weapon.equipEffects, weapon.gameWeapon.stats_to_boost, weapon.gameWeapon.stat_boost_amounts, 4, idx, SR_GEAR_WEAPON);
+        populatekernelStatBoosts(weapon.sharedBase.equipEffects, weapon.gameWeapon.stats_to_boost, weapon.gameWeapon.stat_boost_amounts, 4, idx, SR_GEAR_WEAPON);
         setSrDamageInfo<SrWeapon>(weapon, baseWeapon.damageCalculation);
         addElement(assembleGDataKey(idx), weapon);
         ++idx;
@@ -32,9 +33,9 @@ SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegi
 
 void initializeWeaponStats(SrWeapon& weapon) {
     auto& gameWeapon = weapon.gameWeapon;
-    weapon.stats[StatNames::WEAPON_ATTACK].statValue = gameWeapon.weaponStrength;
-    weapon.stats[StatNames::WEAPON_ACCURACY].statValue = gameWeapon.weaponHitRate;
-    weapon.stats[StatNames::WEAPON_CRITRATE].statValue = gameWeapon.criticalRate;
+    weapon.sharedBase.stats[StatNames::WEAPON_ATTACK].statValue = gameWeapon.weaponStrength;
+    weapon.sharedBase.stats[StatNames::WEAPON_ACCURACY].statValue = gameWeapon.weaponHitRate;
+    weapon.sharedBase.stats[StatNames::WEAPON_CRITRATE].statValue = gameWeapon.criticalRate;
 }
 
 void initializeWeaponElements(SrWeapon& weapon) {
@@ -63,8 +64,8 @@ SISTERRAY_API SrWeaponData getSrWeapon(u16 modItemID, const char* modName) {
     auto& weapon = gContext.weapons.getElement(name);
     apiWeapon.baseData = weapon.gameWeapon;
     apiWeapon.auxData = weapon.auxData;
-    apiWeapon.weaponName = weapon.weaponName.str();
-    apiWeapon.weaponDesc = weapon.weaponDescription.str();
+    apiWeapon.weaponName = weapon.sharedBase.gearName.str();
+    apiWeapon.weaponDesc = weapon.sharedBase.gearDescription.str();
     return apiWeapon;
 }
 
@@ -73,8 +74,8 @@ SISTERRAY_API void setSrWeaponData(SrWeaponData data, u16 modItemID, const char*
     auto srWeapon = SrWeapon();
     srWeapon.gameWeapon = data.baseData;
     srWeapon.auxData = data.auxData;
-    srWeapon.weaponName = EncodedString::from_unicode(data.weaponName);
-    srWeapon.weaponDescription = EncodedString::from_unicode(data.weaponDesc);
+    srWeapon.sharedBase.gearName = EncodedString::from_unicode(data.weaponName);
+    srWeapon.sharedBase.gearDescription = EncodedString::from_unicode(data.weaponDesc);
     gContext.weapons.updateElement(name, srWeapon);
 }
 
@@ -83,17 +84,17 @@ SISTERRAY_API void addSrWeapon(SrWeaponData data, u16 modItemID, const char* mod
     auto srWeapon = SrWeapon();
     srWeapon.gameWeapon = data.baseData;
     srWeapon.auxData = data.auxData;
-    srWeapon.weaponName = EncodedString::from_unicode(data.weaponName);
-    srWeapon.weaponDescription = EncodedString::from_unicode(data.weaponDesc);
+    srWeapon.sharedBase.gearName = EncodedString::from_unicode(data.weaponName);
+    srWeapon.sharedBase.gearDescription = EncodedString::from_unicode(data.weaponDesc);
     gContext.weapons.addElement(name, srWeapon);
 
     u8 iconType = getWeaponIcon(characterID);
-    gContext.itemTypeData.appendItem(name, ITYPE_WEAPON, iconType);
+    gContext.baseItems.appendItem(name, ItemTypeNames::WEAPON_TYPE, iconType);
 }
 
 SISTERRAY_API void initWeapons(SrKernelStream* stream) {
     gContext.weapons = SrWeaponRegistry(stream);
-    gContext.itemTypeData.initializeAugmentedData(ITYPE_WEAPON, gContext.weapons.resourceCount());
+    gContext.baseItems.initializeAugmentedData(ItemTypeNames::WEAPON_TYPE, gContext.weapons.resourceCount());
     srLogWrite("kernel.bin: Loaded %lu weapons", (unsigned long)gContext.weapons.resourceCount());
 }
 

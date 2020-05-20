@@ -23,7 +23,7 @@ public:
 };
 
 SrAttack attackFromItem(const SrItem& item);
-bool canCharacterUseItem(u8 character_ID, u16 item_id);
+bool canCharacterUseItem(u8 character_ID, u16 materiaID);
 ConsumableUseData getOnUseData(u16 itemID);
 ConsumableUseData createOnUseItemData(u16 hp_heal_amount, u16 mp_heal_amount, u16 stat_to_boost,
     u16 character_restriction_mask, u8 hp_heal_percent,

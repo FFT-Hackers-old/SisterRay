@@ -84,10 +84,9 @@ void clearCommandArray(u8 characterIdx);
 void voidCommand(EnabledCommand& command, u8 enabledIndex);
 void clearSummonCommandArray(u8 summonIdx);
 void enableDefaultCommands(u8 characterIdx, bool magicEnabled, bool summonEnabled);
-void applyLinkedMateriaModifiers(u8 characterIdx, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType);
-void dispatchSupportHandlers(u8 characterIdx, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGearType gearType);
+void applyLinkedMateriaModifiers(u8 characterIdx, u8* slots, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGameGearType gearType);
+void dispatchSupportHandlers(u8 characterIdx, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGameGearType gearType);
 
-u8* getMateriaSlots(u8 characterIdx, SrGearType gearType);
 bool slotsAreLinked(u8 leftSlot, u8 rightSlot);
 void updateCommands(u8 partyIdx, u32 statusMask);
 void updateCommandsActive(u8 characterIdx, i32 commandType);

@@ -9,71 +9,40 @@ void handleChangeMateriaCharacter(const MenuDrawEvent* event) {
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
-
     auto topWidget = getChild(mainWidget, CHAR_DATA_WIDGET_NAME);
     updatePortraitPartyIndex(getChild(topWidget, PORTRAIT_WIDGET_NAME), *MAT_MENU_PARTY_INDEX);
     updateHPBarPartyIndex(getChild(topWidget, HPBAR_WIDGET_NAME), *MAT_MENU_PARTY_INDEX);
-
-    std::vector<std::string> listNames = { EQUIPPED_WEAPON, EQUIPPED_ARMOR };
-    for (u32 row = 0; row < listNames.size(); row++) {
-        auto gear = getEquippedGear(characterRecordArrayIndex, row + 1);
-        fetchedName = getNameFromRelativeID(gear, row + 1);
-        updateText(getChild(topWidget, listNames[row]), fetchedName);
-    }
-
-    auto slotsPtr = &(gContext.weapons.getResource(getEquippedGear(characterRecordArrayIndex, 1)).gameWeapon.materia_slots[0]);
-    updateMateriaSlots(getChild(topWidget, GEAR_1_SLOTS), slotsPtr);
-    auto materiaPtr = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).wpnMaterias.data();
-    updateMateriaData(getChild(topWidget, GEAR_1_SLOTS), materiaPtr);
-
-    slotsPtr = &(gContext.armors.getResource(getEquippedGear(characterRecordArrayIndex, 2)).gameArmor.materia_slots[0]);
-    updateMateriaSlots(getChild(topWidget, GEAR_2_SLOTS), slotsPtr);
-    materiaPtr = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).armMaterias.data();
-    updateMateriaData(getChild(topWidget, GEAR_2_SLOTS), materiaPtr);
 }
 
 void handleUpdateMateriaDescription(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
-    u16 materiaID;
-    const char * fetchedDescription;
     auto materiaDescription = getChild(menuWidget, MATERIA_DESC_WIDGET_NAME);
     auto descriptionWidget = getChild(materiaDescription, MATERIA_DESC);
 
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX);
     if (event->menuState != 1 && event->menuState != 2) {
         disableWidget(descriptionWidget);
         return;
     }
 
     auto slotChoice = getStateCursor(event->menu, 1)->context;
-
+    u16 materiaID;
     if (event->menuState == 2) {
         auto materiaChoice = getStateCursor(event->menu, 2)->context;
-        materiaID = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex).item_id;
+        materiaID = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex).materiaID;
     }
     else if (event->menuState == 1) {
-        switch (slotChoice.relativeRowIndex) {
-            case 0:
-                materiaID = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeColumnIndex].item_id;
-                break;
-            case 1:
-                materiaID = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeColumnIndex].item_id;
-                break;
-            default: {
-                break;
-            }
-        }
+        auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
+        materiaID = gearSlot.materia[slotChoice.relativeColumnIndex].materiaID;
     }
+
     enableWidget(descriptionWidget);
-    fetchedDescription = gContext.materias.getResource(materiaID).materiaDescription.str();
+    auto fetchedDescription = gContext.materias.getResource(materiaID).materiaDescription.str();
     updateText(descriptionWidget, fetchedDescription);
 }
 
 void handleUpdateMateriaView(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
-    MateriaInventoryEntry materia;
     auto gridWidget = getChild(menuWidget, MATERIA_GRID_WIDGET_NAME);
     auto slotChoice = getStateCursor(event->menu, 0)->context;
     if ((event->menuState == 0 || (event->menuState < 7 && event->menuState > 2)) && slotChoice.relativeRowIndex == 0) {
@@ -90,35 +59,24 @@ void handleUpdateMateriaView(const MenuDrawEvent* event) {
 
 void handleUpdateMateriaData(const MenuDrawEvent* event) {
     auto menuWidget = event->menu->menuWidget;
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*MAT_MENU_PARTY_INDEX);
     MateriaInventoryEntry materia;
-    const char * fetchedText;
     auto standardViewWidget = getChild(getChild(menuWidget, MATERIA_DATA_WIDGET_NAME), STANDARD_DISPLAY);
     if (event->menuState != 1 && event->menuState != 2) {
         disableWidget(standardViewWidget);
         return;
     }
     auto slotChoice = getStateCursor(event->menu, 1)->context;
-
+    auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
     if (event->menuState == 2) {
         auto materiaChoice = getStateCursor(event->menu, 2)->context;
         materia = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
     }
     else if (event->menuState == 1) {
-        switch (slotChoice.relativeRowIndex) {
-            case 0:
-                materia = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).wpnMaterias[slotChoice.relativeColumnIndex];
-                break;
-            case 1:
-                materia = gContext.characters.getElement(getCharacterName(characterRecordArrayIndex)).armMaterias[slotChoice.relativeColumnIndex];
-                break;
-            default: {
-                break;
-            }
-        }
+        materia = gearSlot.materia[slotChoice.relativeColumnIndex];
     }
 
-    if (materia.item_id != 0xFFFF) {
+    if (materia.materiaID != 0xFFFF) {
         enableWidget(standardViewWidget);
         updateMateriaDisplay(standardViewWidget, materia);
         return;
@@ -127,16 +85,16 @@ void handleUpdateMateriaData(const MenuDrawEvent* event) {
 }
 
 void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) {
-    auto materiaName = gContext.materias.getResource(materia.item_id).materiaName.str();
+    auto materiaName = gContext.materias.getResource(materia.materiaID).materiaName.str();
     updateText(getChild(displayWidget, MATERIA_NAME), materiaName);
     /*last byte of status effect is element index; this is temporary until we have fully moved materia into sister ray*/
-    auto elementIndex = gContext.materias.getResource(materia.item_id).gameMateria.elementType;
+    auto elementIndex = gContext.materias.getResource(materia.materiaID).gameMateria.elementType;
     auto elementName = gContext.gameStrings.elementNames.get_string(elementIndex);
     updateText(getChild(displayWidget, MATERIA_ELEMENT), elementName);
 
-    updateAssetType(getChild(displayWidget, MATERIA_SPHERE), getMateriaColorType(materia.item_id));
+    updateAssetType(getChild(displayWidget, MATERIA_SPHERE), getMateriaColorType(materia.materiaID));
 
-    auto materiaType = getMateriaColorType(materia.item_id);
+    auto materiaType = getMateriaColorType(materia.materiaID);
     updateAssetType(getChild(displayWidget, MATERIA_SPHERE), materiaType);
 
     u8 maxLevel = 1;
@@ -144,8 +102,8 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
     if (materiaLevel < maxLevel) {
         enableWidget(getChild(displayWidget, CURRENT_AP));
         disableWidget(getChild(displayWidget, MASTERED));
-        updateNumber(getChild(displayWidget, CURRENT_AP), materia.materia_ap);
-        updateNumber(getChild(displayWidget, TO_LEVEL_AP), gContext.materias.getResource(materia.item_id).gameMateria.apLevel[materiaLevel - 1] * 100 - materia.materia_ap);
+        updateNumber(getChild(displayWidget, CURRENT_AP), materia.materiaAP);
+        updateNumber(getChild(displayWidget, TO_LEVEL_AP), gContext.materias.getResource(materia.materiaID).gameMateria.apLevel[materiaLevel - 1] * 100 - materia.materiaAP);
     }
     else {
         disableWidget(getChild(displayWidget, CURRENT_AP));
@@ -176,8 +134,8 @@ void updateMateriaDisplay(Widget* displayWidget, MateriaInventoryEntry materia) 
 
 void dispatchMateriaTypeHandlers(Widget* displayWidget, const MateriaInventoryEntry& materia, u8 materiaLevel) {
     DrawMateriaDataEvent event = { displayWidget, materia, materiaLevel };
-    auto materiaType = getMateriaTopType(materia.item_id);
-    auto subtype = getMateriaSubType(materia.item_id);
+    auto materiaType = getMateriaTopType(materia.materiaID);
+    auto subtype = getMateriaSubType(materia.materiaID);
 
     auto topkey = getTopKey(materiaType);
     auto subkey = getSubKey(subtype);
@@ -191,7 +149,7 @@ void drawCommandViewWidget(const MenuDrawEvent* event) {
     auto viewChoiceCursor = getStateCursor(event->menu, 0);
     auto commandChoiceCursor = getStateCursor(event->menu, 3);
     auto commandViewWidget = getChild(event->menu->menuWidget, COMMAND_VIEW_WIDGET_NAME);
-    if (!(event->menuState >= 3 && event->menuState < 7) && !(event->menuState == 0 && viewChoiceCursor->context.relativeRowIndex == 0)) {
+    if (!(event->menuState >= 3 && event->menuState < 7) && !(event->menuState == 0 && viewChoiceCursor->context.relativeColumnIndex == 1)) {
         disableWidget(commandViewWidget);
         return;
     }

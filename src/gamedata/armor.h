@@ -10,12 +10,9 @@
 #define KERNEL_ARMOR_COUNT 32
 
 struct SrArmor_ {
+    Equippable sharedBase;
     ArmorData gameArmor;
     AuxArmorData auxData;
-    EncodedString armorName;
-    EncodedString armorDescription;
-    std::unordered_map<std::string, SrStaticStat> stats;
-    EquipmentStatBoosts equipEffects;
 };
 
 class SrArmorRegistry : public SrNamedResourceRegistry<SrArmor, std::string> {

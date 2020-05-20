@@ -167,12 +167,14 @@ StaticGridWidget* createStaticGridWidget(DrawStaticGridParams params, std::strin
     widget->updater = params.updater;
     widget->rowSpacing = params.rowSpacing;
     widget->columnSpacing = params.columnSpacing;
+    widget->allocator = params.allocator;
     /*If a primitive childtype is specified, type allocate the results, otherwise add them to the collection manually*/
     if (childType || params.allocator) {
         u32 slotCount = widget->columnCount * widget->rowCount;
         for (u32 slot = 0; slot < slotCount; slot++) {
             auto name = std::to_string(slot);
             auto child = typeAllocate(childType, name, widget->allocator);
+            srLogWrite("ALLOCATING STATIG GRID ELEMENT FOR GRID: %s", widget->widget.widget.name.c_str());
             addChildWidget((Widget*)widget, child, name);
         }
     }

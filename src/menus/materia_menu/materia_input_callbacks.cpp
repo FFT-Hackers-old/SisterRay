@@ -15,12 +15,12 @@ void checkArrangeChoiceHandler(const MenuInputEvent* event) {
     u32* dword_DC1108 = (u32*)(0xDC1108);
 
     playMenuSound(1);
-    switch (optionChoice.relativeRowIndex) {
-        case 0: {
+    switch (optionChoice.relativeColumnIndex) {
+        case 1: {
             setMenuState(event->menu, 3);
             break;
         }
-        case 1: {
+        case 2: {
             if (*byte_DC0B4B & 1) {
                 playMenuSound(3);
                 return;
@@ -30,20 +30,14 @@ void checkArrangeChoiceHandler(const MenuInputEvent* event) {
             break;
         }
         default: {
-
+            playMenuSound(1);
+            setMenuState(event->menu, 1);
         }
     }
 }
 
-void enterSlotView(const MenuInputEvent* event) {
-    if (event->menuState != 0)
-        return;
-    playMenuSound(1);
-    setMenuState(event->menu, 1);
-}
-
 void enterOptionView(const MenuInputEvent* event) {
-    if (event->menuState != 1 || (getStateCursor(event->menu, 1)->context.relativeColumnIndex != 0))
+    if (event->menuState != 1)
         return;
     playMenuSound(1);
     setMenuState(event->menu, 0);
@@ -55,22 +49,11 @@ void enterMateriaViewHandler(const MenuInputEvent* event) {
 
     auto slotChoice = getStateCursor(event->menu, 1)->context;
     auto activeSlot = slotChoice.relativeColumnIndex;
-    auto gearType = slotChoice.relativeRowIndex;
     u8 characterID = G_SAVE_MAP->activeParty[*EQUIP_MENU_PARTY_INDEX];
-    u8* slotsPtr = nullptr;
-    switch (gearType) {
-        case 0: {
-            slotsPtr = &(gContext.weapons.getResource(getEquippedGear(characterID, 1)).gameWeapon.materia_slots[0]);
-            break;
-        }
-        case 1: {
-            slotsPtr = &(gContext.armors.getResource(getEquippedGear(characterID, 2)).gameArmor.materia_slots[0]);
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    auto& characterRecord = gContext.party.getActivePartyCharacter(characterID);
+    auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
+    u8* slotsPtr = getMateriaSlots(gearSlot.equippedIdx, gearSlot.slotGearType);
+ 
     srLogWrite("Weapon Slots: %d, %d, %d, %d", slotsPtr[0], slotsPtr[1], slotsPtr[2], slotsPtr[3]);
     srLogWrite("CHECKING VALIDITY OF SLOT TYPE: %d", slotsPtr[activeSlot]);
     if (!(slotsPtr[activeSlot]) || *byte_DC0B4B) {
@@ -86,35 +69,19 @@ void equipMateriaHandler(const MenuInputEvent* event) {
     if (event->menuState != 2)
         return;
 
+    playMenuSound(1);
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX);
     auto slotChoice = getStateCursor(event->menu, 1)->context;
     auto activeSlot = slotChoice.relativeColumnIndex;
     auto materiaChoice = getStateCursor(event->menu, 2)->context;
-    u8 characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
-    auto charName = getCharacterName(characterID);
-    MateriaInventoryEntry equippedMateria;
-    MateriaInventoryEntry toEquipMateria;
 
-    auto gearType = slotChoice.relativeRowIndex;
-    switch (gearType) {
-        case 0: {
-            equippedMateria = gContext.characters.getElement(charName).wpnMaterias[activeSlot];
-            toEquipMateria = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
-            gContext.materiaInventory->updateResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex, equippedMateria);
-            gContext.characters.getElement(charName).wpnMaterias[activeSlot] = toEquipMateria;
-            break;
-        }
-        case 1: {
-            equippedMateria = gContext.characters.getElement(charName).armMaterias[activeSlot];
-            toEquipMateria = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
-            gContext.materiaInventory->updateResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex, equippedMateria);
-            gContext.characters.getElement(charName).armMaterias[activeSlot] = toEquipMateria;
-            break;
-        }
-        default: {
-            break;
-        }
-    }
+    auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
+    auto equippedMateria = gearSlot.materia[activeSlot];
+    auto toEquipMateria = gContext.materiaInventory->getResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex);
+    gContext.materiaInventory->updateResource(materiaChoice.baseRowIndex + materiaChoice.relativeRowIndex, equippedMateria);
+    gearSlot.materia[activeSlot] = toEquipMateria;
     srUpdatePartyMember(*MAT_MENU_PARTY_INDEX);
+
 
 }
 
@@ -147,9 +114,8 @@ void arrangeChoiceHandler(const MenuInputEvent* event) {
     if (event->menuState != 7)
         return;
 
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*MAT_MENU_PARTY_INDEX);
     auto arrangeChoice = getStateCursor(event->menu, 7)->context;
-    u8 characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
-    auto charName = getCharacterName(characterID);
     switch (arrangeChoice.relativeRowIndex) {
         case 0:                             // transition to arrange
             playMenuSound(1);
@@ -162,18 +128,14 @@ void arrangeChoiceHandler(const MenuInputEvent* event) {
                 playMenuSound(3);
                 return;
             }
-            for (auto slotIdx = 0; slotIdx < 8; ++slotIdx) { //probably factor out into a "remove all materia" method
-                auto equippedWpnMateria = gContext.characters.getElement(charName).wpnMaterias[slotIdx];
-                auto equippedArmMateria = gContext.characters.getElement(charName).armMaterias[slotIdx];
-                if (equippedWpnMateria.item_id != 0xFFFF && !(gContext.materiaInventory->isFull())) {
-                    gContext.characters.getElement(charName).wpnMaterias[slotIdx].item_id = -1;
-                    gContext.characters.getElement(charName).wpnMaterias[slotIdx].materia_ap = 0;
-                    gContext.materiaInventory->insertIntoMateriaInventory(equippedWpnMateria);
-                }
-                if (equippedArmMateria.item_id != 0xFF && !(gContext.materiaInventory->isFull())) {
-                    gContext.characters.getElement(charName).armMaterias[slotIdx].item_id = -1;
-                    gContext.characters.getElement(charName).armMaterias[slotIdx].materia_ap = 0;
-                    gContext.materiaInventory->insertIntoMateriaInventory(equippedArmMateria);
+            for (auto& gearSlot : characterRecord.equipment) {
+                for (auto slotIdx = 0; slotIdx < 8; ++slotIdx) { //probably factor out into a "remove all materia" method
+                    auto equippedMateria = gearSlot.materia[slotIdx];
+                    if (equippedMateria.materiaID != 0xFFFF && !(gContext.materiaInventory->isFull())) {
+                        gearSlot.materia[slotIdx].materiaID = 0xFFFF;
+                        gearSlot.materia[slotIdx].materiaAP = 0;
+                        gContext.materiaInventory->insertIntoMateriaInventory(equippedMateria);
+                    }
                 }
             }
             playMenuSound(447);
@@ -196,7 +158,7 @@ void trashMateriaHandler(const MenuInputEvent* event) {
     auto materiaChoice = getStateCursor(event->menu, 8)->context;
     auto rowPosition = materiaChoice.relativeRowIndex;
 
-    if (gContext.materiaInventory->getResource(rowPosition).item_id == -1) {
+    if (gContext.materiaInventory->getResource(rowPosition).materiaID == -1) {
         playMenuSound(3);
     }
     else {
@@ -227,7 +189,7 @@ void confirmTrashHandler(const MenuInputEvent* event) {
 
 //Materia Menu Cancel Handlers
 void exitMenuHandler(const MenuInputEvent* event) {
-    if ((event->menuState != 0) && (event->menuState != 1))
+    if ((event->menuState != 0))
         return;
 
     u32* dword_DC0E74 = (u32*)(0xDC0E74);
@@ -287,43 +249,24 @@ void removeMateriaHandler(const MenuInputEvent* event) {
     if (event->menuState != 1)
         return;
 
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*MAT_MENU_PARTY_INDEX);
     auto slotChoice = getStateCursor(event->menu, 1)->context;
     auto activeSlot = slotChoice.relativeColumnIndex;
-    auto gearType = slotChoice.relativeRowIndex;
-    u8 characterID = getCharacterRecordIndex(*MAT_MENU_PARTY_INDEX);
-    auto charName = getCharacterName(characterID);
-    u8* slotsPtr = nullptr;
-    MateriaInventoryEntry equippedMateria;
 
     if (gContext.materiaInventory->isFull()) {
         playMenuSound(3);
         return;
     }
 
-    switch (gearType) {
-        case 0: {
-            equippedMateria = gContext.characters.getElement(charName).wpnMaterias[activeSlot];
-            if (equippedMateria.item_id = 0xFFFF) {
-                playMenuSound(3);
-                return;
-            }
-            gContext.characters.getElement(charName).wpnMaterias[activeSlot].item_id = -1;
-            gContext.characters.getElement(charName).wpnMaterias[activeSlot].materia_ap = 0;
-            break;
-        }
-        case 1: {
-            equippedMateria = gContext.characters.getElement(charName).armMaterias[activeSlot];
-            if (equippedMateria.item_id = 0xFFFF) {
-                playMenuSound(3);
-                return;
-            }
-            gContext.characters.getElement(charName).armMaterias[activeSlot].item_id = -1;
-            gContext.characters.getElement(charName).armMaterias[activeSlot].materia_ap = 0;
-            break;
-        }
-        default: {
-        }
+    auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
+    auto equippedMateria = gearSlot.materia[activeSlot];
+    if (equippedMateria.materiaID = 0xFFFF) {
+        playMenuSound(3);
+        return;
     }
+    gearSlot.materia[activeSlot].materiaID = 0xFFFF;
+    gearSlot.materia[activeSlot].materiaAP = 0;
+
     playMenuSound(447);
     gContext.materiaInventory->insertIntoMateriaInventory(equippedMateria);
     srUpdatePartyMember(*MAT_MENU_PARTY_INDEX);

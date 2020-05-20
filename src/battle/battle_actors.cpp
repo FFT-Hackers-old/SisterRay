@@ -566,7 +566,7 @@ ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
         actorState.weaponCtx = &(partyActor.weaponCtx);
         actorState.activeStatuses = &(partyActors[activeParty[actorIdx]].battleActor.activeStatuses);
         actorState.enemyData = nullptr;
-        auto weaponIdx = gContext.party.getActivePartyCharacter(actorIdx).equippedWeapon;
+        auto weaponIdx = gContext.party.getActivePartyCharacter(actorIdx).equipment[0].equippedIdx;
         actorState.srWeapon = &(gContext.weapons.getResource(weaponIdx));
         return actorState;
     }
@@ -593,7 +593,7 @@ ActorBattleState SrBattleActors::getSrBattleCharacterActor(u8 characterIdx) {
     actorState.weaponCtx = &(partyActor.weaponCtx);
     actorState.activeStatuses = &(partyActors[characterIdx].battleActor.activeStatuses);
     actorState.enemyData = nullptr;
-    auto weaponIdx = gContext.party.getActivePartyCharacter(characterIdx).equippedWeapon;
+    auto weaponIdx = gContext.party.getActivePartyCharacter(characterIdx).equipment[0].equippedIdx;
     actorState.srWeapon = &(gContext.weapons.getResource(weaponIdx));
     return actorState;
 }
@@ -646,7 +646,7 @@ ActorBattleState SrBattleActors::getActiveBattleActor(u8 actorIdx) {
         actorState.party34 = getBattleParty34(actorIdx);
         actorState.weaponCtx = getBattleWeaponCtx(actorIdx);
         actorState.enemyData = nullptr;
-        auto weaponIdx = gContext.party.getActivePartyCharacter(actorIdx).equippedWeapon;
+        auto weaponIdx = gContext.party.getActivePartyCharacter(actorIdx).equipment[0].equippedIdx;
         actorState.srWeapon = &(gContext.weapons.getResource(weaponIdx));
         return actorState;
     }

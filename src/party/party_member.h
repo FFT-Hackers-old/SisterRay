@@ -14,7 +14,7 @@
 #define AUTO_ACTION_COUNT 10
 
 typedef struct {
-    std::unordered_map<std::string, SrActorStat> playerStats;
+    std::unordered_map<std::string, SrBoostedStat> playerStats;
     std::array<EnabledSpell, MAGIC_COUNT> actorMagics;
     std::array<EnabledSpell, SUMMON_COUNT> actorSummons;
     std::array<EnabledSpell, ESKILL_COUNT> actorEnemySkills;

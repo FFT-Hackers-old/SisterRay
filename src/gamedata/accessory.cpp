@@ -2,6 +2,7 @@
 #include <string.h>
 #include "../impl.h"
 #include "accessory.h"
+#include "base_type_names.h"
 
 SrAccessoryRegistry::SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAccessory, std::string>() {
     size_t read_size;
@@ -14,18 +15,18 @@ SrAccessoryRegistry::SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResour
         if (read_size != sizeof(baseAccessory))
             break;
         SrAccessory accessory;
-        accessory.accessoryName = gContext.gameStrings.accessory_names.get_string(idx);
-        accessory.accessoryDescription = gContext.gameStrings.accessory_descriptions.get_string(idx);
+        accessory.sharedBase.gearName = gContext.gameStrings.accessory_names.get_string(idx);
+        accessory.sharedBase.gearDescription = gContext.gameStrings.accessory_descriptions.get_string(idx);
         accessory.gameAccessory = baseAccessory;
         initializeAccessoryElements(accessory, idx);
-        populatekernelStatBoosts(accessory.equipEffects, accessory.gameAccessory.stats_to_boost, accessory.gameAccessory.stat_boost_amounts, 2, idx, SR_GEAR_ACCESSORY);
+        populatekernelStatBoosts(accessory.sharedBase.equipEffects, accessory.gameAccessory.stats_to_boost, accessory.gameAccessory.stat_boost_amounts, 2, idx, SR_GEAR_ACCESSORY);
         addElement(assembleGDataKey(idx), accessory);
         ++idx;
     }
 }
 
 void initializeAccessoryElements(SrAccessory& accessory, u16 relativeID) {
-    auto& equipEffects = accessory.equipEffects;
+    auto& equipEffects = accessory.sharedBase.equipEffects;
     for (auto elementIdx = 0; elementIdx < 16; elementIdx++) {
         if (!(accessory.gameAccessory.elements_mask & (1 << elementIdx))) {
             continue;
@@ -63,8 +64,8 @@ SISTERRAY_API SrAccessoryData getSrAccessory(u16 modItemID, const char* modName)
     auto& accessory = gContext.accessories.getElement(name);
     apiAccessory.baseData = accessory.gameAccessory;
     apiAccessory.auxData = accessory.auxData;
-    apiAccessory.accessoryName = accessory.accessoryName.str();
-    apiAccessory.accessoryDesc= accessory.accessoryDescription.str();
+    apiAccessory.accessoryName = accessory.sharedBase.gearName.str();
+    apiAccessory.accessoryDesc= accessory.sharedBase.gearDescription.str();
     return apiAccessory;
 }
 
@@ -73,8 +74,8 @@ SISTERRAY_API void setSrAccessoryData(SrAccessoryData data, u16 modItemID, const
     auto srAccessory = SrAccessory();
     srAccessory.gameAccessory = data.baseData;
     srAccessory.auxData = data.auxData;
-    srAccessory.accessoryName = EncodedString::from_unicode(data.accessoryName);
-    srAccessory.accessoryDescription = EncodedString::from_unicode(data.accessoryDesc);
+    srAccessory.sharedBase.gearName = EncodedString::from_unicode(data.accessoryName);
+    srAccessory.sharedBase.gearDescription = EncodedString::from_unicode(data.accessoryDesc);
     gContext.accessories.updateElement(name, srAccessory);
 }
 
@@ -83,14 +84,14 @@ SISTERRAY_API void addSrAccessory(SrAccessoryData data, u16 modItemID, const cha
     auto srAccessory = SrAccessory();
     srAccessory.gameAccessory = data.baseData;
     srAccessory.auxData = data.auxData;
-    srAccessory.accessoryName = EncodedString::from_unicode(data.accessoryName);
-    srAccessory.accessoryDescription = EncodedString::from_unicode(data.accessoryDesc);
+    srAccessory.sharedBase.gearName = EncodedString::from_unicode(data.accessoryName);
+    srAccessory.sharedBase.gearDescription = EncodedString::from_unicode(data.accessoryDesc);
     gContext.accessories.addElement(name, srAccessory);
-    gContext.itemTypeData.appendItem(name, ITYPE_ACC, ICONTYPE_ACC);
+    gContext.baseItems.appendItem(name, ItemTypeNames::ACCESSORY_TYPE, ICONTYPE_ACC);
 }
 
 SISTERRAY_API void initAccessories(SrKernelStream* stream) {
     gContext.accessories = SrAccessoryRegistry(stream);
-    gContext.itemTypeData.initializeAugmentedData((u8)3, gContext.accessories.resourceCount());
+    gContext.baseItems.initializeAugmentedData(ItemTypeNames::ACCESSORY_TYPE, gContext.accessories.resourceCount());
     srLogWrite("kernel.bin: Loaded %lu accessories", (unsigned long)gContext.accessories.resourceCount());
 }

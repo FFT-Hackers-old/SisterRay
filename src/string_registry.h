@@ -6,6 +6,7 @@
 #include "sr_registry_template.h"
 #include "EncodedString.h"
 #include <vector>
+#include <string>
 
 static const char* defaultString = "\x01\x00\x22\x41\x44\x00\x33\x54\x52\x49\x4e\x47\x00\x01\xFF";
 
@@ -53,10 +54,14 @@ typedef struct {
     StringRegistry  summon_attack_names;
 } SrGameStrings;
 
-const char* getNameFromRelativeID(u16 relativeID, u8 itemType);
-const char* getNameFromItemID(u16 item_id);
-const char* getDescriptionFromRelativeID(u16 relativeId, u8 itemType);
-const char* getDescriptionFromID(u16 item_id);
+
+const char* getGearNameFromRelativeID(u16 relativeID, SrGameGearType itemType);
+const char* getNameFromRelativeID(u16 relativeID, std::string itemType);
+const char* getNameFromItemID(u16 materiaID);
+
+const char* getGearDescriptionFromRelativeID(u16 relativeID, SrGameGearType itemType);
+const char* getDescriptionFromRelativeID(u16 relativeId, std::string itemType);
+const char* getDescriptionFromID(u16 materiaID);
 void initGameStrings();
 const char* getDefaultString();
 

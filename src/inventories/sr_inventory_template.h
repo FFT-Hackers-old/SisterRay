@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include "../sr_registry_template.h"
 
-/*This template requires that quantity/item_id are in the struct
+/*This template requires that quantity/materiaID are in the struct
   Could metaprogram this away but not worth the effort right now*/
 template<class T> class SrInventory : public SrResourceRegistry<T> {
 public:
@@ -17,7 +17,7 @@ public:
             _resource_registry[inventory_index].quantity = _resource_registry[inventory_index].quantity - stepSize;
         }
         else {
-            _resource_registry[inventory_index].item_id = 0xFFFF;
+            _resource_registry[inventory_index].materiaID = 0xFFFF;
             _resource_registry[inventory_index].quantity = 0;
         }
     }
@@ -32,15 +32,15 @@ public:
     }
 
     void addResourceAtIndex(u16 inventory_index, u16 itemID) {
-        if (_resource_registry[inventory_index].item_id == 0xFFFF) {
-            _resource_registry[inventory_index].item_id = itemID;
+        if (_resource_registry[inventory_index].materiaID == 0xFFFF) {
+            _resource_registry[inventory_index].materiaID = itemID;
             _resource_registry[inventory_index].quantity = 1;
         }
     }
 
     u16 findItemInventoryIndex(u16 itemID) {
         for (auto it = std::begin(_resource_registry); it != std::end(_resource_registry); ++it) {
-            if ((*it).item_id == itemID) {
+            if ((*it).materiaID == itemID) {
                 return distance(_resource_registry.begin(), it);
             }
         }

@@ -3,6 +3,7 @@
 
 #include <SisterRay/types.h>
 #include <SisterRay/SisterRay.h>
+#include "equipment.h"
 #include "../sr_named_registry.h"
 #include "../battle/ai_script/ai_scripts.h"
 #include "party_utils.h"
@@ -14,11 +15,7 @@ struct _SrCharacter {
     CharacterRecord* gameCharacter;
     BattleAIData characterAI;
     KernelCharacterGrowth characterGrowth;
-    std::array<MateriaInventoryEntry, 8> wpnMaterias;
-    std::array<MateriaInventoryEntry, 8> armMaterias;
-    u16 equippedWeapon;
-    u16 equippedArmor;
-    u16 equippedAccessory;
+    std::vector<GearSlot> equipment;
 };
 
 /*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/
@@ -28,5 +25,6 @@ public:
 };
 
 SISTERRAY_API void initCharacterData(SrKernelStream* stream);
+void createDefaultEquipmentSlots(SrCharacter& character);
 
 #endif

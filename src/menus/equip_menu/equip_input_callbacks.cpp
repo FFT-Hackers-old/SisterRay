@@ -1,6 +1,7 @@
 #include "equip_input_callbacks.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
+#include "../../gamedata/base_type_names.h"
 
 void equipGearHandler(const MenuInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 0)->context;
@@ -13,41 +14,25 @@ void equipGearHandler(const MenuInputEvent* event) {
 
     playMenuSound(447);
     setMenuState(event->menu, 0);
-    u16 equippedGearRelativeIndex = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relative_item_id;
-    switch (slotChoice.relativeRowIndex) { //
-        case 0: { //equip WEAPON
-            equippedGearItemType = 1;
-            handleEquipGear(characterRecord, equippedGearItemType, equippedGearRelativeIndex);
-            break;
-        }
-        case 1: { //equip ARMOR
-            equippedGearItemType = 2;
-            handleEquipGear(characterRecord, equippedGearItemType, equippedGearRelativeIndex);
-            break;
-        }
-        case 2: { //equip Accessory
-            equippedGearItemType = 3;
-            handleEquipGear(characterRecord, equippedGearItemType, equippedGearRelativeIndex);
-            break;
-        }
-        default: {
-        }
-    }
-    recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
-    recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
+    u16 equippedGearRelativeIndex = gContext.gearViewData.getResource(gearChoice.baseRowIndex + gearChoice.relativeRowIndex).relativeItemID;
+    auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
+    handleEquipGear(gearSlot, equippedGearRelativeIndex);
+    gContext.party.recalculatePartyMember(*EQUIP_MENU_PARTY_INDEX);
     updateMiscPartyStats();
 
 }
 
 void selectGearHandler(const MenuInputEvent* event) {
     auto slotChoice = getStateCursor(event->menu, 0)->context;
-    i32 cursorViewBound = 0;
+    u8 cursorViewBound = 0;
     u16 equippableGearCount = 0;
 
     if (event->menuState != 0)
         return;
 
-    equippableGearCount = setupGearMenu(slotChoice.relativeRowIndex + 1);
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX);
+    auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
+    equippableGearCount = setupGearMenu(gearSlot);
     srLogWrite("%d equippable items for actor %d", equippableGearCount, *EQUIP_MENU_PARTY_INDEX);
     if (equippableGearCount && !(*byte_DC0B4B & 1)) {
         playMenuSound(1);
@@ -56,7 +41,6 @@ void selectGearHandler(const MenuInputEvent* event) {
             cursorViewBound = equippableGearCount;
         else
             cursorViewBound = 8;
-
         setContextCursorData(&(getStateCursor(event->menu, 1)->context), 0, 0, 1, cursorViewBound, 0, 0, 1, equippableGearCount, 0, 0, 0, 0, 0, 1);
     }
     else {
@@ -119,81 +103,75 @@ void changeToMateriaMenu(const MenuInputEvent* event) {
 }
 
 void handleUnequipAcc(const MenuInputEvent* event) {
-    CharacterRecord& characterRecord = *getPartyActorCharacterRecord(*EQUIP_MENU_PARTY_INDEX);
+    auto slotChoice = getStateCursor(event->menu, 0)->context;
+    auto& characterRecord = gContext.party.getActivePartyCharacter(*EQUIP_MENU_PARTY_INDEX);
+    auto& gearSlot = characterRecord.equipment[slotChoice.relativeRowIndex];
     if (!(*byte_DC0B4B & 1) && *dword_DCA5C4 == 2) {
         playMenuSound(4);
-        if (characterRecord.equipped_accessory != 0xFF) {
-            auto removedGearRelativeIndex = characterRecord.equipped_accessory;
-            auto removedGearAbsoluteIndex = gContext.itemTypeData.getAbsoluteID(3, removedGearRelativeIndex);
+        if (gearSlot.equippedIdx != 0xFFFF) {
+            auto removedGearRelativeIndex = gearSlot.equippedIdx;
+            auto removedGearAbsoluteIndex = gContext.baseItems.getAbsoluteID(ItemTypeNames::ACCESSORY_TYPE, removedGearRelativeIndex);
             gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteIndex, 1); //can only unequip
         }
-
-        characterRecord.equipped_accessory = 0xFF;
-        recalculateBaseStats(*EQUIP_MENU_PARTY_INDEX);
-        recalculateDerivedStats(*EQUIP_MENU_PARTY_INDEX);
+        gearSlot.equippedIdx == 0xFFFF;
+        gContext.party.recalculatePartyMember(*EQUIP_MENU_PARTY_INDEX);
         updateMiscPartyStats();
     }
 }
 
-void handleEquipGear(SrCharacter& characterRecord, u8 gearType, u8 equippedGearRelativeIndex) {
-    u8 removedGearRelativeID;
-    u16 removedGearAbsoluteID;
-    u16 equippedGearAbsoluteID;
-
-    switch (gearType) {
-        case 1: {
-            removedGearRelativeID = characterRecord.equippedWeapon;
-            removedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, removedGearRelativeID);
-            equippedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, equippedGearRelativeIndex);
-            characterRecord.equippedWeapon = equippedGearRelativeIndex;
-            handleMateriaUpdate(characterRecord, gearType, equippedGearRelativeIndex);
+void handleEquipGear(GearSlot& gearSlot, u16 equippedGearIdx) {
+    Equippable equipped;
+    u16 removedGearRelativeID = gearSlot.equippedIdx;
+    auto itemType = getItemTypeFromGearType(gearSlot.slotGearType);
+    u16 removedGearAbsoluteID = gContext.baseItems.getAbsoluteID(itemType, removedGearRelativeID);
+    u16 equippedGearAbsoluteID = gContext.baseItems.getAbsoluteID(itemType, equippedGearIdx);
+    switch (gearSlot.slotGearType) {
+        case SR_GEAR_WEAPON: {
+            equipped = gContext.weapons.getResource(equippedGearIdx).sharedBase;
             break;
         }
-        case 2: {
-            removedGearRelativeID = characterRecord.equippedArmor;
-            removedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, removedGearRelativeID);
-            equippedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, equippedGearRelativeIndex);
-            characterRecord.equippedArmor = equippedGearRelativeIndex;
-            handleMateriaUpdate(characterRecord, gearType, equippedGearRelativeIndex);
+        case SR_GEAR_ARMOR: {
+            equipped = gContext.armors.getResource(equippedGearIdx).sharedBase;
             break;
         }
-        case 3: {
-            removedGearRelativeID = characterRecord.equippedAccessory;
-            removedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, removedGearRelativeID);
-            equippedGearAbsoluteID = gContext.itemTypeData.getAbsoluteID(gearType, equippedGearRelativeIndex);
-            characterRecord.equippedAccessory = equippedGearRelativeIndex;
+        case SR_GEAR_ACCESSORY: {
+            equipped = gContext.accessories.getResource(equippedGearIdx).sharedBase;
             break;
         }
         default: {
         }
     }
-
+    gearSlot.equippedIdx = equippedGearIdx;
+    gearSlot.equipped = equipped;
+    handleMateriaUpdate(gearSlot, equippedGearIdx);
     *DID_MATERIA_GEAR_CHANGE = 1;
     gContext.inventory->incrementInventoryByItemID(removedGearAbsoluteID, 1);
     gContext.inventory->decrementInventoryByItemID(equippedGearAbsoluteID, 1);
 }
 
 //Update Materia after new items are equipped
-void handleMateriaUpdate(SrCharacter& activeCharacterRecord, u8 gearType, u16 gearRelativeIndex) {
+void handleMateriaUpdate(GearSlot& gearSlot, u16 equippedGearIdx) {
     WeaponData newWeaponData;
     ArmorData newArmorData;
     MateriaInventoryEntry& equippedMateriaData = MateriaInventoryEntry();
     u8* materiaSlots;
     bool shouldRemove = false;
     auto characterID = getCharacterRecordIndex(*EQUIP_MENU_PARTY_INDEX);
+    if (gearSlot.slotGearType == SR_GEAR_ACCESSORY){
+        return;
+    }
 
-    for (i32 materiaSlotIndex = 0; materiaSlotIndex < 8; ++materiaSlotIndex) {
-        switch (gearType) {
-            case 1: {
-                newWeaponData = gContext.weapons.getResource(gearRelativeIndex).gameWeapon;
-                materiaSlots = &(newWeaponData.materia_slots[0]);
-                equippedMateriaData = activeCharacterRecord.wpnMaterias[materiaSlotIndex];
+    for (u8 materiaSlotIndex = 0; materiaSlotIndex < 8; ++materiaSlotIndex) {
+        equippedMateriaData = gearSlot.materia[materiaSlotIndex];
+        switch (gearSlot.slotGearType) {
+            case SR_GEAR_WEAPON: {
+                newWeaponData = gContext.weapons.getResource(equippedGearIdx).gameWeapon;
+                materiaSlots = &(newWeaponData.materiaSlots[0]);
                 break;
             }
-            case 2: {
-                newArmorData = gContext.armors.getResource(gearRelativeIndex).gameArmor;
-                materiaSlots = &(newArmorData.materia_slots[0]);
-                equippedMateriaData = activeCharacterRecord.armMaterias[materiaSlotIndex];
+            case SR_GEAR_ARMOR: {
+                newArmorData = gContext.armors.getResource(equippedGearIdx).gameArmor;
+                materiaSlots = &(newArmorData.materiaSlots[0]);
                 break;
             }
             default: {
@@ -201,36 +179,53 @@ void handleMateriaUpdate(SrCharacter& activeCharacterRecord, u8 gearType, u16 ge
             }
         }
 
-        shouldRemove = (!(materiaSlots[materiaSlotIndex] && (equippedMateriaData.item_id != 0xFFFF)));
+        shouldRemove = (!(materiaSlots[materiaSlotIndex] && (equippedMateriaData.materiaID != 0xFFFF)));
         if (shouldRemove) {
             *byte_DC1148 = 0;
-            gContext.materiaInventory->insertIntoMateriaInventory(equippedMateriaData); //put any materia removed back on, needs to work with the SR materia
+            gContext.materiaInventory->insertIntoMateriaInventory(equippedMateriaData);
             *byte_DC1148 = 0;
-            equippedMateriaData.item_id = 0xFFFF;
+            equippedMateriaData.materiaID = 0xFFFF;
         }
     }
 }
 
 /*There are originally 32 slots for the equipment view, this interfaces with a new global. We construct
   We do this by just constructing a new object and binding it to the gContext, since this is an emphemeral struct*/
-u16 setupGearMenu(u8 itemType) {
+u16 setupGearMenu(GearSlot& gearSlot) {
     u8 characterID = G_SAVE_MAP->activeParty[*EQUIP_MENU_PARTY_INDEX];
     u16 equippableGearCount = 0;
     gContext.gearViewData = SrGearViewData();
     srLogWrite("Checking usable gear for character %d", characterID);
+    std::string itemType;
+    auto gearSlotType = gearSlot.slotGearType;
+    switch (gearSlotType) {
+    case SR_GEAR_WEAPON: {
+        itemType = ItemTypeNames::WEAPON_TYPE;
+        break;
+    }
+    case SR_GEAR_ARMOR: {
+        itemType = ItemTypeNames::ARMOR_TYPE;
+        break;
+    }
+    case SR_GEAR_ACCESSORY: {
+        itemType = ItemTypeNames::ACCESSORY_TYPE;
+        break;
+    }
+    }
+
     for (u16 inventoryIdx = 0; inventoryIdx < gContext.inventory->currentCapacity(); inventoryIdx++) {
-        auto inventoryEntry = gContext.inventory->getResource(inventoryIdx).item_id;
-        if (gContext.itemTypeData.getResource(inventoryEntry).itemType != itemType) {
+        auto inventoryEntry = gContext.inventory->getResource(inventoryIdx).materiaID;
+        if (gContext.baseItems.getResource(inventoryEntry).itemType != itemType) {
             continue;
         }
         if (characterCanEquipItem(characterID, inventoryEntry)) {
-            GearViewData data = { gContext.itemTypeData.getResource(inventoryEntry).typeRelativeID };
-            srLogWrite("initialized gear view data with id: %i", data.relative_item_id);
+            GearViewData data = { gContext.baseItems.getResource(inventoryEntry).typeRelativeID };
+            srLogWrite("initialized gear view data with id: %i", data.relativeItemID);
             gContext.gearViewData.addResource(data);
             equippableGearCount++;
         }
     }
-    gContext.gearViewData.setItemType(itemType);
+    gContext.gearViewData.setItemType(gearSlot.slotGearType);
     gContext.gearViewData.setSlotsInUse(equippableGearCount);
     return equippableGearCount;
 }

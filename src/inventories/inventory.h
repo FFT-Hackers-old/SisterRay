@@ -10,10 +10,10 @@
   all routines which touch the inventory are being rewritten */
 #pragma pack(push, 1)
 typedef struct InventoryEntry{
-    u16 item_id;
+    u16 materiaID;
     u8 quantity;
-    InventoryEntry(): item_id(0xFFFF), quantity(0) {};
-    InventoryEntry(u16 item_id, u8 quantity): item_id(item_id), quantity(quantity) {};
+    InventoryEntry(): materiaID(0xFFFF), quantity(0) {};
+    InventoryEntry(u16 materiaID, u8 quantity): materiaID(materiaID), quantity(quantity) {};
 } InventoryEntry;
 #pragma pack(pop)
 
@@ -25,18 +25,18 @@ public:
 
 //The data structure stores information
 typedef struct {
-    u16 relative_item_id;
+    u16 relativeItemID;
 } GearViewData;
 
 class SrGearViewData : public SrResourceRegistry<GearViewData> {
 public:
-    u8 itemType;
-    u16 slots_in_use;
-    SrGearViewData(i16 allocation_size, u8 itemType);
+    SrGameGearType itemType;
+    u16 slotsInUse;
+    SrGearViewData(i16 allocation_size, SrGameGearType itemType);
     SrGearViewData() : SrResourceRegistry<GearViewData>() {}
     void setSlotsInUse(u16 slotsInUse);
-    void setItemType(u8 itemType);
-    u8 getItemType();
+    void setItemType(SrGameGearType itemType);
+    SrGameGearType getItemType();
 };
 
 SISTERRAY_API void initInventory();

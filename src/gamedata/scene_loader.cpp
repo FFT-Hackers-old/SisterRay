@@ -189,7 +189,7 @@ void setStealableItems(SrEnemyData& enemy) {
 void calculateEnemyStats(SrEnemyData& enemy) {
     const auto& gameEnemy = enemy.enemyData;
     auto& stats = enemy.enemyStats;
-    SrActorStat stat = { 1, 1 };
+    SrBoostedStat stat = { 1, 1 };
     for (const auto& element : gContext.stats.named_registry) {
         stats[element.first] = stat;
     }

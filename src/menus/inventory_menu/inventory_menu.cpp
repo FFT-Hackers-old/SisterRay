@@ -47,7 +47,7 @@ void displayInventoryCursorStates(Menu* menu, u16 menuState, u32 updateStateMask
 
             if (!(*use_on_characters_enabled)) {
                 auto characterChoiceCursor = getStateCursor(menu, 2);
-                item_ID = gContext.inventory->getResource(itemChoiceCursor->context.baseRowIndex + itemChoiceCursor->context.relativeRowIndex).item_id;;
+                item_ID = gContext.inventory->getResource(itemChoiceCursor->context.baseRowIndex + itemChoiceCursor->context.relativeRowIndex).materiaID;;
                 if (!(gContext.items.getResource(item_ID).auxData.target_all))
                     drawCursor(characterChoiceCursor, 0.0f);
                 else

@@ -44,7 +44,7 @@ void battleInventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatI
         return;
     }
     auto typedPtr = (CursorGridWidget*)self;
-    auto itemID = gContext.battleInventory->getResource(flatIndex).item_id;
+    auto itemID = gContext.battleInventory->getResource(flatIndex).materiaID;
     if (itemID == 0xFFFF) {
         disableWidget(widget);
         return;
@@ -55,5 +55,5 @@ void battleInventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatI
     updateTextColor(getChild(widget, std::string("TXT")), textColor);
     updateNumber(getChild(widget, std::string("AMT")), gContext.battleInventory->getResource(itemID).quantity);
     updateNumberColor(getChild(widget, std::string("AMT")), textColor);
-    updateItemIcon(getChild(widget, std::string("ICN")), gContext.itemTypeData.getResource(itemID).itemIconType);
+    updateItemIcon(getChild(widget, std::string("ICN")), gContext.baseItems.getResource(itemID).itemIconType);
 }

@@ -16,7 +16,7 @@ SrItemInventory::SrItemInventory(i16 allocation_size): SrInventory<InventoryEntr
 }
 
 /*Construct with default values*/
-SrGearViewData::SrGearViewData(i16 allocation_size, u8 type) : SrResourceRegistry<GearViewData>(allocation_size) {
+SrGearViewData::SrGearViewData(i16 allocation_size, SrGameGearType type) : SrResourceRegistry<GearViewData>(allocation_size) {
     for (i32 i = 0; i < allocation_size; i++) {
         GearViewData entry = {
             0
@@ -28,14 +28,14 @@ SrGearViewData::SrGearViewData(i16 allocation_size, u8 type) : SrResourceRegistr
 }
 
 void SrGearViewData::setSlotsInUse(u16 slotsInUse) {
-    slots_in_use = slotsInUse;
+    slotsInUse = slotsInUse;
 }
 
-void SrGearViewData::setItemType(u8 type) {
+void SrGearViewData::setItemType(SrGameGearType type) {
     itemType = type;
 }
 
-u8 SrGearViewData::getItemType() {
+SrGameGearType SrGearViewData::getItemType() {
     return itemType;
 }
 

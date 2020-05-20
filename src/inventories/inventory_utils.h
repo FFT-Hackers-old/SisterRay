@@ -7,11 +7,10 @@
 /*utility for decrementing the quantity of an item at a particular inventory index*/
 i16 sortInventory(i32 sort_type);
 void testFillInventory();
-void addInventoryEntry(u16 item_id, u8 quantity);
-bool usableInInventoryMenu(u16 item_id);
-u16 getCharacterRestrictionMask(u16 item_id);
-u16 getRestrictionMask(u16 item_id);
-u8 getTargetFlags(u16 item_id);
-void updateInventoryEntry(u16 item_id, u8 quantity);
+void addInventoryEntry(u16 itemID, u8 quantity);
+bool usableInInventoryMenu(u16 itemID);
+u16 getRestrictionMask(u16 absoluteID);
+u8 getTargetFlags(u16 absoluteID);
+void updateInventoryEntry(u16 itemID, u8 quantity);
 
 #endif

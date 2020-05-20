@@ -1,116 +1,78 @@
 #include "inventory_utils.h"
 #include "../impl.h"
+#include "../gamedata/base_type_names.h"
 
 /*Utility check if an item is usable on the menu*/
-bool usableInInventoryMenu(u16 item_id) {
-    u16 restriction_mask = getRestrictionMask(item_id);
-    if (restriction_mask & 4) {
+bool usableInInventoryMenu(u16 materiaID) {
+    u16 restrictionMask = getRestrictionMask(materiaID);
+    if (restrictionMask & 4) {
         return true;
     }
     return false;
 }
 
-void updateInventoryEntry(u16 item_id, u8 quantity) {
+void updateInventoryEntry(u16 materiaID, u8 quantity) {
     InventoryEntry entry = {
-        item_id,
+        materiaID,
         quantity
     };
-    gContext.inventory->updateResource(item_id, entry);
+    gContext.inventory->updateResource(materiaID, entry);
 }
 
-void addInventoryEntry(u16 item_id, u8 quantity) {
+void addInventoryEntry(u16 materiaID, u8 quantity) {
     InventoryEntry entry = {
-        item_id,
+        materiaID,
         quantity
     };
     gContext.inventory->addResource(entry);
 }
 
-u16 getCharacterRestrictionMask(u16 absoluteItemID) {
-    u8 itemType = gContext.itemTypeData.getResource(absoluteItemID).itemType;
-    u16 relativeItemID = gContext.itemTypeData.getResource(absoluteItemID).typeRelativeID;
-    u16 restrictionMask;
-    switch (itemType) {
-    case 0: {
-        restrictionMask = gContext.items.getResource(relativeItemID).auxData.characterRestrictionMask;
-        break;
-    }
-    case 1: {
-        srLogWrite("Fetching restriction mask for weapon with relative id: %d", relativeItemID);
-        restrictionMask = gContext.weapons.getResource(relativeItemID).gameWeapon.equip_mask;
-        srLogWrite("Restriction mask: %x", restrictionMask);
-        break;
-    }
-    case 2: {
-        restrictionMask = gContext.armors.getResource(relativeItemID).gameArmor.equip_mask;
-        break;
-    }
-    case 3: {
-        restrictionMask = gContext.accessories.getResource(relativeItemID).gameAccessory.equip_mask;
-        break;
-    }
-    default:
-        restrictionMask = 0x00;
-    }
-    return restrictionMask;
-}
-
 u16 getRestrictionMask(u16 absoluteID) {
-    u8 itemType = gContext.itemTypeData.getResource(absoluteID).itemType;
-    u16 relativeID = gContext.itemTypeData.getResource(absoluteID).typeRelativeID;
+    std::string itemType = gContext.baseItems.getResource(absoluteID).itemType;
+    u16 relativeID = gContext.baseItems.getResource(absoluteID).typeRelativeID;
     u16 restrictionMask;
-    switch (itemType) {
-    case 0: {
+    if (itemType == ItemTypeNames::CONSUMABLE_TYPE) {
         restrictionMask = gContext.items.getResource(relativeID).gameItem.restrictionMask;
-        break;
+        return restrictionMask;
     }
-    case 1: {
-        restrictionMask = gContext.weapons.getResource(relativeID).gameWeapon.restriction_mask;
-        break;
+    if (itemType == ItemTypeNames::WEAPON_TYPE){
+        restrictionMask = gContext.weapons.getResource(relativeID).gameWeapon.restrictionMask;
+        return restrictionMask;
     }
-    case 2: {
-        restrictionMask = gContext.armors.getResource(relativeID).gameArmor.restriction_mask;
-        break;
+    if (itemType == ItemTypeNames::ARMOR_TYPE){
+        restrictionMask = gContext.armors.getResource(relativeID).gameArmor.restrictionMask;
+        return restrictionMask;
     }
-    case 3: {
-        restrictionMask = gContext.accessories.getResource(relativeID).gameAccessory.restriction_mask;
-        break;
+    if (itemType == ItemTypeNames::ACCESSORY_TYPE) {
+        restrictionMask = gContext.accessories.getResource(relativeID).gameAccessory.restrictionMask;
+        return restrictionMask;
     }
-    default:
-        restrictionMask = 0x00;
-    }
-    return restrictionMask;
+    return 0;
 }
 
 u8 getTargetFlags(u16 absoluteItemID) {
-    u8 item_type = gContext.itemTypeData.getResource(absoluteItemID).itemType;
-    u16 relativeID = gContext.itemTypeData.getResource(absoluteItemID).typeRelativeID;
+    std::string itemType = gContext.baseItems.getResource(absoluteItemID).itemType;
+    u16 relativeID = gContext.baseItems.getResource(absoluteItemID).typeRelativeID;
     u8 targetingFlags;
-    switch (item_type) {
-    case 0: {
+    if (itemType == ItemTypeNames::CONSUMABLE_TYPE) {
         targetingFlags = gContext.items.getResource(relativeID).gameItem.targetingFlags;
-        break;
+        return targetingFlags;
     }
-    case 1: {
+    if (itemType == ItemTypeNames::WEAPON_TYPE) {
         targetingFlags = gContext.weapons.getResource(relativeID).gameWeapon.targetFlags;
-        break;
+        return targetingFlags;
     }
-    case 2: {
-        targetingFlags = 3;
-        break;
+    if (itemType == ItemTypeNames::ARMOR_TYPE) {
+        return 3;
     }
-    case 3: {
-        targetingFlags = 3;
-        break;
+    if (itemType == ItemTypeNames::ACCESSORY_TYPE) {
+        return 3;
     }
-    default:
-        targetingFlags = 0x00;
-    }
-    return targetingFlags;
+    return 0;
 }
 
 void testFillInventory() {
-    for (u16 item_id = 0; item_id < 320; item_id++) {
-        updateInventoryEntry(item_id, 99);
+    for (u16 materiaID = 0; materiaID < 320; materiaID++) {
+        updateInventoryEntry(materiaID, 99);
     }
 }

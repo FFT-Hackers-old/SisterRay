@@ -11,7 +11,7 @@ SISTERRAY_API u8 setupBattleInventory() {
 
     u16 totalItemsCount = 0;
     for (i32 inventory_index = 0; inventory_index < inventorySize; inventory_index++) {
-        itemID = gContext.inventory->getResource(inventory_index).item_id;
+        itemID = gContext.inventory->getResource(inventory_index).materiaID;
         quantity = gContext.inventory->getResource(inventory_index).quantity;
         targetFlags = getTargetFlags(itemID);
         restrictionMask = getRestrictionMask(itemID);

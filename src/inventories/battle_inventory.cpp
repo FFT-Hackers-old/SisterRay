@@ -19,7 +19,7 @@ SrBattleInventory::SrBattleInventory(i16 allocation_size) : SrInventory<BattleIn
 }
 
 void SrBattleInventory::setSlotsInUse(u16 slotsInUse) {
-    slots_in_use = slotsInUse;
+    slotsInUse = slotsInUse;
 }
 
 SISTERRAY_API void initBattleInventory() {

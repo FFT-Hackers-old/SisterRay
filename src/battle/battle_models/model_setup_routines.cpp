@@ -191,7 +191,7 @@ void playCorrectWeaponAnimation(u32 actorIdx) {
         }
 
         auto character = gContext.party.getActivePartyCharacter(actorIdx);
-        u8 weaponModelID = gContext.weapons.getResource(character.equippedWeapon).weaponModelID;
+        u8 weaponModelID = gContext.weapons.getResource(character.equipment[0].equippedIdx).weaponModelID;
         if (!modelData->weaponModels)
             return;
 

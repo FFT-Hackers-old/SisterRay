@@ -64,7 +64,7 @@ void handleExitSelectTargets(const MenuInputEvent* event) {
     if (*W_COMMAND_ENABLED == 2 && (*ISSUED_COMMAND_ID == CMD_W_ITEM)) {
         auto indexChosen = getChosenActionMenuIndex();
         const BattleInventoryEntry& inventoryEntry = gContext.battleInventory->getResource(indexChosen);
-        if (inventoryEntry.item_id == 0xFFFF) {
+        if (inventoryEntry.materiaID == 0xFFFF) {
             gContext.battleInventory->addResourceAtIndex(indexChosen, getChosenActionID());
         }
         gContext.battleInventory->incrementInventoryEntry(indexChosen, 1);

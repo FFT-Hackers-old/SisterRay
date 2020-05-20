@@ -18,13 +18,13 @@ public:
         handler_names[name] = callback;
     }
 
-    const T& get_handler(u16 item_id) const {
-        auto& name = getResource(item_id);
+    const T& get_handler(u16 materiaID) const {
+        auto& name = getResource(materiaID);
         return handler_names[name];
     }
 
-    T& get_handler(u16 item_id) {
-        auto& name = getResource(item_id);
+    T& get_handler(u16 materiaID) {
+        auto& name = getResource(materiaID);
         return handler_names[name];
     }
 };

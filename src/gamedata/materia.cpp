@@ -178,16 +178,16 @@ u32 getMateriaColorType(u16 materiaID) {
 }
 
 u8 getMateriaLevel(const MateriaInventoryEntry& materia, u8* maxLevelPtr) {
-    if (materia.item_id == 0xFFFF) {
+    if (materia.materiaID == 0xFFFF) {
         *maxLevelPtr = 0;
         return 0;
     }
-    auto levels = gContext.materias.getResource(materia.item_id).gameMateria.apLevel;
+    auto levels = gContext.materias.getResource(materia.materiaID).gameMateria.apLevel;
 
     u8 level = 1;
     u8 maxLevel = 1;
     for (u16 apLevelIndex = 0; levels[apLevelIndex] != 0xFFFF; ++apLevelIndex) {
-        if (materia.materia_ap > (levels[apLevelIndex] * 100))
+        if (materia.materiaAP > (levels[apLevelIndex] * 100))
             ++level;
         maxLevel++;
 

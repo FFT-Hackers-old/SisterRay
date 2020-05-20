@@ -15,7 +15,7 @@ SrPartyMembers::SrPartyMembers(u8 characterCount) {
     for (u8 partyIdx = 0; partyIdx < characterCount; partyIdx++) {
         SrPartyData partyData = {};
         auto& stats = partyData.playerStats;
-        SrActorStat stat = { 1, 1 };
+        SrBoostedStat stat = { 1, 1 };
         for (const auto& element : gContext.stats.named_registry) {
             stats[element.first] = stat;
         }
@@ -107,11 +107,11 @@ void SrPartyMembers::handleMateriaActorUpdates(u8 characterID, const std::vector
     bool magicEnabled = false;
     bool summonEnabled = false;
     for (auto materia : equippedMaterias) {
-        if (materia.item_id == 0xFFFF)
+        if (materia.materiaID == 0xFFFF)
             continue;
-        if ((getMateriaTopType(materia.item_id) == 0x9) || (getMateriaTopType(materia.item_id) == 0xA))
+        if ((getMateriaTopType(materia.materiaID) == 0x9) || (getMateriaTopType(materia.materiaID) == 0xA))
             magicEnabled = true;
-        if ((getMateriaTopType(materia.item_id) == 0xB) || (getMateriaTopType(materia.item_id) == 0xC)) {
+        if ((getMateriaTopType(materia.materiaID) == 0xB) || (getMateriaTopType(materia.materiaID) == 0xC)) {
             summonEnabled = true;
         }
     }
@@ -122,13 +122,13 @@ void SrPartyMembers::handleMateriaActorUpdates(u8 characterID, const std::vector
 
     for (auto it = std::begin(equippedMaterias); it != std::end(equippedMaterias); ++it) {
         auto materia = *it;
-        if (materia.item_id == 0xFFFF)
+        if (materia.materiaID == 0xFFFF)
             continue;
         u8 maxLevel = 1;
         auto materiaLevel = getMateriaLevel(materia, &maxLevel);
-        EnableAbilitiesEvent enableActionEvent = { characterID, materia, gContext.materias.getResource(materia.item_id).gameMateria, materiaLevel };
-        auto topkey = getTopKey(getMateriaTopType(materia.item_id));
-        auto subkey = getSubKey(getMateriaSubType(materia.item_id));
+        EnableAbilitiesEvent enableActionEvent = { characterID, materia, gContext.materias.getResource(materia.materiaID).gameMateria, materiaLevel };
+        auto topkey = getTopKey(getMateriaTopType(materia.materiaID));
+        auto subkey = getSubKey(getMateriaSubType(materia.materiaID));
         std::vector<SrEventContext> dispatchContexts = { topkey, subkey };
         gContext.eventBus.dispatch(ENABLE_ACTIONS, &enableActionEvent, dispatchContexts);
     }
@@ -297,39 +297,41 @@ void SrPartyMembers::initCharacterBattleFields(u8 characterID, const ActorBattle
 
 void SrPartyMembers::recalculateCharacter(u8 characterID) {
     auto characterName = getCharacterName(characterID);
-    auto weaponMaterias = gContext.characters.getElement(characterName).wpnMaterias;
-    auto armorMaterias = gContext.characters.getElement(characterName).armMaterias;
+    const auto& character = gContext.characters.getElement(characterName);
 
     std::vector<MateriaInventoryEntry> equippedMaterias = std::vector<MateriaInventoryEntry>();
-    equippedMaterias.resize(weaponMaterias.max_size() + armorMaterias.max_size());
-
-    std::vector<MateriaInventoryEntry> wpnVector = std::vector<MateriaInventoryEntry>();
-    wpnVector.resize(weaponMaterias.max_size());
-    std::vector<MateriaInventoryEntry> armVector = std::vector<MateriaInventoryEntry>();
-    armVector.resize(armorMaterias.max_size());
-
-    std::copy(begin(weaponMaterias), end(weaponMaterias), begin(equippedMaterias));
-    std::copy(begin(armorMaterias), end(armorMaterias), begin(equippedMaterias) + weaponMaterias.size());
-    std::copy(begin(weaponMaterias), end(weaponMaterias), begin(wpnVector));
-    std::copy(begin(armorMaterias), end(armorMaterias), begin(armVector));
+    StatBoostModifiers statModifiers = StatBoostModifiers();
+    for (auto& gearSlot : character.equipment) {
+        equippedMaterias.insert(std::end(equippedMaterias), std::begin(gearSlot.materia), std::end(gearSlot.materia));
+        addStatBoosts(statModifiers, gearSlot.equipped.equipEffects);
+    }
 
     clearActions(characterID);
-    handleMateriaActorUpdates(characterID, equippedMaterias); //Enable spells, counters, commands, and fill out stat boosts based on materia stuff
-    applyLinkedMateriaModifiers(characterID, wpnVector, SR_GEAR_WEAPON);
-    applyLinkedMateriaModifiers(characterID, armVector, SR_GEAR_ARMOR);
-
-    StatBoostModifiers statModifiers = StatBoostModifiers();
-    //Add all stat modifiers from weapons to the modification object, for determining the base value of that stat
-    auto& characterRecord = gContext.characters.getResource(characterID);
-    const auto& weapon = gContext.weapons.getResource(characterRecord.equippedWeapon);
-    addStatBoosts(statModifiers, weapon.equipEffects);
-    const auto& armor = gContext.armors.getResource(characterRecord.equippedArmor);
-    addStatBoosts(statModifiers, armor.equipEffects);
-    const auto& accessory = gContext.accessories.getResource(characterRecord.equippedAccessory);
-    addStatBoosts(statModifiers, accessory.equipEffects);
+    handleMateriaActorUpdates(characterID, equippedMaterias);
     for (auto equippedMateria : equippedMaterias) {
-        const auto& materia = gContext.materias.getResource(equippedMateria.item_id);
+        const auto& materia = gContext.materias.getResource(equippedMateria.materiaID);
         addStatBoosts(statModifiers, materia.equipEffects);
+    }
+
+
+    for (auto& gearSlot : character.equipment) {
+        std::vector<MateriaInventoryEntry> linkedMaterias = std::vector<MateriaInventoryEntry>();
+        linkedMaterias.resize(gearSlot.materia.size());
+        std::copy(begin(gearSlot.materia), end(gearSlot.materia), begin(linkedMaterias));
+
+        u8* slots = getMateriaSlots(gearSlot.equippedIdx, gearSlot.slotGearType);
+        switch (gearSlot.slotGearType) {
+        case SR_GEAR_WEAPON: {
+            applyLinkedMateriaModifiers(characterID, slots, linkedMaterias, SR_GEAR_WEAPON);
+            break;
+        }
+        case SR_GEAR_ARMOR: {
+            applyLinkedMateriaModifiers(characterID, slots, linkedMaterias, SR_GEAR_ARMOR);
+            break;
+        }
+        default: {
+        }
+        }
     }
 
     auto& srPartyMember = partyMembers[characterID];
@@ -433,9 +435,8 @@ u8 getCommandRows(u8 characterID) {
 }
 
 /*Applys modifiers when support materia are paired with others*/
-void applyLinkedMateriaModifiers(u8 characterIdx, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGearType gearType) {
+void applyLinkedMateriaModifiers(u8 characterIdx, u8* slots, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGameGearType gearType) {
     for (auto pairIndex = 0; pairIndex < 8; pairIndex += 2) {
-        auto slots = getMateriaSlots(characterIdx, gearType);
         auto leftSlot = slots[pairIndex];
         auto rightSlot = slots[pairIndex];
 
@@ -445,29 +446,13 @@ void applyLinkedMateriaModifiers(u8 characterIdx, const std::vector<MateriaInven
 
         auto& leftMateria = equippedMaterias[pairIndex];
         auto& rightMateria = equippedMaterias[pairIndex + 1];
-        if (getMateriaTopType(leftMateria.item_id) == 5) {
+        if (getMateriaTopType(leftMateria.materiaID) == 5) {
             dispatchSupportHandlers(characterIdx, leftMateria, rightMateria, gearType);
         }
-        if (getMateriaTopType(rightMateria.item_id) == 5) {
+        if (getMateriaTopType(rightMateria.materiaID) == 5) {
             dispatchSupportHandlers(characterIdx, rightMateria, leftMateria, gearType);
         }
     }
-}
-
-u8* getMateriaSlots(u8 partyIdx, SrGearType gearType) {
-    u8 characterRecordArrayIndex = getCharacterRecordIndex(partyIdx);
-
-    auto kernelObjectID = getEquippedGear(characterRecordArrayIndex, gearType);
-
-    if (gearType == SR_GEAR_WEAPON) {
-        auto materiaSlots = &(gContext.weapons.getResource(kernelObjectID).gameWeapon.materia_slots[0]);
-        return materiaSlots;
-    }
-    else if (gearType == SR_GEAR_ARMOR) {
-        auto materiaSlots = &(gContext.armors.getResource(kernelObjectID).gameArmor.materia_slots[0]);
-        return materiaSlots;
-    }
-    return nullptr;
 }
 
 bool slotsAreLinked(u8 leftSlot, u8 rightSlot) {
@@ -479,7 +464,7 @@ bool slotsAreLinked(u8 leftSlot, u8 rightSlot) {
 }
 
 /*Dispatch support materia handlers, keyed on contexts corresponding to the type and subtype of the paired materia*/
-void dispatchSupportHandlers(u8 characterIdx, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGearType gearType) {
+void dispatchSupportHandlers(u8 characterIdx, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGameGearType gearType) {
     u8 supportMax;
     u8 pairedMax;
     auto supportLevel = getMateriaLevel(supportMateria, &supportMax);
@@ -488,22 +473,21 @@ void dispatchSupportHandlers(u8 characterIdx, const MateriaInventoryEntry& suppo
         characterIdx,
         supportMateria,
         supportLevel,
-        gContext.materias.getResource(supportMateria.item_id).gameMateria,
+        gContext.materias.getResource(supportMateria.materiaID).gameMateria,
         pairedMateria,
         pairedLevel,
-        gContext.materias.getResource(pairedMateria.item_id).gameMateria,
+        gContext.materias.getResource(pairedMateria.materiaID).gameMateria,
         gearType
     };
 
-    auto topkey = getTopKey(getMateriaTopType(pairedMateria.item_id));
-    auto subkey = getSubKey(getMateriaSubType(pairedMateria.item_id));
+    auto topkey = getTopKey(getMateriaTopType(pairedMateria.materiaID));
+    auto subkey = getSubKey(getMateriaSubType(pairedMateria.materiaID));
     std::vector<SrEventContext> dispatchContexts = { topkey, subkey };
     gContext.eventBus.dispatch(APPLY_SUPPORT, (void*)&applySupportEvent, dispatchContexts);
 }
 
-void srUpdatePartyMember(u8 characterIdx) {
-    recalculateBaseStats(characterIdx);
-    recalculateDerivedStats(characterIdx); //This function will be replaced with an sr version to correctly init the new command fields
+void srUpdatePartyMember(u8 partyIdx) {
+    gContext.party.recalculatePartyMember(partyIdx); //This function will be replaced with an sr version to correctly init the new command fields
     updateMiscPartyStats();
 }
 

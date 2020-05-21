@@ -24,7 +24,7 @@ SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<S
     addElement(StatNames::LUCK, luck);
     SrStat dex = { EncodedString::from_unicode(StatNames::DEX_NAME.c_str()), 255, 0, false };
     addElement(StatNames::DEXTERITY, dex);
-    SrStat agi = { EncodedString::from_unicode(StatNames::AGI_NAME.c_str()), 255, 0, false };
+    SrStat agi = { EncodedString::from_unicode(StatNames::AGILITY_NAME.c_str()), 255, 0, false };
     addElement(StatNames::AGILITY, dex);
 
     SrStat wpnAtk = { EncodedString::from_unicode(StatNames::WEAPON_ATTACK_NAME.c_str()), 255, 0, false };

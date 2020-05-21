@@ -24,7 +24,7 @@ namespace StatNames {
     const std::string MAG_NAME = "Magic";
     const std::string FOCUS_NAME = "Focus";
     const std::string SPR_NAME = "Spirit";
-    const std::string AGILITY = "Agility";
+    const std::string AGILITY_NAME = "Agility";
     const std::string LUCK_NAME = "Luck";
 
     const std::string WEAPON_ATTACK = "WPNATK";

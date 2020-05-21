@@ -5,8 +5,8 @@
 using namespace BattleMenuWidgetNames;
 
 void initBattleSummonViewWidget(const MenuInitEvent* event) {
-    auto mainWidget = event->menu;
-    auto battleSummonView = createActionViewWidget(BATTLE_SUMMON_WIDGET_NAME, 0, 340, battleSummonNameViewUpdater, BATTLE_MENU_NAME.c_str(), BATTLE_SUMMON_STATE);
+    auto mainWidget = event->menu->menuWidget;
+    auto battleSummonView = createActionViewWidget(BATTLE_SUMMON_WIDGET_NAME.c_str(), 0, 340, battleSummonNameViewUpdater, BATTLE_MENU_NAME.c_str(), BATTLE_SUMMON_STATE);
     addChildWidget(mainWidget, battleSummonView, BATTLE_SUMMON_WIDGET_NAME);
 }
 

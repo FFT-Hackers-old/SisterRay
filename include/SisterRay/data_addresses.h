@@ -81,7 +81,7 @@
 // End
 
 #define MAT_MENU_PARTY_INDEX                 (u32*)0xDD1638
-#define STAT_MENU_ACTIVE_ACTOR             (u32*)0xDCA478
+#define STAT_MENU_ACTIVE_ACTOR               (u32*)0xDCA478
 //These Globals are used to communicate between update loops by the magic menu
 #define enabledSpellTypeMask                 (u8*)0xDC0927
 //

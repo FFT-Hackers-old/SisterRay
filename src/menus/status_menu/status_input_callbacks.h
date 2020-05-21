@@ -8,7 +8,7 @@
 #include "status_widget_names.h"
 #include "../../party/characters.h"
 
-void exitMenuListener(const MenuInputEvent* event);
-void changeCharLeft(const MenuInputEvent* event);
-void changeCharRight(const MenuInputEvent* event);
+void statExitMenuListener(const MenuInputEvent* event);
+void statChangeCharLeft(const MenuInputEvent* event);
+void statChangeCharRight(const MenuInputEvent* event);
 #endif

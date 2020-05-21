@@ -27,11 +27,11 @@ void initStatCharDataWidget(const MenuInitEvent* event) {
     auto HPBarWidget = createHPBarWidget(hpBarParams, HPBAR_WIDGET_NAME);
     addChildWidget(charStatusWidget, (Widget*)HPBarWidget, HPBAR_WIDGET_NAME);
 
-    DrawStaticGridParams staticGridParams = { primaryStatsUpdater, 17, 100, 1, 8, 0, 20, &allocateStatRow };
+    DrawStaticGridParams staticGridParams = { &primaryStatUpdater, 17, 100, 1, 8, 0, 20, &allocateStatRow };
     auto charEquipGrid = createStaticGridWidget(staticGridParams, PRIMARY_STATS_GRID);
     addChildWidget(charStatusWidget, (Widget*)charEquipGrid, PRIMARY_STATS_GRID);
 
-    auto commandView = createCommandViewWidget(STATUS_COMMAND_WIDGET_NAME, 0x90, 0x154, &statusCommandNameViewUpdater);
+    auto commandView = createCommandViewWidget(STATUS_COMMAND_WIDGET_NAME.c_str(), 0x90, 0x154, &statusCommandNameViewUpdater);
     addChildWidget(mainWidget, commandView, STATUS_COMMAND_WIDGET_NAME);
 
     addChildWidget(mainWidget, charStatusWidget, CHAR_DATA_WIDGET_NAME);
@@ -48,9 +48,9 @@ Widget* allocateStatRow(const char* name, i32 xCoordinate, i32 yCoordinate){
     auto textWidget = createTextWidget(textParams, "STAT");
     addChildWidget(equipRow, (Widget*)textWidget, "STAT");
 
-    setTextParams(&textParams, xCoordinate + 60, yCoordinate, defaultString, COLOR_WHITE, 0.2f);
-    textWidget = createTextWidget(textParams, "VAL");
-    addChildWidget(equipRow, (Widget*)textWidget, "VAL");
+    DrawNumberParams numberParams = { xCoordinate + 60, yCoordinate, 0, 4, COLOR_WHITE, 0.2f };
+    auto numberWidget = createNumberWidget(numberParams, "VAL");
+    addChildWidget(equipRow, (Widget*)numberWidget, "VAL");
     return equipRow;
 }
 
@@ -65,7 +65,7 @@ void primaryStatUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
     const auto& actorStats = partyMember.srPartyMember->playerStats;
     for (auto& statName : primaryStatOrder) {
         updateText(getChild(widget, "STAT"), gContext.stats.getElement(statName).displayName.str());
-        updateText(getChild(widget, "VAL"), actorStats.at(statName).statValue);
+        updateNumber(getChild(widget, "VAL"), actorStats.at(statName).statValue);
     }
 }
 

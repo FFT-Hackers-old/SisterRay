@@ -3,7 +3,7 @@
 #include "../../party/party_utils.h"
 #include "../../gamedata/base_type_names.h"
 
-void exitMenuListener(const MenuInputEvent* event) {
+void statExitMenuListener(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
 
@@ -15,7 +15,7 @@ void exitMenuListener(const MenuInputEvent* event) {
 }
 
 /*Handlers for L1/R1 "switching" inputs, for states where they function*/
-void changeCharLeft(const MenuInputEvent* event) {
+void statChangeCharLeft(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
 
@@ -26,7 +26,7 @@ void changeCharLeft(const MenuInputEvent* event) {
     //update displayed character Data in the Widget
 }
 
-void changeCharRight(const MenuInputEvent* event) {
+void statChangeCharRight(const MenuInputEvent* event) {
     if (event->menuState != 0)
         return;
 

@@ -6,12 +6,7 @@
 #include <zlib.h>
 #include "inventories/inventory_functions.h"
 #include "inventories/inventory_utils.h"
-#include "menus/inventory_menu/inventory_menu.h"
-#include "menus/inventory_menu/inventory_menu_callbacks.h"
-#include "menus/equip_menu/equip_menu.h"
-#include "menus/equip_menu//equip_menu_callbacks.h"
-#include "menus/materia_menu/materia_menu.h"
-#include "menus/materia_menu/materia_menu_callbacks.h"
+#include "menus/menu_engine.h"
 #include "menus/battle_menu//battle_menu.h"
 #include "party/party_callbacks.h"
 #include "battle/battle_engine_api.h"
@@ -163,30 +158,21 @@ static void Init(void) {
     initLimits((u8*)magicLGP);
     free(battleLGP);
     free(magicLGP);
-    registerEquipMenuListeners();
-    initializeEquipMenu();
-    registerInventoryMenuListeners();
-    initializeInventoryMenu();
-    registerMateriaMenuListeners();
-    initializeMateriaMenu();
-    registerPartyCallbacks();
-    initializeSrBattleEngine();
 
     srLogWrite("menus initialization complete");
     //End Register base callbacks, begin registering new handlers
-    mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
-    //mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
-    mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
     mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);
     mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
     mogReplaceFunction(GET_MP_COST, &getMPCost);
-    mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
     //mogReplaceFunction(PRINT_DEBUG_STRING, &gameLogWrite);
+    initializeSrMenuEngine();
+    registerPartyCallbacks();
+    initializeSrBattleEngine();
     initializeBattleMenu();
     srLogWrite("initialization complete");
     LoadMods();

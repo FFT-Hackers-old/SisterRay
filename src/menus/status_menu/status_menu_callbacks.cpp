@@ -19,7 +19,7 @@ void registerStatMenuListeners() {
     gContext.eventBus.addListener(INIT_STATUS_MENU, (SrEventCallback)&initStatCharDataWidget, modName);
     gContext.eventBus.addListener(DRAW_STATUS_MENU, (SrEventCallback)&handleStatusMenuChangeCharacter, modName);
 
-    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&exitMenuListener, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_L1, (SrEventCallback)&changeCharLeft, modName, contextKeys);
-    gContext.eventBus.addListener(MENU_INPUT_R1, (SrEventCallback)&changeCharRight, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_CANCEL, (SrEventCallback)&statExitMenuListener, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_L1, (SrEventCallback)&statChangeCharLeft, modName, contextKeys);
+    gContext.eventBus.addListener(MENU_INPUT_R1, (SrEventCallback)&statChangeCharRight, modName, contextKeys);
 }

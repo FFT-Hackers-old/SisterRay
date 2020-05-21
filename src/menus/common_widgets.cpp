@@ -1,6 +1,7 @@
 #include "common_widgets.h"
 #include "menu.h"
 #include "menu_interface.h"
+#include "../impl.h"
 
 /*Initializes the command view widget used */
 Widget* createCommandViewWidget(const char* name, i32 x, i32 y, SRLISTUPDATERPROC commandNameViewUpdater, const char* menuName, u8 cursorIdx) {
@@ -14,7 +15,7 @@ Widget* createCommandViewWidget(const char* name, i32 x, i32 y, SRLISTUPDATERPRO
     for (u8 idx = 0; idx < 3; idx++) {
         auto actorCommandsWidget = createWidget(std::to_string(idx));
         if (menuName) {
-            DrawCursorGridParams gridParams = { menuName, cursorIdx, commandNameViewUpdater, x + 10, y + 11, &allocateCommandRow, 0, idx, true };
+            DrawCursorGridParams gridParams = { menuName, cursorIdx, commandNameViewUpdater, x + 10, y + 11, &allocateCommandRow, idx, true };
             auto gridWidget = (Widget*)createGridWidget(gridParams, name);
         }
         else {
@@ -23,7 +24,7 @@ Widget* createCommandViewWidget(const char* name, i32 x, i32 y, SRLISTUPDATERPRO
         }
         addChildWidget(actorCommandsWidget, gridWidget, "GRID");
         auto boxWidget = createBoxWidget(boxParams, "BOX");
-        addChildWidget(actorCommandsWidget, boxWidget, "BOX");
+        addChildWidget(actorCommandsWidget, (Widget*)boxWidget, "BOX");
         addChildWidget(commandViewWidget, (Widget*)actorCommandsWidget, std::to_string(idx));
     }
     return commandViewWidget;
@@ -64,12 +65,22 @@ Widget* allocateCommandRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
 }
 
 /*Temporary function until we also provide infrastructure for extending the number of commands*/
+
+void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u8* updatingActor) {
+    const auto& commands = gContext.party.getActivePartyMember(*updatingActor).gamePartyMember->enabledCommandArray;
+    baseCommandNameViewUpdater(self, widget, flatIndex, commands);
+}
+
 void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u32* updatingActor) {
+    const auto& commands = gContext.party.getActivePartyMember(*updatingActor).gamePartyMember->enabledCommandArray;
+    baseCommandNameViewUpdater(self, widget, flatIndex, commands);
+}
+
+void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, const EnabledCommand (&commands)[16]) {
     if (self->collectionType != GridWidgetClass() || self->collectionType != StaticGridWidgetClass()) {
         return;
     }
 
-    const auto& commands = gContext.party.getActivePartyMember(*updatingActor).gamePartyMember->enabledCommandArray;
     if (commands[flatIndex].commandID == 0xFF) {
         disableWidget(getChild(widget, std::string("ARW")));
         disableWidget(getChild(widget, std::string("TXT")));
@@ -93,7 +104,7 @@ void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
     disableWidget(getChild(widget, std::string("ARW")));
 }
 
-void createActionViewWidget(const char* name, i32 x, i32 y, SRLISTUPDATERPROC actionViewUpdater, const char* menuName, u16 cursorIdx) {
+Widget* createActionViewWidget(const char* name, i32 x, i32 y, SRLISTUPDATERPROC actionViewUpdater, const char* menuName, u16 cursorIdx) {
     auto actionView = createWidget(name);
 
     DrawBoxParams boxParams = { 0, 340, 640, 140,  0.4f };
@@ -101,13 +112,13 @@ void createActionViewWidget(const char* name, i32 x, i32 y, SRLISTUPDATERPROC ac
     std::vector<std::string> names = { "0", "1", "2" };
     for (u8 idx = 0; idx < names.size(); idx++) {
         auto actorActionView = createWidget(std::to_string(idx));
-        DrawCursorGridParams gridParams = { menuName, cursorIdx, &actionView, 42, 360, allocateActionRow, idx };
+        DrawCursorGridParams gridParams = { menuName, cursorIdx, actionViewUpdater, 42, 360, &allocateActionRow, idx };
         auto gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(actorActionView, (Widget*)gridWidget, names[idx]);
         auto boxWidget = createBoxWidget(boxParams, "BOX");
         addChildWidget(actorActionView, (Widget*)boxWidget, "BOX");
     }
-    return actionView
+    return actionView;
 }
 
 Widget* allocateActionRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
@@ -121,12 +132,12 @@ Widget* allocateActionRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
 void updateActionsActor(Widget* cmdWidget, u8 actorIdx, Menu* menu, u16 cursorState) {
     for (u8 partyIdx = 0; partyIdx < 3; partyIdx++) {
         if (partyIdx == actorIdx) {
-            enableWidget(cmdWidget, std::to_string(actorIdx)));
+            enableWidget(getChild(cmdWidget, std::to_string(actorIdx)));
             if (menu) {
                 setActiveCursorIndex(menu, cursorState, actorIdx);
             }
             continue;
         }
-        disableWidget(cmdWidget, std::to_string(actorIdx)));
+        disableWidget(getChild(cmdWidget, std::to_string(actorIdx)));
     }
 }

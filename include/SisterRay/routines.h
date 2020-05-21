@@ -158,7 +158,7 @@ typedef i32(*pfnsub6FA12F)(i32, i32, i32, i32);
 #define sub_6FA12F                      ((pfnsub6FA12F)0x6FA12F)
 
 typedef i16*(*pfnsub6C98A6)(void);
-#define sub_6C98A6                      ((pfnsub6C98A6)0x6C98A6)
+#define renderMenuType                      ((pfnsub6C98A6)0x6C98A6)
 
 typedef void(*pfnsub6C497C)(i32, char);
 #define sub_6C497C                      ((pfnsub6C497C)0x6C497C)

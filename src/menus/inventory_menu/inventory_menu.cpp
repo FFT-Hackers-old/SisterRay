@@ -27,7 +27,7 @@ void displayInventoryCursorStates(Menu* menu, u16 menuState, u32 updateStateMask
     u32 inventory_arrange_type = *(INVENTORY_ARRANGE_TYPE);
     u16 item_ID;
 
-    sub_6C98A6();
+    renderMenuType();
     auto viewChoiceCursor = getStateCursor(menu, 0);
     switch (menu->currentState) {
         case 0: {

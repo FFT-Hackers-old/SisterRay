@@ -9,7 +9,7 @@ const WidgetClass* GridWidgetClass() {
     return &kGridWidgetClass;
 }
 
-SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, const char* name) {
+SISTERRAY_API void srNewGridWidget(Widget* parent, DrawCursorGridParams params, const char* name) {
     auto widget = createGridWidget(params, std::string(name));
     addChildWidget(parent, (Widget*)widget, std::string(name));
 }
@@ -91,7 +91,7 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
 
 /*Use this method to create self-managing grid widgets from a cursor context object, with a parametrized type
   Do not use your own childTypes here, use the pre-defined widget types in sister ray*/
-CursorGridWidget* createGridWidget(drawGridParams params, std::string name, const WidgetClass* childType) {
+CursorGridWidget* createGridWidget(DrawCursorGridParams params, std::string name, const WidgetClass* childType) {
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType, sizeof(CursorGridWidget));
     widget->cursorName = params.cursorName;
     widget->menuState = params.menuState;

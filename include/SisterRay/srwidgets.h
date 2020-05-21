@@ -223,10 +223,10 @@ typedef struct {
     SRLISTALLOCPROC allocator;
     u32 cursorIdx;
     u8 transpose;
-} drawGridParams;
+} DrawCursorGridParams;
 
 typedef struct CursorGridWidget_ CursorGridWidget;
-typedef void(*PFNSRNEWGRIDWIDGETPROC)(Widget*, drawGridParams, char*, u16);
+typedef void(*PFNSRNEWGRIDWIDGETPROC)(Widget*, DrawCursorGridParams, char*, u16);
 
 typedef struct {
     SRLISTUPDATERPROC updater;

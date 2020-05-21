@@ -15,7 +15,7 @@ SISTERRAY_API void materiaMenuUpdateHandler(i32 updateStateMask) {
 void displayMateriaCursorStates(Menu* menu, u16 menuState, u32 updateStateMask) {
     u16 item_ID;
 
-    sub_6C98A6();
+    renderMenuType();
     auto checkArrangeCursor = getStateCursor(menu, 0);
     auto slotChoiceCursor = getStateCursor(menu, 1);
     switch (menu->currentState) {

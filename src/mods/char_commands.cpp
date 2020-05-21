@@ -347,7 +347,7 @@ void initSoldierCommandViewWidget(const MenuInitEvent* menuEvent) {
     std::vector<std::string> names = { SoldierWidgetNames::SOLDIER_GRID_NAME };
     for (u32 idx = 0; idx < names.size(); idx++) {
         auto characterChoice = getStateCursor(menu, getStateByName(menu, SOLDIER_STATE_NAME), idx);
-        drawGridParams gridParams = { BattleMenuWidgetNames::BATTLE_MENU_NAME.c_str(), getStateByName(menu, SOLDIER_STATE_NAME), soldierCommandUpdater, 50, 364, allocateSoldierRow, idx };
+        DrawCursorGridParams gridParams = { BattleMenuWidgetNames::BATTLE_MENU_NAME.c_str(), getStateByName(menu, SOLDIER_STATE_NAME), soldierCommandUpdater, 50, 364, allocateSoldierRow, idx };
         srNewGridWidget(soldierCommandView, gridParams, names[idx].c_str());
     }
 }

@@ -251,7 +251,7 @@ void initInfernoViewWidget(const MenuInitEvent* menuEvent) {
     std::vector<std::string> names = { InfernoWidgetNames::INFERNO_GRID_NAME };
     for (u32 idx = 0; idx < names.size(); idx++) {
         auto characterChoice = getStateCursor(menu, getStateByName(menu, INFERNO_STATE_NAME), idx);
-        drawGridParams gridParams = { BattleMenuWidgetNames::BATTLE_MENU_NAME.c_str(), getStateByName(menu, INFERNO_STATE_NAME), infernoCommandUpdater, 50, 364, allocateInfernoRow, idx };
+        DrawCursorGridParams gridParams = { BattleMenuWidgetNames::BATTLE_MENU_NAME.c_str(), getStateByName(menu, INFERNO_STATE_NAME), infernoCommandUpdater, 50, 364, allocateInfernoRow, idx };
         srNewGridWidget(soldierCommandView, gridParams, names[idx].c_str());
     }
 }

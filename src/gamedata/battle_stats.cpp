@@ -16,12 +16,16 @@ SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<S
     addElement(StatNames::VITALITY, vit);
     SrStat mag = { EncodedString::from_unicode(StatNames::MAG_NAME.c_str()), 255, 0, false };
     addElement(StatNames::MAGIC, mag);
+    SrStat foc = { EncodedString::from_unicode(StatNames::FOCUS_NAME.c_str()), 255, 0, false };
+    addElement(StatNames::FOCUS, mag);
     SrStat spr = { EncodedString::from_unicode(StatNames::SPR_NAME.c_str()), 255, 0, false };
     addElement(StatNames::SPIRIT, spr);
     SrStat luck = { EncodedString::from_unicode(StatNames::LUCK_NAME.c_str()), 255, 0, false };
     addElement(StatNames::LUCK, luck);
     SrStat dex = { EncodedString::from_unicode(StatNames::DEX_NAME.c_str()), 255, 0, false };
     addElement(StatNames::DEXTERITY, dex);
+    SrStat agi = { EncodedString::from_unicode(StatNames::AGI_NAME.c_str()), 255, 0, false };
+    addElement(StatNames::AGILITY, dex);
 
     SrStat wpnAtk = { EncodedString::from_unicode(StatNames::WEAPON_ATTACK_NAME.c_str()), 255, 0, false };
     addElement(StatNames::WEAPON_ATTACK, wpnAtk);

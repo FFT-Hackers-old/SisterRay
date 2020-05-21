@@ -55,7 +55,7 @@ SISTERRAY_API void updateMateriaData(Widget* widget, MateriaInventoryEntry* mate
 SISTERRAY_API void srNewSimpleAssetWidget(Widget* parent, DrawSimpleAssetParams params, const char* name);
 SISTERRAY_API void setSimpleAssetParams(DrawSimpleAssetParams* params, i32 xCoordinate, i32 yCoordinate, u8 arrowCode, color arrowColor, float priority);
 
-SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, const char* name);
+SISTERRAY_API void srNewGridWidget(Widget* parent, DrawCursorGridParams params, const char* name);
 
 SISTERRAY_API void setStaticGridParams(DrawStaticGridParams* params, i32 xCoordinate, i32 yCoordinate,
     u16 columnCount, u16 rowCount, u16 columnSpacing, u16 rowSpacing,

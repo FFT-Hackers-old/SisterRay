@@ -7,21 +7,25 @@ namespace StatNames {
     const std::string HP = "HP";
     const std::string MP = "MP";
     const std::string STRENGTH = "STR";
+    const std::string DEXTERITY = "DEX";
     const std::string VITALITY = "VIT";
     const std::string MAGIC = "MAG";
+    const std::string FOCUS = "FOC";
     const std::string SPIRIT = "SPR";
-    const std::string DEXTERITY = "DEX";
+    const std::string AGILITY = "AGI";
     const std::string LUCK = "LCK";
 
     // Display Names for primary stats
     const std::string HP_NAME = "HP";
     const std::string MP_NAME = "MP";
     const std::string STR_NAME = "Strength";
+    const std::string DEX_NAME = "Dexterity";
     const std::string VIT_NAME= "Vitality";
     const std::string MAG_NAME = "Magic";
+    const std::string FOCUS_NAME = "Focus";
     const std::string SPR_NAME = "Spirit";
-    const std::string DEX_NAME = "Dexterity";
-    const std::string LUCK_NAME = "LCK";
+    const std::string AGILITY = "Agility";
+    const std::string LUCK_NAME = "Luck";
 
     const std::string WEAPON_ATTACK = "WPNATK";
     const std::string WEAPON_ACCURACY = "WPNHIT";

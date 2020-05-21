@@ -17,7 +17,7 @@ struct CursorGridWidget_ {
 void drawGridWidget(CursorGridWidget* gridWidget); //draw visibleRow # of child widgets
 static const WidgetClass kGridWidgetClass = { (SRWIDGETDRAWPROC)drawGridWidget };
 const WidgetClass* GridWidgetClass();
-CursorGridWidget* createGridWidget(drawGridParams params, std::string name, const WidgetClass* childType = nullptr);
+CursorGridWidget* createGridWidget(DrawCursorGridParams params, std::string name, const WidgetClass* childType = nullptr);
 bool isGridWidget(Widget* widget);
 
 /*row/column widget for holding static texts which cannot rationally be bound to a cursor*/

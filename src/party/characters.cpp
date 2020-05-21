@@ -1,7 +1,9 @@
 #include "characters.h"
 #include "../impl.h"
+//#include <google/protobuf/text_format.h>
 
 #define CHARACTER_BLOCK_SIZE 3988
+using namespace StatNames;
 
 SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
     srLogWrite("loading character AI Data");
@@ -23,12 +25,22 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
             character.gameCharacter = &(CHARACTER_RECORD_ARRAY[characterIndex]);
         }
         auto charName = getCharacterName(characterIndex);
+        initializeCharacterStats(character);
         createDefaultEquipmentSlots(character);
         gContext.characters.addElement(charName, character);
     }
 
     free(sectionBuffer);
     srLogWrite("kernel.bin: Loaded %lu character AI scripts", (unsigned long)gContext.characters.resourceCount());
+}
+
+void initializeCharacterStats(SrCharacter& character) {
+    std::vector<std::string> primaryStats{ STRENGTH, VITALITY, DEXTERITY, StatNames::MAGIC, FOCUS, SPIRIT, AGILITY, LUCK };
+    for (auto statName : primaryStats) {
+        character.statTable[statName] = StatTable();
+        character.statPointMultipliers[statName] = 1;
+        character.appliedPoints[statName] = 0;
+    }
 }
 
 

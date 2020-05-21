@@ -76,6 +76,9 @@ void handleUpdateGearSlotsWidget(const MenuDrawEvent* event) {
             return;
         }
     }
+
+    enableWidget(materiaSlotsWidget);
+    enableWidget(growthWidget);
     updateMateriaSlots(materiaSlotsWidget, materiaSlots);
 
     if (materiaGrowth < 0 || materiaGrowth > 3) //display any invalid materia growth as "None"

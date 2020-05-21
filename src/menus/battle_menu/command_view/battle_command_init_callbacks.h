@@ -10,7 +10,6 @@
 
 
 void initBattleCommandViewWidget(const MenuInitEvent* event);
-Widget* allocateCommandRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 void battleCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex);
 
 

@@ -25,7 +25,7 @@ void initBattleItemViewWidget(const MenuInitEvent* event) {
     std::vector<std::string> names = { PARTY_1_ITEM_GRID, PARTY_2_ITEM_GRID, PARTY_3_ITEM_GRID };
     for (u32 idx = 0; idx < names.size(); idx++) {
         auto battleItemChoice = getStateCursor(event->menu, idx);
-        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_ITEM_STATE, &battleInventoryRowUpdater, 98, 360, allocateBattleInventoryRow, idx };
+        DrawCursorGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_ITEM_STATE, &battleInventoryRowUpdater, 98, 360, allocateBattleInventoryRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleItemView, (Widget*)gridWidget, names[idx]);
     }

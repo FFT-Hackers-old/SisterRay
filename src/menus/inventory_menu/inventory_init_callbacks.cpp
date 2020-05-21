@@ -83,7 +83,7 @@ void initCharViewWidget(const MenuInitEvent* event) {
 
 //Handles the base display
 void initItemViewWidget(const MenuInitEvent* event) {
-    drawGridParams gridParams;
+    DrawCursorGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
@@ -170,7 +170,7 @@ void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
 void keyItemsViewWidget(const MenuInitEvent* event) {
     auto keyItemsChoice = getStateCursor(event->menu, 3);
 
-    drawGridParams gridParams;
+    DrawCursorGridParams gridParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
     auto menuObject = event->menu;

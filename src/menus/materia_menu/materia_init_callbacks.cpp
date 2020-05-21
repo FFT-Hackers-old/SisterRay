@@ -129,7 +129,7 @@ void initMateriaViewWidget(const MenuInitEvent* event) {
     addChildWidget(materiaViewWidget, (Widget*)boxWidget, MATERIA_GRID_BOX);
 
     auto normalMateriaViewWidget = createWidget(MATERIA_GRID);
-    drawGridParams gridParams = { MATERIA_MENU_NAME.c_str(), 2, &materiaEntryUpdater, 427, 210, &allocateMateriaRow, 0 };
+    DrawCursorGridParams gridParams = { MATERIA_MENU_NAME.c_str(), 2, &materiaEntryUpdater, 427, 210, &allocateMateriaRow, 0 };
     gridWidget = createGridWidget(gridParams, MATERIA_GRID_NAMES);
     addChildWidget(normalMateriaViewWidget, (Widget*)gridWidget, MATERIA_GRID_NAMES);
 
@@ -284,28 +284,23 @@ void initMateriaDataWidget(const MenuInitEvent* event) {
 /*Initializes the command view widget used */
 void initCommandViewWidget(const MenuInitEvent* event) {
     auto commandChoiceCursor = getStateCursor(event->menu, 3);
-
-    drawGridParams gridParams;
-    CursorGridWidget* gridWidget;
-    BoxWidget* boxWidget;
-    DrawBoxParams boxParams;
     auto menuObject = event->menu;
     auto mainWidget = menuObject->menuWidget;
 
     auto commandViewWidget = createWidget(COMMAND_VIEW_WIDGET_NAME);
 
-    boxParams = {
+    DrawBoxParams boxParams = {
         0x2F,
         0xD6,
         98,
         0x78,
         0.3f
     };
-    boxWidget = createBoxWidget(boxParams, CMD_GRID_BOX);
+    auto boxWidget = createBoxWidget(boxParams, CMD_GRID_BOX);
     addChildWidget(commandViewWidget, (Widget*)boxWidget, CMD_GRID_BOX);
 
-    gridParams = { MATERIA_MENU_NAME.c_str(), 3, &commandNameViewUpdater, 0x2F + 10, 0xD6 + 11, nullptr, 0 };
-    gridWidget = createGridWidget(gridParams, CMD_GRID, TextWidgetKlass());
+    DrawCursorGridParams gridParams = { MATERIA_MENU_NAME.c_str(), 3, &commandNameViewUpdater, 0x2F + 10, 0xD6 + 11, nullptr, 0 };
+    auto gridWidget = createGridWidget(gridParams, CMD_GRID, TextWidgetKlass());
     addChildWidget(commandViewWidget, (Widget*)gridWidget, CMD_GRID);
 
     addChildWidget(mainWidget, commandViewWidget, COMMAND_VIEW_WIDGET_NAME);
@@ -330,7 +325,7 @@ void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
 
 /*Initializes the spell view Widget used*/
 void initSpellViewWidget(const MenuInitEvent* event) {
-    drawGridParams gridParams;
+    DrawCursorGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;

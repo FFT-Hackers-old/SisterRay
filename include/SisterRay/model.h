@@ -18,7 +18,7 @@ typedef struct {
 typedef struct {
     u32 field_0;
     u32 actionFlags;
-    u32 field_8;
+    u32 limitFastATBMask;
     u32 textureCount;
     u32 field_10;
     u32 field_14;
@@ -184,7 +184,7 @@ typedef struct {
     u8 field_2;
     u8 field_3;
     u8* scriptPtr;
-    u16 field_8;
+    u16 limitFastATBMask;
     u16 opCodeArgs[5];
     u8 field_14;
     u8 field_15;

@@ -40,7 +40,8 @@ void srDisplayDamageEvents(u32 damagedMask) {
 
 
 void srTriggerDamageEffect() {
-    auto& triggerDamageMainCtx = *(TriggerDamageEffectCtx*)getEffect100QueueTop();
+    auto& triggerDamageMainCtx = *(TriggerDamageEffectCtx*)getEffect60QueueTop();
+
     if (triggerDamageMainCtx.elapsedFrames){
         if (triggerDamageMainCtx.elapsedFrames != 1)
             return;
@@ -51,9 +52,11 @@ void srTriggerDamageEffect() {
     }
 
     if (!triggerDamageMainCtx.displayDelay) {
-        triggerDamageMainCtx.handlerControl = -1;
+        triggerDamageMainCtx.handlerControl = 0xFFFF;
         if ((triggerDamageMainCtx.impactEventQueueIdx & 0x8000u) == 0) {
             auto& impactEvent = *getImpactEvent(triggerDamageMainCtx.impactEventQueueIdx);
+            auto srExtendedImpactEvent = getExtendedImpactEvent(triggerDamageMainCtx.impactEventQueueIdx);
+            auto damageEvent = getDamageEvent(triggerDamageMainCtx.damageEventQueueIdx);
             auto targetID = impactEvent.targetID;
             auto targetState = gContext.battleActors.getActiveBattleActor(targetID);
             if (targetID >= 0 && targetID < 3) {
@@ -62,7 +65,7 @@ void srTriggerDamageEffect() {
                 if (impactEvent.currentTargetMP <= targetState.actorBattleVars->maxMP)
                     targetState.actorTimers->currentMP = impactEvent.currentTargetMP;
             }
-            TriggerDamageDisplayEvent triggerDamageEvent{ &targetState };
+            TriggerDamageDisplayEvent triggerDamageEvent{ damageEvent, &impactEvent, srExtendedImpactEvent, &targetState };
             gContext.eventBus.dispatch(TRIGGER_DAMAGE_DISPLAY, &triggerDamageEvent);
         }
     }
@@ -74,9 +77,8 @@ void srTriggerDamageEffect() {
 #define gameDisplayBarrierEffects      ((PFNSR_VOIDSUB)0x425F3F)
 #define gameHandleTargetReactions      ((PFNSR_VOIDSUB)0x42613A)
 typedef int(*PFNSR_SOMECRITSUB)(u32, u32, u32);
-#define sub_5BD436                     ((PFNSR_SOMECRITSUB)0x58D436)
+#define sub_5BD436                     ((PFNSR_SOMECRITSUB)0x5BD436)
 void targetReactionMain() {
-    u32* dword_BFB2E0 = (u32*)0xBFB2E0;
     auto& reactionMainCtx = *(TargetReactionEffectCtx*)getEffect100QueueTop();
     if (reactionMainCtx.reactionDelay) {
         --reactionMainCtx.reactionDelay;
@@ -84,8 +86,10 @@ void targetReactionMain() {
     }
 
     if (reactionMainCtx.actionFlags & 2) //Checks to see if action crits
-        *dword_BFB2E0 = sub_5BD436(250, 250, 250);
-    if (reactionMainCtx.impactEventQueueIdx != -1 && reactionMainCtx.field_18 != 1) {
+        triggerScreenFlash(250, 250, 250);
+
+
+    if (reactionMainCtx.impactEventQueueIdx != 0xFFFF && reactionMainCtx.field_18 != 1) {
         gameDisplayBarrierEffects();
         auto& damageDisplayCtx = *((DamageDisplayEffectCtx*)srCreateEffect(gameDisplayDamageNumbers, EFFECT60));
         damageDisplayCtx.actionFlags = reactionMainCtx.actionFlags;
@@ -99,4 +103,9 @@ void targetReactionMain() {
     /*Routine dispatches impact effects, sounds, etc. May modularize in the future, for now delegation makes sense*/
     gameHandleTargetReactions();
 
+}
+
+void triggerScreenFlash(u8 red, u8 green, u8 blue) {
+    u32* dword_BFB2E0 = (u32*)0xBFB2E0;
+    *dword_BFB2E0 = sub_5BD436(250, 250, 250);
 }

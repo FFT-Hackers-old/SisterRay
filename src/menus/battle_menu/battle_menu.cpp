@@ -117,7 +117,7 @@ void dispatchBattleUpdates() {
 }
 
 
-void initializeBattleMenu() {
+void createBattleMenu() {
     mogReplaceFunction(DISPATCH_BATTLE_UPDATES, &dispatchBattleUpdates);
     mogReplaceFunction(INIT_BATTLE_DATA, &resetBattleMenu);
     auto battleMenu = createMenu(INIT_BATTLE_MENU, DRAW_BATTLE_MENU, BATTLE_MENU, 64);
@@ -144,7 +144,7 @@ void initializeBattleMenu() {
     initializeBattleMoveMenu();
 }
 
-void DispatchBattleMenuSetup() {
+void initializeBattleMenu() {
     gContext.menuWidgets.initializeMenu(BATTLE_MENU_NAME, BATTLE_MENU_WIDGET_NAME);
 }
 

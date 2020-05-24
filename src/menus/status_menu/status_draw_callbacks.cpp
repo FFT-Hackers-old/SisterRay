@@ -12,8 +12,19 @@ void handleStatusMenuChangeCharacter(const MenuDrawEvent* event) {
     updatePortraitPartyIndex(getChild(topWidget, PORTRAIT_WIDGET_NAME), *STAT_MENU_ACTIVE_ACTOR);
     updateHPBarPartyIndex(getChild(topWidget, HPBAR_WIDGET_NAME), *STAT_MENU_ACTIVE_ACTOR);
 
-    enableWidget(getChild(menuWidget, STATUS_COMMAND_WIDGET_NAME));
-    updateCommandsActor(getChild(menuWidget, STATUS_COMMAND_WIDGET_NAME), *STAT_MENU_ACTIVE_ACTOR);
-    resizeCommandBox(*STAT_MENU_ACTIVE_ACTOR, getChild(menuWidget, STATUS_COMMAND_WIDGET_NAME));
+    enableWidget(getChild(getChild(menuWidget, PRIM_STATS_WIDGET_NAME), STATUS_COMMAND_WIDGET_NAME));
+    updateCommandsActor(getChild(getChild(menuWidget, PRIM_STATS_WIDGET_NAME), STATUS_COMMAND_WIDGET_NAME), *STAT_MENU_ACTIVE_ACTOR);
+    resizeCommandBox(*STAT_MENU_ACTIVE_ACTOR, getChild(getChild(menuWidget, PRIM_STATS_WIDGET_NAME), STATUS_COMMAND_WIDGET_NAME));
 }
 
+
+void handleActivateCombatStats(const MenuDrawEvent* event) {
+    auto menuWidget = event->menu->menuWidget;
+    if (event->menuState == 1) {
+        enableWidget(getChild(menuWidget, COMBAT_STATS_WIDGET));
+        disableWidget(getChild(menuWidget, PRIM_STATS_WIDGET_NAME));
+        return;
+    }
+    enableWidget(getChild(menuWidget, PRIM_STATS_WIDGET_NAME));
+    disableWidget(getChild(menuWidget, COMBAT_STATS_WIDGET));
+}

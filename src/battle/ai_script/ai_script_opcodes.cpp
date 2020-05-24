@@ -173,7 +173,7 @@ OpCodeControlSequence OpCode45(AIScriptEvent* srEvent) {
 }
 
 typedef i32(*SRPFN_GAMEPERFORMCOMPAREOPS)(u8, u8);
-#define gamePerformLogicOps ((SRPFN_GAMEPERFORMCOMPAREOPS)0x5D93DF)
+#define gamePerformLogicOps ((SRPFN_GAMEPERFORMCOMPAREOPS)0x5D93EF)
 void handleCompareOperations(AIScriptEvent* srEvent) {
     i32 result = 0;
     auto& scriptCtx = *srEvent->scriptContext;
@@ -280,6 +280,7 @@ OpCodeControlSequence OpCode71(AIScriptEvent* srEvent) {
 }
 
 OpCodeControlSequence OpCode72(AIScriptEvent* srEvent) {
+    handleJumps(srEvent);
     return RUN_NEXT;
 }
 

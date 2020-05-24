@@ -35,5 +35,6 @@ public:
 SISTERRAY_API void initCharacterData(SrKernelStream* stream);
 void initializeCharacterStats(SrCharacter& character);
 void createDefaultEquipmentSlots(SrCharacter& character);
+void finalizeCharacters();
 
 #endif

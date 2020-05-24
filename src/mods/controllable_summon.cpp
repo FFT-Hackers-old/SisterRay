@@ -175,7 +175,7 @@ void initializeIfrit(InitSummonEvent* summEvent) {
     enableSummonMagic(2, 0, 27);
     enableSummonMagic(2, 1, 28);
     enableSummonMagic(2, 2, 29);
-    auto& stats = summEvent->summonState->srPartyMember->playerStats;
+    auto& stats = summEvent->summonState->srPartyMember->stats;
 
     stats[StatNames::HP].baseValue = 8530;
     stats[StatNames::MP].baseValue = 630;

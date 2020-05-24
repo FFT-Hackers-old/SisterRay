@@ -1,6 +1,7 @@
 #include "damage_callback_utils.h"
 #include "status_names.h"
 #include "../impl.h"
+#include <algorithm>
 
 bool actorIsDamageImmune(ActorBattleVars battleVars, ActorBattleState srActorState, bool isMagic) {
     bool isDamageImmune = false;
@@ -16,7 +17,7 @@ bool actorIsDamageImmune(ActorBattleVars battleVars, ActorBattleState srActorSta
 }
 
 
-bool srActorHasStatus(const ActorBattleState& srActorState, std::string statusName) {
+bool srActorHasStatus(const ActorBattleState& srActorState, const std::string statusName) {
     const auto& status = gContext.statuses.getElement(statusName);
     const auto& battleVars = *srActorState.actorBattleVars;
     if (status.isGameStatus) {
@@ -46,6 +47,53 @@ bool srActorHasStatus(const std::vector<ActiveStatus>& activeStatuses, std::stri
             [&](ActiveStatus status) {return status.statusName == statusName; }) != activeStatuses.end();
     }
 }
+
+bool didInflictionSucceed(StatusInfliction infliction, ActorBattleState attackerState, ActorBattleState& targetState, std::unordered_map<std::string, SrStaticStat> attackStats) {
+    auto inflictChance = 4 * infliction.inflictionChance;
+    if (inflictChance > 252) {
+        inflictChance = 252;
+    }
+    srLogWrite("Infliction Chance: %i", inflictChance);
+
+    const auto& status = gContext.statuses.getElement(infliction.statusName);
+    auto res = targetState.battleStats->at(status.resName).activeValue;
+    auto pen = attackerState.battleStats->at(status.penName).activeValue + attackStats[status.penName].statValue;
+    auto modifier = res - pen;
+    inflictChance -= (modifier / 100) * inflictChance;
+
+    if (inflictChance >= udist(rng)) {
+        srLogWrite("INFLICTION SUCCESSFUL");
+        return true;
+    }
+    srLogWrite("INFLICTION FAILED");
+    return false;
+}
+
+bool srInflictStatus(ActorBattleState& targetState, std::string statusName) {
+    srLogWrite("ATTEMPTING TO INFLICT STATUS: %s", statusName.c_str());
+    auto& targetStatuses = *targetState.activeStatuses;
+    auto wasFound = (std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName; }) != targetStatuses.end());
+    const auto& status = gContext.statuses.getElement(statusName);
+    if (!wasFound || status.allowMultiple) {
+        if (!status.removeOnInflict.empty()) {
+            auto it = std::remove_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
+                return std::find(status.removeOnInflict.begin(), status.removeOnInflict.end(), activeStatus.statusName) != status.removeOnInflict.end();
+                });
+        }
+        if (!status.neutralizeOnInflict.empty()) {
+            auto it = std::remove_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
+                return std::find(status.neutralizeOnInflict.begin(), status.neutralizeOnInflict.end(), activeStatus.statusName) != status.neutralizeOnInflict.end();
+                });
+        }
+        ActiveStatus activeStatus = ActiveStatus{ statusName };
+        targetStatuses.push_back(activeStatus);
+    }
+    if (status.isGameStatus) {
+        targetState.actorBattleVars->statusMask |= (1 << status.gameIndex);
+    }
+    return true;
+}
+
 
 void setActionDidHit(DamageCalculationEvent* dmgEvent, bool didHit) {
     if (!didHit) {

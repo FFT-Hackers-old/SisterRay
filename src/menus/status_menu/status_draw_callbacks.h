@@ -8,4 +8,5 @@
 #include "status_widget_names.h"
 
 void handleStatusMenuChangeCharacter(const MenuDrawEvent* event);
+void handleActivateCombatStats(const MenuDrawEvent* event);
 #endif

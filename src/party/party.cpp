@@ -14,12 +14,12 @@ SrPartyMembers::SrPartyMembers(u8 characterCount) {
     srLogWrite("initializing Sister Ray Party for %lu characters", characterCount);
     for (u8 partyIdx = 0; partyIdx < characterCount; partyIdx++) {
         SrPartyData partyData = {};
-        auto& stats = partyData.playerStats;
+        auto& stats = partyData.stats;
         SrBoostedStat stat = { 1, 1 };
         for (const auto& element : gContext.stats.named_registry) {
             stats[element.first] = stat;
         }
-        srLogWrite("Initialized party member with %lu stats", partyData.playerStats.size());
+        srLogWrite("Initialized party member with %lu stats", partyData.stats.size());
         partyMembers[partyIdx] = partyData;
     }
 }
@@ -336,23 +336,16 @@ void SrPartyMembers::recalculateCharacter(u8 characterID) {
 
     auto& srPartyMember = partyMembers[characterID];
     auto& gamePartyMember = gamePartyMembers[characterID];
-    calculateActorStats(srPartyMember, *getCharacterRecordWithID(characterID), statModifiers);
+    calculatePrimaryBaseStats(*getSrCharacterRecord(characterID), srPartyMember);
+    applyStatBoosts(srPartyMember, statModifiers, true);
+    calculateDerivedBaseStats(*getSrCharacterRecord(characterID), srPartyMember);
+    applyStatBoosts(srPartyMember, statModifiers, false);
 
     gamePartyMember.characterID = characterID;
-    gamePartyMember.maxHP = srPartyMember.playerStats[StatNames::HP].statValue;
-    gamePartyMember.maxMP = srPartyMember.playerStats[StatNames::MP].statValue;
+    gamePartyMember.maxHP = srPartyMember.stats[StatNames::HP].statValue;
+    gamePartyMember.maxMP = srPartyMember.stats[StatNames::MP].statValue;
     gamePartyMember.currentHP = getPartyActorCharacterRecord(characterID)->current_HP;
     gamePartyMember.currentMP = getPartyActorCharacterRecord(characterID)->current_MP;
-    gamePartyMember.physAttack = srPartyMember.playerStats[StatNames::WEAPON_ATTACK].statValue;
-    gamePartyMember.physDefense = srPartyMember.playerStats[StatNames::ARMOR_DEFENSE].statValue;
-    gamePartyMember.magAttack = srPartyMember.playerStats[StatNames::WEAPON_MAGIC].statValue;
-    gamePartyMember.magDefense = srPartyMember.playerStats[StatNames::ARMOR_MDEFENSE].statValue;
-    gamePartyMember.strength = srPartyMember.playerStats[StatNames::STRENGTH].statValue;
-    gamePartyMember.vitality = srPartyMember.playerStats[StatNames::VITALITY].statValue;
-    gamePartyMember.magic = srPartyMember.playerStats[StatNames::MAGIC].statValue;
-    gamePartyMember.spirit = srPartyMember.playerStats[StatNames::SPIRIT].statValue;
-    gamePartyMember.speed = srPartyMember.playerStats[StatNames::DEXTERITY].statValue;
-    gamePartyMember.luck = srPartyMember.playerStats[StatNames::LUCK].statValue;
     InitPartyMemberEvent partyEvent{ characterID, &getSrCharacter(characterID) };
     gContext.eventBus.dispatch(INIT_PLAYER_PARTY_MEMBER, &partyEvent);
     //TODO after all references are removed kill these copies
@@ -407,8 +400,6 @@ PartyMemberState getSrCharacter(u8 characterIdx) {
 PartyMemberState getActivePartyMember(u8 partyIdx) {
     return gContext.party.getActivePartyMember(partyIdx);
 }
-
-
 
 
 void SrPartyMembers::setSummonCtx(u8 summonIdx, u32 cumulativeAP, u8 maxLevel) {

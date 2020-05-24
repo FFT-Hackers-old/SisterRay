@@ -35,14 +35,27 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
 }
 
 void initializeCharacterStats(SrCharacter& character) {
-    std::vector<std::string> primaryStats{ STRENGTH, VITALITY, DEXTERITY, StatNames::MAGIC, FOCUS, SPIRIT, AGILITY, LUCK };
+    std::vector<std::string> primaryStats{ STRENGTH, VITALITY, DEXTERITY, AGILITY, StatNames::MAGIC, SPIRIT, FOCUS, INSIGHT, LUCK };
     for (auto statName : primaryStats) {
         character.statTable[statName] = StatTable();
+        character.statTable[statName].fill(75);
+        character.statPointMultipliers[statName] = 1;
+        character.appliedPoints[statName] = 0;
+    }
+
+    std::vector<std::string> resourceStats{ HP, MP };
+    for (auto statName : resourceStats) {
+        character.statTable[statName] = StatTable();
+        if (statName == MP){
+            character.statTable[statName].fill(100);
+        }
+        else {
+            character.statTable[statName].fill(1000);
+        }
         character.statPointMultipliers[statName] = 1;
         character.appliedPoints[statName] = 0;
     }
 }
-
 
 void createDefaultEquipmentSlots(SrCharacter& character) {
     for (u8 gearSlotIdx = 0; gearSlotIdx < 3; gearSlotIdx++) {
@@ -81,4 +94,9 @@ SISTERRAY_API SrCharacter* getSrCharacterRecord(u8 characterIdx) {
 
 SISTERRAY_API CharacterRecord* getGameCharacter(SrCharacter* srCharacter) {
     return srCharacter->gameCharacter;
+}
+
+
+void finalizeCharacters() {
+    finalizeRegistry<SrCharacter, InitCharacterEvent, SrCharacterRegistry>(gContext.characters, INIT_CHARACTERS);
 }

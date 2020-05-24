@@ -7,17 +7,25 @@
 
 #define STATUS_MATERIA_HANDLER   ((void*)0x703ABD)
 
-void initializeSrMenuEngine() {
-    mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
-//mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
+void createSrMenus() {
+    mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); 
     mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
     mogReplaceFunction(STATUS_MATERIA_HANDLER, &statusMenuUpdateHandler);
 
     registerEquipMenuListeners();
-    initializeEquipMenu();
+    createEquipMenu();
     registerInventoryMenuListeners();
-    initializeInventoryMenu();
+    createInventoryMenu();
     registerMateriaMenuListeners();
+    createMateriaMenu();
+    registerStatMenuListeners();
+    createStatMenu();
+}
+
+void initializeSrMenus() {
+    initializeEquipMenu();
+    initializeInventoryMenu();
     initializeMateriaMenu();
+    initializeStatMenu();
 }

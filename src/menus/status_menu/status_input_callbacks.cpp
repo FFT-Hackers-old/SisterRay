@@ -14,6 +14,23 @@ void statExitMenuListener(const MenuInputEvent* event) {
     }
 }
 
+void displayCombatStats(const MenuInputEvent* event) {
+    if (event->menuState != 0)
+        return;
+    else{
+        setMenuState(event->menu, 1);
+    }
+}
+
+
+void exitCombatStats(const MenuInputEvent* event) {
+    if (event->menuState != 1)
+        return;
+    else {
+        setMenuState(event->menu, 0);
+    }
+}
+
 /*Handlers for L1/R1 "switching" inputs, for states where they function*/
 void statChangeCharLeft(const MenuInputEvent* event) {
     if (event->menuState != 0)

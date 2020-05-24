@@ -85,7 +85,7 @@ void handleUpdateGearSlotsWidget(const MenuDrawEvent* event) {
         materiaGrowth = 4;
 
     const char * menuText = gContext.gameStrings.equipMenuTexts.get_string(materiaGrowth + 11);
-    i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
+    i32 growthTypeY = equipMenuWindowConfig[2].y + 64;
     i32 growthTypeX = sub_6F54A2((u8*)menuText);
     moveWidget(growthWidget, 243 - growthTypeX / 2, growthTypeY);
     updateText(growthWidget, menuText);

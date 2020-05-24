@@ -5,6 +5,7 @@
 #include "mods/char_commands.h"
 #include "mods/new_spells.h"
 #include "mods/controllable_summon.h"
+#include "mods/stagger.h"
 
 #include "impl.h"
 
@@ -43,6 +44,7 @@ SISTERRAY_API void LoadMods(void)
     loadCharMod();
     registerEruption();
     loadPlayableSummons();
+    loadStagger();
 
     if (!mods.good())
         return;

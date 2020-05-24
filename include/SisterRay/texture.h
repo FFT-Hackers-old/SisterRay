@@ -169,7 +169,7 @@ typedef struct {
 typedef struct {
     u32 field_0;
     u32 actionFlags;
-    u32 field_8;
+    u32 limitFastATBMask;
     u32 field_C;
     u32 field_10;
     u32 field_14;

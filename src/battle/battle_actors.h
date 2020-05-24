@@ -73,6 +73,7 @@ public:
     void initializePartyCharacter(u8 characterID);
     void swapPartyToSummon(u8 summonIdx);
     bool isActorSummon(u8 actorIdx);
+    bool isActorInBattle(u8 actorIdx);
 protected:
     ActorBattleState getSrBattleCharacterActor(u8 actorIdx);
     ActorBattleState getSrBattleSummonActor(u8 summonIdx);
@@ -113,6 +114,7 @@ BattleWeaponCtx* getBattleWeaponCtx(u8 actorIdx);
 const SrBattleStat& getSrBattleStat(u8 actorID, std::string statName);
 SrBattleStat& getMutableSrBattleStat(u8 actorID, std::string statName);
 CharacterRecord* getCharacterRecordWithID(u8 characterID);
+ActorBattleState getActiveBattleActor(u8 actorIdx);
 
 
 #endif

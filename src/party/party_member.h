@@ -13,8 +13,8 @@
 #define ESKILL_COUNT 24
 #define AUTO_ACTION_COUNT 10
 
-typedef struct {
-    std::unordered_map<std::string, SrBoostedStat> playerStats;
+struct SrPartyData_ {
+    std::unordered_map<std::string, SrBoostedStat> stats;
     std::array<EnabledSpell, MAGIC_COUNT> actorMagics;
     std::array<EnabledSpell, SUMMON_COUNT> actorSummons;
     std::array<EnabledSpell, ESKILL_COUNT> actorEnemySkills;
@@ -24,7 +24,7 @@ typedef struct {
     EnabledCommand toggleCommandArray[16];
     bool isLimitActive;
     bool isActive;
-} SrPartyData;
+};
 
 
 struct PartyMemberState_{

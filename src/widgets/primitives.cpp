@@ -232,10 +232,10 @@ void drawBoxWidget(BoxWidget* boxWidget) {
     BoxColors swapColors;
 
     DrawBoxParams params = {
-        boxWidget->drawDistanceXa,
-        boxWidget->drawDistanceXb,
-        boxWidget->drawDistanceYa,
-        boxWidget->drawDistanceYb
+        boxWidget->x,
+        boxWidget->y,
+        boxWidget->width,
+        boxWidget->height
     };
     if (boxWidget->isAlphaEnabled) {
         swap = *dword_DC3CD8;
@@ -269,10 +269,10 @@ SISTERRAY_API void srNewBoxWidget(Widget* parent, DrawBoxParams params, const ch
 
 BoxWidget* createBoxWidget(DrawBoxParams params, std::string name) {
     BoxWidget* widget = (BoxWidget*)createWidget(name, sizeof(BoxWidget), &kBoxWidgetClass);
-    widget->drawDistanceXa = params.drawDistance1;
-    widget->drawDistanceXb = params.drawDistance2;
-    widget->drawDistanceYa = params.drawDistance3;
-    widget->drawDistanceYb = params.drawDistance4;
+    widget->x = params.x;
+    widget->y = params.y;
+    widget->width = params.width;
+    widget->height = params.height;
     widget->priority = params.boxFloat;
     widget->isAlphaEnabled = params.isAlphaEnabled;
     widget->useBoxColors = params.useBoxColors;
@@ -282,10 +282,10 @@ BoxWidget* createBoxWidget(DrawBoxParams params, std::string name) {
 
 
 SISTERRAY_API void setBoxParams(DrawBoxParams* params, i16 xPosition, i16 yPosition, u16 width, u16 height, float priority, u8 isAlphaEnabled, u8 useBoxColors, BoxColors boxColors) {
-    params->drawDistance1 = xPosition;
-    params->drawDistance2 = yPosition;
-    params->drawDistance3 = width;
-    params->drawDistance4 = height;
+    params->x = xPosition;
+    params->y = yPosition;
+    params->width = width;
+    params->height = height;
     params->boxFloat = priority;
     params->isAlphaEnabled = isAlphaEnabled;
 }
@@ -298,13 +298,11 @@ const WidgetClass* BoxWidgetKlass() {
     return &kBoxWidgetClass;
 }
 
-SISTERRAY_API void resizeBox(Widget* widgetToUpdate, i16 drawDistance1, i16 drawDistance2, i16 drawDistance3, i16 drawdistance4) {
+SISTERRAY_API void resizeBox(Widget* widgetToUpdate, i16 width, i16 height) {
     if (isBoxWidget(widgetToUpdate)) {
         auto typedPtr = (BoxWidget*)widgetToUpdate;
-        typedPtr->drawDistanceXa = drawDistance1;
-        typedPtr->drawDistanceXb = drawDistance2;
-        typedPtr->drawDistanceYa = drawDistance3;
-        typedPtr->drawDistanceYb = drawdistance4;
+        typedPtr->width = width;
+        typedPtr->height = height;
     }
     else {
         //srLogWrite("attempting to resize a box widget which is not a Box Widget");
@@ -326,13 +324,13 @@ SISTERRAY_API u16 getBoxDrawDistance(Widget* widgetToUpdate, i32 dimension) {
         auto typedPtr = (BoxWidget*)widgetToUpdate;
         switch (dimension) {
             case 0:
-                return typedPtr->drawDistanceXa;
+                return typedPtr->x;
             case 1:
-                return typedPtr->drawDistanceXb;
+                return typedPtr->y;
             case 2:
-                return typedPtr->drawDistanceYa;
+                return typedPtr->width;
             case 3:
-                return typedPtr->drawDistanceYb;
+                return typedPtr->height;
             default:{
                 srLogWrite("attempting to fetch an invalid box dimension");
                 return 0xFFFF;

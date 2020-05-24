@@ -246,6 +246,14 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
+    bool doesExpire;
+    bool doesStack;
+    u8 stacks;
+    bool allowMultiple;
+    bool persistAfterBattle;
+} SrStatusBehavior;
+
+typedef struct {
     u8 canLink;
 } AuxMateriaData;
 

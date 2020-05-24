@@ -21,10 +21,10 @@ struct NumberWidget_ {
 
 struct BoxWidget_ {
     Widget widget;
-    u16 drawDistanceXa;
-    u16 drawDistanceXb;
-    u16 drawDistanceYa;
-    u16 drawDistanceYb;
+    u16 x;
+    u16 y;
+    u16 width;
+    u16 height;
     float priority;
     u8 isAlphaEnabled;
     u8 useBoxColors;

@@ -158,7 +158,7 @@ void drawCommandViewWidget(const MenuDrawEvent* event) {
     srLogWrite("Drawing widget for actor %i", *MAT_MENU_PARTY_INDEX);
     commandChoiceCursor->context.maxColumnBound = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].commandColumns;
     commandChoiceCursor->context.viewColumnBound = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].commandColumns;
-    resizeBox(getChild(commandViewWidget, CMD_GRID_BOX), 0x2F, 0xD6, 65 * commandChoiceCursor->context.maxColumnBound + 0x98, 0x78);
+    resizeBox(getChild(commandViewWidget, CMD_GRID_BOX), 65 * commandChoiceCursor->context.maxColumnBound + 0x98, 0x78);
 }
 
 void drawSpellsWidget(const MenuDrawEvent* event) {

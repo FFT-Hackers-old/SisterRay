@@ -3,46 +3,102 @@
 #include "../impl.h"
 #include "status_names.h"
 #include "element_names.h"
+#include "battle_stat_formulas.h"
 
 
 SrStatRegistry::SrStatRegistry(bool initResistances) : SrNamedResourceRegistry<SrStat, std::string>() {
-    SrStat hp = { EncodedString::from_unicode(StatNames::HP_NAME.c_str()), 9999, 0, false };
+    SrStat hp = { EncodedString::from_unicode(StatNames::HP_NAME.c_str()), 9999, 0, false, false, true, true, &srHPFormula };
     addElement(StatNames::HP, hp);
-    SrStat mp = { EncodedString::from_unicode(StatNames::MP_NAME.c_str()), 999, 0, false };
+    SrStat mp = { EncodedString::from_unicode(StatNames::MP_NAME.c_str()), 999, 0, false, false, true, true, &srMPFormula };
     addElement(StatNames::MP, mp);
-    SrStat str = { EncodedString::from_unicode(StatNames::STR_NAME.c_str()), 255, 0, false };
+
+    SrStat str = { EncodedString::from_unicode(StatNames::STR_NAME.c_str()), 255, 0, false, true, true };
     addElement(StatNames::STRENGTH, str);
-    SrStat vit = { EncodedString::from_unicode(StatNames::VIT_NAME.c_str()), 255, 0, false };
+    SrStat vit = { EncodedString::from_unicode(StatNames::VIT_NAME.c_str()), 255, 0, false, true, true };
     addElement(StatNames::VITALITY, vit);
-    SrStat mag = { EncodedString::from_unicode(StatNames::MAG_NAME.c_str()), 255, 0, false };
-    addElement(StatNames::MAGIC, mag);
-    SrStat foc = { EncodedString::from_unicode(StatNames::FOCUS_NAME.c_str()), 255, 0, false };
-    addElement(StatNames::FOCUS, mag);
-    SrStat spr = { EncodedString::from_unicode(StatNames::SPR_NAME.c_str()), 255, 0, false };
-    addElement(StatNames::SPIRIT, spr);
-    SrStat luck = { EncodedString::from_unicode(StatNames::LUCK_NAME.c_str()), 255, 0, false };
-    addElement(StatNames::LUCK, luck);
-    SrStat dex = { EncodedString::from_unicode(StatNames::DEX_NAME.c_str()), 255, 0, false };
+    SrStat dex = { EncodedString::from_unicode(StatNames::DEX_NAME.c_str()), 255, 0, false, true, true };
     addElement(StatNames::DEXTERITY, dex);
-    SrStat agi = { EncodedString::from_unicode(StatNames::AGILITY_NAME.c_str()), 255, 0, false };
-    addElement(StatNames::AGILITY, dex);
+    SrStat agi = { EncodedString::from_unicode(StatNames::AGILITY_NAME.c_str()), 255, 0, false, true, true };
+    addElement(StatNames::AGILITY, agi);
+    SrStat mag = { EncodedString::from_unicode(StatNames::MAG_NAME.c_str()), 255, 0, false, true, true };
+    addElement(StatNames::MAGIC, mag);
+    SrStat spr = { EncodedString::from_unicode(StatNames::SPR_NAME.c_str()), 255, 0, false, true, true };
+    addElement(StatNames::SPIRIT, spr);
+    SrStat foc = { EncodedString::from_unicode(StatNames::FOCUS_NAME.c_str()), 255, 0, false, true, true };
+    addElement(StatNames::FOCUS, foc);
+    SrStat insight = { EncodedString::from_unicode(StatNames::INSIGHT_NAME.c_str()), 255, 0, false, true, true };
+    addElement(StatNames::INSIGHT, insight);
+
+    SrStat luck = { EncodedString::from_unicode(StatNames::LUCK_NAME.c_str()), 255, 0, false, true, true };
+    addElement(StatNames::LUCK, luck);
+
 
     SrStat wpnAtk = { EncodedString::from_unicode(StatNames::WEAPON_ATTACK_NAME.c_str()), 255, 0, false };
     addElement(StatNames::WEAPON_ATTACK, wpnAtk);
     SrStat wpnHit = { EncodedString::from_unicode(StatNames::WEAPON_ACCURACY_NAME.c_str()), 255, 0, false };
     addElement(StatNames::WEAPON_ACCURACY, wpnHit);
-    SrStat def = { EncodedString::from_unicode(StatNames::ARMOR_DEFENSE_NAME.c_str()), 255, 0, false };
-    addElement(StatNames::ARMOR_DEFENSE, def);
+    SrStat wpnMag = { EncodedString::from_unicode(StatNames::WEAPON_MAGIC_NAME.c_str()), 255, 0, false };
+    addElement(StatNames::WEAPON_MAGIC, wpnMag);
+    SrStat adef = { EncodedString::from_unicode(StatNames::ARMOR_DEFENSE_NAME.c_str()), 255, 0, false };
+    addElement(StatNames::ARMOR_DEFENSE, adef);
     SrStat mdef = { EncodedString::from_unicode(StatNames::ARMOR_MDEFENSE_NAME.c_str()), 255, 0, false };
     addElement(StatNames::ARMOR_MDEFENSE, mdef);
-    SrStat pev = { EncodedString::from_unicode(StatNames::EVADE_NAME.c_str()), 255, 0, false };
-    addElement(StatNames::EVADE, pev);
     SrStat mev = { EncodedString::from_unicode(StatNames::MEVADE_NAME.c_str()), 255, 0, false };
     addElement(StatNames::MEVADE, mev);
     SrStat magHit = { EncodedString::from_unicode(StatNames::MAGIC_ACCURACY_NAME.c_str()), 255, 0, false };
     addElement(StatNames::MAGIC_ACCURACY, magHit);
 
+    SrStat atkpwr = { EncodedString::from_unicode(StatNames::ATTACK_POWER_NAME.c_str()), 255, 0, false, false, false, true, &srAtkPwrFormula };
+    addElement(StatNames::ATTACK_POWER, atkpwr);
+    SrStat atkSpd = { EncodedString::from_unicode(StatNames::ATTACK_SPEED_NAME.c_str()), 255, 0, false, false, false, true, &srAtkSpdFormula };
+    addElement(StatNames::ATTACK_SPEED, atkSpd);
+    SrStat acc = { EncodedString::from_unicode(StatNames::ACCURACY_NAME.c_str()), 255, 0, false, false, false, true, &srAccFormula };
+    addElement(StatNames::ACCURACY, acc);
+    SrStat critRate = { EncodedString::from_unicode(StatNames::CRIT_RATE_NAME.c_str()), 255, 0, false, false, false, true, &srCritRateFormula };
+    addElement(StatNames::CRIT_RATE, critRate);
+    SrStat critPwr = { EncodedString::from_unicode(StatNames::CRIT_POWER_NAME.c_str()), 255, 0, false, false, false, true, &srCritPwrFormula };
+    addElement(StatNames::CRIT_POWER, critPwr);
+    SrStat stagPwr = { EncodedString::from_unicode(StatNames::STAGGER_POWER_NAME.c_str()), 255, 0, false, false, false, true, &srStgPwrFormula };
+    addElement(StatNames::STAGGER_POWER, stagPwr);
+    SrStat stagDmg = { EncodedString::from_unicode(StatNames::STAGGER_DAMAGE_NAME.c_str()), 100, 0, false, false, false, true, &srStgDmgFormula };
+    addElement(StatNames::STAGGER_DAMAGE, stagDmg);
+    SrStat armPen = { EncodedString::from_unicode(StatNames::ARMOR_PEN_NAME.c_str()), 100, 0, false };
+    addElement(StatNames::ARMOR_PEN, armPen);
+    SrStat defPen = { EncodedString::from_unicode(StatNames::DEFENSE_PEN_NAME.c_str()), 100, 0, false };
+    addElement(StatNames::DEFENSE_PEN, defPen);
+    SrStat evaPen = { EncodedString::from_unicode(StatNames::EVASION_PEN_NAME.c_str()), 100, 0, false };
+    addElement(StatNames::EVASION_PEN, evaPen);
+    SrStat parryPen = { EncodedString::from_unicode(StatNames::PARRY_PEN_NAME.c_str()), 100, 0, false };
+    addElement(StatNames::PARRY_PEN, parryPen);
+    SrStat blockPen = { EncodedString::from_unicode(StatNames::BLOCK_PEN_NAME.c_str()), 100, 0, false };
+    addElement(StatNames::BLOCK_PEN, blockPen);
 
+    SrStat def = { EncodedString::from_unicode(StatNames::DEFENSE_NAME.c_str()), 255, 0, false, false, false, true, &srDefenseFormula };
+    addElement(StatNames::DEFENSE, def);
+    SrStat armor = { EncodedString::from_unicode(StatNames::ARMOR_NAME.c_str()), 5000, 0, false, false, false, true, &srArmorFormula };
+    addElement(StatNames::ARMOR, armor);
+    SrStat pev = { EncodedString::from_unicode(StatNames::EVADE_NAME.c_str()), 255, 0, false, false, false, true, &srEvadeFormula };
+    addElement(StatNames::EVADE, pev);
+    SrStat block = { EncodedString::from_unicode(StatNames::BLOCK_NAME.c_str()), 5000, 0, false, false, false, true, &srBlockAmtFormula };
+    addElement(StatNames::BLOCK, block);
+    SrStat blockrate = { EncodedString::from_unicode(StatNames::BLOCK_RATE_NAME.c_str()), 255, 0, false, false, false, true, &srBlockFormula };
+    addElement(StatNames::BLOCK_RATE, blockrate);
+    SrStat parry = { EncodedString::from_unicode(StatNames::PARRY_RATE_NAME.c_str()), 255, 0, false, false, false, true, &srParryFormula };
+    addElement(StatNames::PARRY_RATE, parry);
+    SrStat stagRes = { EncodedString::from_unicode(StatNames::STAGGER_RES_NAME.c_str()), 100, -100, true };
+    addElement(StatNames::STAGGER_RES, stagRes);
+    SrStat critRes = { EncodedString::from_unicode(StatNames::CRIT_RES_NAME.c_str()), 100, -100, true };
+    addElement(StatNames::CRIT_RES, critRes);
+    SrStat woundRes = { EncodedString::from_unicode(StatNames::WOUND_RES_NAME.c_str()), 100, -100, true };
+    addElement(StatNames::WOUND_RES, woundRes);
+    SrStat physDbfRes = { EncodedString::from_unicode(StatNames::PHYS_DEBUFF_RES_NAME.c_str()), 100, -100, true };
+    addElement(StatNames::PHYS_DEBUFF_RES, physDbfRes);
+    SrStat physBufAff = { EncodedString::from_unicode(StatNames::PHYS_BUFF_AFF_NAME.c_str()), 100, -100, true };
+    addElement(StatNames::PHYS_BUFF_AFF, physBufAff);
+
+
+
+    // Register Stats Associated with Particular Elements And Statuses
     SrStat pen = { EncodedString::from_unicode(ElementNames::FIRE_NAME.c_str()), 100, 0, false };
     SrStat fres = { EncodedString::from_unicode(ElementNames::FIRE_NAME.c_str()), 200, -100, true };
     addElement(StatNames::FIRE_RES, fres);
@@ -258,9 +314,36 @@ void initStats(bool initResistances) {
     srLogWrite("initialized %lu stats", (unsigned long)gContext.stats.resourceCount());
 }
 
+
+void finalizeStats() {
+    finalizeRegistry<SrStat, InitStatEvent, SrStatRegistry>(gContext.stats, INIT_STATS);
+}
+
 SISTERRAY_API void registerStat(const char* statName, const char* displayName, i32 max, i32 min) {
     bool canGoNegative = min < 0;
     SrStat newStat{ EncodedString::from_unicode(displayName), max, min, canGoNegative };
     gContext.stats.addElement(std::string(statName), newStat);
 }
 
+
+SISTERRAY_API void setStat(const char* statName, i32* target, i32 value) {
+    auto stat = gContext.stats.getElement(std::string(statName));
+    if (value > stat.maxValue) {
+        *target = stat.maxValue;
+        return;
+    }
+    if (value < stat.minValue) {
+        *target = stat.minValue;
+        return;
+    }
+    *target = value;
+}
+
+SISTERRAY_API void incrementStat(const char* statName, i32* target, i32 increment) {
+    setStat(statName, target, *target + increment);
+}
+
+
+SISTERRAY_API void decrementStat(const char* statName, i32* target, i32 decrement) {
+    setStat(statName, target, *target - decrement);
+}

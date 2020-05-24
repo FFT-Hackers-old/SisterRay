@@ -84,10 +84,10 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    u16 drawDistance1;
-    u16 drawDistance2;
-    u16 drawDistance3;
-    u16 drawDistance4;
+    u16 x;
+    u16 y;
+    u16 width;
+    u16 height;
     float boxFloat;
     u8 isAlphaEnabled;
     u8 useBoxColors;

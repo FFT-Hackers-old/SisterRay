@@ -9,5 +9,6 @@
 #include "../../widgets/widget.h"
 
 SISTERRAY_API void statusMenuUpdateHandler(i32 updateStateMask);
+void displayStatMenuCursors(Menu* menu, u16 menuState, u32 stateControlMask);
 
 #endif

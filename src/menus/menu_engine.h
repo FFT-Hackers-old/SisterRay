@@ -7,5 +7,6 @@
 #include "inventory_menu/inventory_menu.h"
 #include "materia_menu/materia_menu.h"
 
-void initializeSrMenuEngine();
+void createSrMenus();
+void initializeSrMenus();
 #endif

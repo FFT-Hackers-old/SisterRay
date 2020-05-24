@@ -48,8 +48,8 @@ void handleTopDisplayString(const MenuDrawEvent* event) {
             updateText(getChild(topDisplayWidget, "TXT"), &(argSubBuffer[0]));
             BoxWidget* box = (BoxWidget*)getChild(topDisplayWidget, "BOX");
             auto stringWidth = 12 * (EncodedString(&(argSubBuffer[0])).size());
-            auto x = (box->drawDistanceXa + (box->drawDistanceYa / 2)) - (stringWidth / 2);
-            auto y = box->drawDistanceXb + (box->drawDistanceYb / 4);
+            auto x = (box->x + (box->width / 2)) - (stringWidth / 2);
+            auto y = box->y + (box->height / 4);
             moveWidget(getChild(topDisplayWidget, "TXT"), x, y);
             return;
         }
@@ -60,8 +60,8 @@ void handleTopDisplayString(const MenuDrawEvent* event) {
             updateText(getChild(topDisplayWidget, "TXT"), &(argSubBuffer[0]));
             BoxWidget* box = (BoxWidget*)getChild(topDisplayWidget, "BOX");
             auto stringWidth = 12 * (EncodedString(&(argSubBuffer[0])).size());
-            auto x = (box->drawDistanceXa + (box->drawDistanceYa / 2)) - (stringWidth / 2);
-            auto y = box->drawDistanceXb + (box->drawDistanceYb / 4);
+            auto x = (box->x + (box->width / 2)) - (stringWidth / 2);
+            auto y = box->y + (box->height / 4);
             moveWidget(getChild(topDisplayWidget, "TXT"), x, y);
             return;
         }
@@ -72,8 +72,8 @@ void handleTopDisplayString(const MenuDrawEvent* event) {
         updateText(getChild(topDisplayWidget, "TXT"), textToDraw); // Will need some code to center the text+
         BoxWidget* box = (BoxWidget*)getChild(topDisplayWidget, "BOX");
         auto stringWidth = 12 * (EncodedString(textToDraw).size());
-        auto x = (box->drawDistanceXa + (box->drawDistanceYa / 2)) - (stringWidth / 2);
-        auto y = box->drawDistanceXb + (box->drawDistanceYb / 4);
+        auto x = (box->x + (box->width / 2)) - (stringWidth / 2);
+        auto y = box->y + (box->height / 4);
         moveWidget(getChild(topDisplayWidget, "TXT"), x, y);
         *actionDisplayActive = 0;
         return;

@@ -18,7 +18,7 @@
 
 void battleMenuUpdateHandler(i32 updateStateMask);
 void dispatchBattleUpdates();
+void createBattleMenu();
 void initializeBattleMenu();
-void DispatchBattleMenuSetup();
 
 #endif

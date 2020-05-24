@@ -10,5 +10,6 @@
 
 void initializeStatMenu();
 void registerStatMenuListeners();
+void createStatMenu();
 
 #endif

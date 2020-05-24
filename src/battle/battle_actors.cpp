@@ -8,6 +8,7 @@
 #include "../gamedata/status_names.h"
 #include "../gamedata/damage_callback_utils.h"
 #include "../gamedata/summons.h"
+#include "../battle/time/battle_time.h"
 
 #define ACTOR_COUNT 10
 #define ENEMY_ACTOR_COUNT 6
@@ -79,6 +80,10 @@ void SrBattleActors::initializePartyActor(u8 partyIdx, u8 characterID) {
     activatePartyActor(partyIdx);
 }
 
+bool SrBattleActors::isActorInBattle(u8 actorIdx) {
+    auto& aiBattleContext = *AI_BATTLE_CONTEXT;
+    return aiBattleContext.allActorsMask & (1 << actorIdx);
+}
 
 void SrBattleActors::initializePartyCharacter(u8 characterID) {
     auto& partyActor = partyActors[characterID];
@@ -166,56 +171,14 @@ void SrBattleActors::initializePartyCharacter(u8 characterID) {
     if (party34.limitBar == 255) {
         if (party34.limitLevelIdx != 255) {
             *word_9A889E |= 1 << characterID;
-            actorTimers.field_8 |= 1;
+            actorTimers.limitFastATBMask |= 1;
             actorTimers.activeCommandsMask |= 1u;
         }
-        actorTimers.field_8 &= 0xFFFEu;
+        actorTimers.limitFastATBMask &= 0xFFFEu;
     }
 
     gContext.party.initCharacterBattleFields(characterID, getSrBattleCharacterActor(characterID));
-
-    u16* word_9AAD1E = (u16*)0x9AAD1E;
-    auto statusMask = (i32)actorBattleVars.statusMask;
-    auto vTimer = 0;
-    auto cTimer = 0;
-    //DebugBreak();
-    if (statusMask < 0) {
-        switch (*word_9AAD1E) {
-        case 1:
-            statusMask |= (1 << STS_PARALYSIS_IDX);
-            break;
-        case 0:
-        case 3:
-            statusMask |= (1 << STS_BLIND_IDX);
-            break;
-        }
-    }
-
-    auto srStatus = partyActor.battleActor.activeStatuses;
-    if (!(srActorHasStatus(srStatus, StatusNames::STOP) || srActorHasStatus(srStatus, StatusNames::DEATH))) {
-        if (srActorHasStatus(srStatus, StatusNames::SLOW)) {
-            vTimer = getBattleSpeed();
-            cTimer = 34;
-        }
-        else if (srActorHasStatus(srStatus, StatusNames::HASTE)) {
-            vTimer = 3 * getBattleSpeed();
-            cTimer = 136;
-        }
-        else {
-            vTimer = 2 * getBattleSpeed();;
-            cTimer = 68;
-        }
-    }
-
-    u16 dexterity = partyActor.battleActor.battleStats[StatNames::DEXTERITY].activeValue;
-    auto turnTimer = dexterity * vTimer / getDexNormalization();
-
-    if (srActorHasStatus(srStatus, StatusNames::STOP) || srActorHasStatus(srStatus, StatusNames::PARALYSIS) || srActorHasStatus(srStatus, StatusNames::SLEEP))
-        turnTimer = 0;
-
-    actorTimers.vTimerIncrement = vTimer;
-    actorTimers.turnTimerIncrement = turnTimer;
-    actorTimers.CTimerIncrement = cTimer;
+    srSetActorTimers(getSrBattleCharacterActor(characterID));
 
     actorTimers.currentHP = actorBattleVars.currentHP;
     actorTimers.currentMP = actorBattleVars.currentMP;
@@ -286,62 +249,10 @@ void SrBattleActors::initializePartySummon(u8 summonIdx) {
         actorBattleVars.statusMask |= 1;
     }
 
-    //sub_437370(partyIdx); Routine sets up attack data for switching to limit. Won't be needed
     u16* word_9A889E = (u16*)0x9A889E;
-    /*if (party34.limitBar == 255) {
-        if (party34.limitLevelIdx != 255) {
-            *word_9A889E |= 1 << summonID;
-            actorTimers.field_8 |= 1;
-            actorTimers.activeCommandsMask |= 1u;
-        }
-        actorTimers.field_8 &= 0xFFFEu;
-    }*/
 
     gContext.party.initSummonBattleFields(summonIdx, getSrBattleSummonActor(summonIdx));
-
-    u16* word_9AAD1E = (u16*)0x9AAD1E;
-    auto statusMask = (i32)actorBattleVars.statusMask;
-    auto vTimer = 0;
-    auto cTimer = 0;
-    //DebugBreak();
-    if (statusMask < 0) {
-        switch (*word_9AAD1E) {
-        case 1:
-            statusMask |= (1 << STS_PARALYSIS_IDX);
-            break;
-        case 0:
-        case 3:
-            statusMask |= (1 << STS_BLIND_IDX);
-            break;
-        }
-    }
-
-    auto srStatus = summonActor.battleActor.activeStatuses;
-    if (!(srActorHasStatus(srStatus, StatusNames::STOP) || srActorHasStatus(srStatus, StatusNames::DEATH))) {
-        if (srActorHasStatus(srStatus, StatusNames::SLOW)) {
-            vTimer = getBattleSpeed();
-            cTimer = 34;
-        }
-        else if (srActorHasStatus(srStatus, StatusNames::HASTE)) {
-            vTimer = 3 * getBattleSpeed();
-            cTimer = 136;
-        }
-        else {
-            vTimer = 2 * getBattleSpeed();;
-            cTimer = 68;
-        }
-    }
-
-    u16 dexterity = summonActor.battleActor.battleStats[StatNames::DEXTERITY].activeValue;
-    auto turnTimer = dexterity * vTimer / getDexNormalization();
-
-    if (srActorHasStatus(srStatus, StatusNames::STOP) || srActorHasStatus(srStatus, StatusNames::PARALYSIS) || srActorHasStatus(srStatus, StatusNames::SLEEP))
-        turnTimer = 0;
-
-    actorTimers.vTimerIncrement = vTimer;
-    actorTimers.turnTimerIncrement = turnTimer;
-    actorTimers.CTimerIncrement = cTimer;
-
+    srSetActorTimers(getSrBattleSummonActor(summonIdx));
     actorTimers.currentHP = actorBattleVars.currentHP;
     actorTimers.currentMP = actorBattleVars.currentMP;
     // These are used when learning a new ESkill, this should be handled differently
@@ -374,7 +285,6 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
     if (enemyModelID != 0xFFFF) {
         actorBattleVars->formationID = enemyModelID;
         auto sceneRelativeID = 0;
-        //DebugBreak();
         for (auto idx = 0; idx < 3; ++idx) {
             if (getInBattleFormationEnemyModels()->EnemyIds[idx] == enemyModelID) {
                 sceneRelativeID = idx;
@@ -382,7 +292,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
             }
         }
 
-        aiBattleContext.unkMask |= 1 << (enemyIdx + 4);
+        aiBattleContext.enemyActorsMask |= 1 << (enemyIdx + 4);
         byte_9AAD2C[sceneRelativeID]++;
         auto sceneEnemyDataPtr = getInBattleActorEnemyData(sceneRelativeID);
         actorFormation.enemyID = sceneRelativeID;
@@ -456,54 +366,12 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
                 enemyActors[enemyIdx].battleActor.gameTimerState.field_F = enemyActors[enemyIdx].battleActor.gameAIState.characterID;
         }
 
-        u16* word_9AAD1E = (u16*)0x9AAD1E;
-        auto statusMask = (i32)actorBattleVars->statusMask;
-        auto vTimer = 0;
-        auto cTimer = 0;
-        if (statusMask < 0) {
-            switch (*word_9AAD1E) {
-            case 1:
-                statusMask |= (1 << STS_PARALYSIS_IDX);
-                break;
-            case 0:
-            case 3:
-                statusMask |= (1 << STS_BLIND_IDX);
-                break;
-            }
-        }
-
-        auto srStatus = *enemyActor.activeStatuses;
-        if (!(srActorHasStatus(srStatus, StatusNames::STOP) || srActorHasStatus(srStatus, StatusNames::DEATH))) {
-            if (srActorHasStatus(srStatus, StatusNames::SLOW)) {
-                vTimer = getBattleSpeed();
-                cTimer = 34;
-            }
-            else if (srActorHasStatus(srStatus, StatusNames::HASTE)) {
-                vTimer = 3 * getBattleSpeed();
-                cTimer = 136;
-            }
-            else {
-                vTimer = 2 * getBattleSpeed();;
-                cTimer = 68;
-            }
-        }
-
-        u16 dexterity = enemyActor.battleStats->at(StatNames::DEXTERITY).activeValue;
-        auto turnTimer = dexterity * vTimer / getDexNormalization();
-
-        if (srActorHasStatus(srStatus, StatusNames::STOP) || srActorHasStatus(srStatus, StatusNames::PARALYSIS) || srActorHasStatus(srStatus, StatusNames::SLEEP))
-            turnTimer = 0;
-
-        actorTimers->vTimerIncrement = vTimer;
-        actorTimers->turnTimerIncrement = turnTimer;
-        actorTimers->CTimerIncrement = cTimer;
+        srSetActorTimers(enemyActor);
 
         actorTimers->currentHP = actorBattleVars->currentHP;
         actorTimers->currentMP = actorBattleVars->currentMP;
 
         activateEnemyActor(enemyIdx);
-
-
     }
 }
 
@@ -747,7 +615,7 @@ void initializePlayerActors() {
 void initializeEnemyActors() {
     u8* byte_9AAD2C = (u8*)0x9AAD2C;
     auto& aiBattleContext = *AI_BATTLE_CONTEXT;
-    aiBattleContext.unkMask = 0;
+    aiBattleContext.enemyActorsMask = 0;
     for (auto sceneRelativeIdx = 0; sceneRelativeIdx < 3; ++sceneRelativeIdx)
         byte_9AAD2C[sceneRelativeIdx] = 0;
 
@@ -764,7 +632,7 @@ void setPartyStats(u8 characterID, SrPartyBattleActor& partyActor) {
 
 void setBattleStats(const PartyMemberState& srPartyMember, SrPartyBattleActor& partyActor) {
     auto& actorBattleVars = partyActor.battleActor.gameAIState;
-    auto& stats = srPartyMember.srPartyMember->playerStats;
+    auto& stats = srPartyMember.srPartyMember->stats;
     auto& battleStats = partyActor.battleActor.battleStats;
 
     for (const auto& statElement : gContext.stats.named_registry) {
@@ -879,4 +747,9 @@ void setEnemyStats(u8 enemyIndex, ActorBattleState& enemyActor) {
     actorBattleVars->luck = battleStats[StatNames::LUCK].statValue;
     actorBattleVars->pEvade = battleStats[StatNames::EVADE].statValue;
     actorBattleVars->mEvade = battleStats[StatNames::MEVADE].statValue;
+}
+
+
+ActorBattleState getActiveBattleActor(u8 actorIdx) {
+    return gContext.battleActors.getActiveBattleActor(actorIdx);
 }

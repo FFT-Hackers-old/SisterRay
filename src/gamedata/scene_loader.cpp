@@ -200,7 +200,10 @@ void calculateEnemyStats(SrEnemyData& enemy) {
     stats[StatNames::MAGIC].baseValue = gameEnemy.magic;
     stats[StatNames::SPIRIT].baseValue = gameEnemy.mDefense;
     stats[StatNames::DEXTERITY].baseValue = gameEnemy.dexterity;
+    stats[StatNames::AGILITY].baseValue = gameEnemy.dexterity;
     stats[StatNames::LUCK].baseValue = gameEnemy.luck;
+    stats[StatNames::FOCUS].baseValue = gameEnemy.luck;
+    stats[StatNames::INSIGHT].baseValue = gameEnemy.luck;
     stats[StatNames::EVADE].baseValue = gameEnemy.enemyEvade;
     stats[StatNames::MEVADE].baseValue = gameEnemy.enemyEvade;
 

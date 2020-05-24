@@ -2,13 +2,52 @@
 #include "../impl.h"
 #include "../gamedata/stat_names.h"
 
-void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& charRecord, const StatBoostModifiers& statModifiers) {
-    for (auto& statElement : srPartyMember.playerStats) {
+
+void calculatePrimaryBaseStats(const SrCharacter& character, SrPartyData& srPartyMember) {
+    for (auto& statElement : gContext.stats.named_registry) {
+        auto& statName = statElement.first;
+        auto& stat = gContext.stats.getResource(statElement.second);
+        if (stat.isPrimary) {
+            if (stat.useTable) {
+                auto val = character.statTable.at(statName).at(character.gameCharacter->level) + (character.statPointMultipliers.at(statName) * character.appliedPoints.at(statName));
+                srLogWrite("Setting primary table stat value to %i", val);
+                setStat(statName.c_str(), &srPartyMember.stats[statName].baseValue, val);
+            }
+        }
+    }
+}
+
+void calculateDerivedBaseStats(const SrCharacter& character, SrPartyData& srPartyMember){
+    for (auto& statElement : gContext.stats.named_registry) {
+        auto& statName = statElement.first;
+        auto& stat = gContext.stats.getResource(statElement.second);
+        if (stat.isDerived) {
+            if (stat.useTable) {
+                auto val = character.statTable.at(statName).at(character.gameCharacter->level) + (character.statPointMultipliers.at(statName) * character.appliedPoints.at(statName));
+                srLogWrite("Setting derived table stat value to %i", val);
+                setStat(statName.c_str(), &srPartyMember.stats[statName].baseValue, val);
+            }
+            if (stat.derivedFormula) {
+                srLogWrite("Setting derived forumla stat value to %i", stat.derivedFormula(&srPartyMember));
+                setStat(statName.c_str(), &srPartyMember.stats[statName].baseValue, stat.derivedFormula(&srPartyMember));
+            }
+        }
+    }
+}
+
+void applyStatBoosts(SrPartyData& srPartyMember, const StatBoostModifiers& statModifiers, bool calculatePrimary) {
+    for (auto& statElement : srPartyMember.stats) {
         const auto& statName = statElement.first;
         srLogWrite("Calculating stat %s", statName.c_str());
         auto& stat = statElement.second;
-        auto& statData = gContext.stats.getElement(statName);
-        stat.baseValue = getGameBaseStat(statName, charRecord);
+
+        const auto& statData = gContext.stats.getElement(statName);
+        if (calculatePrimary && !statData.isPrimary) {
+            continue;
+        }
+        if (!calculatePrimary && statData.isPrimary) {
+            continue;
+        }
         if (statModifiers.find(statName) == statModifiers.end()) {
             stat.statValue = stat.baseValue;
             srLogWrite("Defaulting stat %s to base value %d", statName.c_str(), stat.baseValue);
@@ -45,26 +84,6 @@ void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& char
         //srLogWrite("Calculated stat value: %d for stat %s", statValue, statName.c_str());
         stat.statValue = statValue;
     }
-}
-
-u32 getGameBaseStat(std::string statName, const CharacterRecord& record) {
-    if (statName == StatNames::HP)
-        return record.base_HP;
-    if (statName == StatNames::MP)
-        return record.base_MP;
-    if (statName == StatNames::STRENGTH)
-        return record.strength + record.bonus_strength;
-    if (statName == StatNames::VITALITY)
-        return record.vitality + record.bonus_vitality;
-    if (statName == StatNames::MAGIC)
-        return record.magic + record.bonus_magic;
-    if (statName == StatNames::SPIRIT)
-        return record.spirit + record.bonus_spirit;
-    if (statName == StatNames::DEXTERITY)
-        return record.dexterity + record.bonus_dexterity;
-    if (statName == StatNames::LUCK)
-        return record.luck + record.luck;
-    return 0;
 }
 
 void addStatBoosts(StatBoostModifiers& acc, const EquipmentStatBoosts& boosts) {

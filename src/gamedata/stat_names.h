@@ -11,6 +11,7 @@ namespace StatNames {
     const std::string VITALITY = "VIT";
     const std::string MAGIC = "MAG";
     const std::string FOCUS = "FOC";
+    const std::string INSIGHT = "INST";
     const std::string SPIRIT = "SPR";
     const std::string AGILITY = "AGI";
     const std::string LUCK = "LCK";
@@ -23,6 +24,7 @@ namespace StatNames {
     const std::string VIT_NAME= "Vitality";
     const std::string MAG_NAME = "Magic";
     const std::string FOCUS_NAME = "Focus";
+    const std::string INSIGHT_NAME = "Insight";
     const std::string SPR_NAME = "Spirit";
     const std::string AGILITY_NAME = "Agility";
     const std::string LUCK_NAME = "Luck";
@@ -33,17 +35,13 @@ namespace StatNames {
     const std::string ARMOR_DEFENSE = "ARMDEF";
     const std::string ARMOR_MDEFENSE = "ARMMAGDEF";
     const std::string WEAPON_MAGIC = "WPNMATK";
-    const std::string EVADE = "PEV";
-    const std::string MEVADE = "MEV";
     const std::string MAGIC_ACCURACY = "MAGHIT";
 
-    const std::string WEAPON_ATTACK_NAME = "Weapon Atk";
-    const std::string WEAPON_ACCURACY_NAME = "Weapon Hit";
-    const std::string ARMOR_DEFENSE_NAME = "Defense";
-    const std::string ARMOR_MDEFENSE_NAME = "M.Defense";
-    const std::string WEAPON_MAGIC_NAME = "M.Attack";
-    const std::string EVADE_NAME = "Evade";
-    const std::string MEVADE_NAME = "M.Evade";
+    const std::string WEAPON_ATTACK_NAME = "Wpn Attackk";
+    const std::string WEAPON_ACCURACY_NAME = "Wpn Hit";
+    const std::string ARMOR_DEFENSE_NAME = "Phys Armor";
+    const std::string ARMOR_MDEFENSE_NAME = "Mag Armor";
+    const std::string WEAPON_MAGIC_NAME = "Wpn Magic";
     const std::string MAGIC_ACCURACY_NAME = "Magic Acc.";
 
     const std::string SLASH_ARM = "SLASHRES";
@@ -53,6 +51,77 @@ namespace StatNames {
     const std::string SLASH_SKL = "SLASHSKL";
     const std::string PIERCE_SKL = "PIERCESKL";
     const std::string BLUNT_SKL = "BLUNTSKL";
+
+    // Combat Stats. Low Level Stats used in battle
+    const std::string ATTACK_POWER = "ATKPWR";
+    const std::string ATTACK_SPEED = "ATKSPD";
+    const std::string ACCURACY = "PACC";
+    const std::string CRIT_RATE = "CRTRATE";
+    const std::string CRIT_POWER = "CRTPWR";
+    const std::string STAGGER_POWER = "STAGPWR";
+    const std::string STAGGER_DAMAGE = "STAGDMG";
+    const std::string EVASION_PEN = "EVAPEN";
+    const std::string PARRY_PEN = "PARRYPEN";
+    const std::string BLOCK_PEN = "BLOCKPEN";
+    const std::string ARMOR_PEN = "ARMPEN"; //Reduce the effect of armor
+    const std::string DEFENSE_PEN = "DEFPEN"; //Reduce the effect of defense
+
+    const std::string DEFENSE = "DEFENSE";
+    const std::string ARMOR = "ARMOR";
+    const std::string BLOCK = "AMTBLOCK";
+    const std::string BLOCK_RATE = "BLOCK_RATE";
+    const std::string PARRY_RATE = "PARRY_RATE";
+    const std::string EVADE = "PEV";
+    const std::string STAGGER_RES = "STAGRES";
+    const std::string CRIT_RES = "CRITRES";
+    const std::string WOUND_RES = "WOUNDRES";
+    const std::string PHYS_DEBUFF_RES = "PHYSDBFRES";
+    const std::string PHYS_BUFF_AFF = "PHYSBUFFAFF";
+
+    const std::string ATTACK_POWER_NAME = "Attack Pwr";
+    const std::string ATTACK_SPEED_NAME = "Attack Spd";
+    const std::string ACCURACY_NAME = "Accuracy";
+    const std::string CRIT_RATE_NAME = "Crit Rate";
+    const std::string CRIT_POWER_NAME = "Crit Pwr";
+    const std::string STAGGER_POWER_NAME = "Stagger Pwr";
+    const std::string STAGGER_DAMAGE_NAME = "Stagger Dmg";
+    const std::string EVASION_PEN_NAME = "Evasion Pen";
+    const std::string PARRY_PEN_NAME = "Parry Pen";
+    const std::string BLOCK_PEN_NAME = "Block Pen";
+    const std::string ARMOR_PEN_NAME = "Armor Pen"; //Reduce the effect of armor
+    const std::string DEFENSE_PEN_NAME = "Defense Pen"; //Reduce the effect of defense
+
+    const std::string DEFENSE_NAME = "Defense";
+    const std::string ARMOR_NAME = "Armor";
+    const std::string BLOCK_NAME = "Block Amt";
+    const std::string BLOCK_RATE_NAME = "Block Rate";
+    const std::string PARRY_RATE_NAME = "Parry Rate";
+    const std::string EVADE_NAME = "Evasion";
+    const std::string STAGGER_RES_NAME = "Stagger Res";
+    const std::string CRIT_RES_NAME = "Crit Res";
+    const std::string WOUND_RES_NAME = "Wound Res";
+    const std::string PHYS_DEBUFF_RES_NAME = "Phys Dbf Res";
+    const std::string PHYS_BUFF_AFF_NAME = "Phys Buf Res";
+
+    // Magic Combat Status. Low Level Stats used in battle
+    const std::string MAGIC_POWER = "MAGPWR";
+    const std::string MAGIC_FLUENCY = "MAGFLU";
+    const std::string MAGIC_CONTROL = "MAGCON";
+    const std::string MAGIC_STAGGER = "MAGSTAG";
+    //const std::string MAGIC_ACCURACY = "MAGACC";
+    const std::string MEVADE_PEN = "MEVPEN";
+    const std::string DIFFUSE_PEN = "DIFPEN";
+    const std::string MP_REGEN_RATE = "MPREGEN";
+    const std::string MAG_ARMOR_PEN = "MAGARMPEN";
+    const std::string MAG_DEF_PEN = "MAGDEFPEN";
+
+
+    const std::string MAGIC_DEFENSE = "MAGDEF";
+    const std::string MEVADE = "MEV";
+    const std::string MAG_DEBUFF_RES = "MAGDBFRES";
+    const std::string MAG_BUFF_AFF = "MAGBUFFAFF";
+
+    const std::string MEVADE_NAME = "M Evade";
 
     // New Elemental Resistances
     const std::string FIRE_RES = "FIRERES";

@@ -14,14 +14,14 @@ void controlStateView(const TransitionData& transition){
 
     if (!sub_41AB67(128) && !(*byte_DC206D != 2 && *byte_DC206E != 2 && *byte_DC206F != 2 && *byte_DC206C != 2)) {
         setViewport(
-            transition.field_8 + *dword_DC105C + transition.field_0,
+            transition.limitFastATBMask + *dword_DC105C + transition.field_0,
             transition.field_A + *dword_DC1060 + transition.field_2,
             transition.field_C,
             20,
             ctx);
     }
     setViewport(
-        transition.field_8 + *dword_DC105C + transition.field_0,
+        transition.limitFastATBMask + *dword_DC105C + transition.field_0,
         transition.field_A + *dword_DC1060 + transition.field_2,
         transition.field_C,
         transition.field_E,
@@ -40,7 +40,7 @@ void handleOpenMenuState(Menu* menu, u32 menuState, TransitionData& transition) 
     if (transition.field_E > transition.field_6)
         transition.field_E = transition.field_6;
 
-    transition.field_8 = (transition.field_4 / 2) - transition.field_C / 2;
+    transition.limitFastATBMask = (transition.field_4 / 2) - transition.field_C / 2;
     transition.field_A = (transition.field_6 / 2) - transition.field_E / 2;
 }
 
@@ -56,7 +56,7 @@ void handleCloseMenuState(Menu* menu, u32 menuState, TransitionData& transition)
     if (transition.field_E < 1) {
         transition.field_E = 1;
     }
-    transition.field_8 = (transition.field_4 / 2) - transition.field_C / 2;
+    transition.limitFastATBMask = (transition.field_4 / 2) - transition.field_C / 2;
     transition.field_A = (transition.field_6 / 2) - transition.field_E / 2;
 }
 

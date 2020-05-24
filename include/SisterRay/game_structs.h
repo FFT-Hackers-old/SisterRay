@@ -28,8 +28,8 @@ typedef struct {
     u16 turnTimerIncrement;    //0x02
     u16 charATBValue;          //0x04
     u16 field_6;               //0x06
-    u16 field_8;
-    u16 CTimerIncrement;       //0xA
+    u16 limitFastATBMask;
+    u16 cTimerIncrement;       //0xA
     u8 field_C;
     u8 field_D;
     u8 activeCommandsMask;     //0x0D
@@ -153,7 +153,7 @@ typedef struct {
     u8 deathType;    //0x04
     u8 field_5;       //0x05
     u16 field_6;    //0x06
-    u32 field_8;   //0x08
+    u32 limitFastATBMask;   //0x08
     u32 field_C;   //0x0C
 } BattleParty10;
 #pragma pack(pop)
@@ -359,7 +359,7 @@ typedef struct {
     u16 actorEnemiesMask;  //A0
     u16 activeEnemiesMask;  //B0
     u16 actorPartyMask;     //C0
-    u16 unkMask;            //D0
+    u16 enemyActorsMask;            //D0
     u16 allActorsMask;      //E0
     u16 unkMask2;            //F0
     u16 unkMask3;            //0x100

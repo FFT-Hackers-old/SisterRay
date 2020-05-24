@@ -11,4 +11,6 @@
 void statExitMenuListener(const MenuInputEvent* event);
 void statChangeCharLeft(const MenuInputEvent* event);
 void statChangeCharRight(const MenuInputEvent* event);
+void displayCombatStats(const MenuInputEvent* event);
+void exitCombatStats(const MenuInputEvent* event);
 #endif

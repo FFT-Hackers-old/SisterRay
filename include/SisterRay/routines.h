@@ -216,7 +216,7 @@ typedef void(*pfnsub5CA722)(i32, i32);
 #define copyAdditionalEffects           ((pfnsub5CA722)0x5CA722)
 
 typedef void(*pfnsub435139)(i32, u8, u8, i16);
-#define srCreateEvent                   ((pfnsub435139)0x435139)
+#define gameCreateEvent                   ((pfnsub435139)0x435139)
 
 typedef i32(*pfnsub5C8684)(u32, u32);
 #define getLimitRelativeIndex           ((pfnsub5C8684)0x5C8684)

@@ -31,11 +31,14 @@ struct SrDamageContext_ {
     std::unordered_set<DamageModifiers> dmgFormulaModifiers;
     u16 hitFormula;
     std::unordered_set<HitModifiers> hitFormulaModifiers;
+    std::unordered_map<std::string, i32> miscComputation;
 };
 
 bool actorIsDamageImmune(ActorBattleVars battleVars, ActorBattleState srActorState, bool isMagic);
-bool srActorHasStatus(const ActorBattleState& srActorState, std::string statusName);
-bool srActorHasStatus(const std::vector<ActiveStatus>& activeStatuses, std::string statusName);
+bool srActorHasStatus(const ActorBattleState& srActorState, const std::string statusName);
+bool srActorHasStatus(const std::vector<ActiveStatus>& activeStatuses, const std::string statusName);
+bool didInflictionSucceed(StatusInfliction infliction, ActorBattleState attackerState, ActorBattleState& targetState, std::unordered_map<std::string, SrStaticStat> attackStats);
+bool srInflictStatus(ActorBattleState& srActorState, std::string statusName);
 void setActionDidHit(DamageCalculationEvent* event, bool didHit);
 bool checkActionDidHit(DamageCalculationEvent* dmgEvent);
 void setDisplayBarrier(DamageCalculationEvent* event);

@@ -6,21 +6,19 @@
 /*Initializes the command view widget used */
 Widget* createCommandViewWidget(const char* name, i32 x, i32 y, SRLISTUPDATERPROC commandNameViewUpdater, const char* menuName, u8 cursorIdx) {
     auto commandViewWidget = createWidget(name);
-
-    DrawBoxParams boxParams = { x, y, 98, 0x78, 0.3f };
-    auto boxWidget = createBoxWidget(boxParams, "BOX");
-    addChildWidget(commandViewWidget, (Widget*)boxWidget, "BOX");
+    moveWidget(commandViewWidget, x, y);
+    DrawBoxParams boxParams = { x, y, 98, 0x78, 0.2f };
 
     Widget* gridWidget;
     for (u8 idx = 0; idx < 3; idx++) {
         auto actorCommandsWidget = createWidget(std::to_string(idx));
         if (menuName) {
-            DrawCursorGridParams gridParams = { menuName, cursorIdx, commandNameViewUpdater, x + 10, y + 11, &allocateCommandRow, idx, true };
-            auto gridWidget = (Widget*)createGridWidget(gridParams, name);
+            DrawCursorGridParams gridParams = { menuName, cursorIdx, commandNameViewUpdater, x + 20, y + 11, &allocateCommandRow, idx, true };
+            gridWidget = (Widget*)createGridWidget(gridParams, name);
         }
         else {
-            DrawStaticGridParams gridParams = { commandNameViewUpdater, x, y, 4, 4, 50, 20, &allocateCommandRow, true };
-            auto gridWiget = (Widget*)createStaticGridWidget(gridParams, name);
+            DrawStaticGridParams gridParams = { commandNameViewUpdater, x + 20, y + 11, 4, 4, 50, 26, &allocateCommandRow, true };
+            gridWidget = (Widget*)createStaticGridWidget(gridParams, name);
         }
         addChildWidget(actorCommandsWidget, gridWidget, "GRID");
         auto boxWidget = createBoxWidget(boxParams, "BOX");
@@ -35,36 +33,33 @@ void resizeCommandBox(u8 actorID, Widget* cmdWidget, Cursor* commandChoiceCursor
     if (commandChoiceCursor) {
         commandChoiceCursor->context.maxColumnBound = gContext.party.getActivePartyMember(actorID).gamePartyMember->commandColumns;
         commandChoiceCursor->context.viewColumnBound = gContext.party.getActivePartyMember(actorID).gamePartyMember->commandColumns;
-        resizeBox(boxWidget, 160, 340, 120 * commandChoiceCursor->context.maxColumnBound, 120);
+        resizeBox(boxWidget, 120 * commandChoiceCursor->context.maxColumnBound, 120);
     }
-    resizeBox(boxWidget, 160, 340, 120 * gContext.party.getActivePartyMember(actorID).gamePartyMember->commandColumns, 120);
+    resizeBox(boxWidget, 120 * gContext.party.getActivePartyMember(actorID).gamePartyMember->commandColumns, 120);
 }
 
 void updateCommandsActor(Widget* cmdWidget, u8 actorIdx, Menu* menu, u16 cursorState) {
-    std::vector<std::string> names = { "0", "1", "2" };
-    for (u8 partyIdx = 0; partyIdx < names.size(); partyIdx++) {
+    for (u8 partyIdx = 0; partyIdx < 3; partyIdx++) {
         if (partyIdx == actorIdx) {
-            enableWidget(getChild(cmdWidget, names[partyIdx]));
+            enableWidget(getChild(cmdWidget, std::to_string(partyIdx)));
             if (menu) {
                 setActiveCursorIndex(menu, cursorState, actorIdx);
             }
             continue;
         }
-        disableWidget(getChild(cmdWidget, names[partyIdx]));
+        disableWidget(getChild(cmdWidget, std::to_string(partyIdx)));
     }
 }
 
 Widget* allocateCommandRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     auto cmdWidget = createWidget(name);
     moveWidget(cmdWidget, xCoordinate, yCoordinate);
-    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.501f };
+    DrawTextParams textParams = { xCoordinate, yCoordinate, getDefaultString(), COLOR_WHITE, 0.19f };
     addChildWidget(cmdWidget, (Widget*)createTextWidget(textParams, std::string("TXT")), std::string("TXT"));
-    DrawGameAssetParams gameAssetParams = AllArrow(xCoordinate + 4, yCoordinate, 0.501f);
+    DrawGameAssetParams gameAssetParams = AllArrow(xCoordinate + 4, yCoordinate, 0.19f);
     addChildWidget(cmdWidget, (Widget*)createGameAssetWidget(gameAssetParams, std::string("ARW")), std::string("ARW"));
     return cmdWidget;
 }
-
-/*Temporary function until we also provide infrastructure for extending the number of commands*/
 
 void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u8* updatingActor) {
     const auto& commands = gContext.party.getActivePartyMember(*updatingActor).gamePartyMember->enabledCommandArray;
@@ -72,15 +67,15 @@ void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
 }
 
 void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u32* updatingActor) {
+    srLogWrite("Animating Commands for Actor: %x, ptr: %x", *updatingActor, updatingActor);
     const auto& commands = gContext.party.getActivePartyMember(*updatingActor).gamePartyMember->enabledCommandArray;
     baseCommandNameViewUpdater(self, widget, flatIndex, commands);
 }
 
 void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, const EnabledCommand (&commands)[16]) {
-    if (self->collectionType != GridWidgetClass() || self->collectionType != StaticGridWidgetClass()) {
+    if (self->collectionType != GridWidgetClass() && self->collectionType != StaticGridWidgetClass()) {
         return;
     }
-
     if (commands[flatIndex].commandID == 0xFF) {
         disableWidget(getChild(widget, std::string("ARW")));
         disableWidget(getChild(widget, std::string("TXT")));

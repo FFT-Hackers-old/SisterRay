@@ -25,11 +25,13 @@ PRNG_Type rng;
 std::uniform_int_distribution<PRNG_Type::result_type> udist(0, 255);
 
 void finalizeRegistries() {
+    finalizeStats();
     finalizeArmors();
     finalizeWeapons();
     finalizeEnemies();
     finalizeAttacks();
     finalizeCommands();
+    finalizeCharacters();
 }
 
 static const SrKernelStreamHandler kKernelBinHandlers[9] = {
@@ -158,26 +160,24 @@ static void Init(void) {
     initLimits((u8*)magicLGP);
     free(battleLGP);
     free(magicLGP);
-
-    srLogWrite("menus initialization complete");
     //End Register base callbacks, begin registering new handlers
     mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
-    mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);
     mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
     mogReplaceFunction(GET_MP_COST, &getMPCost);
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
-    //mogReplaceFunction(PRINT_DEBUG_STRING, &gameLogWrite);
-    initializeSrMenuEngine();
+    mogReplaceFunction(PRINT_DEBUG_STRING, &gameLogWrite);
+    createSrMenus();
     registerPartyCallbacks();
     initializeSrBattleEngine();
-    initializeBattleMenu();
+    createBattleMenu();
     srLogWrite("initialization complete");
     LoadMods();
     finalizeRegistries();
-    DispatchBattleMenuSetup();
+    initializeSrMenus();
+    initializeBattleMenu();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 
     /* Init RNG */

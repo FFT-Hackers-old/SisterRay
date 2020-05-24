@@ -29,6 +29,7 @@ struct StaticGridWidget_ {
     u16 rowSpacing;
     SRLISTUPDATERPROC updater;
     SRLISTALLOCPROC allocator;
+    bool transpose;
 };
 
 void drawStaticGridWidget(StaticGridWidget* gridWidget); //draw visibleRow # of child widgets

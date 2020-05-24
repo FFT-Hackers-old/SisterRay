@@ -11,5 +11,6 @@
 
 void initializeMateriaMenu();
 void registerMateriaMenuListeners();
+void createMateriaMenu();
 
 #endif

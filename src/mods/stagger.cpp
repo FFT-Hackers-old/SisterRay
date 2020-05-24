@@ -3,12 +3,33 @@
 #include "../events/event_bus_interface.h"
 #include "../impl.h"
 #include "../gamedata/summons.h"
+#include "../gamedata/battle_stats.h"
+#include "../battle/battle_actors.h"
+#include "../gamedata/damage_callback_utils.h"
+#include "../battle/effects/effects_api.h"
+
+#define STAGGER_MOD_NAME "STGMODNAME"
 
 void loadStagger() {
     registerStat(StaggerStatNames::STAGGER.c_str(), "Stagger", 1024, 0);
     registerStat(StaggerStatNames::MAX_STAGGER.c_str(), "Stagger", 1024, 255);
-    srAddListener(INIT_PLAYER_PARTY_MEMBER, (SrEventCallback)initializePartyStaggerStats, "STAGGER_MOD");
-    srAddListener(INIT_ENEMY, (SrEventCallback)initializeEnemyStaggerStats, "STAGGER_MOD");
+    registerStat(StaggerStatNames::STAGGER_INFLT_RES.c_str(), "Stagger Res", 100, 0);
+    registerStat(StaggerStatNames::STAGGER_INFLT_PEN.c_str(), "Stagger Pen", 100, 0);
+    SrStatusBehavior behavior = { false, false, 0, false, false };
+    registerStatus(
+        StaggerStatNames::STAGGER_STATUS.c_str(),
+        "Staggered",
+        StaggerStatNames::STAGGER_INFLT_PEN.c_str(),
+        StaggerStatNames::STAGGER_INFLT_RES.c_str(),
+        behavior
+    );
+    srAddListener(INIT_PLAYER_PARTY_MEMBER, (SrEventCallback)initializePartyStaggerStats, STAGGER_MOD_NAME);
+    srAddListener(INIT_ENEMY, (SrEventCallback)initializeEnemyStaggerStats, STAGGER_MOD_NAME);
+    srAddListener(INIT_ATTACK, (SrEventCallback)initializeAttackStaggerStats, STAGGER_MOD_NAME);
+    srAddListener(ON_FINALIZE_IMPACT_EVENTS, (SrEventCallback)setStaggerToInflict, STAGGER_MOD_NAME);
+    srAddListener(TRIGGER_DAMAGE_DISPLAY, (SrEventCallback)triggerStaggerDamage, STAGGER_MOD_NAME);
+    srAddListener(POST_DAMAGE_FORMULA, (SrEventCallback)applyStaggerDamageMedifiers, STAGGER_MOD_NAME);
+    initializeStaggerMenuElement();
 }
 
 
@@ -19,19 +40,35 @@ void initializeEnemyStaggerStats(InitEnemyEvent* enemyEvent) {
 
     enemyEvent->enemyState->enemyStats[StaggerStatNames::MAX_STAGGER].baseValue = 512;
     enemyEvent->enemyState->enemyStats[StaggerStatNames::MAX_STAGGER].statValue = 512;
+
+    enemyEvent->enemyState->enemyStats[StaggerStatNames::STAGGER_INFLT_PEN].baseValue = 0;
+    enemyEvent->enemyState->enemyStats[StaggerStatNames::STAGGER_INFLT_RES].statValue = 0;
+}
+
+void initializeAttackStaggerStats(InitAttackEvent* attackEvent) {
+    attackEvent->attack->stats[StaggerStatNames::STAGGER_DAMAGE].statValue = 16;
 }
 
 
 void initializePartyStaggerStats(InitPartyMemberEvent* partyEvent) {
-    partyEvent->partyState->srPartyMember->playerStats[StaggerStatNames::STAGGER].baseValue = 0;
-    partyEvent->partyState->srPartyMember->playerStats[StaggerStatNames::STAGGER].statValue = 0;
+    partyEvent->partyState->srPartyMember->stats[StaggerStatNames::STAGGER].baseValue = 0;
+    partyEvent->partyState->srPartyMember->stats[StaggerStatNames::STAGGER].statValue = 0;
 
-    partyEvent->partyState->srPartyMember->playerStats[StaggerStatNames::MAX_STAGGER].baseValue = 512;
-    partyEvent->partyState->srPartyMember->playerStats[StaggerStatNames::MAX_STAGGER].statValue = 512;
+    partyEvent->partyState->srPartyMember->stats[StaggerStatNames::MAX_STAGGER].baseValue = 512;
+    partyEvent->partyState->srPartyMember->stats[StaggerStatNames::MAX_STAGGER].statValue = 512;
+
+    partyEvent->partyState->srPartyMember->stats[StaggerStatNames::STAGGER_INFLT_PEN].baseValue = 512;
+    partyEvent->partyState->srPartyMember->stats[StaggerStatNames::STAGGER_INFLT_RES].statValue = 512;
 }
 
 
 void initializeSummonStaggerStats(InitSummonEvent* summonEvent) {
+
+}
+
+void initializeStaggerMenuElement() {
+    srAddListener(INIT_BATTLE_MENU, (SrEventCallback)initStaggerBarWidget, STAGGER_MOD_NAME);
+    srAddListener(DRAW_BATTLE_MENU, (SrEventCallback)drawStaggerBarWidget, STAGGER_MOD_NAME);
 
 }
 
@@ -65,15 +102,85 @@ void drawStaggerBarWidget(const MenuDrawEvent* event) {
     std::vector<std::string> names = { StaggerWidgetNames::ENEMY_BAR_1, StaggerWidgetNames::ENEMY_BAR_2, StaggerWidgetNames::ENEMY_BAR_3,
         StaggerWidgetNames::ENEMY_BAR_4, StaggerWidgetNames::ENEMY_BAR_5, StaggerWidgetNames::ENEMY_BAR_6 };
 
-    for (auto idx = 0; idx < 6; idx++) {
-        auto enemyStaggerWidget = srGetChild(mainWidget, names[idx].c_str());
+    for (auto idx = 4; idx < 10; idx++) {
+        auto enemyStaggerWidget = srGetChild(mainWidget, names[idx - 4].c_str());
+        auto& screenSpacePosition = getActorScreenSpacePosition(idx);
+        if (screenSpacePosition.actorPosition.x == 0xFFFF || screenSpacePosition.actorPosition.y == 0xFFFF) {
+            disableWidget(enemyStaggerWidget);
+            continue;
+        }
+        if (!gContext.battleActors.isActorInBattle(idx)) {
+            disableWidget(enemyStaggerWidget);
+            continue;
+        }
+        enableWidget(enemyStaggerWidget);
+        moveWidget(enemyStaggerWidget, screenSpacePosition.actorPosition.x + 15, screenSpacePosition.actorPosition.y + 20);
+        auto& currentStagger = gContext.battleActors.getActiveBattleActor(idx).battleStats->at(StaggerStatNames::STAGGER);
+        auto& incrementCtx = currentStagger.incrementCtx;
+        if (srActorHasStatus(gContext.battleActors.getActiveBattleActor(idx), StaggerStatNames::STAGGER_STATUS)) {
+            updateBarColor((BarWidget*)srGetChild(enemyStaggerWidget, "BAR"), 0x8300A100);
+        }
+        if (incrementCtx.barDisplayValue != 1024) {
+            if (incrementCtx.incrementTargetValue > incrementCtx.barDisplayValue) {
+                incrementCtx.barDisplayValue += 10;
+                if (incrementCtx.barDisplayValue > incrementCtx.incrementTargetValue) {
+                    incrementCtx.barDisplayValue == incrementCtx.incrementTargetValue;
+                }
+            }
+            updateBarColor((BarWidget*)srGetChild(enemyStaggerWidget, "BAR"), 0xFFA50000);
+        }
+        else {
+            updateBarColor((BarWidget*)srGetChild(enemyStaggerWidget, "BAR"), 0x8308A100);
+        }
+        updateBarLength((BarWidget*)srGetChild(enemyStaggerWidget, "BAR"), (incrementCtx.barDisplayValue / 16));
+
     }
 }
 
-void setStaggerToInflict() {
+// This should probably be an extra event type
+void setStaggerToInflict(SrActionImpactSetupEvent* srEvent) {
+    auto& targetState = srEvent->damageCtx->srDamageContext->targetState;
+    auto& attackerState = srEvent->damageCtx->srDamageContext->attackerState;
+    auto& attackStagger = srEvent->damageCtx->srDamageContext->attackStats[StaggerStatNames::STAGGER_DAMAGE].statValue;
+    u16 hitStaggerDamage = (attackStagger / 16) * (1 + (attackerState.battleStats->at(StatNames::STAGGER_POWER).activeValue / 100)) * 500;
+    hitStaggerDamage = hitStaggerDamage - (hitStaggerDamage * (targetState.battleStats->at(StatNames::STAGGER_RES).activeValue / 100.0f));
+    if (srActorHasStatus(targetState, StaggerStatNames::STAGGER_STATUS)) {
+        hitStaggerDamage /= 3;
+    };
+    srEvent->damageCtx->srDamageContext->miscComputation["CUMULATIVE_STAGGER"] += hitStaggerDamage;
+    u16 staggerAfterInflict = srEvent->damageCtx->srDamageContext->miscComputation["CUMULATIVE_STAGGER"] + targetState.battleStats->at(StaggerStatNames::STAGGER).activeValue;
+    if (!srActorHasStatus(targetState, StaggerStatNames::STAGGER_STATUS)) {
+        if ((staggerAfterInflict >= 1024) && (targetState.battleStats->at(StaggerStatNames::STAGGER).activeValue < 1024)) {
+            srEvent->impactEvent->impactSoundID = 0x98;
+            srInflictStatus(targetState, StaggerStatNames::STAGGER_STATUS);
+        }
+    }
+    srEvent->srExtendedEvent->staggerDamage = hitStaggerDamage;
 
 }
 
 void triggerStaggerDamage(TriggerDamageDisplayEvent* srEvent) {
     auto& stagger = srEvent->targetState->battleStats->at(StaggerStatNames::STAGGER);
+    stagger.incrementCtx.incrementTargetValue = stagger.activeValue + srEvent->extendedImpactEvent->staggerDamage;
+    if (stagger.incrementCtx.incrementTargetValue > 1024) {
+        stagger.incrementCtx.incrementTargetValue = 1024;
+    }
+    if ((stagger.incrementCtx.incrementTargetValue == 1024) && (stagger.activeValue < 1024)) {
+        auto reactionCtx = (TargetReactionEffectCtx*)getEffect100QueueTop();
+        triggerScreenFlash(0x8A, 07, 0xA1);
+    }
+    stagger.statValue = stagger.incrementCtx.incrementTargetValue;
+    stagger.activeValue = stagger.statValue;
+}
+
+void applyStaggerDamageMedifiers(DamageCalculationEvent* srEvent) {
+    auto& targetState = srEvent->srDamageContext->targetState;
+    auto& attackerState = srEvent->srDamageContext->attackerState;
+    if (srActorHasStatus(targetState, StaggerStatNames::STAGGER_STATUS)) {
+        srEvent->damageContext->currentDamage *= (1 + (attackerState.battleStats->at(StatNames::STAGGER_POWER).activeValue / 100.0f));
+    };
+}
+
+void decayStaggerGuage() {
+
 }

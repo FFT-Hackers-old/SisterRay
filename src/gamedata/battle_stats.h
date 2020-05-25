@@ -60,12 +60,12 @@ typedef struct {
 } resourceIncrement;
 
 
-typedef struct {
+struct SrBattleStat_ {
     i32 activeValue;
     i32 statValue;
     resourceIncrement incrementCtx;
     std::vector<StatModifier> modifiers; //consumed and decremented on V-Timer in battle, modifies active value
-} SrBattleStat;
+};
 
 
 void initStats(bool initResistances);

@@ -26,6 +26,7 @@
 #define FF7_TARGET_REACTION_MAIN   ((void*)0x425FC4)
 #define FF7_UPDATE_ACTOR_TIMERS   ((void*)0x4339C2)
 #define FF7_UPDATE_RESOURCES      ((void*)0x4320AC)
+#define FF7_DISPATCH_TIMERS       ((void*)0x43526A)
 
 
 PFNSETPLAYERDATA* oldSetPlayerModel;
@@ -51,5 +52,6 @@ void initializeSrBattleEngine() {
     mogReplaceFunction(FF7_TARGET_REACTION_MAIN, &targetReactionMain);
     mogReplaceFunction(FF7_UPDATE_ACTOR_TIMERS, &srUpdateActorTimers);
     mogReplaceFunction(FF7_UPDATE_RESOURCES, &srHandleFillATB);
+    mogReplaceFunction(FF7_DISPATCH_TIMERS, &srDispathTimeEvents);
     registerActionPopCallbacks();
 }

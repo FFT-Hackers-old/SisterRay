@@ -11,6 +11,7 @@ typedef struct SrWeapon_ SrWeapon;
 typedef struct SrArmor_ SrArmor;
 typedef struct SrCommand_ SrCommand;
 typedef struct SrAttack_ SrAttack;
+typedef struct SrBattleStat_ SrBattleStat;
 
 typedef struct {
     SRPFNSPELLLOADERCALLBACK loadCallback;

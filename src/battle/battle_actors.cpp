@@ -9,6 +9,7 @@
 #include "../gamedata/damage_callback_utils.h"
 #include "../gamedata/summons.h"
 #include "../battle/time/battle_time.h"
+#include "../events/event_bus_interface.h"
 
 #define ACTOR_COUNT 10
 #define ENEMY_ACTOR_COUNT 6
@@ -182,6 +183,10 @@ void SrBattleActors::initializePartyCharacter(u8 characterID) {
 
     actorTimers.currentHP = actorBattleVars.currentHP;
     actorTimers.currentMP = actorBattleVars.currentMP;
+    partyActor.battleActor.activeStatuses.clear();
+
+    InitBattleActorEvent timerEvent{ 0xFF, characterID, &getSrBattleCharacterActor(characterID),  true };
+    dispatchEvent(INIT_BATTLE_ACTORS, &timerEvent);
     // These are used when learning a new ESkill, this should be handled differently
     //party34->learnedEnemySkills = getLearnedEnemySkills(characterRecord);
     //party34->knownEnemySkills = party34->learnedEnemySkills;
@@ -255,13 +260,12 @@ void SrBattleActors::initializePartySummon(u8 summonIdx) {
     srSetActorTimers(getSrBattleSummonActor(summonIdx));
     actorTimers.currentHP = actorBattleVars.currentHP;
     actorTimers.currentMP = actorBattleVars.currentMP;
-    // These are used when learning a new ESkill, this should be handled differently
-    //party34->learnedEnemySkills = getLearnedEnemySkills(characterRecord);
-    //party34->knownEnemySkills = party34->learnedEnemySkills;
+    summonActor.battleActor.activeStatuses.clear();
 }
 
 
 void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
+    srLogWrite("--------------------START INIT ENEMY---------------------------");
     u8* byte_9AAD2C = (u8*)0x9AAD2C;
     u8* byte_9A9AAC = (u8*)0x9A9AAC;
     auto enemyActor = getSrBattleActor(enemyIdx + 4);
@@ -371,7 +375,16 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         actorTimers->currentHP = actorBattleVars->currentHP;
         actorTimers->currentMP = actorBattleVars->currentMP;
 
+        auto& statuses = enemyActors[enemyIdx].battleActor.activeStatuses;
+        statuses.clear();
+        srLogWrite("ENEMY STATUSES AFTER CLEAR");
+        for (auto& targetStatus : enemyActors[enemyIdx].battleActor.activeStatuses) {
+            srLogWrite("ENEMY STATUSES AFTER INIT: %s", targetStatus.statusName.c_str());
+        }
         activateEnemyActor(enemyIdx);
+        InitBattleActorEvent timerEvent{ enemyIdx, 0xFF, &enemyActor, true };
+        dispatchEvent(INIT_BATTLE_ACTORS, &timerEvent);
+        srLogWrite("--------------------END INIT ENEMY---------------------------");
     }
 }
 
@@ -416,8 +429,8 @@ ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
     if (actorIdx == 3) {
         actorState.actorBattleVars = getActorBattleVars(actorIdx);
         actorState.actorTimers = getActorTimerBlock(actorIdx);
-        actorState.battleStats = nullptr;
-        actorState.activeStatuses = nullptr;
+        actorState.battleStats = &omniscientActor.battleActor.battleStats;
+        actorState.activeStatuses = &omniscientActor.battleActor.activeStatuses;
         actorState.party10 = nullptr;
         actorState.party34 = nullptr;
         actorState.weaponCtx = nullptr;
@@ -498,8 +511,8 @@ ActorBattleState SrBattleActors::getActiveBattleActor(u8 actorIdx) {
         return actorState;
     }
     if (actorIdx == 3) {
-        actorState.battleStats = nullptr;
-        actorState.activeStatuses = nullptr;
+        actorState.battleStats = &omniscientActor.battleActor.battleStats;
+        actorState.activeStatuses = &omniscientActor.battleActor.activeStatuses;
         actorState.party10 = nullptr;
         actorState.party34 = nullptr;
         actorState.weaponCtx = nullptr;
@@ -752,4 +765,10 @@ void setEnemyStats(u8 enemyIndex, ActorBattleState& enemyActor) {
 
 ActorBattleState getActiveBattleActor(u8 actorIdx) {
     return gContext.battleActors.getActiveBattleActor(actorIdx);
+}
+
+
+SISTERRAY_API SrBattleStat* getBattleActorStat(ActorBattleState* battleState, const char* statName) {
+    auto& battleStats = *battleState->battleStats;
+    return &(battleStats[std::string(statName)]);
 }

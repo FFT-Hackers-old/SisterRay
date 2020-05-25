@@ -16,6 +16,6 @@ SISTERRAY_API u32 srAddListener(SrEventType eventType, SrEventCallback callback,
     return listener.listenerID;
 }
 
-SISTERRAY_API u32 dispatchEvent(SrEventType eventType, void* srEvent){
+SISTERRAY_API void dispatchEvent(SrEventType eventType, void* srEvent){
     gContext.eventBus.dispatch(eventType, srEvent);
 }

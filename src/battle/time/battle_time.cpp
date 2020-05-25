@@ -8,18 +8,25 @@
 #include "../battle_engine_interface.h"
 
 
-static u32 G_VTIMER_INCREMENTS[2][10] = 0x9AE928;
-static u32 G_CTIMER_INCREMENTS[2][10] = 0x9AE978;
-static u32 G_V_TIMERS[10] = 0x9AE900;
-static u32 G_C_TIMERS[10] = 0x9AE8D8;
+static u32* G_VTIMER_INCREMENTS = (u32*)0x9AE928;
+static u32* G_CTIMER_INCREMENTS = (u32*)0x9AE978;
+static u32* G_TIMER_INCREMENTS = (u32*)0x9AE8D0;
+static u32* G_V_TIMERS = (u32*)0x9AE900;
+static u32* G_C_TIMERS = (u32*)0x9AE8D8;
+static u32* G_G_TIMERS = (u32*)0x9AE8A8;
+
+
+typedef void(*PFNSRSUB_5C89E2)(u32, u32, u32);
+static PFNSRSUB_5C89E2 actorDeathHandler = (PFNSRSUB_5C89E2)0x5C89E2;
+static PFNSR_VOIDSUB runFormationAIScripts = (PFNSR_VOIDSUB)0x5C8931;
 void srDispathTimeEvents() {
-    u8 timerSetChoice = ::timerSetChoice;
-    ::timerSetChoice ^= 1u;
+    u32* timerSetChoice = (u32*)0x9AE8A0;
+    *timerSetChoice ^= 1u;
     auto& aiContext = *AI_BATTLE_CONTEXT;
-    auto actorVTimerIncrements = &G_VTIMER_INCREMENTS[timerSetChoice];
-    auto actorCTimerIncrements = &G_CTIMER_INCREMENTS[timerSetChoice];
-    auto globalTimerDecrement = G_TURN_TIMER_INCREMENTS[timerSetChoice] >> 13;
-    G_TURN_TIMER_INCREMENTS[timerSetChoice] &= 0x1FFFu;
+    u32* actorVTimerIncrements = &(G_VTIMER_INCREMENTS[10 * (*timerSetChoice)]);
+    u32* actorCTimerIncrements = &(G_CTIMER_INCREMENTS[10 * (*timerSetChoice)]);
+    u32 globalTimerDecrement = G_TIMER_INCREMENTS[*timerSetChoice] >> 13;
+    G_TIMER_INCREMENTS[*timerSetChoice] &= 0x1FFFu;
     for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
         auto& battleActor = getActiveBattleActor(actorIdx);
         auto timerField6 = battleActor.actorTimers->field_6;
@@ -28,37 +35,40 @@ void srDispathTimeEvents() {
 
         G_V_TIMERS[actorIdx] += actorVTimer;
         bool didVTimerTick = G_V_TIMERS[actorIdx] >> 13;
+        UpdateActorTimersEvent updateTimersEvent{ &battleActor };
         if (didVTimerTick) {
-
+            srLogWrite("DISPATCHING V-Timer Tick Events for actor %i", actorIdx);
+            dispatchEvent(ON_VTIMER_TICK, &updateTimersEvent);
         }
         G_V_TIMERS[actorIdx] &= 0x1FFFu;
 
         G_C_TIMERS[actorIdx] += actorCTimer;
         bool didCTimerTick = G_C_TIMERS[actorIdx] >> 12;
         if (didCTimerTick) {
-
+            srLogWrite("DISPATCHING C-Timer Tick Events for actor %i", actorIdx);
+            dispatchEvent(ON_CTIMER_TICK, &updateTimersEvent);
         }
         G_C_TIMERS[actorIdx] &= 0xFFFu;
 
-        G_TURN_TIMERS[actorIdx] += timerField6 * actorVTimer;
-        auto v8 = G_TURN_TIMERS[actorIdx] >> 15;
-        G_TURN_TIMERS[actorIdx] &= 0x7FFFu;
+        G_G_TIMERS[actorIdx] += timerField6 * actorVTimer;
+        auto v8 = G_G_TIMERS[actorIdx] >> 15;
+        G_G_TIMERS[actorIdx] &= 0x7FFFu;
         actorVTimerIncrements[actorIdx] = 0;
         actorCTimerIncrements[actorIdx] = 0;
 
         if (!(srActorHasStatus(battleActor, StatusNames::DEATH))) {
-            auto v7 = v8 + battleActor.actorBattleVars->currentHP;
-            if (v7 >= 0) {
-                if (v7 > battleActor.actorBattleVars->maxHP)
-                    v7 = battleActor.actorBattleVars->maxHP;
+            auto currentHP = v8 + battleActor.actorBattleVars->currentHP;
+            if (currentHP >= 0) {
+                if (currentHP > battleActor.actorBattleVars->maxHP)
+                    currentHP = battleActor.actorBattleVars->maxHP;
             }
             else {
                 srInflictStatus(battleActor, StatusNames::DEATH);
                 actorDeathHandler(actorIdx, actorIdx, 1);
                 runFormationAIScripts();
-                v7 = 0;
+                currentHP = 0;
             }
-            AI_BATTLE_STATE.actorAIStates[actorIdx].currentHP = v7;
+            battleActor.actorBattleVars->currentHP = currentHP;
         }
         for (u8 gameEventType = 0; gameEventType < 16; ++gameEventType) {
             u32 eventTimerDecrement;
@@ -100,11 +110,12 @@ void srHandleFillATB() {
         gameSyncTimers();
         for (u8 actorIdx = 0; actorIdx < 10; ++actorIdx) {
             auto& actorTimers = *gContext.battleActors.getActiveBattleActor(actorIdx).actorTimers;
+            srSetActorTimers(getActiveBattleActor(actorIdx));
             if (!((*word_9A88A4 | 7) & (*G_NOT_DEFEATED_ACTORS | 0x3F0) & (1 << actorIdx))) {
                 continue;
             }
 
-            UpdateActorTimersSevent updateTimersEvent{ &battleActor };
+            UpdateActorTimersEvent updateTimersEvent{ &gContext.battleActors.getActiveBattleActor(actorIdx) };
             dispatchEvent(ON_ACTOR_ATB_FILL, &updateTimersEvent);
             auto atbValue = actorTimers.charATBValue;
             auto turnTimerIncrement = actorTimers.turnTimerIncrement;
@@ -173,7 +184,7 @@ void handleActorTurn(u8 actorIdx, ActorBattleState& actorState) {
     u16* word_9AAD04 = (u16*)0x9AAD04;
     u16* word_9AAD1C = (u16*)0x9AAD1C;
     u32* dword_9AE208 = (u32*)0x9AE208;
-    UpdateActorTimersSevent updateTimersEvent{ &actorState };
+    UpdateActorTimersEvent updateTimersEvent{ &actorState };
     dispatchEvent(ON_ACTOR_ATB_FULL, &updateTimersEvent);
     if (actorIdx >= 3 || actorState.actorBattleVars->stateFlags & 0x10) {
         gameIssueChosenAction(actorIdx, 0xFFFF, 0, 0);
@@ -219,7 +230,7 @@ void srHandleFillLimit() {
 }
 
 void srUpdateActorTimers(u8 actorIdx) {
-    srSetActorTimers(gContext.battleActors.getActiveBattleActor(actorIdx));
+    srSetActorTimers(getActiveBattleActor(actorIdx));
 }
 
 void srSetActorTimers(ActorBattleState& battleActor) {
@@ -257,8 +268,9 @@ void srSetActorTimers(ActorBattleState& battleActor) {
         }
     }
 
-    u16 agility = battleActor.battleStats->at(StatNames::AGILITY).activeValue;
-    auto turnTimer = agility * vTimerIncrement / getDexNormalization();
+    auto& stats = *battleActor.battleStats;;
+    auto agilityFactor = 1 + (stats[StatNames::AGILITY].activeValue / 128.0f);
+    auto turnTimer = (agilityFactor * vTimerIncrement) / 2;
 
     if (srActorHasStatus(battleActor, StatusNames::STOP) || srActorHasStatus(battleActor, StatusNames::PARALYSIS) || srActorHasStatus(battleActor, StatusNames::SLEEP))
         turnTimer = 0;
@@ -267,6 +279,6 @@ void srSetActorTimers(ActorBattleState& battleActor) {
     actorTimers.turnTimerIncrement = turnTimer;
     actorTimers.cTimerIncrement = cTimerIncrement;
 
-    UpdateActorTimersSevent updateTimersEvent{ &battleActor };
+    UpdateActorTimersEvent updateTimersEvent{ &battleActor };
     dispatchEvent(UPDATE_ACTOR_TIMERS, &updateTimersEvent);
 }

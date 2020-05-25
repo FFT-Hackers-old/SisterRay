@@ -193,7 +193,7 @@ void calculateEnemyStats(SrEnemyData& enemy) {
     for (const auto& element : gContext.stats.named_registry) {
         stats[element.first] = stat;
     }
-    stats[StatNames::HP].baseValue = gameEnemy.maxHP;
+    stats[StatNames::HP].baseValue = 2 * gameEnemy.maxHP;
     stats[StatNames::MP].baseValue = gameEnemy.maxMP;
     stats[StatNames::STRENGTH].baseValue = gameEnemy.strength;
     stats[StatNames::VITALITY].baseValue = gameEnemy.defense;

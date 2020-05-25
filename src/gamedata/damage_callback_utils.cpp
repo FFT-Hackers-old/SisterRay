@@ -94,6 +94,17 @@ bool srInflictStatus(ActorBattleState& targetState, std::string statusName) {
     return true;
 }
 
+bool srRemoveStatus(ActorBattleState& targetState, std::string statusName) {
+    auto& targetStatuses = *targetState.activeStatuses;
+    auto wasFound = (std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName; }) != targetStatuses.end());
+    const auto& status = gContext.statuses.getElement(statusName);
+    if (wasFound) {
+        targetStatuses.erase(std::remove_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) { return statusName == activeStatus.statusName;  }), targetStatuses.end());
+        return true;
+    }
+    return false;
+}
+
 
 void setActionDidHit(DamageCalculationEvent* dmgEvent, bool didHit) {
     if (!didHit) {

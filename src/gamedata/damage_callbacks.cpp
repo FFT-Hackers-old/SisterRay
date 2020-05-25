@@ -10,6 +10,7 @@
 typedef void(*SRPFN_SUB436E92)();
 #define gameResetAnimEventCamera   ((SRPFN_SUB436E92)0x436E92)
 void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 targetID) {
+    srLogWrite("----------------------DAMAGE LOG START------------------------");
     auto damageContext = srDamageEvent->damageContext;
     auto& aiContext = *srDamageEvent->aiContext;
     auto& gameDamageEvent = *srDamageEvent->gameDamageEvent;
@@ -21,13 +22,14 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     printDamageQueueState();
     /*srLogWrite("Running Cover Callback");
     handleCover(srDamageEvent);*/
-    printDamageEvent(&gameDamageEvent);
-    printDamageQueueState();
-    srLogWrite("Cover callback exeucted");
+   // printDamageEvent(&gameDamageEvent);
+    //printDamageQueueState();
+    //srLogWrite("Cover callback exeucted");
     srLogWrite("setting Target Context");
     setTargetContext(gameDamageEvent.targetID, srDamageEvent);
-    printDamageEvent(&gameDamageEvent);
-    printDamageQueueState();
+    for (auto& targetStatus : *srDamageEvent->srDamageContext->targetState.activeStatuses) {
+        srLogWrite("TARGET STATUSES PRIOR TO ACTION: %s", targetStatus.statusName.c_str());
+    }
     srLogWrite("Target Context set");
     srLogWrite("Setting up status infliction");
     attemptStatusInfliction(srDamageEvent);
@@ -85,6 +87,10 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     handleDeathImpactSetup(srDamageEvent);
     printDamageEvent(&gameDamageEvent);
     printDamageQueueState();
+    for (auto& targetStatus : *srDamageEvent->srDamageContext->targetState.activeStatuses) {
+        srLogWrite("TARGET STATUSES PRIOR TO ACTION: %s", targetStatus.statusName.c_str());
+    }
+    srLogWrite("--------------------------------DAMAGE LOG END----------------------------------------");
 }
 
 //Hit and Damage Formulas will now live in a registry
@@ -603,10 +609,9 @@ void handleDamage(DamageCalculationEvent* srDamageEvent) {
             //Handle Death inflicted
             actorState.statusMask |= 1u;
             if (!srActorHasStatus(srDamageEvent->srDamageContext->targetState, StatusNames::DEATH)) {
-                auto death = ActiveStatus{ StatusNames::DEATH };
-                srDamageEvent->srDamageContext->targetState.activeStatuses->push_back(death);
+                srInflictStatus(srDamageEvent->srDamageContext->targetState, StatusNames::DEATH);
+                srLogWrite("FLAGGING TARGET %i AS DEAD", srDamageEvent->damageContext->targetID);
             }
-            srLogWrite("FLAGGING TARGET %i AS DEAD");
             if (damageContext->miscActionFlags & 0x2000)
                 handleMorph(srDamageEvent);
         }

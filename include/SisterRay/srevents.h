@@ -67,6 +67,9 @@ typedef enum {
     UPDATE_ACTOR_TIMERS,
     ON_ACTOR_ATB_FILL,
     ON_ACTOR_ATB_FULL,
+    ON_VTIMER_TICK,
+    ON_CTIMER_TICK,
+    INIT_BATTLE_ACTORS,
 
     //Initialization Events
     INIT_PLAYER_BATTLE_ACTOR,
@@ -265,9 +268,10 @@ typedef struct {
 } ModelAnimationEvent;
 
 typedef struct {
-    u8 actorIdx;
+    u8 enemyIdx;
     u8 characterIdx;
     ActorBattleState* ownerState;
+    bool isEnemy;
 } InitBattleActorEvent;
 
 
@@ -285,7 +289,7 @@ typedef struct {
 
 typedef struct {
     ActorBattleState* srActor;
-} UpdateActorTimersSevent;
+} UpdateActorTimersEvent;
 
 typedef struct {
     bool fromScene;

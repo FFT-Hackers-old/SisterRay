@@ -39,6 +39,7 @@ bool srActorHasStatus(const ActorBattleState& srActorState, const std::string st
 bool srActorHasStatus(const std::vector<ActiveStatus>& activeStatuses, const std::string statusName);
 bool didInflictionSucceed(StatusInfliction infliction, ActorBattleState attackerState, ActorBattleState& targetState, std::unordered_map<std::string, SrStaticStat> attackStats);
 bool srInflictStatus(ActorBattleState& srActorState, std::string statusName);
+bool srRemoveStatus(ActorBattleState& srActorState, std::string statusName);
 void setActionDidHit(DamageCalculationEvent* event, bool didHit);
 bool checkActionDidHit(DamageCalculationEvent* dmgEvent);
 void setDisplayBarrier(DamageCalculationEvent* event);

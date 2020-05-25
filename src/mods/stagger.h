@@ -27,6 +27,9 @@ void loadStagger();
 void initializeEnemyStaggerStats(InitEnemyEvent* enemyEvent);
 void initializePartyStaggerStats(InitPartyMemberEvent* partyEvent);
 void initializeStaggerMenuElement();
+void decayStaggerGuage(UpdateActorTimersEvent* srTimerEvent);
+void staggerInitActors(InitBattleActorEvent* initActorEvent);
+void handleStaggeredActorATB(UpdateActorTimersEvent* updateTimerEvent);
 
 void initializeAttackStaggerStats(InitAttackEvent* enemyEvent);
 void initStaggerBarWidget(const MenuInitEvent* event);

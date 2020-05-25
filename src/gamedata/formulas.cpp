@@ -35,11 +35,11 @@ void srAttackDamageBase(DamageCalculationEvent* damageEvent) {
         attackerStr = attackerState.battleStats->at(StatNames::STRENGTH).activeValue;
     }
 
-    srLogWrite("attackerStr: %u | attackerLvl: %f", attackerStr, atkLevel);
+    srLogWrite("attackerStr: %u | attackerLvl: %i", attackerStr, atkLevel);
 
     auto lvlFactor = (1 + (atkLevel / 10.0f));
     auto strFactor = (1 + (attackerStr / 32.0f));
-    srLogWrite("strFactor: %u | levelFactor: %f", strFactor, lvlFactor);
+    srLogWrite("strFactor: %f | levelFactor: %f", strFactor, lvlFactor);
     baseDamage = actionPower * lvlFactor * strFactor;
     gameDamageCtx.currentDamage = baseDamage;
 }

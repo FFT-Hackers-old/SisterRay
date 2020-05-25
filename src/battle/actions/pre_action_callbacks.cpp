@@ -137,7 +137,7 @@ void setPlayerCommandData(ActionContextEvent* actionEvent) {
                     if (damageContext->miscActionFlags & 0x200) {
                         if (enabledComandData[commandIdx].allCount) {
                             --enabledComandData[commandIdx].allCount;
-                            srCreateEvent(2, issuingActorID, 21, 1);
+                            gameCreateEvent(2, issuingActorID, 21, 1);
                         }
                         else {
                             damageContext->miscActionFlags |= 0x100000u;

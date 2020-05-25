@@ -33,8 +33,8 @@ SISTERRAY_API color getNumberColor(Widget* widget);
 SISTERRAY_API float getNumberPriority(Widget* widget);
 
 SISTERRAY_API void srNewBoxWidget(Widget* parent, DrawBoxParams params, const char* name);
-SISTERRAY_API void setBoxParams(DrawBoxParams* params, i16 drawDistance1, i16 drawDistance2, u16 drawDistance3, u16 drawDistance4, float priority, u8 isAlphaEnabled = 1, u8 useBoxColors=0, BoxColors boxColors = {0,0,0,0});
-SISTERRAY_API void resizeBox(Widget* widget, i16 drawDistance1, i16 drawDistance2, i16 drawDistance3, i16 drawdistance4);
+SISTERRAY_API void setBoxParams(DrawBoxParams* params, i16 x, i16 y, u16 width, u16 height, float priority, u8 isAlphaEnabled = 1, u8 useBoxColors=0, BoxColors boxColors = {0,0,0,0});
+SISTERRAY_API void resizeBox(Widget* widget, i16 width, i16 height);
 SISTERRAY_API void updateBoxPriority(Widget* widget, float priority);
 SISTERRAY_API u16 getBoxDrawDistance(Widget* widget, i32 dimension);
 SISTERRAY_API float getBoxPriority(Widget* widget);
@@ -55,7 +55,7 @@ SISTERRAY_API void updateMateriaData(Widget* widget, MateriaInventoryEntry* mate
 SISTERRAY_API void srNewSimpleAssetWidget(Widget* parent, DrawSimpleAssetParams params, const char* name);
 SISTERRAY_API void setSimpleAssetParams(DrawSimpleAssetParams* params, i32 xCoordinate, i32 yCoordinate, u8 arrowCode, color arrowColor, float priority);
 
-SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, const char* name);
+SISTERRAY_API void srNewGridWidget(Widget* parent, DrawCursorGridParams params, const char* name);
 
 SISTERRAY_API void setStaticGridParams(DrawStaticGridParams* params, i32 xCoordinate, i32 yCoordinate,
     u16 columnCount, u16 rowCount, u16 columnSpacing, u16 rowSpacing,

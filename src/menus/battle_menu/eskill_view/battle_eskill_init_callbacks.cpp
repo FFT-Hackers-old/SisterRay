@@ -26,7 +26,7 @@ void initBattleESkillViewWidget(const MenuInitEvent* event) {
     for (u32 idx = 0; idx < names.size(); idx++) {
         auto eskillChoice = getStateCursor(event->menu, idx);
 
-        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_ESKILL_STATE, &battleEskillNameViewUpdater, 42, 360, allocateEskillRow, idx };
+        DrawCursorGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_ESKILL_STATE, &battleEskillNameViewUpdater, 42, 360, allocateEskillRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleESkillView, (Widget*)gridWidget, names[idx]);
     }

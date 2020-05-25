@@ -158,7 +158,7 @@ typedef i32(*pfnsub6FA12F)(i32, i32, i32, i32);
 #define sub_6FA12F                      ((pfnsub6FA12F)0x6FA12F)
 
 typedef i16*(*pfnsub6C98A6)(void);
-#define sub_6C98A6                      ((pfnsub6C98A6)0x6C98A6)
+#define renderMenuType                      ((pfnsub6C98A6)0x6C98A6)
 
 typedef void(*pfnsub6C497C)(i32, char);
 #define sub_6C497C                      ((pfnsub6C497C)0x6C497C)
@@ -216,7 +216,7 @@ typedef void(*pfnsub5CA722)(i32, i32);
 #define copyAdditionalEffects           ((pfnsub5CA722)0x5CA722)
 
 typedef void(*pfnsub435139)(i32, u8, u8, i16);
-#define srCreateEvent                   ((pfnsub435139)0x435139)
+#define gameCreateEvent                   ((pfnsub435139)0x435139)
 
 typedef i32(*pfnsub5C8684)(u32, u32);
 #define getLimitRelativeIndex           ((pfnsub5C8684)0x5C8684)

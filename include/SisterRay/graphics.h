@@ -33,7 +33,7 @@ typedef struct {
 typedef struct {
     u32 field_0;
     u32 actionFlags;
-    u32 field_8;
+    u32 limitFastATBMask;
     u32 field_C;
     u32 field_10;
     TextureSet *textureSet;
@@ -134,7 +134,7 @@ typedef struct {
 typedef struct {
     u32 field_0;
     u32 size;
-    u32 field_8;
+    u32 limitFastATBMask;
     u32 field_C;
     Matrix* matrixArray;
     Matrix* matrixWorld;
@@ -235,7 +235,7 @@ typedef struct {
 typedef struct {
     GraphicsObject* graphicsObject;
     u32 polygontype;
-    u32 field_8;
+    u32 limitFastATBMask;
     R3Point vertices[4];
     TextureCoords textureCoords[4];
     u32 colors[4];
@@ -259,7 +259,7 @@ typedef struct {
 typedef struct {
     u32 field_0;
     u32 actionFlags;
-    u32 field_8;
+    u32 limitFastATBMask;
     u32 frameCounter;
     DrawableObjectChain* graphicsObjectChain;
     GraphicsInstance *graphicsInstance;
@@ -284,7 +284,7 @@ typedef struct {
 struct _PolygonSet {
     u32 field_0;
     u32 actionFlags;
-    u32 field_8;
+    u32 limitFastATBMask;
     u32 field_C;
     u32 numgroups;
     GraphicsChain field_14;
@@ -346,7 +346,7 @@ typedef struct {
 struct _GraphicsObject {
     u32 polytype;
     u32 actionFlags;
-    u32 field_8;
+    u32 limitFastATBMask;
     AuxillaryGFX* auxillaries;
     MatrixSet* matrixSet;
     PolygonSet* polygonSet;

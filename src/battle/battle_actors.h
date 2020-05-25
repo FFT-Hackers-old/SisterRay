@@ -63,7 +63,6 @@ struct ActorBattleState_{
 class SrBattleActors {
 public:
     SrBattleActors() {}
-    ActorBattleState getSrBattleActor(u8 actorIdx);
     ActorBattleState getActiveBattleActor(u8 actorIdx);
     void initializePartyActor(u8 partyIdx, u8 characterID);
     void initializeEnemyActor(u8 actorIdx);
@@ -73,7 +72,9 @@ public:
     void initializePartyCharacter(u8 characterID);
     void swapPartyToSummon(u8 summonIdx);
     bool isActorSummon(u8 actorIdx);
+    bool isActorInBattle(u8 actorIdx);
 protected:
+    ActorBattleState getSrBattleActor(u8 actorIdx);
     ActorBattleState getSrBattleCharacterActor(u8 actorIdx);
     ActorBattleState getSrBattleSummonActor(u8 summonIdx);
     void setActivePartyActor(u8 partyIdx, u8 characterID);
@@ -85,6 +86,7 @@ protected:
 private:
     std::array<u8, 3> activeParty;
     u8 activeSummonIdx;
+    SrPartyBattleActor omniscientActor;
     std::array<u8, 10> actorIsSummon;
     std::array<SrPartyBattleActor, 10> partyActors;
     std::array<SrEnemyBattleActor, 6> enemyActors;
@@ -113,6 +115,7 @@ BattleWeaponCtx* getBattleWeaponCtx(u8 actorIdx);
 const SrBattleStat& getSrBattleStat(u8 actorID, std::string statName);
 SrBattleStat& getMutableSrBattleStat(u8 actorID, std::string statName);
 CharacterRecord* getCharacterRecordWithID(u8 characterID);
+ActorBattleState getActiveBattleActor(u8 actorIdx);
 
 
 #endif

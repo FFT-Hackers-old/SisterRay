@@ -16,7 +16,7 @@ void setupGameDamageAndImpactEvents(DamageCalculationEvent* srDamageEvent);
 void handleDeathImpactSetup(DamageCalculationEvent* srDamageEvent);
 void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent);
 void attemptStatusInfliction(DamageCalculationEvent* srDamageEvent);
-bool didInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* srDamageEvent);
+bool didActionInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* srDamageEvent);
 void handleStatusInfliction(DamageCalculationEvent* srDamageEvent);
 void handleMorph(DamageCalculationEvent* srDamageEvent);
 void handleHealEffects(DamageCalculationEvent* srDamageEvent);

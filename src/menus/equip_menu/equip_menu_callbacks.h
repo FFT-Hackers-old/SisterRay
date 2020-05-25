@@ -10,5 +10,6 @@
 
 void initializeEquipMenu();
 void registerEquipMenuListeners();
+void createEquipMenu();
 
 #endif

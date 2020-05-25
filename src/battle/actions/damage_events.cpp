@@ -5,6 +5,8 @@
 #define DISPLAY_QUEUE_CAPACITY        78
 #define G_DAMAGE_DISPLAY_EVENT_TARGET_IDS ((u8*)0xC05E68)
 
+static SrExtendedImpactEvent extendedImpactEventQueue[128];
+
 DamageDisplayEvent* getDamageDisplayEvent(u8 queueIndex) {
     if (queueIndex > DISPLAY_QUEUE_CAPACITY) {
         return nullptr;
@@ -35,7 +37,18 @@ DamageEvent* newDamageEvent() {
     G_DAMAGE_EVENT_QUEUE[*G_CURRENT_DAMAGE_QUEUE_IDX].impactEventQueueIdx = -1;
     if (*G_CURRENT_DAMAGE_QUEUE_IDX < 128)
         ++*G_CURRENT_DAMAGE_QUEUE_IDX;
+    else {
+        *G_CURRENT_DAMAGE_QUEUE_IDX = 0;
+    }
     return damageEvent;
+}
+
+DamageEvent* getDamageEvent(u8 idx) {
+    if (idx < 128) {
+        auto damageEvent = &G_DAMAGE_EVENT_QUEUE[idx];
+        return damageEvent;
+    }
+    return nullptr;
 }
 
 void printDamageEvent(DamageEvent* damageEvent) {
@@ -56,13 +69,26 @@ ImpactEvent* newImpactEvent(DamageEvent* damageEvent) {
     impactEvent->targetID = damageEvent->targetID;
     if (*G_CURRENT_IMPACT_QUEUE_IDX < 128)
         ++*G_CURRENT_IMPACT_QUEUE_IDX;
+    else {
+        *G_CURRENT_IMPACT_QUEUE_IDX = 0;
+    }
     return impactEvent;
 }
 
+SrExtendedImpactEvent* getExtendedImpactEvent(u8 idx) {
+    if (idx < 128) {
+        auto impactEvent = &extendedImpactEventQueue[idx];
+        return impactEvent;
+    }
+    return nullptr;
+}
 
 ImpactEvent* getImpactEvent(u8 impactEffectIdx) {
-    ImpactEvent* impactEvent = &G_IMPACT_EVENT_QUEUE[impactEffectIdx];
-    return impactEvent;
+    if (impactEffectIdx < 128) {
+        ImpactEvent* impactEvent = &G_IMPACT_EVENT_QUEUE[impactEffectIdx];
+        return impactEvent;
+    }
+    return nullptr;
 }
 
 ImpactEvent* createImpactEvent(DamageEvent* damageEvent, u16 dealtDamage, u16 actionFlags, u16 impactSound, u16 impactEffect, u32 targetHP, u16 targetMP) {

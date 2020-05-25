@@ -7,8 +7,10 @@ using namespace MateriaWidgetNames;
 
 
 void initializeMateriaMenu() {
-    srLogWrite("initializing mateia menu");
-    /*The Materia menu has 11 well-defined viewing states*/
+    gContext.menuWidgets.initializeMenu(MATERIA_MENU_NAME, MATERIA_WIDGET_NAME);
+}
+
+void createMateriaMenu() {
     CursorContext checkArrangeContext = { 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 0, 0, 0, 1 };
     Cursor checkArrangeCursor = { checkArrangeContext, 160, 5, 30, 80 };
     CursorContext slotSelectContext = { 0, 0, 8, 2, 0, 0, 8, 2, 0, 0, 0, 0, 0, 1 };
@@ -40,7 +42,6 @@ void initializeMateriaMenu() {
     };
     auto materiaMenu = createMenu(INIT_MATERIA_MENU, DRAW_MATERIA_MENU, MATERIA_MENU_CONTEXT, 12, &(cursorArray[0]));
     gContext.menuWidgets.addElement(MATERIA_MENU_NAME, materiaMenu);
-    gContext.menuWidgets.initializeMenu(MATERIA_MENU_NAME, MATERIA_WIDGET_NAME);
 }
 
 void registerMateriaMenuListeners() {

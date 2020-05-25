@@ -8,8 +8,10 @@
 #include "../gamedata/base_item.h"
 #include <string>
 
-void calculateActorStats(SrPartyData& srPartyMember, const CharacterRecord& charRecord, const StatBoostModifiers& statModifiers);
-u32 getGameBaseStat(std::string statName, const CharacterRecord& record);
+
+void calculatePrimaryBaseStats(const SrCharacter& character, SrPartyData& srPartyMember);
+void calculateDerivedBaseStats(const SrCharacter& character, SrPartyData& srPartyMember);
+void applyStatBoosts(SrPartyData& srPartyMember, const StatBoostModifiers& statModifiers, bool calculatePrimary);
 void addStatBoosts(StatBoostModifiers& acc, const EquipmentStatBoosts& boosts);
 
 

@@ -1,5 +1,9 @@
 syntax="proto3";
 
-message SrStatValue{
+message SrStatValueProto {
     int32 value;
+}
+
+message SrStatTableProto {
+    repeated SrStatValue values;
 }

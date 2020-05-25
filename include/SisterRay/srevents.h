@@ -11,6 +11,8 @@ typedef enum {
     NO_TYPE,
     INIT_EQUIP_MENU,
     DRAW_EQUIP_MENU,
+    INIT_STATUS_MENU,
+    DRAW_STATUS_MENU,
     INIT_INVENTORY_MENU,
     DRAW_INVENTORY_MENU,
     INIT_MATERIA_MENU,
@@ -60,12 +62,23 @@ typedef enum {
     PRE_DAMAGE_DEALT,
     POST_DAMAGE_DEALT,
     POST_ACTION_DAMAGE_CALC,
+    ON_FINALIZE_IMPACT_EVENTS,
     TRIGGER_DAMAGE_DISPLAY,
+    UPDATE_ACTOR_TIMERS,
+    ON_ACTOR_ATB_FILL,
+    ON_ACTOR_ATB_FULL,
+    ON_VTIMER_TICK,
+    ON_CTIMER_TICK,
+    INIT_BATTLE_ACTORS,
 
     //Initialization Events
     INIT_PLAYER_BATTLE_ACTOR,
     INIT_PLAYER_PARTY_MEMBER,
     INIT_SUMMON_PARTY_MEMBER,
+    INIT_STATS,
+    INIT_ELEMENTS,
+    INIT_STATUSES,
+    INIT_CHARACTERS,
     INIT_ENEMY,
     INIT_ENEMY_ACTOR,
     INIT_WEAPON,
@@ -82,6 +95,7 @@ typedef enum {
 typedef enum {
     INVALID_CONTEXT,
     EQUIP_MENU_CONTEXT,
+    STATUS_MENU_CONTEXT,
     INVENTORY_MENU_CONTEXT,
     MATERIA_MENU_CONTEXT,
     BATTLE_MENU,
@@ -172,6 +186,11 @@ typedef struct DamageFormula_ DamageFormula;
 typedef struct HitFormula_ HitFormula;
 typedef struct PartyMemberState_ PartyMemberState;
 typedef struct SrEnemyData_ SrEnemyData;
+typedef struct SrPartyData_ SrPartyData;
+typedef struct SrStat_ SrStat;
+typedef struct SrExtendedImpactEvent_ SrExtendedImpactEvent;
+
+typedef i32(*SRPFN_DERIVEDSTATFORMULA)(SrPartyData*);
 
 #pragma pack(push, 1)
 typedef struct {
@@ -199,6 +218,9 @@ typedef struct {
 #pragma pack(pop)
 
 typedef struct {
+    DamageEvent* damageEvent;
+    ImpactEvent* impactEvent;
+    SrExtendedImpactEvent* extendedImpactEvent;
     ActorBattleState* targetState;
 } TriggerDamageDisplayEvent;
 
@@ -217,7 +239,6 @@ typedef struct {
     DamageCalcStruct* damageContext;
     SrDamageContext* srDamageContext;
     AIBattleContext* aiContext;
-
 } CommandSetupEvent;
 
 typedef struct {
@@ -247,9 +268,10 @@ typedef struct {
 } ModelAnimationEvent;
 
 typedef struct {
-    u8 actorIdx;
+    u8 enemyIdx;
     u8 characterIdx;
     ActorBattleState* ownerState;
+    bool isEnemy;
 } InitBattleActorEvent;
 
 
@@ -266,6 +288,10 @@ typedef struct {
 
 
 typedef struct {
+    ActorBattleState* srActor;
+} UpdateActorTimersEvent;
+
+typedef struct {
     bool fromScene;
     u16 sceneIdx;
     u16 formationIdx;
@@ -276,11 +302,17 @@ typedef struct {
     SrArmor* armor;
 } InitArmorEvent;
 
+typedef struct {
+    SrStat* stat;
+} InitStatEvent;
+
+typedef struct {
+    SrCharacter* character;
+} InitCharacterEvent;
 
 typedef struct {
     SrWeapon* weapon;
 } InitWeaponEvent;
-
 
 typedef struct {
     SrCommand* command;
@@ -298,6 +330,13 @@ typedef struct {
     u16 actionIdx;
     u16 targetMask;
 } AnimEffectEvent;
+
+typedef struct {
+    DamageEvent* damageEvent;
+    ImpactEvent* impactEvent;
+    SrExtendedImpactEvent* srExtendedEvent;
+    DamageCalculationEvent* damageCtx;
+} SrActionImpactSetupEvent;
 
 typedef struct {
     const u8 characterIdx;

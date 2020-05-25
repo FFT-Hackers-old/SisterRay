@@ -13,7 +13,7 @@ struct _TransitionData {
     i16 field_2;
     i16 field_4;
     i16 field_6;
-    i16 field_8;
+    i16 limitFastATBMask;
     i16 field_A;
     i16 field_C;
     i16 field_E;

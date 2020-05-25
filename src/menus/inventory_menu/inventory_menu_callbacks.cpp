@@ -6,7 +6,10 @@
 using namespace InventoryWidgetNames;
 
 void initializeInventoryMenu() {
-    srLogWrite("initializing inventory menu");
+    gContext.menuWidgets.initializeMenu(INVENTORY_MENU_NAME, INVENTORY_WIDGET_NAME);
+}
+
+void createInventoryMenu() {
     CursorContext topBarContext = { 0, 0, 3, 1, 0, 0, 3, 1, 0, 0, 1, 0, 0, 0 };
     Cursor topBarCursor = { topBarContext, 13, 26, 0, 93 };
     CursorContext itemViewContext = { 0, 0, 1, 10, 0, 0, 1, gContext.inventory->currentCapacity(), 0, 0, 0, 0, 0, 1 };
@@ -23,7 +26,6 @@ void initializeInventoryMenu() {
     Cursor cursorArray[6] = { topBarCursor, itemViewCursor, charViewCursor, keyItemsViewCursor, arrangeViewCursor, customSortViewCursor };
     auto inventoryMenu = createMenu(INIT_INVENTORY_MENU, DRAW_INVENTORY_MENU, INVENTORY_MENU_CONTEXT, 6, &(cursorArray[0]));
     gContext.menuWidgets.addElement(INVENTORY_MENU_NAME, inventoryMenu);
-    gContext.menuWidgets.initializeMenu(INVENTORY_MENU_NAME, INVENTORY_WIDGET_NAME);
 }
 
 void registerInventoryMenuListeners() {

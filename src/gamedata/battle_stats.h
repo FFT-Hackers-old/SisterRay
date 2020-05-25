@@ -8,17 +8,20 @@
 #include "../EncodedString.h"
 #include "../sr_named_registry.h"
 
-typedef struct {
+struct SrStat_ {
     EncodedString displayName;
     i32 maxValue;
     i32 minValue;
     bool canBeNegative;
-}SrStat;
+    bool isPrimary;
+    bool useTable;
+    bool isDerived;
+    SRPFN_DERIVEDSTATFORMULA derivedFormula;
+};
 
 /*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/
 class SrStatRegistry : public SrNamedResourceRegistry<SrStat, std::string> {
 public:
-
     SrStatRegistry() : SrNamedResourceRegistry<SrStat, std::string>() {}
     explicit SrStatRegistry(bool initResistances);
 };
@@ -52,20 +55,19 @@ typedef struct {
 
 
 typedef struct {
-    i32 newValue;
-    i32 previousValue;
     i32 incrementTargetValue;
     i32 barDisplayValue;
 } resourceIncrement;
 
 
-typedef struct {
+struct SrBattleStat_ {
     i32 activeValue;
     i32 statValue;
     resourceIncrement incrementCtx;
     std::vector<StatModifier> modifiers; //consumed and decremented on V-Timer in battle, modifies active value
-} SrBattleStat;
+};
 
 
 void initStats(bool initResistances);
+void finalizeStats();
 #endif // !BATTLE_STATS_H

@@ -175,7 +175,7 @@ void initializeIfrit(InitSummonEvent* summEvent) {
     enableSummonMagic(2, 0, 27);
     enableSummonMagic(2, 1, 28);
     enableSummonMagic(2, 2, 29);
-    auto& stats = summEvent->summonState->srPartyMember->playerStats;
+    auto& stats = summEvent->summonState->srPartyMember->stats;
 
     stats[StatNames::HP].baseValue = 8530;
     stats[StatNames::MP].baseValue = 630;
@@ -251,7 +251,7 @@ void initInfernoViewWidget(const MenuInitEvent* menuEvent) {
     std::vector<std::string> names = { InfernoWidgetNames::INFERNO_GRID_NAME };
     for (u32 idx = 0; idx < names.size(); idx++) {
         auto characterChoice = getStateCursor(menu, getStateByName(menu, INFERNO_STATE_NAME), idx);
-        drawGridParams gridParams = { BattleMenuWidgetNames::BATTLE_MENU_NAME.c_str(), getStateByName(menu, INFERNO_STATE_NAME), infernoCommandUpdater, 50, 364, allocateInfernoRow, idx };
+        DrawCursorGridParams gridParams = { BattleMenuWidgetNames::BATTLE_MENU_NAME.c_str(), getStateByName(menu, INFERNO_STATE_NAME), infernoCommandUpdater, 50, 364, allocateInfernoRow, idx };
         srNewGridWidget(soldierCommandView, gridParams, names[idx].c_str());
     }
 }

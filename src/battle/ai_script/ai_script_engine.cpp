@@ -184,19 +184,22 @@ const AttackData& getAttackDataPtr(i32 attackID) {
     return attack;
 }
 
-void srRunAIScript(u8 actorID, u8* scriptPtr, u8 charID) {
+#define G_SCRIPT_IDX_PTR  ((AIScriptContext**)0xC3F330)
+void srRunAIScript(u8 actorID, const u8* scriptPtr, u8 charID) {
     bool scriptEnded = false;
     const u8* const runningScriptPtr = scriptPtr;
     auto scriptCtx = G_AI_SCRIPT_CTX;     // this is the same memory as the battle context struct, but the values are for the most part unrelated
+    *G_SCRIPT_IDX_PTR = G_AI_SCRIPT_CTX;
     scriptCtx->actorID = actorID;
     scriptCtx->currentScriptIdx = 0;
     scriptCtx->stackPosition = 512;
-    srLogWrite("Inside SR AI Script");
+    srLogWrite("Inside SR AI Script, actor ID: %i, characterID: %i", actorID, charID);
     while (!scriptEnded) {
         scriptCtx->currentOpCode = runningScriptPtr[scriptCtx->currentScriptIdx++];
         scriptCtx->opCodeLow = scriptCtx->currentOpCode & 0xF;
         scriptCtx->opCodeHigh = scriptCtx->currentOpCode >> 4;
         AIScriptEvent srEvent = { actorID, runningScriptPtr, scriptCtx, scriptCtx->currentScriptIdx, charID };
+        srLogWrite("Running Opcode with high op: %x, low op: %x", scriptCtx->opCodeHigh, scriptCtx->opCodeLow);
         auto opcode = gContext.AIScriptOpcodes.getResource(scriptCtx->currentOpCode);
         auto control = opcode(&srEvent);
         switch (control) {

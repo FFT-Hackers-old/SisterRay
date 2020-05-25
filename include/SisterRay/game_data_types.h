@@ -11,6 +11,7 @@ typedef struct SrWeapon_ SrWeapon;
 typedef struct SrArmor_ SrArmor;
 typedef struct SrCommand_ SrCommand;
 typedef struct SrAttack_ SrAttack;
+typedef struct SrBattleStat_ SrBattleStat;
 
 typedef struct {
     SRPFNSPELLLOADERCALLBACK loadCallback;
@@ -244,6 +245,14 @@ typedef struct {
     u8      data[6];
 } MateriaData;
 #pragma pack(pop)
+
+typedef struct {
+    bool doesExpire;
+    bool doesStack;
+    u8 stacks;
+    bool allowMultiple;
+    bool persistAfterBattle;
+} SrStatusBehavior;
 
 typedef struct {
     u8 canLink;

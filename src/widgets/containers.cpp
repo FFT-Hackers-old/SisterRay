@@ -9,7 +9,7 @@ const WidgetClass* GridWidgetClass() {
     return &kGridWidgetClass;
 }
 
-SISTERRAY_API void srNewGridWidget(Widget* parent, drawGridParams params, const char* name) {
+SISTERRAY_API void srNewGridWidget(Widget* parent, DrawCursorGridParams params, const char* name) {
     auto widget = createGridWidget(params, std::string(name));
     addChildWidget(parent, (Widget*)widget, std::string(name));
 }
@@ -52,28 +52,15 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
             idx--;
         }
     }
-    if (cursorGrid->transpose) {
-        for (u32 rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
-            for (u32 columnIndex = 0; columnIndex < context.viewColumnBound; ++columnIndex) {
-                u16 flatIndex = (context.maxColumnBound) * (columnIndex)+(rowIndex);
-                auto child = getChild((Widget*)cursorGrid, flatIndex);
-                if (child) {
-                    auto elementX = (cursor.columnSpacing * columnIndex) + cursorGrid->widget.widget.xCoordinate;
-                    auto elementY = (cursor.rowSpacing * rowIndex) + cursorGrid->widget.widget.yCoordinate;
-                    moveWidget(child, elementX, elementY);
-                    u16 startIndex = ((context.maxColumnBound) * (context.baseRowIndex)) + (context.baseColumnIndex);
-                    if (cursorGrid->updater) {
-                        cursorGrid->updater((CollectionWidget*)cursorGrid, child, startIndex + flatIndex);
-                    }
-                    drawWidget(child);
-                }
-            }
-        }
-        return;
-    }
     for (u32 rowIndex = 0; rowIndex < context.viewRowBound; ++rowIndex) {
         for (u32 columnIndex = 0; columnIndex < context.viewColumnBound; ++columnIndex) {
-            u16 flatIndex = (context.maxColumnBound) * (rowIndex) + (columnIndex);
+            u16 flatIndex;
+            if (cursorGrid->transpose) {
+                flatIndex = (context.maxRowBound * columnIndex) + rowIndex;
+            }
+            else {
+                flatIndex = (context.maxColumnBound * rowIndex) + columnIndex;
+            }
             auto child = getChild((Widget*)cursorGrid, flatIndex);
             if (child) {
                 auto elementX = (cursor.columnSpacing * columnIndex) + cursorGrid->widget.widget.xCoordinate;
@@ -91,7 +78,7 @@ void drawGridWidget(CursorGridWidget* cursorGrid) {
 
 /*Use this method to create self-managing grid widgets from a cursor context object, with a parametrized type
   Do not use your own childTypes here, use the pre-defined widget types in sister ray*/
-CursorGridWidget* createGridWidget(drawGridParams params, std::string name, const WidgetClass* childType) {
+CursorGridWidget* createGridWidget(DrawCursorGridParams params, std::string name, const WidgetClass* childType) {
     CursorGridWidget* widget = (CursorGridWidget*)createCollectionWidget(name, &kGridWidgetClass, childType, sizeof(CursorGridWidget));
     widget->cursorName = params.cursorName;
     widget->menuState = params.menuState;
@@ -141,7 +128,13 @@ void drawStaticGridWidget(StaticGridWidget* staticGrid) {
     }
     for (auto rowIndex = 0; rowIndex < staticGrid->rowCount; ++rowIndex) {
         for (auto columnIndex = 0; columnIndex < staticGrid->columnCount; ++columnIndex) {
-            u16 flatIndex = ((staticGrid->columnCount) * (rowIndex)) + (columnIndex);
+            u16 flatIndex;
+            if (staticGrid->transpose){
+                flatIndex = ((staticGrid->rowCount) * (columnIndex)) + (rowIndex);
+            }
+            else {
+                flatIndex = ((staticGrid->columnCount) * (rowIndex)) + (columnIndex);
+            }
             auto child = getChild((Widget*)staticGrid, flatIndex);
             if (child) {
                 auto elementX = (staticGrid->columnSpacing * columnIndex) + staticGrid->widget.widget.xCoordinate;
@@ -168,6 +161,7 @@ StaticGridWidget* createStaticGridWidget(DrawStaticGridParams params, std::strin
     widget->rowSpacing = params.rowSpacing;
     widget->columnSpacing = params.columnSpacing;
     widget->allocator = params.allocator;
+    widget->transpose = params.transpose;
     /*If a primitive childtype is specified, type allocate the results, otherwise add them to the collection manually*/
     if (childType || params.allocator) {
         u32 slotCount = widget->columnCount * widget->rowCount;

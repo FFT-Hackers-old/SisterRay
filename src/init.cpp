@@ -6,12 +6,7 @@
 #include <zlib.h>
 #include "inventories/inventory_functions.h"
 #include "inventories/inventory_utils.h"
-#include "menus/inventory_menu/inventory_menu.h"
-#include "menus/inventory_menu/inventory_menu_callbacks.h"
-#include "menus/equip_menu/equip_menu.h"
-#include "menus/equip_menu//equip_menu_callbacks.h"
-#include "menus/materia_menu/materia_menu.h"
-#include "menus/materia_menu/materia_menu_callbacks.h"
+#include "menus/menu_engine.h"
 #include "menus/battle_menu//battle_menu.h"
 #include "party/party_callbacks.h"
 #include "battle/battle_engine_api.h"
@@ -30,11 +25,13 @@ PRNG_Type rng;
 std::uniform_int_distribution<PRNG_Type::result_type> udist(0, 255);
 
 void finalizeRegistries() {
+    finalizeStats();
     finalizeArmors();
     finalizeWeapons();
     finalizeEnemies();
     finalizeAttacks();
     finalizeCommands();
+    finalizeCharacters();
 }
 
 static const SrKernelStreamHandler kKernelBinHandlers[9] = {
@@ -163,35 +160,24 @@ static void Init(void) {
     initLimits((u8*)magicLGP);
     free(battleLGP);
     free(magicLGP);
-    registerEquipMenuListeners();
-    initializeEquipMenu();
-    registerInventoryMenuListeners();
-    initializeInventoryMenu();
-    registerMateriaMenuListeners();
-    initializeMateriaMenu();
-    registerPartyCallbacks();
-    initializeSrBattleEngine();
-
-    srLogWrite("menus initialization complete");
     //End Register base callbacks, begin registering new handlers
-    mogReplaceFunction(MAIN_INVENTORY_HANDLER, &inventoryMenuUpdateHandler); //add our new menu handler
-    //mogReplaceFunction(INIT_BATTLE_INVENTORY, &setupBattleInventory);
-    mogReplaceFunction(EQUIP_MENU_UPDATE_HANDLER, &equipMenuUpdateHandler);
     mogReplaceFunction(LOAD_ABILITY_DATA_HANDLER, &srLoadAbilityData);
-    mogReplaceFunction(EXECUTE_AI_SCRIPT_HANDLER, &srExecuteAIScript);
     mogReplaceFunction(EXECUTE_FORMATION_SCRIPT_HANDLER, &srExecuteFormationScripts);
     mogReplaceFunction(ENQUEUE_SCRIPT_ACTION, &enqueueScriptAction);
     mogReplaceFunction(GET_MP_COST, &getMPCost);
-    mogReplaceFunction(MAT_MATERIA_HANDLER, &materiaMenuUpdateHandler);
     mogReplaceFunction(RECALCULATE_DERIVED_STATS, &srRecalculateDerivedStats);
     mogReplaceFunction(DISPATCH_AUTO_ACTIONS, &dispatchAutoActions);
     mogReplaceFunction(UPDATE_COMMANDS_ACTIVE, &updateCommandsActive);
-    //mogReplaceFunction(PRINT_DEBUG_STRING, &gameLogWrite);
-    initializeBattleMenu();
+    mogReplaceFunction(PRINT_DEBUG_STRING, &gameLogWrite);
+    createSrMenus();
+    registerPartyCallbacks();
+    initializeSrBattleEngine();
+    createBattleMenu();
     srLogWrite("initialization complete");
     LoadMods();
     finalizeRegistries();
-    DispatchBattleMenuSetup();
+    initializeSrMenus();
+    initializeBattleMenu();
     MessageBoxA(NULL, "Sister ray at 100% power", "SisterRay", 0);
 
     /* Init RNG */

@@ -26,7 +26,7 @@ void initBattleMoveViewWidget(const MenuInitEvent* event) {
     for (auto idx = 0; idx < names.size(); idx++) {
         auto cmdItemChoice = getStateCursor(event->menu, idx);
 
-        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_MOVE_STATE, &battleMoveNameViewUpdater, 15 + 8 + 25, 350, allocateMoveRow, idx };
+        DrawCursorGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_MOVE_STATE, &battleMoveNameViewUpdater, 15 + 8 + 25, 350, allocateMoveRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battleCommandView, (Widget*)gridWidget, names[idx]);
     }

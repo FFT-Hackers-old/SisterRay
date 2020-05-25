@@ -49,5 +49,10 @@ SISTERRAY_API bool maskIsSingleTarget(u16 targetMask);
 SISTERRAY_API u8 getFirstMaskBitIdx(u16 targetMask);
 
 SISTERRAY_API void registerStat(const char* statName, const char* displayName, i32 max, i32 min);
+SISTERRAY_API void setStat(const char* statName, i32* target, i32 value);
+SISTERRAY_API void incrementStat(const char* statName, i32* target, i32 increment);
+SISTERRAY_API void decrementStat(const char* statName, i32* target, i32 decrement);
 
+
+SISTERRAY_API void registerStatus(const char* statusName, const char* displayName, const char* penName, const char* resName, SrStatusBehavior  behavior, bool isGameStatus=false, u16 gameIndex=0xFFFF);
 #endif

@@ -24,7 +24,7 @@ void initBattlePHSViewWidget(const MenuInitEvent* event) {
     std::vector<std::string> names = { PARTY_1_PHS_GRID, PARTY_2_PHS_GRID, PARTY_3_PHS_GRID };
     for (u32 idx = 0; idx < names.size(); idx++) {
         auto characterChoice = getStateCursor(event->menu, BATTLE_PHS_STATE, idx);
-        drawGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_PHS_STATE, &battlePHSUpdater, 42, 360, allocatePHSRow, idx };
+        DrawCursorGridParams gridParams = { BATTLE_MENU_NAME.c_str(), BATTLE_PHS_STATE, &battlePHSUpdater, 42, 360, allocatePHSRow, idx };
         gridWidget = createGridWidget(gridParams, names[idx]);
         addChildWidget(battlePHSView, (Widget*)gridWidget, names[idx]);
     }

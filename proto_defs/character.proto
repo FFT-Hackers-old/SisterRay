@@ -1,0 +1,13 @@
+syntax="proto3";
+import "sr_stats.proto";
+import "equipment.proto";
+
+message SrCharacterProto{
+    map<string, SrStatTableProto> statTable;
+    map<string, int32> pointMultiplier;
+    repeated SrGearSlotProto gearSlotConfig;
+}
+
+message SrCharacterSaveProto{
+    repeated GearSlotSave equipment;
+}

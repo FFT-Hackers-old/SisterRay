@@ -13,7 +13,7 @@ public:
     SrAIScriptOpCodeRegistry();
 };
 
-void srRunAIScript(u8 actorID, u8* scriptPtr, u8 charID);
+void srRunAIScript(u8 actorID, const u8* scriptPtr, u8 charID);
 u16 readAIScript16(const u8* const scriptPtr, AIScriptContext& scriptCtx);
 u32 srReadValue(u8 actorID, u8 readType, u16 addressArg);
 void srWriteValue(u8 actorID, u8 writeType, u16 addressArg, u32 valueArg);

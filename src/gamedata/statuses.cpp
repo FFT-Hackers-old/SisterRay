@@ -180,3 +180,17 @@ std::string getStatusIDFromIndex(u8 statusIdx) {
     }
     }
 }
+
+
+SISTERRAY_API void registerStatus(const char* statusName, const char* displayName, const char* penName, const char* resName, SrStatusBehavior  behavior, bool isGameStatus, u16 gameIndex) {
+    SrStatus newStatus;
+    newStatus.displayName = EncodedString::from_unicode(displayName);
+    newStatus.penName = std::string(penName);
+    newStatus.resName = std::string(resName);
+    newStatus.doesExpire = behavior.doesExpire;
+    newStatus.allowMultiple = behavior.allowMultiple;
+    newStatus.persistsAfterBattle = behavior.persistAfterBattle;
+    newStatus.isGameStatus = isGameStatus;
+    newStatus.gameIndex = gameIndex;
+    gContext.statuses.addElement(std::string(statusName), newStatus);
+}

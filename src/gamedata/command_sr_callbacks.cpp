@@ -851,13 +851,13 @@ void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellD
         if (damageContext->quadCount > 8) {
             damageContext->quadCount = 8;
         }
-        srCreateEvent(2, damageContext->attackerID, 21, 6);
+        gameCreateEvent(2, damageContext->attackerID, 21, 6);
     }
     else if (damageContext->commandIndexCopy == CMD_SUMMON) {
         if (spellData->allCount) { //if yo ucan still use the summon
             if (spellData->allCount != 255) {
                 spellData->allCount = spellData->allCount - 1;
-                srCreateEvent(2, damageContext->attackerID, 21, 4);
+                gameCreateEvent(2, damageContext->attackerID, 21, 4);
             }
         }
         else {
@@ -868,7 +868,7 @@ void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellD
         if (spellData->allCount) {
             if (spellData->allCount != 255) {
                 spellData->allCount = spellData->allCount - 1;
-                srCreateEvent(2, damageContext->attackerID, 21, 2);
+                gameCreateEvent(2, damageContext->attackerID, 21, 2);
             }
         }
         else if (abilityData.targetingFlags & 8) {

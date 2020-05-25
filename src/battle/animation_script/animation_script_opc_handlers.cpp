@@ -273,12 +273,12 @@ OpCodeControlSequence OpCode9A(AnimScriptEvent* srEvent) {
 
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[1] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
-    scriptCtx.field_8 = GAME_ANGLE_MAX - (targetModelState74.someHPCopy + 2048);
+    scriptCtx.limitFastATBMask = GAME_ANGLE_MAX - (targetModelState74.someHPCopy + 2048);
     scriptCtx.opCodeArgs[0] = (targetModelState.field_6 * targetModelState.field_12 / GAME_ANGLE_MAX);
 
-    i16 xDecrement = (i16)((scriptCtx.opCodeArgs[0] * srCalculateXVectorComponent(scriptCtx.field_8)) / GAME_ANGLE_MAX);
+    i16 xDecrement = (i16)((scriptCtx.opCodeArgs[0] * srCalculateXVectorComponent(scriptCtx.limitFastATBMask)) / GAME_ANGLE_MAX);
     ownerModelState.restingPosition.x = targetModelState.restingPosition.x - xDecrement;
-    i16 zDecrement = (i16)((scriptCtx.opCodeArgs[0] * srCalculateZVectorComponent(scriptCtx.field_8)) / GAME_ANGLE_MAX);
+    i16 zDecrement = (i16)((scriptCtx.opCodeArgs[0] * srCalculateZVectorComponent(scriptCtx.limitFastATBMask)) / GAME_ANGLE_MAX);
     ownerModelState.restingPosition.z = targetModelState.restingPosition.z - zDecrement;
     ownerModelState.restingPosition.y = scriptCtx.opCodeArgs[1];
     return RUN_NEXT;
@@ -498,12 +498,12 @@ OpCodeControlSequence OpCodeAB(AnimScriptEvent* srEvent) {
     actorBattleState.restingYRotation = attackerModelState.initialYRotation;
     scriptCtx.opCodeArgs[4] = *(u16*)off_C06008;
     scriptCtx.opCodeArgs[1] = 0;
-    scriptCtx.field_8 = GAME_ANGLE_MAX - (getBattleModelState(*G_CURRENT_ACTION_ACTOR)->restingYRotation + 2048);
+    scriptCtx.limitFastATBMask = GAME_ANGLE_MAX - (getBattleModelState(*G_CURRENT_ACTION_ACTOR)->restingYRotation + 2048);
     scriptCtx.opCodeArgs[0] = (actorBattleState.field_6 * actorBattleState.field_12 >> 12) + (attackerModelState.field_6 * scriptCtx.opCodeArgs[4] >> 12);
 
-    i64 xDelta = (scriptCtx.opCodeArgs[0]*(srCalculateXVectorComponent((i16)scriptCtx.field_8))) / GAME_ANGLE_MAX;
+    i64 xDelta = (scriptCtx.opCodeArgs[0]*(srCalculateXVectorComponent((i16)scriptCtx.limitFastATBMask))) / GAME_ANGLE_MAX;
     attackerModelState.restingPosition.x = actorBattleState.restingPosition.x - xDelta;
-    i64 zDelta = (scriptCtx.opCodeArgs[0]*(srCalculateZVectorComponent((i16)scriptCtx.field_8))) / GAME_ANGLE_MAX;
+    i64 zDelta = (scriptCtx.opCodeArgs[0]*(srCalculateZVectorComponent((i16)scriptCtx.limitFastATBMask))) / GAME_ANGLE_MAX;
     attackerModelState.restingPosition.z = zDelta + actorBattleState.restingPosition.z;
     attackerModelState.restingPosition.y = scriptCtx.opCodeArgs[1];
     return RUN_NEXT;
@@ -515,7 +515,7 @@ OpCodeControlSequence OpCodeAC(AnimScriptEvent* srEvent) {
     auto& ownerModelState = *srEvent->battleModelState;
     auto& ownerModelState74 = *getBattleModelState74(srEvent->actorID);
     ownerModelState.modelEffectFlags |= 0x20u;
-    ownerModelState74.field_0 = UNK_ACTOR_STRUCT_ARRAY[srEvent->actorID].field_8;
+    ownerModelState74.field_0 = UNK_ACTOR_STRUCT_ARRAY[srEvent->actorID].limitFastATBMask;
     ownerModelState.restingYRotation = ownerModelState.initialYRotation;
     scriptCtx.opCodeArgs[0] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     u8 modelIdx = 4;
@@ -719,7 +719,7 @@ OpCodeControlSequence OpCodeBE(AnimScriptEvent* srEvent) {
     *byte_BF23BC = 1;                    // multi-hit damage queue
     *off_C06008 = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     bool isNotTifa = UNK_ACTOR_STRUCT_ARRAY[getActionActorIdx()].characterID != ACT_IDX_TIFA;
-    if (isNotTifa || *off_C06008 != 8 || !(UNK_ACTOR_STRUCT_ARRAY[*byte_BFCDE0].field_8 & 0x800)) {
+    if (isNotTifa || *off_C06008 != 8 || !(UNK_ACTOR_STRUCT_ARRAY[*byte_BFCDE0].limitFastATBMask & 0x800)) {
         pushDelayedDamageDisplayEffect(getAnimatingActionTargetMask(), *off_C06008, 1);
     }
     return RUN_NEXT;

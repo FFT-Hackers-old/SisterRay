@@ -21,10 +21,10 @@ void initViewChoiceWidget(const MenuInitEvent* event) {
     auto viewChoiceWidget = createWidget(VIEW_CHOICE_WIDGET_NAME);
 
     boxParams = {
-       menuWindowConfig[0].drawDistance1,
-       menuWindowConfig[0].drawDistance2,
-       menuWindowConfig[0].drawDistance3,
-       menuWindowConfig[0].drawDistance4,
+       menuWindowConfig[0].x,
+       menuWindowConfig[0].y,
+       menuWindowConfig[0].width,
+       menuWindowConfig[0].height,
        0.111f
     };
 
@@ -83,7 +83,7 @@ void initCharViewWidget(const MenuInitEvent* event) {
 
 //Handles the base display
 void initItemViewWidget(const MenuInitEvent* event) {
-    drawGridParams gridParams;
+    DrawCursorGridParams gridParams;
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
@@ -93,10 +93,10 @@ void initItemViewWidget(const MenuInitEvent* event) {
     auto itemViewWidget = createWidget(ITEM_VIEW_WIDGET_NAME);
 
     boxParams = {
-        menuWindowConfig[2].drawDistance1,
-        menuWindowConfig[2].drawDistance2,
-        menuWindowConfig[2].drawDistance3,
-        menuWindowConfig[2].drawDistance4,
+        menuWindowConfig[2].x,
+        menuWindowConfig[2].y,
+        menuWindowConfig[2].width,
+        menuWindowConfig[2].height,
         0.3f
     };
     boxWidget = createBoxWidget(boxParams, ITEM_VIEW_BOX);
@@ -170,7 +170,7 @@ void inventoryRowUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) 
 void keyItemsViewWidget(const MenuInitEvent* event) {
     auto keyItemsChoice = getStateCursor(event->menu, 3);
 
-    drawGridParams gridParams;
+    DrawCursorGridParams gridParams;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
     auto menuObject = event->menu;
@@ -225,10 +225,10 @@ void itemDescriptionWidget(const MenuInitEvent* event) {
     auto itemDescWidget = createWidget(ITEM_DESC_WIDGET_NAME);
 
     boxParams = {
-       menuWindowConfig[1].drawDistance1,
-       menuWindowConfig[1].drawDistance2,
-       menuWindowConfig[1].drawDistance3,
-       menuWindowConfig[1].drawDistance4,
+       menuWindowConfig[1].x,
+       menuWindowConfig[1].y,
+       menuWindowConfig[1].width,
+       menuWindowConfig[1].height,
        0.2f
     };
     boxWidget = createBoxWidget(boxParams, ITEM_DESC_BOX);
@@ -265,7 +265,7 @@ void arrangeTypeWidget(const MenuInitEvent* event) {
     std::vector<std::string> listNames = { SORT_TYPE_1, SORT_TYPE_2, SORT_TYPE_3, SORT_TYPE_4, SORT_TYPE_5, SORT_TYPE_6, SORT_TYPE_7, SORT_TYPE_8 };
     for (u32 sortType = 0; sortType < listNames.size(); ++sortType) {
         const char* fetchedDescription = gContext.gameStrings.inventory_menu_texts.get_string(sortType + 3);
-        setTextParams(&textParams, boxParams.drawDistance1 + 13, boxParams.drawDistance2 + 26 * sortType + 13, fetchedDescription, COLOR_WHITE, 0.001f);
+        setTextParams(&textParams, boxParams.x + 13, boxParams.y + 26 * sortType + 13, fetchedDescription, COLOR_WHITE, 0.001f);
         auto textChild = createTextWidget(textParams, listNames[sortType]);
         addChildWidget(arrangeTypeWidget, (Widget*)textChild, listNames[sortType]);
     }

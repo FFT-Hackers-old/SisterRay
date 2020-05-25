@@ -10,5 +10,6 @@
 
 void initializeInventoryMenu();
 void registerInventoryMenuListeners();
+void createInventoryMenu();
 
 #endif

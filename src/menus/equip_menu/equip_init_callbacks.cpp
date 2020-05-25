@@ -18,10 +18,10 @@ void initCharDataWidget(const MenuInitEvent* event) {
     auto currentEquipWidget = createWidget(CHAR_DATA_WIDGET_NAME);
 
     DrawBoxParams boxParams = {
-       equipMenuWindowConfig[0].drawDistance1,
-       equipMenuWindowConfig[0].drawDistance2,
-       equipMenuWindowConfig[0].drawDistance3,
-       equipMenuWindowConfig[0].drawDistance4,
+       equipMenuWindowConfig[0].x,
+       equipMenuWindowConfig[0].y,
+       equipMenuWindowConfig[0].width,
+       equipMenuWindowConfig[0].height,
        0.3f
     };
 
@@ -74,16 +74,16 @@ void initGearDescWidget(const MenuInitEvent* event) {
     auto GearDescWidget = createWidget(GEAR_DESC_WIDGET_NAME);
 
     DrawBoxParams boxParams = {
-        equipMenuWindowConfig[1].drawDistance1,
-        equipMenuWindowConfig[1].drawDistance2,
-        equipMenuWindowConfig[1].drawDistance3,
-        equipMenuWindowConfig[1].drawDistance4,
+        equipMenuWindowConfig[1].x,
+        equipMenuWindowConfig[1].y,
+        equipMenuWindowConfig[1].width,
+        equipMenuWindowConfig[1].height,
         0.3f
     };
     auto boxWidget = createBoxWidget(boxParams, GEAR_DESC_BOX);
     addChildWidget(mainWidget, (Widget*)boxWidget, GEAR_DESC_BOX);
 
-    setTextParams(&textParams, 12, equipMenuWindowConfig[1].drawDistance2 + 13, defaultString, COLOR_WHITE, 0.2f);
+    setTextParams(&textParams, 12, equipMenuWindowConfig[1].y + 13, defaultString, COLOR_WHITE, 0.2f);
     auto textWidget = createTextWidget(textParams, GEAR_DESCRIPTION);
     addChildWidget(GearDescWidget, (Widget*)textWidget, GEAR_DESCRIPTION);
 
@@ -108,10 +108,10 @@ void initGearMateriaSlotWidget(const MenuInitEvent* event) {
     auto equipMateraSlotWidget = createWidget(GEAR_SLOTS_WIDGET_NAME);
 
     boxParams = {
-        equipMenuWindowConfig[2].drawDistance1,
-        equipMenuWindowConfig[2].drawDistance2,
-        equipMenuWindowConfig[2].drawDistance3,
-        equipMenuWindowConfig[2].drawDistance4,
+        equipMenuWindowConfig[2].x,
+        equipMenuWindowConfig[2].y,
+        equipMenuWindowConfig[2].width,
+        equipMenuWindowConfig[2].height,
         0.3f
     };
     boxWidget = createBoxWidget(boxParams, GEAR_SLOTS_BOX);
@@ -120,13 +120,13 @@ void initGearMateriaSlotWidget(const MenuInitEvent* event) {
     std::vector<std::string> equipSlotDataNames = { SLOTS_NAME, GROWTH_NAME };
     for (int i = 0; i < 2; i++) {
         menuText = gContext.gameStrings.equipMenuTexts.get_string(14 + i);
-        setTextParams(&textParams, 27, 42 * i + equipMenuWindowConfig[2].drawDistance2 + 21, menuText, COLOR_TEAL, 0.1f);
+        setTextParams(&textParams, 27, 42 * i + equipMenuWindowConfig[2].y + 21, menuText, COLOR_TEAL, 0.1f);
         textWidget = createTextWidget(textParams, equipSlotDataNames[i]);
         addChildWidget(equipMateraSlotWidget, (Widget*)textWidget, equipSlotDataNames[i]);
     }
 
     //create a default static variable later to a valid bytearray representing materia slot data
-    slotsParams = { 153, equipMenuWindowConfig[2].drawDistance2 + 21, nullptr };
+    slotsParams = { 153, equipMenuWindowConfig[2].y + 21, nullptr };
     slotsWidget = createSlotsWidget(slotsParams, GEAR_SLOTS);
     addChildWidget(equipMateraSlotWidget, (Widget*)slotsWidget, GEAR_SLOTS);
 
@@ -135,7 +135,7 @@ void initGearMateriaSlotWidget(const MenuInitEvent* event) {
         materiaGrowth = 4;
 
     menuText = gContext.gameStrings.equipMenuTexts.get_string(materiaGrowth + 4);
-    i32 growthTypeY = equipMenuWindowConfig[2].drawDistance2 + 64;
+    i32 growthTypeY = equipMenuWindowConfig[2].y + 64;
     i32 growthTypeX = 35;
     setTextParams(&textParams, 243 - growthTypeX / 2, growthTypeY, menuText, COLOR_WHITE, 0.2f);
     textWidget = createTextWidget(textParams, GEAR_GROWTH);
@@ -146,7 +146,7 @@ void initGearMateriaSlotWidget(const MenuInitEvent* event) {
 
 /*Initialize the Widget That displays stats*/
 void initStatDiffWidget(const MenuInitEvent* event) {
-    u16 windowTop = equipMenuWindowConfig[3].drawDistance2 + 26;
+    u16 windowTop = equipMenuWindowConfig[3].y + 26;
     const char* menuText;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
@@ -156,10 +156,10 @@ void initStatDiffWidget(const MenuInitEvent* event) {
     auto statDiffWidget = createWidget(STAT_DIFF_WIDGET_NAME);
 
     boxParams = {
-        equipMenuWindowConfig[3].drawDistance1,
-        equipMenuWindowConfig[3].drawDistance2,
-        equipMenuWindowConfig[3].drawDistance3,
-        equipMenuWindowConfig[3].drawDistance4,
+        equipMenuWindowConfig[3].x,
+        equipMenuWindowConfig[3].y,
+        equipMenuWindowConfig[3].width,
+        equipMenuWindowConfig[3].height,
         0.5f
     };
     boxWidget = createBoxWidget(boxParams, STAT_DIFF_BOX);
@@ -208,16 +208,16 @@ void initGearListWidget(const MenuInitEvent* event) {
     auto gearListWidget = createWidget(GEAR_LIST_WIDGET_NAME);
 
     boxParams = {
-        equipMenuWindowConfig[4].drawDistance1,
-        equipMenuWindowConfig[4].drawDistance2,
-        equipMenuWindowConfig[4].drawDistance3,
-        equipMenuWindowConfig[4].drawDistance4,
+        equipMenuWindowConfig[4].x,
+        equipMenuWindowConfig[4].y,
+        equipMenuWindowConfig[4].width,
+        equipMenuWindowConfig[4].height,
         0.5f
     };
     boxWidget = createBoxWidget(boxParams, GEAR_LIST_BOX);
     addChildWidget(gearListWidget, (Widget*)boxWidget, GEAR_LIST_BOX);
 
-    drawGridParams gridParams = { EQUIP_MENU_NAME.c_str(), 1, &gearViewNameUpdater, 427, 193, nullptr, 0 };
+    DrawCursorGridParams gridParams = { EQUIP_MENU_NAME.c_str(), 1, &gearViewNameUpdater, 427, 193, nullptr, 0 };
     auto cursorListWidget = createGridWidget(gridParams, EQUIP_LIST, TextWidgetKlass());
     addChildWidget(gearListWidget, (Widget*)cursorListWidget, EQUIP_LIST);
 

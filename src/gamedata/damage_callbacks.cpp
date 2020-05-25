@@ -10,6 +10,7 @@
 typedef void(*SRPFN_SUB436E92)();
 #define gameResetAnimEventCamera   ((SRPFN_SUB436E92)0x436E92)
 void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 targetID) {
+    srLogWrite("----------------------DAMAGE LOG START------------------------");
     auto damageContext = srDamageEvent->damageContext;
     auto& aiContext = *srDamageEvent->aiContext;
     auto& gameDamageEvent = *srDamageEvent->gameDamageEvent;
@@ -21,13 +22,14 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     printDamageQueueState();
     /*srLogWrite("Running Cover Callback");
     handleCover(srDamageEvent);*/
-    printDamageEvent(&gameDamageEvent);
-    printDamageQueueState();
-    srLogWrite("Cover callback exeucted");
+   // printDamageEvent(&gameDamageEvent);
+    //printDamageQueueState();
+    //srLogWrite("Cover callback exeucted");
     srLogWrite("setting Target Context");
     setTargetContext(gameDamageEvent.targetID, srDamageEvent);
-    printDamageEvent(&gameDamageEvent);
-    printDamageQueueState();
+    for (auto& targetStatus : *srDamageEvent->srDamageContext->targetState.activeStatuses) {
+        srLogWrite("TARGET STATUSES PRIOR TO ACTION: %s", targetStatus.statusName.c_str());
+    }
     srLogWrite("Target Context set");
     srLogWrite("Setting up status infliction");
     attemptStatusInfliction(srDamageEvent);
@@ -85,6 +87,10 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     handleDeathImpactSetup(srDamageEvent);
     printDamageEvent(&gameDamageEvent);
     printDamageQueueState();
+    for (auto& targetStatus : *srDamageEvent->srDamageContext->targetState.activeStatuses) {
+        srLogWrite("TARGET STATUSES PRIOR TO ACTION: %s", targetStatus.statusName.c_str());
+    }
+    srLogWrite("--------------------------------DAMAGE LOG END----------------------------------------");
 }
 
 //Hit and Damage Formulas will now live in a registry
@@ -190,7 +196,7 @@ void handleSteal(DamageCalculationEvent* srDamageEvent) {
             stealString = 48;
         }
         else {
-            srCreateEvent(0, damageContext.attackerID, 3, stolenItem);
+            gameCreateEvent(0, damageContext.attackerID, 3, stolenItem);
             targetState.actorTimers->unkActorFlags |= 1u;
             stealString = 47;
         }
@@ -284,6 +290,10 @@ void setupGameDamageAndImpactEvents(DamageCalculationEvent* srDamageEvent) {
             damageContext.attackImpactEffectID,
             aiContext.actorAIStates[damageContext.targetID].currentHP,
             aiContext.actorAIStates[damageContext.targetID].currentMP);
+        auto gameImpactEvent = getImpactEvent(damageEvent.impactEventQueueIdx);
+        auto extendedImpactEvent = getExtendedImpactEvent(damageEvent.impactEventQueueIdx);
+        SrActionImpactSetupEvent setupDamageEvent{ &damageEvent, gameImpactEvent, extendedImpactEvent, srDamageEvent };
+        gContext.eventBus.dispatch(ON_FINALIZE_IMPACT_EVENTS, &setupDamageEvent);
     }
 
     if (damageContext.abilityFlags1 & 0x20)
@@ -417,7 +427,7 @@ void attemptStatusInfliction(DamageCalculationEvent* srDamageEvent) {
     auto toggle = std::vector<std::string>();
     for (const auto& infliction : inflictions) {
         srLogWrite("PERFORMING INFLICTION CALCULATION for status: %s", infliction.statusName.c_str());
-        if (didInflictionSucceed(infliction, srDamageEvent)) {
+        if (didActionInflictionSucceed(infliction, srDamageEvent)) {
             if (infliction.doesToggle) {
                 srLogWrite("adding status %s to toggle-list", infliction.statusName);
                 toggle.push_back(infliction.statusName);
@@ -437,51 +447,39 @@ void attemptStatusInfliction(DamageCalculationEvent* srDamageEvent) {
     srDamageEvent->srDamageContext->toToggleStatuses = toggle;
 }
 
-bool didInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* srDamageEvent) {
+bool didActionInflictionSucceed(StatusInfliction infliction, DamageCalculationEvent* srDamageEvent) {
     auto damageContext = srDamageEvent->damageContext;
     u16* gEscapedActorsMask = (u16*)0x9AAD24;
 
-    /*auto levelDelta = damageContext->attackerLevel - damageContext->targetLevel;
-    auto magDelta = AI_BATTLE_STATE.actorAIStates[damageContext->attackerID].magAtk - AI_BATTLE_STATE.actorAIStates[damageContext->targetID].mdefense;*/
     srLogWrite("Handling status infliction for target %d", srDamageEvent->damageContext->targetID);
     const auto& inflictions = srDamageEvent->srDamageContext->statusToInflict;
-    auto inflictChance = 4 * infliction.inflictionChance;
+    auto& inflictChance = infliction.inflictionChance;
     srLogWrite("Infliction Chance: %i", inflictChance);
-    if ((damageContext->targetStatusMask & 0x800) && std::find_if(
-        inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::FROG;}) != inflictions.end())
-        inflictChance = 252;
-    if ((damageContext->targetStatusMask & 0x1000) && std::find_if(
-        inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::SMALL;}) != inflictions.end())
-        inflictChance = 252;
-    /*if (damageContext->targetID < 3 && aRcBattleBattle & combinedMask)
-        inflictChance = 252;*/
+    if (srActorHasStatus(srDamageEvent->srDamageContext->targetState, StatusNames::FROG) && std::find_if(
+        inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::FROG; }) != inflictions.end()) {
+        inflictChance = 64;
+    }
+    if (srActorHasStatus(srDamageEvent->srDamageContext->targetState, StatusNames::SMALL) && std::find_if(
+        inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::SMALL; }) != inflictions.end()) {
+        inflictChance = 64;
+    }
 
-    if (inflictChance < 252) {
+    if (inflictChance < 64) {
         inflictChance = damageContext->MPTurboBoost * inflictChance / 100 + inflictChance;
         if ((damageContext->abilityTargetingFlags & 0xC) != 4 && damageContext->targetCount > 1)
             inflictChance = 2 * inflictChance / 3;
         if (damageContext->quadCount)
             inflictChance >>= 1;
     }
-    // apply target resistances for this status, reducing infliction chance
-    const auto& status = gContext.statuses.getElement(infliction.statusName);
-    auto res = srDamageEvent->srDamageContext->targetState.battleStats->at(status.resName).activeValue;
-    auto pen = srDamageEvent->srDamageContext->attackerState.battleStats->at(status.penName).activeValue + srDamageEvent->srDamageContext->attackStats[status.penName].statValue;
-    auto modifier = res - pen;
-    inflictChance -= (modifier / 100) * inflictChance;
-    // return no to death immunity in weird context
+
+    bool didSucceed = didInflictionSucceed(infliction, srDamageEvent->srDamageContext->attackerState, srDamageEvent->srDamageContext->targetState, srDamageEvent->srDamageContext->attackStats);
     auto isInflictingDeath = std::find_if(inflictions.begin(), inflictions.end(), [&](StatusInfliction elmnt) {return elmnt.statusName == StatusNames::DEATH; }) != inflictions.end();
     if (isInflictingDeath && (1 << damageContext->currentUnitIDTempt) & *gEscapedActorsMask) {
         srLogWrite("INFLICTION FAILED DUE TO TARGETING ESCAPED/DEATH");
         return false;
     }
 
-    if (inflictChance >= gameGetInflictRand(100) + 1) {
-        srLogWrite("INFLICTION SUCCESSFUL");
-        return true;
-    }
-    srLogWrite("INFLICTION FAILED");
-    return false;
+    return didSucceed;
 }
 
 void handleStatusInfliction(DamageCalculationEvent* srDamageEvent) {
@@ -523,27 +521,7 @@ void handleStatusInfliction(DamageCalculationEvent* srDamageEvent) {
     }
     // add every status to be added
     for (auto statusName : addStatuses) {
-        srLogWrite("ATTEMPTING TO INFLICT STATUS: %s", statusName.c_str());
-        auto wasFound = std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName; }) != targetStatuses.end();
-        const auto& status = gContext.statuses.getElement(statusName);
-
-        if (!wasFound || status.allowMultiple) {
-            if (!status.removeOnInflict.empty()) {
-                auto it = std::remove_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
-                    return std::find(status.removeOnInflict.begin(), status.removeOnInflict.end(), activeStatus.statusName) != status.removeOnInflict.end();
-                    });
-            }
-            if (!status.neutralizeOnInflict.empty()) {
-                auto it = std::remove_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
-                    return std::find(status.neutralizeOnInflict.begin(), status.neutralizeOnInflict.end(), activeStatus.statusName) != status.neutralizeOnInflict.end();
-                    });
-                if (it != targetStatuses.end()) {
-                    continue;
-                }
-            }
-            ActiveStatus activeStatus = ActiveStatus{ statusName };
-            targetStatuses.push_back(activeStatus);
-        }
+        srInflictStatus(srDamageEvent->srDamageContext->targetState, statusName);
     }
     for (auto& targetStatus : targetStatuses) {
         srLogWrite("target now has active status: %s", targetStatus.statusName.c_str());
@@ -631,10 +609,9 @@ void handleDamage(DamageCalculationEvent* srDamageEvent) {
             //Handle Death inflicted
             actorState.statusMask |= 1u;
             if (!srActorHasStatus(srDamageEvent->srDamageContext->targetState, StatusNames::DEATH)) {
-                auto death = ActiveStatus{ StatusNames::DEATH };
-                srDamageEvent->srDamageContext->targetState.activeStatuses->push_back(death);
+                srInflictStatus(srDamageEvent->srDamageContext->targetState, StatusNames::DEATH);
+                srLogWrite("FLAGGING TARGET %i AS DEAD", srDamageEvent->damageContext->targetID);
             }
-            srLogWrite("FLAGGING TARGET %i AS DEAD");
             if (damageContext->miscActionFlags & 0x2000)
                 handleMorph(srDamageEvent);
         }
@@ -659,7 +636,7 @@ void handleMorph(DamageCalculationEvent* srDamageEvent) {
             if (targetState.party10->deathType < 17)
                 targetState.party10->deathType = 7;
 
-            srCreateEvent(0, damageContext->attackerID, 3, morphItemID);
+            gameCreateEvent(0, damageContext->attackerID, 3, morphItemID);
             pushDisplayString(damageContext->attackerID, 86, 1, (u32*)&morphItemID);
             targetState.actorTimers->unkActorFlags |= 0x10u;
         }

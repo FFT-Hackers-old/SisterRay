@@ -9,7 +9,7 @@ using namespace EquipWidgetNames;
 SISTERRAY_API void equipMenuUpdateHandler(i32 updateStateMask) {
     Menu* menu = gContext.menuWidgets.getElement("EQUIP_MENU");
 
-    sub_6C98A6();
+    renderMenuType();
     runMenu(menu, updateStateMask);
     displayMenuCursors(menu, getMenuState(menu), updateStateMask);
 }

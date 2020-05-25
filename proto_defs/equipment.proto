@@ -1,0 +1,13 @@
+syntax="proto3";
+
+message SrGearSlotProto {
+    uint32 gearSlotType;
+    uint32 slotSupType;
+    string displayName;
+}
+
+message GearSlotSave{
+    uint32 gearSlotType;
+    string equippedID;
+    uint32 gearSlotIdx;
+}

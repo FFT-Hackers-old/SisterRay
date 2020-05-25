@@ -10,7 +10,6 @@
 
 
 void initBattleMagicViewWidget(const MenuInitEvent* event);
-Widget* allocateSpellRow(const char* name, i32 xCoordinate, i32 yCoordinate);
 
 
 #endif

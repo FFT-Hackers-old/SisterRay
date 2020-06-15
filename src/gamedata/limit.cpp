@@ -26,11 +26,11 @@ void loadCloudAnimScripts() {
     crossScript[26] = getSrPlayerAnimationIdx(CLOUD_LIMIT_MOD_NAME, 7, "CLOUD.DAT");
     addAnimationScript(CLOUD_LIMIT_MOD_NAME, 1, "CLOUD.DAT", crossScript, 30);
 
-    u8 climScript[34] = { 0xE8, 0xFC, 0, 0xE0, 0xEA, 0xF4, 0x19, 0xF3, 0xEC, 0xF0, 0x2C, 0xD8, 0, 0x1A, 0, 0xFB, 40, 6, 0, 0, 0xF0, 0x2D, 0xD8, 0x19, 0x30, 0, 0xA8, 0x26, 8, 0x2E, 0xFA, 0xF0, 0xE5, 0xEE };
+    u8 climScript[35] = { 0xE8, 0xFC, 0, 0xE0, 0xEA, 0xF4, 0x19, 0xF3, 0xEC, 0xF0, 0x2C, 0xD8, 0, 0x1A, 0, 0xD1, 0xB0, 4, 0, 0, 4, 0xF0, 0x2D, 0xD8, 0x19, 0x30, 0, 0xA8, 0x26, 8, 0x2E, 0xFA, 0xF0, 0xE5, 0xEE };
     climScript[10] = getSrPlayerAnimationIdx(CLOUD_LIMIT_MOD_NAME, 10, "CLOUD.DAT");
-    climScript[21] = getSrPlayerAnimationIdx(CLOUD_LIMIT_MOD_NAME, 11, "CLOUD.DAT");
-    climScript[29] = getSrPlayerAnimationIdx(CLOUD_LIMIT_MOD_NAME, 12, "CLOUD.DAT");
-    addAnimationScript(CLOUD_LIMIT_MOD_NAME, 2, "CLOUD.DAT", climScript, 34);
+    climScript[22] = getSrPlayerAnimationIdx(CLOUD_LIMIT_MOD_NAME, 11, "CLOUD.DAT");
+    climScript[30] = getSrPlayerAnimationIdx(CLOUD_LIMIT_MOD_NAME, 12, "CLOUD.DAT");
+    addAnimationScript(CLOUD_LIMIT_MOD_NAME, 2, "CLOUD.DAT", climScript, 35);
 }
 
 void createCloudLimitActions() {
@@ -52,12 +52,13 @@ void createCloudLimitActions() {
     addElementToAction(CLOUD_LIMIT_MOD_NAME, 0, ElementNames::SLASH.c_str());
     setActionAnimationScript(CLOUD_LIMIT_MOD_NAME, 0, "CLOUD.DAT", CLOUD_LIMIT_MOD_NAME, 0);
     setActionEffectType(CLOUD_LIMIT_MOD_NAME, 0, LIMIT);
+    addActionToCommand(BASE_PREFIX, CMD_LIMIT, CLOUD_LIMIT_MOD_NAME, 0);
 
 
     auto cross = SrActionData();
     cross.attackName = "Cross-Slash";
     cross.attackDesc = "Powerful Jumping Slash, Capable of Shattering Defenses";
-    cross.baseData.attackPower = 42;
+    cross.baseData.attackPower = 30;
     cross.baseData.additionalEffect = 0;
     cross.baseData.additionalEffectModifier = 3;
     cross.baseData.animationEffectID = 1;
@@ -72,6 +73,7 @@ void createCloudLimitActions() {
     addElementToAction(CLOUD_LIMIT_MOD_NAME, 1, ElementNames::SLASH.c_str());
     setActionAnimationScript(CLOUD_LIMIT_MOD_NAME, 1, "CLOUD.DAT", CLOUD_LIMIT_MOD_NAME, 1);
     setActionEffectType(CLOUD_LIMIT_MOD_NAME, 1, LIMIT);
+    addActionToCommand(BASE_PREFIX, CMD_LIMIT, CLOUD_LIMIT_MOD_NAME, 1);
 
 
     auto clim = SrActionData();
@@ -79,8 +81,8 @@ void createCloudLimitActions() {
     clim.attackDesc = "Stab your foe, and cleave them in two";
     clim.baseData.attackPower = 60;
     clim.baseData.additionalEffect = 0xFF;
-    clim.baseData.additionalEffectModifier = 0xFF;
-    clim.baseData.animationEffectID = 4;
+    clim.baseData.additionalEffectModifier = 0;
+    clim.baseData.animationEffectID = 3;
     clim.baseData.targetingFlags = TGT_FLAG_ENABLE_SELECT | TGT_FLAG_START_ENEMIES;
     clim.baseData.abilityHitRate = 0x64;
     clim.baseData.cameraMovementSingle = 0x35;
@@ -92,6 +94,7 @@ void createCloudLimitActions() {
     addElementToAction(CLOUD_LIMIT_MOD_NAME, 2, ElementNames::PIERCE.c_str());
     setActionAnimationScript(CLOUD_LIMIT_MOD_NAME, 2, "CLOUD.DAT", CLOUD_LIMIT_MOD_NAME, 2);
     setActionEffectType(CLOUD_LIMIT_MOD_NAME, 2, LIMIT);
+    addActionToCommand(BASE_PREFIX, CMD_LIMIT, CLOUD_LIMIT_MOD_NAME, 2);
 }
 
 

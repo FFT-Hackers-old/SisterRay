@@ -3,21 +3,21 @@
 
 #include <SisterRay/SisterRay.h>
 
-i32 srHPFormula(SrPartyData* character);
-i32 srMPFormula(SrPartyData* character);
-i32 srAtkPwrFormula(SrPartyData* character);
-i32 srAtkSpdFormula(SrPartyData* character);
-i32 srAccFormula(SrPartyData* actor);
-i32 srCritRateFormula(SrPartyData* actor);
-i32 srCritPwrFormula(SrPartyData* actor);
-i32 srStgPwrFormula(SrPartyData* actor);
-i32 srStgDmgFormula(SrPartyData* actor);
+i32 srHPFormula(StatFormulaCtx* character);
+i32 srMPFormula(StatFormulaCtx* character);
+i32 srAtkPwrFormula(StatFormulaCtx* character);
+i32 srAtkSpdFormula(StatFormulaCtx* character);
+i32 srAccFormula(StatFormulaCtx* actor);
+i32 srCritRateFormula(StatFormulaCtx* actor);
+i32 srCritPwrFormula(StatFormulaCtx* actor);
+i32 srStgPwrFormula(StatFormulaCtx* actor);
+i32 srStgDmgFormula(StatFormulaCtx* actor);
 
-i32 srArmorFormula(SrPartyData* actor);
-i32 srDefenseFormula(SrPartyData* actor);
-i32 srEvadeFormula(SrPartyData* actor);
-i32 srBlockAmtFormula(SrPartyData* actor);
-i32 srBlockFormula(SrPartyData* actor);
-i32 srParryFormula(SrPartyData* actor);
+i32 srArmorFormula(StatFormulaCtx* actor);
+i32 srDefenseFormula(StatFormulaCtx* actor);
+i32 srEvadeFormula(StatFormulaCtx* actor);
+i32 srBlockAmtFormula(StatFormulaCtx* actor);
+i32 srBlockFormula(StatFormulaCtx* actor);
+i32 srParryFormula(StatFormulaCtx* actor);
 #endif
 

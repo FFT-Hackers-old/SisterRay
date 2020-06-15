@@ -2,7 +2,7 @@
 #include <string.h>
 #include <fstream>
 #include <string>
-#include "mods/char_commands.h"
+#include "mods/character_mechanics_mod/char_commands.h"
 #include "mods/new_spells.h"
 #include "mods/controllable_summon.h"
 #include "mods/stagger.h"

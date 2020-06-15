@@ -1,5 +1,6 @@
 #include "battle_targeting_input_callbacks.h"
 #include "../../menu.h"
+#include "../../../events/event_bus_interface.h"
 #include "../battle_menu_utils.h"
 #include "../../../battle/battle_engine_interface.h"
 #include "../../../impl.h"
@@ -52,6 +53,7 @@ void handleSelectTargets(const MenuInputEvent* event) {
         setMenuState(event->menu, BATTLE_INACTIVE);
         srLogWrite("Dispatching Chosen Command from targeting!");
         dispatchChosenBattleAction();
+        dispatchEvent(ON_TARGETS_SELECTED, nullptr);
     }
 }
 

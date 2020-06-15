@@ -24,7 +24,7 @@ typedef struct {
     u32 size;					
     void* last;	//type is GameHeap*, cast before usage	
     u32 field_C;
-    u32 field_10;
+    u32 totalBones;
     u32 field_14;
     u32 field_18;
     u32 field_1C;

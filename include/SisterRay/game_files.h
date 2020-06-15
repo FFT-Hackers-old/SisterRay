@@ -29,7 +29,7 @@ typedef struct {
     u32 field_4;
     u32 lgpTableIdx;
     u32 field_C;
-    u32 field_10;
+    u32 totalBones;
     u32 field_14;
     u32 field_18;
     u32 field_1C;
@@ -55,7 +55,7 @@ typedef struct {
     u32 loadBFileFlag;
     u32 initSkeletonFlag;
     u32 modelBoneCount;
-    u32 field_10;
+    u32 totalBones;
     u32 field_14;
     u32 textureCount;
     u32 modelAnimCount;

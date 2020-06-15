@@ -8,6 +8,7 @@
 #include "../gamedata/base_item.h"
 #include <string>
 
+using StatMap = std::unordered_map<std::string, SrBoostedStat>;
 
 void calculatePrimaryBaseStats(const SrCharacter& character, SrPartyData& srPartyMember);
 void calculateDerivedBaseStats(const SrCharacter& character, SrPartyData& srPartyMember);

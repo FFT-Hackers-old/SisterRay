@@ -70,6 +70,7 @@ typedef enum {
     ON_VTIMER_TICK,
     ON_CTIMER_TICK,
     INIT_BATTLE_ACTORS,
+    SET_TARGET_REACTION,
 
     //Initialization Events
     INIT_PLAYER_BATTLE_ACTOR,
@@ -88,7 +89,10 @@ typedef enum {
     INIT_ATTACK,
 
 
-    RUN_ANIM_SCRIPT_OPCODE
+    RUN_ANIM_SCRIPT_OPCODE,
+    SR_COMBO_OPCODE,
+    RETURN_TO_IDLE,
+    ON_TARGETS_SELECTED
 } SrEventType;
 
 
@@ -108,6 +112,7 @@ typedef enum {
     BATTLE_COMMAND_VIEW,
     ENABLE_ACTION_NO_MATERIA,
     PLAYING_ANIMATION,
+    SR_COMBO_INPUT,
     MAT_HIGH_TYPE_0,
     MAT_HIGH_TYPE_1,
     MAT_HIGH_TYPE_2,
@@ -190,7 +195,7 @@ typedef struct SrPartyData_ SrPartyData;
 typedef struct SrStat_ SrStat;
 typedef struct SrExtendedImpactEvent_ SrExtendedImpactEvent;
 
-typedef i32(*SRPFN_DERIVEDSTATFORMULA)(SrPartyData*);
+typedef i32(*SRPFN_DERIVEDSTATFORMULA)(StatFormulaCtx*);
 
 #pragma pack(push, 1)
 typedef struct {

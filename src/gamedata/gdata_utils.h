@@ -10,7 +10,7 @@ const std::string assembleGDataKey(u16 resourceIdx);
 
 //For use with Weapons, Items, Attacks, anything SrObject with a damagebyte
 template <class T> void setSrDamageInfo(T& dmgResource, u8 damageByte) {
-    u8 highDmg = (damageByte >> 4) & 0xF0;
+    u8 highDmg = (damageByte & 0xF0) >> 4;
     u8 lowDmg = damageByte & 0xF;
     switch (highDmg) {
     case 0: {

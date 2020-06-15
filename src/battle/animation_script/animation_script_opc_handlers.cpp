@@ -7,6 +7,7 @@
 #include "../battle_utils.h"
 #include "../../party/party_utils.h"
 #include "../../impl.h"
+#include "../../events/event_bus_interface.h"
 
 bool invertDirection = false;
 
@@ -274,7 +275,7 @@ OpCodeControlSequence OpCode9A(AnimScriptEvent* srEvent) {
     scriptCtx.opCodeArgs[4] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[1] = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.limitFastATBMask = GAME_ANGLE_MAX - (targetModelState74.someHPCopy + 2048);
-    scriptCtx.opCodeArgs[0] = (targetModelState.field_6 * targetModelState.field_12 / GAME_ANGLE_MAX);
+    scriptCtx.opCodeArgs[0] = (targetModelState.field_6 * targetModelState.height/ GAME_ANGLE_MAX);
 
     i16 xDecrement = (i16)((scriptCtx.opCodeArgs[0] * srCalculateXVectorComponent(scriptCtx.limitFastATBMask)) / GAME_ANGLE_MAX);
     ownerModelState.restingPosition.x = targetModelState.restingPosition.x - xDecrement;
@@ -499,7 +500,7 @@ OpCodeControlSequence OpCodeAB(AnimScriptEvent* srEvent) {
     scriptCtx.opCodeArgs[4] = *(u16*)off_C06008;
     scriptCtx.opCodeArgs[1] = 0;
     scriptCtx.limitFastATBMask = GAME_ANGLE_MAX - (getBattleModelState(*G_CURRENT_ACTION_ACTOR)->restingYRotation + 2048);
-    scriptCtx.opCodeArgs[0] = (actorBattleState.field_6 * actorBattleState.field_12 >> 12) + (attackerModelState.field_6 * scriptCtx.opCodeArgs[4] >> 12);
+    scriptCtx.opCodeArgs[0] = (actorBattleState.field_6 * actorBattleState.height >> 12) + (attackerModelState.field_6 * scriptCtx.opCodeArgs[4] >> 12);
 
     i64 xDelta = (scriptCtx.opCodeArgs[0]*(srCalculateXVectorComponent((i16)scriptCtx.limitFastATBMask))) / GAME_ANGLE_MAX;
     attackerModelState.restingPosition.x = actorBattleState.restingPosition.x - xDelta;
@@ -1045,7 +1046,7 @@ OpCodeControlSequence OpCodeD1(AnimScriptEvent* srEvent) {
     *off_C06008 = readOpCodeArg16(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     scriptCtx.opCodeArgs[3] = readOpCodeArg8(srEvent->scriptPtr, srEvent->scriptContext, srEvent->battleModelState);
     R3PointWord* moveBasePoint = nullptr;
-    if (getTargetAllActive()) {
+    if (getTargetAllActive() || (countTargets(getAnimatingActionTargetMask()) > 1)) {
         srComputeEnemyPartyCenter(getAnimatingActionTargetMask(), (R3PointWord*)&(scriptCtx.field_16));
         moveBasePoint = (R3PointWord*)&(scriptCtx.field_16);
     }
@@ -1482,6 +1483,7 @@ OpCodeControlSequence OpCodeEE(AnimScriptEvent* srEvent) {
     actorModelState.isScriptExecuting = 0;
     actorModelState.currentScriptPosition = 0;
     actorModelState.waitFrames = 0;
+    dispatchEvent(RETURN_TO_IDLE, srEvent);
     return RUN_NEXT;
 }
 

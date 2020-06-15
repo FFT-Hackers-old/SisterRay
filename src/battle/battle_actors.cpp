@@ -110,7 +110,7 @@ void SrBattleActors::initializePartyCharacter(u8 characterID) {
     actorBattleVars.characterID = characterID + 0x10;
     actorBattleVars.level = characterRecord->level;
     actorBattleVars.idleAnimHolder = 0;
-    actorBattleVars.apValue = 8;
+    actorBattleVars.missAnimScript = 8;
     actorBattleVars.damageAnimID = 5;
     actorBattleVars.stateFlags = 8;
     party34.characterRecord = characterRecord;
@@ -217,7 +217,7 @@ void SrBattleActors::initializePartySummon(u8 summonIdx) {
     actorBattleVars.characterID = summonIdx + 0x10;
     actorBattleVars.level = min(10 + (gContext.party.getSummonCtx(summonIdx).cumulativeAP / 1000), 99);
     actorBattleVars.idleAnimHolder = 0;
-    actorBattleVars.apValue = 8;
+    actorBattleVars.missAnimScript = 8;
     actorBattleVars.damageAnimID = 5;
     actorBattleVars.stateFlags = 8;
     party34.characterRecord = nullptr;
@@ -311,7 +311,7 @@ void SrBattleActors::initializeEnemyActor(u8 enemyIdx) {
         actorBattleVars->expValue = sceneEnemyDataPtr->expAward;
         actorBattleVars->damageAnimID = 1;
         actorBattleVars->unknown6 = 1;
-        actorBattleVars->apValue = 2;
+        actorBattleVars->missAnimScript = 2;
         actorBattleVars->idleAnimScript = 0;
         actorBattleVars->statusMask = 0;
         actorBattleVars->initalStatusMasks = 0;

@@ -3,11 +3,13 @@
 #include "../battle/scene_globals.h"
 #include "../battle/actions/actions_api.h"
 #include "../battle/battle_utils.h"
+#include "../battle/battle_models/battle_model_state_interface.h"
 #include "../impl.h"
 #include "status_names.h"
 #include "element_names.h"
 #include "damage_callback_utils.h"
 #include <algorithm>
+#include <math.h>
 
 void srLoadAbilityData() {
     CommandSetupEvent srEvent = { gDamageContextPtr };
@@ -177,8 +179,8 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                     do {
                         bool shouldRandomTarget = false;
                         damageContext->targetMask = targetMask;
-                        if (damageContext->attackHitCount)
-                            shouldRandomTarget = true;
+                        /*if (damageContext->attackHitCount)
+                            shouldRandomTarget = true;*/
                         if (damageContext->quadCount && (damageContext->abilityTargetingFlags & 0xC) != 4)
                             shouldRandomTarget = true;
                         if (damageContext->abilityTargetingFlags & 0x80)
@@ -467,7 +469,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
      u16* word_9A8896 = (u16*)0x9A8896;
      u16* word_9A88AA = (u16*)0x9A88AA;
      u16* word_9A88AE = (u16*)0x9A88AE;
-     u16* word_9A8898 = (u16*)0x9A8898;
+     u16* G_SHORT_RANGE = (u16*)0x9A8898;
      u16* G_ESCAPED_ACTORS_MASK = (u16*)0x9AAD24;
 
      auto damageContext = srSetupEvent.damageContext;
@@ -515,6 +517,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                      validRowTargets = 15u;
              }
 
+             srLogWrite("Set Valid Row Targets mask: %x", validRowTargets);
              u8 cmdIdx = damageContext->commandIndexCopy;
              if (cmdIdx != CMD_SUMMON && cmdIdx != CMD_LIMIT) {
                  if (confusionActive && manipulateActive)
@@ -536,7 +539,7 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                  possibleTargets &= validRowTargets;
              }
              else if (targetFlags & TGT_SHORT_RANGE) {
-                 possibleTargets = (*word_9A8898 & possibleTargets);
+                 possibleTargets = (*G_SHORT_RANGE & possibleTargets);
              }
              damageContext->targetMask &= possibleTargets;
              srLogWrite("Target Mask after short range/one row restrictions: %x", damageContext->targetMask);
@@ -565,6 +568,37 @@ void srApplyDamage(CommandSetupEvent& srSetupEvent) {
                  damageContext->usedTargetMask &= word_9A88AA[v0 & 2];
              }
              srLogWrite("calculated targetFlags targetMask: %x", damageContext->targetMask);
+             //Add some additional logic to handle distance based cleave
+             if (countTargets(damageContext->targetMask) == 1) {
+                 srLogWrite("Valid Row Targets For Cleave: %x", ((~validRowTargets) & 0x3FF));
+                 u16 validTargets = (*word_9A8894 & *word_9A8896) & ((~validRowTargets) & 0x3FF);
+                 u16 validCleaves = validTargets & (~damageContext->targetMask);
+                 srLogWrite("Valid cleave targets: %x for target %x", validCleaves, damageContext->targetMask);
+                 u8 targetIdx;
+                 for (auto idx = 0; idx < 10; idx++) {
+                     if (damageContext->targetMask & (1 << idx)) {
+                         targetIdx = idx;
+                         break;
+                     }
+                 }
+             
+                 for (u8 actorIdx = 0; actorIdx < 10; actorIdx++) {
+                     if (validCleaves & (1 << actorIdx)) {
+                         auto position = getBattleModelState(actorIdx)->restingPosition;
+                         srLogWrite("POSITION OF VALID CLEAVE actor: %i: %i, %i, %i", actorIdx, position.x, position.y, position.z);
+                         srLogWrite("X-DISTANCE: %i", abs(getBattleModelState(targetIdx)->restingPosition.x - position.x));
+                         srLogWrite("Z-DISTANCE: %i", abs(getBattleModelState(targetIdx)->restingPosition.z - position.z));
+                         if (abs(getBattleModelState(targetIdx)->restingPosition.x - position.x) < srSetupEvent.srDamageContext->attackStats["X_CLEAVE_RANGE"].statValue) {
+                             if (abs(getBattleModelState(targetIdx)->restingPosition.z - position.z) < srSetupEvent.srDamageContext->attackStats["Z_CLEAVE_RANGE"].statValue) {
+                                 srLogWrite("CLEAVING TARGET %i", actorIdx);
+                                 damageContext->targetMask |= (1 << actorIdx);
+                             }
+                         }
+                         
+                     }
+                 }
+
+             }
          }
      }
      else {
@@ -701,11 +735,6 @@ void srSetupAction(CommandSetupEvent& srSetupEvent) {
     srSetupEvent.srDamageContext->mpDamageLimit = action.mpDamageLimit;
 
     switch (damageContext->commandIndexCopy) {
-        case 20: {
-            if (damageContext->attackerID < 3)
-                initializeLimitContext(damageContext);
-            break;
-        }
         case 32: {
             currentSceneAbilities[0] = abilityData;
             *currentSceneAbilityIDs = action.attackID;
@@ -801,40 +830,6 @@ void srSetupAction(CommandSetupEvent& srSetupEvent) {
     if (deathSentenceFlag)
         gAiActorVariables[damageContext->attackerID].statusMask &= 0xFFDFFFFF;
     copyAdditionalEffects(abilityData.additionalEffect, abilityData.additionalEffectModifier);
-}
-
-//Kill this during Limit Break reimplementation
-void initializeLimitContext(DamageCalcStruct* damageContext) {
-    u8 characterID;
-    u8* activeLimitIDs;
-    u8* kernelLimitScriptIndexes = (u8*)(0x7B76A0);
-    u8* unkPartyStructPtr = (u8*)(0x9A87F4);
-
-    characterID = unkPartyStructPtr[16 * damageContext->attackerID];
-    activeLimitIDs = getGamePartyMember(damageContext->attackerID)->enabledLimitBytes;
-    if (damageContext->absAttackIndex >= 96 && damageContext->absAttackIndex <= 128) {
-        auto scriptIndex = damageContext->absAttackIndex - 96;
-        if (kernelLimitScriptIndexes[scriptIndex] != 255)
-            damageContext->animationScriptID = kernelLimitScriptIndexes[scriptIndex];
-        damageContext->enabledMagicsIndex = -1;
-        return;
-    }
-    for (i32 limitIndex = 0; limitIndex < 3; ++limitIndex) {
-        auto relativeLimitIndex = (i8)activeLimitIDs[limitIndex];
-        if (relativeLimitIndex + 128 == damageContext->absAttackIndex) {
-            auto limitAnimationScriptIndex = 0;
-            for (auto charLimitArrayIndex = 0; charLimitArrayIndex < 12; ++charLimitArrayIndex) {
-                auto fetchedRelativeIndex = getLimitRelativeIndex(characterID, charLimitArrayIndex);
-                if (fetchedRelativeIndex != 127) {
-                    if (fetchedRelativeIndex == relativeLimitIndex)
-                        break;
-                    ++limitAnimationScriptIndex;
-                }
-            }
-            damageContext->animationScriptID = limitAnimationScriptIndex + 60;
-            break;
-        }
-    }
 }
 
 void updatePlayerSpellData(DamageCalcStruct* damageContext, EnabledSpell* spellData, const AttackData& abilityData) {

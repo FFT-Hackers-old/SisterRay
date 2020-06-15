@@ -7,7 +7,7 @@
 #include "texture.h"
 #include "data_structures.h"
 
-typedef struct _GraphicsObject GraphicsObject;
+typedef struct GameDrawable_ GameDrawable;
 typedef struct _PolygonSet PolygonSet;
 
 typedef struct{
@@ -32,8 +32,8 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 field_0;
-    u32 actionFlags;
-    u32 limitFastATBMask;
+    u32 field_4;
+    u32 field_8;
     u32 field_C;
     u32 field_10;
     TextureSet *textureSet;
@@ -71,7 +71,7 @@ typedef struct {
     u8 field_7;
     u32 color;
     u32 field_C;
-    u32 field_10;
+    u32 totalBones;
     u32 x_offset;
     u32 y_offset;
     u32 z_offset;
@@ -233,7 +233,7 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
-    GraphicsObject* graphicsObject;
+    GameDrawable* graphicsObject;
     u32 polygontype;
     u32 limitFastATBMask;
     R3Point vertices[4];
@@ -252,7 +252,7 @@ typedef struct {
     DrawableState* drawableState;
     Matrix matrix;
     PaletteAuxillary paletteAuxillary;
-} DrawableObjectChain;
+} DrawableChain;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
@@ -261,7 +261,7 @@ typedef struct {
     u32 actionFlags;
     u32 limitFastATBMask;
     u32 frameCounter;
-    DrawableObjectChain* graphicsObjectChain;
+    DrawableChain* graphicsObjectChain;
     GraphicsInstance *graphicsInstance;
 } GraphicsChain;
 #pragma pack(pop)
@@ -330,7 +330,7 @@ typedef struct {
     u32 actionFlags;
     u32 count;
     u32 vertexCount;
-    u32 field_10;
+    u32 totalBones;
     nVertex* vertices;
     u32 indexCount;
     u32 field_1C;
@@ -338,15 +338,15 @@ typedef struct {
     u32 field_24;
     u8* palettes;
     u32 drainedHP;
-    GraphicsObject* graphicsObject;
+    GameDrawable* graphicsObject;
 } IndexedVertices;
 #pragma pack(pop)
 
 #pragma pack(push, 1)
-struct _GraphicsObject {
+struct GameDrawable_ {
     u32 polytype;
-    u32 actionFlags;
-    u32 limitFastATBMask;
+    u32 field_4;
+    u32 field_8;
     AuxillaryGFX* auxillaries;
     MatrixSet* matrixSet;
     PolygonSet* polygonSet;
@@ -357,7 +357,7 @@ struct _GraphicsObject {
     float vOffset;
     void *dx_sfx_2C;
     void *graphicsInstance;
-    u32 innateStatusMask;
+    u32 field_34;
     u32 verticesPerShape;
     u32 indicesPerShape;
     u32 vertexOffset;

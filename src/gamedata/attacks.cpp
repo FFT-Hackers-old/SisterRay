@@ -249,6 +249,20 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
  }
 
 
+ SISTERRAY_API void addHitModifier(const  char* modName, u16 modActionID, HitModifiers hitModifier) {
+     auto name = std::string(modName) + std::to_string(modActionID);
+     auto& attack = gContext.attacks.getElement(name);
+     attack.hitFormulaModifiers.insert(hitModifier);
+ }
+
+
  void finalizeAttacks() {
      finalizeRegistry<SrAttack, InitAttackEvent, SrAttackRegistry>(gContext.attacks, INIT_ATTACK);
+ }
+
+
+ SISTERRAY_API void addAttackStat(const char* modName, u16 modActionIdx, const char* statName, i32 value) {
+     auto name = std::string(modName) + std::to_string(modActionIdx);
+     auto& attack = gContext.attacks.getElement(name);
+     attack.stats[std::string(statName)].statValue = value;
  }

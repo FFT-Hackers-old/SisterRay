@@ -33,6 +33,7 @@ void loadStagger() {
     srAddListener(INIT_BATTLE_ACTORS, (SrEventCallback)staggerInitActors, STAGGER_MOD_NAME);
     srAddListener(ON_VTIMER_TICK, (SrEventCallback)decayStaggerGuage, STAGGER_MOD_NAME);
     srAddListener(UPDATE_ACTOR_TIMERS, (SrEventCallback)handleStaggeredActorATB, STAGGER_MOD_NAME);
+    srAddListener(POST_HIT_FORMULA, (SrEventCallback)handleStaggerNoDodge, STAGGER_MOD_NAME);
     initializeStaggerMenuElement();
 }
 
@@ -153,6 +154,10 @@ void setStaggerToInflict(SrActionImpactSetupEvent* srEvent) {
     auto& attackStagger = srEvent->damageCtx->srDamageContext->attackStats[StaggerStatNames::STAGGER_DAMAGE].statValue;
     u16 hitStaggerDamage = (attackStagger / 16) * (1 + (attackerState.battleStats->at(StatNames::STAGGER_POWER).activeValue / 100)) * 300;
     hitStaggerDamage = hitStaggerDamage - (hitStaggerDamage * (targetState.battleStats->at(StatNames::STAGGER_RES).activeValue / 100.0f));
+    if (srEvent->damageCtx->damageContext->hitTypeFlags & 1) {
+        srLogWrite("MIssed actions do not inflict stagger");
+        return;
+    }
     if (srActorHasStatus(targetState, StaggerStatNames::STAGGER_STATUS)) {
         hitStaggerDamage /= 3;
     };
@@ -219,5 +224,13 @@ void decayStaggerGuage(UpdateActorTimersEvent* srTimerEvent) {
         stagger.statValue = decayedTarget;
         stagger.incrementCtx.incrementTargetValue = decayedTarget;
         stagger.activeValue = stagger.statValue;
+    }
+}
+
+void handleStaggerNoDodge(DamageCalculationEvent* srDmgCalcEvent) {
+    auto& aiContext = *srDmgCalcEvent->aiContext;
+    if (srActorHasStatus(srDmgCalcEvent->srDamageContext->targetState, StaggerStatNames::STAGGER_STATUS)) {
+        srDmgCalcEvent->damageContext->hitTypeFlags &= ~1;
+        srLogWrite("Staggered enemies cannot dodge in punisher stance, unflagging");
     }
 }

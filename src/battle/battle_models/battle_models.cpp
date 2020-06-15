@@ -112,7 +112,7 @@ BattleModel* srSetPlayerModel(i32 a1, i32 a2, u8 modelArrayIdx, char *filename) 
     BattleModel* newBattleModel = nullptr;
     clearLoadCtx(&lgpLoadCtx);               // 0x44 in size
     initializeFileContext(&fileContext);
-    lgpLoadCtx.field_10 = a1;
+    lgpLoadCtx.totalBones = a1;
     lgpLoadCtx.field_14 = a2;
     if (modelArrayIdx < 3) {
         getSrPartyMember(modelArrayIdx).srPartyMember->modelName = std::string(filename);

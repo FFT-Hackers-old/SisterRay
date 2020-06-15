@@ -32,7 +32,6 @@ const WidgetClass* getChildTypeFromID(u16 widgetTypeID) {
 
 /*Grid widgets positions are automatically updated and track the position of the cursor they are initialized with*/
 void drawGridWidget(CursorGridWidget* cursorGrid) {
-
     auto cursor = gContext.menuWidgets.getElement(cursorGrid->cursorName)->cursors[cursorGrid->menuState][cursorGrid->cursorIdx];
     auto context = cursor.context;
     auto size = cursorGrid->widget.widget.children.size();
@@ -168,7 +167,6 @@ StaticGridWidget* createStaticGridWidget(DrawStaticGridParams params, std::strin
         for (u32 slot = 0; slot < slotCount; slot++) {
             auto name = std::to_string(slot);
             auto child = typeAllocate(childType, name, widget->allocator);
-            srLogWrite("ALLOCATING STATIG GRID ELEMENT FOR GRID: %s", widget->widget.widget.name.c_str());
             addChildWidget((Widget*)widget, child, name);
         }
     }

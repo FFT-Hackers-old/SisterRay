@@ -1,6 +1,7 @@
 #include "stat_calculation.h"
 #include "../impl.h"
 #include "../gamedata/stat_names.h"
+#include "../gamedata/battle_stats.h"
 
 
 void calculatePrimaryBaseStats(const SrCharacter& character, SrPartyData& srPartyMember) {
@@ -28,8 +29,9 @@ void calculateDerivedBaseStats(const SrCharacter& character, SrPartyData& srPart
                 setStat(statName.c_str(), &srPartyMember.stats[statName].baseValue, val);
             }
             if (stat.derivedFormula) {
-                srLogWrite("Setting derived forumla stat value to %i", stat.derivedFormula(&srPartyMember));
-                setStat(statName.c_str(), &srPartyMember.stats[statName].baseValue, stat.derivedFormula(&srPartyMember));
+                StatFormulaCtx ctx{ &(srPartyMember.stats), true, 0, false, false };
+                srLogWrite("Setting derived forumla stat value to %i", stat.derivedFormula(&ctx));
+                setStat(statName.c_str(), &srPartyMember.stats[statName].baseValue, stat.derivedFormula(&ctx));
             }
         }
     }

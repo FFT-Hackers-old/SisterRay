@@ -55,8 +55,10 @@ void srPlayModelAnimation(u8 actorID) {
     u8* byte_BF2A30 = (u8*)0xBF2A30;
 
     if (battleModel) {
-        actorModelState.field_10 = battleModel->skeletonData->totalBones;
+        actorModelState.totalBones = battleModel->skeletonData->totalBones;
         actorModelState.tableRelativeModelAnimIdx = -1;
+        ModelAnimationEvent modelEvent = { actorID,  &actorModelState, getBattleModelState74(actorID) };
+        gContext.eventBus.dispatch(SETUP_MODEL_ANIMATION, &modelEvent);
         auto modelAnimationIndex = actorModelState.runningAnimIdx;
         if (modelAnimationIndex < 0) {
             actorModelState.isScriptExecuting = 1;
@@ -74,19 +76,20 @@ void srPlayModelAnimation(u8 actorID) {
         }
 
 
-        ModelAnimationEvent modelEvent = { actorID,  &actorModelState, getBattleModelState74(actorID) };
         dispatchAnimationInputs(&modelEvent);
-        gContext.eventBus.dispatch(SETUP_MODEL_ANIMATION, &modelEvent);
         actorModelState.tableRelativeModelAnimIdx = modelAnimationIndex;
         auto playingAnimation = battleModel->animationsTable[modelAnimationIndex];
         if (playingAnimation) {
+            //srLogWrite("Start of Anim Player Table Relative Idx: %i, animIdx: %i, playing Frame: %i, frames played: %i", actorModelState.tableRelativeModelAnimIdx, actorModelState.runningAnimIdx, actorModelState.currentPlayingFrame, actorModelState.playedAnimFrames);
             actorModelState.currentPlayingFrame = actorModelState.playedAnimFrames;
             if (!*byte_9ADEF8) {
                 auto continuePlaying = 1;
+
                 if (*byte_9ADEFC && *byte_9ADF04 && actorID == *byte_9ADF00) {
                     if (*byte_BF2A30) {
                         actorModelState.playedAnimFrames = playingAnimation->frameCount - 1;
                         actorModelState.currentPlayingFrame = actorModelState.playedAnimFrames;
+                        //srLogWrite("Doing DAT frame count update");
                         continuePlaying = 0;
                     }
                     else {
@@ -106,9 +109,12 @@ void srPlayModelAnimation(u8 actorID) {
                 actorModelState.isScriptExecuting = 1;
             }
 
+            //srLogWrite("End of Anim Player Table Relative Idx: %i, animIdx: %i, playing Frame: %i, frames played: %i", actorModelState.tableRelativeModelAnimIdx, actorModelState.runningAnimIdx, actorModelState.currentPlayingFrame, actorModelState.playedAnimFrames);
             gContext.eventBus.dispatch(POST_MODEL_ANIMATION, &modelEvent);
         }
         return;
+
+        srLogWrite("End of Anim Player Table Relative Idx: %i", actorModelState.tableRelativeModelAnimIdx);
     }
     srLogWrite("CRITICAL: Feteched nullptr for actor %d when executing animation!", actorID);
 }

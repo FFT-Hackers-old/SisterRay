@@ -140,10 +140,10 @@ void printAnimationEventQueue() {
 }
 
 
-AnimationEvent* createAnimEvent(u8 attackerID, u8 activeAllies, u8 animScriptID, u8 commandIdx, u16 actionIdx, u8 spellEffectIdx, u8 actionFlags, u16 cameraData) {
+AnimationEvent* createAnimEvent(u8 attackerID, u8 scriptType, u8 animScriptID, u8 commandIdx, u16 actionIdx, u8 spellEffectIdx, u8 actionFlags, u16 cameraData) {
     auto animationEvent = newAnimEvent();
     animationEvent->attackerID = attackerID;
-    animationEvent->activeAllies = activeAllies;
+    animationEvent->activeAllies = scriptType;
     animationEvent->animationScriptID = animScriptID;
     animationEvent->commandIndex = commandIdx;
     animationEvent->spellEffectID = spellEffectIdx;

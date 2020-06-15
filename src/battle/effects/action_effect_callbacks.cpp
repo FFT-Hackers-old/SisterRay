@@ -38,6 +38,9 @@ void srDisplayDamageEvents(u32 damagedMask) {
     }
 }
 
+void srDispatchTargetReaction(u8 targetIdx) {
+    sub_5C0158(targetIdx);
+}
 
 void srTriggerDamageEffect() {
     auto& triggerDamageMainCtx = *(TriggerDamageEffectCtx*)getEffect60QueueTop();

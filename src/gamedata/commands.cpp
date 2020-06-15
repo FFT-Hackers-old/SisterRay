@@ -285,7 +285,7 @@ u16 getDefaultCmdAnimScript(u16 commandIdx) {
             break;
         }
         default: {
-            return 0;
+            return 0xFFFF;
             break;
         }
     }

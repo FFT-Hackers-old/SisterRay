@@ -18,5 +18,6 @@ SRPFNSPELLLOADERCALLBACK srGetLoaderCallback(SrAnimationType dispatchCommandIdx,
 void srLoadActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx);
 SRPFNSPELLEFFECTCALLBACK srGetDispatchCallback(SrAnimationType animationType, u8 animEffectID);
 void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx);
-
+void srDelayPushTargetedEffect100(u16 targetMask, u16 attackerIdx, u16 delayFrames, SRPFNSPELLEFFECTCALLBACK callback);
+void setEffectDisplayPoint(u8 actorIdx, u16 modelStatePointIdx, R3PointWord* ret);
 #endif

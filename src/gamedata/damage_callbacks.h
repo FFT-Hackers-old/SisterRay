@@ -12,7 +12,7 @@ void runFormulas(DamageCalculationEvent* srDamageEvent);
 void handleCover(DamageCalculationEvent* srDamageEvent);
 void handleSteal(DamageCalculationEvent* srDamageEvent);
 void handleDamageSuccessful(DamageCalculationEvent* srDamageEvent);
-void setupGameDamageAndImpactEvents(DamageCalculationEvent* srDamageEvent);
+void setImpactEvents(DamageCalculationEvent* srDamageEvent);
 void handleDeathImpactSetup(DamageCalculationEvent* srDamageEvent);
 void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent);
 void attemptStatusInfliction(DamageCalculationEvent* srDamageEvent);

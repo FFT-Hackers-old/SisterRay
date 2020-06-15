@@ -4,6 +4,7 @@
 #include "../impl.h"
 #include "status_names.h"
 #include "element_names.h"
+#include "../events/event_bus_interface.h"
 #include "damage_callback_utils.h"
 #include <algorithm>
 
@@ -38,14 +39,14 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     if (gameDamageEvent.targetID != targetID) {
         srLogWrite("Handling Retarget");
         gameResetAnimEventCamera();
-        damageContext->abilityFlags1 |= 0x20;
+        damageContext->hitTypeFlags |= 0x20;
     }
 
     u8 targetIDLocal = damageContext->targetID;
     if (!(damageContext->specialAbilityFlags & 1))
         damageContext->abilityFlags2 |= 4;
     if (aiContext.actorAIStates[targetID].stateFlags & 0x4000)
-        damageContext->abilityFlags1 |= 1u;
+        damageContext->hitTypeFlags |= 1u;
 
     srLogWrite("Preparing to run formulas");
     runFormulas(srDamageEvent);
@@ -53,7 +54,7 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
 
     gContext.eventBus.dispatch(PRE_DAMAGE_DEALT, (void*)srDamageEvent);
     if (!damageContext->abilityPower)
-        damageContext->abilityFlags1 |= 2u;
+        damageContext->hitTypeFlags |= 2u;
     /*if (sub_5DC08E(targetID))
         damageContext->elementalDefenseMask = 32;*/
     srLogWrite("applying Elemental Modifiers");
@@ -68,20 +69,20 @@ void calculateDamage(DamageCalculationEvent* srDamageEvent, u8 attackerID, u8 ta
     handleStatusInfliction(srDamageEvent);
     handleDamage(srDamageEvent);
 
-    if ((damageContext->abilityFlags1 & 0x40001) == 262145) {
-        damageContext->abilityFlags1 |= 0xFD;
+    if ((damageContext->hitTypeFlags & 0x40001) == 262145) {
+        damageContext->hitTypeFlags |= 0xFD;
     }
     // where impact events are made
-    setupGameDamageAndImpactEvents(srDamageEvent);
+    setImpactEvents(srDamageEvent);
     handleHealEffects(srDamageEvent);
 
     /*if (targetID < 3 && damageContext->attackerID >= 4 && damageContext->unkActorBlockPtr->learnedESkillsMask && damageContext->commandIndexCopy == 13) {
         handleLearnESkill();
     }*/
     gameDamageEvent.targetStatusMask = aiContext.actorAIStates[targetID].statusMask;
-    gameDamageEvent.damagedAnimScriptIdx = damageContext->targetReactionAnimation;
+    gameDamageEvent.damagedAnimScriptIdx = damageContext->damagedAnimScriptIdx;
 
-    if (damageContext->abilityFlags1 & 0x20)
+    if (damageContext->hitTypeFlags & 0x20)
         gameDamageEvent.damagedAnimScriptIdx = 9;
 
     handleDeathImpactSetup(srDamageEvent);
@@ -104,15 +105,26 @@ void runFormulas(DamageCalculationEvent* srDamageEvent) {
     auto& hitModifiers = srDamageEvent->srDamageContext->hitFormulaModifiers;
     auto damageFormula = gContext.damageFormulas.getResource(srDamageEvent->srDamageContext->damageFormula);
     auto& damageModifiers = srDamageEvent->srDamageContext->dmgFormulaModifiers;
+    for (auto& modifier : hitModifiers) {
+        srLogWrite("HIT MODIFIER: %i present", modifier);
+    }
+    srLogWrite("CHECK ACCURACY BOOL %i:", isHitFormulaModifierActive(srDamageEvent, CHECK_ACCURACY));
     if (isHitFormulaModifierActive(srDamageEvent, CHECK_ACCURACY)) {
-       gContext.eventBus.dispatch(PRE_HIT_FORMULA, (void*)srDamageEvent);
-       hitFormula.baseFormulaCallback(srDamageEvent);
-       gContext.eventBus.dispatch(POST_HIT_FORMULA, (void*)srDamageEvent);
-       auto rand = udist(rng) / 2;
-       if (srDamageEvent->srDamageContext->hitChance_ < rand) {
-           srLogWrite("Setting Action Hit: Successful");
-           setActionDidHit(srDamageEvent, true);
-       }
+        srLogWrite("CHECK ACCURACY ACTIVE, performing computation");
+        gContext.eventBus.dispatch(PRE_HIT_FORMULA, (void*)srDamageEvent);
+        hitFormula.baseFormulaCallback(srDamageEvent);
+        auto rand = udist(rng) / 2;
+
+        srLogWrite("CHECK ACCURACY ACTIVE, hit chance: %i", srDamageEvent->srDamageContext->hitChance_);
+        if (srDamageEvent->srDamageContext->hitChance_ > rand) {
+            srLogWrite("Setting Action Hit: Successful");
+            setActionDidHit(srDamageEvent, true);
+        }
+        else {
+            srLogWrite("Setting Action Hit: Miss");
+            setActionDidHit(srDamageEvent, false);
+        }
+        gContext.eventBus.dispatch(POST_HIT_FORMULA, (void*)srDamageEvent);
     }
     else {
         srLogWrite("Setting Action Hit: Successful");
@@ -151,7 +163,7 @@ void handleDamageSuccessful(DamageCalculationEvent* srDamageEvent) {
     gContext.eventBus.dispatch(POST_DAMAGE_DEALT, (void*)srDamageEvent);
     if (damageContext.attackerID != damageContext.targetID)
         damageContext.wasDamagedMask |= 1 << damageContext.targetID;
-    if (damageContext.abilityFlags1 & 4 && damageContext.attackHitCount <= 8)
+    if (damageContext.hitTypeFlags & 4 && damageContext.attackHitCount <= 8)
         handleSteal(srDamageEvent);
     applyReflect(srDamageEvent);
     // Set Barrier/MBarrier flags
@@ -259,15 +271,16 @@ void handleCover(DamageCalculationEvent* srDamageEvent) {
     }
 }
 
-void setupGameDamageAndImpactEvents(DamageCalculationEvent* srDamageEvent) {
+void setImpactEvents(DamageCalculationEvent* srDamageEvent) {
     auto& damageContext = *srDamageEvent->damageContext;
     auto& srDamageContext = *srDamageEvent->srDamageContext;
     auto& damageEvent = *srDamageEvent->gameDamageEvent;
     auto& aiContext = *srDamageEvent->aiContext;
     damageEvent.targetStatusMask = aiContext.actorAIStates[damageContext.targetID].statusMask;
-    damageEvent.damagedAnimScriptIdx = damageContext.targetReactionAnimation;
+    damageEvent.damagedAnimScriptIdx = damageContext.damagedAnimScriptIdx;
+    srLogWrite("Set final target reaction script ID to %i", damageEvent.damagedAnimScriptIdx);
 
-    if (damageContext.abilityFlags1 & 2) {
+    if (damageContext.hitTypeFlags & 2) {
         if (!wasStatusChanged(srDamageEvent)) {
             if (damageEvent.impactEventQueueIdx == -1) {
                 createImpactEvent(
@@ -296,8 +309,10 @@ void setupGameDamageAndImpactEvents(DamageCalculationEvent* srDamageEvent) {
         gContext.eventBus.dispatch(ON_FINALIZE_IMPACT_EVENTS, &setupDamageEvent);
     }
 
-    if (damageContext.abilityFlags1 & 0x20)
+    if (damageContext.hitTypeFlags & 0x20)
         damageEvent.damagedAnimScriptIdx = 9;
+
+    dispatchEvent(SET_TARGET_REACTION, srDamageEvent);
 }
 
 void handleHealEffects(DamageCalculationEvent* srDamageEvent) {
@@ -362,19 +377,19 @@ void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent) {
     auto& damageContext = *srDamageEvent->damageContext;
 
     damageContext.targetID = targetID;
-    srDamageEvent->srDamageContext->targetState = gContext.battleActors.getActiveBattleActor(damageContext.targetID);
+    srDamageEvent->srDamageContext->targetState = getActiveBattleActor(damageContext.targetID);
     auto& targetBattleVars = *srDamageEvent->srDamageContext->targetState.actorBattleVars;
 
-    srDamageEvent->srDamageContext->targetState = gContext.battleActors.getActiveBattleActor(targetID);
     damageContext.targetEnemyIndex = -1;
     //damageContext.unkDword10 = 0;
     damageContext.abilityFlags2 = 0;
     damageContext.targetDefense = 0;
     damageContext.currentDamage = 0;
     damageContext.targetStateFlags = 0;
-    damageContext.abilityFlags1 = damageContext.miscActionFlags;
+    damageContext.hitTypeFlags = damageContext.miscActionFlags;
     damageContext.finalHitRate = damageContext.abilityHitRate;
-    damageContext.targetReactionAnimation = targetBattleVars.damageAnimID;
+    damageContext.damagedAnimScriptIdx = targetBattleVars.missAnimScript;
+    srLogWrite("Damaged anim script set to: %x", targetBattleVars.missAnimScript);
     damageContext.targetStatusMask = targetBattleVars.statusMask;
     damageContext.targetLevel = targetBattleVars.level;
     damageContext.targetCurrentHP = targetBattleVars.currentHP;
@@ -385,7 +400,7 @@ void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent) {
     damageContext.attackImpactEffectID = -1;
     damageContext.killRecoverDamage = -1;
     if (!damageContext.abilityPower)
-        damageContext.targetReactionAnimation = 51;
+        damageContext.damagedAnimScriptIdx = 51;
 
     else if (!damageContext.abilityPower) {
         setActionDidHit(srDamageEvent, false);
@@ -394,21 +409,6 @@ void setTargetContext(u8 targetID, DamageCalculationEvent* srDamageEvent) {
     damageContext.elementalDefenseMask = 0;
     damageContext.currentDamage = 0;
 
-    if (damageContext.specialAbilityFlags & 0x400) {
-        /*if (damageContext->specialAbilityFlags & 4)
-            damageContext->targetDefense = getStatWithModifiers(
-                targetActorID,
-                aiContext.actorAIStates[targetActorID].mdefense,
-                3);
-        else
-            damageContext->targetDefense = getStatWithModifiers(
-                targetActorID,
-                aiContext.actorAIStates[targetActorID].defense,
-                2);
-    }
-    if (damageContext->targetDefense > 512)
-        damageContext->targetDefense = 512;*/
-    }
     if (damageContext.targetID >= 4)
         damageContext.targetEnemyIndex = getInBattleFormationActorData(damageContext.targetID - 4)->enemyID;
 }
@@ -561,13 +561,13 @@ void handleStatusInfliction(DamageCalculationEvent* srDamageEvent) {
         if ((newTargetStatus ^ previousTargetStatus) & 1) {
             if (previousTargetStatus & 1){
                 if (damageContext->targetID >= 4)
-                    damageContext->targetReactionAnimation = 57;
+                    damageContext->damagedAnimScriptIdx = 57;
             }
             else if (damageContext->targetStatusMask & 0x400) {
-                damageContext->targetReactionAnimation = 48;
+                damageContext->damagedAnimScriptIdx = 48;
             }
             else if (damageContext->targetStatusMask & 0x800) {
-                damageContext->targetReactionAnimation = 5;
+                damageContext->damagedAnimScriptIdx = 5;
             }
             else {
                 u16 defaultAnimScript;
@@ -575,7 +575,7 @@ void handleStatusInfliction(DamageCalculationEvent* srDamageEvent) {
                     defaultAnimScript = aiContext.actorAIStates[damageContext->targetID].damageAnimID;
                 else
                     defaultAnimScript = byte_7B76C0[damageContext->targetReactionAnimation];
-                damageContext->targetReactionAnimation = defaultAnimScript;
+                damageContext->damagedAnimScriptIdx = defaultAnimScript;
             }
         }
         else {
@@ -673,7 +673,7 @@ typedef void(*SRPFN_GAMESETREACTIONANIM)(bool);
 #define gameSetHitReaction (SRPFN_GAMESETREACTIONANIM(0x5DB8D6))
 void handleDamageReaction(DamageCalculationEvent* srDamageEvent) {
     auto damageContext = srDamageEvent->damageContext;
-    if (damageContext->abilityFlags1 & 3) {
+    if (damageContext->hitTypeFlags & 3) {
         if (!checkActionDidHit(srDamageEvent)) {
             damageContext->attackImpactSound = damageContext->missAtkSound;
         }
@@ -702,8 +702,11 @@ void handleDamageReaction(DamageCalculationEvent* srDamageEvent) {
         if (!(damageContext->abilityFlags2 & 1) && damageContext->killRecoverDamage)
             gameSetHitReaction(0);
         else
-            damageContext->targetReactionAnimation = 51;
+            damageContext->damagedAnimScriptIdx = 51;
+
+
     }
+    srLogWrite("Target reaction script set to : %x", damageContext->damagedAnimScriptIdx);
 }
 
 void applyDamageCaps(DamageCalculationEvent* srDamageEvent) {
@@ -794,10 +797,10 @@ void applyReflect(DamageCalculationEvent* srDamageEvent) {
         else {
             srDamageEvent->srDamageContext->toRemoveStatuses.push_back(StatusNames::REFLECT);
         }
-        damageContext->abilityFlags1 |= 2u;
+        damageContext->hitTypeFlags |= 2u;
 
         if (damageContext->targetID < 3)
-            damageContext->targetReactionAnimation = 10;
+            damageContext->damagedAnimScriptIdx = 10;
 
         srDamageEvent->gameDamageEvent->actionFlags |= 2; //Display reflect flag
     }
@@ -823,16 +826,20 @@ void applyElementalModifiers(DamageCalculationEvent* setupEvent) {
     auto& targetStats = *targetState.battleStats;
     auto& attackerStats = *attackerState.battleStats;
     for (const auto& name : setupEvent->srDamageContext->attackElements) {
+        srLogWrite("Applying modifiers for element: %s", name.c_str());
         const auto& element = gContext.elements.getElement(name);
         if (std::find(srDamageContext.attackElements.begin(), srDamageContext.attackElements.end(), name) != srDamageContext.attackElements.end()) {
             auto res = targetStats[element.resName];
+            srLogWrite("target res value: %i", res.activeValue);
             if (res.activeValue == 255) {
                 aiContext.actorAIStates[damageContext.targetID].currentHP = aiContext.actorAIStates[damageContext.targetID].maxHP;
                 aiContext.actorAIStates[damageContext.targetID].currentMP = aiContext.actorAIStates[damageContext.targetID].maxMP;
                 damageContext.abilityFlags2 = 1;
-                damageContext.abilityFlags1 &= 0xFFFFFFFD;
+                damageContext.hitTypeFlags &= 0xFFFFFFFD;
                 srDamageContext.toAddStatuses.erase(std::remove(srDamageContext.toAddStatuses.begin(), srDamageContext.toAddStatuses.end(), StatusNames::DEATH));
                 damageContext.killRecoverDamage = -3;
+                srLogWrite("Elemental Recovery Triggered");
+                break;
             }
             if (res.activeValue == -255) {
                 std::vector<std::string> toAdd = { StatusNames::DEATH };
@@ -843,23 +850,28 @@ void applyElementalModifiers(DamageCalculationEvent* setupEvent) {
                         toRemove.push_back(statusPair.first);
                     }
                 }
-                damageContext.abilityFlags1 &= 0xFFFFFFFD;
+                damageContext.hitTypeFlags &= 0xFFFFFFFD;
                 damageContext.abilityFlags2 &= 0xFFFFFFFE;
                 damageContext.killRecoverDamage = -2;
+                srLogWrite("Elemental Death Triggered");
                 break;
             }
             auto pen = attackerStats[element.penName];
+            srLogWrite("attacker res pen: %i", pen.activeValue);
             auto eRes = res.activeValue - pen.activeValue;
             auto aff = attackerStats[element.affName];
             if (eRes > 100) {
+                srLogWrite("Effective Res > 100, flagging absorbtion");
                 damageContext.abilityFlags2 ^= 1u;
             }
-            elementalDamageModifier = elementalDamageModifier - (eRes / 100);
-            elementalDamageModifier = (aff.activeValue / 100) + elementalDamageModifier;
+            elementalDamageModifier = elementalDamageModifier - (eRes / 100.0f);
+            elementalDamageModifier = (aff.activeValue / 100.0f) + elementalDamageModifier;
+            srLogWrite("Elemental Modifer: %f", elementalDamageModifier);
             if (name == ElementNames::RESTORE) {
                 damageContext.abilityFlags2 |= 1u;
             }
         }
     }
     damageContext.currentDamage = damageContext.currentDamage * elementalDamageModifier;
+    srLogWrite("Damage After elemental modifers: %i", damageContext.currentDamage);
 }

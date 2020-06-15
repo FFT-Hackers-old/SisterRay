@@ -37,7 +37,7 @@ struct _GameContext {
     u32 width;
     u32 heiht;
     u32 bitsPerPixel;
-    u32 field_10;
+    u32 totalBones;
     u32 field_14;
     u32 field_18;
     u32 field_1C;
@@ -234,7 +234,7 @@ typedef void(*SRGFXDRIVER_SETRENDERSTATE)(AuxillaryGFX*, GameContext*);
 typedef void(*SRGFXDRIVER_FIELD74CB)(u32, GameContext*);
 typedef void(*SRGFXDRIVER_FIELD78CB)(PolygonSet*, GameContext*);
 typedef void(*SRGFXDRIVER_DEFERREDDRAW)(PolygonSetChain*, GameContext*);
-typedef void(*SRGFXDRIVER_FIELD80CB)(GraphicsObject*, GameContext*);
+typedef void(*SRGFXDRIVER_FIELD80CB)(GameDrawable*, GameContext*);
 typedef void(*SRGFXDRIVER_FIELD84CB)(u32, GameContext*);
 typedef u32(*SRGFXDRIVER_BEGINSCENE)(u32, GameContext*);
 typedef void(*SRGFXDRIVER_ENDSCENE)(GameContext*);

@@ -48,7 +48,7 @@ typedef struct {
 #pragma pack(push, 1)
 typedef struct {
     u32 version;
-    u32 actionFlags;
+    u32 field_4;
     u32 colorKey;
     u32 field_C;
     u32 field_10;
@@ -135,9 +135,9 @@ typedef struct {
     u32 field_20;
     u32 field_24;
     u32 field_28;
-    u32 drainedHP;
-    u32 drainedMP;
-    u32 innateStatusMask;
+    u32 field_2C;
+    u32 field_30;
+    u32 field_34;
     u32 field_38;
     u32 field_3C;
     u32 field_40;
@@ -171,7 +171,7 @@ typedef struct {
     u32 actionFlags;
     u32 limitFastATBMask;
     u32 field_C;
-    u32 field_10;
+    u32 totalBones;
     u32 field_14;
     u32 field_18;
     u32 field_1C;

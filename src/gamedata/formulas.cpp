@@ -10,7 +10,7 @@ void srNoDamage(DamageCalculationEvent* damageEvent) {
     auto& srDamageCtx = *damageEvent->srDamageContext;
     auto& gameDamageCtx = *damageEvent->damageContext;
 
-    gameDamageCtx.abilityFlags1 |= 2u;
+    gameDamageCtx.hitTypeFlags |= 2u;
 }
 
 #define gameHandleOrientation ((PFNSR_VOIDSUB)0x5DE356)
@@ -29,10 +29,12 @@ void srAttackDamageBase(DamageCalculationEvent* damageEvent) {
     auto atkLevel = gameDamageCtx.attackerLevel;
     i32 attackerStr;
     if (srDamageCtx.damageType == MAGICAL) {
+        srLogWrite("Magical attack, use magic for damage");
         attackerStr = attackerState.battleStats->at(StatNames::MAGIC).activeValue;
     }
     else {
-        attackerStr = attackerState.battleStats->at(StatNames::STRENGTH).activeValue;
+        srLogWrite("Physical attack, use strength for damage");
+        attackerStr = attackerState.battleStats->at(StatNames::ATTACK_POWER).activeValue;
     }
 
     srLogWrite("attackerStr: %u | attackerLvl: %i", attackerStr, atkLevel);
@@ -74,17 +76,19 @@ void srSpellDamageBase(DamageCalculationEvent* damageEvent) {
 void srAttackHitBase(DamageCalculationEvent* damageEvent) {
     auto hitModifiers = damageEvent->srDamageContext->hitFormulaModifiers;
     const auto& attackerState = damageEvent->srDamageContext->attackerState;
-    auto attackerAcc = attackerState.battleStats->at(StatNames::WEAPON_ACCURACY);
+    auto attackerAcc = attackerState.battleStats->at(StatNames::ACCURACY);
 
     const auto& targetState = damageEvent->srDamageContext->targetState;
     auto targetEvade = targetState.battleStats->at(StatNames::EVADE);
 
     auto actionHitRate = damageEvent->damageContext->finalHitRate;
-    auto delta = (actionHitRate) * (1 + (attackerAcc.activeValue / 100)) - targetEvade.activeValue;
+    auto delta = (actionHitRate) * (1 + (attackerAcc.activeValue / 255.0f)) - targetEvade.activeValue;
+    srLogWrite("Computed hit chance: %f from action hit: %i, accuracy: %i, evade: %i", delta, actionHitRate, attackerAcc.activeValue, targetEvade.activeValue);
     if (delta < 0)
         delta = 0;
 
     damageEvent->srDamageContext->hitChance_ = delta;
+    srLogWrite("Running Hit Formula, hit chance: %i", delta);
 }
 
 void srSpellHitBase(DamageCalculationEvent* damageEvent) {
@@ -102,6 +106,7 @@ void srSpellHitBase(DamageCalculationEvent* damageEvent) {
         delta = 0;
 
     damageEvent->srDamageContext->hitChance_ = delta;
+    srLogWrite("Running Hit Formula, hit chance: %i", delta);
 }
 
 void initFormulas() {

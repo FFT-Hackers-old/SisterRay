@@ -153,9 +153,13 @@ void* srInitializeAnimScriptsData(const char* filename, ModelAAHeader* aaHeader)
 SISTERRAY_API void addAnimationScript(const char* modName, u16 modIdx, const char* modelName, u8* script, u16 scriptLength) {
     u16 trueAnimScriptLength = scriptLength;
     auto name = std::string(modName) + std::to_string(modIdx);
-    auto animationScript = animScriptFromBuffer(script, scriptLength, &trueAnimScriptLength);
+    AnimationScript animationScript;
+    for (auto scriptIdx = 0; scriptIdx < scriptLength; scriptIdx++) {
+        animationScript.push_back(script[scriptIdx]);
+    }
+    //auto animationScript = animScriptFromBuffer(script, scriptLength, &trueAnimScriptLength);
 
-    SrAnimationScript srAnimScript = { trueAnimScriptLength, animationScript };
+    SrAnimationScript srAnimScript = { scriptLength, animationScript };
     if (!gContext.battleAnimationScripts.contains(modelName)) {
         srLogWrite("MODEL: %s not found in registry, default constructing", modelName);
         auto modelScripts = SrModelScripts();

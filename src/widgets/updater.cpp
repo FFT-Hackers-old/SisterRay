@@ -9,6 +9,7 @@ void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
     }
     auto typedPtr = (CursorGridWidget*)self;
     auto magics = getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID).srPartyMember->actorMagics;
+    srLogWrite("Drawing Magic with Flat Indiex: %i", flatIndex);
     if (magics[flatIndex].magicIndex == 0xFF) {
         disableWidget(getChild(widget, std::string("ARW")));
         disableWidget(getChild(widget, std::string("TXT")));

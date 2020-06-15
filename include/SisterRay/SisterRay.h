@@ -16,6 +16,7 @@
 #include <SisterRay/model.h>
 #include <SisterRay/srevents.h>
 #include <SisterRay/game_files.h>
+#include <SisterRay/srinput.h>
 
 /*Macro for handling compilation in both C and C++*/
 #if defined(__cplusplus)

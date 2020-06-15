@@ -38,4 +38,5 @@ Widget* allocateStaggerBarWidget(const char* name, i32 xCoordinate, i32 yCoordin
 void setStaggerToInflict(SrActionImpactSetupEvent* srEvent);
 void triggerStaggerDamage(TriggerDamageDisplayEvent* srEvent);
 void applyStaggerDamageMedifiers(DamageCalculationEvent* srEvent);
+void handleStaggerNoDodge(DamageCalculationEvent* srDamageEvent);
 #endif // !STAGGER_H

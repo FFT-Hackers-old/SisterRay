@@ -20,7 +20,7 @@ typedef struct {
     u32 actionFlags;
     u32 limitFastATBMask;
     u32 textureCount;
-    u32 field_10;
+    u32 totalBones;
     u32 field_14;
     TextureHeader* textureArray;
     u32 field_1C;
@@ -115,8 +115,8 @@ typedef struct {
     u16 animScriptPtr; //BE117A, 0xA
     u16 field_C;
     u16 runningAnimIdx; //0xE
-    u16 field_10;
-    u16 field_12;
+    u16 totalBones;
+    u16 height;
     u16 field_14;
     u16 initialXRotation;
     u16 initialYRotation;
@@ -203,6 +203,12 @@ typedef struct {
     BattleModelState* battleModelState;
     u8** animationScriptTable;
 } AnimScriptEvent;
+
+typedef struct InputBuffer_ InputBuffer;
+typedef struct {
+    AnimScriptEvent* animScriptEvent;
+    InputBuffer* inputBuffer;
+} ComboEvent;
 
 #pragma pack(push, 1)
 typedef struct {

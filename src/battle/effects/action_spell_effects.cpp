@@ -267,3 +267,17 @@ void srDispatchActionSpellEffects(u8 actorID, u8 commandIdx, u16 actionIdx) {
     auto effectCallback = srGetDispatchCallback(animationType, animEffectID);
     effectCallback(getAnimatingActionTargetMask(), actorID);
 }
+
+
+typedef void(*PFNSR_DELAYACTIONEFFECT100PUSH)(u16, u16, u16, SRPFNSPELLEFFECTCALLBACK);
+static const auto gamePushDelayedEFfect = ((PFNSR_DELAYACTIONEFFECT100PUSH)0x5BFD3E);
+void srDelayPushTargetedEffect100(u16 targetMask, u16 attackerIdx, u16 delayFrames, SRPFNSPELLEFFECTCALLBACK callback) {
+    gamePushDelayedEFfect(targetMask, attackerIdx, delayFrames, callback);
+}
+
+
+typedef void(*PFNSR_SETEFFECTDISPLAYPNT)(u8, u16, R3PointWord*);
+static const auto gameSetDisplayPnt = ((PFNSR_SETEFFECTDISPLAYPNT)0x5BFD3E);
+void setEffectDisplayPoint(u8 actorIdx, u16 modelStatePointIdx, R3PointWord* ret) {
+    gameSetDisplayPnt(actorIdx, modelStatePointIdx, ret);
+}

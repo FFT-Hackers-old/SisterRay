@@ -2,6 +2,7 @@
 #define GAME_DATA_INTERFACE_H
 
 #include <SisterRay/SisterRay.h>
+#include "formulas.h"
 
 /*Public API file, consumers can use these methods to add their own game data resources*/
 SISTERRAY_API SrWeaponData getSrWeapon(u16 itemID, const char* modName);
@@ -44,6 +45,7 @@ SISTERRAY_API void addElementToAction(const char* modName, u16 modActionIdx, con
 SISTERRAY_API void addStatusToAction(const char* modName, u16 modActionIdx, const char* statusName, u8 inflictionChance, u8 doesRemove, u8 doesToggle, u16 duration);
 SISTERRAY_API void setActionAnimationScript(const char* modName, u16 modActionID, const char* modelName, const char* scriptModName, u16 modScriptID);
 SISTERRAY_API void setEffectCallback(const char* modName, u16 modActionID, SRPFNSPELLEFFECTCALLBACK callback);
+SISTERRAY_API void addAttackStat(const char* modName, u16 modActionIdx, const char* statName, i32 value);
 
 SISTERRAY_API bool maskIsSingleTarget(u16 targetMask);
 SISTERRAY_API u8 getFirstMaskBitIdx(u16 targetMask);
@@ -54,5 +56,7 @@ SISTERRAY_API void incrementStat(const char* statName, i32* target, i32 incremen
 SISTERRAY_API void decrementStat(const char* statName, i32* target, i32 decrement);
 
 
+SISTERRAY_API void addHitModifier(const  char* modName, u16 modActionID, HitModifiers hitModifier);
 SISTERRAY_API void registerStatus(const char* statusName, const char* displayName, const char* penName, const char* resName, SrStatusBehavior  behavior, bool isGameStatus=false, u16 gameIndex=0xFFFF);
+
 #endif

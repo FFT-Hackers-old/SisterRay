@@ -344,8 +344,8 @@ void SrPartyMembers::recalculateCharacter(u8 characterID) {
     gamePartyMember.characterID = characterID;
     gamePartyMember.maxHP = srPartyMember.stats[StatNames::HP].statValue;
     gamePartyMember.maxMP = srPartyMember.stats[StatNames::MP].statValue;
-    gamePartyMember.currentHP = getPartyActorCharacterRecord(characterID)->current_HP;
-    gamePartyMember.currentMP = getPartyActorCharacterRecord(characterID)->current_MP;
+    gamePartyMember.currentHP = min(getPartyActorCharacterRecord(characterID)->current_HP, gamePartyMember.maxHP);
+    gamePartyMember.currentMP = min(getPartyActorCharacterRecord(characterID)->current_MP, gamePartyMember.maxMP);
     InitPartyMemberEvent partyEvent{ characterID, &getSrCharacter(characterID) };
     gContext.eventBus.dispatch(INIT_PLAYER_PARTY_MEMBER, &partyEvent);
     //TODO after all references are removed kill these copies

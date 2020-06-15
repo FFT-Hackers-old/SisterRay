@@ -53,7 +53,7 @@ typedef struct {
     u16 damageEventQueueIdx;
     u16 field_C;
     u16 field_A;
-    u32 field_10;
+    u32 totalBones;
     u32 field_14;
     u16 field_18;
     u16 field_1A;

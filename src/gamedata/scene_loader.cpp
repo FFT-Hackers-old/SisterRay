@@ -121,7 +121,6 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
         setStealableItems(srEnemyData);
         /*Add enemies to the enemy registry*/
         gContext.enemies.addElement(registryName, srEnemyData);
-        srLogWrite("Enemy:%s added to registry with unique idx %d", registryName.c_str(), *uniqueIdx);
     }
 
     /*Create a formation referencing the unique enemy IDs*/
@@ -136,12 +135,6 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
         formation.formationAI = formationAI;
         gContext.formations.addElement(assembleGDataKey(*formationIndex), formation);
         *formationIndex = *formationIndex + 1;
-        srLogWrite("Formation:%s added to registry with enemies %d, %d, %d",
-            assembleGDataKey(*formationIndex).c_str(),
-            formation.FormationEnemyIDs.uniqueIDs[0],
-            formation.FormationEnemyIDs.uniqueIDs[1],
-            formation.FormationEnemyIDs.uniqueIDs[2]
-        );
     }
 
     /*Duduplicate enemy abilities and put them into a registry by attack ID. They can be fetched via the string form of their attack ID*/
@@ -202,10 +195,26 @@ void calculateEnemyStats(SrEnemyData& enemy) {
     stats[StatNames::DEXTERITY].baseValue = gameEnemy.dexterity;
     stats[StatNames::AGILITY].baseValue = gameEnemy.dexterity;
     stats[StatNames::LUCK].baseValue = gameEnemy.luck;
-    stats[StatNames::FOCUS].baseValue = gameEnemy.luck;
-    stats[StatNames::INSIGHT].baseValue = gameEnemy.luck;
+    stats[StatNames::FOCUS].baseValue = gameEnemy.mDefense;
+    stats[StatNames::INSIGHT].baseValue = gameEnemy.magic;
     stats[StatNames::EVADE].baseValue = gameEnemy.enemyEvade;
     stats[StatNames::MEVADE].baseValue = gameEnemy.enemyEvade;
+    for (const auto& element : gContext.stats.named_registry) {
+        if (gContext.stats.getResource(element.second).isPrimary) {
+            stats[element.first].statValue = stats[element.first].baseValue;
+        }
+    }
+    for (auto& statElement : gContext.stats.named_registry) {
+        auto& statName = statElement.first;
+        auto& stat = gContext.stats.getResource(statElement.second);
+        if (stat.isDerived) {
+            if (stat.derivedFormula) {
+                StatFormulaCtx ctx{ &(stats), false, 0xFF, true, enemy.modelID};
+                srLogWrite("Setting derived forumla stat %s value %i for enemy %s", stat.displayName.unicode(), stat.derivedFormula(&ctx), EncodedString(enemy.enemyData.enemyName).unicode());
+                setStat(statName.c_str(), &stats[statName].baseValue, stat.derivedFormula(&ctx));
+            }
+        }
+    }
 
     auto elements = &(gameEnemy.elementTypes[0]);
     auto elementModifiers = &(gameEnemy.elementModifiers[0]);

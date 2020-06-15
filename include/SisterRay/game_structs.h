@@ -254,10 +254,10 @@ typedef struct {
     u32 targetEnemyIndex; //0x20C
     u32 targetDefense; //0x210
     i32 currentDamage; //0x214
-    u32 abilityFlags1; //0x218
+    u32 hitTypeFlags; //0x218
     u32 unkDWord6; //0x21C
     u32 abilityFlags2; //0x220
-    u32 unkActionID; //0x224
+    u32 damagedAnimScriptIdx; //0x224
     u32 targetStatusMask; //0x228
     u32 targetStatusImmuneMask; //0x22C
     u32 elementalDefenseMask; //0x230
@@ -324,7 +324,8 @@ typedef struct {
     u16     gilStolen;
     u16     itemStolen;
     u16     unknown7;
-    u16     apValue;
+    u8      missAnimScript;
+    u8      APValue;
     u32     gilValue;
     u32     expValue;
     u8      unused8;

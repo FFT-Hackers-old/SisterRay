@@ -8,6 +8,7 @@
 #include "../EncodedString.h"
 #include "../sr_named_registry.h"
 
+
 struct SrStat_ {
     EncodedString displayName;
     i32 maxValue;
@@ -65,6 +66,17 @@ struct SrBattleStat_ {
     i32 statValue;
     resourceIncrement incrementCtx;
     std::vector<StatModifier> modifiers; //consumed and decremented on V-Timer in battle, modifies active value
+};
+
+
+using StatMap = std::unordered_map<std::string, SrBoostedStat>;
+
+struct StatFormulaCtx_ {
+    StatMap* stats;
+    bool isCharacter;
+    u8 characterIdx;
+    bool isEnemy;
+    u16 enemyID;
 };
 
 

@@ -22,6 +22,6 @@ void battleSummonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
         return;
     }
     enableWidget(getChild(widget, std::string("TXT")));
-    updateText(getChild(widget, std::string("TXT")), getCommandAction(CMD_SUMMON, summons[flatIndex].magicIndex).attackName.str());
+    updateText(getChild(widget, std::string("TXT")), getCommandAction(CMD_SUMMON, summons[flatIndex].magicIndex).name.str());
     updateTextColor(getChild(widget, std::string("TXT")), COLOR_WHITE);
 }

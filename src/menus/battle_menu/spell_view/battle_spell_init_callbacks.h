@@ -12,4 +12,5 @@
 void initBattleMagicViewWidget(const MenuInitEvent* event);
 
 
+
 #endif

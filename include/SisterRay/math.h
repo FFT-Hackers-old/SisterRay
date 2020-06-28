@@ -21,6 +21,15 @@ typedef struct {
 
 #pragma pack(push, 1)
 typedef struct {
+    i16 x;
+    i16 y;
+    i16 z;
+    i16 w;
+} R3PointWordH;
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+typedef struct {
     u16 x;
     u16 y;
 } R2PointWord;
@@ -34,6 +43,14 @@ typedef struct {
 } R3PointDWord;
 #pragma pack(pop)
 
+#pragma pack(push, 1)
+typedef struct {
+    i32 x;
+    i32 y;
+    i32 z;
+    i32 w;
+} R3PointDWordH;
+#pragma pack(pop)
 
 #pragma pack(push, 1)
 typedef struct {

@@ -61,5 +61,4 @@ typedef struct {
     u16 field_1E;
 } TriggerDamageEffectCtx;
 #pragma pack(pop)
-
 #endif

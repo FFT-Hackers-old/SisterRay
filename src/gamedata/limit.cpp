@@ -34,9 +34,10 @@ void loadCloudAnimScripts() {
 }
 
 void createCloudLimitActions() {
+    auto& character = gContext.characters.getResource(0); //Cloud
     auto braver = SrActionData();
-    braver.attackName = "Braver";
-    braver.attackDesc = "Powerful Jumping Slash, Capable of Shattering Defenses";
+    braver.name = "Braver";
+    braver.description = "Powerful Jumping Slash, Capable of Shattering Defenses";
     braver.baseData.attackPower = 48;
     braver.baseData.additionalEffect = 0xFF;
     braver.baseData.additionalEffectModifier = 0xFF;
@@ -53,11 +54,12 @@ void createCloudLimitActions() {
     setActionAnimationScript(CLOUD_LIMIT_MOD_NAME, 0, "CLOUD.DAT", CLOUD_LIMIT_MOD_NAME, 0);
     setActionEffectType(CLOUD_LIMIT_MOD_NAME, 0, LIMIT);
     addActionToCommand(BASE_PREFIX, CMD_LIMIT, CLOUD_LIMIT_MOD_NAME, 0);
+    character.limitBreaks.push_back(0);
 
 
     auto cross = SrActionData();
-    cross.attackName = "Cross-Slash";
-    cross.attackDesc = "Powerful Jumping Slash, Capable of Shattering Defenses";
+    cross.name = "Cross-Slash";
+    cross.description = "Powerful Jumping Slash, Capable of Shattering Defenses";
     cross.baseData.attackPower = 30;
     cross.baseData.additionalEffect = 0;
     cross.baseData.additionalEffectModifier = 3;
@@ -74,11 +76,12 @@ void createCloudLimitActions() {
     setActionAnimationScript(CLOUD_LIMIT_MOD_NAME, 1, "CLOUD.DAT", CLOUD_LIMIT_MOD_NAME, 1);
     setActionEffectType(CLOUD_LIMIT_MOD_NAME, 1, LIMIT);
     addActionToCommand(BASE_PREFIX, CMD_LIMIT, CLOUD_LIMIT_MOD_NAME, 1);
+    character.limitBreaks.push_back(1);
 
 
     auto clim = SrActionData();
-    clim.attackName = "Climhazzard";
-    clim.attackDesc = "Stab your foe, and cleave them in two";
+    clim.name = "Climhazzard";
+    clim.description = "Stab your foe, and cleave them in two";
     clim.baseData.attackPower = 60;
     clim.baseData.additionalEffect = 0xFF;
     clim.baseData.additionalEffectModifier = 0;
@@ -95,6 +98,7 @@ void createCloudLimitActions() {
     setActionAnimationScript(CLOUD_LIMIT_MOD_NAME, 2, "CLOUD.DAT", CLOUD_LIMIT_MOD_NAME, 2);
     setActionEffectType(CLOUD_LIMIT_MOD_NAME, 2, LIMIT);
     addActionToCommand(BASE_PREFIX, CMD_LIMIT, CLOUD_LIMIT_MOD_NAME, 2);
+    character.limitBreaks.push_back(2);
 }
 
 

@@ -23,7 +23,7 @@ void drawBaseViewWidget(const MenuDrawEvent* event) {
 
             const char* characterName = nullptr;
             if (gContext.battleActors.isActorSummon(1)) {
-                characterName = getCommandAction(CMD_SUMMON, 2).attackName.str();
+                characterName = getCommandAction(CMD_SUMMON, 2).name.str();
             }
             else {
                 characterName = gContext.party.getActivePartyCharacter(partyIdx).gameCharacter->character_name;

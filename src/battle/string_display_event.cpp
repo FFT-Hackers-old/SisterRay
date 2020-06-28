@@ -68,7 +68,7 @@ void handleTopDisplayString(const MenuDrawEvent* event) {
     }
     else if (*actionDisplayActive) {
         enableWidget(topDisplayWidget);
-        auto textToDraw = getCommandAction(*stringCommandIdx, *stringActionIdx).attackName.str();
+        auto textToDraw = getCommandAction(*stringCommandIdx, *stringActionIdx).name.str();
         updateText(getChild(topDisplayWidget, "TXT"), textToDraw); // Will need some code to center the text+
         BoxWidget* box = (BoxWidget*)getChild(topDisplayWidget, "BOX");
         auto stringWidth = 12 * (EncodedString(textToDraw).size());
@@ -127,7 +127,7 @@ void handleBattleStrSubstitions(char* ret, const char* base) {
         case 0xEE: {
             // Get the name of the attack based on an absolute ID. Will need to modify calling code
             wordArg = wordReader[baseStrIdx + 1];
-            resourceName = gContext.attacks.getResource(wordArg).attackName.str();
+            resourceName = gContext.attacks.getResource(wordArg).name.str();
             retStrIdx += insertEncodedStr(ret, retStrIdx, resourceName);
             baseStrIdx += 3;
             break;

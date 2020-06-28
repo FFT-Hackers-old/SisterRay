@@ -31,7 +31,12 @@ void srHandlePoppedAction(BattleQueueEntry* poppedAction) {
         *dword_9AEA84 = 1;
     }
 
-    runSetupCallbacks(actionEvent);
+    if (getCommandAction(poppedAction->queueAction.actionCommandIndex, poppedAction->queueAction.actionAttackIndex).useOverrideCallbacks) {
+        runActionSetupCallbacks(actionEvent);
+    }
+    else {
+        runSetupCallbacks(actionEvent);
+    }
     *dword_9AEA84 = 2;
 
     if (!(*dword_9AEA60)) {

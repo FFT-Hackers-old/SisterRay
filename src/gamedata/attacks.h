@@ -16,27 +16,31 @@
 #include "gdata_utils.h"
 
 struct SrAttack_ {
-    AttackData attackData;
-    u16 attackID;
-    EncodedString attackName;
-    EncodedString attackDescription;
-    SrAnimationType animationType;
-    u16 animScriptIndex; //Overrides the command ID if set, -1 treated as null
-    bool useOverride;
-    SpellEffect overrideEffect;
-    bool useMulti;
-    SpellEffect multiEffect;
+    EncodedString name;
+    EncodedString description;
     std::vector<std::string> attackElements;
     std::vector<StatusInfliction> statusAttack;
-    std::unordered_map<std::string, SrStaticStat> stats; //For example status penetration
-    bool useOverrideLimits;
-    u16 hpDamageLimit;
-    u16 mpDamageLimit;
+    std::unordered_map<std::string, SrStaticStat> stats;
+    std::vector<SRPFNCOMMANDSETUP> setupCallbacks;
+    std::vector<SRPFNCMDSELECTCALLBACK> selectCallbacks;
     DamageType damageType;
     u16 damageFormula;
     std::unordered_set<DamageModifiers> dmgFormulaModifiers;
     u16 hitFormula;
     std::unordered_set<HitModifiers> hitFormulaModifiers;
+
+    AttackData attackData;
+    u16 attackID;
+    SrAnimationType animationType;
+    u16 animScriptIndex; //Overrides the command ID if set, -1 treated as null
+    bool useOverride;
+    SpellEffect overrideEffect;
+    bool useMulti;
+    SpellEffect multiEffect; //For example status penetration
+    bool useOverrideLimits;
+    bool useOverrideCallbacks;
+    u16 hpDamageLimit;
+    u16 mpDamageLimit;
 };
 
 class SrAttackRegistry : public SrNamedResourceRegistry<SrAttack, std::string> {

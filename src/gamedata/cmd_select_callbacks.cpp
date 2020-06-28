@@ -29,6 +29,10 @@ void cmdItemSelectHandler(SelectCommandEvent* event) {
     setMenuState(event->menuObect, BATTLE_ITEM_STATE);
 }
 
+void cmdLimitSelectHandler(SelectCommandEvent* event) {
+    setMenuState(event->menuObect, BATTLE_LIMIT_STATE);
+}
+
 void cmdWMagicSelectHandler(SelectCommandEvent* event) {
     *W_COMMAND_ENABLED = 1;
     cmdMagicSelectHandler(event);

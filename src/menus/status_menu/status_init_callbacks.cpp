@@ -75,7 +75,7 @@ void initStatCombatDataWidget(const MenuInitEvent* event) {
 }
 
 void statusCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
-    baseCommandNameViewUpdater(self, widget, flatIndex, STAT_MENU_ACTIVE_ACTOR);
+    commandNameViewUpdater(self, widget, flatIndex, STAT_MENU_ACTIVE_ACTOR);
 }
 
 Widget* allocateStatRow(const char* name, i32 xCoordinate, i32 yCoordinate){

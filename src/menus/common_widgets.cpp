@@ -61,18 +61,29 @@ Widget* allocateCommandRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
     return cmdWidget;
 }
 
-void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u8* updatingActor) {
-    const auto& commands = gContext.party.getActivePartyMember(*updatingActor).gamePartyMember->enabledCommandArray;
+void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u8* updatingActor) {
+    const EnabledCommand* commands = &(gContext.party.getActivePartyMember(*updatingActor).gamePartyMember->enabledCommandArray[0]);
     baseCommandNameViewUpdater(self, widget, flatIndex, commands);
 }
 
-void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u32* updatingActor) {
-    srLogWrite("Animating Commands for Actor: %x, ptr: %x", *updatingActor, updatingActor);
-    const auto& commands = gContext.party.getActivePartyMember(*updatingActor).gamePartyMember->enabledCommandArray;
+void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u32* updatingActor) {
+    const EnabledCommand* commands = &(gContext.party.getActivePartyMember(*updatingActor).gamePartyMember->enabledCommandArray[0]);
     baseCommandNameViewUpdater(self, widget, flatIndex, commands);
 }
 
-void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, const EnabledCommand (&commands)[16]) {
+
+void techniqueViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u32* updatingActor) {
+    const auto commands = gContext.party.getActivePartyMember(*updatingActor).srPartyMember->actorTechniques.data();
+    baseCommandNameViewUpdater(self, widget, flatIndex, commands);
+}
+
+
+void techniqueViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u8* updatingActor) {
+    const EnabledCommand* commands = gContext.party.getActivePartyMember(*updatingActor).srPartyMember->actorTechniques.data();
+    baseCommandNameViewUpdater(self, widget, flatIndex, commands);
+}
+
+void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, const EnabledCommand* commands) {
     if (self->collectionType != GridWidgetClass() && self->collectionType != StaticGridWidgetClass()) {
         return;
     }
@@ -82,7 +93,7 @@ void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
         return;
     }
     enableWidget(getChild(widget, std::string("TXT")));
-    updateText(getChild(widget, std::string("TXT")), gContext.commands.getResource(commands[flatIndex].commandID).commandName.str());
+    updateText(getChild(widget, std::string("TXT")), gContext.commands.getResource(commands[flatIndex].commandID).name.str());
     auto color = COLOR_WHITE;
     if (commands[flatIndex].commandFlags & 2) {
         color = COLOR_GRAY;
@@ -129,7 +140,6 @@ Widget* allocateActionRow(const char* name, i32 xCoordinate, i32 yCoordinate) {
 void updateActionsActor(Widget* cmdWidget, u8 actorIdx, Menu* menu, u16 cursorState) {
     for (u8 partyIdx = 0; partyIdx < 3; partyIdx++) {
         if (partyIdx == actorIdx) {
-            srLogWrite("SETTING ACTIVE MAGIC CURSOR to %i", partyIdx);
             enableWidget(getChild(cmdWidget, std::to_string(partyIdx)));
             if (menu) {
                 setActiveCursorIndex(menu, cursorState, actorIdx);

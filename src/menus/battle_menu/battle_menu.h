@@ -14,6 +14,8 @@
 #include "item_view/battle_item_callbacks.h"
 #include "phs_view/battle_phs_callbacks.h"
 #include "move_view/battle_move_callbacks.h"
+#include "technique_view/battle_technique_callbacks.h"
+#include "limit_view/battle_limit_callbacks.h"
 
 
 void battleMenuUpdateHandler(i32 updateStateMask);

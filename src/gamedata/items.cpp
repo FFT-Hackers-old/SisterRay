@@ -84,10 +84,10 @@ SrAttack attackFromItem(const SrItem& item) {
     attack.attackData.additionalEffect = item.gameItem.additionalEffectID;
     attack.attackData.additionalEffectModifier = item.gameItem.additionalEffectModifier;
 
-    attack.attackName = item.itemName;
+    attack.name = item.itemName;
     attack.animScriptIndex = 0xFFFF;
     attack.animationType = ITEM;
-    attack.attackDescription = item.itemDescription;
+    attack.description = item.itemDescription;
     return attack;
 }
 

@@ -405,11 +405,26 @@ void SrBattleActors::swapPartyToSummon(u8 summonIdx){
     *gameActor.party10 = *srActor.party10;
     *gameActor.party34 = *srActor.party34;
     //*gameActor.weaponCtx = *srActor.weaponCtx;
-    gContext.party.battleDeactivatePartyMember(0);
-    gContext.party.battleDeactivatePartyMember(2);
+    gContext.party.battleDeactivatePartySlot(0);
+    gContext.party.battleDeactivatePartySlot(2);
     getActiveBattleActor(0).actorBattleVars->stateFlags &= (~(0x8));
     getActiveBattleActor(2).actorBattleVars->stateFlags &= (~(0x8));
     srLogWrite("state for disabled actor: %x", getActiveBattleActor(0).actorBattleVars->stateFlags);
+}
+
+void SrBattleActors::swapSummonToParty() {
+    auto gameActor = getActiveBattleActor(1);
+    auto srActor = getSrBattleActor(1);
+    actorIsSummon[1] = false;
+    activeSummonIdx = 0xFFFF;
+    *gameActor.actorBattleVars = *srActor.actorBattleVars;
+    *gameActor.actorTimers = *srActor.actorTimers;
+    *gameActor.party10 = *srActor.party10;
+    *gameActor.party34 = *srActor.party34;
+    gContext.party.battleActivatePartySlot(0);
+    gContext.party.battleActivatePartySlot(2);
+    getActiveBattleActor(0).actorBattleVars->stateFlags |= ((0x8));
+    getActiveBattleActor(2).actorBattleVars->stateFlags |= ((0x8));
 }
 
 bool SrBattleActors::isActorSummon(u8 actorIdx) {
@@ -460,6 +475,10 @@ ActorBattleState SrBattleActors::getSrBattleActor(u8 actorIdx) {
     actorState.weaponCtx = nullptr;
     actorState.enemyData = &enemyActors[actorIdx - 4].enemyData;
     return actorState;
+}
+
+u16 SrBattleActors::getActiveSummonIdx() {
+    return activeSummonIdx;
 }
 
 

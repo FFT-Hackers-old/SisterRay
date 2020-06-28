@@ -88,6 +88,7 @@ typedef struct {
     SrCommandRegistry                   commands;
     SrAttackRegistry                    attacks;
     SrCharacterRegistry                 characters;
+    SrSummonRegistry                    summons;
     SrPartyMembers                      party;
     SrBattleActors                      battleActors;
     SrStatRegistry                      stats;

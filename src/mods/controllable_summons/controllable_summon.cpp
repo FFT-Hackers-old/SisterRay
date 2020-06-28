@@ -1,8 +1,8 @@
 #include "controllable_summon.h"
-#include "../battle/battle_engine_api.h"
-#include "../events/event_bus_interface.h"
-#include "../impl.h"
-#include "../gamedata/summons.h"
+#include "../../battle/battle_engine_api.h"
+#include "../../events/event_bus_interface.h"
+#include "../../impl.h"
+#include "../../gamedata/summons.h"
 
 #define CONTROL_SUMMON_MOD_NAME "srPlayableSummon"
 void loadControllableSummon() {
@@ -23,6 +23,7 @@ void loadControllableSummon() {
 void loadPlayableSummons() {
     loadPlayableSummonAnimations();
     loadPlayableSummonAnimScripts();
+    createIfritCommand();
     initIfritMenu();
 }
 
@@ -35,8 +36,13 @@ void loadPlayableSummonAnimScripts() {
     for (auto idx = 0; idx < 26; idx++) {
         addAnimationScript(CONTROL_SUMMON_MOD_NAME, idx + 2, summonModelNames[2].c_str(), &(summonFiller[0]), 2);
     }
+
     u8 summonCast[12] = { 0xE8, 0xFC, getSrPlayerAnimationIdx(CONTROL_SUMMON_MOD_NAME, 2, summonModelNames[2].c_str()), 0xA5, 0xEA, 6, 0xEC, 0xF4, 0xF, 0xF3, 0xE5, 0xEE };
     addAnimationScript(CONTROL_SUMMON_MOD_NAME, 29, summonModelNames[2].c_str(), &(summonCast[0]), 12);
+
+
+    u8 hellFireCast[12] = { 0xE8, 0xFC, getSrPlayerAnimationIdx(CONTROL_SUMMON_MOD_NAME, 2, summonModelNames[2].c_str()), 0xA5, 0xEA, 6, 0xEC, 0xF4, 0xF, 0xF3, 0xE5, 0xEE };
+    addAnimationScript(CONTROL_SUMMON_MOD_NAME, 30, summonModelNames[2].c_str(), &(summonCast[0]), 12);
     srLogWrite("REGISTERING SUMMON ANIMATION, Model : %s has %i animations", summonModelNames[2].c_str(), gContext.battleAnimationScripts.getElement(summonModelNames[2].c_str()).scriptCount);
 }
 
@@ -88,23 +94,23 @@ void createIfritCommand() {
     commandData.baseData.singleCameraID = 0xFFFF;
     commandData.baseData.multipleCameraID = 0xFFFF;
     commandData.auxData.animationEffectID = 0xFF;
-    commandData.commandName = "Ravage";
-    commandData.commandDesc = "Ravage the opponent";
+    commandData.name = "Ravage";
+    commandData.description = "Ravage the opponent";
     addSrCommand(commandData, 1, CONTROL_SUMMON_MOD_NAME);
-    registerSelectCallback(CONTROL_SUMMON_MOD_NAME, 0, cmdRavageSelectHandler);
-    registerSetupCallback(CONTROL_SUMMON_MOD_NAME, 0, loadAbility);
-    registerSetupCallback(CONTROL_SUMMON_MOD_NAME, 0, applyDamage);
+    registerSelectCallback(CONTROL_SUMMON_MOD_NAME, 1, cmdRavageSelectHandler);
+    registerSetupCallback(CONTROL_SUMMON_MOD_NAME, 1, loadAbility);
+    registerSetupCallback(CONTROL_SUMMON_MOD_NAME, 1, applyDamage);
 
     auto inferno = SrCommandData();
     inferno.baseData.singleCameraID = 0xFFFF;
     inferno.baseData.multipleCameraID = 0xFFFF;
     inferno.auxData.animationEffectID = 0xFF;
-    inferno.commandName = "Inferno";
-    inferno.commandDesc = "Use Inferno skills";
+    inferno.name = "Inferno";
+    inferno.description = "Use Inferno skills";
     addSrCommand(inferno, 2, CONTROL_SUMMON_MOD_NAME);
-    registerSelectCallback(CONTROL_SUMMON_MOD_NAME, 0, cmdInfernoSelectHandler);
-    registerSetupCallback(CONTROL_SUMMON_MOD_NAME, 0, loadAbility);
-    registerSetupCallback(CONTROL_SUMMON_MOD_NAME, 0, applyDamage);
+    registerSelectCallback(CONTROL_SUMMON_MOD_NAME, 2, cmdInfernoSelectHandler);
+    registerSetupCallback(CONTROL_SUMMON_MOD_NAME, 2, loadAbility);
+    registerSetupCallback(CONTROL_SUMMON_MOD_NAME, 2, applyDamage);
 }
 
 
@@ -113,13 +119,13 @@ void cmdInfernoSelectHandler(SelectCommandEvent* menuEvent) {
     setMenuState(menuEvent->menuObect, getStateByName(menuEvent->menuObect, INFERNO_STATE_NAME));
 }
 
-
-
-#define RAVAGE_STATE_NAME "RAVAGE_CMD"
 void cmdRavageSelectHandler(SelectCommandEvent* menuEvent) {
-    setMenuState(menuEvent->menuObect, getStateByName(menuEvent->menuObect, RAVAGE_STATE_NAME));
-}
+    setChosenActionID(0);
+    setChosenActionMenuIndex(0);
+    setTargetingFromFlags(TGT_FLAG_ENABLE_SELECT | TGT_FLAG_START_ENEMIES, false);
+    setMenuState(menuEvent->menuObect, BATTLE_TARGETING_STATE);
 
+}
 
 # define SUMMON_ACTOR_IDX  1
 OpCodeControlSequence activatePlayableSummon(AnimScriptEvent* srEvent) {
@@ -177,7 +183,7 @@ void initializeIfrit(InitSummonEvent* summEvent) {
     enableSummonMagic(2, 2, 29);
     auto& stats = summEvent->summonState->srPartyMember->stats;
 
-    stats[StatNames::HP].baseValue = 8530;
+    stats[StatNames::HP].baseValue = 7530;
     stats[StatNames::MP].baseValue = 630;
     stats[StatNames::STRENGTH].baseValue = 120;
     stats[StatNames::VITALITY].baseValue = 75;
@@ -203,16 +209,6 @@ void initializeIfrit(InitSummonEvent* summEvent) {
     gamePartyMember.maxMP = stats[StatNames::MP].statValue;
     gamePartyMember.currentHP = stats[StatNames::HP].statValue;
     gamePartyMember.currentMP = stats[StatNames::MP].statValue;
-    gamePartyMember.physAttack = stats[StatNames::STRENGTH].statValue;
-    gamePartyMember.physDefense = stats[StatNames::VITALITY].statValue;
-    gamePartyMember.magAttack = stats[StatNames::MAGIC].statValue;
-    gamePartyMember.magDefense = stats[StatNames::SPIRIT].statValue;
-    gamePartyMember.strength = stats[StatNames::STRENGTH].statValue;
-    gamePartyMember.vitality = stats[StatNames::VITALITY].statValue;
-    gamePartyMember.magic = stats[StatNames::MAGIC].statValue;
-    gamePartyMember.spirit = stats[StatNames::SPIRIT].statValue;
-    gamePartyMember.speed = stats[StatNames::DEXTERITY].statValue;
-    gamePartyMember.luck = stats[StatNames::LUCK].statValue;
 }
 
 void initIfritMenu() {
@@ -237,7 +233,7 @@ void initInfernoViewWidget(const MenuInitEvent* menuEvent) {
     DrawBoxParams boxParams;
     auto menu = menuEvent->menu;
     auto mainWidget = getWidget(menu);
-    auto soldierCommandView = srNewWidget(mainWidget, InfernoWidgetNames::INFERNO_WIDGET_NAME.c_str());
+    auto infernoCommandView = srNewWidget(mainWidget, InfernoWidgetNames::INFERNO_WIDGET_NAME.c_str());
 
     boxParams = {
         0,
@@ -246,13 +242,13 @@ void initInfernoViewWidget(const MenuInitEvent* menuEvent) {
         140,
         0.4f
     };
-    srNewBoxWidget(soldierCommandView, boxParams, InfernoWidgetNames::INFERNO_BOX_NAME.c_str());
+    srNewBoxWidget(infernoCommandView, boxParams, InfernoWidgetNames::INFERNO_BOX_NAME.c_str());
 
     std::vector<std::string> names = { InfernoWidgetNames::INFERNO_GRID_NAME };
     for (u32 idx = 0; idx < names.size(); idx++) {
         auto characterChoice = getStateCursor(menu, getStateByName(menu, INFERNO_STATE_NAME), idx);
         DrawCursorGridParams gridParams = { BattleMenuWidgetNames::BATTLE_MENU_NAME.c_str(), getStateByName(menu, INFERNO_STATE_NAME), infernoCommandUpdater, 50, 364, allocateInfernoRow, idx };
-        srNewGridWidget(soldierCommandView, gridParams, names[idx].c_str());
+        srNewGridWidget(infernoCommandView, gridParams, names[idx].c_str());
     }
 }
 
@@ -274,7 +270,7 @@ void infernoCommandUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         disableWidget(srGetChild(widget, "TXT"));
     }
 
-    updateText(srGetChild(widget, "TXT"), getSrCommandAction(CONTROL_SUMMON_MOD_NAME, 2, flatIndex).attackName);
+    updateText(srGetChild(widget, "TXT"), getSrCommandAction(CONTROL_SUMMON_MOD_NAME, 2, flatIndex).name);
     enableWidget(srGetChild(widget, "TXT"));
     updateTextColor(srGetChild(widget, "TXT"), COLOR_WHITE);
 }

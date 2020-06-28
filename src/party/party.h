@@ -51,7 +51,8 @@ public:
     void recalculatePartyMember(u8 partyIdx);
     void swapPartyMembers(u8 partyIdx, u8 newCharacterID);
     void activateSummon(u8 summonIdx);
-    void battleDeactivatePartyMember(u8 partyIdx);
+    void battleDeactivatePartySlot(u8 partyIdx);
+    void battleActivatePartySlot(u8 partyIdx);
     bool isSlotEnabled(u8 partyIdx);
     void deactivateSlot(u8 partyIdx);
     void activateSlot(u8 partyIdx);
@@ -83,7 +84,7 @@ void srUpdatePartyMember(u8 characterIdx);
 void clearCommandArray(u8 characterIdx);
 void voidCommand(EnabledCommand& command, u8 enabledIndex);
 void clearSummonCommandArray(u8 summonIdx);
-void enableDefaultCommands(u8 characterIdx, bool magicEnabled, bool summonEnabled);
+void enableDefaultCommands(u8 characterIdx, bool magicEnabled, bool summonEnabled, bool techniquesEnabled);
 void applyLinkedMateriaModifiers(u8 characterIdx, u8* slots, const std::vector<MateriaInventoryEntry>& equippedMaterias, SrGameGearType gearType);
 void dispatchSupportHandlers(u8 characterIdx, const MateriaInventoryEntry& supportMateria, const MateriaInventoryEntry& pairedMateria, SrGameGearType gearType);
 

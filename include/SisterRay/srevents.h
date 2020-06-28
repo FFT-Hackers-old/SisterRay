@@ -80,6 +80,7 @@ typedef enum {
     INIT_ELEMENTS,
     INIT_STATUSES,
     INIT_CHARACTERS,
+    INIT_SUMMONS,
     INIT_ENEMY,
     INIT_ENEMY_ACTOR,
     INIT_WEAPON,
@@ -314,6 +315,11 @@ typedef struct {
 typedef struct {
     SrCharacter* character;
 } InitCharacterEvent;
+
+
+typedef struct {
+    SrSummon* summon;
+} InitSummonCharacterEvent;
 
 typedef struct {
     SrWeapon* weapon;

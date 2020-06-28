@@ -11,6 +11,8 @@ namespace InfernoWidgetNames {
     const std::string INFERNO_GRID_NAME = "INFERNO_GRID";
 }
 
+
+void createIfritCommand();
 void loadControllableSummon();
 OpCodeControlSequence activatePlayableSummon(AnimScriptEvent* srEvent);
 void initializeIfrit(InitSummonEvent* summEvent);

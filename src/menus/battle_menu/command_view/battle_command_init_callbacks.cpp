@@ -11,5 +11,5 @@ void initBattleCommandViewWidget(const MenuInitEvent* event) {
 }
 
 void battleCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
-    baseCommandNameViewUpdater(self, widget, flatIndex, BATTLE_ACTIVE_ACTOR_ID);
+    commandNameViewUpdater(self, widget, flatIndex, BATTLE_ACTIVE_ACTOR_ID);
 }

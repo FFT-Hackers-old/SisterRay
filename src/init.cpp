@@ -14,7 +14,7 @@
 #include "files/lgp_loader.h"
 #include "battle/sr_battle_engine.h"
 #include "gamedata/command_sr_callbacks.h"
-#include "mods/controllable_summon.h"
+#include "mods/controllable_summons/controllable_summon.h"
 #include "gamedata/limits.h"
 #include "gamedata/summons.h"
 #include <random>
@@ -143,6 +143,7 @@ static void Init(void) {
     initStatuses();
     initElements();
     initFormulas();
+    initSummonCharacters();
     srLoadKernel2Bin();
     srLoadKernelBin();
     initParty();

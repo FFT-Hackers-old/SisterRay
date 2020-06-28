@@ -9,7 +9,7 @@ bool srLoadActionSoundEffect(u16 soundIdx, void* overrideLocation) {
 
 
 typedef void(*PFNSR_GAMEPLAYSOUNDEFFECT)(u32, u8, u16);
-static const auto gamePlayActionSoundEffect = ((PFNSR_GAMEPLAYSOUNDEFFECT)0x745DBB);
+static const auto gamePlayActionSoundEffect = ((PFNSR_GAMEPLAYSOUNDEFFECT)0x5BFFF3);
 void srPlayActionSoundEffect(u32 unk, u8 unk2, u16 soundIdx) {
     gamePlayActionSoundEffect(unk, unk2, soundIdx);
 }

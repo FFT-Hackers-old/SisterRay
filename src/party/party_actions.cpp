@@ -8,6 +8,11 @@ void clearCommandArray(u8 characterIdx) {
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         voidCommand(characterIdx, slotIndex);
     }
+    auto& techniques = getSrCharacter(characterIdx).srPartyMember->actorTechniques;
+    for (auto slot : techniques) {
+        slot.commandID = 0xFF;
+        slot.allCount = 0;
+    }
 }
 
 void clearSummonCommandArray(u8 summonIdx) {
@@ -31,14 +36,19 @@ void voidCommand(EnabledCommand& command, u8 enabledIndex) {
 }
 
 /*Hooking into here we can insert default commands for characters and such*/
-void enableDefaultCommands(u8 characterIdx, bool magicEnabled, bool summonEnabled) {
+void enableDefaultCommands(u8 characterIdx, bool magicEnabled, bool summonEnabled, bool techniquesEnabled) {
     enableCommand(characterIdx, 0, CMD_ATTACK);
-    enableCommand(characterIdx, 3, CMD_ITEM);
+
+    setToggleCommand(characterIdx, 0, BASE_PREFIX, 0x14);
+    enableCommand(characterIdx, 4, CMD_ITEM);
     if (magicEnabled) {
-        enableCommand(characterIdx, 1, CMD_MAGIC);
+        enableCommand(characterIdx, 2, CMD_MAGIC);
     }
     if (summonEnabled) {
-        enableCommand(characterIdx, 2, CMD_SUMMON);
+        enableCommand(characterIdx, 3, CMD_SUMMON);
+    }
+    if (techniquesEnabled) {
+        enableCommand(characterIdx, 1, CMD_TECHNIQUES);
     }
 }
 
@@ -69,19 +79,18 @@ SISTERRAY_API void enableActorCommand(u8 actorIdx, u8 enabledIndex, const char* 
     srLogWrite("UPDATED COMMAND AT %i to IDX: %i", enabledIndex, commandArray[enabledIndex].commandID);
 }
 
-SISTERRAY_API void setToggleCommand(u8 partyIdx, u8 enabledIndex, const char* modName, u8 modCmdIdx) {
+SISTERRAY_API void setToggleCommand(u8 characterIdx, u8 enabledIndex, const char* modName, u8 modCmdIdx) {
     if (enabledIndex >= 16) {
         srLogWrite("attempt to enable an invalid command slot");
         return;
     }
     auto name = std::string(modName) + std::to_string(modCmdIdx);
-    auto& commandArray = gContext.party.getActivePartyMember(partyIdx).gamePartyMember->enabledCommandArray;
-    auto& toggleCommand =  gContext.party.getActivePartyMember(partyIdx).srPartyMember->toggleCommandArray[enabledIndex];
+    auto& commandArray = gContext.party.getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
+    auto& toggleCommand =  gContext.party.getSrCharacter(characterIdx).srPartyMember->toggleCommandArray[enabledIndex];
     toggleCommand.commandID = commandArray[enabledIndex].commandID;
     toggleCommand.cursorCommandType = commandArray[enabledIndex].cursorCommandType;
     toggleCommand.targetingData = commandArray[enabledIndex].targetingData;
     toggleCommand.commandFlags = 0;
-    enableActorCommand(partyIdx, enabledIndex, modName, modCmdIdx);
 }
 
 SISTERRAY_API void toggleBack(u8 partyIdx, u8 enabledIndex) {
@@ -97,18 +106,45 @@ SISTERRAY_API void toggleBack(u8 partyIdx, u8 enabledIndex) {
     srLogWrite("Toggling Command at Idx: %i back to cmd: %i", enabledIndex, activeCommand.commandID);
 }
 
-SISTERRAY_API void enableCommand(u8 characterIdx, u8 enabledIndex, u8 commandIndex) {
+SISTERRAY_API void enableCommand(u8 characterIdx, u8 enabledIndex, u8 commandIndex, bool isTechnique) {
     if (enabledIndex >= 16) {
         srLogWrite("attempt to enable an invalid command slot");
         return;
     }
+    if (isTechnique && enabledIndex > gContext.party.getSrCharacter(characterIdx).srPartyMember->actorTechniques.size()) {
+        srLogWrite("attempted to enable invalid technique slot");
+        return;
+    }
     auto commandArray = gContext.party.getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
+    if (isTechnique) {
+        commandArray = gContext.party.getSrCharacter(characterIdx).srPartyMember->actorTechniques.data();
+    }
     commandArray[enabledIndex].commandID = commandIndex;
     commandArray[enabledIndex].cursorCommandType = getCommand(commandIndex).gameCommand.commandMenuID;
     commandArray[enabledIndex].targetingData = getCommand(commandIndex).gameCommand.targetingFlags;
     commandArray[enabledIndex].commandFlags = 0;
 }
 
+SISTERRAY_API void insertCommand(u8 characterIdx, u8 enabledIndex, u8 commandIndex, bool isTechnique) {
+    if (enabledIndex >= 16) {
+        srLogWrite("attempt to enable an invalid command slot");
+        return;
+    }
+    if (isTechnique && enabledIndex > gContext.party.getSrCharacter(characterIdx).srPartyMember->actorTechniques.size()) {
+        srLogWrite("attempted to enable invalid technique slot");
+        return;
+    }
+    auto commandArray = gContext.party.getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
+    if (isTechnique) {
+        commandArray = gContext.party.getSrCharacter(characterIdx).srPartyMember->actorTechniques.data();
+    }
+    if (commandArray[enabledIndex].commandID != 0xFF) {
+        memmove(&commandArray[enabledIndex], &commandArray[enabledIndex + 1], (16 - (enabledIndex + 1)) * sizeof(commandArray));
+    }
+    else {
+        enableCommand(characterIdx, enabledIndex, commandIndex);
+    }
+}
 
 SISTERRAY_API void enableSummonCommand(u8 summonIdx, u8 enabledIndex, u8 commandIndex) {
     auto commandArray = gContext.party.getSrSummon(summonIdx).gamePartyMember->enabledCommandArray;
@@ -170,8 +206,12 @@ SISTERRAY_API EnabledSpell* getSpellSlot(u8 characterIdx, u8 commandIndex, u16 a
 }
 
 /*Insert a given command index, enabling it. Will not insert at Magic/Command/Summon indexes*/
-SISTERRAY_API void  insertEnabledCommand(u8 characterIdx, u8 commandIndex) {
-    auto& commandArray = gContext.party.getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
+SISTERRAY_API void  insertEnabledCommand(u8 characterIdx, u8 commandIndex, bool technique) {
+    EnabledCommand* commandArray = gContext.party.getSrCharacter(characterIdx).gamePartyMember->enabledCommandArray;
+    auto& isTechnique = gContext.commands.getResource(commandIndex).isTechnique;
+    if (isTechnique) {
+        commandArray = gContext.party.getSrCharacter(characterIdx).srPartyMember->actorTechniques.data();
+    }
     u8 freeIndex = 0xFF;
     for (auto slotIndex = 0; slotIndex < 16; slotIndex++) {
         if (commandArray[slotIndex].commandID == 0xFF) {

@@ -23,7 +23,12 @@ void enableSoldier(const EnableDefaultAbilitiesEvent* const event) {
         return;
     }
     enableCommand(event->characterIdx, 0, getInternalCommandID(1, MOD_NAME));
-    enableCommand(event->characterIdx, 1, getInternalCommandID(0, MOD_NAME));
+    if (gContext.party.getSrCharacter(event->characterIdx).gamePartyMember->enabledCommandArray[1].commandID == 0xFF) {
+        enableCommand(event->characterIdx, 1, getInternalCommandID(0, MOD_NAME));
+    }
+    else {
+        insertCommand(event->characterIdx, 1, getInternalCommandID(0, MOD_NAME));
+    }
 }
 
 #define LACERATE_PATH  "mods\\cloud\\lacerate.srm"
@@ -263,8 +268,8 @@ void loadCloudActions() {
     addAnimationScript(MOD_NAME, 0, "CLOUD.DAT", swordPlayScript, 34);
 
     auto swordPlay = SrActionData();
-    swordPlay.attackName = "Swordplay";
-    swordPlay.attackDesc = "Flurry of Rapid Strikes. High Chance to Bleed";
+    swordPlay.name = "Swordplay";
+    swordPlay.description = "Flurry of Rapid Strikes. High Chance to Bleed";
     swordPlay.baseData.attackPower = 6;
     swordPlay.baseData.additionalEffect = 0;
     swordPlay.baseData.additionalEffectModifier = 3;
@@ -290,8 +295,8 @@ void loadCloudActions() {
     addAnimationScript(MOD_NAME, 1, "CLOUD.DAT", leapingScript, 39);
 
     auto leapSlash = SrActionData();
-    leapSlash.attackName = "Leap Slash";
-    leapSlash.attackDesc = "Powerful Jumping Slash. Good vs Defense/Block";
+    leapSlash.name = "Leap Slash";
+    leapSlash.description = "Powerful Jumping Slash. Good vs Defense/Block";
     leapSlash.baseData.attackPower = 48;
     leapSlash.baseData.additionalEffect = 0xFF;
     leapSlash.baseData.additionalEffectModifier = 0xFF;
@@ -326,8 +331,8 @@ void loadCloudActions() {
     addAnimationScript(MOD_NAME, 8, "CLOUD.DAT", fthrustScript, 40);
 
     auto fthrustData = SrActionData();
-    fthrustData.attackName = "F. Thrust";
-    fthrustData.attackDesc = "Charge an Enemy, dealing high stagger";
+    fthrustData.name = "F. Thrust";
+    fthrustData.description = "Charge an Enemy, dealing high stagger";
     fthrustData.baseData.attackPower = 24;
     fthrustData.baseData.additionalEffect = 0;
     fthrustData.baseData.additionalEffectModifier = 1;
@@ -346,8 +351,8 @@ void loadCloudActions() {
     addActionToCommand(MOD_NAME, 0, MOD_NAME, 8);
 
     auto actionData = SrActionData();
-    actionData.attackName = "Lacerate";
-    actionData.attackDesc = "Flurry of Rapid Strikes. High Chance to Bleed";
+    actionData.name = "Lacerate";
+    actionData.description = "Flurry of Rapid Strikes. High Chance to Bleed";
     actionData.baseData.attackPower = 4;
     actionData.baseData.additionalEffect = 0;
     actionData.baseData.additionalEffectModifier = 4;
@@ -375,8 +380,8 @@ void loadCloudActions() {
     addAnimationScript(MOD_NAME, 3, "CLOUD.DAT", impaleScript, 34);
 
     auto impaleData = SrActionData();
-    impaleData.attackName = "Impale";
-    impaleData.attackDesc = "Gore an opponent for massive damage";
+    impaleData.name = "Impale";
+    impaleData.description = "Gore an opponent for massive damage";
     impaleData.baseData.attackPower = 24;
     impaleData.baseData.additionalEffect = 0;
     impaleData.baseData.additionalEffectModifier = 2;
@@ -403,8 +408,8 @@ void loadCloudActions() {
     addAnimationScript(MOD_NAME, 9, "CLOUD.DAT", ie1, 45);
 
     auto infinityEnd = SrActionData();
-    infinityEnd.attackName = "Infinity's End";
-    infinityEnd.attackDesc = "Powerful Jumping Slash. Good vs Defense/Block";
+    infinityEnd.name = "Infinity's End";
+    infinityEnd.description = "Powerful Jumping Slash. Good vs Defense/Block";
     infinityEnd.baseData.attackPower = 80;
     infinityEnd.baseData.additionalEffect = 0xFF;
     infinityEnd.baseData.additionalEffectModifier = 0xFF;
@@ -434,8 +439,8 @@ void initSwordPlay() {
     addAnimationScript(MOD_NAME, 10, "CLOUD.DAT", sp1s, 45);
 
     auto sp1 = SrActionData();
-    sp1.attackName = "Swordplay";
-    sp1.attackDesc = "Basic Combo String, press square to continue the combo";
+    sp1.name = "Swordplay";
+    sp1.description = "Basic Combo String, press square to continue the combo";
     sp1.baseData.attackPower = 7;
     sp1.baseData.additionalEffect = 0xFF;
     sp1.baseData.additionalEffectModifier = 0xFF;
@@ -464,8 +469,8 @@ void initSwordPlay() {
     addAnimationScript(MOD_NAME, 11, "CLOUD.DAT", sp2s, 45);
 
     auto sp2 = SrActionData();
-    sp2.attackName = "Swordplay";
-    sp2.attackDesc = "Basic Combo String, press square to continue the combo";
+    sp2.name = "Swordplay";
+    sp2.description = "Basic Combo String, press square to continue the combo";
     sp2.baseData.attackPower = 7;
     sp2.baseData.additionalEffect = 0xFF;
     sp2.baseData.additionalEffectModifier = 0xFF;
@@ -495,8 +500,8 @@ void initSwordPlay() {
     addAnimationScript(MOD_NAME, 12, "CLOUD.DAT", sp3s, 45);
 
     auto sp3 = SrActionData();
-    sp3.attackName = "Swordplay";
-    sp3.attackDesc = "Basic Combo String, press square to continue the combo";
+    sp3.name = "Swordplay";
+    sp3.description = "Basic Combo String, press square to continue the combo";
     sp3.baseData.attackPower = 15;
     sp3.baseData.additionalEffect = 0xFF;
     sp3.baseData.additionalEffectModifier = 0xFF;
@@ -522,8 +527,8 @@ void initSwordPlay() {
     addAnimationScript(MOD_NAME, 15, "CLOUD.DAT", sp2bs, 45);
 
     auto sp2b = SrActionData();
-    sp2b.attackName = "Swordplay";
-    sp2b.attackDesc = "Basic Combo String, press square to continue the combo";
+    sp2b.name = "Swordplay";
+    sp2b.description = "Basic Combo String, press square to continue the combo";
     sp2b.baseData.attackPower = 7;
     sp2b.baseData.additionalEffect = 0xFF;
     sp2b.baseData.additionalEffectModifier = 0xFF;
@@ -551,8 +556,8 @@ void initSwordPlay() {
     addAnimationScript(MOD_NAME, 16, "CLOUD.DAT", sp3bs, 45);
 
     auto sp3b = SrActionData();
-    sp3b.attackName = "Swordplay";
-    sp3b.attackDesc = "Basic Combo String, press square to continue the combo";
+    sp3b.name = "Swordplay";
+    sp3b.description = "Basic Combo String, press square to continue the combo";
     sp3b.baseData.attackPower = 7;
     sp3b.baseData.additionalEffect = 0xFF;
     sp3b.baseData.additionalEffectModifier = 0xFF;
@@ -583,8 +588,8 @@ void initSwordPlay() {
 
 
     auto psp1 = SrActionData();
-    psp1.attackName = "Swordplay";
-    psp1.attackDesc = "Basic Combo String, press square to continue the combo";
+    psp1.name = "Swordplay";
+    psp1.description = "Basic Combo String, press square to continue the combo";
     psp1.baseData.attackPower = 4;
     psp1.baseData.additionalEffect = 0;
     psp1.baseData.additionalEffectModifier = 4;
@@ -621,8 +626,8 @@ void loadCharMod() {
     commandData.baseData.singleCameraID = 0xFFFF;
     commandData.baseData.multipleCameraID = 0xFFFF;
     commandData.auxData.animationEffectID = 0xFF;
-    commandData.commandName = "SOLDIER";
-    commandData.commandDesc = "Use SOLDIER skills";
+    commandData.name = "SOLDIER";
+    commandData.description = "Use SOLDIER skills";
     addSrCommand(commandData, 0, MOD_NAME);
     u8 punisherIdle[3] = { getSrPlayerAnimationIdx(MOD_NAME, 12, "CLOUD.DAT"), 0xFE, 0xC0 };
     addAnimationScript(MOD_NAME, 5, "CLOUD.DAT", punisherIdle, 3);
@@ -634,16 +639,16 @@ void loadCharMod() {
     commandMisc.baseData.singleCameraID = 0xFFFF;
     commandMisc.baseData.multipleCameraID = 0xFFFF;
     commandMisc.auxData.animationEffectID = 0xFF;
-    commandMisc.commandName = "Swordplay";
-    commandMisc.commandDesc = "Attack with equipped weapon";
+    commandMisc.name = "Swordplay";
+    commandMisc.description = "Attack with equipped weapon";
     addSrCommand(commandMisc, 1, MOD_NAME);
 
     auto commandStance = SrCommandData();
     commandStance.baseData.singleCameraID = 0xFFFF;
     commandStance.baseData.multipleCameraID = 0xFFFF;
     commandStance.auxData.animationEffectID = 0xFF;
-    commandStance.commandName = "Stance";
-    commandStance.commandDesc = "switch between character Stances";
+    commandStance.name = "Stance";
+    commandStance.description = "switch between character Stances";
     addSrCommand(commandStance, 2, MOD_NAME);
     registerSetupCallback(MOD_NAME, 2, swapStance);
 
@@ -660,8 +665,8 @@ void loadCharMod() {
     registerSetupCallback(MOD_NAME, 1, applyDamage);
 
     auto punish = SrActionData();
-    punish.attackName = "Punish";
-    punish.attackDesc = "Quick Punisher Counter";
+    punish.name = "Punish";
+    punish.description = "Quick Punisher Counter";
     punish.baseData.attackPower = 16;
     punish.baseData.additionalEffect = 0xFF;
     punish.baseData.additionalEffectModifier = 0xFF;
@@ -705,8 +710,8 @@ void initializeLimits() {
     addAnimationScript(MOD_NAME, 4, "CLOUD.DAT", swordPlayScript, 31);
 
     auto swordPlay = SrActionData();
-    swordPlay.attackName = "Swordplay";
-    swordPlay.attackDesc = "Simple Three Hit Combo. Press Square to Change Stances";
+    swordPlay.name = "Swordplay";
+    swordPlay.description = "Simple Three Hit Combo. Press Square to Change Stances";
     swordPlay.baseData.attackPower = 8;
     swordPlay.baseData.additionalEffect = 0;
     swordPlay.baseData.additionalEffectModifier = 3;
@@ -791,7 +796,7 @@ void soldierCommandUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         disableWidget(srGetChild(widget, "TXT"));
     }
 
-    updateText(srGetChild(widget, "TXT"), getSrCommandAction(MOD_NAME, 0, flatIndex).attackName);
+    updateText(srGetChild(widget, "TXT"), getSrCommandAction(MOD_NAME, 0, flatIndex).name);
     enableWidget(srGetChild(widget, "TXT"));
     updateTextColor(srGetChild(widget, "TXT"), COLOR_WHITE);
 }

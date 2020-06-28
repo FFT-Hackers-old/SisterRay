@@ -319,7 +319,7 @@ void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatInde
         return;
     }
     enableWidget(widget);
-    updateText(widget, gContext.commands.getResource(commands[flatIndex].commandID).commandName.str());
+    updateText(widget, gContext.commands.getResource(commands[flatIndex].commandID).name.str());
     updateTextColor(widget, COLOR_WHITE);
 }
 
@@ -366,7 +366,7 @@ void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex)
         return;
     }
     enableWidget(widget);
-    updateText(widget, getCommandAction(CMD_MAGIC, magics[flatIndex].magicIndex).attackName.str());
+    updateText(widget, getCommandAction(CMD_MAGIC, magics[flatIndex].magicIndex).name.str());
     updateTextColor(widget, COLOR_WHITE);
 }
 
@@ -381,7 +381,7 @@ void summonNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     enableWidget(widget);
-    updateText(widget, getCommandAction(CMD_SUMMON, summons[flatIndex].magicIndex).attackName.str());
+    updateText(widget, getCommandAction(CMD_SUMMON, summons[flatIndex].magicIndex).name.str());
     updateTextColor(widget, COLOR_WHITE);
 }
 
@@ -396,6 +396,6 @@ void eskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex
         return;
     }
     enableWidget(widget);
-    updateText(widget, getCommandAction(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex).attackName.str());
+    updateText(widget, getCommandAction(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex).name.str());
     updateTextColor(widget, COLOR_WHITE);
 }

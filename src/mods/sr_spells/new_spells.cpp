@@ -1,14 +1,14 @@
 #include "new_spells.h"
-#include "../battle/battle_engine_api.h"
-#include "../impl.h"
-#include "../gamedata/element_names.h"
-#include "../gamedata/damage_callback_utils.h"
+#include "../../battle/battle_engine_api.h"
+#include "../../impl.h"
+#include "../../gamedata/element_names.h"
+#include "../../gamedata/damage_callback_utils.h"
 
 #define SPELL_MOD_NAME "SR_SPELLS"
 void registerEruption() {
     auto eruption = SrActionData();
-    eruption.attackName = "Eruption";
-    eruption.attackDesc = "Ground erupts beneath the enemy party";
+    eruption.name = "Eruption";
+    eruption.description = "Ground erupts beneath the enemy party";
     eruption.baseData.attackPower = 56;
     eruption.baseData.additionalEffect = 0xFF;
     eruption.baseData.additionalEffectModifier = 0xFF;
@@ -67,7 +67,7 @@ void prepareEruption(u16 actioNTargetMask, u8 casterIdx) {
 #define gameIfritMain      ((PFNSR_VOIDSUB)0x593A95)
 
 typedef R3PointWord* (*SRPFN_SUB661000)(u16);
-#define gameGet3DPoint  ((SRPFN_SUB661000)0x661000)
+#define gameGetHeapBuffer  ((SRPFN_SUB661000)0x661000)
 
 typedef void(*SRPFN_SUB662AD8)(R3PointWord*, GameRotationMatrix*);
 #define gameRotateMatrix      ((SRPFN_SUB662AD8)0x662AD8)
@@ -78,7 +78,7 @@ void setupEruptionMain(u16 actionTargetMask, u8 casterIdx) {
     R3PointWord* G_POINT_BCC790 = (R3PointWord*)0xBCC790;
     u8* byte_BFCB64 = (u8*)0xBFCB64;
     u16* EFFECT_TARGET_MASK = (u16*)0xBCC6B0;
-    auto point = gameGet3DPoint(0);
+    auto point = gameGetHeapBuffer(0);
     GameRotationMatrix* G_IFRIT_MAT_BCC768 = (GameRotationMatrix*)0xBCC768;
     G_IFRIT_MAT_BCC768->position[0] = 0;
     G_IFRIT_MAT_BCC768->position[1] = 0;
@@ -124,7 +124,7 @@ void srEruptionMain() {
 
     if (!(*byte_BCC6A4 & 1)) {
         *byte_BCC6A4 |= 1u;
-        dword_BCC700 = gameGet3DPoint(0);
+        dword_BCC700 = gameGetHeapBuffer(0);
     }
     wordMatrixProduct(mat1, G_IFRIT_MAT_BCC768, ret);
 

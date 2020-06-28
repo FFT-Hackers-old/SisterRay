@@ -11,6 +11,7 @@
 #define MAGIC_COUNT 66
 #define SUMMON_COUNT 16
 #define ESKILL_COUNT 24
+#define SPECIAL_COUNT 12
 #define AUTO_ACTION_COUNT 10
 
 struct SrPartyData_ {
@@ -18,6 +19,7 @@ struct SrPartyData_ {
     std::array<EnabledSpell, MAGIC_COUNT> actorMagics;
     std::array<EnabledSpell, SUMMON_COUNT> actorSummons;
     std::array<EnabledSpell, ESKILL_COUNT> actorEnemySkills;
+    std::array<EnabledCommand, SPECIAL_COUNT> actorTechniques;
     std::array<SrAutoAction, AUTO_ACTION_COUNT> actorAutoActions;
     std::string modelName;
     std::array<u8, 10> partySwapBuffer;

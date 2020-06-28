@@ -25,7 +25,7 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
             character.gameCharacter = &(CHARACTER_RECORD_ARRAY[characterIndex]);
         }
         auto charName = getCharacterName(characterIndex);
-        initializeCharacterStats(character);
+        initializeStats<SrCharacter>(character);
         createDefaultEquipmentSlots(character);
         gContext.characters.addElement(charName, character);
     }
@@ -34,28 +34,72 @@ SISTERRAY_API void initCharacterData(SrKernelStream* stream) {
     srLogWrite("kernel.bin: Loaded %lu character AI scripts", (unsigned long)gContext.characters.resourceCount());
 }
 
-void initializeCharacterStats(SrCharacter& character) {
-    std::vector<std::string> primaryStats{ STRENGTH, VITALITY, DEXTERITY, AGILITY, StatNames::MAGIC, SPIRIT, FOCUS, INSIGHT, LUCK };
-    for (auto statName : primaryStats) {
-        character.statTable[statName] = StatTable();
-        character.statTable[statName].fill(75);
-        character.statPointMultipliers[statName] = 1;
-        character.appliedPoints[statName] = 0;
-    }
-
-    std::vector<std::string> resourceStats{ HP, MP };
-    for (auto statName : resourceStats) {
-        character.statTable[statName] = StatTable();
-        if (statName == MP){
-            character.statTable[statName].fill(100);
-        }
-        else {
-            character.statTable[statName].fill(1000);
-        }
-        character.statPointMultipliers[statName] = 1;
-        character.appliedPoints[statName] = 0;
+void initSummonCharacters() {
+    gContext.summons = SrSummonRegistry();
+    for (auto summonIdx = 0; summonIdx < 16; summonIdx++) {
+        srLogWrite("attemping to load AI scripts for character %i", summonIdx);
+        auto summon = SrSummon();
+        BattleAIData summonAI = BattleAIData();
+        summon.characterAI = summonAI;
+        initializeStats<SrSummon>(summon);
+        summon.summonDisplayName = EncodedString::from_unicode(getSummonName(summonIdx).c_str());
+        gContext.summons.addElement(BASE_PREFIX + std::to_string(summonIdx), summon);
     }
 }
+
+std::string getSummonName(u16 summonIdx) {
+    switch (summonIdx) {
+    case 0: {
+        return "Choco/Mog";
+    case 1: {
+        return "Shiva";
+    }
+    case 2: {
+        return "Ifrit";
+    }
+    case 3: {
+        return "Ramuh";
+    }
+    case 4: {
+        return "Titan";
+    }
+    case 5: {
+        return "Odin";
+    }
+    case 6: {
+        return "Leviathan";
+    }
+    case 7: {
+        return "Bahamut";
+    }
+    case 8: {
+        return "Kujata";
+    }
+    case 9: {
+        return "Alexander";
+    }
+    case 10: {
+        return "Phoenix";
+    }
+    case 11: {
+        return "Neo Bahamut";
+    }
+    case 12: {
+        return "Hades";
+    }
+    case 13: {
+        return "Typhon";
+    }
+    case 14: {
+        return "Bahamut ZERO";
+    }
+    case 15:
+        return "Knights of the Round";
+    }
+    }
+    return "";
+}
+
 
 void createDefaultEquipmentSlots(SrCharacter& character) {
     for (u8 gearSlotIdx = 0; gearSlotIdx < 3; gearSlotIdx++) {
@@ -99,4 +143,9 @@ SISTERRAY_API CharacterRecord* getGameCharacter(SrCharacter* srCharacter) {
 
 void finalizeCharacters() {
     finalizeRegistry<SrCharacter, InitCharacterEvent, SrCharacterRegistry>(gContext.characters, INIT_CHARACTERS);
+}
+
+
+void finalizeSummons() {
+    finalizeRegistry<SrSummon, InitSummonCharacterEvent, SrSummonRegistry>(gContext.summons, INIT_SUMMONS);
 }

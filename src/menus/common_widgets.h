@@ -7,9 +7,11 @@
 
 Widget* createCommandViewWidget(const char* name, i32 x, i32 y, SRLISTUPDATERPROC commandNameViewUpdater, const char* menuName=nullptr, u8 cursorIdx=0);
 Widget* allocateCommandRow(const char* name, i32 xCoordinate, i32 yCoordinate);
-void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u8* updatingActor);
-void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u32* updatingActor);
-void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, const EnabledCommand (&commands)[16]);
+void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u8* updatingActor);
+void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u32* updatingActor);
+void techniqueViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u32* updatingActor);
+void techniqueViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, u8* updatingActor);
+void baseCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex, const EnabledCommand*);
 void updateCommandsActor(Widget* cmdWidget, u8 actorIdx, Menu* menu=nullptr, u16 cursorState=0);
 void resizeCommandBox(u8 actorID, Widget* boxWidget, Cursor* commandChoiceCursor=nullptr);
 

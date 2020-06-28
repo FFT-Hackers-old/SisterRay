@@ -148,9 +148,14 @@ void populateRegistries(const SceneLayout& sceneData, u16* formationIndex, u32* 
             continue;
 
         if (!(gContext.attacks.contains(stringID))) { //must implement a method to check if the dictionary contains a key
-            auto attackName = EncodedString((const char *)enemyAttackNames[relAttackIndex].name);
+            auto name = EncodedString((const char *)enemyAttackNames[relAttackIndex].name);
             auto attackData = enemyAttacks[relAttackIndex];
-            SrAttack enemyAttack = { attackData, attackID, attackName, EncodedString::from_unicode(""), ENEMY_ATTACK,  };
+            SrAttack enemyAttack;
+            enemyAttack.attackData = attackData;
+            enemyAttack.attackID = attackID;
+            enemyAttack.name = name;
+            enemyAttack.description = EncodedString::from_unicode("");
+            enemyAttack.animationType = ENEMY_ATTACK;
             initializeActionElements(enemyAttack);
             initializeStatusAfflictions(enemyAttack);
             setSrDamageInfo<SrAttack>(enemyAttack, attackData.damageFormula);

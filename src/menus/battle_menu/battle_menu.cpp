@@ -142,6 +142,10 @@ void createBattleMenu() {
     initializeBattlePHSMenu();
     registerMoveMenuListeners();
     initializeBattleMoveMenu();
+    registerLimitMenuListeners();
+    initializeBattleLimitMenu();
+    registerTechniqueMenuListeners();
+    initializeBattleTechniqueMenu();
 }
 
 void initializeBattleMenu() {

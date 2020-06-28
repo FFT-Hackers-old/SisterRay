@@ -71,7 +71,9 @@ public:
     u8* getActorRandomVarBuffer(u8 actorIdx);
     void initializePartyCharacter(u8 characterID);
     void swapPartyToSummon(u8 summonIdx);
+    void swapSummonToParty();
     bool isActorSummon(u8 actorIdx);
+    u16 getActiveSummonIdx();
     bool isActorInBattle(u8 actorIdx);
 protected:
     ActorBattleState getSrBattleActor(u8 actorIdx);

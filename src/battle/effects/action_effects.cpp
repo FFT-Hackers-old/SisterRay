@@ -1,4 +1,5 @@
 #include "action_effects.h"
+#include "../../impl.h"
 
 
 #define gamePushEffect100        ((PFNSRPUSHEFFECT)0x5BEC50)
@@ -10,6 +11,7 @@ u8 srPushEffect60(PFNSREFFECTCALLBACK callback) {
 }
 
 u8 srPushEffect100(PFNSREFFECTCALLBACK callback) {
+    srLogWrite("PUSHED EFFECT CALLBACK: %x", callback);
     return gamePushEffect100(callback);
 }
 

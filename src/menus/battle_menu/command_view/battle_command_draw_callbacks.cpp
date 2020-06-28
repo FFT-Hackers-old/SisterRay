@@ -23,11 +23,9 @@ void drawBattleCommandViewWidget(const MenuDrawEvent* event) {
     Cursor* commandChoiceCursor = getStateCursor(event->menu, BATTLE_CMD_STATE, *BATTLE_ACTIVE_ACTOR_ID);
     resizeCommandBox(*BATTLE_ACTIVE_ACTOR_ID, getChild(menuWidget, BATTLE_COMMAND_WIDGET_NAME), commandChoiceCursor);
 
-    auto& actorState = gContext.battleActors.getActiveBattleActor(*BATTLE_ACTIVE_ACTOR_ID);
-    auto& partyState = gContext.party.getActivePartyCharacter(*BATTLE_ACTIVE_ACTOR_ID);
     if (*G_LIMIT_ACTORS_MASK & (1 << *BATTLE_ACTIVE_ACTOR_ID)) {
-        setToggleCommand(*BATTLE_ACTIVE_ACTOR_ID, 0, BASE_PREFIX, 0x14);
         gContext.party.getActivePartyMember(*BATTLE_ACTIVE_ACTOR_ID).srPartyMember->isLimitActive = true;
+        toggleBack(*BATTLE_ACTIVE_ACTOR_ID, 0);
         *G_LIMIT_ACTORS_MASK &= (~((1 << *BATTLE_ACTIVE_ACTOR_ID)));
     }
 }

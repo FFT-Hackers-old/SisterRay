@@ -96,9 +96,14 @@ PartyMemberState SrPartyMembers::getSrSummon(u8 summonIdx) {
     return ret;
 }
 
-void SrPartyMembers::battleDeactivatePartyMember(u8 partyIdx) {
+void SrPartyMembers::battleDeactivatePartySlot(u8 partyIdx) {
     battleSavePartyMember(partyIdx);
     deactivateSlot(partyIdx);
+}
+
+
+void SrPartyMembers::battleActivatePartySlot(u8 partyIdx) {
+    activateSlot(partyIdx);
 }
 
 /*This method enables actions*/
@@ -106,6 +111,7 @@ void SrPartyMembers::handleMateriaActorUpdates(u8 characterID, const std::vector
 
     bool magicEnabled = false;
     bool summonEnabled = false;
+    bool techniqueEnabled = false;
     for (auto materia : equippedMaterias) {
         if (materia.materiaID == 0xFFFF)
             continue;
@@ -114,8 +120,11 @@ void SrPartyMembers::handleMateriaActorUpdates(u8 characterID, const std::vector
         if ((getMateriaTopType(materia.materiaID) == 0xB) || (getMateriaTopType(materia.materiaID) == 0xC)) {
             summonEnabled = true;
         }
+        if ((getMateriaTopType(materia.materiaID) == 0x6) || (getMateriaTopType(materia.materiaID) == 0x8)) {
+            techniqueEnabled = true;
+        }
     }
-    enableDefaultCommands(characterID, magicEnabled, summonEnabled);
+    enableDefaultCommands(characterID, magicEnabled, summonEnabled, techniqueEnabled);
     EnableDefaultAbilitiesEvent enableActionEvent = { characterID };
     std::vector<SrEventContext> dispatchContexts = { ENABLE_ACTION_NO_MATERIA };
     gContext.eventBus.dispatch(ENABLE_ACTIONS, &enableActionEvent, dispatchContexts);
@@ -139,9 +148,6 @@ void SrPartyMembers::battleActivatePartyMember(u8 partyIdx) {
     auto& srMember = getSrPartyMember(partyIdx);
     auto& activeMember = getActivePartyMember(partyIdx);
 
-    srLogWrite("ACTIVATING PARTY MEMBER at %p", &activeMember);
-    srLogWrite("Max HP: %d", srMember.gamePartyMember->maxHP);
-    srLogWrite("Strength: %d", srMember.gamePartyMember->strength);
     *activeMember.gamePartyMember = *srMember.gamePartyMember;
 
     std::array<u8, 10> inactiveParty;

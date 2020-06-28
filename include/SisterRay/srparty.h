@@ -6,6 +6,7 @@
 
 
 typedef struct _SrCharacter SrCharacter;
+typedef struct _SrSummon SrSummon;
 
 #pragma pack(push, 1)
 typedef struct {

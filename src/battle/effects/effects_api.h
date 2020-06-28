@@ -8,4 +8,5 @@
 #include "summon_effects.h"
 #include "sound_effects.h"
 #include "action_effect_textures.h"
+#include "../matrix_ops/matrix.h"
 #endif // !EFFECTS_AIP

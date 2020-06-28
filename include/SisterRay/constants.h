@@ -81,7 +81,7 @@
 #define CMD_QUAD_CUT        ((u8)0x1B)
 #define CMD_ENEMY_ACTION    ((u8)0x20)
 #define CMD_POISONTICK      ((u8)0x23)
-
+#define CMD_TECHNIQUES      ((u8)0x24)
 #define STS_DEATH           ((u32)0x1)
 #define STS_CRITICAL        ((u32)0x2)
 #define STS_SLEEP           ((u32)0x4)
@@ -150,6 +150,7 @@
 
 #define BATTLE_INACTIVE          33
 #define BATTLE_TARGETING_STATE   0
+#define BATTLE_LIMIT_STATE       20
 #define BATTLE_CMD_STATE         1
 #define BATTLE_SUMMON_STATE      7
 #define BATTLE_MAGIC_STATE       6
@@ -158,6 +159,7 @@
 #define BATTLE_MANIP_STATE       19
 #define BATTLE_PHS_STATE         34
 #define BATTLE_MOVE_STATE        35
+#define BATTLE_TECHNIQUE_STATE   36
 
 #define SLOT_LEFT_LINKED           3
 #define SLOT_RIGHT_LINKED          2

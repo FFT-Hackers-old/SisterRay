@@ -16,7 +16,7 @@ void battleSpellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flat
         return;
     }
     enableWidget(getChild(widget, std::string("TXT")));
-    updateText(getChild(widget, std::string("TXT")), getCommandAction(CMD_MAGIC, magics[flatIndex].magicIndex).attackName.str());
+    updateText(getChild(widget, std::string("TXT")), getCommandAction(CMD_MAGIC, magics[flatIndex].magicIndex).name.str());
     updateTextColor(widget, COLOR_WHITE);
     if (magics[flatIndex].allCount) {
         enableWidget(getChild(widget, std::string("ARW")));
@@ -36,7 +36,7 @@ void battleEskillNameViewUpdater(CollectionWidget* self, Widget* widget, u16 fla
         return;
     }
     enableWidget(widget);
-    updateText(widget, getCommandAction(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex).attackName.str());
+    updateText(widget, getCommandAction(CMD_ENEMY_SKILL, eSkills[flatIndex].magicIndex).name.str());
     updateTextColor(widget, COLOR_WHITE);
 }
 

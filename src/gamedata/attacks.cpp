@@ -22,8 +22,8 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
         if (read_size != sizeof(baseAttack))
             break;
         attack.attackData = baseAttack;
-        attack.attackName = gContext.gameStrings.magic_names.getResource(idx);
-        attack.attackDescription = gContext.gameStrings.magic_descriptions.getResource(idx);
+        attack.name = gContext.gameStrings.magic_names.getResource(idx);
+        attack.description = gContext.gameStrings.magic_descriptions.getResource(idx);
         if (idx == 96 || idx == 97) {
             attack.attackID = idx;
             cmdIdx = CMD_SUMMON;
@@ -48,8 +48,8 @@ SrAttackRegistry::SrAttackRegistry(SrKernelStream* stream) : SrNamedResourceRegi
             attack.multiEffect = getDefaultMagicMultiEffects(idx);
         }
         else if (idx < KERNEL_SUMMON_CUTOFF) {
-            attack.attackName = gContext.gameStrings.magic_names.getResource(idx);
-            attack.attackDescription = gContext.gameStrings.magic_descriptions.getResource(idx);
+            attack.name = gContext.gameStrings.magic_names.getResource(idx);
+            attack.description = gContext.gameStrings.magic_descriptions.getResource(idx);
             attack.attackID = idx;
             cmdIdx = CMD_SUMMON;
             attack.animationType = SUMMON;
@@ -178,8 +178,8 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
      auto srAttack = SrAttack();
      srAttack.attackData = data.baseData;
      // srAttack.auxData = data.auxData;
-     srAttack.attackName = EncodedString::from_unicode(data.attackName);
-     srAttack.attackDescription = EncodedString::from_unicode(data.attackName);
+     srAttack.name = EncodedString::from_unicode(data.name);
+     srAttack.description = EncodedString::from_unicode(data.name);
      gContext.attacks.addElement(name, srAttack);
      srLogWrite("Mod %s added action with true idx: %i ", modName, gContext.attacks.getResourceIndex(name));
  }
@@ -187,7 +187,7 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
 
  SISTERRAY_API SrActionData getSrAction(u16 attackIdx, const char* modName) {
      auto srAttack = gContext.attacks.getElement(std::string(modName) + std::to_string(attackIdx));
-     SrActionData ret{ srAttack.attackData, srAttack.attackName.str(), srAttack.attackDescription.str() };
+     SrActionData ret{ srAttack.attackData, srAttack.name.str(), srAttack.description.str() };
      return ret;
  }
 
@@ -215,14 +215,14 @@ u16 getDefaultMagicUseMulti(u16 actionID) {
  SISTERRAY_API SrActionData getSrCommandAction(const char* modName, u8 modCmdIdx, u16 cmdAtkIdx){
      u16 actionIdx = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx)).commandActions[cmdAtkIdx];
      auto& srAction = gContext.attacks.getResource(actionIdx);
-     SrActionData ret{srAction.attackData, srAction.attackName.str(), srAction.attackDescription.str()};
+     SrActionData ret{srAction.attackData, srAction.name.str(), srAction.description.str()};
      return ret;
  }
 
  SISTERRAY_API SrActionData getSrCommandSwapAction(const char* modName, u8 modCmdIdx, u16 cmdAtkIdx) {
      u16 actionIdx = gContext.commands.getElement(std::string(modName) + std::to_string(modCmdIdx)).swapActions[cmdAtkIdx];
      auto& srAction = gContext.attacks.getResource(actionIdx);
-     SrActionData ret{ srAction.attackData, srAction.attackName.str(), srAction.attackDescription.str() };
+     SrActionData ret{ srAction.attackData, srAction.name.str(), srAction.description.str() };
      return ret;
  }
 

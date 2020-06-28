@@ -20,8 +20,8 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
         srCommand.auxData.damageCalculationByte = getDefaultCmdDamage(commandIdx);
         srCommand.auxData.miscCommandFlags = getDefaultCmdFlags(commandIdx);
         srCommand.auxData.hasActions = getDefaultHasActions(commandIdx);
-        srCommand.commandName = gContext.gameStrings.command_names.getResource(commandIdx);
-        srCommand.commandDescription = gContext.gameStrings.command_descriptions.getResource(commandIdx);
+        srCommand.name = gContext.gameStrings.command_names.getResource(commandIdx);
+        srCommand.description = gContext.gameStrings.command_descriptions.getResource(commandIdx);
         registerDefaultCallbacks(commandIdx, srCommand);
         registerSelectCallbacks(commandIdx, srCommand);
 
@@ -31,7 +31,7 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
     }
 
     //Initialize enemy/game commands not loaded via kernel
-    std::vector<u16> auxCommandIDs = { CMD_ENEMY_ACTION, 33, 34, CMD_POISONTICK };
+    std::vector<u16> auxCommandIDs = { CMD_ENEMY_ACTION, 33, 34, CMD_POISONTICK, CMD_TECHNIQUES };
     for (auto commandIdx : auxCommandIDs) {
         SrCommand srCommand = SrCommand();
         auto playerCommand = CommandData();
@@ -43,6 +43,15 @@ SrCommandRegistry::SrCommandRegistry(SrKernelStream* stream): SrNamedResourceReg
         if (commandIdx == CMD_POISONTICK) {
             srCommand.gameCommand.singleCameraID = 0xFFFF;
             srCommand.gameCommand.multipleCameraID = 0xFFFF;
+        }
+        if (commandIdx == CMD_TECHNIQUES) {
+            srCommand.hasSubCommands = true;
+            std::vector<u8> toConvert = { CMD_STEAL, CMD_MUG, CMD_MORPH, CMD_DEATHBLOW, CMD_SENSE, CMD_MANIPULATE, CMD_MIME, CMD_THROW, CMD_COIN, CMD_FLASH };
+            for (auto cmdIdx : toConvert) {
+                auto& cmd = gContext.commands.getResource(cmdIdx);
+                cmd.isTechnique = true;
+                srCommand.subCommands.push_back(cmdIdx);
+            }
         }
         registerDefaultCallbacks(commandIdx, srCommand);
         registerSelectCallbacks(commandIdx, srCommand);
@@ -61,21 +70,9 @@ void initCommands(SrKernelStream* stream) {
     srCommand.setupCallbacks.push_back(phsChangeSetup);
     gContext.commands.addElement(std::string("CMD_PHS"), srCommand);
 
-    auto commandData = SrCommandData();
-    commandData.baseData.singleCameraID = 0xFFFF;
-    commandData.baseData.multipleCameraID = 0xFFFF;
-    commandData.auxData.animationEffectID = 0xFF;
-    commandData.commandName = "SOLDIER";
-    commandData.commandDesc = "Use SOLDIER skills";
-    addSrCommand(commandData, 0, CLOUD_LIMIT_MOD_NAME);
-    // registerSelectCallback(CLOUD_MOD_NAME, 0, cmdSoldierelectHandler);
-    registerSetupCallback(CLOUD_LIMIT_MOD_NAME, 0, loadAbility);
-    registerSetupCallback(CLOUD_LIMIT_MOD_NAME, 0, applyDamage);
-
     srLogWrite("sister-ray: Loaded %lu commands", (unsigned long)gContext.commands.resourceCount());
 
 }
-
 
 void finalizeCommands() {
     finalizeRegistry<SrCommand, InitCommandEvent, SrCommandRegistry>(gContext.commands, INIT_COMMAND);
@@ -96,26 +93,26 @@ const SrAttack& getCommandAction(u8 commandIdx, u16 actionIdx) {
     }
     actionTableIdx = srCommand.commandActions[actionIdx];
     srLogWrite("getting attack with true index %d", actionTableIdx);
-    srLogWrite("fetched action name %s", gContext.attacks.getResource(actionTableIdx).attackName.str());
+    srLogWrite("fetched action name %s", gContext.attacks.getResource(actionTableIdx).name.str());
     return gContext.attacks.getResource(actionTableIdx);
 }
 
 
 SISTERRAY_API void addActionToCommand(const char* modName, u8 commandIdx, const char* actionModName, u16 actionIdx) {
-    auto commandName = std::string(modName) + std::to_string(commandIdx);
+    auto name = std::string(modName) + std::to_string(commandIdx);
     auto actionName = std::string(actionModName) + std::to_string(actionIdx);
-    addCommandAction(std::string(commandName), std::string(actionName));
+    addCommandAction(std::string(name), std::string(actionName));
 }
 
 SISTERRAY_API void addSwapActionToCommand(const char* modName, u8 commandIdx, const char* actionModName, u16 actionIdx) {
-    auto commandName = std::string(modName) + std::to_string(commandIdx);
+    auto name = std::string(modName) + std::to_string(commandIdx);
     auto actionName = std::string(actionModName) + std::to_string(actionIdx);
-    addCommandSwapAction(std::string(commandName), std::string(actionName));
+    addCommandSwapAction(std::string(name), std::string(actionName));
 }
 
 SISTERRAY_API void toggleSwapActions(const char* modName, u8 commandIdx, u16 enabledIdx) {
-    auto commandName = std::string(modName) + std::to_string(commandIdx);
-    auto& command = gContext.commands.getElement(commandName);
+    auto name = std::string(modName) + std::to_string(commandIdx);
+    auto& command = gContext.commands.getElement(name);
     if (enabledIdx < command.actionCount) {
         u16 swap = command.commandActions[enabledIdx];
         command.commandActions[enabledIdx] = command.swapActions[enabledIdx];
@@ -160,6 +157,15 @@ void runSetupCallbacks(ActionContextEvent& actionEvent) {
     }
 }
 
+void runActionSetupCallbacks(ActionContextEvent& actionEvent) {
+    CommandSetupEvent setupEvent = { actionEvent.damageContext, actionEvent.srDamageContext, actionEvent.battleAIContext };
+    setupEvent.srDamageContext->attackerState = gContext.battleActors.getActiveBattleActor(actionEvent.damageContext->attackerID);
+    auto& callbacks = getCommandAction(actionEvent.damageContext->commandIndex, actionEvent.damageContext->relAttackIndex).setupCallbacks;
+    for (auto callback : callbacks) {
+        callback(setupEvent);
+    }
+}
+
 void runSelectCallbacks(EnabledCommand& command, Menu* menu) {
     SelectCommandEvent setupEvent = { menu, &command };
     auto& callbacks = getCommand(command.commandID).selectCallbacks;
@@ -174,8 +180,8 @@ SISTERRAY_API void addSrCommand(SrCommandData data, u8 commandIdx, const char* m
     auto srCommand = SrCommand();
     srCommand.gameCommand = data.baseData;
     srCommand.auxData = data.auxData;
-    srCommand.commandName = EncodedString::from_unicode(data.commandName);
-    srCommand.commandDescription = EncodedString::from_unicode(data.commandDesc);
+    srCommand.name = EncodedString::from_unicode(data.name);
+    srCommand.description = EncodedString::from_unicode(data.description);
     srCommand.auxData.animationScriptIndex = 0xFFFF;
     gContext.commands.addElement(name, srCommand);
 }
@@ -183,7 +189,7 @@ SISTERRAY_API void addSrCommand(SrCommandData data, u8 commandIdx, const char* m
 
 SISTERRAY_API SrCommandData getSrCommand(u8 commandIdx, const char* modName) {
     auto srCommand = gContext.commands.getElement(std::string(modName) + std::to_string(commandIdx));
-    SrCommandData ret{ srCommand.gameCommand, srCommand.auxData, srCommand.commandName.str(), srCommand.commandDescription.str() };
+    SrCommandData ret{ srCommand.gameCommand, srCommand.auxData, srCommand.name.str(), srCommand.description.str() };
     return ret;
 }
 
@@ -569,6 +575,9 @@ void registerSelectCallbacks(u16 commandIdx, SrCommand& auxCommand) {
         case 23: {
             auxCommand.selectCallbacks.push_back(&cmdWItemSelectHandler);
             break;
+        }
+        case CMD_LIMIT: {
+            auxCommand.selectCallbacks.push_back(&cmdLimitSelectHandler);
         }
         default: {
             break;

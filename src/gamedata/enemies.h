@@ -31,7 +31,7 @@ struct SrEnemyData_ {
 typedef struct {
     AttackData attackData;
     u16 attackID;
-    EncodedString attackName;
+    EncodedString name;
 } EnemyAttack;
 
 /*The following registries contain enemy data and AI scripts indexed by the absolute ID of the enemy*/

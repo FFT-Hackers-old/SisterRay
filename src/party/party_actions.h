@@ -6,11 +6,11 @@
 SISTERRAY_API void addAutoAction(u8 characterIdx, AutoActionType type, u8 commandIndex, u16 actionID, u8 activationChance, u8 counterCount);
 
 /*Public API for getting and enabling stuff in your own enabling handlers*/
-SISTERRAY_API void enableCommand(u8 characterIdx, u8 enabledIndex, u8 commandIndex);
+SISTERRAY_API void enableCommand(u8 characterIdx, u8 enabledIndex, u8 commandIndex, bool isTechnique=false);
 SISTERRAY_API void enableSummonCommand(u8 summonIdx, u8 enabledIndex, u8 commandIndex);
 SISTERRAY_API void voidCommand(u8 characterIdx, u8 enabledIndex);
 SISTERRAY_API u8 getEnabledSlotIndex(u8 characterIdx, u8 commandIndex);
-SISTERRAY_API void  insertEnabledCommand(u8 characterIdx, u8 commandIndex);
+SISTERRAY_API void  insertEnabledCommand(u8 characterIdx, u8 commandIndex, bool technique=false);
 SISTERRAY_API EnabledCommand* getCommandSlot(u8 characterIdx, u8 commandIndex);
 SISTERRAY_API EnabledSpell* getSpellSlot(u8 characterIdx, u8 commandIndex, u16 actionIndex);
 SISTERRAY_API EnabledSpell* getEnabledMagicSlot(u8 characterIdx, u32 enabledSlotIndex);

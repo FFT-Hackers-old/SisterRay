@@ -9,6 +9,7 @@
 #define BASE_WEAPON_OFFSET (u16)0x34 //This is the offset between a model animation and its weapon animation for player models
 //Indexes 0x2C - 0x34 are reserve for limits, but the data doesn't appear to be in the animation file
 #define CLOUD_LIMIT_MOD_NAME "srff7LimCloud"
+#define SUMMON_LIMIT_PREFIX "srSummonLimit"
 static const std::vector<std::string> characterModelNames = {
     std::string("CLOUD.DAT"),
     std::string("BARRETT.DAT"),

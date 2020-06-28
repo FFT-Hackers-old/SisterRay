@@ -14,21 +14,27 @@
 #define KERNEL_COMMAND_COUNT 32
 
 struct SrCommand_ {
-    CommandData gameCommand;
-    AuxCommandData auxData;
-    EncodedString commandName;
-    EncodedString commandDescription;
-    std::unordered_map<std::string, SrBoostedStat> commandStats;
+    EncodedString name;
+    EncodedString description;
+    std::vector<std::string> attackElements;
+    std::vector<StatusInfliction> statusAttack;
+    std::unordered_map<std::string, SrBoostedStat> stats;
     std::vector<SRPFNCOMMANDSETUP> setupCallbacks;
     std::vector<SRPFNCMDSELECTCALLBACK> selectCallbacks;
-    u16 actionCount;
-    std::vector<u16> commandActions; //vector of indexes into the attacks table. Game engine fetches attack data through this
-    std::vector<u16> swapActions;
     DamageType damageType;
     u16 damageFormula;
     std::unordered_set<DamageModifiers> dmgFormulaModifiers;
     u16 hitFormula;
     std::unordered_set<HitModifiers> hitFormulaModifiers;
+
+    CommandData gameCommand;
+    AuxCommandData auxData;
+    u16 actionCount;
+    bool hasSubCommands;
+    bool isTechnique;
+    std::vector<u16> subCommands; //vector of indexes into the commands table. Can define recursive command structures, i.e techniques command
+    std::vector<u16> commandActions; //vector of indexes into the attacks table. Game engine fetches attack data through this
+    std::vector<u16> swapActions;
 };
 
 class SrCommandRegistry : public SrNamedResourceRegistry<SrCommand, std::string> {
@@ -38,6 +44,7 @@ public:
 };
 
 void runSetupCallbacks(ActionContextEvent& actionEvent);
+void runActionSetupCallbacks(ActionContextEvent& actionEvent);
 void runSelectCallbacks(EnabledCommand& command, Menu* menu);
 void initCommands(SrKernelStream* stream);
 u16 getDefaultCmdAnimScript(u16 idx);

@@ -3,8 +3,8 @@
 #include <fstream>
 #include <string>
 #include "mods/character_mechanics_mod/char_commands.h"
-#include "mods/new_spells.h"
-#include "mods/controllable_summon.h"
+#include "mods/sr_spells/new_spells.h"
+#include "mods/controllable_summons/controllable_summon.h"
 #include "mods/stagger.h"
 
 #include "impl.h"

@@ -66,8 +66,8 @@ typedef struct {
 typedef struct {
     CommandData baseData;
     AuxCommandData auxData;
-    const char* commandName;
-    const char* commandDesc;
+    const char* name;
+    const char* description;
 } SrCommandData;
 
 typedef struct {
@@ -95,8 +95,8 @@ typedef struct {
 
 typedef struct {
     AttackData baseData;
-    const char* attackName;
-    const char* attackDesc;
+    const char* name;
+    const char* description;
 } SrActionData;
 
 #pragma pack(push, 1)

@@ -85,10 +85,6 @@ void setupIfritMain(u16 actionTargetMask, u8 casterIdx) {
     *byte_BFCB64 |= 8u;
 }
 
-
-typedef void (*SRPFN_WORDMATMULTIPLY)(GameRotationMatrix*, GameRotationMatrix*, GameRotationMatrix*);
-#define wordMatrixProduct  ((SRPFN_WORDMATMULTIPLY)0x661E85)
-
 typedef void (*SRPFN_PUSHSOMEIFRITTHING)(u32, u32);
 #define sub_5BFC65     ((SRPFN_PUSHSOMEIFRITTHING)0x5BFC65)
 
@@ -117,7 +113,7 @@ void srIfritMain() {
         *byte_BCC6A4 |= 1u;
         dword_BCC700 = gameGetHeapBuffer(0);
     }
-    wordMatrixProduct(mat1, G_IFRIT_MAT_BCC768, ret);
+    srMatrixProduct(mat1, G_IFRIT_MAT_BCC768, ret);
 
     auto ifritEffectCtx = getEffect100QueueTop();
     u16 currentFrame = ifritEffectCtx->wordArray[0];
@@ -311,7 +307,7 @@ void srHellfireEffectMain() {
         *byte_BCC6A4 |= 1u;
         dword_BCC700 = gameGetHeapBuffer(0);
     }
-    wordMatrixProduct(G_EFFECT_MAT, G_IFRIT_MAT_BCC768, ret);
+    srMatrixProduct(G_EFFECT_MAT, G_IFRIT_MAT_BCC768, ret);
 
     auto ifritEffectCtx = getEffect100QueueTop();
     u16 currentFrame = ifritEffectCtx->wordArray[0];
@@ -363,7 +359,7 @@ void srHellfireEffectMain() {
     if ((currentFrame > 0x15) && (currentFrame < 0x32)) {
         IfritBreathCtx* G_BREATH_CTX = (IfritBreathCtx*)0xBCC700;
         srCopyWeaponMatrix(1, 5, &ifritBreathMatrix);
-        srSetTrailRotationMatrix(G_EFFECT_MAT, &ifritBreathMatrix, &G_BREATH_CTX->rotationMatrix);
+        srApplyDeltaTranspose(G_EFFECT_MAT, &ifritBreathMatrix, &G_BREATH_CTX->rotationMatrix);
         srCopyRotMatToGlobal(&G_BREATH_CTX->rotationMatrix);
         srCopyTranslationToGlobal(&G_BREATH_CTX->rotationMatrix);
         R3PointWord relative = { 0, 0x96, 0 };

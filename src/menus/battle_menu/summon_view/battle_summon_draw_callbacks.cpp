@@ -11,5 +11,4 @@ void drawBattleSummonViewWidget(const MenuDrawEvent* event) {
     }
     enableWidget(getChild(menuWidget, BATTLE_SUMMON_WIDGET_NAME));
     updateActionsActor(getChild(menuWidget, BATTLE_SUMMON_WIDGET_NAME), *BATTLE_ACTIVE_ACTOR_ID, event->menu, BATTLE_SUMMON_STATE);
-
 }

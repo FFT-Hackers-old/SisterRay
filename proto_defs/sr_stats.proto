@@ -1,9 +1,9 @@
 syntax="proto3";
 
 message SrStatValueProto {
-    int32 value;
+    int32 value = 1;
 }
 
 message SrStatTableProto {
-    repeated SrStatValue values;
+    repeated SrStatValueProto values = 1;
 }

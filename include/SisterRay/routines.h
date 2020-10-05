@@ -185,7 +185,7 @@ typedef i32(*pfnsub6D0AF9)(i16, i16, i16);
 #define initHandlerCursorState          ((pfnsub6D0AF9)0x6D0AF9)
 
 typedef i32(*pfnsub6C9812)(i32, i32);
-#define sub_6C9812                      ((pfnsub6C9812)0x6C9812) //Sets some data for transition from EQUIP to main menu
+#define gameSetMenuTransition                      ((pfnsub6C9812)0x6C9812) //Sets some data for transition from EQUIP to main menu
 
 typedef i32(*pfnsub6C6AEE)(i32);
 #define setActiveMenu                      ((pfnsub6C6AEE)0x6C6AEE) //Sets some data for transition from EQUIP to main menu

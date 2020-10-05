@@ -166,4 +166,12 @@
 #define SLOT_LEFT_LINKED_2         7
 #define SLOT_RIGHT_LINKED_2        6
 
+enum GameModule {
+    NO_MODULE,
+    FIELD,
+    BATTLE,
+    WORLD_MAP,
+    MODULE_4,
+    MENU,
+};
 #endif

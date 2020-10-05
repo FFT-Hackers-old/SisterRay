@@ -2,5 +2,5 @@ syntax="proto3";
 import "sr_stats.proto";
 
 message SrAttackProto{
-    map<string, SrStatValue> stats;
+    map<string, SrStatValueProto> stats = 1;
 }

@@ -3,8 +3,10 @@
 #include "../../party/party_utils.h"
 #include "../menu_utils.h"
 #include "../../inventories/inventory_utils.h"
+#include "materia_widget_names.h"
 
 #define COMMAND_ROW_COUNT 4
+using namespace MateriaWidgetNames;
 
 //MATERIA_MENU_OK_HANDLERS
 void checkArrangeChoiceHandler(const MenuInputEvent* event) {
@@ -91,21 +93,24 @@ void selectCheckViewHandler(const MenuInputEvent* event) {
 
     auto commandChoice = getStateCursor(event->menu, 3)->context;
     auto flatCommandIndex = (commandChoice.baseColumnIndex * COMMAND_ROW_COUNT) + commandChoice.relativeRowIndex;
-    auto commandID = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].enabledCommandArray[flatCommandIndex].cursorCommandType;
+    auto commandID = gContext.party.getActivePartyMember(*MAT_MENU_PARTY_INDEX).gamePartyMember->enabledCommandArray[flatCommandIndex].commandID;
     switch (commandID) {
-        case 1:
-        case 8: {
-            setMenuState(event->menu, 4);
+        case CMD_MAGIC:
+        case CMD_W_MAGIC: {
+            setMenuState(event->menu, MAGIC_VIEW_STATE);
             break;
         }
-        case 2:
-        case 9: {
-            setMenuState(event->menu, 5);
+        case CMD_SUMMON:
+        case CMD_W_SUMMON: {
+            setMenuState(event->menu, SUMMON_VIEW_STATE);
             break;
         }
-        case 4: {
-            setMenuState(event->menu, 6);
+        case CMD_ENEMY_SKILL: {
+            setMenuState(event->menu, ESKILL_VIEW_STATE);
             break;
+        }
+        case CMD_TECHNIQUES: {
+            setMenuState(event->menu, TECHNIQUE_VIEW_STATE);
         }
     }
 }
@@ -195,7 +200,7 @@ void exitMenuHandler(const MenuInputEvent* event) {
     u32* dword_DC0E74 = (u32*)(0xDC0E74);
 
     playMenuSound(4);
-    sub_6C9812(5, 0);
+    gameSetMenuTransition(5, 0);
     setActiveMenu(0);
     *dword_DC0E74 = 0;
 }
@@ -221,8 +226,12 @@ void exitCheckArrangeView(const MenuInputEvent* event) {
 
 void exitSpellCheckView(const MenuInputEvent* event) {
     srLogWrite("Running exit spell handler");
-    if (event->menuState != 4 && event->menuState != 5 && event->menuState != 6)
+    if (event->menuState != MAGIC_VIEW_STATE &&
+        event->menuState != SUMMON_VIEW_STATE &&
+        event->menuState != ESKILL_VIEW_STATE &&
+        (event->menuState != TECHNIQUE_VIEW_STATE)) {
         return;
+    }
     playMenuSound(4);
     setMenuState(event->menu, 3);
 }

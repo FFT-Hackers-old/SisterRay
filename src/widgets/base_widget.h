@@ -6,8 +6,17 @@
 #include "widgets_api.h"
 #include <vector>
 #include <unordered_map>
+#include "../system/graphics.h"
+
+struct TransitionCtx {
+    u16 transitionDuration;
+    u16 elapsedFrames;
+    bool enterActive;
+    bool exitActive;
+};
 
 typedef void(*SRWIDGETDRAWPROC)(Widget*);
+typedef bool(*SRWIDGETTRANSITIONPROC)(Widget*);
 typedef struct {
     SRWIDGETDRAWPROC draw;
 } WidgetClass;
@@ -25,6 +34,12 @@ struct Widget_ {
     u32 xCoordinate;
     u32 yCoordinate;
     bool enabled;
+    bool active; //set after transitioning is complete
+    ViewPort activePort;
+    ViewPort targetPort;
+    TransitionCtx transitionCtx;
+    SRWIDGETTRANSITIONPROC enterCallback;
+    SRWIDGETTRANSITIONPROC exitCallback;
 };
 
 struct CollectionWidget_ {
@@ -32,6 +47,7 @@ struct CollectionWidget_ {
     const WidgetClass* collectionType;
     const WidgetClass* containedKlass;
 };
+
 
 Widget* createWidget(std::string name, size_t size = sizeof(Widget), const WidgetClass* klass = &kBaseWidgetClass);
 CollectionWidget* createCollectionWidget(std::string name, const WidgetClass* collectionType, const WidgetClass* containedType, size_t allocSize);

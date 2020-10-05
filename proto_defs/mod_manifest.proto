@@ -4,3 +4,12 @@ message ModManifest{
     string modName = 1;
     repeated string deps = 2;
 }
+
+message ModResources{
+    repeated SrAttack attacks = 1;
+}
+
+message SisterRayMod{
+    ModManifest manifest = 1;
+    ModResources resources = 2;
+}

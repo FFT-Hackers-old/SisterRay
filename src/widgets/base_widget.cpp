@@ -1,5 +1,7 @@
 #include "base_widget.h"
 #include "../impl.h"
+#include "../menus/menu_api.h"
+#include "../module/module.h"
 
 //Create a default Widget on the heap, be sure to free this memory
 Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass) {
@@ -11,6 +13,11 @@ Widget* createWidget(std::string name, size_t size, const WidgetClass* wclass) {
     widget->name = name;
     widget->klass = wclass;
     widget->enabled = true;
+    widget->targetPort.x = 0;
+    widget->targetPort.y = 0;
+    widget->targetPort.w = 640;
+    widget->targetPort.h = 480;
+    widget->activePort = widget->targetPort;
     return widget;
 }
 
@@ -39,6 +46,7 @@ void drawWidget(Widget* widget) {
     if (!widget->enabled)
         return;
 
+    auto activeModule = getActiveGameModule();
     if (widget->klass == &kCollectionWidgetClass) {
         auto typedPtr = (CollectionWidget *)widget;
         if (typedPtr->collectionType->draw) {
@@ -50,10 +58,26 @@ void drawWidget(Widget* widget) {
     if (widget->klass->draw) {
         widget->klass->draw(widget);
     }
+
     else if (!widget->children.empty()) {
         for (auto it = begin(widget->children); it != end(widget->children); ++it) {
             drawWidget(*it);
         }
+        if (widget->enterCallback && widget->transitionCtx.enterActive) {
+            auto setActive = widget->enterCallback(widget);
+            if (setActive) {
+                widget->active = true;
+            }
+        }
+        else if (widget->exitCallback && widget->transitionCtx.exitActive) {
+            auto setInactve = widget->exitCallback(widget);
+            if (setInactve) {
+                widget->enabled = false;
+                widget->active = false;
+            }
+        }
+        dispatchMenuDraw();
+        srSetViewport(widget->activePort);
     }
 }
 
@@ -174,10 +198,21 @@ SISTERRAY_API i32 getWidgetY(Widget* widget) {
     return widget->yCoordinate;
 }
 
-SISTERRAY_API void enableWidget(Widget* widget) {
+SISTERRAY_API void enableWidget(Widget* widget, bool doEnter) {
+    if (doEnter && widget->enterCallback) {
+        widget->transitionCtx.enterActive = true;
+        widget->enabled = true;
+        return;
+    }
     widget->enabled = true;
+    widget->active = true;
 }
 
-SISTERRAY_API void disableWidget(Widget* widget) {
+SISTERRAY_API void disableWidget(Widget* widget, bool doExit) {
+    if (doExit && widget->exitCallback) {
+        widget->transitionCtx.exitActive = true;
+        return;
+    }
     widget->enabled = false;
+    widget->active = false;
 }

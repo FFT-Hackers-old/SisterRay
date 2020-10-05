@@ -2,6 +2,7 @@
 #include "../../impl.h"
 #include "../../party/party_utils.h"
 #include "../../widgets/updaters.h"
+#include "../common_widgets.h"
 
 using namespace MateriaWidgetNames;
 
@@ -283,44 +284,14 @@ void initMateriaDataWidget(const MenuInitEvent* event) {
 
 /*Initializes the command view widget used */
 void initCommandViewWidget(const MenuInitEvent* event) {
-    auto commandChoiceCursor = getStateCursor(event->menu, 3);
-    auto menuObject = event->menu;
-    auto mainWidget = menuObject->menuWidget;
-
-    auto commandViewWidget = createWidget(COMMAND_VIEW_WIDGET_NAME);
-
-    DrawBoxParams boxParams = {
-        0x2F,
-        0xD6,
-        98,
-        0x78,
-        0.3f
-    };
-    auto boxWidget = createBoxWidget(boxParams, CMD_GRID_BOX);
-    addChildWidget(commandViewWidget, (Widget*)boxWidget, CMD_GRID_BOX);
-
-    DrawCursorGridParams gridParams = { MATERIA_MENU_NAME.c_str(), 3, &commandNameViewUpdater, 0x2F + 10, 0xD6 + 11, nullptr, 0 };
-    auto gridWidget = createGridWidget(gridParams, CMD_GRID, TextWidgetKlass());
-    addChildWidget(commandViewWidget, (Widget*)gridWidget, CMD_GRID);
-
-    addChildWidget(mainWidget, commandViewWidget, COMMAND_VIEW_WIDGET_NAME);
+    auto mainWidget = event->menu->menuWidget;
+    auto commandView = createCommandViewWidget(COMMAND_VIEW_WIDGET_NAME.c_str(), 0x90, 0x154, &matCommandNameViewUpdater, MATERIA_MENU_NAME.c_str(), 3);
+    addChildWidget(mainWidget, commandView, COMMAND_VIEW_WIDGET_NAME);
 }
 
-/*Temporary function until we also provide infrastructure for extending the number of commands*/
-void commandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
-    if (self->collectionType != GridWidgetClass()) {
-        return;
-    }
-    auto typedPtr = (CursorGridWidget*)self;
-    const auto& commands = gContext.party.getActivePartyMember(*MAT_MENU_PARTY_INDEX).gamePartyMember->enabledCommandArray;;
-    auto commandID = commands[flatIndex].commandID;
-    if (commandID == 0xFF) {
-        disableWidget(widget);
-        return;
-    }
-    enableWidget(widget);
-    updateText(widget, gContext.commands.getResource(commands[flatIndex].commandID).name.str());
-    updateTextColor(widget, COLOR_WHITE);
+
+void matCommandNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    commandNameViewUpdater(self, widget, flatIndex, MAT_MENU_PARTY_INDEX);
 }
 
 /*Initializes the spell view Widget used*/
@@ -329,30 +300,27 @@ void initSpellViewWidget(const MenuInitEvent* event) {
     CursorGridWidget* gridWidget;
     BoxWidget* boxWidget;
     DrawBoxParams boxParams;
+
     auto mainWidget = event->menu->menuWidget;
 
     auto spellViewWidget = createWidget(SPELL_VIEW_WIDGET_NAME);
+    auto magicView = createActionViewWidget(SPELL_GRID.c_str(), 0x2F + 35, 0x157 + 13, spellNameViewUpdater, MATERIA_MENU_NAME.c_str(), MAGIC_VIEW_STATE);
+    addChildWidget(spellViewWidget, (Widget*)magicView, SPELL_GRID);
 
-    boxParams = {
-         0x2F,
-         0x157,
-         0x1A2,
-         0x78,
-         0.203f
-    };
-    boxWidget = createBoxWidget(boxParams, SPELL_VIEW_BOX);
-    addChildWidget(spellViewWidget, (Widget*)boxWidget, SPELL_VIEW_BOX);
+    auto summonView = createActionViewWidget(SUMMON_GRID.c_str(), 0x2F + 35, 0x157 + 13, summonNameViewUpdater, MATERIA_MENU_NAME.c_str(), SUMMON_VIEW_STATE);
+    addChildWidget(spellViewWidget, (Widget*)summonView, SUMMON_GRID);
 
-    gridParams = { MATERIA_MENU_NAME.c_str(), 4, &spellNameViewUpdater, 0x2F + 35, 0x157 + 13, nullptr, 0 };
-    addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, SPELL_GRID, TextWidgetKlass()), SPELL_GRID);
+    auto eskillView = createActionViewWidget(ESKILL_GRID.c_str(), 0x2F + 35, 0x157 + 13, eskillNameViewUpdater, MATERIA_MENU_NAME.c_str(), ESKILL_VIEW_STATE);
+    addChildWidget(spellViewWidget, (Widget*)eskillView, ESKILL_GRID);
 
-    gridParams = { MATERIA_MENU_NAME.c_str(), 5, &summonNameViewUpdater, 0x2F + 93, 0x157 + 13, nullptr, 0 };
-    addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, SUMMON_GRID, TextWidgetKlass()) , SUMMON_GRID);
-
-    gridParams = { MATERIA_MENU_NAME.c_str(), 6, &eskillNameViewUpdater, 0x2F + 40 , 0x157 + 13, nullptr, 0 };
-    addChildWidget(spellViewWidget, (Widget*)createGridWidget(gridParams, ESKILL_GRID, TextWidgetKlass()), ESKILL_GRID);
+    auto battleTechniqueView = createActionViewWidget(TECHNIQUE_GRID.c_str(), 0x2F + 35, 0x157 + 13, matTechniqueViewUpdater, MATERIA_MENU_NAME.c_str(), TECHNIQUE_VIEW_STATE);
+    addChildWidget(spellViewWidget, battleTechniqueView, TECHNIQUE_GRID);
 
     addChildWidget(mainWidget, spellViewWidget, SPELL_VIEW_WIDGET_NAME);
+}
+
+void matTechniqueViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {
+    techniqueViewUpdater(self, widget, flatIndex, MAT_MENU_PARTY_INDEX);
 }
 
 void spellNameViewUpdater(CollectionWidget* self, Widget* widget, u16 flatIndex) {

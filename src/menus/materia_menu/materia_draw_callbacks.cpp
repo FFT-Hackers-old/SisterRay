@@ -1,6 +1,7 @@
 #include "materia_draw_callbacks.h"
 #include "../../impl.h"
 #include "../../party/party_utils.h"
+#include "../common_widgets.h"
 
 using namespace MateriaWidgetNames;
 
@@ -156,46 +157,47 @@ void drawCommandViewWidget(const MenuDrawEvent* event) {
 
     enableWidget(commandViewWidget);
     srLogWrite("Drawing widget for actor %i", *MAT_MENU_PARTY_INDEX);
-    commandChoiceCursor->context.maxColumnBound = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].commandColumns;
-    commandChoiceCursor->context.viewColumnBound = PARTY_STRUCT_ARRAY[*MAT_MENU_PARTY_INDEX].commandColumns;
+    auto& member = getActivePartyMember(*MAT_MENU_PARTY_INDEX).gamePartyMember;
+    commandChoiceCursor->context.maxColumnBound = member->commandColumns;
+    commandChoiceCursor->context.viewColumnBound = member->commandColumns;
     resizeBox(getChild(commandViewWidget, CMD_GRID_BOX), 65 * commandChoiceCursor->context.maxColumnBound + 0x98, 0x78);
 }
 
 void drawSpellsWidget(const MenuDrawEvent* event) {
-    auto magicGrids = getChild(event->menu->menuWidget, SPELL_VIEW_WIDGET_NAME);
-    auto spellBox = getChild(magicGrids, SPELL_VIEW_BOX);
-    auto magicGrid = getChild(magicGrids, SPELL_GRID);
-    if (event->menuState != 4) {
-        disableWidget(magicGrid);
-        disableWidget(spellBox);
+    auto subViews = getChild(event->menu->menuWidget, SPELL_VIEW_WIDGET_NAME);
+
+    auto menuWidget = event->menu->menuWidget;
+    if (event->menuState != MAGIC_VIEW_STATE) {
+        disableWidget(getChild(subViews, SPELL_GRID));
     }
     else {
-        enableWidget(magicGrid);
-        enableWidget(spellBox);
-        return;
+        enableWidget(getChild(subViews, SPELL_GRID));
+        updateActionsActor(getChild(subViews, SPELL_GRID), *MAT_MENU_PARTY_INDEX, event->menu, MAGIC_VIEW_STATE);
     }
 
-    auto summonGrid = getChild(magicGrids, SUMMON_GRID);
-    if (event->menuState != 5) {
-        disableWidget(summonGrid);
-        disableWidget(spellBox);
+    if (event->menuState != SUMMON_VIEW_STATE) {
+        disableWidget(getChild(subViews, SUMMON_GRID));
     }
     else {
-        enableWidget(summonGrid);
-        enableWidget(spellBox);
-        return;
+        enableWidget(getChild(subViews, SUMMON_GRID));
+        updateActionsActor(getChild(subViews, SUMMON_GRID), *MAT_MENU_PARTY_INDEX, event->menu, SUMMON_VIEW_STATE);
     }
 
-    auto eSkillGrid = getChild(magicGrids, ESKILL_GRID);
-    if (event->menuState != 6) {
-        disableWidget(eSkillGrid);
-        disableWidget(spellBox);
+    if (event->menuState != ESKILL_VIEW_STATE) {
+        disableWidget(getChild(subViews, ESKILL_GRID));
     }
     else {
-        enableWidget(eSkillGrid);
-        enableWidget(spellBox);
-        return;
+        enableWidget(getChild(subViews, ESKILL_GRID));
+        updateActionsActor(getChild(subViews, ESKILL_GRID), *MAT_MENU_PARTY_INDEX, event->menu, ESKILL_VIEW_STATE);
     }
+    if (event->menuState != TECHNIQUE_VIEW_STATE) {
+        disableWidget(getChild(subViews, TECHNIQUE_GRID));
+    }
+    else {
+        enableWidget(getChild(subViews, TECHNIQUE_GRID));
+        updateActionsActor(getChild(subViews, TECHNIQUE_GRID), *MAT_MENU_PARTY_INDEX, event->menu, TECHNIQUE_VIEW_STATE);
+    }
+
 }
 
 

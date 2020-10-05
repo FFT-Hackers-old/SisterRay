@@ -1,4 +1,6 @@
 #include "menu_utils.h"
+#include "../module/module_api.h"
+#include "../impl.h"
 
 void setContextCursorData(CursorContext* CursorContext, u32 relativeColumn, u32 relativeRow,
     u32 viewColumn, u32 viewRow, u32 baseColumn, u32 baseRow, u32 maxColumn, u32 maxRow,
@@ -41,3 +43,16 @@ void renderMenuSideScroller(drawScrollerParams* arguments, float floatArg) {
 void renderGearMateriaSlots(u32 xbase, u32 ybase, u8* slotsToRender) {
     renderMateriaSlots(xbase, ybase, (i32)slotsToRender);
 };
+
+
+const auto gameDispatchBattleMenuDraw = (PFNSR_VOIDSUB)0x6DC1EB;
+const auto gameDispatchMenuDraw = (PFNSR_VOIDSUB)0x6FA347;
+void dispatchMenuDraw() {
+    auto activeModule = getActiveGameModule();
+    if (activeModule == BATTLE) {
+        gameDispatchBattleMenuDraw();
+    }
+    else if (activeModule == MENU) {
+        gameDispatchMenuDraw();
+    }
+}

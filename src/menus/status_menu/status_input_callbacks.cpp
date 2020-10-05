@@ -9,7 +9,7 @@ void statExitMenuListener(const MenuInputEvent* event) {
 
     else {
         playMenuSound(4);
-        sub_6C9812(5, 0);
+        gameSetMenuTransition(5, 0);
         setActiveMenu(0);
     }
 }

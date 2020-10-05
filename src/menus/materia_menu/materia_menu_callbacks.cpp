@@ -35,13 +35,23 @@ void createMateriaMenu() {
     CursorContext destroyMateriaContext = { 0, 1, 1, 2, 0, 0, 1, 2, 0, 0, 0, 1, 0, 0 };
     Cursor destroyMateriaCursor = { destroyMateriaContext, 0x92 ,0x67, 26, 0 };
 
-    Cursor cursorArray[11] = { checkArrangeCursor, slotSelectCursor, materiaInventoryCursor,
+    CursorContext techniqueSelection = { 0, 0, 3, 3, 0, 0, 3, 12 / 3, 0, 0, 0, 0, 0, 1 };
+    Cursor techniqueCursor = { techniqueSelection, 8, 364, 32, 156 };
+
+    Cursor cursorArray[12] = { checkArrangeCursor, slotSelectCursor, materiaInventoryCursor,
         checkCommandCursor, magicViewCursor, summonViewCursor,
         eSkillViewCursor, arrangeViewCursor, destroyMateriaCursor,
-        arrangeViewCursor, arrangeViewCursor
+        arrangeViewCursor, arrangeViewCursor, techniqueCursor
     };
-    auto materiaMenu = createMenu(INIT_MATERIA_MENU, DRAW_MATERIA_MENU, MATERIA_MENU_CONTEXT, 12, &(cursorArray[0]));
+    auto materiaMenu = createMenu(INIT_MATERIA_MENU, DRAW_MATERIA_MENU, MATERIA_MENU_CONTEXT, 13, &(cursorArray[0]));
+    for (auto partyIdx = 0; partyIdx < 3; partyIdx++) {
+        setStateCursor(materiaMenu, 4, magicViewCursor, partyIdx);
+        setStateCursor(materiaMenu, 5, summonViewCursor, partyIdx);
+        setStateCursor(materiaMenu, 6, eSkillViewCursor, partyIdx);
+        setStateCursor(materiaMenu, 12, techniqueCursor, partyIdx);
+    }
     gContext.menuWidgets.addElement(MATERIA_MENU_NAME, materiaMenu);
+    
 }
 
 void registerMateriaMenuListeners() {

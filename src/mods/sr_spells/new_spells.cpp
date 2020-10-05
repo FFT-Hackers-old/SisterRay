@@ -95,7 +95,7 @@ void setupEruptionMain(u16 actionTargetMask, u8 casterIdx) {
 
 
 typedef void (*SRPFN_WORDMATMULTIPLY)(GameRotationMatrix*, GameRotationMatrix*, GameRotationMatrix*);
-#define wordMatrixProduct  ((SRPFN_WORDMATMULTIPLY)0x661E85)
+#define gameMatrixProduct  ((SRPFN_WORDMATMULTIPLY)0x661E85)
 
 typedef void (*SRPFN_PUSHSOMEIFRITTHING)(u32, u32);
 #define sub_5BFC65     ((SRPFN_PUSHSOMEIFRITTHING)0x5BFC65)
@@ -126,7 +126,7 @@ void srEruptionMain() {
         *byte_BCC6A4 |= 1u;
         dword_BCC700 = gameGetHeapBuffer(0);
     }
-    wordMatrixProduct(mat1, G_IFRIT_MAT_BCC768, ret);
+    gameMatrixProduct(mat1, G_IFRIT_MAT_BCC768, ret);
 
     auto ifritEffectCtx = getEffect100QueueTop();
     u16 currentFrame = ifritEffectCtx->wordArray[0];

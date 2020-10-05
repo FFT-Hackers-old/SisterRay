@@ -4,6 +4,11 @@
 #include <string>
 
 namespace MateriaWidgetNames {
+    //states
+    const u32 MAGIC_VIEW_STATE = 4;
+    const u32 SUMMON_VIEW_STATE = 5;
+    const u32 ESKILL_VIEW_STATE = 6;
+    const u32 TECHNIQUE_VIEW_STATE = 12;
     const std::string MATERIA_MENU_NAME = "MATERIA_MENU";
     //Names of TOP LEVEL WIDGETS
     const std::string MATERIA_WIDGET_NAME = "MAT_WIDGET";
@@ -24,6 +29,7 @@ namespace MateriaWidgetNames {
     const std::string CHECK_NAME = "CHECK";
     const std::string ARRANGE_NAME = "ARRANGE";
     //MATERIA_VIEW_WIDGET//
+    const std::string TECHNIQUE_GRID = "TECHNIQUE_GRID";
     const std::string MATERIA_GRID = "MATERIA_GRID";
     const std::string MATERIA_GRID_NAMES = "GRID_NAMES";
     const std::string MATERIA_GRID_SPHERES = "GRID_SPHERES";

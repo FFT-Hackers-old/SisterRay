@@ -3,11 +3,11 @@ import "sr_stats.proto";
 import "equipment.proto";
 
 message SrCharacterProto{
-    map<string, SrStatTableProto> statTable;
-    map<string, int32> pointMultiplier;
-    repeated SrGearSlotProto gearSlotConfig;
+    map<string, SrStatTableProto> statTable = 1;
+    map<string, int32> pointMultiplier = 2;
+    repeated SrGearSlotProto gearSlotConfig = 3;
 }
 
 message SrCharacterSaveProto{
-    repeated GearSlotSave equipment;
+    repeated GearSlotSave equipment = 1;
 }

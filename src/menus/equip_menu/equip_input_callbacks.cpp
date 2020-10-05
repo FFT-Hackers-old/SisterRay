@@ -59,13 +59,13 @@ void exitMenuListener(const MenuInputEvent* event) {
 
     if (*DID_MATERIA_GEAR_CHANGE && (*word_DD1BC0 || *dword_DC1290)) {
         playMenuSound(1);
-        sub_6C9812(4, 3);
+        gameSetMenuTransition(4, 3);
         setActiveMenu(3);
         *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
     }
     else {
         playMenuSound(4);
-        sub_6C9812(5, 0);
+        gameSetMenuTransition(5, 0);
         setActiveMenu(0);
     }
 }
@@ -96,7 +96,7 @@ void changeCharRight(const MenuInputEvent* event) {
 void changeToMateriaMenu(const MenuInputEvent* event) {
     if ((*word_DD1BC0 || *dword_DC1290)) { //When switching to the materia view, square
         playMenuSound(1);
-        sub_6C9812(4, 3);
+        gameSetMenuTransition(4, 3);
         setActiveMenu(3);
         *VIEW_PERSISTENT_ACTOR_INDEX = *EQUIP_MENU_PARTY_INDEX;
     }

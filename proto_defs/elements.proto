@@ -1,0 +1,11 @@
+syntax="proto3";
+import "references.proto"
+
+message SrElementProto {
+    string displayName = 1;
+    bool isGameElement = 2;
+    uint32 gameIndex = 3;
+    SrResourceReference affName = 4;
+    SrResourceReference resName = 5;
+    SrResourceReference penName = 6;
+}

@@ -11,8 +11,7 @@
 
 struct SrArmor_ {
     Equippable sharedBase;
-    ArmorData gameArmor;
-    AuxArmorData auxData;
+    GameArmor gameArmor;
 };
 
 class SrArmorRegistry : public SrNamedResourceRegistry<SrArmor, std::string> {

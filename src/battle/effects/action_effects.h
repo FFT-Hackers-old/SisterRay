@@ -38,5 +38,8 @@ typedef enum {
 
 EffectContext* srCreateEffect(PFNSREFFECTCALLBACK callback, GameEffectType effectType);
 void flushSrEffects100();
+void dispatchEffects10();
+void dispatchEffects60();
+void dispatchEffects100();
 
 #endif 

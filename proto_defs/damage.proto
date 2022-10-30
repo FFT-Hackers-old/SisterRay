@@ -1,0 +1,23 @@
+syntax="proto3";
+import "status_effect.proto"
+
+
+enum DamageTypeProto {
+    UNKNOWN = 0;
+    PHYSICAL = 1;
+    MAGICAL = 2;
+}
+
+message DamageInflictionProto{
+    repeated string attackElements = 0; //must refer to an SrElementProto's Name'
+    DamageTypeProto damageType = 1;
+    string damageFormula = 2; //Name of the Damage Formula used by this attack
+    string hitFormula = 3;  // Name of the Hit Formula used by this attack
+    repeated string tags = 4; //Tags for damage calculation modifiers
+    repeated StatusInflictionProto inflictions = 5;
+}
+
+message DamageInflictionKV{
+    SrResourceReference key = 1; //References a stat registered with Character Scope
+    DamageInflictionProto value = 2;
+}

@@ -5,7 +5,7 @@
 #include "../../impl.h"
 
 void runAnimationScript(u8 actorID, u8** ptrToScriptTable) {
-    AnimScriptContext** scriptCtxGlobal = (AnimScriptContext**)0x8FE2AC;
+    ScriptContext** scriptCtxGlobal = (ScriptContext**)0x8FE2AC;
     auto& ownerModelState = *getBattleModelState(actorID);
     auto& scriptOwner74State = *getBattleModelState74(actorID);
     auto& scriptOwnerRotationData = *getBattleModelRotationData(actorID);

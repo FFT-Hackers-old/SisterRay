@@ -28,6 +28,7 @@ struct SrAttack_ {
     std::unordered_set<DamageModifiers> dmgFormulaModifiers;
     u16 hitFormula;
     std::unordered_set<HitModifiers> hitFormulaModifiers;
+    std::vector<std::string> tags;
 
     AttackData attackData;
     u16 attackID;

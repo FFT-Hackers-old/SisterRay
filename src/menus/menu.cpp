@@ -49,9 +49,6 @@ void runMenu(Menu* menu, u32 updateStateMask) {
     MenuDrawEvent event = { menu, getMenuState(menu), updateStateMask };
     gContext.eventBus.dispatch(menu->drawEvent, &event);
     drawWidget(menu->menuWidget);
-    /*for (u32 menuState = 0; menuState < menu->stateCount; menuState++) {
-        handleTransition(menu, menuState);
-    }*/
     if (menu->inputContext == BATTLE_MENU) {
         dispatchMenuInput(updateStateMask, menu, menu->inputContext);
         return;
@@ -61,10 +58,29 @@ void runMenu(Menu* menu, u32 updateStateMask) {
     }
 }
 
+void drawMenuCursors(Menu* menuObject, u32 updateStateMask) {
+    //Always draw the active cursor for the state
+    auto menuState = getMenuState(menuObject);
+    auto activeCursor = getStateCursor(menuObject, menuState, getActiveCursorIndex(menuObject, menuState));
+    drawCursor(activeCursor, 0.1f);
+    auto auxillaries = menuObject->auxillaryDrawCursors[menuState];
+    for (const auto& auxCursorDraw : auxillaries) {
+        if (auxCursorDraw.isFlashing) {
+            drawFlashingCursor(getStateCursor(menuObject, menuState, getActiveCursorIndex(menuObject, auxCursorDraw.stateIdx)), updateStateMask, 0.1f);
+        }
+        else {
+            drawCursor(getStateCursor(menuObject, menuState, getActiveCursorIndex(menuObject, auxCursorDraw.stateIdx)), 0.1f);
+        }
+    }
+}
+
 void dispatchMenuInput(i32 updateStateMask, Menu* menuObject, SrEventContext menuContext) {
     auto menuState = menuObject->currentState;
     auto activeCursor = getStateCursor(menuObject, menuState, getActiveCursorIndex(menuObject, menuState));
     auto menuWidget = menuObject->menuWidget;
+    if (!menuObject->dispatchInput) {
+        return;
+    }
 
     MenuInputEvent event = { menuObject, menuState };
     auto dispatchContext = std::vector<SrEventContext>({ menuContext });
@@ -169,52 +185,6 @@ SISTERRAY_API void setActiveCursorIndex(Menu* menu, u32 menuState, u32 cursorInd
     if (menuState < menu->stateCount) {
         if (menu->cursors[menuState].find(cursorIndex) != menu->cursors[menuState].end()) {
             menu->activeStateCursors[menuState] = cursorIndex;
-        }
-    }
-}
-
-SISTERRAY_API void setTransitionData(Menu* menu, u32 menuState, TransitionData transition) {
-    if (menuState < menu->stateCount) {
-        auto it = menu->transitionData.find(menuState);
-        if (it != menu->transitionData.end()) {
-            menu->transitionData[menuState] = transition;
-        }
-    }
-}
-
-SISTERRAY_API TransitionData* getTransitionData(Menu* menu, u32 menuState) {
-    if (menuState < menu->stateCount) {
-        auto it = menu->transitionData.find(menuState);
-        if (it != menu->transitionData.end()) {
-            return &(it->second);
-        }
-    }
-    return nullptr;
-}
-
-SISTERRAY_API void setOpeningState(Menu* menu, u32 menuState) {
-    if (menuState < menu->stateCount) {
-        auto it = menu->stateStatus.find(menuState);
-        if (it != menu->stateStatus.end()) {
-            menu->stateStatus[menuState] = 1;
-        }
-    }
-}
-
-SISTERRAY_API void setClosingState(Menu* menu, u32 menuState) {
-    if (menuState < menu->stateCount) {
-        auto it = menu->stateStatus.find(menuState);
-        if (it != menu->stateStatus.end()) {
-            menu->stateStatus[menuState] = 2;
-        }
-    }
-}
-
-SISTERRAY_API void setNoTransitionState(Menu* menu, u32 menuState) {
-    if (menuState < menu->stateCount) {
-        auto it = menu->stateStatus.find(menuState);
-        if (it != menu->stateStatus.end()) {
-            menu->stateStatus[menuState] = 0;
         }
     }
 }

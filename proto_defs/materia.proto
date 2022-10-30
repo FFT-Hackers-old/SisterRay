@@ -1,0 +1,40 @@
+syntax="proto3";
+import "sr_stats.proto"
+import "references.proto"
+
+enum SrMateriaType {
+    UNKNOWN_TYPE = 0;
+    MAGIC = 1;
+    COMMAND = 2;
+    INDEPENDENT = 3;
+    SUPPORT = 4;
+    SUMMON = 5;
+}
+
+message SrMateriaLevelProto{
+   uint32 requiredAP = 1;
+   repeated Enables enabled = 2;
+   repeated LinkEnables linkEnables = 3;
+   repeated string tags = 4;
+   repeated StatBoostProto equipEffects = 5; //Active when the materia has the current level, stacks with bass ones, but not cumulative (implements independent materia)
+   string displayName = 6; //Displayed in the Menu for this particular level
+}
+
+message SrMateriaProto{
+    SrMateriaType type = 1; //Primarily determines menu display type in this data model
+    string name = 2;
+    string displayName = 3;
+    string description = 4;
+    repeated string tags = 4;
+    repeated StatBoostProto equipEffects = 5; //Active whenever the materia is equipped
+    repeated SrMateriaLevelProto levels = 6; //Level Representation of this Materia
+}
+
+message Enables {
+    repeated SrResourceReference actionNames = 1; //Must reference the name of an SrAction
+    repeated SrResourceReference commandNames = 2; //Must reference the name of an SrCommand
+}
+
+message LinkEnables {
+    repeated string effectTags = 1; //When this materia is linked with another Materia, it will apply these properties to the spell. Extendable by adding your own effects via the code api. EX: HP_ABSORB, QUADRA_MAGIC, MP_TURBO
+}

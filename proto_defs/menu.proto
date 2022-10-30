@@ -1,0 +1,23 @@
+syntax="proto3";
+import "widget.proto";
+
+message SrMenuCursorProto {
+    ScreenSpacePosition position = 1;
+    int32 rowSpacing = 2;
+    int32 colSpacing = 3;
+    uint32 maxRowBound = 4;
+    uint32 maxColBound = 5;
+    uint32 viewRowBound = 6;
+    uint32 viewColBound = 7;
+}
+
+message SrMenuStateProto {
+    string stateName = 1;
+    repeated SrMenuCursorProto cursors = 2; //One or more cursors associated with this menu state
+}
+
+message SrMenuProto {
+    string menuName = 1;
+    SrWidgetProto menuWidget = 2; //This is the widget associated with the menu, you can enable/disable specific widgets in code based on state changes
+    repeated SrMenuStateProto = 3;
+}

@@ -1,13 +1,37 @@
 syntax="proto3";
 import "sr_stats.proto";
 import "equipment.proto";
+import "resources.proto";
+import "references.proto"
 
-message SrCharacterProto{
-    map<string, SrStatTableProto> statTable = 1;
-    map<string, int32> pointMultiplier = 2;
-    repeated SrGearSlotProto gearSlotConfig = 3;
+
+message StatTableKV{
+    SrResourceReference key = 1; //References a stat registered with Character Scope
+    SrStatTableProto value = 2;
 }
 
+message MultiplierKV{
+    SrResourceReference key = 1; //References a stat registerd with Character Scope
+    float value = 2;
+}
+
+message SrCharacterProto{
+    repeated StatTableKV statTable = 1;
+    repeated MultiplierKV pointMultiplier = 2;
+    repeated SrResourceProto resources = 3;
+    repeated SrGearSlotProto gearSlotConfig = 4;
+}
+
+message StatReferenceKV{
+    SrResourceReference key = 1;
+    uint32 value = 2;
+}
+
+//Serialized representation of the state of a character
 message SrCharacterSaveProto{
-    repeated GearSlotSave equipment = 1;
+    SrResourceReference character = 1;
+    repeated ResourceValueProto resourceValues = 2;
+    repeated GearSlotSave equipment = 3;
+    repeated StatReferenceKV allocatedPoints = 4;
+    uint32 unspentPoints = 5;
 }

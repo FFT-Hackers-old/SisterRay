@@ -74,7 +74,7 @@ bool srInflictStatus(ActorBattleState& targetState, std::string statusName) {
     auto& targetStatuses = *targetState.activeStatuses;
     auto wasFound = (std::find_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {return statusName == activeStatus.statusName; }) != targetStatuses.end());
     const auto& status = gContext.statuses.getElement(statusName);
-    if (!wasFound || status.allowMultiple) {
+    if (!wasFound || status.behavior.allowMultiple) {
         if (!status.removeOnInflict.empty()) {
             auto it = std::remove_if(targetStatuses.begin(), targetStatuses.end(), [&](ActiveStatus activeStatus) {
                 return std::find(status.removeOnInflict.begin(), status.removeOnInflict.end(), activeStatus.statusName) != status.removeOnInflict.end();

@@ -1,0 +1,6 @@
+syntax="proto3";
+
+enum SrTimerProto {
+    VTIMER = 0;
+    CTIMER = 1;
+}

@@ -135,7 +135,7 @@ SISTERRAY_API void initAnimScriptOpCodes() {
     srLogWrite("Registered %i Animation Script OpCodes", gContext.animScriptOpcodes.resourceCount());
 }
 
-u8 readOpCodeArg8(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
+u8 readOpCodeArg8(u8* scriptPtr, ScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition;
     auto byteReader = (u8*)argPosition;
     auto arg = *byteReader;
@@ -143,7 +143,7 @@ u8 readOpCodeArg8(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* model
     return arg;
 }
 
-u16 readOpCodeArg16(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
+u16 readOpCodeArg16(u8* scriptPtr, ScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition;
     auto wordReader = (u16*)argPosition;
     auto arg = *wordReader;
@@ -151,7 +151,7 @@ u16 readOpCodeArg16(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* mod
     return arg;
 }
 
-u32 readOpCodeArg32(u8* scriptPtr, AnimScriptContext* ctx, BattleModelState* modelState) {
+u32 readOpCodeArg32(u8* scriptPtr, ScriptContext* ctx, BattleModelState* modelState) {
     auto argPosition = scriptPtr + modelState->currentScriptPosition;
     auto wordReader = (u32*)argPosition;
     auto arg = *wordReader;

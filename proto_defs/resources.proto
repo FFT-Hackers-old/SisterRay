@@ -1,0 +1,24 @@
+syntax="proto3";
+import "resources.proto"
+
+// Resources are things like HP, MP, Limit Bars. They can have associated costs and be damaged, they are implemented as references to two stats
+message SrResourceProto{
+    string name = 1;
+    string displayName = 2;
+    SrResourceReference maxStat;= 3;
+    SrResourceReference currentStat = 4;
+}
+
+//Used from saves
+message SrResourceValue {
+    SrResourceReference stat = 2;
+    uint32 currentValue = 3;
+    uint32 currentMaxValue = 4;
+    bool isNegative = 5;
+}
+
+// Actions can cost any Resource, which will be deducted at HP time from the user
+message SrResourceCost {
+    SrResourceReference resource = 1; //Must refer to the name of an SrResourceProto
+    uint32 cost = 2;
+}

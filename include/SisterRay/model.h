@@ -192,13 +192,13 @@ typedef struct {
     u16 field_18;
     u16 field_1A;
     u8 field_1C;
-} AnimScriptContext;
+} ScriptContext;
 #pragma pack(pop)
 
 typedef struct {
     u8 actorID;
     u8* scriptPtr;
-    AnimScriptContext* scriptContext;
+    ScriptContext* scriptContext;
     u8 currentScriptIdx;
     BattleModelState* battleModelState;
     u8** animationScriptTable;
@@ -257,8 +257,38 @@ typedef struct {
     u8 charID;
 } AIScriptEvent;
 
+typedef struct {
+    R3PointWord point;
+    u16 field_6;
+    u16 currentPosition;
+    u16 framesToWait;
+    u8 field_C;
+    u8 field_D;
+} CamPointContext;
+
+typedef struct {
+    i32 arg1;
+    i32 arg2;
+    i32 arg3;
+    i32 arg4;
+    i32 arg5;
+    i32 arg6;
+    i32 arg7;
+    i32 arg8;
+} ScriptGlobals;
+
+typedef struct {
+    u8 actorID;
+    const u8* const scriptPtr;
+    ScriptContext* scriptCtx;
+    CamPointContext* camScriptCtx;
+    ScriptGlobals* gameGlobals;
+    u8 currentScriptIdx;
+} CamScriptEvent;
+
 enum OpCodeControlSequence { RUN_NEXT, PLAY_ANIM, BREAK };
 typedef OpCodeControlSequence(*SRPFNANMSCRIPTOPCODEHANDLER)(AnimScriptEvent*);
+typedef OpCodeControlSequence(*SRPFNCAMSCRIPTOPCODEHANDLER)(CamScriptEvent*);
 typedef OpCodeControlSequence(*SRPFNAISCRIPTOPCODEHANDLER)(AIScriptEvent*);
 
 #pragma pack(push, 1)

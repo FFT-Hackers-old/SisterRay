@@ -6,7 +6,7 @@
 
 SrWeaponRegistry::SrWeaponRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrWeapon, std::string>() {
     size_t read_size;
-    WeaponData baseWeapon;
+    GameWeapon baseWeapon;
 
     auto idx = 0;
     while (1) {
@@ -63,7 +63,6 @@ SISTERRAY_API SrWeaponData getSrWeapon(u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
     auto& weapon = gContext.weapons.getElement(name);
     apiWeapon.baseData = weapon.gameWeapon;
-    apiWeapon.auxData = weapon.auxData;
     apiWeapon.weaponName = weapon.sharedBase.gearName.str();
     apiWeapon.weaponDesc = weapon.sharedBase.gearDescription.str();
     return apiWeapon;
@@ -73,7 +72,6 @@ SISTERRAY_API void setSrWeaponData(SrWeaponData data, u16 modItemID, const char*
     auto name = std::string(modName) + std::to_string(modItemID);
     auto srWeapon = SrWeapon();
     srWeapon.gameWeapon = data.baseData;
-    srWeapon.auxData = data.auxData;
     srWeapon.sharedBase.gearName = EncodedString::from_unicode(data.weaponName);
     srWeapon.sharedBase.gearDescription = EncodedString::from_unicode(data.weaponDesc);
     gContext.weapons.updateElement(name, srWeapon);
@@ -83,7 +81,6 @@ SISTERRAY_API void addSrWeapon(SrWeaponData data, u16 modItemID, const char* mod
     auto name = std::string(modName) + std::to_string(modItemID);
     auto srWeapon = SrWeapon();
     srWeapon.gameWeapon = data.baseData;
-    srWeapon.auxData = data.auxData;
     srWeapon.sharedBase.gearName = EncodedString::from_unicode(data.weaponName);
     srWeapon.sharedBase.gearDescription = EncodedString::from_unicode(data.weaponDesc);
     gContext.weapons.addElement(name, srWeapon);

@@ -29,6 +29,7 @@ typedef struct {
     EncodedString gearName;
     EncodedString gearDescription;
     std::unordered_map<std::string, SrStaticStat> stats;
+    std::unordered_set<std::string> tags;
     EquipmentStatBoosts equipEffects;
 } Equippable;
 

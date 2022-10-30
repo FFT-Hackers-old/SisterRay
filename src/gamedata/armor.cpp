@@ -8,7 +8,7 @@
 
 SrArmorRegistry::SrArmorRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrArmor, std::string>() {
     size_t read_size;
-    ArmorData baseArmor;
+    GameArmor baseArmor;
 
     auto idx = 0;
     while (1) {
@@ -78,7 +78,6 @@ SISTERRAY_API SrArmorData getSrArmor(u16 modItemID, const char* modName) {
     auto name = std::string(modName) + std::to_string(modItemID);
     auto& armor = gContext.armors.getElement(name);
     apiArmor.baseData = armor.gameArmor;
-    apiArmor.auxData = armor.auxData;
     apiArmor.armorName = armor.sharedBase.gearName.str();
     apiArmor.armorDesc = armor.sharedBase.gearDescription.str();
     return apiArmor;
@@ -88,7 +87,6 @@ SISTERRAY_API void setSrArmorData(SrArmorData data, u16 modItemID, const char* m
     auto name = std::string(modName) + std::to_string(modItemID);
     auto srArmor = SrArmor();
     srArmor.gameArmor = data.baseData;
-    srArmor.auxData = data.auxData;
     srArmor.sharedBase.gearName = EncodedString::from_unicode(data.armorName);
     srArmor.sharedBase.gearDescription = EncodedString::from_unicode(data.armorDesc);
     gContext.armors.updateElement(name, srArmor);
@@ -98,7 +96,6 @@ SISTERRAY_API void addSrArmor(SrArmorData data, u16 modItemID, const char* modNa
     auto name = std::string(modName) + std::to_string(modItemID);
     auto srArmor = SrArmor();
     srArmor.gameArmor = data.baseData;
-    srArmor.auxData = data.auxData;
     srArmor.sharedBase.gearName = EncodedString::from_unicode(data.armorName);
     srArmor.sharedBase.gearDescription = EncodedString::from_unicode(data.armorDesc);
     gContext.armors.addElement(name, srArmor);

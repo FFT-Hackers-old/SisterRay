@@ -52,6 +52,7 @@ extern "C" {
 #include "battle/battle_models/battle_models.h"
 #include "battle/ai_script/ai_script_engine.h"
 #include "battle/battle_actors.h"
+#include "battle/camera/camera_script_opcode.h"
 
 #include <map>
 #include <string>
@@ -63,6 +64,7 @@ extern PRNG_Type rng;
 extern std::uniform_int_distribution<PRNG_Type::result_type> udist;
 typedef void(*PFNSR_VOIDSUB)();
 typedef void(*PFNSR_INTSUB)(u32);
+typedef void(*PFNSR_WORDSUB)(u16);
 
 typedef struct {
     lua_State*                          L;
@@ -84,6 +86,8 @@ typedef struct {
     SrBattleAnimScriptRegistry          battleAnimationScripts;
     SrAnimOpCodeRegistry                animScriptOpcodes;
     SrAIScriptOpCodeRegistry            AIScriptOpcodes;
+    SrPosCameraOpCodeRegistry           camPositionOpcodes;
+    SrLookAtCameraOpCodeRegistry        camLookAtOpCodes;
 
     SrCommandRegistry                   commands;
     SrAttackRegistry                    attacks;

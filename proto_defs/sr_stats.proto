@@ -1,9 +1,44 @@
 syntax="proto3";
 
+enum SrStatScope{
+    UNKNOWN = 0;
+    ACTOR = 1;
+    CHARACTER = 2;
+    EQUIPMENT = 3;
+    ARMOR = 4;
+    WEAPONS = 5;
+    COMMANDS = 6;
+    ACTIONS = 7;
+}
+
+message SrStatProto {
+    name = 1;
+    repeated SrStatScope scopes = 2;
+    string displayName = 3;
+    uint32 maxValue = 4;
+    uint32 minValue = 5;
+    bool canBeNegative = 6;
+    bool isPrimary = 7;
+    bool useTable = 8;
+    bool isDerived = 9;
+}
+
+message StatBoostProto {
+    bool sign = 1;
+    uint32 amount = 2;
+    bool isPercent = 3;
+    repeated string tags = 4;
+}
+
 message SrStatValueProto {
     int32 value = 1;
 }
 
 message SrStatTableProto {
     repeated SrStatValueProto values = 1;
+}
+
+message StaticStatKV{
+    SrResourceReference key = 1; //References a stat registered with Character Scope
+    SrStatValueProto value = 2;
 }

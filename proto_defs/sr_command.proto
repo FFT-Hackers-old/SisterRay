@@ -1,0 +1,13 @@
+syntax="proto3";
+import "damage.proto";
+import "references.proto"
+
+message SrCommandProto{
+    SrAttackProto attack = 1; //If the command is really just a top level action, configure it's effects here'
+
+    // Data related to more complex commands
+    uint32 actionCount = 2;
+    repeated SrResourceReference subCommands = 3; //vector of other command names. Can define recursive command structures, i.e a techniques command
+    repeated SrResourceReference commandActions = 4; //vector of attack names. Game engine fetches attack data through this, and actions are displayed 
+    repeated SrResourceReference swapActions = 5;
+}

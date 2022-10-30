@@ -6,7 +6,7 @@
 
 SrAccessoryRegistry::SrAccessoryRegistry(SrKernelStream* stream) : SrNamedResourceRegistry<SrAccessory, std::string>() {
     size_t read_size;
-    AccessoryData baseAccessory;
+    GameAccessory baseAccessory;
 
     auto idx = 0;
     while (1) {
@@ -63,7 +63,6 @@ SISTERRAY_API SrAccessoryData getSrAccessory(u16 modItemID, const char* modName)
     auto name = std::string(modName) + std::to_string(modItemID);
     auto& accessory = gContext.accessories.getElement(name);
     apiAccessory.baseData = accessory.gameAccessory;
-    apiAccessory.auxData = accessory.auxData;
     apiAccessory.accessoryName = accessory.sharedBase.gearName.str();
     apiAccessory.accessoryDesc= accessory.sharedBase.gearDescription.str();
     return apiAccessory;
@@ -73,7 +72,6 @@ SISTERRAY_API void setSrAccessoryData(SrAccessoryData data, u16 modItemID, const
     auto name = std::string(modName) + std::to_string(modItemID);
     auto srAccessory = SrAccessory();
     srAccessory.gameAccessory = data.baseData;
-    srAccessory.auxData = data.auxData;
     srAccessory.sharedBase.gearName = EncodedString::from_unicode(data.accessoryName);
     srAccessory.sharedBase.gearDescription = EncodedString::from_unicode(data.accessoryDesc);
     gContext.accessories.updateElement(name, srAccessory);
@@ -83,7 +81,6 @@ SISTERRAY_API void addSrAccessory(SrAccessoryData data, u16 modItemID, const cha
     auto name = std::string(modName) + std::to_string(modItemID);
     auto srAccessory = SrAccessory();
     srAccessory.gameAccessory = data.baseData;
-    srAccessory.auxData = data.auxData;
     srAccessory.sharedBase.gearName = EncodedString::from_unicode(data.accessoryName);
     srAccessory.sharedBase.gearDescription = EncodedString::from_unicode(data.accessoryDesc);
     gContext.accessories.addElement(name, srAccessory);

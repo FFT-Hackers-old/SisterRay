@@ -1,6 +1,17 @@
 syntax="proto3";
 import "sr_stats.proto";
+import "status_effects.proto"
+import "damage.proto";
+import "resources.proto";
 
 message SrAttackProto{
-    map<string, SrStatValueProto> stats = 1;
+    string name = 1;
+    string displayName = 2;
+    string description = 3;
+    repeated StaticStatKV stats = 4; //Add any engine stats for attacks (hit chance, etc) -- plus any custom ones in your mod
+    repeated string tags = 5;
+    repeated DamageInflictionKV damaging = 6; //A map of resource_name -> damage contexts for the attack
+    repeated SrResourceCost costs = 7;
+    repeated string setupCallbacks = 8; //Repeated string of engine callbacks to run at setup time
+    repeated string selectCallbacks = 9; //Repeated string of enginbe callbacks to run at select time
 }

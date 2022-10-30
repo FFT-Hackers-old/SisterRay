@@ -1,0 +1,6 @@
+syntax="proto3"
+
+message SrResourceReference{
+    string modName = 1;
+    string resourceName = 2;
+}

@@ -8,8 +8,7 @@
 
 typedef struct {
     Equippable sharedBase;
-    AccessoryData gameAccessory;
-    AuxAccessoryData auxData;
+    GameAccessory gameAccessory;
 } SrAccessory;
 
 #define KERNEL_ACCESSORY_COUNT 32

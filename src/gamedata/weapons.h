@@ -13,8 +13,7 @@
 
 struct SrWeapon_ {
     Equippable sharedBase;
-    WeaponData gameWeapon;
-    AuxWeaponData auxData;
+    GameWeapon gameWeapon;
     std::vector<std::string> attackElements;
     std::vector<StatusInfliction> statusAttack;
     DamageType damageType;

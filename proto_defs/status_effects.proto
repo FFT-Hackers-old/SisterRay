@@ -1,0 +1,28 @@
+syntax="proto3";
+import "timers.proto"
+import "references.proto"
+
+message SrStatusEffectProto{
+    string displayName = 1;
+    string description = 2;
+    bool isGameStatus = 3;
+    uint32 gameIndex = 4;
+    SrResourceReference penName = 5; //Must Reference an SrStatProto's name'
+    SrResourceReference resName = 6; //Must Reference an SrStatProto's name'
+    bool doesExpire = 7;
+    bool doesStack = 8;
+    uint32 stacks = 9;
+    bool persistsAfterBattle = 10;
+    bool allowMultiple = 11;
+    repeated string removeOnInflict = 12;
+    repeated string neutralizeOnInflict = 13;
+}
+
+message SrStatusInflictionProto{
+    string statusName = 1;
+    uint32 inflictionChance =2;
+    bool doesToggle = 3;
+    bool doesRemove = 4;
+    uint32 duration = 5;
+    SrTimerProto timer_type = 6;
+}

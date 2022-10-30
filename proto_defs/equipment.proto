@@ -1,13 +1,56 @@
 syntax="proto3";
+import "sr_stats.proto";
+import "damage.proto";
+import "references.proto";
+
+enum GearSlotType{
+    WEAPON = 0;
+    ARMOR = 1;
+    ACCESSORY = 2;
+}
 
 message SrGearSlotProto {
-    uint32 gearSlotType = 1;
-    uint32 slotSupType = 2;
-    string displayName = 3;
+    GearSlotType gearSlotType = 1;
+    string matcher = 2;
+    uint32 gearSlotIdx = 3;
+    string displayName = 4;
 }
 
 message GearSlotSave{
-    uint32 gearSlotType = 1;
-    string equippedID = 2;
-    uint32 gearSlotIdx = 3;
+    GearSlotType gearSlotType = 1;
+    SrResourceReference equipped = 2; //References the name of the piece of gear in the armor, accessory, or weapon registry
+    repeated string materia = 3;
+    uint32 gearSlotIdx = 4;
+}
+
+message MateriaContext {
+    string materiaSlots = 1; //Ex O=OO=OOO
+    uint32 growthRate = 2;
+}
+
+message SrEquippableProto{
+    SrResourceReference name = 1;
+    string displayName = 2;
+    string gearDescription = 3;
+    repeated StaticStatKV stats = 4;
+    repeated string tags = 5;
+    repeated StatBoostProto equipEffects = 6;
+}
+
+message SrAccessoryProto {
+    SrEquippableProto equippable = 1;
+    string matcher = 2; //Matches with a gear slot to determine if an item is equippable in that slot
+}
+
+message SrArmorProto{
+    SrEquippableProto equippable = 1;
+    MateriaContext materia = 2;
+    string matcher = 3;
+}
+
+message SrWeaponProto{
+    SrEquippableProto equippable = 1;
+    MateriaContext materia = 2;
+    repeated DamageInflictionKV damaging = 3; //Map of Resource -> Damage Infliction Context
+    string matcher = 4;
 }

@@ -73,3 +73,15 @@ void flushSrEffects100() {
         effectQueue[idx].handlerIndex = 0xFFFF;
     }
 }
+
+void dispatchEffects10() {
+
+}
+
+void dispatchEffects60() {
+
+}
+
+void dispatchEffects100() {
+
+}

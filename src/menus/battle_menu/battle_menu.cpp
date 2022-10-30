@@ -72,7 +72,6 @@ void resetBattleMenu() {
     *BATTLE_PAUSED = 0;
     *word_DC1F3C = *LIMIT_ACTIVE_MASK;
     *CURSOR_MEMORY_ACTIVE = (*word_DC0E12 >> 4) & 3;
-    setOpeningState(menu, BATTLE_INACTIVE);
     *word_CC0828 = 2;
 }
 
@@ -122,8 +121,6 @@ void createBattleMenu() {
     mogReplaceFunction(INIT_BATTLE_DATA, &resetBattleMenu);
     auto battleMenu = createMenu(INIT_BATTLE_MENU, DRAW_BATTLE_MENU, BATTLE_MENU, 64);
     gContext.menuWidgets.addElement(BATTLE_MENU_NAME, battleMenu);
-    TransitionData baseTransition = { 0x14C, 0x280, 0x70, 0, 0, 0x280, 0x70, 14, 1 };
-    setTransitionData(battleMenu, BATTLE_INACTIVE, baseTransition);
     registerBaseViewListeners();
     initializeBattleBaseMenu();
     registerTargetingMenuListeners();

@@ -151,8 +151,8 @@ void handleEquipGear(GearSlot& gearSlot, u16 equippedGearIdx) {
 
 //Update Materia after new items are equipped
 void handleMateriaUpdate(GearSlot& gearSlot, u16 equippedGearIdx) {
-    WeaponData newWeaponData;
-    ArmorData newArmorData;
+    GameWeapon newWeaponData;
+    GameArmor newArmorData;
     MateriaInventoryEntry& equippedMateriaData = MateriaInventoryEntry();
     u8* materiaSlots;
     bool shouldRemove = false;

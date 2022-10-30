@@ -1,0 +1,102 @@
+syntax="proto3"
+import "references.proto";
+
+// Enum of Supported Widget Types
+enum SrWidgetTypes{
+    UNKNOWN = 0;
+    TEXT_WIDGET = 1;
+    NUMBER_WIDGET = 2;
+    BOX_WIDGET = 3;
+    BAR_WIDGET = 4;
+    SCROLLER_WIDGET = 5;
+    COLLECTION_WIDGET = 6;
+}
+
+//Chosen based on the type
+message TypeArguments{
+    SrTextWidgetArgsProto text = 1;
+    SrNumberWidgetArgsProto number = 2;
+    SrBoxWidgetArgsProto box = 3;
+    SrScrollerWidgetArgsProto scroller = 4;
+    SrCollectionWidgetArgsProto collection = 5;
+}
+
+message ScreenSpacePosition {
+    uint32 x = 1;
+    uint32 y = 2;
+}
+
+//Create Widget Hierachies recursively
+message SrWidgetProto{
+    SrWidgetTypes type = 1;
+    SrWidgetTypeArguments typeArgs = 2;
+    string name = 3;
+    ScreenSpacePosition position = 4; //Children will have positions relative to this screen space point and move with the parent
+    repeated SrWidgetProto children = 5;
+    float priority = 6;
+}
+
+enum GameColors {
+    COLOR_GRAY = 1;
+    COLOR_UNKNOWN_1 = 2;
+    COLOR_RED = 3;
+    COLOR_UNKNOWN_2 = 4;
+    COLOR_UNKNOWN_3 = 5;
+    COLOR_TEAL = 6;
+    COLOR_GREEN = 7;
+    COLOR_WHITE = 8;
+}
+
+message SrTextWidgetArgsProto {
+    string text = 1;
+    GameColors color = 2;
+
+}
+
+message SrNumberWidgetArgsProto {
+    uint32 value = 1;
+    GeamColors color = 3;
+}
+
+message RGBAProto {
+    uint32 r = 1;
+    uint32 g = 2;
+    uint32 b = 3;
+    uint32 a = 4;
+}
+
+message BoxColorsProto{
+    RGBAProto rgba1 = 1;
+    RGBAProto rgba2 = 2;
+    RGBAProto rgba3 = 3;
+    RGBAProto rgba4 = 4;
+}
+
+message SrBoxWidgetArgsProto {
+    uint32 width = 1;
+    uint32 height = 2;
+    bool isAlphaEnabled = 3;
+    BoxColorsProto boxColors = 4;
+}
+
+message SrScrollerWidgetArgsProto {
+
+}
+
+//One Row of a collection widget, the widget defined here is used to construct an allocator
+message CollectionRow{
+    SrWidgetProto rowSpec = 1; // The widget defined here will be used to construct an allocator for Collection Widgets
+}
+
+message CursorReferenceProto {
+    SrResourceReference menu = 1; //The menu needed to resolve the cursor reference
+    string stateName = 2; //The name of the state the cursor belongs to
+    uint32 cursorIdx = 3; //The index of the cursor to bind to for that given state
+
+}
+//This gets a reference to a Cursor
+message SrCollectionWidgetArgsProto {
+    CursorReferenceProto cursor = 1; //Determines not the collection is navigable with a cursor or just a viewable array
+    CollectionRow widget = 2;
+}
+

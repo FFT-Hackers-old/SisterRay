@@ -109,7 +109,7 @@ typedef struct {
     EnabledSpell unusedMagics[2]; //0x2B8
     EnabledSpell enabledSummons[16]; //0x2C8
     EnabledSpell enabledEnemySkills[24]; //0x348
-    WeaponData weaponData;
+    GameWeapon weaponData;
     u32 unkthing2;
     u32 unkthing;
     u8 charGilBonus;

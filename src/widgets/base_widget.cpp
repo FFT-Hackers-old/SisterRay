@@ -55,6 +55,7 @@ void drawWidget(Widget* widget) {
         return;
     }
 
+    //Create Drawables in the game engine based on the widget-type
     if (widget->klass->draw) {
         widget->klass->draw(widget);
     }
@@ -63,22 +64,23 @@ void drawWidget(Widget* widget) {
         for (auto it = begin(widget->children); it != end(widget->children); ++it) {
             drawWidget(*it);
         }
-        if (widget->enterCallback && widget->transitionCtx.enterActive) {
-            auto setActive = widget->enterCallback(widget);
-            if (setActive) {
-                widget->active = true;
-            }
-        }
-        else if (widget->exitCallback && widget->transitionCtx.exitActive) {
-            auto setInactve = widget->exitCallback(widget);
-            if (setInactve) {
-                widget->enabled = false;
-                widget->active = false;
-            }
-        }
-        dispatchMenuDraw();
-        srSetViewport(widget->activePort);
     }
+
+    if (widget->enterCallback && widget->transitionCtx.enterActive) {
+        auto setActive = widget->enterCallback(widget);
+        if (setActive) {
+            widget->active = true;
+        }
+    }
+    else if (widget->exitCallback && widget->transitionCtx.exitActive) {
+        auto setInactve = widget->exitCallback(widget);
+        if (setInactve) {
+            widget->enabled = false;
+            widget->active = false;
+        }
+    }
+    dispatchMenuDraw();
+    srSetViewport(widget->activePort);
 }
 
 //Frees a Widget and destroys all of its children

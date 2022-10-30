@@ -1,4 +1,9 @@
 syntax = "proto3";
+import "sr_attack.proto";
+import "character.proto";
+import "equipment.proto";
+import "materia.proto";
+import "elements.proto"
 
 message ModManifest{
     string modName = 1;
@@ -6,7 +11,14 @@ message ModManifest{
 }
 
 message ModResources{
-    repeated SrAttack attacks = 1;
+    repeated SrAttackProto stats = 1;
+    repeated SrCharacterProto characters = 2;
+    repeated SrStatsProto attacks = 3;
+    repeated SrWeaponProto weapons = 4;
+    repeated SrArmorProto armors = 5;
+    repeated SrAccessoryProto accessories = 6;
+    repeated SrMateriaProto materias = 7;
+    repeated SrElementProto elements = 8;
 }
 
 message SisterRayMod{

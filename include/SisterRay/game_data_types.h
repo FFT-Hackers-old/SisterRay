@@ -164,16 +164,11 @@ typedef struct {
     u8      impactEffectID;
     u16     specialAttackFlags;
     u16     restrictionMask;
-} WeaponData;
+} GameWeapon;
 #pragma pack(pop)
 
 typedef struct {
-    u16 stagger;
-} AuxWeaponData;
-
-typedef struct {
-    WeaponData baseData;
-    AuxWeaponData auxData;
+    GameWeapon baseData;
     const char* weaponName;
     const char* weaponDesc;
 } SrWeaponData;
@@ -197,16 +192,11 @@ typedef struct {
     u8      stat_boost_amounts[4];
     u16     restrictionMask;
     u16     unknown4;
-} ArmorData;
+} GameArmor;
 #pragma pack(pop)
 
 typedef struct {
-    u16 staggerRes;
-} AuxArmorData;
-
-typedef struct {
-    ArmorData baseData;
-    AuxArmorData auxData;
+    GameArmor baseData;
     const char* armorName;
     const char* armorDesc;
 } SrArmorData;
@@ -221,17 +211,11 @@ typedef struct {
     u32     status_defense_mask;
     u16     equipMask;
     u16     restrictionMask;
-} AccessoryData;
+} GameAccessory;
 #pragma pack(pop)
 
 typedef struct {
-    u16 stagger;
-    u16 staggerRes;
-} AuxAccessoryData;
-
-typedef struct {
-    AccessoryData baseData;
-    AuxAccessoryData auxData;
+    GameAccessory baseData;
     const char* accessoryName;
     const char* accessoryDesc;
 } SrAccessoryData;

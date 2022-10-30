@@ -24,10 +24,5 @@ SISTERRAY_API void setMenuState(Menu* menu, u32 value);
 SISTERRAY_API Widget* getWidget(Menu* menu);
 SISTERRAY_API u32 getActiveCursorIndex(Menu* menu, u32 menuState);
 SISTERRAY_API void setActiveCursorIndex(Menu* menu, u32 menuState, u32 cursorIndex);
-SISTERRAY_API void setTransitionData(Menu* menu, u32 menuState, TransitionData transition);
-SISTERRAY_API TransitionData* getTransitionData(Menu* menu, u32 menuState);
-SISTERRAY_API void setOpeningState(Menu* menu, u32 menuState);
-SISTERRAY_API void setClosingState(Menu* menu, u32 menuState);
-SISTERRAY_API void setNoTransitionState(Menu* menu, u32 menuState);
 
 #endif
